@@ -8,6 +8,12 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-06-28 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_controlmisc.prg
+     ! Wrong casting.
+
 2018-06-26 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

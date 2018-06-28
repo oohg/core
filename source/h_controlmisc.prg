@@ -1947,7 +1947,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
    hb_vmSend( 0 );
    if( hb_parl( -1 ) )
    {
-      SetBkMode( hdc, (COLORREF) TRANSPARENT );
+      SetBkMode( hdc, TRANSPARENT );
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
       oSelf->lOldBackColor = -1;
@@ -2018,7 +2018,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             hb_vmSend( 0 );
             if( hb_parl( -1 ) )
             {
-               SetBkMode( hdc, (COLORREF) TRANSPARENT );
+               SetBkMode( hdc, TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
                oSelf->lOldBackColor = -1;
@@ -2034,7 +2034,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          }
          else
          {
-            SetBkMode( hdc, (COLORREF) TRANSPARENT );
+            SetBkMode( hdc, TRANSPARENT );
             DeleteObject( oSelf->BrushHandle );
             oSelf->BrushHandle = GetTabBrush( hwnd );
             oSelf->lOldBackColor = -1;
@@ -2066,7 +2066,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
 
             if( ValidHandler( hwnd ) )
             {
-               SetBkMode( hdc, (COLORREF) TRANSPARENT );
+               SetBkMode( hdc, TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetTabBrush( hwnd );
                oSelf->lOldBackColor = -1;
@@ -2086,7 +2086,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       hb_vmSend( 0 );
       if( hb_parl( -1 ) )
       {
-         SetBkMode( hdc, (COLORREF) TRANSPARENT );
+         SetBkMode( hdc, TRANSPARENT );
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
          oSelf->lOldBackColor = -1;
