@@ -84,7 +84,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
-            HBitMap, Handle\> ;
+            HBitMap, Handle, oBkGrnd\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;

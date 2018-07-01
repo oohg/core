@@ -8,6 +8,12 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-01 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+    * include\source\i_window.ch
+      + Data oBkGrnd to semi-oop syntax.
+
 2018-07-01 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
@@ -172,7 +178,7 @@
 2018-05-24 19:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
-    * include\source\i_window.prg
+    * include\source\i_window.ch
       + Added window status constants.
     * core\source\h_form.prg
       * Use new window status constants.
