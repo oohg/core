@@ -2871,6 +2871,7 @@ METHOD RecordId() CLASS TVirtualField
 
 CLASS TXBrowseByCell FROM TXBrowse
 
+   DATA lFocusRect                INIT .F.
    DATA Type                      INIT "XBROWSEBYCELL" READONLY
 
    METHOD AddColumn
@@ -3033,7 +3034,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    HB_SYMBOL_UNUSED( lNone )
    HB_SYMBOL_UNUSED( lCBE )
 
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
 
    ::Super:Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;

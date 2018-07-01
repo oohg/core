@@ -4123,6 +4123,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
 
 CLASS TGridByCell FROM TGrid
 
+   DATA lFocusRect                INIT .F.
    DATA Type                      INIT "GRIDBYCELL" READONLY
 
    METHOD AddColumn
@@ -4176,7 +4177,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip ) CLASS TGridByCell
 
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
    ASSIGN lCBE       VALUE lCBE       TYPE "L" DEFAULT .T.
 

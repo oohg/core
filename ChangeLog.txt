@@ -8,6 +8,16 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-01 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_browse.prg
+     ! Initial values of data TOBrowseByCell():lFocusRect.
+   * core\source\h_grid.prg
+     ! Initial values of data TGridByCell():lFocusRect.
+   * core\source\h_xbrowse.prg
+     ! Initial values of data TXBrowseByCell():lFocusRect.
+
 2018-06-28 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
