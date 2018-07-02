@@ -1192,6 +1192,7 @@ CLASS TControl FROM TWindow
    DATA OldValue             INIT nil
    DATA OldColor
    DATA OldBackColor
+   DATA oBkGrnd                   INIT NIL
 
    METHOD Row                SETGET
    METHOD Col                SETGET
@@ -1974,7 +1975,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
 /*
  * METHOD Events_Color( wParam, nDefColor ) CLASS TFRAME
  * METHOD Events_Color( wParam, nDefColor ) CLASS TCHECKBOX
- * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOGROUP
  * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOITEM
  */
 HB_FUNC( EVENTS_COLOR_INTAB )
@@ -1983,21 +1983,35 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hdc = (HDC) hb_parnl( 2 );
    LONG lBackColor;
-   RECT rc;
-   LPRECT lprc;
-   BOOL bTransparent;
-   BOOL bDefault;
-   HWND hwnd;
+   POINT pt;
+   BOOL bTransparent, bDefault, bIsTab = FALSE;
+   HWND hwnd = 0;
    LONG_PTR style;
+   HBRUSH OldBrush;
+   PHB_ITEM pBkGrnd;
+   POCTRL oBkGrnd;
 
    if( oSelf->lFontColor != -1 )
    {
       SetTextColor( hdc, (COLORREF) oSelf->lFontColor );
    }
 
-   _OOHG_Send( pSelf, s_TabHandle );
+   _OOHG_Send( pSelf, s_oBkGrnd );
    hb_vmSend( 0 );
-   hwnd = HWNDparam( -1 );
+   pBkGrnd = hb_param( -1, HB_IT_OBJECT );
+   if( pBkGrnd )
+   {
+      oBkGrnd = _OOHG_GetControlInfo( pBkGrnd );
+      hwnd = oBkGrnd->hWnd;
+   }
+
+   if( ! ValidHandler( hwnd ) )
+   {
+      _OOHG_Send( pSelf, s_TabHandle );
+      hb_vmSend( 0 );
+      hwnd = HWNDparam( -1 );
+      bIsTab = TRUE;
+   }
 
    if( ValidHandler( hwnd ) )
    {
@@ -2012,16 +2026,22 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       {
          style = GetWindowLongPtr( hwnd, GWL_STYLE );
 
-         if( style & TCS_BUTTONS )
+         if( bIsTab && ( style & TCS_BUTTONS ) )
          {
             _OOHG_Send( pSelf, s_Transparent );
             hb_vmSend( 0 );
             if( hb_parl( -1 ) )
             {
+      char cBuffError[ 1000 ];
+      sprintf( cBuffError, "here" );
+      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+
                SetBkMode( hdc, TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
                oSelf->lOldBackColor = -1;
+               OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+               DeleteObject( OldBrush );
                hb_retnl( (LONG) oSelf->BrushHandle );
                return;
             }
@@ -2039,10 +2059,12 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             oSelf->BrushHandle = GetTabBrush( hwnd );
             oSelf->lOldBackColor = -1;
 
-            GetWindowRect( oSelf->hWnd, &rc );
-            lprc = &rc;
-            MapWindowPoints( HWND_DESKTOP, hwnd, (LPPOINT) lprc, 2 );
-            SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+            pt.x = 0;
+            pt.y = 0;
+            MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
+            SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
+            OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+            DeleteObject( OldBrush );
 
             hb_retnl( (LONG) oSelf->BrushHandle );
             return;
@@ -2053,14 +2075,14 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    {
       _OOHG_Send( pSelf, s_Type );
       hb_vmSend( 0 );
-      if( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 )
-//      if( ( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 ) || ( strcmp( hb_parc( -1 ), "CHECKBOX" ) == 0 ) || ( strcmp( hb_parc( -1 ), "FRAME" ) == 0 ) )
+      if( ( strcmp( hb_parc( -1 ), "RADIOITEM" ) == 0 ) || ( strcmp( hb_parc( -1 ), "CHECKBOX" ) == 0 ) )
       {
          _OOHG_Send( pSelf, s_oBkGrnd );
          hb_vmSend( 0 );
-         if( hb_param( -1, HB_IT_OBJECT ) )
+         oBkGrnd = hb_param( -1, HB_IT_OBJECT );
+         if( oBkGrnd )
          {
-            _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
+            _OOHG_Send( oBkGrnd, s_hWnd );
             hb_vmSend( 0 );
             hwnd = HWNDparam( -1 );
 
@@ -2071,10 +2093,12 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                oSelf->BrushHandle = GetTabBrush( hwnd );
                oSelf->lOldBackColor = -1;
 
-               GetWindowRect( oSelf->hWnd, &rc );
-               lprc = &rc;
-               MapWindowPoints( HWND_DESKTOP, hwnd, (LPPOINT) lprc, 2 );
-               SetBrushOrgEx( hdc, -rc.left, -rc.top, NULL );
+               pt.x = 0;
+               pt.y = 0;
+               MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
+               SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
+               OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+               DeleteObject( OldBrush );
 
                hb_retnl( (LONG) oSelf->BrushHandle );
                return;
@@ -2090,6 +2114,8 @@ HB_FUNC( EVENTS_COLOR_INTAB )
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
          oSelf->lOldBackColor = -1;
+         OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+         DeleteObject( OldBrush );
          hb_retnl( (LONG) oSelf->BrushHandle );
          return;
       }
@@ -2107,6 +2133,8 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       oSelf->lOldBackColor = lBackColor;
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = CreateSolidBrush( lBackColor );
+      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+      DeleteObject( OldBrush );
    }
 
    hb_retnl( (LONG) oSelf->BrushHandle );

@@ -90,6 +90,8 @@
       [ <threestate: THREESTATE> ] ;
       [ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
+      [ BACKGROUND <bkgrnd> ] ;
+      [ <lnofr: NOFOCUSRECT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -98,4 +100,8 @@
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
             <.threestate.>, <.left.>, IIF( #<drawby> == "OOHGDRAW", .T., ;
-            IIF( #<drawby> == "WINDRAW", .F., NIL ) ) )
+            IIF( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.lnofr.> )
+
+#xtranslate CHECKBOX [ <x> ] FOCUSRECT ;
+   => ;
+      CHECKBOX [ <x> ]

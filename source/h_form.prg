@@ -3222,9 +3222,8 @@ MDICHILD:
    if( ! hwnd )
    {
       char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!",
-                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), (int) GetLastError() );
+      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       return;
    }
 
@@ -3271,9 +3270,8 @@ MDICHILD:
    if( ! hwnd )
    {
       char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!",
-                  MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), (int) GetLastError() );
+      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       return;
    }
 

@@ -8,10 +8,30 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-01 22:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\include\i_altsyntax.ch
+   * core\include\i_checkbox.ch
+     + BACKGROUND and NOFOCUSRECT clauses.
+   * core\source\c_windows.c
+     * WM_PRINTCLIENT replaced by WM_PRINT.
+   * core\source\h_controlmisc.prg
+     ! Background painting using a brush derived from the
+       underlying control (tab, form or image).
+   * core\source\h_checkbox.prg
+     + Support for BACKGROUND and NOFOCUSRECT clauses.
+     * No longer forces TRANSPARENT to .F. when visual styles
+       are enabled.
+     * Custom draw now mimics Windows behaviour.
+     ; Checkboxes can now appear "transparent".
+   * core\source\h_form.prg
+     * Format.
+
 2018-07-01 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
-    * include\source\i_window.ch
+    * core\include\i_window.ch
       + Data oBkGrnd to semi-oop syntax.
 
 2018-07-01 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>

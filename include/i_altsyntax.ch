@@ -1723,7 +1723,7 @@ ANIGIF
             _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
-CHECK BOX/BUTTON
+CHECKBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE CHECKBOX <name> ;
@@ -1735,7 +1735,10 @@ CHECK BOX/BUTTON
       _OOHG_ActiveControlField       := NIL    ;;
       _OOHG_ActiveControl3State      := .F.    ;;
       _OOHG_ActiveControlDrawBy      := NIL    ;;
-      _OOHG_ActiveControlLeft        := .F.
+      _OOHG_ActiveControlLeft        := .F.    ;;
+      _OOHG_ActiveControlBackground  := NIL    ;;
+      _OOHG_ActiveControlNoFocusRect := .F.    ;;
+      _OOHG_ActiveControlFocusRect   := .F.
 
 #xcommand THREESTATE <threestate> ;
    => ;
@@ -1745,27 +1748,6 @@ CHECK BOX/BUTTON
    => ;
       _OOHG_ActiveControlAlignment := "LEFT" ;;
       _OOHG_ActiveControlLeft := <left>
-
-#xcommand DEFINE CHECKBUTTON <name> ;
-   => ;
-      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlCaption      := NIL   ;;
-      _OOHG_ActiveControlPicture      := NIL   ;;
-      _OOHG_ActiveControlField        := NIL   ;;
-      _OOHG_ActiveControlBuffer       := NIL   ;;
-      _OOHG_ActiveControlHBitmap      := NIL   ;;
-      _OOHG_ActiveControlTransparent  := .T.   ;;
-      _OOHG_ActiveControlScale        := .F.   ;;
-      _OOHG_ActiveControlNo3DColors   := .F.   ;;
-      _OOHG_ActiveControlAutoFit      := .F.   ;;
-      _OOHG_ActiveControlNoDIBSection := .T.   ;;
-      _OOHG_ActiveControlDrawBy       := NIL   ;;
-      _OOHG_ActiveControlImageMargin  := NIL   ;;
-      _OOHG_ActiveControlOnMouseMove  := NIL   ;;
-      _OOHG_ActiveControlAlignment    := NIL   ;;
-      _OOHG_ActiveControlMultiLine    := .F.   ;;
-      _OOHG_ActiveControlFlat         := .F.   ;;
-      _OOHG_ActiveControlNoToday      := .F.
 
 #xcommand ONCHANGE <onchange> ;
    => ;
@@ -1816,7 +1798,34 @@ CHECK BOX/BUTTON
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControl3State, ;
             _OOHG_ActiveControlLeft, ;
-            _OOHG_ActiveControlDrawBy )
+            _OOHG_ActiveControlDrawBy, ;
+            _OOHG_ActiveControlBackground, ;
+            iif( _OOHG_ActiveControlNoFocusRect, .T., iif( _OOHG_ActiveControlFocusRect, .F., NIL ) ) )
+
+/*---------------------------------------------------------------------------
+CHECKBUTTON
+---------------------------------------------------------------------------*/
+
+#xcommand DEFINE CHECKBUTTON <name> ;
+   => ;
+      _OOHG_ClearActiveControlInfo( <(name)> ) ;;
+      _OOHG_ActiveControlCaption      := NIL   ;;
+      _OOHG_ActiveControlPicture      := NIL   ;;
+      _OOHG_ActiveControlField        := NIL   ;;
+      _OOHG_ActiveControlBuffer       := NIL   ;;
+      _OOHG_ActiveControlHBitmap      := NIL   ;;
+      _OOHG_ActiveControlTransparent  := .T.   ;;
+      _OOHG_ActiveControlScale        := .F.   ;;
+      _OOHG_ActiveControlNo3DColors   := .F.   ;;
+      _OOHG_ActiveControlAutoFit      := .F.   ;;
+      _OOHG_ActiveControlNoDIBSection := .T.   ;;
+      _OOHG_ActiveControlDrawBy       := NIL   ;;
+      _OOHG_ActiveControlImageMargin  := NIL   ;;
+      _OOHG_ActiveControlOnMouseMove  := NIL   ;;
+      _OOHG_ActiveControlAlignment    := NIL   ;;
+      _OOHG_ActiveControlMultiLine    := .F.   ;;
+      _OOHG_ActiveControlFlat         := .F.   ;;
+      _OOHG_ActiveControlNoToday      := .F.
 
 #xcommand END CHECKBUTTON ;
    => ;
