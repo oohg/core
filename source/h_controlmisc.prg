@@ -2032,10 +2032,6 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             hb_vmSend( 0 );
             if( hb_parl( -1 ) )
             {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "here" );
-      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-
                SetBkMode( hdc, TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetStockObject( NULL_BRUSH );

@@ -71,7 +71,7 @@ CLASS TCheckBox FROM TLabel
    DATA cPicture                  INIT ""
    DATA IconWidth                 INIT 19
    DATA LeftAlign                 INIT .F.
-   DATA lLibDraw                  INIT .F.
+   DATA lLibDraw                  INIT _OOHG_UsesVisualStyle()
    DATA lNoFocusRect              INIT .F.
    DATA nHeight                   INIT 28
    DATA nWidth                    INIT 100
@@ -87,14 +87,13 @@ CLASS TCheckBox FROM TLabel
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
+METHOD Define( ControlName, ParentForm, x, y, Caption, uValue, fontname, ;
                fontsize, tooltip, changeprocedure, w, h, lostfocus, gotfocus, ;
                HelpId, invisible, notabstop, bold, italic, underline, ;
                strikeout, field, backcolor, fontcolor, transparent, autosize, ;
                lRtl, lDisabled, threestate, leftalign, drawby, bkgrnd, lNoFocusRect ) CLASS TCheckBox
 
-   Local ControlHandle, nStyle, nStyleEx := 0
-   Local oTab
+   LOCAL ControlHandle, nStyle, nStyleEx := 0, oTab
 
    ASSIGN ::nCol         VALUE x            TYPE "N"
    ASSIGN ::nRow         VALUE y            TYPE "N"
@@ -103,17 +102,11 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ASSIGN ::Transparent  VALUE transparent  TYPE "L"
    ASSIGN autosize       VALUE autosize     TYPE "L" DEFAULT .F.
    ASSIGN ::Threestate   VALUE threestate   TYPE "L"
+   ASSIGN uValue         VALUE uValue       TYPE "L" DEFAULT ( iif( ::Threestate, NIL, .F. ) )
    ASSIGN ::LeftAlign    VALUE leftalign    TYPE "L"
-   ASSIGN ::lLibDraw     VALUE drawby       TYPE "L" DEFAULT _OOHG_UsesVisualStyle()
+   ASSIGN ::lLibDraw     VALUE drawby       TYPE "L"
+   ASSIGN ::oBkGrnd      VALUE bkgrnd       TYPE "O"
    ASSIGN ::lNoFocusRect VALUE lNoFocusRect TYPE "L"
-
-   IF ! ::Threestate .and. ! HB_IsLogical( value )
-      value := .F.
-   ENDIF
-
-   IF HB_ISOBJECT( bkgrnd )
-      ::oBkGrnd := bkgrnd
-   ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor,, lRtl )
 
@@ -143,10 +136,10 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
       ENDIF
    ENDIF
 
-   ::Autosize    := autosize
-   ::Caption     := Caption
+   ::Autosize := autosize
+   ::Caption  := Caption
 
-   ::SetVarBlock( Field, Value )
+   ::SetVarBlock( Field, uValue )
 
    ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
@@ -385,7 +378,8 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
    HMODULE hInstDLL;
    HTHEME hTheme;
    int state_id, checkState, drawState;
-   LONG_PTR style, state, lBackColor;
+   LONG_PTR style, state;
+   LONG lBackColor;
    HBRUSH hBrush;
    RECT content_rect, aux_rect;
    SIZE s;
@@ -396,7 +390,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       { CBS_MIXEDNORMAL,     CBS_MIXEDHOT,     CBS_MIXEDPRESSED,     CBS_MIXEDDISABLED,     CBS_MIXEDNORMAL }
    };
 
-    if( pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT )
+   if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
    {
       hInstDLL = LoadLibrary( "UXTHEME.DLL" );
       if( ! hInstDLL )
@@ -469,26 +463,18 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
       /*
       @ 30,30 CHECKBOX Chk1 ;                // The drawing area of the control
-         HEIGHT 28 ;                         // is 34 pixels high: 8 extra pixels
-         WIDTH 120 ;                         // at the top and 1 at the bottom.
+         HEIGHT 28 ;                         // is 38 pixels high: 8 extra pixels
+         WIDTH 120 ;                         // at the top and 2 at the bottom.
       */
 
       /* draw parent background */
-      if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
+      if( bDrawBkGrnd )
       {
-         if( bDrawBkGrnd )
+         if( ( dwProcIsThemeBackgroundPartiallyTransparent )( hTheme, BP_CHECKBOX, state_id ) )
          {
-            if( ( dwProcIsThemeBackgroundPartiallyTransparent )( hTheme, BP_CHECKBOX, state_id ) )
-            {
-               /* pCustomDraw->rc is the item´s client area */
-               ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
-            }
+            /* pCustomDraw->rc is the item´s client area */
+            ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
          }
-
-         ( dwProcCloseThemeData )( hTheme );
-         FreeLibrary( hInstDLL );
-
-         return CDRF_DODEFAULT;
       }
 
       /* get button size */
@@ -555,8 +541,6 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       /* cleanup */
      ( dwProcCloseThemeData )( hTheme );
       FreeLibrary( hInstDLL );
-
-      return CDRF_SKIPDEFAULT;
    }
 
    return CDRF_SKIPDEFAULT;

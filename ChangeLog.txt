@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-03 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   * core\source\h_checkbox.prg
+     * Some format.
+     * Changed initial value of data lLibDraw.
+     ! Type of var at C level.
+     % Now the control is painted in one pass.
+   * core\source\h_controlmisc.prg
+     ! Removed some leftover code that displayed a "here" message.
+   * core\source\h_textarray.prg
+     * Some format.
+
 2018-07-01 22:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.

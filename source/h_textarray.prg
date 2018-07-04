@@ -67,25 +67,25 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTextArray FROM TControl
 
-   DATA Type                      INIT "TEXTARRAY" READONLY
+   DATA Type                       INIT "TEXTARRAY" READONLY
 
-   METHOD AssumeFixed             SETGET
+   METHOD AssumeFixed              SETGET
    METHOD Clear
-   METHOD Cls                     BLOCK { |Self| ::Clear(), ::DevPos( 0, 0 ) }
-   METHOD ColCount                SETGET
-   METHOD CursorType              SETGET
+   METHOD Cls                      BLOCK { |Self| ::Clear(), ::DevPos( 0, 0 ) }
+   METHOD ColCount                 SETGET
+   METHOD CursorType               SETGET
    METHOD Define
    METHOD DevPos
    METHOD Events
-   METHOD QOut( t )               BLOCK { |Self, t| ::Write( CRLF ), ::Write( t ) }
-   METHOD QQOut( t )              BLOCK { |Self, t| ::Write( t ) }
-   METHOD RowCount                SETGET
+   METHOD QOut( t )                BLOCK { |Self, t| ::Write( CRLF ), ::Write( t ) }
+   METHOD QQOut( t )               BLOCK { |Self, t| ::Write( t ) }
+   METHOD RowCount                 SETGET
    METHOD Scroll
    METHOD SetFont
-   METHOD TextCol                 SETGET
-   METHOD TextRow                 SETGET
+   METHOD TextCol                  SETGET
+   METHOD TextRow                  SETGET
    METHOD Write
-   METHOD WriteLn( t, c, r,f, b ) BLOCK { |Self, t, c, r, f, b| ::Write( t, c, r, f, b), ::Write( CRLF ) }
+   METHOD WriteLn( t, c, r, f, b ) BLOCK { |Self, t, c, r, f, b| ::Write( t, c, r, f, b), ::Write( CRLF ) }
    METHOD WriteRaw
 
    ENDCLASS
