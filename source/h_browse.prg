@@ -300,7 +300,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    aSize( ::aWidths, Len( ::aFields ) )
    aEval( ::aWidths, { |x,i| ::aWidths[ i ] := If( ! ValType( x ) == "N", 100, x ) } )
 
-   // If splitboxed force no vertical scrollbar
+   // If splitboxed then force no vertical scrollbar
 
    ASSIGN lNoVScroll VALUE lNoVScroll TYPE "L" DEFAULT .F.
    If ValType( nCol ) != "N" .OR. ValType( nRow ) != "N"
@@ -3818,6 +3818,9 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
    Local _RecNo, s, lRet := .F., cWorkArea, aBefore, aAfter
 
    s := ::nRowPos
+   IF ! s > 0
+      s := ::FirstVisibleItem
+   ENDIF
 
    If  s >= Len( ::aRecMap ) .OR. ::lKeysLikeClipper
       cWorkArea := ::WorkArea
