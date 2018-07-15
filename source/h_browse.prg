@@ -238,6 +238,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
    ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
    ASSIGN lAltA         VALUE lAltA        TYPE "L" DEFAULT .T.
+   ASSIGN lCBE          VALUE lCBE         TYPE "L" DEFAULT .F.
 
    If HB_IsArray( aDefaultValues )
       ::aDefaultValues := aDefaultValues
@@ -376,8 +377,6 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    EndIf
 
    ::SizePos()
-
-   ::lChangeBeforeEdit := .F.
 
    ::Value := nValue
 
