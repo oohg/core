@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-16 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+   + core\resources\oohg_bw_532x532.png
+   + core\resources\oohg_color_3d_133x133.bmp
+   + core\resources\oohg_color_3d_32x32_825clrs.ico
+   + core\resources\oohg_color_3d_32x32_878clrs.ico
+   + core\resources\oohg_color_3d_534x534.bmp
+   + core\resources\oohg_color_flat_32x32_334clrs.ico
+   + core\resources\oohg_color_flat_532x532x3clrs.png
+   + core\resources\oohg_mono_32x32.ico
+     ; Thanks to Miguel Angel Juarez Apaza.
+
 2018-07-15 11:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
