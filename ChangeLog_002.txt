@@ -230,15 +230,15 @@
   * source\h_grid.prg
     + Added SHOWNONE style to TGridControlDatePicker class.
 
-2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\makelib_mingw.bat
     ! fixed check for already defined environment variables.
 
-2011-07-01 16:41:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+2011-07-01 16:41:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_browse.prg
     ! Fixed crash when repainting a minimized browse.
 
-2011-07-01 15:56:00 UTC-0300 Fernando Yurisich <fernando.yurisich@gmail.com>
+2011-07-01 15:56:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\makelib_mingw.bat
     + Added check for already defined environment variables.
 
