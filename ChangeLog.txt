@@ -8,6 +8,36 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-16 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+
+2018-07-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+   * core\source\miniprint.prg
+     * Function TextAlign renamed as _HMG_PRINTER_TextAlign.
+     * Function CreateThumbnails renamed as _HMG_PRINTER_CreateThumbnails.
+     * Function CVSSetTextAlign renamed as _HMG_PRINTER_SetTextAlign.
+
+2018-07-16 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_edit.prg
+     * Functions ABMListado, ABMListadoEvento and ABMListadoImprimir
+       are now static.
+   * core\source\h_edit_ex.prg
+     * Function ABM2Borrar is now static.
+
+2018-07-16 21:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     - Commented out code.
+
+2018-07-16 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + BackColorCode, Transparent, Parent and Container properties.
+
+2018-07-16 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + Various alternate event clauses.
+
 2018-07-16 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
