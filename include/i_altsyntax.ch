@@ -1961,9 +1961,17 @@ COMBOBOX
    => ;
       _OOHG_ActiveControlOnEnter := <{enter}>
 
+#xcommand ONLISTDISPLAY <enter> ;
+   => ;
+      _OOHG_ActiveControlOnListDisplay := <{enter}>
+
 #xcommand ON LISTDISPLAY <enter> ;
    => ;
       _OOHG_ActiveControlOnListDisplay := <{enter}>
+
+#xcommand ONLISTCLOSE <enter> ;
+   => ;
+      _OOHG_ActiveControlOnListClose := <{enter}>
 
 #xcommand ON LISTCLOSE <enter> ;
    => ;
@@ -1976,6 +1984,10 @@ COMBOBOX
 #xcommand SOURCEORDER <sourceorder> ;
    => ;
       _OOHG_ActiveControlSourceOrder := <sourceorder>
+
+#xcommand ONREFRESH <refresh> ;
+   => ;
+      _OOHG_ActiveControlOnRefresh := <{refresh}>
 
 #xcommand ON REFRESH <refresh> ;
    => ;
@@ -3602,7 +3614,15 @@ SCROLLBAR
       _OOHG_ActiveControlVertical   := .F.     ;;
       _OOHG_ActiveControlHorizontal := .F.
 
+#xcommand ONLINEUP <lineup> ;
+   => ;
+      _OOHG_ActiveControlOnLineUp := <{lineup}>
+
 #xcommand ON LINEUP <lineup> ;
+   => ;
+      _OOHG_ActiveControlOnLineUp := <{lineup}>
+
+#xcommand ONLINELEFT <lineup> ;
    => ;
       _OOHG_ActiveControlOnLineUp := <{lineup}>
 
@@ -3610,7 +3630,15 @@ SCROLLBAR
    => ;
       _OOHG_ActiveControlOnLineUp := <{lineup}>
 
+#xcommand ONLINEDOWN <linedown> ;
+   => ;
+      _OOHG_ActiveControlOnLineDown := <{linedown}>
+
 #xcommand ON LINEDOWN <linedown> ;
+   => ;
+      _OOHG_ActiveControlOnLineDown := <{linedown}>
+
+#xcommand ONLINERIGHT <linedown> ;
    => ;
       _OOHG_ActiveControlOnLineDown := <{linedown}>
 
@@ -3618,7 +3646,15 @@ SCROLLBAR
    => ;
       _OOHG_ActiveControlOnLineDown := <{linedown}>
 
+#xcommand ONPAGEUP <pageup> ;
+   => ;
+      _OOHG_ActiveControlOnPageUp := <{pageup}>
+
 #xcommand ON PAGEUP <pageup> ;
+   => ;
+      _OOHG_ActiveControlOnPageUp := <{pageup}>
+
+#xcommand ONPAGELEFT <pageup> ;
    => ;
       _OOHG_ActiveControlOnPageUp := <{pageup}>
 
@@ -3626,7 +3662,15 @@ SCROLLBAR
    => ;
       _OOHG_ActiveControlOnPageUp := <{pageup}>
 
+#xcommand ONPAGEDOWN <pagedown> ;
+   => ;
+      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+
 #xcommand ON PAGEDOWN <pagedown> ;
+   => ;
+      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+
+#xcommand ONPAGERIGHT <pagedown> ;
    => ;
       _OOHG_ActiveControlOnPageDown := <{pagedown}>
 
@@ -3634,13 +3678,25 @@ SCROLLBAR
    => ;
       _OOHG_ActiveControlOnPageDown := <{pagedown}>
 
+#xcommand ONTOP <top> ;
+   => ;
+      _OOHG_ActiveControlOnTop := <{top}>
+
 #xcommand ON TOP <top> ;
+   => ;
+      _OOHG_ActiveControlOnTop := <{top}>
+
+#xcommand ONLEFT <top> ;
    => ;
       _OOHG_ActiveControlOnTop := <{top}>
 
 #xcommand ON LEFT <top> ;
    => ;
       _OOHG_ActiveControlOnTop := <{top}>
+
+#xcommand ONBOTTOM <bottom> ;
+   => ;
+      _OOHG_ActiveControlOnBottom := <{bottom}>
 
 #xcommand ON BOTTOM <bottom> ;
    => ;
@@ -3650,15 +3706,31 @@ SCROLLBAR
    => ;
       _OOHG_ActiveControlOnBottom := <{bottom}>
 
+#xcommand ONRIGHT <bottom> ;
+   => ;
+      _OOHG_ActiveControlOnBottom := <{bottom}>
+
+#xcommand ONTHUMB <thumb> ;
+   => ;
+      _OOHG_ActiveControlOnThumb := <{thumb}>
+
 #xcommand ON THUMB <thumb> ;
    => ;
       _OOHG_ActiveControlOnThumb := <{thumb}>
+
+#xcommand ONTRACK <track> ;
+   => ;
+      _OOHG_ActiveControlOnTrack := <{track}>
 
 #xcommand ON TRACK <track> ;
    => ;
       _OOHG_ActiveControlOnTrack := <{track}>
 
 #xcommand ON ENDTRACK <endtrack> ;
+   => ;
+      _OOHG_ActiveControlOnEndTrack := <{endtrack}>
+
+#xcommand ONENDTRACK <endtrack> ;
    => ;
       _OOHG_ActiveControlOnEndTrack := <{endtrack}>
 
