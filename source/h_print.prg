@@ -1215,20 +1215,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE  WIDTH nWidth
@@ -1237,20 +1237,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
@@ -1261,20 +1261,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
@@ -1283,20 +1283,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
@@ -1309,20 +1309,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
@@ -1331,20 +1331,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
@@ -1355,20 +1355,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
@@ -1377,20 +1377,20 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSEIF cAlign == "C"
-                     TextAlign( TA_CENTER )
+                     _HMG_PRINTER_TextAlign( TA_CENTER )
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
                   ELSE
                      @ nLin, nCol PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
@@ -1399,24 +1399,24 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ENDIF
          ENDIF
       ENDIF
-      TextAlign( TA_NOUPDATECP )
+      _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
    ELSE   // ::cUnits == "ROWCOL"
       IF lItalic
          IF lBold
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ENDIF
@@ -1424,17 +1424,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ENDIF
@@ -1444,17 +1444,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ENDIF
@@ -1462,17 +1462,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize ITALIC COLOR aColor ANGLE nAngle WIDTH nWidth
                   ENDIF
@@ -1484,17 +1484,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ENDIF
@@ -1502,17 +1502,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize BOLD COLOR aColor ANGLE nAngle WIDTH nWidth
                   ENDIF
@@ -1522,17 +1522,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             IF lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle UNDERLINE WIDTH nWidth
                   ENDIF
@@ -1540,17 +1540,17 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
             ELSE   // ! lUnder
                IF lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle STRIKEOUT WIDTH nWidth
                   ENDIF
                ELSE   // ! lStrike
                   IF cAlign == "R"
-                     TextAlign( TA_RIGHT )
+                     _HMG_PRINTER_TextAlign( TA_RIGHT )
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 + ( Len( cText ) ) * ::nmHor PRINT ( cText ) FONT cFont SIZE nSize  COLOR aColor ANGLE nAngle WIDTH nWidth
-                     TextAlign( TA_NOUPDATECP )
+                     _HMG_PRINTER_TextAlign( TA_NOUPDATECP )
                   ELSE
                      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT ( cText ) FONT cFont SIZE nSize COLOR aColor ANGLE nAngle WIDTH nWidth
                   ENDIF

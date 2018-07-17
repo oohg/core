@@ -514,7 +514,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview()
 
    RETURN
 
-PROCEDURE CreateThumbNails()
+PROCEDURE _HMG_PRINTER_CreateThumbNails()
 
    LOCAL tFactor
    LOCAL tWidth
@@ -572,7 +572,7 @@ PROCEDURE _HMG_PRINTER_ThumbnailToggle()
 PROCEDURE _HMG_PRINTER_ProcessThumbnails()
 
    If _HMG_PRINTER_PPNAV.thumbswitch.Value == .T.
-      CreateThumbNails()
+      _HMG_PRINTER_CreateThumbNails()
       _HMG_PRINTER_SHOWTHUMBNAILS.Show()
    Else
       _HMG_PRINTER_SHOWTHUMBNAILS.Hide()
@@ -1899,9 +1899,9 @@ FUNCTION _HMG_PRINTER_SetJobName( cName )
 
    RETURN NIL
 
-FUNCTION TextAlign( nAlign )
+FUNCTION _HMG_PRINTER_TextAlign( nAlign )
 
-   CVCSETTEXTALIGN( _HMG_PRINTER_hDC, nAlign )
+   _HMG_PRINTER_SetTextAlign( _HMG_PRINTER_hDC, nAlign )
 
    RETURN NIL
 
@@ -1968,7 +1968,7 @@ FUNCTION _HMG_PRINTER_PreviewZoom( nSize )
 #define ERR_PRINTDLG                                0x00100000
 
 
-HB_FUNC( CVCSETTEXTALIGN )
+HB_FUNC( _HMG_PRINTER_SETTEXTALIGN )
 {
    hb_retni( SetTextAlign( (HDC) hb_parnl( 1 ), hb_parni( 2 ) ) );
 }
