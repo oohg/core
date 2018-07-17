@@ -176,31 +176,6 @@ typedef struct OOHG_Window {
    LONG       lAux[ 10 ];
    HFONT      hFontHandle;
    LONG       lOldBackColor, lUseBackColor;
-
-/*
-   int        iRow, iCol, iWidth, iHeight;
-   HB_ITEM    oParent;
-   HB_ITEM    oContainer;
-   BYTE       *cFontName;
-   int        iFontSize;
-   BOOL       bBold, bItalic, bUnderline, bStrikeout;
-   int        iRowMargin, iColMargin;
-   BOOL       bRtl;
-   HWND       hContextMenu;
-   BOOL       bEnabled;
-
-   DATA aControls      INIT {}
-   DATA aControlsNames INIT {}
-   DATA lInternal      INIT .T.
-   DATA OnClick        INIT nil
-   DATA OnGotFocus     INIT nil
-   DATA OnLostFocus    INIT nil
-   DATA OnMouseDrag    INIT nil
-   DATA OnMouseMove    INIT nil
-   DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
-   DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
-   DATA DefBkColorEdit  INIT nil
-*/
 } OCTRL, *POCTRL;
 
 extern void SetDragCursorARROW( BOOL isCtrlKeyDown );
