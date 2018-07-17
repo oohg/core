@@ -274,7 +274,7 @@ STATIC _cFiltro         AS Character            // Condición de filtro.
 /****************************************************************************************
  *  Aplicación: Comando EDIT para MiniGUI
  *       Autor: Cristóbal Mollá [cemese@terra.es]
- *     Función: ABM()
+ *     Función: ABM2()
  * Descripción: Función inicial. Comprueba los parámetros pasados, crea la estructura
  *              para las etiquetas y controles de edición y crea la ventana de visualización
  *              de registro.
@@ -1465,7 +1465,7 @@ static function ABM2EditarCopiar()
  *    Devuelve: NIL
 ****************************************************************************************/
 
-function ABM2Borrar()
+static function ABM2Borrar()
 
    ////////// Declaración de variables locales.-----------------------------------
 

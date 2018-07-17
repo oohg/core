@@ -1124,7 +1124,7 @@ static function ABMBusqueda()
  *    Devuelve: NIL
  ***************************************************************************************/
 
-function ABMListado()
+static function ABMListado()
 
    // Declaración de variables locales.-------------------------------------------
    local nItem          // := 1                            // Indice de iteración.
@@ -1288,7 +1288,7 @@ function ABMListado()
  *    Devuelve: NIL
  ***************************************************************************************/
 
-function ABMListadoEvento( nEvento )
+static function ABMListadoEvento( nEvento )
 
    // Declaración de variables locales.-------------------------------------------
    local cItem        // := ""                             // Nombre del item.
@@ -1402,7 +1402,7 @@ function ABMListadoEvento( nEvento )
  *    Devuelve: NIL
  ***************************************************************************************/
 
-function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
+static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
 
    // Declaración de variables locales.-------------------------------------------
    local nLineas      := 0                                 // Numero de linea.
