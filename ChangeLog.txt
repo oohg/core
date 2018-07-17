@@ -12,6 +12,17 @@
    * core\ChangeLog.txt
      * Updated.
 
+2018-07-16 21:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+     * .hbx files are now create at include folder.
+
+2018-07-16 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog.txt
+     * Updated.
+
 2018-07-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
    * core\source\miniprint.prg

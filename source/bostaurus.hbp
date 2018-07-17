@@ -16,7 +16,7 @@
 
 # generate list of functions
 # the file name must be unique
--hbx=${hb_name}_funcs.hbx
+-hbx=..\include\${hb_name}_funcs.hbx
 
 # path to headers files (.ch)
 -i..\include
