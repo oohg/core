@@ -305,7 +305,7 @@ rem
    rem *** Cleanup ***
    if exist _temp.o del _temp.o
    if exist _temp.rc del _temp.rc
-   del _oohg_resconfig.h
+   if exist _oohg_resconfig.h del _oohg_resconfig.h
    del %TFILE%.o
    del %TFILE%.c
    set THR_LIB=
