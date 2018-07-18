@@ -58,7 +58,6 @@
  * If you do not wish that, delete this exception notice.
  */
 
-
 #ifdef _WIN64
    #define HB_ARRAYGETNL( n, x )      hb_arrayGetNLL( n, x )
    #define HB_ARRAYSETNL( n, x, y )   hb_arraySetNLL( n, x, y )
@@ -71,13 +70,14 @@
    #define HB_PARNL( n )              hb_parnll( n )
    #define HB_PARNL2( n, x )          hb_parnll( n, x )
    #define HB_PARNL3( n, x, y )       hb_parnll( n, x, y )
+   #define HB_PARPTR( n )             hb_parptr( n )
+   #define HB_PARPTR2( n, x )         hb_parptr( n, x )
    #define HB_PARVNL( n, x )          hb_parnll( n, x )
    #define HB_STORC( n, x, y )        hb_storc( n, x, y )
    #define HB_STORDL( n, x, y )       hb_stordl( n, x, y )
    #define HB_STORL( n, x, y )        hb_storl( n, x, y )
    #define HB_STORND( n, x, y )       hb_stornd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storni( n, x, y )
-   #define HB_STORNI2( n, x )         hb_storni( n, x )
    #define HB_STORNL( n, x, y )       hb_stornll( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_stornll( n, x, y )
@@ -89,14 +89,15 @@
    #define HB_PARNL( n )              hb_parvnll( n )
    #define HB_PARNL2( n, x )          hb_parvnll( n, x )
    #define HB_PARNL3( n, x, y )       hb_parvnll( n, x, y )
+   #define HB_PARPTR( n )             hb_parptr( n )
+   #define HB_PARPTR2( n, x )         hb_parvptr( n, x )
    #define HB_PARVNL( n, x )          hb_parvnll( n, x )
    #define HB_STORC( n, x, y )        hb_storvc( n, x, y )
    #define HB_STORDL( n, x, y )       hb_storvdl( n, x, y )
    #define HB_STORL( n, x, y )        hb_storvl( n, x, y )
    #define HB_STORND( n, x, y )       hb_storvnd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storvni( n, x, y )
-   #define HB_STORNI2( n, x )         hb_storvni( n, x )
-   #define HB_STORNL( n, x, y )       hb_stornll( n, x, y )
+   #define HB_STORNL( n, x, y )       hb_storvnll( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storvptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_storvnll( n, x, y )
 #endif /* __XHARBOUR__ */
@@ -112,13 +113,14 @@
    #define HB_PARNL( n )              hb_parnl( n )
    #define HB_PARNL2( n, x )          hb_parnl( n, x )
    #define HB_PARNL3( n, x, y )       hb_parnl( n, x, y )
+   #define HB_PARPTR( n )             hb_parptr( n )
+   #define HB_PARPTR2( n, x )         hb_parptr( n, x )
    #define HB_PARVNL( n, x )          hb_parnl( n, x )
    #define HB_STORC( n, x, y )        hb_storc( n, x, y )
    #define HB_STORDL( n, x, y )       hb_stordl( n, x, y )
    #define HB_STORL( n, x, y )        hb_storl( n, x, y )
    #define HB_STORND( n, x, y )       hb_stornd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storni( n, x, y )
-   #define HB_STORNI2( n, x )         hb_storni( n, x )
    #define HB_STORNL( n, x, y )       hb_stornl( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_stornl( n, x, y )
@@ -130,13 +132,14 @@
    #define HB_PARNL( n )              hb_parvnl( n )
    #define HB_PARNL2( n, x )          hb_parvnl( n, x )
    #define HB_PARNL3( n, x, y )       hb_parvnl( n, x, y )
+   #define HB_PARPTR( n )             hb_parptr( n )
+   #define HB_PARPTR2( n, x )         hb_parvptr( n, x )
    #define HB_PARVNL( n, x )          hb_parvnl( n, x )
    #define HB_STORC( n, x, y )        hb_storvc( n, x, y )
    #define HB_STORDL( n, x, y )       hb_storvdl( n, x, y )
    #define HB_STORL( n, x, y )        hb_storvl( n, x, y )
    #define HB_STORND( n, x, y )       hb_storvnd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storvni( n, x, y )
-   #define HB_STORNI2( n, x )         hb_storvni( n, x )
    #define HB_STORNL( n, x, y )       hb_storvnl( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storvptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_storvnl( n, x, y )
@@ -144,13 +147,15 @@
 #endif /* _WIN64 */
 
 #ifdef OOHG_HWND_POINTER
-   #define HWNDparam( pos )          ( (HWND) hb_parptr( pos ) )
+   #define HWNDparam( n )            ( (HWND) HB_PARPTR( n ) )
+   #define HWNDparam2( n, x )        ( (HWND) HB_PARPTR2( n, x ) )
    #define HWNDret( hWnd )           ( hb_retptr( hWnd ) )
    #define HWNDpush( hWnd )          ( hb_vmPushPointer( hWnd ) )
 #else
-   #define HWNDparam( pos )          ( (HWND) HB_PARNL( pos ) )
+   #define HWNDparam( n )            ( (HWND) HB_PARNL( n ) )
+   #define HWNDparam2( n, x )        ( (HWND) HB_PARNL2( n, x ) )
    #define HWNDret( hWnd )           ( HB_RETNL( (LONG_PTR) hWnd ) )
-   #define HWNDpush( hWnd )          ( hb_vmPushLong( (LONG_PTR) hWnd ) )
+   #define HWNDpush( hWnd )          ( hb_vmPushNumInt( (LONG_PTR) hWnd ) )
 #endif
 
 #define ValidHandler( hWnd )         ( ( hWnd ) != 0 && (HWND)( hWnd ) != (HWND)( ~0 ) )
@@ -176,18 +181,43 @@ typedef struct OOHG_Window {
    LONG       lAux[ 10 ];
    HFONT      hFontHandle;
    LONG       lOldBackColor, lUseBackColor;
+
+/*
+   int        iRow, iCol, iWidth, iHeight;
+   HB_ITEM    oParent;
+   HB_ITEM    oContainer;
+   BYTE       *cFontName;
+   int        iFontSize;
+   BOOL       bBold, bItalic, bUnderline, bStrikeout;
+   int        iRowMargin, iColMargin;
+   BOOL       bRtl;
+   HWND       hContextMenu;
+   BOOL       bEnabled;
+
+   DATA aControls      INIT {}
+   DATA aControlsNames INIT {}
+   DATA lInternal      INIT .T.
+   DATA OnClick        INIT nil
+   DATA OnGotFocus     INIT nil
+   DATA OnLostFocus    INIT nil
+   DATA OnMouseDrag    INIT nil
+   DATA OnMouseMove    INIT nil
+   DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
+   DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
+   DATA DefBkColorEdit  INIT nil
+*/
 } OCTRL, *POCTRL;
 
-extern void SetDragCursorARROW( BOOL isCtrlKeyDown );
-extern void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
-extern PHB_ITEM GetFormObjectByHandle( HWND hWnd );
-extern PHB_ITEM GetControlObjectByHandle( HWND hWnd );
-extern PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd );
-extern void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
+void SetDragCursorARROW( BOOL isCtrlKeyDown );
+void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString );
+PHB_ITEM GetFormObjectByHandle( HWND hWnd );
+PHB_ITEM GetControlObjectByHandle( HWND hWnd );
+PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd );
+void _OOHG_Send( PHB_ITEM pSelf, int iSymbol );
 void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char* cType, PHB_ITEM pArray );
 void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char* cType, LPARAM lParam );
 LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam, WNDPROC lpfnOldWndProc );
-extern int GetKeyFlagState( void );
+int GetKeyFlagState( void );
 POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf );
 BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate );
@@ -205,6 +235,11 @@ HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Und
 BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor );
 wchar_t * AnsiToWide( const char * szString );
+void getwinver( OSVERSIONINFO * pOSvi );
+HANDLE _OOHG_GlobalMutex( void );
+BOOL _OOHG_UseGDIP( void );
+HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
+BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 
 // Symbols table
 #define s_Events_Notify        0
@@ -346,4 +381,3 @@ wchar_t * AnsiToWide( const char * szString );
    #undef MAKELONG
 #endif
 #define MAKELONG(a, b)  ((LONG)(((WORD)((DWORD_PTR)(a) & 0xffff)) | (((DWORD)((WORD)((DWORD_PTR)(b) & 0xffff))) << 16)))
-

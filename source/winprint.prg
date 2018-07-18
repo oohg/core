@@ -822,20 +822,15 @@ METHOD Say(row,col,txt,defname,lcolor,lalign)    CLASS HBPrinter
    case valtype(txt)=="U"    ;  aadd(atxt,"NIL")
    case valtype(txt)$"BO"    ;  aadd(atxt,"")
    case HB_IsArray(txt)      ;  aeval(txt,{|x| aadd(atxt,sayconvert(x)) })
-   case valtype(txt)$"MC"    ;  atxt:=str2arr( txt, Chr( 13 ) + Chr( 10 ) )
+   case valtype(txt)$"MC"    ;  atxt:=str2arr( txt, CRLF )
    endcase
    apos:=::convert({row,col})
    if lcolor<>NIL
-     // BEGIN RL 2003-08-03
-
       IF HB_IsNumeric (lcolor)
          rr_settextcolor(lcolor)
       ELSEIF HB_IsArray (lcolor)
          rr_settextcolor( RR_SETRGB ( lcolor [1] , lcolor [2] , lcolor [3] ) )
       ENDIF
-
-     // END RL
-
    endif
    if lalign<>NIL
       oldalign:=rr_gettextalign()
@@ -3560,8 +3555,8 @@ HB_FUNC (RR_CREATEIMAGELIST)
       dx = (int) bm.bmWidth/number;
  himl = ImageList_Create(dx,bm.bmHeight,ILC_COLOR24|ILC_MASK,number,0);
  ImageList_AddMasked(himl,hbmpx,CLR_DEFAULT);
- HB_STORNI2(dx,3);
- HB_STORNI2(bm.bmHeight,4);
+ hb_storni( dx, 3 );
+ hb_storni( bm.bmHeight, 4 );
  DeleteObject(hbmpx);
  hb_retnl((LONG) himl);
 }
