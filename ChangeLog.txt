@@ -8,7 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2018-07-16 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-07-20 20:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_windefs.ch
+   * core\include\i_xbrowse.ch
+   * core\source\h_browse.prg
+   * core\source\h_grid.prg
+     + DATA lNoHSB to CLASS TGrid().
+   * core\source\h_xbrowse.prg
+     + NOHSCROLLBAR clause to GRID, XBROWSE and BROWSE controls.
+
+2018-07-16 21:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
      * Updated.
 

@@ -91,6 +91,7 @@ WINDOWS MESSAGES
 #define WM_NOTIFY                     78
 #define WM_HELP                       83
 #define WM_CONTEXTMENU                123
+#define WM_NCCALCSIZE                 131
 #define WM_NCPAINT                    133
 #define WM_NCACTIVATE                 134
 #define WM_GETDLGCODE                 135

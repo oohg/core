@@ -2549,7 +2549,8 @@ GRID
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
-      _OOHG_ActiveControlCellToolTip      := .F.
+      _OOHG_ActiveControlCellToolTip      := .F. ;;
+      _OOHG_ActiveControlNoHScroll        := .F.
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2825,7 +2826,8 @@ GRID
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
-            _OOHG_ActiveControlCellToolTip )
+            _OOHG_ActiveControlCellToolTip, ;
+            _OOHG_ActiveControlNoHScroll )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -2918,7 +2920,8 @@ BROWSE
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
-      _OOHG_ActiveControlCellToolTip      := .F.
+      _OOHG_ActiveControlCellToolTip      := .F. ;;
+      _OOHG_ActiveControlNoHScroll        := .F.
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3110,7 +3113,8 @@ BROWSE
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
-            _OOHG_ActiveControlCellToolTip )
+            _OOHG_ActiveControlCellToolTip, ;
+            _OOHG_ActiveControlNoHScroll )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3197,7 +3201,8 @@ XBROWSE
       _OOHG_ActiveControlDisplayEdit      := .T. ;;
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
-      _OOHG_ActiveControlCellToolTip      := .F.
+      _OOHG_ActiveControlCellToolTip      := .F. ;;
+      _OOHG_ActiveControlNoHScroll        := .F.
 
 #xcommand END XBROWSE ;
    => ;
@@ -3301,7 +3306,8 @@ XBROWSE
             _OOHG_ActiveControlBeforeEditCell, ;
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
-            _OOHG_ActiveControlCellToolTip )
+            _OOHG_ActiveControlCellToolTip, ;
+            _OOHG_ActiveControlNoHScroll )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

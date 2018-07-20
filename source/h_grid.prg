@@ -131,6 +131,7 @@ CLASS TGrid FROM TControl
    DATA lNestedEdit               INIT .F.
    DATA lNoDelMsg                 INIT .F.
    DATA lNoGrid                   INIT .F.
+   DATA lNoHSB                    INIT .F.
    DATA lNoModal                  INIT .F.
    DATA lNoneUnsels               INIT .F.
    DATA lPLM                      INIT .F.
@@ -280,7 +281,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip ) CLASS TGrid
+               lLabelTip, lNoHSB ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -294,7 +295,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -317,7 +318,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip ) CLASS TGrid
+                lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
+                lNoHSB ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -385,6 +387,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN ::lAtFirstCol       VALUE lAtFirst          TYPE "L"
    ASSIGN ::lKeysLikeClipper  VALUE klc               TYPE "L"
    ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
+   ASSIGN ::lNoHSB            VALUE lNoHSB            TYPE "L" DEFAULT .F.
 
    /*
     * This must be placed before calling ::Register because when the
@@ -2815,6 +2818,11 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       EndIf
       Return 0
 
+   ElseIf ::lNoHSB .AND. nMsg == WM_NCCALCSIZE
+      If IsWindowStyle( hWnd, WS_HSCROLL )
+         ::Style( ::Style() - WS_HSCROLL )
+      EndIf
+
    EndIf
 
    Return Nil
@@ -3965,7 +3973,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip ) CLASS TGridMulti
+               lLabelTip, lNoHSB ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -3983,7 +3991,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4175,7 +4183,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip ) CLASS TGridByCell
+               lLabelTip, lNoHSB ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4193,7 +4201,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
 
    // Search the current column
    ::SearchCol := -1
@@ -7196,6 +7204,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_MOUSEWHEEL:
       case WM_CHAR:
       case WM_LBUTTONDBLCLK:
+      case WM_NCCALCSIZE:
          if( ! s_Events2 )
          {
             s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_EVENTS2" ) );
@@ -7208,7 +7217,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPushLong( wParam );
          hb_vmPushLong( lParam );
          hb_vmDo( 5 );
-         bDefault = FALSE;
+         bDefault = ( message == WM_NCCALCSIZE );
          break;
 
       case WM_NOTIFY:
