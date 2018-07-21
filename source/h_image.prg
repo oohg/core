@@ -70,6 +70,11 @@ CLASS TImage FROM TControl
    DATA aExcludeArea              INIT {}
    DATA AutoFit                   INIT .T.
    DATA bOnClick                  INIT ""
+   DATA bOnDblClick               INIT ""
+   DATA bOnMClick                 INIT ""
+   DATA bOnMDblClick              INIT ""
+   DATA bOnRClick                 INIT ""
+   DATA bOnRDblClick              INIT ""
    DATA cPicture                  INIT ""
    DATA hImage                    INIT NIL
    DATA ImageSize                 INIT .F.
@@ -89,6 +94,11 @@ CLASS TImage FROM TControl
    METHOD Events
    METHOD HBitMap                 SETGET
    METHOD OnClick                 SETGET
+   METHOD OnDblClick              SETGET
+   METHOD OnMClick                SETGET
+   METHOD OnMDblClick             SETGET
+   METHOD OnRClick                SETGET
+   METHOD OnRDblClick             SETGET
    METHOD OriginalSize
    METHOD Picture                 SETGET
    METHOD Release
@@ -101,7 +111,8 @@ CLASS TImage FROM TControl
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
       lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
-      lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange ) CLASS TImage
+      lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange, bOnDblClick, ;
+      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick ) CLASS TImage
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -143,8 +154,13 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
       ENDIF
    ENDIF
 
-   ASSIGN ::OnClick  VALUE bOnClick  TYPE "B"
-   ASSIGN ::OnChange VALUE bOnChange TYPE "B"
+   ASSIGN ::OnClick     VALUE bOnClick     TYPE "B"
+   ASSIGN ::OnChange    VALUE bOnChange    TYPE "B"
+   ASSIGN ::OnDblClick  VALUE bOnDblClick  TYPE "B"
+   ASSIGN ::OnMClick    VALUE bOnMClick    TYPE "B"
+   ASSIGN ::OnMDblClick VALUE bOnMDblClick TYPE "B"
+   ASSIGN ::OnRClick    VALUE bOnRClick    TYPE "B"
+   ASSIGN ::OnRDblClick VALUE bOnRDblClick TYPE "B"
 
    RETURN Self
 
@@ -226,13 +242,128 @@ METHOD Buffer( cBuffer ) CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD OnClick( bOnClick ) CLASS TImage
 
+   LOCAL lSet
+
    IF PCount() > 0
       ::bOnClick := bOnClick
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( HB_ISBLOCK( bOnClick ), SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, HB_ISBLOCK( bOnClick ) )
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
    ENDIF
 
    RETURN ::bOnClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OnDblClick( bOnDblClick ) CLASS TImage
+
+   LOCAL lSet
+
+   IF PCount() > 0
+      ::bOnDblClick := bOnDblClick
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
+   ENDIF
+
+   RETURN ::bOnDblClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OnMClick( bOnMClick ) CLASS TImage
+
+   LOCAL lSet
+
+   IF PCount() > 0
+      ::bOnMClick := bOnMClick
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
+   ENDIF
+
+   RETURN ::bOnMClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OnMDblClick( bOnMDblClick ) CLASS TImage
+
+   LOCAL lSet
+
+   IF PCount() > 0
+      ::bOnMDblClick := bOnMDblClick
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
+   ENDIF
+
+   RETURN ::bOnMDblClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OnRClick( bOnRClick ) CLASS TImage
+
+   LOCAL lSet
+
+   IF PCount() > 0
+      ::bOnRClick := bOnRClick
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
+   ENDIF
+
+   RETURN ::bOnRClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OnRDblClick( bOnRDblClick ) CLASS TImage
+
+   LOCAL lSet
+
+   IF PCount() > 0
+      ::bOnRDblClick := bOnRDblClick
+
+      lSet := HB_ISBLOCK( ::bOnClick ) .OR. ;
+              HB_ISBLOCK( ::bOnDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMClick ) .OR. ;
+              HB_ISBLOCK( ::bOnMDblClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRClick ) .OR. ;
+              HB_ISBLOCK( ::bOnRDblClick )
+
+      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TIMAGE_SETNOTIFY( Self, lSet )
+   ENDIF
+
+   RETURN ::bOnRDblClick
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ToolTip( uToolTip ) CLASS TImage

@@ -242,8 +242,8 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlCaption                => _OOHG_ActiveControlInfo \[ 227 \]
 #xtranslate _OOHG_ActiveControlAction                 => _OOHG_ActiveControlInfo \[ 228 \]
 #xtranslate _OOHG_ActiveControlFlat                   => _OOHG_ActiveControlInfo \[ 229 \]
-
-
+#xtranslate _OOHG_ActiveControlOnRDblClick            => _OOHG_ActiveControlInfo \[ 230 \]
+#xtranslate _OOHG_ActiveControlOnMDblClick            => _OOHG_ActiveControlInfo \[ 231 \]
 #xtranslate _OOHG_ActiveControlPicture                => _OOHG_ActiveControlInfo \[ 232 \]
 #xtranslate _OOHG_ActiveControlEditCellValue          => _OOHG_ActiveControlInfo \[ 233 \]
 #xtranslate _OOHG_ActiveControlItems                  => _OOHG_ActiveControlInfo \[ 234 \]
@@ -258,8 +258,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlHeaders                => _OOHG_ActiveControlInfo \[ 243 \]
 #xtranslate _OOHG_ActiveControlWidths                 => _OOHG_ActiveControlInfo \[ 244 \]
 #xtranslate _OOHG_ActiveControlOnDblClick             => _OOHG_ActiveControlInfo \[ 245 \]
-
-
+#xtranslate _OOHG_ActiveControlOnMClick               => _OOHG_ActiveControlInfo \[ 246 \]
 #xtranslate _OOHG_ActiveControlCellToolTip            => _OOHG_ActiveControlInfo \[ 247 \]
 #xtranslate _OOHG_ActiveControlOnHeadClick            => _OOHG_ActiveControlInfo \[ 248 \]
 #xtranslate _OOHG_ActiveControlNoLines                => _OOHG_ActiveControlInfo \[ 249 \]
@@ -1626,7 +1625,12 @@ IMAGE
       _OOHG_ActiveControlNo3DColors        := .F. ;;
       _OOHG_ActiveControlNoLoadTransparent := .F. ;;
       _OOHG_ActiveControlTransparent       := .F. ;;
-      _OOHG_ActiveControlExcludeArea       := NIL
+      _OOHG_ActiveControlExcludeArea       := NIL ;;
+      _OOHG_ActiveControlOnRClick          := NIL ;;
+      _OOHG_ActiveControlOnMClick          := NIL ;;
+      _OOHG_ActiveControlOnDblClick        := NIL ;;
+      _OOHG_ActiveControlOnRDblClick       := NIL ;;
+      _OOHG_ActiveControlOnMDblClick       := NIL
 
 #xcommand STRETCH <stretch> ;
    => ;
@@ -1655,6 +1659,30 @@ IMAGE
 #xcommand EXCLUDEAREA <area> ;
    => ;
       _OOHG_ActiveControlExcludeArea := <area>
+
+#xcommand ONMCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnMClick := <{dblclick}>
+
+#xcommand ON MCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnMClick := <{dblclick}>
+
+#xcommand ONRDBLCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnRDblClick := <{dblclick}>
+
+#xcommand ON RDBLCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnRDblClick := <{dblclick}>
+
+#xcommand ONDMBLCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnMDblClick := <{dblclick}>
+
+#xcommand ON MDBLCLICK <dblclick> ;
+   => ;
+      _OOHG_ActiveControlOnMDblClick := <{dblclick}>
 
 #xcommand END IMAGE ;
    => ;
@@ -1686,7 +1714,12 @@ IMAGE
             _OOHG_ActiveControlTransparent, ;
             _OOHG_ActiveControlExcludeArea, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlOnChange )
+            _OOHG_ActiveControlOnChange, ;
+            _OOHG_ActiveControlOnRClick, ;
+            _OOHG_ActiveControlOnMClick, ;
+            _OOHG_ActiveControlOnDblClick, ;
+            _OOHG_ActiveControlOnRDblClick, ;
+            _OOHG_ActiveControlOnMDblClick )
 
 /*---------------------------------------------------------------------------
 ANIGIF

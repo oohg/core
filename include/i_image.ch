@@ -62,7 +62,7 @@
 #command @ <row>, <col> IMAGE <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
+      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ <stretch: STRETCH> ] ;
@@ -87,6 +87,11 @@
       [ EXCLUDEAREA <area> ] ;
       [ <disabled: DISABLED> ] ;
       [ <dummy3: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy4: ONRCLICK, ON RCLICK> <rclk> ] ;
+      [ <dummy5: ONMCLICK, ON MCLICK> <mclk> ] ;
+      [ <dummy6: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
+      [ <dummy7: ONRDBLCLICK, ON RDBLCLICK> <rdblclk> ] ;
+      [ <dummy8: ONMDBLCLICK, ON MDBLCLICK> <mdblclk> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
@@ -94,4 +99,5 @@
             <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
             ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
             <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
-            <area>, <.disabled.>, <{change}> )
+            <area>, <.disabled.>, <{change}>, <{rclk}>, <{mclk}>, <{dblclk}>, ;
+            <{rdblclk}>, <{mdblclk}> )

@@ -8,6 +8,16 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-20 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_image.ch
+     + ON RCLICK, MCLICK, RDBLCLICK and MDBLCLICK clauses.
+   * core\source\h_image.prg
+     + DATAs bOnDblClick, bOnMClick, bOnMDblClick, bOnRClick
+       and bOnRDblClick.
+     + METHODs OnDblClick, OnMClick, OnMDblClick, OnRClick
+       and OnRDblClick.
+
 2018-07-20 20:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_browse.ch
