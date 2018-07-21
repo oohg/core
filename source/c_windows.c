@@ -1412,6 +1412,11 @@ HB_FUNC( GETSYSTEMMETRICS )
     hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
 }
 
+HB_FUNC( GETWINDOWEXSTYLE )
+{
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) );
+}
+
 HB_FUNC( GETWINDOWSTYLE )
 {
    HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) );

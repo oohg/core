@@ -232,6 +232,8 @@ CLASS TWindow
    DATA lProcMsgsOnVisible        INIT .T.
 
    DATA DefBkColorEdit            INIT Nil
+   DATA DefBkColorTab             INIT NIL
+   DATA DefBkColorTabPage         INIT NIL
 
    DATA ClientAdjust              INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust                  INIT .F.
@@ -268,6 +270,7 @@ CLASS TWindow
    METHOD Value               BLOCK { || nil }
    METHOD TabStop             SETGET
    METHOD Style               SETGET
+   METHOD ExStyle             SETGET
    METHOD RTL                 SETGET
    METHOD AcceptFiles         SETGET
    METHOD Action              SETGET
@@ -536,7 +539,8 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )
    hb_retnl( oSelf->lFontColor );
 }
 
-HB_FUNC_STATIC( TWINDOW_BACKCOLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1063,6 +1067,15 @@ METHOD Style( nStyle ) CLASS TWindow
    ENDIF
 
    RETURN GetWindowStyle( ::hWnd )
+
+METHOD ExStyle( nExStyle ) CLASS TWindow
+
+   IF HB_ISNUMERIC( nExStyle )
+      SetWindowExStyle( ::hWnd, nExStyle )
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
+   ENDIF
+
+   RETURN GetWindowExStyle( ::hWnd )
 
 METHOD RTL( lRTL ) CLASS TWindow
 
@@ -2920,7 +2933,8 @@ PROCEDURE _OOHG_CallDump( uTitle, cOutput )
 
 CLASS TDynamicValues
 
-   DATA   oWnd
+   DATA oWnd
+
    METHOD New
    ERROR HANDLER Error
 

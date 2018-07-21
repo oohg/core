@@ -8,6 +8,14 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-21 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     + Function GetWindowExStyle.
+   * core\source\h_windows.prg
+     + DATA DefBkColorTab.
+     + DATA DefBkColorTabPage.
+     + METHOD ExStyle.
+
 2018-07-20 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_image.ch
