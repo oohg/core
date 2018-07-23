@@ -4011,10 +4011,10 @@ HB_FUNC( BT_STRETCH_RECT )    // ( @Width1, @Height1, @Width2, @Height2, Mode_St
    if( HB_ISBYREF( 1 ) && HB_ISBYREF( 2 ) && HB_ISBYREF( 3 ) && HB_ISBYREF( 4 ) )
    {
       bt_bmp_adjust_rect( &Width1, &Height1, &Width2, &Height2, Mode_Stretch );
-      HB_STORNI2( Width1,  1 );
-      HB_STORNI2( Height1, 2 );
-      HB_STORNI2( Width2,  3 );
-      HB_STORNI2( Height2, 4 );
+      hb_storni( Width1,  1 );
+      hb_storni( Height1, 2 );
+      hb_storni( Width2,  3 );
+      hb_storni( Height2, 4 );
       hb_retl( TRUE );
    }
    else
@@ -4435,7 +4435,7 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
    if( HB_ISBYREF( 3 ) )
    {
       SHGetFileInfo( (LPCTSTR) pidlFolders, 0, &psfi, sizeof( SHFILEINFO ), SHGFI_PIDL | SHGFI_SYSICONINDEX );
-      HB_STORNI2( psfi.iIcon, 3 );
+      hb_storni( psfi.iIcon, 3 );
    }
 
    switch( hb_parni( 2 ) )

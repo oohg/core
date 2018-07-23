@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-23 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     ! Error on HB_STORNI2.
+
 2018-07-21 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_windows.c
      + Function GetWindowExStyle.
