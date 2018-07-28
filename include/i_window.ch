@@ -84,7 +84,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
-            HBitMap, Handle, oBkGrnd, Transparent, Parent, Container\> ;
+            HBitMap, Handle, oBkGrnd, Transparent, Parent, Container, ;
+            OnRClick\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
@@ -124,12 +125,12 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<c\> . \<p: Save\> \[()\] ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
       #xtranslate <w> . \<c\> . \<p: Action, OnClick, OnGotFocus, OnLostFocus, ;
-            OnDblClick, OnChange\>() ;
+            OnDblClick, OnChange, OnRClick\>() ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, DeleteItem, Open, DeletePage, ;
             DeleteColumn, Expand, Collapse, ColumnAutoFit, ColumnAutoFitH, ;
             ColumnBetterAutoFit, GetParent, GetChildren, HandleToItem, Action, ;
-            OnClick, TabStop, HeaderImage\>( \<a\> ) ;
+            OnClick, TabStop, HeaderImage, OnDblClick, OnRClick\>( \<a\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, Item, ItemReadonly, ItemEnabled, ;
             ItemDraggable, CheckItem, BoldItem, HeaderImage\>( \<arg1\>, ;
@@ -202,7 +203,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             => <w> . \<c\> . \<p\>( \<arg\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Refresh, SetFocus, ;
             DeleteAllItems, Release, Show, Save, Hide, Play, Stop, Close, ;
-            Pause, Eject, OpenDialog, Resume, Action, OnClick\> \[()\] ;
+            Pause, Eject, OpenDialog, Resume, Action, OnClick, OnRClick, ;
+            OnDblClick\> \[()\] ;
             => <w> . \<c\> . \<p\> () ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: AddItem, DeleteItem, ;
             Open, DeletePage, DeleteColumn, Expand, Collapse, Seek\>( \<a\> ) ;
