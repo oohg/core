@@ -8,6 +8,11 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Grid is not displayed when NOHSCROLLBAR and NOVSCROLLBAR
+       clauses are used together.
+
 2018-07-28 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_grid.ch

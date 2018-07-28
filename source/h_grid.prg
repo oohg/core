@@ -392,8 +392,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN ::lAtFirstCol       VALUE lAtFirst          TYPE "L"
    ASSIGN ::lKeysLikeClipper  VALUE klc               TYPE "L"
    ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
-   ASSIGN ::lNoHSB            VALUE lNoHSB            TYPE "L" DEFAULT .F.
-   ASSIGN ::lNoVSB            VALUE lNoVSB            TYPE "L" DEFAULT .F.
+   ASSIGN lNoHSB              VALUE lNoHSB            TYPE "L" DEFAULT .F.
+   ASSIGN lNoVSB              VALUE lNoVSB            TYPE "L" DEFAULT .F.
 
    /*
     * This must be placed before calling ::Register because when the
@@ -503,11 +503,11 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 
    ::Value := value
 
-   IF ::lNoHSB
+   IF lNoHSB
       ::HScrollVisible( .F. )
    ENDIF
-   IF ::lNoVSB
-     ::VScrollVisible( .F. )
+   IF lNoVSB
+      ::VScrollVisible( .F. )
    ENDIF
 
    Return Self
