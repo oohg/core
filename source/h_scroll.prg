@@ -434,11 +434,10 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-// this MUST be a INITSCROLLBAR instead only a VERTICAL scroll bar!!!
 HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
 {
- HWND hwnd;
- HWND hscrollbar;
+   HWND hwnd;
+   HWND hscrollbar;
    int nType = hb_parni( 7 );
    int iStyle, iStyleEx;
 
@@ -458,16 +457,24 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
          break;
    }
 
-   hscrollbar = CreateWindowEx( iStyleEx, "SCROLLBAR", "", iStyle,
- hb_parni(2) , hb_parni(3) , hb_parni(4) , hb_parni(5),
- hwnd,(HMENU) 0 , GetModuleHandle(NULL) , NULL ) ;
+   hscrollbar = CreateWindowEx( iStyleEx,
+                                "SCROLLBAR",
+                                "",
+                                iStyle,
+                                hb_parni( 2 ),
+                                hb_parni( 3 ),
+                                hb_parni( 4 ),
+                                hb_parni( 5 ),
+                                hwnd,
+                                (HMENU) 0,
+                                GetModuleHandle( NULL ),
+                                NULL ) ;
 
    SetScrollRange( hscrollbar, // handle of window with scroll bar
                    SB_CTL,     // scroll bar flag
-                   1,    // minimum scrolling position
-                   100,     // maximum scrolling position
-                   1     // redraw flag
- );
+                   1,          // minimum scrolling position
+                   100,        // maximum scrolling position
+                   1 );        // redraw flag
 
    lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hscrollbar, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
@@ -486,13 +493,9 @@ HB_FUNC( GETHSCROLLBARHEIGHT )
 
 HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
 {
-   hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ),
-             hb_parl( 4 ) ) );
-   #ifdef __MINGW32__                  // Macro correspondiente a MinGW... agregar con un or el de 64
-      RedrawWindow( HWNDparam( 1 ), NULL, NULL,
-         RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN |
-         RDW_ERASENOW | RDW_UPDATENOW | RDW_FRAME
-      );
+   hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
+   #ifdef __MINGW32__                  // This applies to 32 and 64 bits versions
+      RedrawWindow( HWNDparam( 1 ), NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW | RDW_FRAME );
    #endif
 }
 
@@ -637,12 +640,17 @@ HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
    }
    if( lpsi.fMask )
    {
-      hb_retni( SetScrollInfo( HWNDparam( 1 ), SB_VERT, ( LPSCROLLINFO ) &lpsi, TRUE ) );
+      hb_retni( SetScrollInfo( HWNDparam( 1 ), SB_VERT, (LPSCROLLINFO) &lpsi, TRUE ) );
    }
    else
    {
       hb_retni( 0 );
    }
+}
+
+HB_FUNC( SHOWSCROLLBAR )
+{
+   hb_retl( ShowScrollBar( HWNDparam( 1 ), hb_parni( 2 ), hb_parl( 3 ) ) );
 }
 
 #pragma ENDDUMP
