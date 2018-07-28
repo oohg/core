@@ -2583,7 +2583,8 @@ GRID
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
-      _OOHG_ActiveControlNoHScroll        := .F.
+      _OOHG_ActiveControlNoHScroll        := .F. ;;
+      _OOHG_ActiveControlNoVScroll        := .F.
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2860,7 +2861,8 @@ GRID
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
-            _OOHG_ActiveControlNoHScroll )
+            _OOHG_ActiveControlNoHScroll, ;
+            _OOHG_ActiveControlNoVScroll )
 
 /*---------------------------------------------------------------------------
 BROWSE

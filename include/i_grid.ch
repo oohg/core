@@ -169,6 +169,7 @@ STANDARD VERSION
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLLBAR> ] ;
+      [ <novsb: NOVSCROLLBAR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -198,7 +199,7 @@ STANDARD VERSION
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -303,6 +304,7 @@ SPLITBOX VERSION
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLLBAR> ] ;
+      [ <novsb: NOVSCROLLBAR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -332,7 +334,7 @@ SPLITBOX VERSION
             <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
             Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

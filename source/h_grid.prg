@@ -134,6 +134,7 @@ CLASS TGrid FROM TControl
    DATA lNoHSB                    INIT .F.
    DATA lNoModal                  INIT .F.
    DATA lNoneUnsels               INIT .F.
+   DATA lNoVSB                    INIT .F.
    DATA lPLM                      INIT .F.
    DATA lScrollBarUsesClientArea  INIT .F.
    DATA lShowItemAtTop            INIT .F.
@@ -150,7 +151,7 @@ CLASS TGrid FROM TControl
    DATA OnAppend                  INIT Nil
    DATA OnBeforeEditCell          INIT Nil
    DATA OnCheckChange             INIT Nil
-   DATA onDelete                  INIT Nil
+   DATA OnDelete                  INIT Nil
    DATA OnDispInfo                INIT Nil
    DATA OnEditCell                INIT Nil
    DATA OnEditCellEnd             INIT Nil
@@ -221,6 +222,8 @@ CLASS TGrid FROM TControl
    METHOD HeaderImage
    METHOD HeaderImageAlign
    METHOD HeaderSetFont
+   METHOD HScrollAdjust
+   METHOD HScrollVisible          SETGET
    METHOD InsertBlank
    METHOD InsertItem
    METHOD IsColumnReadOnly
@@ -256,6 +259,8 @@ CLASS TGrid FROM TControl
    METHOD ToOpenOffice
    METHOD Up
    METHOD Value                   SETGET
+   METHOD VScrollAdjust
+   METHOD VScrollVisible          SETGET
 
    MESSAGE End                    METHOD GoBottom
    MESSAGE Home                   METHOD GoTop
@@ -281,7 +286,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB ) CLASS TGrid
+               lLabelTip, lNoHSB, lNoVSB ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -295,7 +300,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -319,7 +324,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
-                lNoHSB ) CLASS TGrid
+                lNoHSB, lNoVSB ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -388,6 +393,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN ::lKeysLikeClipper  VALUE klc               TYPE "L"
    ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
    ASSIGN ::lNoHSB            VALUE lNoHSB            TYPE "L" DEFAULT .F.
+   ASSIGN ::lNoVSB            VALUE lNoVSB            TYPE "L" DEFAULT .F.
 
    /*
     * This must be placed before calling ::Register because when the
@@ -497,6 +503,13 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 
    ::Value := value
 
+   IF ::lNoHSB
+      ::HScrollVisible( .F. )
+   ENDIF
+   IF ::lNoVSB
+     ::VScrollVisible( .F. )
+   ENDIF
+
    Return Self
 
 METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -605,7 +618,7 @@ METHOD FirstVisibleColumn( lStart ) CLASS TGrid
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
       nClientWidth := r[ 3 ] - r[ 1 ]
-      If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+      If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
@@ -657,7 +670,7 @@ METHOD LastVisibleColumn( lEnd ) CLASS TGrid
    r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
    GetClientRect( ::hWnd, r )
    nClientWidth := r[ 3 ] - r[ 1 ]
-   If ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+   If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
       nScrollWidth := GetVScrollBarWidth()
    Else
       nScrollWidth := 0
@@ -2472,7 +2485,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
          ListView_EnsureVisible( ::hWnd, nRow )
       EndIf
       r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
-      If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+      If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
@@ -2818,14 +2831,132 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       EndIf
       Return 0
 
-   ElseIf ::lNoHSB .AND. nMsg == WM_NCCALCSIZE
-      If IsWindowStyle( hWnd, WS_HSCROLL )
-         ::Style( ::Style() - WS_HSCROLL )
-      EndIf
+   ElseIf nMsg == WM_NCCALCSIZE
+      i := 0
+      IF IsWindowStyle( hwnd, WS_HSCROLL )
+         ::HScrollAdjust()
+         IF ::lNoHSB
+            i -= WS_HSCROLL
+         ENDIF
+      ELSE
+         IF ! ::lNoHSB
+            i += WS_HSCROLL
+         ENDIF
+      ENDIF
+      IF IsWindowStyle( hwnd, WS_VSCROLL )
+         ::VScrollAdjust()
+         IF ::lNoVSB
+            i -= WS_VSCROLL
+         ENDIF
+      ELSE
+         IF ! ::lNoVSB
+            i += WS_VSCROLL
+         ENDIF
+      ENDIF
+      IF i # 0
+         ::Style( ::Style() + i )
+      ENDIF
 
    EndIf
 
-   Return Nil
+   RETURN NIL
+
+METHOD HScrollVisible( lState ) CLASS TGrid
+
+   LOCAL lChange := .F., w
+
+   IF HB_ISLOGICAL( lState )
+      ::lNoHSB := ! lState
+
+      IF lState
+         IF ! IsWindowStyle( ::hWnd, WS_HSCROLL )
+            ::Style( ::Style() + WS_HSCROLL )
+            lChange := .T.
+         ENDIF
+      ELSE
+         IF IsWindowStyle( ::hWnd, WS_HSCROLL )
+            ::Style( ::Style() - WS_HSCROLL )
+            lChange := .T.
+         ENDIF
+      ENDIF
+
+      IF lChange
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+         IF IsWindowStyle( ::hWnd, WS_VSCROLL )
+            ::VScrollAdjust()
+         ENDIF
+         // This forces the redraw of the grid lines
+         w := ::ColumnWidth( ::LastVisibleColumn )
+         ::ColumnWidth( ::LastVisibleColumn, w + 1 )
+         ::ColumnWidth( ::LastVisibleColumn, w - 1 )
+      ENDIF
+   ENDIF
+
+   RETURN ! ::lNoHSB
+
+METHOD VScrollAdjust CLASS TGrid
+
+   SetScrollRange( ::hWnd, SB_VERT, 0, ::ItemCount - 1, .T. )
+   // This fires WM_NCCALCSIZE
+   SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage)   
+
+   RETURN NIL
+
+METHOD VScrollVisible( lState ) CLASS TGrid
+
+   LOCAL lChange := .F., w
+
+   IF HB_ISLOGICAL( lState )
+      ::lNoVSB := ! lState
+
+      IF lState
+         IF ! IsWindowStyle( ::hWnd, WS_VSCROLL )
+            ::Style( ::Style() + WS_VSCROLL )
+            lChange := .T.
+         ENDIF
+      ELSE
+         IF IsWindowStyle( ::hWnd, WS_VSCROLL )
+            ::Style( ::Style() - WS_VSCROLL )
+            lChange := .T.
+         ENDIF
+      ENDIF
+
+      IF lChange
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+         IF IsWindowStyle( ::hWnd, WS_HSCROLL )
+            ::HScrollAdjust()
+         ENDIF
+         // This forces the redraw of the grid lines
+         w := ::ColumnWidth( ::LastVisibleColumn )
+         ::ColumnWidth( ::LastVisibleColumn, w + 1 )
+         ::ColumnWidth( ::LastVisibleColumn, w - 1 )
+      ENDIF
+   ENDIF
+
+   RETURN ! ::lNoVSB
+
+METHOD HScrollAdjust CLASS TGrid
+
+   LOCAL nSum, i, r, nClientWidth
+
+   r := { 0, 0, 0, 0 }
+   GetClientRect( ::hWnd, r )
+   nClientWidth := r[3] - r[1]
+
+   nSum := 0
+   FOR i := 1 to ::ColumnCount
+      nSum += ::ColumnWidth( i )
+   NEXT
+
+   IF nSum > nClientWidth
+      SetScrollRange( ::hWnd, SB_HORZ, 0, nSum - 1, .T. )
+      // This fires WM_NCCALCSIZE
+      SetScrollPage( ::hWnd, SB_HORZ, r[3] - r[1] )
+   ENDIF
+
+   RETURN NIL
 
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
 
@@ -3973,7 +4104,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB ) CLASS TGridMulti
+               lLabelTip, lNoHSB, lNoVSB ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -3991,7 +4122,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4183,7 +4314,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB ) CLASS TGridByCell
+               lLabelTip, lNoHSB, lNoVSB ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4201,7 +4332,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
 
    // Search the current column
    ::SearchCol := -1
@@ -4318,7 +4449,7 @@ METHOD Value( uValue ) CLASS TGridByCell
             GetClientRect( ::hWnd, r )
             nClientWidth := r[ 3 ] - r[ 1 ]
             r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
-            If ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+            If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
                nScrollWidth := GetVScrollBarWidth()
             Else
                nScrollWidth := 0
@@ -5533,7 +5664,7 @@ FUNCTION _GetGridCellData( Self, aPos )
    aControlRect := { 0, 0, 0, 0 }                                                         // left, top, right, bottom
    GetWindowRect( ::hWnd, aControlRect )
    r := ListView_GetSubitemRect( ::hWnd, ThisItemRowIndex - 1, ThisItemColIndex - 1 )     // top, left, width, height
-   If ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+   If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
       nScrollWidth := GetVScrollBarWidth()
    Else
       nScrollWidth := 0
@@ -6318,10 +6449,10 @@ CLASS TGridControlMemo FROM TGridControl
 
    ENDCLASS
 
-   /*
-   COLUMNCONTROLS syntax:
-   {'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
-   */
+/*
+COLUMNCONTROLS syntax:
+{'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
+*/
 METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll ) CLASS TGridControlMemo
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
@@ -7122,21 +7253,10 @@ METHOD ControlValue( uValue ) CLASS TGridControlLComboBox
    Return ( ::oControl:Value == 1 )
 
 
-EXTERN InitListView, InitListViewColumns, AddListViewItems, InsertListViewItem
-EXTERN ListViewSetItem, ListViewGetItem, FillGridFromArray
-EXTERN ListView_SetItemCount, ListView_GetFirstItem, ListView_SetCurSel, ListViewDeleteString
-EXTERN ListViewReset, ListViewGetMultiSel, ListViewSetMultiSel, ListViewGetItemRow
-EXTERN ListViewGetItemCount, ListViewGetCountPerPage, ListView_EnsureVisible, ListView_GetTopIndex
-EXTERN ListView_RedrawItems, ListView_HitTest, ListView_GetSubItemRect, ListView_GetItemRect
-EXTERN ListView_Update, ListView_Scroll, ListView_SetBkColor, ListView_SetTextBkColor
-EXTERN ListView_SetTextColor, ListView_GetTextColor, ListView_GetBkColor, ListView_GetColumnWidth
-EXTERN ListView_SetColumnWidth, _OOHG_GridArrayWidths, ListView_AddColumn, ListView_DeleteColumn
-EXTERN GetGridVKey, TGrid_Notify_CustomDraw
-
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -7191,12 +7311,12 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 // -----------------------------------------------------------------------------
 {
    HWND hWnd = HWNDparam( 1 );
-   UINT message = (UINT ) hb_parni( 2 );
+   UINT message = (UINT) hb_parni( 2 );
    WPARAM wParam = (WPARAM) hb_parni( 3 );
    LPARAM lParam = (LPARAM) hb_parnl( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   static PHB_SYMB s_Events2 = 0;                             //  TODO: Thread safe ?
-   static PHB_SYMB s_Notify2 = 0;                             //  TODO: Thread safe ?
+   static PHB_SYMB s_Events2 = 0;  
+   static PHB_SYMB s_Notify2 = 0;  
    BOOL bDefault = TRUE;
 
    switch( message )
@@ -7214,8 +7334,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPush( pSelf );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmDo( 5 );
          bDefault = ( message == WM_NCCALCSIZE );
          break;
@@ -7230,8 +7350,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             hb_vmPushSymbol( s_Notify2 );
             hb_vmPushNil();
             hb_vmPush( pSelf );
-            hb_vmPushLong( wParam );
-            hb_vmPushLong( lParam );
+            hb_vmPushNumInt( wParam );
+            hb_vmPushNumInt( lParam );
             hb_vmDo( 3 );
             if( HB_ISNUM( -1 ) )
             {
@@ -7248,8 +7368,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
       HWNDpush( hWnd );
       hb_vmPushLong( message );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
+      hb_vmPushNumInt( wParam );
+      hb_vmPushNumInt( lParam );
       hb_vmSend( 4 );
    }
 }
@@ -7605,7 +7725,7 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
 
 HB_FUNC( SETHEADERIMAGELIST )
 {
-   SendMessage( ListView_GetHeader( HWNDparam( 1 ) ), HDM_SETIMAGELIST, 0, (LPARAM) hb_parnl( 2 ) );
+   SendMessage( ListView_GetHeader( HWNDparam( 1 ) ), HDM_SETIMAGELIST, 0, (LPARAM) HWNDparam( 2 ) );
 }
 
 HB_FUNC( GETHEADER )
@@ -7787,7 +7907,7 @@ HB_FUNC( FILLGRIDFROMARRAY )
    while( iCount > iLen )
    {
       iCount--;
-      SendMessage( hWnd, LVM_DELETEITEM, ( WPARAM ) iCount, 0 );
+      SendMessage( hWnd, LVM_DELETEITEM, (WPARAM) iCount, 0 );
    }
    while( iCount < iLen )
    {
@@ -7871,23 +7991,23 @@ PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lP
    LVITEM lvItem1, lvItem2;
    char cString1[ 1024 ], cString2[ 1024 ];
 
-   si = ( _OOHG_SortItemsInfo * ) lParamSort;
+   si = (_OOHG_SortItemsInfo *) lParamSort;
 
    lvItem1.mask       = LVIF_TEXT;
-   lvItem1.iItem      = lParam1;
+   lvItem1.iItem      = (int) lParam1;
    lvItem1.iSubItem   = si->iColumn;
    lvItem1.cchTextMax = 1022;
    lvItem1.pszText    = cString1;
-   cString1[ 0 ] = cString1[ 1023 ] = 0;
+   cString1[ 0 ]      = cString1[ 1023 ] = 0;
    ListView_GetItem( si->hWnd, &lvItem1 );
    cString1[ 1023 ] = 0;
 
    lvItem2.mask       = LVIF_TEXT;
-   lvItem2.iItem      = lParam2;
+   lvItem2.iItem      = (int) lParam2;
    lvItem2.iSubItem   = si->iColumn;
    lvItem2.cchTextMax = 1022;
    lvItem2.pszText    = cString2;
-   cString2[ 0 ] = cString2[ 1023 ] = 0;
+   cString2[ 0 ]      = cString2[ 1023 ] = 0;
    ListView_GetItem( si->hWnd, &lvItem2 );
    cString2[ 1023 ] = 0;
 
@@ -7897,7 +8017,7 @@ PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lP
       iRet = - iRet;
    }
 
-   return ( PFNLVCOMPARE ) iRet;
+   return (PFNLVCOMPARE) iRet;
 }
 
 HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
@@ -7907,16 +8027,14 @@ HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
    si.hWnd = HWNDparam( 1 );
    si.iColumn = hb_parni( 2 ) - 1;
    si.bDescending = hb_parl( 3 );
-   hb_retni( SendMessage( si.hWnd, LVM_SORTITEMSEX,
-                          ( WPARAM ) ( _OOHG_SortItemsInfo * ) &si,
-                          ( LPARAM ) ( PFNLVCOMPARE ) _OOHG_SortItems ) );
+   hb_retl( (BOOL) SendMessage( si.hWnd, LVM_SORTITEMSEX, (WPARAM) (_OOHG_SortItemsInfo *) &si, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItems ) );
 }
 
 PFNLVCOMPARE CALLBACK _OOHG_SortItemsUser( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
 {
    _OOHG_Send( (PHB_ITEM) lParamSort, s_CompareItems );
-   hb_vmPushLong( (LONG) lParam1 + 1 );
-   hb_vmPushLong( (LONG) lParam2 + 1 );
+   hb_vmPushNumInt( (int) lParam1 + 1 );
+   hb_vmPushNumInt( (int) lParam2 + 1 );
    hb_vmSend( 2 );
    return (PFNLVCOMPARE) hb_parni( -1 );
 }
@@ -7926,32 +8044,32 @@ HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
    PHB_ITEM pSelf = hb_param( 1, HB_IT_OBJECT );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   hb_retni( SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItemsUser ) );
+   hb_retl( (BOOL) SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItemsUser ) );
 }
 
 HB_FUNC( NMHEADER_IITEM )
 {
-   hb_retnl( ( LONG ) ( ( ( NMHEADER * ) hb_parnl( 1 ) )->iItem ) + 1 );
+   hb_retni( ( (NMHEADER *) HB_PARNL( 1 ) )->iItem + 1 );
 }
 
 HB_FUNC( HDITEM_CXY )
 {
-   hb_retni( ( int ) ( ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->cxy ) );
+   hb_retni( ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->cxy );
 }
 
 HB_FUNC( SET_HDITEM_CXY )
 {
-   ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->cxy = hb_parni( 2 );
+   ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->cxy = hb_parni( 2 );
 }
 
 HB_FUNC( HDITEM_IORDER )
 {
-   hb_retni( ( int ) ( ( ( ( NMHEADER * ) hb_parnl( 1 ) )->pitem )->iOrder + 1 ) );
+   hb_retni( ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->iOrder + 1 );
 }
 
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
 {
-   ListView_SetItemCount ( HWNDparam( 1 ), hb_parni( 2 ) ) ;
+   ListView_SetItemCount( HWNDparam( 1 ), hb_parni( 2 ) ) ;
 }
 
 HB_FUNC( LISTVIEW_GETFIRSTITEM )
@@ -7961,12 +8079,12 @@ HB_FUNC( LISTVIEW_GETFIRSTITEM )
 
 HB_FUNC( LISTVIEW_SETCURSEL )
 {
-   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) ( hb_parni( 2 ) - 1 ), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
+   ListView_SetItemState( HWNDparam( 1 ), (WPARAM) ( hb_parni( 2 ) - 1 ), LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
 }
 
 HB_FUNC( LISTVIEW_CLEARCURSEL )
 {
-   ListView_SetItemState( HWNDparam( 1 ), ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0, LVIS_FOCUSED | LVIS_SELECTED );
+   ListView_SetItemState( HWNDparam( 1 ), (WPARAM) ( hb_parni( 2 ) - 1 ), 0, LVIS_FOCUSED | LVIS_SELECTED );
 }
 
 HB_FUNC( LISTVIEWDELETESTRING )
@@ -8025,7 +8143,7 @@ HB_FUNC( LISTVIEWSETMULTISEL )
    // CLEAR CURRENT SELECTIONS
    for( i = 0; i < n; i++ )
    {
-      ListView_SetItemState( hwnd, ( WPARAM ) i, 0, LVIS_FOCUSED | LVIS_SELECTED );
+      ListView_SetItemState( hwnd, (WPARAM) i, 0, LVIS_FOCUSED | LVIS_SELECTED );
    }
 
    // SET NEW SELECTIONS
@@ -8456,12 +8574,12 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
 
 HB_FUNC( GETGRIDVKEY )
 {
-   hb_retnl( ( LPARAM ) ( ( ( LV_KEYDOWN * ) hb_parnl( 1 ) ) -> wVKey ) );
+   hb_retnl( ( (LV_KEYDOWN *) (LPARAM) HB_PARNL( 1 ) )->wVKey );
 }
 
 HB_FUNC( GETGRIDVKEYASCHAR )
 {
-   hb_retni( MapVirtualKey( (UINT) ( ( (LV_KEYDOWN *) hb_parnl( 1 ) ) -> wVKey ), 2 ) );
+   hb_retni( MapVirtualKey( (UINT) ( ( (LV_KEYDOWN *) (LPARAM) HB_PARNL( 1 ) )->wVKey ), 2 ) );
 }
 
 static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, int sGridColor, int sObjColor, int iDefaultColor )
@@ -8825,7 +8943,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
+   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )

@@ -8,6 +8,34 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-07-28 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_grid.ch
+   * core\include\i_windefs.ch
+     + Support for NOVSCROLLBAR clause.
+   * core\source\h_grid.prg
+     + DATA lNoVSB.
+     + METHOD VScrollAdjust.
+     + METHOD VScrollVisible.
+     + METHOD HScrollAdjust.
+     + METHOD HScrollVisible.
+     * Some changes for 64 bit support.
+     ! Return value of functions LisView_SortItemsEx and
+       LisView_SortItemsEx_User.
+
+2018-07-28 18:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     * Some changes for 64 bit support.
+
+2018-07-28 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+   * core\source\h_scroll.prg
+     + Function ShowScrollBar.
+
+2018-07-28 18:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + OnRclick and OnDblClick to semi-oop syntax.
+
 2018-07-23 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.prg
      ! Error on HB_STORNI2.
@@ -153,7 +181,7 @@
    * core\ChangeLog.txt
      * Updated.
     * core\include\i_window.ch
-      + Data oBkGrnd to semi-oop syntax.
+      + oBkGrnd to semi-oop syntax.
 
 2018-07-01 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog.txt
@@ -1014,7 +1042,7 @@
 
 2017-11-02 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog_005.txt
-     ! Comment on oohg_hbxx.o files.
+     ! Comment on .hbx files.
 
 2017-11-02 14:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.hbp

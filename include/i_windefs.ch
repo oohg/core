@@ -919,6 +919,9 @@ SETWINDOWPOS FUNCTION PARAMETERS
 #define SWP_NOZORDER                  0x0004
 #define SWP_NOACTIVATE                0x0010
 #define SWP_FRAMECHANGED              0x0020
+#define SWP_NOCOPYBITS                0x0100
+#define SWP_NOOWNERZORDER             0x0200
+#define SWP_NOSENDCHANGING            0x0400
 
 /*---------------------------------------------------------------------------
 WM_TASKBAR PARAMETER
