@@ -728,9 +728,9 @@ HB_FUNC( IMAGELIST_INIT )
    }
 
    hb_reta( 3 );
-   HB_STORNL( ( LONG ) himl, -1, 1 );
-   HB_STORNI( ( int )  cx,   -1, 2 );
-   HB_STORNI( ( int )  cy,   -1, 3 );
+   HB_STORPTR( himl, -1, 1 );
+   HB_STORNI( cx, -1, 2 );
+   HB_STORNI( cy, -1, 3 );
 }
 
 HB_FUNC( IMAGELIST_DESTROY )
