@@ -8,6 +8,18 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-01 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.prg
+   * core\source\h_frame.prg
+     * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+   * core\source\h_checkbox.prg
+   * core\source\h_radio.prg
+     * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+     ! RTE at C level under XP because DrawThemeTextEx function
+       does not exist. Now function DrawThemeText will be used
+       under XP, which may cause that the focus rectangle gets
+       painted at a different placed.
+
 2018-07-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! Grid is not displayed when NOHSCROLLBAR and NOVSCROLLBAR

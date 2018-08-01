@@ -331,7 +331,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TButton
    Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
+      If ::lLibDraw .AND. ::IsVisualStyled
          Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
       EndIf
    EndIf

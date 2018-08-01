@@ -128,7 +128,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, uValue, fontname, ;
    ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. _OOHG_UsesVisualStyle()
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := ATAIL( _OOHG_ActiveFrame )
 
       IF oTab:Parent:hWnd == ::Parent:hWnd
@@ -191,7 +191,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
    Local nNotify := GetNotifyCode( lParam )
 
    If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::IsVisualStyled .AND. _OOHG_UsesVisualStyle()
+      If ::lLibDraw .AND. ::IsVisualStyled
          Return TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ), ::LeftAlign, ::lNoFocusRect )
       EndIf
    EndIf
@@ -353,14 +353,15 @@ HB_FUNC( INITCHECKBOX )
    HWNDret( hbutton );
 }
 
-typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
+typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
 typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
 typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
 typedef int (CALLBACK *CALL_DRAWTHEMETEXTEX )( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, const RECT*, const DTTOPTS *pOptions );
+typedef int (CALLBACK *CALL_DRAWTHEMETEXT )( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, DWORD, const RECT* );
 typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
-typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
 typedef int (CALLBACK *CALL_GETTHEMEPARTSIZE )( HTHEME, HDC, int, int, const RECT*, THEMESIZE, SIZE* );
 typedef int (CALLBACK *CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT )( HTHEME, int, int );
+typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
 
 int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
 {
@@ -369,6 +370,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
    CALL_CLOSETHEMEDATA dwProcCloseThemeData;
    CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
+   CALL_DRAWTHEMETEXT dwProcDrawThemeText;
    CALL_DRAWTHEMETEXTEX dwProcDrawThemeTextEx;
    CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
    CALL_GETTHEMEPARTSIZE dwProcGetThemePartSize;
@@ -401,13 +403,21 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       dwProcCloseThemeData = (CALL_CLOSETHEMEDATA) GetProcAddress( hInstDLL, "CloseThemeData" );
       dwProcDrawThemeBackground = (CALL_DRAWTHEMEBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeBackground" );
       dwProcDrawThemeParentBackground = (CALL_DRAWTHEMEPARENTBACKGROUND) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
+      dwProcDrawThemeText = (CALL_DRAWTHEMETEXT) GetProcAddress( hInstDLL, "DrawThemeText" );
       dwProcDrawThemeTextEx = (CALL_DRAWTHEMETEXTEX) GetProcAddress( hInstDLL, "DrawThemeTextEx" );
       dwProcGetThemeBackgroundContentRect = (CALL_GETTHEMEBACKGROUNDCONTENTRECT) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
       dwProcGetThemePartSize = (CALL_GETTHEMEPARTSIZE) GetProcAddress( hInstDLL, "GetThemePartSize" );
       dwProcIsThemeBackgroundPartiallyTransparent = (CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT) GetProcAddress( hInstDLL, "IsThemeBackgroundPartiallyTransparent" );
       dwProcOpenThemeData = (CALL_OPENTHEMEDATA) GetProcAddress( hInstDLL, "OpenThemeData" );
 
-      if( ! ( dwProcOpenThemeData && dwProcCloseThemeData && dwProcIsThemeBackgroundPartiallyTransparent && dwProcDrawThemeParentBackground && dwProcGetThemeBackgroundContentRect && dwProcDrawThemeBackground ) )
+      if( ! ( dwProcCloseThemeData &&
+              dwProcDrawThemeBackground &&
+              dwProcDrawThemeParentBackground &&
+              dwProcGetThemeBackgroundContentRect &&
+              dwProcGetThemePartSize &&
+              dwProcIsThemeBackgroundPartiallyTransparent &&
+              dwProcOpenThemeData &&
+              ( dwProcDrawThemeText || dwProcDrawThemeTextEx ) ) )
       {
          FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
@@ -420,8 +430,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
          return CDRF_DODEFAULT;
       }
 
-      /* determine control's state for DrawThemeBackground()
-         note: order of these tests is significant */
+      /* determine control's state, note that the order of these tests is significant */
       style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
       state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
 
@@ -437,7 +446,6 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       {
          checkState = 0;
       }
-
       if( style & WS_DISABLED )
       {
          drawState = 3;
@@ -458,7 +466,6 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       {
          drawState = 0;
       }
-
       state_id = cb_states[checkState][drawState];
 
       /*
@@ -511,30 +518,52 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
       if( strlen( cCaption ) > 0 )
       {
-         /* paint caption */
-         memset( &pOptions, 0, sizeof( DTTOPTS ) );
-         pOptions.dwSize = sizeof( DTTOPTS );
-         if( oSelf->lFontColor != -1 )
+         if( dwProcDrawThemeTextEx )
          {
-            pOptions.dwFlags |= DTT_TEXTCOLOR;
-            pOptions.crText = (COLORREF) oSelf->lFontColor;
-         }
-         ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
-
-         /* paint focus rectangle */
-         if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
-         {
-            aux_rect = content_rect;
-            pOptions.dwFlags = DTT_CALCRECT;
-            ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
-            aux_rect.top += 5;
-            aux_rect.bottom += 1;
-            aux_rect.right += 1;
-            if( ! bLeftAlign )
+            /* paint caption */
+            memset( &pOptions, 0, sizeof( DTTOPTS ) );
+            pOptions.dwSize = sizeof( DTTOPTS );
+            if( oSelf->lFontColor != -1 )
             {
-               aux_rect.left -= 1;
+               pOptions.dwFlags |= DTT_TEXTCOLOR;
+               pOptions.crText = (COLORREF) oSelf->lFontColor;
             }
-            DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+            ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
+
+            /* paint focus rectangle */
+            if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
+            {
+               aux_rect = content_rect;
+               pOptions.dwFlags = DTT_CALCRECT;
+               ( dwProcDrawThemeTextEx )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
+               aux_rect.top += 5;
+               aux_rect.bottom += 1;
+               aux_rect.right += 1;
+               if( ! bLeftAlign )
+               {
+                  aux_rect.left -= 1;
+               }
+               DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+            }
+         }
+         else
+         {
+            /* paint caption */
+            ( dwProcDrawThemeText )( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &content_rect );
+
+            /* paint focus rectangle */
+            if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
+            {
+               aux_rect = content_rect;
+               aux_rect.top += 5;
+               aux_rect.bottom += 1;
+               aux_rect.right += 1;
+               if( ! bLeftAlign )
+               {
+                  aux_rect.left -= 1;
+               }
+               DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+            }
          }
       }
 
