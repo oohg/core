@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-01 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     ! Translations for Harbour 3.4 version.
+
 2018-08-01 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_button.prg
    * core\source\h_frame.prg

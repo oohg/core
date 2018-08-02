@@ -59,55 +59,68 @@
  */
 
 
-#ifndef __XHARBOUR__
+#ifndef __XHARBOUR__                                 // This pp rules are only needed for Harbour compilers
 
-#xtranslate HexToNum( [<x>] ) ;
-   => ;
-      hb_HexToNum( <x> )
+   #xtranslate HexToNum( [<x>] ) ;
+      => ;
+         hb_HexToNum( <x> )
 
-#xtranslate CurDrive( [<x>] ) ;
-   => ;
-      hb_CurDrive( <x> )
+   #xtranslate CurDrive( [<x>] ) ;
+      => ;
+         hb_CurDrive( <x> )
 
-#xtranslate TToC( [<x,...>] ) ;
-   => ;
-      hb_TToC( <x> )
+   #xtranslate TToC( [<x,...>] ) ;
+      => ;
+         hb_TToC( <x> )
 
-#xtranslate CToT( [<x,...>] ) ;
-   => ;
-      hb_CToT( <x> )
+   #xtranslate CToT( [<x,...>] ) ;
+      => ;
+         hb_CToT( <x> )
 
-#xtranslate TToS( [<x,...>] ) ;
-   => ;
-      hb_TToS( <x> )
+   #xtranslate TToS( [<x,...>] ) ;
+      => ;
+         hb_TToS( <x> )
 
-#xtranslate SToT( [<x,...>] ) ;
-   => ;
-      hb_SToT( <x> )
+   #xtranslate SToT( [<x,...>] ) ;
+      => ;
+         hb_SToT( <x> )
 
-#xtranslate PrintFileRaw( [<x,...>] ) ;
-   => ;
-      win_PrintFileRaw( <x> )
+   #xtranslate PrintFileRaw( [<x,...>] ) ;
+      => ;
+         win_PrintFileRaw( <x> )
 
-#xtranslate GetDefaultPrinter( [<x,...>] ) ;
-   => ;
-      win_PrinterGetDefault( <x> )
+   #xtranslate GetDefaultPrinter( [<x,...>] ) ;
+      => ;
+         win_PrinterGetDefault( <x> )
 
-#endif
+   #if ( __HARBOUR__ - 0 > 0x030200 )                // This pp rules are only needed for Harbour 3.4 version
 
+      #xtranslate hb_OEMToANSI( <arg1> ) ;
+         => ;
+            win_OEMToANSI( <arg1> )
 
-#if defined( HB_ARCH_64BIT )
+      #xtranslate hb_ANSIToOEM( <arg1> ) ;
+         => ;
+            win_ANSIToOEM( <arg1> )
 
-#xtranslate win_OemToAnsi( <arg1> ) ;
-   => ;
-      hb_OEMToANSI( <arg1> )
+   #else                                             // This pp rules are only needed for Harbour 3.0 and 3.2 versions
 
-#xtranslate win_AnsiToOem( <arg1> ) ;
-   => ;
-      hb_ANSIToOEM( <arg1> )
+      #xtranslate win_OEMToANSI( <arg1> ) ;
+         => ;
+            hb_OEMToANSI( <arg1> )
 
-#xtranslate TIP_HTMLTOSTR( <arg1> ) ;
-   => ;
-      HtmlToOEM( <arg1> )
+      #xtranslate win_ANSIToOEM( <arg1> ) ;
+         => ;
+            hb_ANSIToOEM( <arg1> )
 
-#endif
+      #if ( __HARBOUR__ - 0 < 0x030200 )             // This pp rule is only needed for Harbour 3.0 version
+
+         #xtranslate tip_HtmlToStr( <arg1> ) ;
+            => ;
+               HtmlToOEM( <arg1> )
+
+      #endif   // #if ( __HARBOUR__ - 0 < 0x030200 )
+
+   #endif   // #if ( __HARBOUR__ - 0 > 0x030200 )
+
+#endif   // #ifndef __XHARBOUR__
