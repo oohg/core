@@ -883,12 +883,18 @@ METHOD Cursor( uValue ) CLASS TForm
 
 METHOD AutoAdjust( nDivH, nDivW ) CLASS TForm
 
-   LOCAL lSwvisible
+   LOCAL lSwvisible, hImageWork
 
    lSwvisible := ::Visible
    If lSwvisible
       ::Hide()
    EndIf
+
+   IF ::lStretchBack .AND. ValidHandler( ::hBackImage )
+      hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight, .F., NIL, .F., 0, 0 )
+      ::BackBitmap := hImageWork
+      DeleteObject( hImageWork )
+   ENDIF
 
    AEVAL( ::aControls, { |o| If( o:Container == nil, o:AdjustResize( nDivH, nDivW ), ) } )
 
