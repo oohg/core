@@ -5,13 +5,9 @@
 
 #include "_oohg_resconfig.h"
 
-// MANIFESTS TO ALLOW THE STYLING OF CONTROLS BY THE OS
+// MANIFEST ALLOW THE STYLING OF CONTROLS BY THE OS
 
-#if defined( HB_ARCH_64BIT )
-    1 24 oohgpath\WindowsXP64.Manifest
-#else
-    1 24 oohgpath\WindowsXP.Manifest
-#endif
+1 24 oohgpath\Windows.Manifest
 
 // CURSORS
 
