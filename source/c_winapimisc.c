@@ -232,6 +232,11 @@ HB_FUNC( MAKELPARAM )
    hb_retnl( MAKELPARAM( hb_parni( 1 ), hb_parni( 2 ) ) );
 }
 
+HB_FUNC( MAKEWPARAM )
+{
+   hb_retnl( MAKEWPARAM( hb_parni( 1 ), hb_parni( 2 ) ) );
+}
+
 HB_FUNC( GET_WHEEL_DELTA_WPARAM )
 {
    hb_retnl( GET_WHEEL_DELTA_WPARAM( hb_parnl( 1 ) ) );
