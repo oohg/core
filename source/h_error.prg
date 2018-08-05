@@ -596,7 +596,6 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
 
    // Header
    ::cBufferScreen += OOHGVersion() + CRLF + cError + CRLF
-
    ::cBufferFile   += ::PreHeader()
    ::cBufferFile   += ::Write2( ::aMessages[2] + GetProgramFileName() )
    ::cBufferFile   += ::Write2( ::aMessages[3] + DToC( Date() ) + "  " + ::aMessages[4] + Time() )
@@ -609,7 +608,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    ::cBufferFile   += ::PostHeader()
 
    // Called functions
-   nPosition++
+   nPosition ++
    DO WHILE ! Empty( ProcName( nPosition ) )
       ::Write( ::aMessages[10] + ;
                ProcName( nPosition ) + ;
@@ -645,9 +644,15 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
 
    IF HB_ISNUMERIC( nPosition )
       // Called functions
-      nPosition++
+      nPosition ++
       DO WHILE ! Empty( ProcName( nPosition ) )
-         ::Write( ::aMessages[10] + ProcName( nPosition ) + "(" + AllTrim( Str( ProcLine( nPosition++ ) ) ) + ")" )
+         ::Write( ::aMessages[10] + ;
+                  ProcName( nPosition ) + ;
+                  " (" + ;
+                  AllTrim( Str( ProcLine( nPosition ) ) ) + ;
+                  ")" + ;
+                  iif( Empty( ProcFile( nPosition ) ), "", " in " + ProcFile( nPosition ) ) )
+         nPosition ++
       ENDDO
    ENDIF
 
