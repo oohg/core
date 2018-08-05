@@ -106,7 +106,7 @@
       [ <style: NOLINES> ] ;
       [ IMAGE <aImage> ] ;
       [ JUSTIFY <aJust> ] ;
-      [ <novscroll: NOVSCROLL> ] ;
+      [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <rtl: RTL> ] ;
@@ -167,12 +167,12 @@
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-      [ <nohsb: NOHSCROLLBAR> ] ;
+      [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
             <col>, <row>, <w>, <h>, <headers>, <widths>, <Fields>, ;
-            <(workarea)>, <value>, <.delete.>, <.lock.>, <.novscroll.>, ;
+            <(workarea)>, <value>, <.delete.>, <.lock.>, <.novsb.>, ;
             <.append.>, <{onappend}>, <replacefields>, <fontname>, <fontsize>, ;
             <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
             <{lostfocus}>, <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, ;

@@ -168,8 +168,8 @@ STANDARD VERSION
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-      [ <nohsb: NOHSCROLLBAR> ] ;
-      [ <novsb: NOVSCROLLBAR> ] ;
+      [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
+      [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;

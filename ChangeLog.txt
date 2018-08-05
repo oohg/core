@@ -8,6 +8,77 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-05 01:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_xbrowse.ch
+     + NOVSCROLLBAR and NOHSCROLLBAR clauses.
+   * core\include\oohg_dyns.hbx
+     * Updated.
+   * core\source\c_controlmisc.c
+     ! ImageList_Init function is not returning a valid object.
+   * core\source\h_browse.prg
+     * METHOD ScrollUpdate renamed to METHOD VScrollUpdate.
+       ; INCOMPATIBLE.
+     * Some format.
+     ! Control shows two scrollbars.
+     ! Value of vertical scrollbar is wrong.
+   * core\source\h_grid.prg
+     + DATA lNeedsAdjust.
+     * METHOD HScrollAdjust renamed to HScrollUpdate.
+     * METHOD VScrollAdjust renamed to VScrollUpdate.
+       ; INCOMPATIBLE.
+     ! METHODs FirstVisibleColumn, LastVisibleColumn an EditCell2
+       do not scroll properly.
+     ! Control disapears when a column divider is dragged.
+     ! In some cases NOVSCROLL and NOHSCROLL are not honored.
+     * Function EXECOLDWNDPROC renamed to TGRID_EXECOLDWNDPROC.
+       ; INCOMPATIBLE.
+   * core\source\h_xbrowse.prg
+     - DATA lVscrollVisible.
+     + METHOD HScrollVisible.
+     + METHOD VScrollUpdate.
+     * Some format.
+     ! Control shows two scrollbars.
+     ! Value of vertical scrollbar is wrong.
+     + Handler for WM_NCCALCSIZE message.
+     * METHOD AdjustRightScroll moved to PRG level.
+
+2018-08-05 00:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Function _OOHG_CallDump now prints ProcFile info.
+
+2018-08-05 00:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scrollbutton.prg
+     + lSunken parameter to METHOD Define.
+       Defaults to .F. if the app is using visual styles, thus
+       showing a flat gray square.
+       Before this change it was always .T., thus showing a
+       sunken gray square.
+       INCOMPATIBLE.
+     * Some changes for 64 bit support.
+
+2018-08-05 00:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_error.prg
+     * METHOD PutMsg now prints ProcFile info.
+
+2018-08-03 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Function MAKEWPARAM.
+
+2018-08-03 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! Form's BACKIMAGE is not stretched wen AUTOADJUST is ON.
+
+2018-08-03 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - core\resources\WindowsXP.Manifest
+   - core\resources\WindowsXP64.Manifest
+   - core\resources\oohg.res
+   + core\resources\Windows.Manifest
+   * core\resources\oohg.rc
+   * core\resources\oohg_bcc.rc
+     ; Now only one manifest is used.
+
 2018-08-01 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_hb_compat.ch
      ! Translations for Harbour 3.4 version.
@@ -305,7 +376,7 @@
    * core\source\h_richeditbox.prg
      + INSERTTYPE clause to EDITBOX and RICHEDITBOX controls.
    * core\include\i_frame.ch
-   * core\include\i_graph.ch
+?? * core\include\i_graph.ch
    * core\include\i_grid.ch
    * core\include\i_menu.ch
      * Format.

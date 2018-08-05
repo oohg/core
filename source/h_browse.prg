@@ -59,6 +59,7 @@
  * If you do not wish that, delete this exception notice.
  */
 
+
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
@@ -103,13 +104,13 @@ CLASS TOBrowse FROM TXBrowse
    METHOD PageUp
    METHOD Refresh
    METHOD RefreshData
-   METHOD ScrollUpdate
+   METHOD VScrollUpdate
    METHOD SetControlValue         BLOCK { || Nil }
    METHOD SetScrollPos
    METHOD SetValue
    METHOD TopBottom
    METHOD Up
-   METHOD UpDate
+   METHOD Update
    METHOD UpdateColors
    METHOD Value                   SETGET
 
@@ -129,12 +130,15 @@ CLASS TOBrowse FROM TXBrowse
       ColumnWidth
       CurrentRow
       Define4
+      DeleteAllItems
       DeleteColumn
       EditItem
       Enabled
       FixBlocks
+      FixControls
       GetCellType
       HelpId
+      HScrollVisible
       RefreshRow
       SetColumn
       SizePos
@@ -171,7 +175,6 @@ CLASS TOBrowse FROM TXBrowse
       FirstSelectedItem
       FirstVisibleColumn
       FirstVisibleItem
-      FixControls
       FontColor
       Header
       HeaderHeight
@@ -209,7 +212,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                bOnDblClick, aHeadClick, bOnGotFocus, bOnLostFocus, cWorkArea, ;
                lAllowDelete, lNoLines, aImage, aJust, nHelpId, lBold, lItalic, ;
                lUnderline, lStrikeout, lBreak, uBackColor, uFontColor, lLock, ;
-               lInPlace, lNoVScroll, lAllowAppend, aReadonly, aValid, ;
+               lInPlace, lNoVSB, lAllowAppend, aReadonly, aValid, ;
                aValidMessages, lAllowEdit, uDynamicBackColor, aWhenFields, ;
                uDynamicForecolor, aPicture, lRtl, bOnAppend, bOnEditCell, ;
                aEditControls, aReplaceFields, lRecCount, aColumnInfo, ;
@@ -225,20 +228,22 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
                bbeforeditcell, bEditCellValue, klc, lLabelTip, lNoHSB ) CLASS TOBrowse
 
-   LOCAL nWidth2, nCol2, oScroll, z
+   LOCAL nWidth2, nCol2, z
 
    ASSIGN ::aFields     VALUE aFields      TYPE "A"
    ASSIGN ::aHeaders    VALUE aHeaders     TYPE "A" DEFAULT {}
-   ASSIGN ::aWidths     VALUE aWidths      TYPE "A" DEFAULT {}
    ASSIGN ::aJust       VALUE aJust        TYPE "A" DEFAULT {}
+   ASSIGN ::aWidths     VALUE aWidths      TYPE "A" DEFAULT {}
    ASSIGN ::lDescending VALUE lDescending  TYPE "L"
-   ASSIGN ::SyncStatus  VALUE lSync        TYPE "L" DEFAULT Nil
    ASSIGN ::lUpdateAll  VALUE lUpdateAll   TYPE "L"
    ASSIGN ::lUpdCols    VALUE lUpdCols     TYPE "L"
-   ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
-   ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
+   ASSIGN ::SyncStatus  VALUE lSync        TYPE "L" DEFAULT Nil
    ASSIGN lAltA         VALUE lAltA        TYPE "L" DEFAULT .T.
    ASSIGN lCBE          VALUE lCBE         TYPE "L" DEFAULT .F.
+   ASSIGN lFixedBlocks  VALUE lFixedBlocks TYPE "L" DEFAULT _OOHG_BrowseFixedBlocks
+   ASSIGN lFixedCtrls   VALUE lFixedCtrls  TYPE "L" DEFAULT _OOHG_BrowseFixedControls
+   ASSIGN lNoHSB        VALUE lNoHSB       TYPE "L" DEFAULT .F.
+   ASSIGN lNoVSB        VALUE lNoVSB       TYPE "L" DEFAULT ( ValType( nCol ) != "N" .OR. ValType( nRow ) != "N" )   // If splitboxed then force no vertical scrollbar
 
    If HB_IsArray( aDefaultValues )
       ::aDefaultValues := aDefaultValues
@@ -296,20 +301,13 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    EndIf
 
    aSize( ::aHeaders, Len( ::aFields ) )
-   aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := If( ! ValType( x ) $ "CM", If( ValType( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
+   aEval( ::aHeaders, { |x,i| ::aHeaders[ i ] := iif( ! ValType( x ) $ "CM", iif( ValType( ::aFields[ i ] ) $ "CM", ::aFields[ i ], "" ), x ) } )
 
    aSize( ::aWidths, Len( ::aFields ) )
-   aEval( ::aWidths, { |x,i| ::aWidths[ i ] := If( ! ValType( x ) == "N", 100, x ) } )
-
-   // If splitboxed then force no vertical scrollbar
-
-   ASSIGN lNoVScroll VALUE lNoVScroll TYPE "L" DEFAULT .F.
-   If ValType( nCol ) != "N" .OR. ValType( nRow ) != "N"
-      lNoVScroll := .T.
-   EndIf
+   aEval( ::aWidths, { |x,i| ::aWidths[ i ] := iif( ! ValType( x ) == "N", 100, x ) } )
 
    ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT ::nWidth
-   nWidth2 := If( lNoVScroll, nWidth, nWidth - GetVScrollBarWidth() )
+   nWidth2 := iif( lNoVSB, nWidth, nWidth - GetVScrollBarWidth() )
 
    ::Define3( ControlName, ParentForm, nCol, nRow, nWidth2, nHeight, cFontName, nFontSize, ;
               cTooltip, aHeadClick, lNoLines, aImage, lBreak, nHelpId, lBold, ;
@@ -321,7 +319,10 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               lDblBffr, lFocusRect, lPLM, lFixedCols, lFixedWidths, ;
               lLikeExcel, lButtons, lAllowDelete, cDelMsg, lNoDelMsg, ;
               lAllowAppend, lNoModal, lFixedCtrls, lExtDbl, nValue, lSilent, ;
-              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, lLabelTip, lNoHSB )
+              lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
+              lLabelTip )
+
+   ::FixBlocks( lFixedBlocks )
 
    ::nWidth := nWidth
 
@@ -329,67 +330,59 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ASSIGN ::aReplaceField VALUE aReplaceFields TYPE "A"
    ASSIGN ::lRecCount     VALUE lRecCount      TYPE "L"
 
-   ::FixBlocks( lFixedBlocks )
-
    ::aRecMap := {}
 
-   ::ScrollButton := TScrollButton():Define( , Self, nCol2, ::nHeight - GetHScrollBarHeight(), GetVScrollBarWidth(), GetHScrollBarHeight() )
-
-   oScroll := TScrollBar()
-   oScroll:nWidth := GetVScrollBarWidth()
-   oScroll:SetRange( 1, 1000 )
-
-   If ::lRtl .AND. ! ::Parent:lRtl
+   IF ::lRtl .AND. ! ::Parent:lRtl
       ::nCol := ::nCol + GetVScrollBarWidth()
-      nCol2 := -GetVScrollBarWidth()
-   Else
+      nCol2 := - GetVScrollBarWidth()
+   ELSE
       nCol2 := nWidth2
-   EndIf
-   oScroll:nCol := nCol2
+   ENDIF
 
-   If IsWindowStyle( ::hWnd, WS_HSCROLL )
-      oScroll:nRow := 0
-      oScroll:nHeight := ::nHeight - GetHScrollBarHeight()
-   Else
-      oScroll:nRow := 0
-      oScroll:nHeight := ::nHeight
+   ::ScrollButton := TScrollButton():Define( NIL, Self, nCol2, ::nHeight - GetHScrollBarHeight(), GetVScrollBarWidth(), GetHScrollBarHeight(), NIL )
+   IF lNoHSB
       ::ScrollButton:Visible := .F.
-   EndIf
+   ENDIF
 
-   oScroll:Define( , Self )
-   ::VScroll := oScroll
+   ::VScroll := TScrollBar():Define( NIL, Self, nCol2, 0, GetVScrollBarWidth(), iif( lNoHSB, ::nHeight, ::nHeight - GetHScrollBarHeight() ) )
    ::VScroll:OnLineUp   := { || ::SetFocus():Up(), 0 }
    ::VScroll:OnLineDown := { || ::SetFocus():Down(), 0 }
    ::VScroll:OnPageUp   := { || ::SetFocus():PageUp(), 0 }
    ::VScroll:OnPageDown := { || ::SetFocus():PageDown(), 0 }
    ::VScroll:OnThumb    := { |VScroll,Pos| ::SetFocus():SetScrollPos( Pos, VScroll ), 0 }
-   ::VScroll:ToolTip    := cTooltip
+   ::VScroll:ToolTip    := cToolTip
    ::VScroll:HelpId     := nHelpId
 
-   ::VScrollCopy := oScroll
+   ::VScrollCopy := ::VScroll
 
-   // Forces to hide "additional" controls when it's inside a non-visible TAB page.
+   // Hide "additional" controls when it's inside a non-visible TAB page
    ::Visible := ::Visible
-
-   ::lVScrollVisible := .T.
-   If lNoVScroll
-      ::VScrollVisible( .F. )
-   EndIf
 
    ::SizePos()
 
    ::Value := nValue
 
+   IF lNoHSB
+      ::HScrollVisible( .F. )
+   ENDIF
+   IF lNoVSB
+      ::VScrollVisible( .F. )
+   ENDIF
+
+   // Must be set after control is initialized
    ::Define4( bOnChange, bOnDblClick, bOnGotFocus, bOnLostFocus, bOnEditCell, bOnEnter, ;
               bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
               bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh, ;
               bbeforeditcell, bEditCellValue )
 
+   ::ToolTip := cToolTip
+   ::HelpId  := nHelpId
+
    Return Self
 
 METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
-                tooltip, aHeadClick, nogrid, aImage, break, HelpId, bold, ;
+                cToolTip, aHeadClick, nogrid, aImage, break, nHelpId, bold, ;
                 italic, underline, strikeout, edit, backcolor, fontcolor, ;
                 dynamicbackcolor, dynamicforecolor, aPicture, lRtl, InPlace, ;
                 editcontrols, readonly, valid, validmessages, aWhenFields, ;
@@ -399,12 +392,12 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
-                lLabelTip, lNoHSB ) CLASS TOBrowse
+                lLabelTip ) CLASS TOBrowse
 
-   ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
-              , fontname, fontsize, tooltip, aHeadClick, nogrid, ;
-              aImage, ::aJust, break, HelpId, bold, italic, underline, ;
-              strikeout, , , edit, backcolor, ;
+   ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, NIL, ;
+              NIL, fontname, fontsize, cTooltip, aHeadClick, nogrid, ;
+              aImage, ::aJust, break, nHelpId, bold, italic, underline, ;
+              strikeout, NIL, NIL, edit, backcolor, ;
               fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
               LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
@@ -412,8 +405,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               aEditKeys, lCheckBoxes, dblbffr, lFocusRect, lPLM, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
-              , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
+              NIL, NIL, lExtDbl, lSilent, lAltA, ;
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, NIL, NIL )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -421,7 +414,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 
    Return Self
 
-METHOD UpDate( nRow, lComplete ) CLASS TOBrowse
+METHOD Update( nRow, lComplete ) CLASS TOBrowse
 
    Local PageLength, aTemp, _BrowseRecMap, x, nRecNo, nCurrentLength
    Local lColor, aFields, cWorkArea, nWidth
@@ -643,7 +636,6 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
          ::DbSkip( -1 )
       EndIf
       ::Update()
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
       If Len( ::aRecMap ) != 0
@@ -675,7 +667,6 @@ METHOD PageUp() CLASS TOBrowse
          ::DbGoTo( ::aRecMap[ 1 ] )
       EndIf
       ::DbSkip( - ::CountPerPage + 1 )
-      ::ScrollUpdate()
       ::Update()
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
@@ -702,7 +693,6 @@ METHOD Home() CLASS TOBrowse                         // METHOD GoTop
    EndIf
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
-   ::ScrollUpdate()
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := 1
@@ -726,7 +716,6 @@ METHOD End( lAppend ) CLASS TOBrowse                 // METHOD GoBottom
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
    _BottomRec := ( cWorkArea )->( RecNo() )
-   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -786,7 +775,6 @@ METHOD Up() CLASS TOBrowse
          EndIf
       EndIf
 
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
       If Len( ::aRecMap ) != 0
@@ -852,7 +840,6 @@ METHOD Down( lAppend ) CLASS TOBrowse
          EndIf
       EndIf
 
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
       If Len( ::aRecMap ) != 0
@@ -948,7 +935,7 @@ METHOD SetValue( Value, mp ) CLASS TOBrowse
       Return Self
    EndIf
 
-   If ValType( mp ) != "N"
+   If ValType( mp ) != "N" .OR. mp < 1
       m := Int( ::CountPerPage / 2 )
    Else
       m := mp
@@ -970,10 +957,7 @@ METHOD SetValue( Value, mp ) CLASS TOBrowse
       Return Self
    EndIf
 
-   If PCount() < 2                           // TODO: Check
-      ::ScrollUpdate()
-   EndIf
-   ::DbSkip( -m + 1 )
+   ::DbSkip( 1 - m )
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := aScan( ::aRecMap, Value )
@@ -1515,7 +1499,6 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             nNewRec := ::aRecMap[ nRow + 1 ]
             ::DbGoTo( nNewRec )
             ::Update( nRow + 1 )
-            ::ScrollUpdate()
             ::DbGoTo( nRecNo )
             nRow := aScan( ::aRecMap, nNewRec )
             ::CurrentRow := nRow
@@ -1586,7 +1569,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             ::DbGoTo( nNextRec )
             If lRefresh
                ::Update( nRow )
-               ::ScrollUpdate()
+               ::VScrollUpdate()
             Else
                Do While ::ItemCount >= ::CountPerPage
                   ::DeleteItem( 1 )
@@ -1644,7 +1627,7 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
    Local ActualRecord, RecordCount
 
    // If vertical scrollbar is used it must be updated
-   If ::lVScrollVisible
+   If ! ::lNoVSB
       RecordCount := ::RecCount
 
       If RecordCount == 0
@@ -1667,44 +1650,55 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 
    Return Self
 
-METHOD ScrollUpdate() CLASS TOBrowse
+METHOD VScrollUpdate() CLASS TOBrowse
 
-Local ActualRecord, RecordCount, cWorkArea
+   LOCAL cWorkArea, nOldRecNo, nRecNo, ActualRecord, RecordCount
 
    // If vertical scrollbar is used it must be updated
-   If ::lVScrollVisible
+   IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
       cWorkArea := ::WorkArea
-      If Select( cWorkArea ) == 0
+      IF Select( cWorkArea ) == 0
          ::RecCount := 0
-         Return Self
-      EndIf
-      RecordCount := ( cWorkArea )->( OrdKeyCount() )
-      If RecordCount > 0
-         ActualRecord := ( cWorkArea )->( OrdKeyNo() )
-      Else
-         ActualRecord := ( cWorkArea )->( RecNo() )
-         RecordCount := ( cWorkArea )->( RecCount() )
-      EndIf
-      If ::lRecCount
-         RecordCount := ( cWorkArea )->( RecCount() )
-      EndIf
+         RETURN Self
+      ENDIF
 
-      ::RecCount := RecordCount
+      nOldRecNo := ( cWorkArea )->( RecNo() )
 
-      If ::lDescending
+      nRecNo := ::nRecLastValue
+      IF nRecNo <= 0
+         nRecNo := nOldRecNo
+      ENDIF
+      ::DbGoTo( nRecNo )
+
+      IF ::lRecCount
+         ActualRecord := nRecNo
+         RecordCount := ( cWorkArea )->( RecCount() )
+      ELSE
+         RecordCount := ( cWorkArea )->( ordKeyCount() )
+         IF RecordCount > 0
+            ActualRecord := ( cWorkArea )->( ordKeyNo() )
+         ELSE
+            ActualRecord := nRecNo
+            RecordCount := ( cWorkArea )->( RecCount() )
+         ENDIF
+      ENDIF
+      IF ::lDescending
          ActualRecord := RecordCount - ActualRecord + 1
-      EndIf
+      ENDIF
 
-      If RecordCount < 1000
+      IF RecordCount < 1000
          ::VScroll:RangeMax := RecordCount
          ::VScroll:Value := ActualRecord
-      Else
+      ELSE
          ::VScroll:RangeMax := 1000
-         ::VScroll:Value := INT( ActualRecord * 1000 / RecordCount )
-      EndIf
-   EndIf
+         ::VScroll:Value := Int( ActualRecord * 1000 / RecordCount )
+      ENDIF
 
-   Return Self
+      ::RecCount := RecordCount
+      ::DbGoTo( nOldRecNo )
+   ENDIF
+
+   RETURN Self
 
 METHOD CurrentRow( nValue ) CLASS TOBrowse
 
@@ -1717,6 +1711,7 @@ METHOD CurrentRow( nValue ) CLASS TOBrowse
          ListView_SetCursel( ::hWnd, nValue )
       EndIf
       ::nRowPos := ::FirstSelectedItem
+      ::VScrollUpdate()
    EndIf
 
    Return ::FirstSelectedItem
@@ -1731,18 +1726,15 @@ METHOD Refresh() CLASS TOBrowse
       Return Self
    EndIf
 
-   v := ::nRecLastValue
-
-   s := ::CurrentRow
-
    _RecNo := ( cWorkArea )->( RecNo() )
 
+   v := ::nRecLastValue
    If v <= 0
       v := _RecNo
    EndIf
-
    ::DbGoTo( v )
 
+   s := ::CurrentRow
    If s <= 1
       ::DbSkip()
       ::DbSkip( -1 )
@@ -1770,8 +1762,6 @@ METHOD Refresh() CLASS TOBrowse
       ::DbGoTo( _RecNo )
       Return Self
    EndIf
-
-   ::ScrollUpdate()
 
    If s != 0
       ::DbSkip( - s + 1 )
@@ -2143,8 +2133,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
       EndIf
 
    ElseIf nNotify == NM_CUSTOMDRAW
-      ::AdjustRightScroll()
-      Return TGrid_Notify_CustomDraw( Self, lParam, .F., , , .F., ::lFocusRect, ::lNoGrid, ::lPLM )
+      IF ::lNeedsAdjust .AND. ::lEndTrack
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      ENDIF
+      RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, .F., ::lFocusRect, ::lNoGrid, ::lPLM )
 
    EndIf
 
@@ -2212,16 +2205,17 @@ CLASS TOBrowseByCell FROM TOBrowse
 
    /*
    Available methods from TOBrowse:
-         DbGoTo
-         DbSkip
-         Define
-         FastUpdate
-         Refresh
-         RefreshData
-         ScrollUpdate
-         TopBottom
-         UpDate
-         UpdateColors
+      CurrentRow
+      DbGoTo
+      DbSkip
+      Define
+      FastUpdate
+      Refresh
+      RefreshData
+      VScrollUpdate
+      TopBottom
+      Update
+      UpdateColors
 
    Available methods from TXBrowse:
       AdjustRightScroll
@@ -2237,8 +2231,10 @@ CLASS TOBrowseByCell FROM TOBrowse
       EditItem
       Enabled
       FixBlocks
+      FixControls
       GetCellType
       HelpId
+      HScrollVisible
       RefreshRow
       SetColumn
       SizePos
@@ -2266,6 +2262,7 @@ CLASS TOBrowseByCell FROM TOBrowse
       CompareItems
       CountPerPage
       Define2
+      DeleteAllItems
       DeleteItem
       EditItem2
       Events_Enter
@@ -2273,7 +2270,6 @@ CLASS TOBrowseByCell FROM TOBrowse
       FirstSelectedItem
       FirstVisibleColumn
       FirstVisibleItem
-      FixControls
       FontColor
       Header
       HeaderHeight
@@ -2292,8 +2288,6 @@ CLASS TOBrowseByCell FROM TOBrowse
       LoadHeaderImages
       NextColInOrder
       OnEnter
-      PanToLeft
-      PanToRight
       PriorColInOrder
       Release
       ScrollToCol
@@ -2898,8 +2892,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
       Return Nil
 
    ElseIf nNotify == NM_CUSTOMDRAW
-      ::AdjustRightScroll()
-      Return TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, .F., ::lFocusRect, ::lNoGrid, ::lPLM )
+      IF ::lNeedsAdjust .AND. ::lEndTrack
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      ENDIF
+      RETURN TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, .F., ::lFocusRect, ::lNoGrid, ::lPLM )
 
    EndIf
 
@@ -3573,7 +3570,7 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
             Return Self
          EndIf
 
-         If ValType( mp ) != "N"
+         If ValType( mp ) != "N" .OR. mp < 1
             m := Int( ::CountPerPage / 2 )
          Else
             m := mp
@@ -3595,9 +3592,6 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
             Return Self
          EndIf
 
-         If PCount() < 2
-            ::ScrollUpdate()
-         EndIf
          ::DbSkip( -m + 1 )
          ::Update()
          ::DbGoTo( _RecNo )
@@ -3713,7 +3707,6 @@ METHOD GoTop( nCol ) CLASS TOBrowseByCell
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_TOP )
-   ::ScrollUpdate()
    ::Update()
    ::DbGoTo( _RecNo )
    ::CurrentRow := 1
@@ -3755,7 +3748,6 @@ METHOD GoBottom( lAppend, nCol ) CLASS TOBrowseByCell
    aBefore := ::Value
    _RecNo := ( cWorkArea )->( RecNo() )
    ::TopBottom( GO_BOTTOM )
-   ::ScrollUpdate()
 
    // If it's for APPEND, leaves a blank line ;)
    ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
@@ -3794,7 +3786,6 @@ METHOD PageUp() CLASS TOBrowseByCell
       If ::Bof()
          s := 1
       EndIf
-      ::ScrollUpdate()
       ::Update()
       ::DbGoTo( _RecNo )
       If ! ::lKeysLikeClipper .OR. s > Len( ::aRecMap )
@@ -3866,7 +3857,6 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
          aAfter := ::Value
          lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       If ::lKeysLikeClipper .AND. s <= Len( ::aRecMap )
          ::CurrentRow := s
@@ -3928,7 +3918,6 @@ Local s, _RecNo, nLen, lRet := .F., cWorkArea, aBefore, aAfter
             ::SetRedraw( .T. )
          EndIf
       EndIf
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := 1
       If HB_IsLogical( lLast ) .AND. lLast
@@ -4008,7 +3997,6 @@ Local s, _RecNo, nLen, lRet := .F., cWorkArea, aBefore, aAfter
          aAfter := ::Value
          lRet := ( aAfter[ 1 ] # aBefore[ 1 ] .OR. aAfter[ 2 ] # aBefore[ 2 ] )
       EndIf
-      ::ScrollUpdate()
       ::DbGoTo( _RecNo )
       ::CurrentRow := Len( ::aRecMap )
    Else
@@ -4063,7 +4051,7 @@ METHOD CurrentCol( nCol ) CLASS TOBrowseByCell
             GetClientRect( ::hWnd, r )
             nClientWidth := r[ 3 ] - r[ 1 ]
             r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
-            If ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+            If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
                nScrollWidth := GetVScrollBarWidth()
             Else
                nScrollWidth := 0

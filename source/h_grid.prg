@@ -127,6 +127,7 @@ CLASS TGrid FROM TControl
    DATA lKeysLikeClipper          INIT .F.
    DATA lLikeExcel                INIT .F.
    DATA lKeysOn                   INIT .T.
+   DATA lNeedsAdjust              INIT .F.
    DATA lNested                   INIT .F.
    DATA lNestedEdit               INIT .F.
    DATA lNoDelMsg                 INIT .F.
@@ -222,7 +223,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderImage
    METHOD HeaderImageAlign
    METHOD HeaderSetFont
-   METHOD HScrollAdjust
+   METHOD HScrollUpdate
    METHOD HScrollVisible          SETGET
    METHOD InsertBlank
    METHOD InsertItem
@@ -259,7 +260,7 @@ CLASS TGrid FROM TControl
    METHOD ToOpenOffice
    METHOD Up
    METHOD Value                   SETGET
-   METHOD VScrollAdjust
+   METHOD VScrollUpdate
    METHOD VScrollVisible          SETGET
 
    MESSAGE End                    METHOD GoBottom
@@ -618,7 +619,7 @@ METHOD FirstVisibleColumn( lStart ) CLASS TGrid
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
       nClientWidth := r[ 3 ] - r[ 1 ]
-      If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+      If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
@@ -670,7 +671,7 @@ METHOD LastVisibleColumn( lEnd ) CLASS TGrid
    r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
    GetClientRect( ::hWnd, r )
    nClientWidth := r[ 3 ] - r[ 1 ]
-   If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+   If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
       nScrollWidth := GetVScrollBarWidth()
    Else
       nScrollWidth := 0
@@ -2485,7 +2486,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
          ListView_EnsureVisible( ::hWnd, nRow )
       EndIf
       r := ListView_GetSubitemRect( ::hWnd, nRow - 1, nCol - 1 ) // top, left, width, height
-      If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+      If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
          nScrollWidth := GetVScrollBarWidth()
       Else
          nScrollWidth := 0
@@ -2832,30 +2833,28 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       Return 0
 
    ElseIf nMsg == WM_NCCALCSIZE
-      i := 0
-      IF IsWindowStyle( hwnd, WS_HSCROLL )
-         ::HScrollAdjust()
-         IF ::lNoHSB
-            i -= WS_HSCROLL
-         ENDIF
+      IF ::lBeginTrack .AND. ! ::lEndTrack
+         ::lNeedsAdjust := .T.
       ELSE
-         IF ! ::lNoHSB
-            i += WS_HSCROLL
+         i := 0
+         IF IsWindowStyle( hwnd, WS_HSCROLL )
+            ::HScrollUpdate()
+            IF ::lNoHSB .AND. IsWindowStyle( hwnd, WS_HSCROLL )
+               i -= WS_HSCROLL
+            ENDIF
          ENDIF
-      ENDIF
-      IF IsWindowStyle( hwnd, WS_VSCROLL )
-         ::VScrollAdjust()
-         IF ::lNoVSB
-            i -= WS_VSCROLL
+         IF IsWindowStyle( hwnd, WS_VSCROLL )
+            ::VScrollUpdate()
+            IF ::lNoVSB
+               i -= WS_VSCROLL
+            ENDIF
          ENDIF
-      ELSE
-         IF ! ::lNoVSB
-            i += WS_VSCROLL
+         IF i # 0
+            ::Style( ::Style() + i )
          ENDIF
+         ::lNeedsAdjust := .F.
       ENDIF
-      IF i # 0
-         ::Style( ::Style() + i )
-      ENDIF
+      RETURN TGrid_ExecOldWndProc( hWnd, WM_NCCALCSIZE, wParam, lParam )
 
    EndIf
 
@@ -2863,7 +2862,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 
 METHOD HScrollVisible( lState ) CLASS TGrid
 
-   LOCAL lChange := .F., w
+   LOCAL nWidth, nColumn
 
    IF HB_ISLOGICAL( lState )
       ::lNoHSB := ! lState
@@ -2871,31 +2870,28 @@ METHOD HScrollVisible( lState ) CLASS TGrid
       IF lState
          IF ! IsWindowStyle( ::hWnd, WS_HSCROLL )
             ::Style( ::Style() + WS_HSCROLL )
-            lChange := .T.
          ENDIF
       ELSE
          IF IsWindowStyle( ::hWnd, WS_HSCROLL )
             ::Style( ::Style() - WS_HSCROLL )
-            lChange := .T.
          ENDIF
       ENDIF
 
-      IF lChange
-         // This fires WM_NCCALCSIZE
-         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
-         IF IsWindowStyle( ::hWnd, WS_VSCROLL )
-            ::VScrollAdjust()
-         ENDIF
-         // This forces the redraw of the grid lines
-         w := ::ColumnWidth( ::LastVisibleColumn )
-         ::ColumnWidth( ::LastVisibleColumn, w + 1 )
-         ::ColumnWidth( ::LastVisibleColumn, w - 1 )
+      // This fires WM_NCCALCSIZE
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      IF IsWindowStyle( ::hWnd, WS_VSCROLL )
+         ::VScrollUpdate()
       ENDIF
+      // This forces the redraw of the grid lines
+      nColumn := ::LastVisibleColumn
+      nWidth  := ::ColumnWidth( nColumn )
+      ::ColumnWidth( nColumn, nWidth + 1 )
+      ::ColumnWidth( nColumn, nWidth - 1 )
    ENDIF
 
    RETURN ! ::lNoHSB
 
-METHOD VScrollAdjust CLASS TGrid
+METHOD VScrollUpdate CLASS TGrid
 
    SetScrollRange( ::hWnd, SB_VERT, 0, ::ItemCount - 1, .T. )
    // This fires WM_NCCALCSIZE
@@ -2905,7 +2901,7 @@ METHOD VScrollAdjust CLASS TGrid
 
 METHOD VScrollVisible( lState ) CLASS TGrid
 
-   LOCAL lChange := .F., w
+   LOCAL nColumn, nWidth
 
    IF HB_ISLOGICAL( lState )
       ::lNoVSB := ! lState
@@ -2913,31 +2909,28 @@ METHOD VScrollVisible( lState ) CLASS TGrid
       IF lState
          IF ! IsWindowStyle( ::hWnd, WS_VSCROLL )
             ::Style( ::Style() + WS_VSCROLL )
-            lChange := .T.
          ENDIF
       ELSE
          IF IsWindowStyle( ::hWnd, WS_VSCROLL )
             ::Style( ::Style() - WS_VSCROLL )
-            lChange := .T.
          ENDIF
       ENDIF
 
-      IF lChange
-         // This fires WM_NCCALCSIZE
-         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
-         IF IsWindowStyle( ::hWnd, WS_HSCROLL )
-            ::HScrollAdjust()
-         ENDIF
-         // This forces the redraw of the grid lines
-         w := ::ColumnWidth( ::LastVisibleColumn )
-         ::ColumnWidth( ::LastVisibleColumn, w + 1 )
-         ::ColumnWidth( ::LastVisibleColumn, w - 1 )
+      // This fires WM_NCCALCSIZE
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      IF IsWindowStyle( ::hWnd, WS_HSCROLL )
+         ::HScrollUpdate()
       ENDIF
+      // This forces the redraw of the grid lines
+      nColumn := ::LastVisibleColumn
+      nWidth  := ::ColumnWidth( nColumn )
+      ::ColumnWidth( nColumn, nWidth + 1 )
+      ::ColumnWidth( nColumn, nWidth - 1 )
    ENDIF
 
    RETURN ! ::lNoVSB
 
-METHOD HScrollAdjust CLASS TGrid
+METHOD HScrollUpdate CLASS TGrid
 
    LOCAL nSum, i, r, nClientWidth
 
@@ -2954,6 +2947,10 @@ METHOD HScrollAdjust CLASS TGrid
       SetScrollRange( ::hWnd, SB_HORZ, 0, nSum - 1, .T. )
       // This fires WM_NCCALCSIZE
       SetScrollPage( ::hWnd, SB_HORZ, r[3] - r[1] )
+   ELSE
+      ::Style( ::Style() - WS_HSCROLL )
+      // This fires WM_NCCALCSIZE
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
    ENDIF
 
    RETURN NIL
@@ -3103,7 +3100,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       If ::lDividerDblclick
          ::lDividerDblclick := .F.
          // Do default processing (needed to properly update header)
-         nResul := ExecOldWndProc( ::hWnd, WM_NOTIFY, wParam, lParam )
+         nResul := TGrid_ExecOldWndProc( ::hWnd, WM_NOTIFY, wParam, lParam )
 
          // Ensure column is visible
          aRect := ListView_GetSubitemRect( ::hWnd, 0, nColumn - 1 )     // top, left, width, height
@@ -3178,7 +3175,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
    Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
 
    If nNotify == NM_CUSTOMDRAW
-      Return TGrid_Notify_CustomDraw( Self, lParam, .F., , , ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+      IF ::lNeedsAdjust .AND. ::lEndTrack
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      ENDIF
+      RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -4449,7 +4450,7 @@ METHOD Value( uValue ) CLASS TGridByCell
             GetClientRect( ::hWnd, r )
             nClientWidth := r[ 3 ] - r[ 1 ]
             r := ListView_GetSubitemRect( ::hWnd, ::nRowPos - 1, ::nColPos - 1 )             // top, left, width, height
-            If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
+            If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount >  ::CountPerPage
                nScrollWidth := GetVScrollBarWidth()
             Else
                nScrollWidth := 0
@@ -5405,7 +5406,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
    Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
 
    If nNotify == NM_CUSTOMDRAW
-      Return TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+      IF ::lNeedsAdjust .AND. ::lEndTrack
+         // This fires WM_NCCALCSIZE
+         SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+      ENDIF
+      RETURN TGrid_Notify_CustomDraw( Self, lParam, .T., ::nRowPos, ::nColPos, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -5664,7 +5669,7 @@ FUNCTION _GetGridCellData( Self, aPos )
    aControlRect := { 0, 0, 0, 0 }                                                         // left, top, right, bottom
    GetWindowRect( ::hWnd, aControlRect )
    r := ListView_GetSubitemRect( ::hWnd, ThisItemRowIndex - 1, ThisItemColIndex - 1 )     // top, left, width, height
-   If ! ::lNoVSB .AND. ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
+   If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ListViewGetItemCount( ::hWnd ) >  ListViewGetCountPerPage( ::hWnd )
       nScrollWidth := GetVScrollBarWidth()
    Else
       nScrollWidth := 0
@@ -7337,7 +7342,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPushNumInt( wParam );
          hb_vmPushNumInt( lParam );
          hb_vmDo( 5 );
-         bDefault = ( message == WM_NCCALCSIZE );
+         bDefault = FALSE;
          break;
 
       case WM_NOTIFY:
@@ -7538,9 +7543,10 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-HB_FUNC( EXECOLDWNDPROC )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TGRID_EXECOLDWNDPROC )          /* FUNCTION TGrid_ExecOldWndProc( hWnd, nMsg, wParam, lParam ) -> uRetVal */
 {
-   hb_retnl( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
+   HB_RETNL( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
 }
 
 HB_FUNC( INITLISTVIEW )

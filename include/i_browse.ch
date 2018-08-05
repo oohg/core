@@ -116,7 +116,7 @@ STANDARD VERSION
       [ <style: NOLINES> ] ;
       [ IMAGE <aImage> ] ;
       [ JUSTIFY <aJust> ] ;
-      [ <novscroll: NOVSCROLL> ] ;
+      [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
       [ <rtl: RTL> ] ;
@@ -182,7 +182,7 @@ STANDARD VERSION
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-      [ <nohsb: NOHSCROLLBAR> ] ;
+      [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -191,7 +191,7 @@ STANDARD VERSION
             <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
             <aJust>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
-            <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
+            <.inplace.>, <.novsb.>, <.append.>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
             <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
             <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, ;
