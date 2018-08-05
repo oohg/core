@@ -64,36 +64,36 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TScrollButton FROM TControl
 
-   DATA Type            INIT "SCROLLBUTTON" READONLY
-
-   DATA ladjust  INIT .F.
+   DATA lAdjust                                   INIT .F.
+   DATA Type                                      INIT "SCROLLBUTTON" READONLY
 
    METHOD Define
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, h ) CLASS TScrollButton
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, lSunken ) CLASS TScrollButton
 
-   Local ControlHandle
+   LOCAL nControlHandle
 
-   ::SetForm( ControlName, ParentForm /* , FontName, FontSize, FontColor, BackColor,, lRtl */ )
+   ::SetForm( cControlName, uParentForm )
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nRow    VALUE nRow    TYPE "N"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
+   ASSIGN lSunken   VALUE lSunken TYPE "L" DEFAULT ! _OOHG_UsesVisualStyle()
 
-   ControlHandle := InitVScrollBarButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height )
+   nControlHandle := InitVScrollBarButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, iif( lSunken, SS_SUNKEN, 0 ) )
 
-   ::Register( ControlHandle, ControlName /* , HelpId, , ToolTip */ )
+   ::Register( nControlHandle, cControlName )
 
-   Return Self
+   RETURN Self
 
-
-EXTERN INITVSCROLLBARBUTTON
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -103,24 +103,35 @@ EXTERN INITVSCROLLBARBUTTON
 
 static WNDPROC lpfnOldWndProc = 0;
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
-HB_FUNC( INITVSCROLLBARBUTTON )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITVSCROLLBARBUTTON )          /* FUNCTION InitVScrollButton( hWnd, nCol, nRow, nWidth, nHeight, nStyle ) -> hWnd */
 {
-   HWND hbutton;
+   HWND hwnd;
    int Style;
 
-   Style = WS_CHILD | WS_VISIBLE | SS_SUNKEN;
+   Style = WS_CHILD | WS_VISIBLE | hb_parni( 6 );
 
-   hbutton = CreateWindow( "static", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-                           ( HWND ) hb_parnl( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+   hwnd = CreateWindow( "static",
+                        "",
+                        Style,
+                        hb_parni( 2 ),
+                        hb_parni( 3 ),
+                        hb_parni( 4 ),
+                        hb_parni( 5 ),
+                        HWNDparam( 1 ),
+                        NULL,
+                        GetModuleHandle( NULL ),
+                        NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
-   hb_retnl( ( LONG ) hbutton );
+   HWNDret( hwnd );
 }
 
 #pragma ENDDUMP
