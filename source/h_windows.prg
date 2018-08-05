@@ -2904,12 +2904,16 @@ PROCEDURE _OOHG_CallDump( uTitle, cOutput )
 
    cText := ""
    nLevel := 1
-   DO WHILE ! Empty( PROCNAME( nLevel ) )
+   DO WHILE ! Empty( ProcName( nLevel ) )
       IF nLevel > 1
-         cText += CHR( 13 ) + CHR( 10 )
+         cText += Chr( 13 ) + Chr( 10 )
       ENDIF
-      cText += PROCNAME( nLevel ) + "(" + LTRIM( STR( PROCLINE( nLevel ) ) ) + ")"
-      nLevel++
+      cText += ProcName( nLevel ) + ;
+               " (" + ;
+               AllTrim( Str( ProcLine( nLevel ) ) ) + ;
+               ")" + ;
+               iif( Empty( ProcFile( nLevel ) ), "", " in " + ProcFile( nLevel ) )
+      nLevel ++
    ENDDO
 
    ASSIGN cOutput VALUE cOutput TYPE "C" DEFAULT "S"
@@ -2928,7 +2932,7 @@ PROCEDURE _OOHG_CallDump( uTitle, cOutput )
       MSGINFO( cText, AutoType( uTitle ) )
    ENDIF
 
-   Return
+   RETURN
 
 
 CLASS TDynamicValues
