@@ -103,6 +103,7 @@ CLASS TImage FROM TControl
    METHOD Picture                 SETGET
    METHOD Release
    METHOD RePaint
+   METHOD Save
    METHOD SizePos
    METHOD ToolTip                 SETGET
 
@@ -149,7 +150,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
    ::Picture := cFileName
    IF ! VALIDHANDLER( ::hImage )
       ::Buffer := cBuffer
-      IF ! ValidHandler( ::hImage )
+      IF ! VALIDHANDLER( ::hImage )
          ::HBitMap := hBitMap
       ENDIF
    ENDIF
@@ -457,6 +458,76 @@ METHOD Copy( lAsDIB ) CLASS TImage
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
+
+   LOCAL nHeight, nWidth
+
+   IF ! VALIDHANDLER( ::hImage )
+      RETURN .F.
+   ENDIF
+
+   ASSIGN cType VALUE Upper( cType ) TYPE "CM" DEFAULT "BMP"
+
+   IF HB_ISARRAY( uSize )
+      ASSIGN nWidth  VALUE uSize[1] TYPE "N" DEFAULT ::CurrentSize()[1]
+      ASSIGN nHeight VALUE uSize[2] TYPE "N" DEFAULT ::CurrentSize()[2]
+   ELSEIF HB_ISNUMERIC( uSize )
+      IF uSize <= 0
+         nWidth  := ::CurrentSize()[1]
+         nHeight := ::CurrentSize()[2]
+      ELSE
+         nWidth  := ::OriginalSize()[1] * uSize
+         nHeight := ::OriginalSize()[2] * uSize
+      ENDIF
+   ELSE
+      nWidth  := ::CurrentSize()[1]
+      nHeight := ::CurrentSize()[2]
+   ENDIF
+
+   IF gPlusInit()
+      IF cType == "JPEG" .OR. cType == "JPG" .OR. cType == "IMAGE/JPEG" .OR. cType == "IMAGE/JPG"
+         IF ! HB_ISNUMERIC( nQuality ) .OR. nQuality < 0 .OR. nQuality > 100
+            nQuality := 100
+         ENDIF
+         // JPEG images are always saved at 24 bpp color depth.
+         gPlusSaveHBitmapToFile( ::hImage, cFile, nWidth, nHeight, "image/jpeg", nQuality, NIL )
+
+      ELSEIF cType == "GIF" .OR. cType == "IMAGE/GIF"
+         // GIF images do not support parameters.
+         // GIF images are always saved at 8 bpp color depth.
+         // GIF images are always compressed using LZW algorithm.
+         gPlusSaveHBitmapToFile( ::hImage, cFile, nWidth, nHeight, "image/gif", NIL, NIL )
+
+      ELSEIF cType == "TIFF" .OR. cType == "TIF" .OR. cType == "IMAGE/TIFF" .OR. cType == "IMAGE/TIF"
+         IF ! HB_ISNUMERIC( nQuality ) .OR. nQuality < 0 .OR. nQuality > 1
+            // This the default value: LZW compression.
+            nQuality := 1
+         ENDIF
+         IF ! HB_ISNUMERIC( nColorDepth ) .OR. ( nColorDepth # 1 .AND. nColorDepth # 4 .AND. nColorDepth # 8 .AND. nColorDepth # 24 .AND. nColorDepth # 32 )
+           // This is the default value: 32 bpp.
+           nColorDepth := 32
+         ENDIF
+         gPlusSaveHBitmapToFile( ::hImage, cFile, nWidth, nHeight, "image/tiff", nQuality, nColorDepth )
+
+      ELSEIF cType == "PNG" .OR. cType == "IMAGE/PNG"
+         // PNG images do not support parameters.
+         // PNG images are always saved at 24 bpp color depth if they don't have transparecy
+         // or at 32 bpp if they have it.
+         // PNG images are always compressed using ZIP algorithm.
+         gPlusSaveHBitmapToFile( ::hImage, cFile, nWidth, nHeight, "image/png", NIL, NIL )
+
+      ELSE
+         // BMP images do not support parameters.
+         gPlusSaveHBitmapToFile( ::hImage, cFile, nWidth, nHeight, "image/bmp", NIL, NIL )
+
+      ENDIF
+      gPlusDeInit()
+   ENDIF
+
+   RETURN FILE( cFile )
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -535,7 +606,7 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage -> nRet */
+HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage -> uRetVal */
 {
    HWND hWnd = HWNDparam( 1 );
    UINT message = (UINT) hb_parni( 2 );
@@ -578,8 +649,8 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
    }
