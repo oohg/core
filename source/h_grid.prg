@@ -6519,7 +6519,8 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       CLIENTAREA ;
       TITLE ::cTitle ;
       MODAL ;
-      NOSIZE
+      NOSIZE ;
+      NOMAXIMIZE
 
    EndIf
 
