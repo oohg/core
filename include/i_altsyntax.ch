@@ -2093,7 +2093,8 @@ DATEPICKER
       _OOHG_ActiveControlNoBorder          := .F. ;;
       _OOHG_ActiveControlRangeLow          := NIL ;;
       _OOHG_ActiveControlRangeHigh         := NIL ;;
-      _OOHG_ActiveControlFormat            := NIL
+      _OOHG_ActiveControlFormat            := NIL ;;
+      _OOHG_ActiveControlValid             := NIL
 
 #xcommand DATEFORMAT <format> ;
    => ;
@@ -2145,7 +2146,8 @@ DATEPICKER
             _OOHG_ActiveControlNoBorder, ;
             _OOHG_ActiveControlRangeLow, ;
             _OOHG_ActiveControlRangeHigh, ;
-            _OOHG_ActiveControlFormat )
+            _OOHG_ActiveControlFormat, ;
+            _OOHG_ActiveControlValid )
 
 #xcommand DEFINE TIMEPICKER <name> ;
    => ;
@@ -2153,7 +2155,8 @@ DATEPICKER
       _OOHG_ActiveControlShowNone := .F.       ;;
       _OOHG_ActiveControlField    := NIL       ;;
       _OOHG_ActiveControlNoBorder := .F.       ;;
-      _OOHG_ActiveControlFormat   := NIL
+      _OOHG_ActiveControlFormat   := NIL       ;;
+      _OOHG_ActiveControlValid    := NIL
 
 #xcommand TIMEFORMAT <format> ;
    => ;
@@ -2190,7 +2193,8 @@ DATEPICKER
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlDisabled, ;
             _OOHG_ActiveControlNoBorder, ;
-            _OOHG_ActiveControlFormat )
+            _OOHG_ActiveControlFormat, ;
+            _OOHG_ActiveControlValid )
 
 /*---------------------------------------------------------------------------
 EDIT BOX

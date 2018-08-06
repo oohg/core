@@ -89,6 +89,7 @@
       [ SUBCLASS <subclass> ] ;
       [ <dummy2: RANGE> <min>, <max> ] ;
       [ DATEFORMAT <cDateFormat> ] ;
+      [ VALID <valid> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TDatePick(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, ;
@@ -96,7 +97,7 @@
             <{gotfocus}>, <.shownone.>, <.updown.>, <.rightalign.>, <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <{enter}>, <.rtl.>, <.disabled.>, ;
-            <.noborder.>, <min>, <max>, <cDateFormat> )
+            <.noborder.>, <min>, <max>, <cDateFormat>, <{valid}> )
 
 #command @ <row>, <col> TIMEPICKER <name> ;
       [ OBJ <obj> ] ;
@@ -127,6 +128,7 @@
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
       [ TIMEFORMAT <cTimeFormat> ] ;
+      [ VALID <valid> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTimePick(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <v>, ;
@@ -134,4 +136,4 @@
             <{gotfocus}>, <.shownone.>, .T., .F., <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <{enter}>, <.rtl.>, <.disabled.>, ;
-            <.noborder.>, <cTimeFormat> )
+            <.noborder.>, <cTimeFormat>, <{valid}> )

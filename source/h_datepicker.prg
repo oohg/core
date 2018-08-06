@@ -84,7 +84,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
-               lNoBorder, DateFrom, DateTo, cDateFormat ) CLASS TDatePick
+               lNoBorder, DateFrom, DateTo, cDateFormat, bValid ) CLASS TDatePick
 
    Local ControlHandle, nStyle, nStyleEx
 
@@ -119,6 +119,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
+   ASSIGN ::postBlock   VALUE bValid    TYPE "B"
 
    Return Self
 
@@ -183,7 +184,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
                fontsize, tooltip, change, lostfocus, gotfocus, shownone, ;
                updown, rightalign, HelpId, invisible, notabstop, bold, ;
                italic, underline, strikeout, Field, Enter, lRtl, lDisabled, ;
-               lNoBorder, cTimeFormat ) CLASS TTimePick
+               lNoBorder, cTimeFormat, bValid ) CLASS TTimePick
 
    Local ControlHandle, nStyle, nStyleEx
 
@@ -219,6 +220,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
    ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
    ASSIGN ::OnChange    VALUE Change    TYPE "B"
    ASSIGN ::OnEnter     VALUE Enter     TYPE "B"
+   ASSIGN ::postBlock   VALUE bValid    TYPE "B"
 
    Return Self
 
