@@ -61,37 +61,25 @@
 
 
 #define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
+#define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include "hbapiitm.h"
-#include "winreg.h"
-#include "tchar.h"
 #include "oohg.h"
 
 HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Orientation )
 {
-   HDC  hDC;
+   HDC hDC;
    int cyp;
 
-   memset ( &cyp, 0, sizeof ( cyp ) ) ;
-   memset ( &hDC, 0, sizeof ( hDC ) ) ;
+   hDC = GetDC( HWND_DESKTOP );
+   cyp = GetDeviceCaps( hDC, LOGPIXELSY );
+   ReleaseDC( HWND_DESKTOP, hDC );
 
-   hDC = GetDC ( HWND_DESKTOP ) ;
-
-   cyp = GetDeviceCaps ( hDC, LOGPIXELSY ) ;
-
-   ReleaseDC ( HWND_DESKTOP, hDC ) ;
-
-   FontSize = ( FontSize * cyp ) / 72 ;
-
-  int     nHeight            = 0 - FontSize;
+  int     nHeight            = 0 - ( FontSize * cyp ) / 72;
   int     nWidth             = 0;
   int     nEscapement        = Escapement;
   int     nOrientation       = Orientation;
@@ -110,9 +98,9 @@ HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Und
       fdwCharSet, fdwOutputPrecision, fdwClipPrecision, fdwQuality, fdwPitchAndFamily, lpszFace );
 }
 
-HB_FUNC ( _SETFONT )
+HB_FUNC( _SETFONT )
 {
-   HFONT font ;
+   HFONT font;
    int bold = FW_NORMAL;
    int italic = 0;
    int underline = 0;
@@ -138,14 +126,14 @@ HB_FUNC ( _SETFONT )
       strikeout = 1;
    }
 
-   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parnl( 8 ), hb_parnl( 9 ) ) ;
-   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) ) ;
-   hb_retnl( (LONG) font );
+   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parnl( 8 ), hb_parnl( 9 ) );
+   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
+   HB_RETNL( (LONG_PTR) font );
 }
 
-HB_FUNC ( SETFONTNAMESIZE )
+HB_FUNC( SETFONTNAMESIZE )
 {
-   HFONT font ;
+   HFONT font;
    int bold = FW_NORMAL;
    int italic = 0;
    int underline = 0;
@@ -172,10 +160,8 @@ HB_FUNC ( SETFONTNAMESIZE )
    }
 
    font = PrepareFont( (char *) hb_parc( 2 ), (LPARAM) hb_parni( 3 ), bold, italic, underline, strikeout, hb_parnl( 8 ), hb_parnl( 9 ) );
-   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) ) ;
+   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
 }
-
-void getwinver( OSVERSIONINFO * pOSvi );
 
 HB_FUNC( GETSYSTEMFONT )
 {

@@ -232,15 +232,16 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_THISTYPE ]              := ''
       ::aVars[ NDX_OOHG_MAIN_ICON ]             := NIL
       ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]     := .T.
+      ::aVars[ NDX_OOHG_APP_CARGO ]             := NIL
       ::aVars[ NDX_BROWSE_SYNCSTATUS ]          := .F.
       ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]         := .T.
       ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]       := .F.
       ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]        := .T.
       ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]      := .F.
       ::aVars[ NDX_GRID_FIXEDCONTROLS ]         := .F.
+      ::aVars[ NDX_OOHG_ERRORLEVEL ]            := 0
       ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ]   := .T.
       ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ] := NIL
-      ::aVars[ NDX_OOHG_ERRORLEVEL ]            := 0
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1166,8 +1167,8 @@ STATIC FUNCTION GetCommandLineArgs
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_IE

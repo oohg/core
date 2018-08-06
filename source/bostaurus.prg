@@ -731,8 +731,8 @@ FUNCTION BT_SetImage( cFormName, cControlName, hBitmap, lReleasePreviousBitmap )
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -801,11 +801,6 @@ FUNCTION BT_SetImage( cFormName, cControlName, hBitmap, lReleasePreviousBitmap )
 #ifndef IEnumIDList_Release
    #define IEnumIDList_Release(T) (T)->lpVtbl->AddRef(T)
 #endif
-
-
-BOOL _OOHG_UseGDIP( void );
-HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr );
-BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 
 
 void bt_MsgDebugInfo( TCHAR *Format, ... )    // ( _TEXT( "Info: Text=%s  Num1=%d  Num2=%d" ), String, Num1, Num2 )
@@ -1481,7 +1476,7 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
          break;
 
       case BT_HDC_BITMAP:
-         hBitmap = (HBITMAP) hb_parnl( 2 );
+         hBitmap = (HBITMAP) HB_PARNL( 2 );
          BT.hDC  = CreateCompatibleDC( NULL );
          SelectObject( BT.hDC, hBitmap );
          break;
@@ -1646,7 +1641,7 @@ HB_FUNC( BT_SCR_INVALIDATERECT )    // ( hWnd, [ { x_left, y_top, x_right, y_bot
    PHB_ITEM pArrayRect;
 
    if( ! HB_ISARRAY( 2 ) )
-       hb_retl( InvalidateRect( (HWND) hb_parnl( 1 ), NULL, hb_parl( 3 ) ) );    // Invalidate all client area
+       hb_retl( InvalidateRect( HWNDparam( 1 ), NULL, hb_parl( 3 ) ) );    // Invalidate all client area
    else
    {
       pArrayRect = hb_param( 2, HB_IT_ARRAY );
@@ -1657,7 +1652,7 @@ HB_FUNC( BT_SCR_INVALIDATERECT )    // ( hWnd, [ { x_left, y_top, x_right, y_bot
          rect.top    = hb_arrayGetNL( pArrayRect, 2 );
          rect.right  = hb_arrayGetNL( pArrayRect, 3 );
          rect.bottom = hb_arrayGetNL( pArrayRect, 4 );
-         hb_retl( InvalidateRect( (HWND) hb_parnl( 1 ), &rect, hb_parl( 3 ) ) );    // Invalidate specific rectangle of client area
+         hb_retl( InvalidateRect( HWNDparam( 1 ), &rect, hb_parl( 3 ) ) );    // Invalidate specific rectangle of client area
       }
       else
          hb_retl( FALSE );
@@ -1671,7 +1666,7 @@ HB_FUNC( BT_DRAWEDGE )    // ( hDC, nRow, nCol, nWidth, nHeight, nEdge, nGrfFlag
    RECT Rect;
    INT  Edge, GrfFlags;
 
-   hDC         = (HDC) hb_parnl( 1 );
+   hDC         = (HDC) HB_PARNL( 1 );
    Rect.top    = hb_parni( 2 );
    Rect.left   = hb_parni( 3 );
    Rect.right  = hb_parni( 4 );
@@ -1706,7 +1701,7 @@ HB_FUNC( BT_DRAW_HDC_POLY )    // ( hDC, aPointX, aPointY, ColorLine, nWidthLine
    POINT aPoint[ 2048 ];
    #endif
 
-   hDC        = ( HDC ) hb_parnl( 1 );
+   hDC        = ( HDC ) HB_PARNL( 1 );
    nCountX    = ( INT ) hb_parinfa( 2, 0 );
    nCountY    = ( INT ) hb_parinfa( 3, 0 );
    ColorLine  = ( COLORREF ) hb_parnl( 4 );
@@ -1776,7 +1771,7 @@ HB_FUNC( BT_DRAW_HDC_ARCX )    // ( hDC, x1, y1, x2, y2, XStartArc, YStartArc, X
    INT      XStartArc, YStartArc, XEndArc, YEndArc;
    INT      nArcType;
 
-   hDC        = (HDC)      hb_parnl( 1 );
+   hDC        = (HDC)      HB_PARNL( 1 );
    x1         = (INT)      hb_parni( 2 );
    y1         = (INT)      hb_parni( 3 );
    x2         = (INT)      hb_parni( 4 );
@@ -1835,7 +1830,7 @@ HB_FUNC( BT_DRAW_HDC_FILLEDOBJECT)    // ( hDC, x1, y1, Width1, Height1, ColorFi
    INT      x1, y1, Width1, Height1;
    INT      nWidthLine, Type, RoundWidth ,RoundHeight;
 
-   hDC         = (HDC)      hb_parnl( 1 );
+   hDC         = (HDC)      HB_PARNL( 1 );
    x1          = (INT)      hb_parni( 2 );
    y1          = (INT)      hb_parni( 3 );
    Width1      = (INT)      hb_parni( 4 );
@@ -1895,12 +1890,12 @@ HB_FUNC( BT_DRAW_HDC_BITMAP )    // ( hDC, x1, y1, Width1, Height1, hBitmap, x2,
    POINT    Point;
    BOOL     ClrOnClr;
 
-   hDC          = (HDC)      hb_parnl( 1 );
+   hDC          = (HDC)      HB_PARNL( 1 );
    x1           = (INT)      hb_parni( 2 );
    y1           = (INT)      hb_parni( 3 );
    Width1       = (INT)      hb_parni( 4 );
    Height1      = (INT)      hb_parni( 5 );
-   hBitmap      = (HBITMAP)  hb_parnl( 6 );
+   hBitmap      = (HBITMAP)  HB_PARNL( 6 );
    x2           = (INT)      hb_parni( 7 );
    y2           = (INT)      hb_parni( 8 );
    Width2       = (INT)      hb_parni( 9 );
@@ -1960,12 +1955,12 @@ HB_FUNC( BT_DRAW_HDC_BITMAPALPHABLEND )    // ( hDC, x1, y1, Width1, Height1, hB
    POINT         Point;
    BOOL          ClrOnClr;
 
-   hDC          = (HDC)     hb_parnl( 1 );
+   hDC          = (HDC)     HB_PARNL( 1 );
    x1           = (INT)     hb_parni( 2 );
    y1           = (INT)     hb_parni( 3 );
    Width1       = (INT)     hb_parni( 4 );
    Height1      = (INT)     hb_parni( 5 );
-   hBitmap      = (HBITMAP) hb_parnl( 6 );
+   hBitmap      = (HBITMAP) HB_PARNL( 6 );
    x2           = (INT)     hb_parni( 7 );
    y2           = (INT)     hb_parni( 8 );
    Width2       = (INT)     hb_parni( 9 );
@@ -2013,7 +2008,7 @@ HB_FUNC( BT_DRAW_HDC_GRADIENTFILL )    // ( hDC, x1, y1, Width1, Height1, Color_
    ULONG         Mode;
    TRIVERTEX     Vert[ 2 ];
 
-   hDC              = (HDC) hb_parnl( 1 );
+   hDC              = (HDC) HB_PARNL( 1 );
    gRect.UpperLeft  = 0;
    gRect.LowerRight = 1;
    Color_RGB_O      = (COLORREF) hb_parnl( 6 );
@@ -2074,7 +2069,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
 
-   hDC         = (HDC)      hb_parnl( 1 );
+   hDC         = (HDC)      HB_PARNL( 1 );
    x           = (INT)      hb_parni( 2 );
    y           = (INT)      hb_parni( 3 );
    Text        = (TCHAR *)  hb_parc( 4 );
@@ -2158,7 +2153,7 @@ HB_FUNC( BT_DRAW_HDC_DRAWTEXT )    // ( hDC, x, y, w, h, Text, FontName, FontSiz
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
 
-   hDC         = (HDC)      hb_parnl( 1 );
+   hDC         = (HDC)      HB_PARNL( 1 );
    x           = (INT)      hb_parni( 2 );
    y           = (INT)      hb_parni( 3 );
    w           = (INT)      hb_parni( 4 );
@@ -2241,7 +2236,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
    UINT     iFirstChar, iLastChar;
    ABCFLOAT ABCfloat;
 
-   hDC      = (HDC)     hb_parnl( 1 );
+   hDC      = (HDC)     HB_PARNL( 1 );
    Text     = (TCHAR *) hb_parc( 2 );
    FontName = (TCHAR *) hb_parc( 3 );
    FontSize = (INT)     hb_parni( 4 );
@@ -2300,7 +2295,7 @@ HB_FUNC( BT_DRAW_HDC_PIXEL )    // ( hDC, x, y, Action, Color )
    INT       Action;
    COLORREF Color;
 
-   hDC     = (HDC)      hb_parnl( 1 );
+   hDC     = (HDC)      HB_PARNL( 1 );
    x       = (INT)      hb_parni( 2 );
    y       = (INT)      hb_parni( 3 );
    Action  = (INT)      hb_parni( 4 );
@@ -2340,12 +2335,12 @@ HB_FUNC( BT_DRAW_HDC_TO_HDC )    // ( hDC1, x1, y1, Width1, Height1, hDC2, x2, y
    POINT    Point;
    BOOL     ClrOnClr;
 
-   hDC1          = (HDC)      hb_parnl( 1 );
+   hDC1          = (HDC)      HB_PARNL( 1 );
    x1            = (INT)      hb_parni( 2 );
    y1            = (INT)      hb_parni( 3 );
    Width1        = (INT)      hb_parni( 4 );
    Height1       = (INT)      hb_parni( 5 );
-   hDC2          = (HDC)      hb_parnl( 6 );
+   hDC2          = (HDC)      HB_PARNL( 6 );
    x2            = (INT)      hb_parni( 7 );
    y2            = (INT)      hb_parni( 8 );
    Width2        = (INT)      hb_parni( 9 );
@@ -2400,12 +2395,12 @@ HB_FUNC( BT_DRAW_HDC_TO_HDC_ALPHABLEND )    // ( hDC1, x1, y1, Width1, Height1, 
    BLENDFUNCTION blend;
    POINT         Point;
 
-   hDC1         = (HDC)  hb_parnl( 1 );
+   hDC1         = (HDC)  HB_PARNL( 1 );
    x1           = (INT)  hb_parni( 2 );
    y1           = (INT)  hb_parni( 3 );
    Width1       = (INT)  hb_parni( 4 );
    Height1      = (INT)  hb_parni( 5 );
-   hDC2         = (HDC)  hb_parnl( 6 );
+   hDC2         = (HDC)  HB_PARNL( 6 );
    x2           = (INT)  hb_parni( 7 );
    y2           = (INT)  hb_parni( 8 );
    Width2       = (INT)  hb_parni( 9 );
@@ -2461,13 +2456,13 @@ HB_FUNC( BT_BMP_CREATE )    // ( Width, Height, Color_Fill_Bk )
    DeleteObject( hBrush );
    DeleteDC( memDC );
 
-   hb_retnl( (LONG_PTR) hBitmap_New );
+   HB_RETNL( (LONG_PTR) hBitmap_New );
 }
 
 
 HB_FUNC( BT_BMP_RELEASE )    // ( hBitmap )
 {
-   HBITMAP hBitmap = (HBITMAP) hb_parnl( 1 );
+   HBITMAP hBitmap = (HBITMAP) HB_PARNL( 1 );
    hb_retl( DeleteObject( hBitmap ) );
 }
 
@@ -2515,11 +2510,11 @@ HB_FUNC( BT_BMP_LOADFILE )    // ( cFileBMP, ClrOnClr )
    // If fail load: return zero
    if( hBitmap == NULL )
    {
-      hb_retnl( 0 );
+      HB_RETNL( 0 );
       return;
    }
 
-   hb_retnl( (LONG_PTR) hBitmap );
+   HB_RETNL( (LONG_PTR) hBitmap );
 }
 
 
@@ -2561,7 +2556,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    // If fail load from Resource and Disk return Null
    if( hEMF == NULL )
    {
-      hb_retnl( (LONG_PTR) NULL );
+      HB_RETNL( (LONG_PTR) NULL );
       return;
    }
 
@@ -2571,7 +2566,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    if( GetEnhMetaFileHeader( hEMF, sizeof( ENHMETAHEADER ), &emh ) == 0 )
    {
       DeleteEnhMetaFile( hEMF );
-      hb_retnl( (LONG_PTR) NULL );
+      HB_RETNL( (LONG_PTR) NULL );
       return;
    }
 
@@ -2609,7 +2604,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    DeleteDC( memDC );
    DeleteObject( hBrush );
 
-   hb_retnl( (LONG_PTR) hBitmap );
+   HB_RETNL( (LONG_PTR) hBitmap );
 }
 
 
@@ -2724,7 +2719,7 @@ BOOL bt_bmp_SaveFile( HBITMAP hBitmap, TCHAR* FileName, INT nTypePicture )
 
 HB_FUNC( BT_BMP_SAVEFILE )    // ( hBitmap, cFileName, nType )
 {
-   HBITMAP hBitmap      = (HBITMAP) hb_parnl( 1 );
+   HBITMAP hBitmap      = (HBITMAP) HB_PARNL( 1 );
    TCHAR  *FileName     = (TCHAR *) hb_parc( 2 );
    INT     nTypePicture = (INT)     hb_parnl( 3 );
 
@@ -2749,7 +2744,7 @@ HB_FUNC( BT_BMP_GETINFO )    // ( hBitmap, Info, x, y )
    COLORREF color;
    INT      Info, x, y;
 
-   hBitmap = (HBITMAP) hb_parnl( 1 );
+   hBitmap = (HBITMAP) HB_PARNL( 1 );
    Info    = (INT)     hb_parnl( 2 );
 
    GetObject( hBitmap, sizeof( BITMAP ), (LPBYTE) &bm );
@@ -2802,7 +2797,7 @@ HB_FUNC( BT_BMP_CLONE )    // ( hBitmap, x1, y1, Width1, Height1 )
    INT     y1, x1, Width1, Height1;
    HDC     memDC1, memDC2;
 
-   hBitmap = (HBITMAP) hb_parnl( 1 );
+   hBitmap = (HBITMAP) HB_PARNL( 1 );
    x1      = (INT)     hb_parni( 2 );
    y1      = (INT)     hb_parni( 3 );
    Width1  = (INT)     hb_parni( 4 );
@@ -2819,7 +2814,7 @@ HB_FUNC( BT_BMP_CLONE )    // ( hBitmap, x1, y1, Width1, Height1 )
    DeleteDC( memDC1 );
    DeleteDC( memDC2 );
 
-   hb_retnl( (LONG_PTR) hBitmap_New );
+   HB_RETNL( (LONG_PTR) hBitmap_New );
 }
 
 
@@ -2991,7 +2986,7 @@ HB_FUNC( BT_BMP_COPYANDRESIZE )    // ( hBitmap, New_Width, New_Height, Mode_Str
    HDC     memDC1, memDC2;
    POINT   Point;
 
-   hBitmap1     = (HBITMAP) hb_parnl( 1 );
+   hBitmap1     = (HBITMAP) HB_PARNL( 1 );
    New_Width    = (INT)     hb_parni( 2 );
    New_Height   = (INT)     hb_parni( 3 );
    Mode_Stretch = (INT)     hb_parni( 4 );
@@ -3031,7 +3026,7 @@ HB_FUNC( BT_BMP_COPYANDRESIZE )    // ( hBitmap, New_Width, New_Height, Mode_Str
    if( nAlgorithm == BT_RESIZE_BILINEAR )
       hBitmap_New = bt_BiLinearInterpolation( hBitmap1, New_Width, New_Height );
 
-   hb_retnl( (LONG_PTR) hBitmap_New );
+   HB_RETNL( (LONG_PTR) hBitmap_New );
 }
 
 
@@ -3052,12 +3047,12 @@ HB_FUNC( BT_BMP_PASTE )    // ( hBitmap_D, x1, y1, Width1, Height1, hBitmap_O, x
    POINT    Point;
    BOOL     ClrOnClr;
 
-   hBitmap_D    = (HBITMAP)  hb_parnl( 1 );
+   hBitmap_D    = (HBITMAP)  HB_PARNL( 1 );
    x1           = (INT)      hb_parni( 2 );
    y1           = (INT)      hb_parni( 3 );
    Width1       = (INT)      hb_parni( 4 );
    Height1      = (INT)      hb_parni( 5 );
-   hBitmap_O    = (HBITMAP)  hb_parnl( 6 );
+   hBitmap_O    = (HBITMAP)  HB_PARNL( 6 );
    x2           = (INT)      hb_parni( 7 );
    y2           = (INT)      hb_parni( 8 );
    Width2       = (INT)      hb_parni( 9 );
@@ -3120,12 +3115,12 @@ HB_FUNC( BT_BMP_PASTE_ALPHABLEND )    // ( hBitmap_D, x1, y1, Width1, Height1, h
    POINT         Point;
    BOOL          ClrOnClr;
 
-   hBitmap_D    = (HBITMAP) hb_parnl( 1 );
+   hBitmap_D    = (HBITMAP) HB_PARNL( 1 );
    x1           = (INT)     hb_parni( 2 );
    y1           = (INT)     hb_parni( 3 );
    Width1       = (INT)     hb_parni( 4 );
    Height1      = (INT)     hb_parni( 5 );
-   hBitmap_O    = (HBITMAP) hb_parnl( 6 );
+   hBitmap_O    = (HBITMAP) HB_PARNL( 6 );
    x2           = (INT)     hb_parni( 7 );
    y2           = (INT)     hb_parni( 8 );
    Width2       = (INT)     hb_parni( 9 );
@@ -3176,7 +3171,7 @@ HB_FUNC( BT_BMP_CAPTURESCR )    // ( hWnd, x1, y1, Width1, Height1, Mode )
    HDC     hDC, memDC;
    INT     x1, y1, Width1, Height1, Mode;
 
-   hWnd    = (HWND) hb_parnl( 1 );
+   hWnd    = HWNDparam( 1 );
    x1      = (INT)  hb_parni( 2 );
    y1      = (INT)  hb_parni( 3 );
    Width1  = (INT)  hb_parni( 4 );
@@ -3198,7 +3193,7 @@ HB_FUNC( BT_BMP_CAPTURESCR )    // ( hWnd, x1, y1, Width1, Height1, Mode )
          break;
 
       default:
-         hb_retnl( 0 );
+         HB_RETNL( 0 );
          return;
    }
 
@@ -3220,7 +3215,7 @@ HB_FUNC( BT_BMP_CAPTURESCR )    // ( hWnd, x1, y1, Width1, Height1, Mode )
          break;
    }
 
-   hb_retnl( (LONG_PTR) hBitmap );
+   HB_RETNL( (LONG_PTR) hBitmap );
 }
 
 
@@ -3281,7 +3276,7 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
    BYTE            BlueGammaRamp[ 256 ];
    INT             i, Action;
 
-   hBitmap = (HBITMAP) hb_parnl( 1 );
+   hBitmap = (HBITMAP) HB_PARNL( 1 );
    Action  = (INT)     hb_parni( 2 );
 
    switch ( Action )
@@ -3515,7 +3510,7 @@ HB_FUNC( BT_BMP_FILTER3X3 )    // ( hBitmap, aFilter )
    register INT x, y;
    INT i, MatKernel3x3Filter[ nMATFILTER ];
 
-   hBitmap = (HBITMAP) hb_parnl( 1 );
+   hBitmap = (HBITMAP) HB_PARNL( 1 );
    if( ! HB_ISARRAY( 2 ) || hb_parinfa( 2, 0 ) != nMATFILTER )
    {
       hb_retl( FALSE );
@@ -3648,7 +3643,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
    #define dABS( n ) ( (double) n >= 0.0 ? (double) n : (double) - n )
    #define SCALING( n ) ( (double) n > 1.0 ? (double) ( 1.0 / n ) : (double) 1.0 )
 
-   hBitmap_O     = (HBITMAP)  hb_parnl( 1 );
+   hBitmap_O     = (HBITMAP)  HB_PARNL( 1 );
    Mode          = (INT)      hb_parnl( 2 );
    Angle         = (FLOAT)    hb_parnd( 3 );
    Color_Fill_Bk = (COLORREF) hb_parnl( 4 );
@@ -3791,7 +3786,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
    DeleteDC( memDC2 );
    DeleteObject( hBrush );
 
-   hb_retnl( (LONG_PTR) hBitmap_D );
+   HB_RETNL( (LONG_PTR) hBitmap_D );
 }
 
 
@@ -3814,7 +3809,7 @@ HB_FUNC( BT_BMP_CLEAN_CLIPBOARD )    // ( hWnd )
       return;
    }
 
-   hWnd = (HWND) hb_parnl( 1 );
+   hWnd = HWNDparam( 1 );
    if( ! OpenClipboard( hWnd ) )
    {
       hb_retl( FALSE );
@@ -3840,14 +3835,14 @@ HB_FUNC( BT_BMP_GET_CLIPBOARD )    // ( hWnd )
 
    if( ! IsClipboardFormatAvailable( CF_DIB ) )
    {
-      hb_retnl( 0 );
+      HB_RETNL( 0 );
       return;
    }
 
-   hWnd = (HWND) hb_parnl( 1 );
+   hWnd = HWNDparam( 1 );
    if( ! OpenClipboard( hWnd ) )
    {
-      hb_retnl( 0 );
+      HB_RETNL( 0 );
       return;
    }
 
@@ -3855,7 +3850,7 @@ HB_FUNC( BT_BMP_GET_CLIPBOARD )    // ( hWnd )
    if( hClipboard == NULL )
    {
       CloseClipboard();
-      hb_retnl( 0 );
+      HB_RETNL( 0 );
       return;
    }
 
@@ -3894,7 +3889,7 @@ HB_FUNC( BT_BMP_GET_CLIPBOARD )    // ( hWnd )
    GlobalUnlock( hClipboard ) ;
    CloseClipboard() ;
 
-   hb_retnl( (LONG_PTR) hBitmap );
+   HB_RETNL( (LONG_PTR) hBitmap );
 }
 
 
@@ -3909,8 +3904,8 @@ HB_FUNC( BT_BMP_PUT_CLIPBOARD )    // ( hBitmap )
    DWORD      nBytes_Bits, nBytes_Total;
    LPBYTE     lp_Clipboard;
 
-   hWnd    = (HWND)    hb_parnl( 1 );
-   hBitmap = (HBITMAP) hb_parnl( 2 );
+   hWnd    = HWNDparam( 1 );
+   hBitmap = (HBITMAP) HB_PARNL( 2 );
 
    GetObject( hBitmap, sizeof( BITMAP ), (LPBYTE) &bm );
 
@@ -4044,7 +4039,7 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
    INT   Bold = FW_NORMAL;
    INT   Italic = 0, Underline = 0, StrikeOut = 0;
 
-   hWnd        = (HWND)     hb_parnl( 1 );
+   hWnd        = HWNDparam( 1 );
    Text        = (TCHAR *)  hb_parc( 2 );
    FontName    = (TCHAR *)  hb_parc( 3 );
    FontSize    = (INT)      hb_parni( 4 );
@@ -4157,17 +4152,17 @@ HB_FUNC( BT_MATHCIRCUMFERENCEARCANGLE )    // ( Radius, Arc ) --> AngleInDegrees
 
 HB_FUNC( BT_SELECTOBJECT )    // ( hDC, hGDIobj )
 {
-   HDC hDC            = (HDC)     hb_parnl( 1 );
-   HGDIOBJ hGDIobj    = (HGDIOBJ) hb_parnl( 2 );
+   HDC hDC            = (HDC)     HB_PARNL( 1 );
+   HGDIOBJ hGDIobj    = (HGDIOBJ) HB_PARNL( 2 );
    HGDIOBJ hGDIobjOld = SelectObject( hDC, hGDIobj );
 
-   hb_retnl( (LONG_PTR) hGDIobjOld );
+   HB_RETNL( (LONG_PTR) hGDIobjOld );
 }
 
 
 HB_FUNC( BT_DELETEOBJECT )    // ( hGDIobj )
 {
-   HGDIOBJ hGDIobj = (HGDIOBJ) hb_parnl( 1 );
+   HGDIOBJ hGDIobj = (HGDIOBJ) HB_PARNL( 1 );
 
    hb_retl( (BOOL) DeleteObject( hGDIobj ) );
 }
@@ -4177,15 +4172,15 @@ HB_FUNC( BT_REGIONCREATEELLIPTIC )    // ( nCol1, nRow1, nCol2, nRow2 )
 {
    HRGN hRgn = CreateEllipticRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
 
-   hb_retnl( (LONG_PTR) hRgn );
+   HB_RETNL( (LONG_PTR) hRgn );
 }
 
 
 HB_FUNC( BT_REGIONCOMBINE )    // ( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode ) --> nResult
 {
    INT  ret;
-   HRGN hRgnSrc1     = (HRGN) hb_parnl( 2 );
-   HRGN hRgnSrc2     = (HRGN) hb_parnl( 3 );
+   HRGN hRgnSrc1     = (HRGN) HB_PARNL( 2 );
+   HRGN hRgnSrc2     = (HRGN) HB_PARNL( 3 );
    INT  nCombineMode = (INT)  hb_parni ( 4 );
 
    if( HB_ISBYREF( 1 ) )
@@ -4211,8 +4206,8 @@ HB_FUNC( BT_REGIONCOMBINE )    // ( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode 
 
 HB_FUNC( BT_REGIONFRAME )    // ( hDC, hRgn, aColor, nWidth, nHeight )
 {
-   HDC hDC       = (HDC)  hb_parnl( 1 );
-   HRGN hRgn     = (HRGN) hb_parnl( 2 );
+   HDC hDC       = (HDC)  HB_PARNL( 1 );
+   HRGN hRgn     = (HRGN) HB_PARNL( 2 );
    HBRUSH hBrush = CreateSolidBrush( RGB( HB_PARNI( 3, 1 ), HB_PARNI( 3, 2 ), HB_PARNI( 3, 3 ) ) );
    INT nWidth    = (INT) hb_parni( 4 );
    INT nHeight   = (INT) hb_parni( 5 );
@@ -4251,19 +4246,19 @@ HB_FUNC( BT_IMAGELISTGETSYSTEMICON )    // ( [ lLargeIcon ] ) --> hImageList( NE
 
    win_Shell_GetImageLists( &himlLarge, &himlSmall );
    if( lLargeIcon )
-      hb_retnl( (LONG_PTR) himlLarge );
+      HB_RETNL( (LONG_PTR) himlLarge );
    else
-      hb_retnl( (LONG_PTR) himlSmall );
+      HB_RETNL( (LONG_PTR) himlSmall );
 }
 
 
 HB_FUNC( BT_IMAGELISTEXTRACTICON )    // ( hImagelist, nIndex )
 {
-   HIMAGELIST himl   = (HIMAGELIST) hb_parnl( 1 );
+   HIMAGELIST himl   = (HIMAGELIST) HB_PARNL( 1 );
    INT        nIndex = (INT)        hb_parni( 2 );
    HICON      hIcon  = ImageList_ExtractIcon( 0, himl, nIndex );
 
-   hb_retnl( (LONG_PTR) hIcon );
+   HB_RETNL( (LONG_PTR) hIcon );
 }
 
 HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf, UINT cchBuf )

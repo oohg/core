@@ -133,7 +133,6 @@ static LPAtlAxGetControl AtlAxGetControl;   // Thread safe, see _Ax_Init()
 /*
 LPAtlAxCreateControl AtlAxCreateControl;
 */
-HANDLE _OOHG_GlobalMutex( void );
 
 //------------------------------------------------------------------------------
 static void _Ax_Init( void )
@@ -602,7 +601,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
    register IEventHandler *    selfobj;
    DWORD                       dwCookie = 0;
 
-   device_interface*           pdevice_interface = (device_interface*) hb_parnl( 1 );
+   device_interface*           pdevice_interface = (device_interface*) HB_PARPTR( 1 );
    MyRealIEventHandler*        pThis;
 
    // Allocate our IEventHandler object (actually a MyRealIEventHandler)
@@ -696,8 +695,8 @@ HB_FUNC( SETUPCONNECTIONPOINT )
       pThis->pEventsExec = hb_itemNew( hb_param( 4, HB_IT_ANY ) );
 #endif
 
-      pThis->pEvents     = hb_itemNew( hb_param( 3, HB_IT_ANY ) );
-      hb_stornl( (LONG) pThis, 2 );
+      pThis->pEvents = hb_itemNew( hb_param( 3, HB_IT_ANY ) );
+      hb_storptr( pThis, 2 );
    }
 
    HWNDret( hr );
@@ -706,7 +705,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 //------------------------------------------------------------------------------
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *self = ( MyRealIEventHandler * ) hb_parnl( 1 );
+   MyRealIEventHandler *self = ( MyRealIEventHandler * ) HB_PARPTR( 1 );
    if( self->pIConnectionPoint )
    {
       self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );

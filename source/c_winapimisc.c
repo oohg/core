@@ -68,8 +68,8 @@
    #define _WIN32_IE 0x0500
 #endif
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_WINNT
@@ -521,7 +521,7 @@ HB_FUNC( GETCURRENTFOLDER )
 
 HB_FUNC( CREATESOLIDBRUSH )
 {
-   hb_retnl( (LONG) CreateSolidBrush( (COLORREF) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
+   HB_RETNL( (LONG_PTR) CreateSolidBrush( (COLORREF) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
 }
 
 HB_FUNC( SETTEXTCOLOR )

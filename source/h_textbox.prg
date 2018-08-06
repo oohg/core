@@ -625,10 +625,10 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          _OOHG_Send( pSelf, s_Super );
          hb_vmSend( 0 );
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         hb_vmPushLong( ( LONG ) hWnd );
+         HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
    }
@@ -1199,10 +1199,10 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lP
          _OOHG_Send( pSelf, s_Super );
          hb_vmSend( 0 );
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         hb_vmPushLong( ( LONG ) hWnd );
+         HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
    }

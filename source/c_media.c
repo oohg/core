@@ -66,7 +66,7 @@
 #include <mmsystem.h>
 #include <commctrl.h>
 #include "hbapi.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 #include <commctrl.h>
 

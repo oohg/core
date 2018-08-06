@@ -125,8 +125,8 @@ EXTERN InitTimer, KillTimer
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_IE

@@ -85,7 +85,7 @@ HB_FUNC( LINEDRAW )
    ReleaseDC( hWnd1, hdc1 );
 }
 
-HB_FUNC ( RECTDRAW )
+HB_FUNC( RECTDRAW )
 {
    HWND hWnd1;
    HDC hdc1;
@@ -115,7 +115,7 @@ HB_FUNC ( RECTDRAW )
    ReleaseDC( hWnd1, hdc1 );
 }
 
-HB_FUNC ( ROUNDRECTDRAW )
+HB_FUNC( ROUNDRECTDRAW )
 {
    HWND hWnd1;
    HDC hdc1;
@@ -144,7 +144,7 @@ HB_FUNC ( ROUNDRECTDRAW )
    ReleaseDC( hWnd1, hdc1 );
 }
 
-HB_FUNC ( ELLIPSEDRAW )
+HB_FUNC( ELLIPSEDRAW )
 {
    HWND hWnd1;
    HDC hdc1;
@@ -173,7 +173,7 @@ HB_FUNC ( ELLIPSEDRAW )
    ReleaseDC( hWnd1, hdc1 );
 }
 
-HB_FUNC ( ARCDRAW )
+HB_FUNC( ARCDRAW )
 {
    HWND hWnd1;
    HDC hdc1;
@@ -189,7 +189,7 @@ HB_FUNC ( ARCDRAW )
    ReleaseDC( hWnd1, hdc1 );
 }
 
-HB_FUNC ( PIEDRAW )
+HB_FUNC( PIEDRAW )
 {
    HWND hWnd1;
    HDC hdc1;
@@ -381,12 +381,12 @@ HB_FUNC( WNDBOXRAISEDDRAW )
    ReleaseDC( hWnd, hDC );
 }
 
-HB_FUNC ( GETDC )
+HB_FUNC( GETDC )
 {
    hb_retnl( (ULONG) GetDC( HWNDparam( 1 ) ) );
 }
 
-HB_FUNC ( RELEASEDC )
+HB_FUNC( RELEASEDC )
 {
    hb_retl( ReleaseDC( HWNDparam( 1 ), (HDC) hb_parnl(2) ) ) ;
 }
@@ -557,8 +557,26 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             RECT        rct;
             char        *cBuffer;
 
+            /* Content of pData:
+               pData->points   = fontname + string
+               pData->top      = row
+               pData->left     = col
+               pData->bottom   = row1
+               pData->right    = col1
+               pData->penrgb   = fontcolor
+               pData->penwidth = LEN( fontname )
+               pData->fillrgb  = backcolor
+               pData->fill     = transparent
+               pData->top2     = bold
+               pData->left2    = italic
+               pData->bottom2  = underline
+               pData->right2   = strikeOut
+               pData->width    = fontsize
+               pData->height   = LEN( string )
+            */
+
             FontColor = SetTextColor( hDC, pData->penrgb );
-            BackColor = SetBkColor(   hDC, pData->fillrgb );
+            BackColor = SetBkColor( hDC, pData->fillrgb );
             if( pData->fill )
             {
                 SetBkMode( hDC, TRANSPARENT );
@@ -567,8 +585,14 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             rct.left   = pData->left;
             rct.bottom = pData->bottom;
             rct.right  = pData->right;
-            hFont = PrepareFont( &pData->points, pData->width, pData->top2, pData->left2, pData->bottom2, pData->right2, 0, 0 );
+
+            /*
+              HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Orientation )
+            */
+            hFont = PrepareFont( (char *) &pData->points, (int) pData->width, (int) pData->top2, (int) pData->left2, (int) pData->bottom2, (int) pData->right2, 0, 0 );
             hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+
+            // Draw string
             cBuffer = &pData->points;
             cBuffer += pData->penwidth + 1;
             if( pData->fill )
@@ -579,10 +603,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             {
                ExtTextOut( hDC, pData->left, pData->top, ETO_CLIPPED | ETO_OPAQUE, &rct, cBuffer, pData->height, NULL );
             }
+
+            // Cleanup
             SelectObject( hDC, hOldFont );
             SetTextColor( hDC, FontColor );
             SetBkColor( hDC, BackColor );
-
          }
          break;
 

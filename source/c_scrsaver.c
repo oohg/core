@@ -61,7 +61,7 @@
 
 
 #define _WIN32_IE      0x0500
-#define HB_OS_WIN_32_USED
+#define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 
@@ -73,7 +73,7 @@
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "../include/oohg.h"
+#include "oohg.h"
 
 typedef BOOL (WINAPI *VERIFYSCREENSAVEPWD)(HWND hwnd);
 typedef VOID (WINAPI *PWDCHANGEPASSWORD) (LPCSTR lpcRegkeyname,HWND hwnd,UINT uiReserved1,UINT uiReserved2);

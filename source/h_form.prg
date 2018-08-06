@@ -78,8 +78,8 @@ STATIC _OOHG_ActiveForm := {}        // Forms under creation
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -1436,8 +1436,8 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPush( pSelf );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );             // TODO: hb_vmPushNumInt( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmDo( 5 );
          break;
    }
@@ -3002,8 +3002,8 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       hb_vmPush( pResult );
       HWNDpush( hWnd );
       hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
+      hb_vmPushNumInt( wParam );
+      hb_vmPushNumInt( lParam );
       hb_vmPush( pSelf );
       hb_vmPushLong( iNest );
       hb_vmPushLong( iCall );
@@ -3017,8 +3017,8 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       _OOHG_Send( pSelf, s_Events );
       HWNDpush( hWnd );
       hb_vmPushLong( uiMsg );
-      hb_vmPushLong( wParam );
-      hb_vmPushLong( lParam );
+      hb_vmPushNumInt( wParam );
+      hb_vmPushNumInt( lParam );
       hb_vmSend( 4 );
       pResult = hb_param( -1, HB_IT_NUMERIC );
    }

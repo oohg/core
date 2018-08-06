@@ -382,8 +382,8 @@ METHOD Copy( lAsDIB ) CLASS TPicture
 
 #define s_Super s_TControl
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_WINNT
@@ -851,8 +851,8 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
             HWNDpush( hWnd );
             hb_vmPushLong( message );
-            hb_vmPushLong( wParam );
-            hb_vmPushLong( lParam );
+            hb_vmPushNumInt( wParam );
+            hb_vmPushNumInt( lParam );
             hb_vmSend( 4 );
          }
          break;

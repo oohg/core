@@ -594,8 +594,8 @@ EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -746,8 +746,8 @@ TODO: detect AERO and set background color accordingly
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
 
    hb_reta( 2 );
-   HB_STORNL( ( LONG ) himage1, -1, 1 );
-   HB_STORNL( ( LONG ) himage2, -1, 2 );
+   HB_STORNL( ( LONG_PTR ) himage1, -1, 1 );
+   HB_STORNL( ( LONG_PTR ) himage2, -1, 2 );
 }
 
 HB_FUNC( SETMENUDEFAULTITEM )

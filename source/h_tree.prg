@@ -2237,8 +2237,8 @@ METHOD Release() CLASS TTree
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_IE
@@ -2764,7 +2764,7 @@ HB_FUNC( TREEVIEW_GETIMAGELIST )
    HIMAGELIST himl = TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) );
 
    hb_reta( 1 );
-   HB_STORNL( ( LONG ) himl, -1, 1 );
+   HB_STORNL( (LONG_PTR) himl, -1, 1 );
 }
 
 HB_FUNC( TREEVIEW_EDITLABEL )

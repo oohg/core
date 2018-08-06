@@ -60,8 +60,8 @@
  */
 
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -95,14 +95,9 @@
 #define PALVERSION   0x300
 
 /* DIB macros */
-#define IS_WIN30_DIB(lpbi)  ((*(LPDWORD)(lpbi)) == sizeof(BITMAPINFOHEADER))
-#define RECTWIDTH(lpRect)     ((lpRect)->right - (lpRect)->left)
-#define RECTHEIGHT(lpRect)    ((lpRect)->bottom - (lpRect)->top)
-
-
-
-
-
+#define IS_WIN30_DIB( lpbi ) ( (* (LPDWORD) (lpbi) ) == sizeof( BITMAPINFOHEADER ) )
+#define RECTWIDTH( lpRect ) ( (lpRect)->right - (lpRect)->left )
+#define RECTHEIGHT( lpRect ) ( (lpRect)->bottom - (lpRect)->top )
 
 #include <shlobj.h>
 #include <windows.h>
@@ -116,7 +111,7 @@
 #include <commctrl.h>
 #include "oohg.h"
 
-BOOL Array2Rect(PHB_ITEM aRect, RECT *rc ) ;
+BOOL Array2Rect( PHB_ITEM aRect, RECT *rc );
 
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 {
@@ -202,7 +197,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
          if( pSelf )
          {
             _OOHG_Send( pSelf, s_LookForKey );
-            hb_vmPushInteger( Msg->wParam );
+            hb_vmPushNumInt( Msg->wParam );
             hb_vmPushInteger( GetKeyFlagState() );
             hb_vmSend( 2 );
             if( hb_parl( -1 ) )
@@ -292,7 +287,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
 HB_FUNC( _MESSAGELOOPEND )
 {
    int *pSwitch;
-   pSwitch = ( int * ) hb_parptr( 1 );              // ::ActivateCount[2]
+   pSwitch = (int *) hb_parptr( 1 );              // ::ActivateCount[2]
 
    if( pSwitch )
    {
@@ -334,8 +329,6 @@ HB_FUNC( _EXITPROCESS2 )
     */
    OleInitialize( NULL );
    OleUninitialize();
-
-   //
    OleUninitialize();
    ExitProcess( hb_parni( 1 ) );
 }
@@ -344,22 +337,19 @@ HB_FUNC( INITSTATUS )
 {
    HWND hs;
 
-   hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE,
-                            "", HWNDparam( 1 ), hb_parni( 3 ) );
+   hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE, "", HWNDparam( 1 ), hb_parni( 3 ) );
 
    SendMessage( hs, SB_SIMPLE, TRUE, 0 );
-   SendMessage( hs, SB_SETTEXT, 255, ( LPARAM ) ( LPSTR ) hb_parc( 2 ) );
+   SendMessage( hs, SB_SETTEXT, 255, (LPARAM) (LPSTR) hb_parc( 2 ) );
    HWNDret( hs );
 }
 
 HB_FUNC( SETSTATUS )
 {
-   HWND hwnd;
-
-   hwnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
 
    SendMessage( hwnd, SB_SIMPLE, TRUE, 0 );
-   SendMessage( hwnd, SB_SETTEXT, 255, ( LPARAM ) ( LPSTR ) hb_parc( 2 ) );
+   SendMessage( hwnd, SB_SETTEXT, 255, (LPARAM) (LPSTR) hb_parc( 2 ) );
 }
 
 HB_FUNC( MAXIMIZE )
@@ -392,7 +382,7 @@ HB_FUNC( POSTQUITMESSAGE )
    PostQuitMessage( hb_parnl( 1 ) );
 }
 
-HB_FUNC ( DESTROYWINDOW )
+HB_FUNC( DESTROYWINDOW )
 {
    DestroyWindow( HWNDparam( 1 ) );
 }
@@ -453,16 +443,15 @@ HB_FUNC( C_CENTER )
    h = rect.bottom - rect.top  + 1;
    x = GetSystemMetrics( SM_CXSCREEN );
    y = GetSystemMetrics( SM_CYSCREEN );
-   SetWindowPos( hwnd, HWND_TOP, ( x - w ) / 2,
-                 ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
+   SetWindowPos( hwnd, HWND_TOP, ( x - w ) / 2, ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
 }
 
 HB_FUNC( GETWINDOWTEXT )
 {
    int iLen = GetWindowTextLength( HWNDparam( 1 ) ) + 1;
-   char *cText = ( char * ) hb_xgrab( iLen );
+   char *cText = (char *) hb_xgrab( iLen );
 
-   GetWindowText( HWNDparam( 1 ), ( LPTSTR ) cText, iLen );
+   GetWindowText( HWNDparam( 1 ), (LPTSTR) cText, iLen );
 
    hb_retc( cText );
    hb_xfree( cText );
@@ -470,48 +459,42 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( SENDMESSAGE )
 {
-    hb_retnl( (LONG) SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
+    HB_RETNL( (LONG_PTR) SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
-HB_FUNC ( UPDATEWINDOW )
+HB_FUNC( UPDATEWINDOW )
 {
-   hb_retnl( ( LONG ) UpdateWindow( HWNDparam( 1 ) ) );
+   hb_retl( UpdateWindow( HWNDparam( 1 ) ) );
 }
 
-HB_FUNC ( GETNOTIFYCODE )
+HB_FUNC( GETNOTIFYCODE )
 {
-   hb_retnl( (LONG) (((NMHDR FAR *) hb_parnl(1))->code) );
+   hb_retni( ( (NMHDR FAR *) HB_PARNL( 1 ) )->code );
 }
 
-HB_FUNC ( GETHWNDFROM )
+HB_FUNC( GETHWNDFROM )
 {
-   HWNDret( ( ( NMHDR FAR * ) hb_parnl( 1 ) )->hwndFrom );
+   HWNDret( ( (NMHDR FAR *) HB_PARNL( 1 ) )->hwndFrom );
 }
 
 HB_FUNC( GETDRAWITEMHANDLE )
 {
-   HWNDret( ( ( DRAWITEMSTRUCT FAR * ) hb_parnl( 1 ) )->hwndItem );
+   HWNDret( ( (DRAWITEMSTRUCT FAR *) HB_PARNL( 1 ) )->hwndItem );
 }
 
 HB_FUNC( GETFOCUS )
 {
-   hb_retnl( (LONG) GetFocus() );
+   HWNDret( GetFocus() );
 }
 
 HB_FUNC( GETGRIDCOLUMN )
 {
-   hb_retnl ( ( LPARAM ) ( ( ( NM_LISTVIEW * ) hb_parnl( 1 ) )->iSubItem ) ) ;
+   hb_retni( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->iSubItem );
 }
 
-HB_FUNC ( MOVEWINDOW )
+HB_FUNC( MOVEWINDOW )
 {
-   hb_retl( MoveWindow( HWNDparam( 1 ),
-                        hb_parni(2),
-                        hb_parni(3),
-                        hb_parni(4),
-                        hb_parni(5),
-                        ( HB_ISNIL( 6 ) ? TRUE : hb_parl( 6 ) )
-                      ));
+   hb_retl( MoveWindow( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), ( HB_ISNIL( 6 ) ? TRUE : hb_parl( 6 ) ) ) );
 }
 
 HB_FUNC( GETWINDOWRECT )
@@ -542,7 +525,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
    if( hb_param( 2, HB_IT_ARRAY ) == 0 || HB_PARNI( 3, 1 ) == -1 )
    {
       hBrush = 0;
-      color = ( HBRUSH )( COLOR_BTNFACE + 1 );
+      color = (HBRUSH)( COLOR_BTNFACE + 1 );
    }
    else
    {
@@ -550,21 +533,21 @@ HB_FUNC( SETWINDOWBACKCOLOR )
       color = hBrush;
    }
 
-   SetClassLong( hWnd, GCL_HBRBACKGROUND, ( LONG ) color );
+   SetClassLongPtr( hWnd, GCL_HBRBACKGROUND, (LONG_PTR) color );
 
    RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 
-   hb_retnl( ( ULONG ) hBrush );
+   HB_RETNL( (LONG_PTR) hBrush );
 }
 
-HB_FUNC (GETDESKTOPWIDTH)
+HB_FUNC( GETDESKTOPWIDTH )
 {
-   hb_retni ( GetSystemMetrics(SM_CXSCREEN) ) ;
+   hb_retni( GetSystemMetrics( SM_CXSCREEN ) );
 }
 
-HB_FUNC (GETDESKTOPHEIGHT)
+HB_FUNC( GETDESKTOPHEIGHT )
 {
-   hb_retni ( GetSystemMetrics(SM_CYSCREEN) ) ;
+   hb_retni( GetSystemMetrics( SM_CYSCREEN ) );
 }
 
 HB_FUNC( GETDESKTOPREALHEIGHT )
@@ -613,7 +596,7 @@ HB_FUNC( GETWINDOWROW )
    hb_retni( rect.top );
 }
 
-HB_FUNC (GETWINDOWCOL)
+HB_FUNC( GETWINDOWCOL )
 {
    RECT rect;
    hb_xmemset( &rect, 0, sizeof( rect ) );
@@ -621,7 +604,7 @@ HB_FUNC (GETWINDOWCOL)
    hb_retni( rect.left );
 }
 
-HB_FUNC (GETWINDOWWIDTH)
+HB_FUNC( GETWINDOWWIDTH )
 {
    RECT rect;
    hb_xmemset( &rect, 0, sizeof( rect ) );
@@ -629,7 +612,7 @@ HB_FUNC (GETWINDOWWIDTH)
    hb_retni( rect.right - rect.left );
 }
 
-HB_FUNC (GETWINDOWHEIGHT)
+HB_FUNC( GETWINDOWHEIGHT )
 {
    RECT rect;
    hb_xmemset( &rect, 0, sizeof( rect ) );
@@ -637,35 +620,35 @@ HB_FUNC (GETWINDOWHEIGHT)
    hb_retni( rect.bottom - rect.top );
 }
 
-HB_FUNC (GETTITLEHEIGHT)
+HB_FUNC( GETTITLEHEIGHT )
 {
-   hb_retni ( GetSystemMetrics( SM_CYCAPTION ) ) ;
+   hb_retni( GetSystemMetrics( SM_CYCAPTION ) );
 }
 
-HB_FUNC (GETEDGEHEIGHT)
+HB_FUNC( GETEDGEHEIGHT )
 {
-   hb_retni ( GetSystemMetrics(  SM_CYEDGE ) ) ;
+   hb_retni( GetSystemMetrics(  SM_CYEDGE ) );
 }
 
-HB_FUNC (GETBORDERHEIGHT)
+HB_FUNC( GETBORDERHEIGHT )
 {
-   hb_retni ( GetSystemMetrics(  SM_CYSIZEFRAME ) ) ;
+   hb_retni( GetSystemMetrics(  SM_CYSIZEFRAME ) );
 }
 
-HB_FUNC (GETBORDERWIDTH)
+HB_FUNC( GETBORDERWIDTH )
 {
-   hb_retni ( GetSystemMetrics( SM_CXSIZEFRAME ) ) ;
+   hb_retni( GetSystemMetrics( SM_CXSIZEFRAME ) );
 }
 
-HB_FUNC ( ISWINDOWVISIBLE )
+HB_FUNC( ISWINDOWVISIBLE )
 {
-   hb_retl( IsWindowVisible( HWNDparam( 1 ) ) ) ;
+   hb_retl( IsWindowVisible( HWNDparam( 1 ) ) );
 }
 
 
-HB_FUNC ( ISWINDOWMAXIMIZED )
+HB_FUNC( ISWINDOWMAXIMIZED )
 {
-   hb_retl( IsZoomed( HWNDparam( 1 ) ) ) ;
+   hb_retl( IsZoomed( HWNDparam( 1 ) ) );
   }
 
 HB_FUNC( ISWINDOWMINIMIZED )
@@ -692,7 +675,7 @@ HB_FUNC( GETCURSORPOS )
 
 HB_FUNC( GETITEMPOS )
 {
-   hb_retnl( (LONG) (((NMMOUSE FAR *) hb_parnl(1))->dwItemSpec) );
+   hb_retnl( (LONG) ( ( (NMMOUSE FAR *) HB_PARNL( 1 ) )->dwItemSpec ) );
 }
 
 HB_FUNC( GETWINDOWSTATE )
@@ -706,11 +689,9 @@ HB_FUNC( GETWINDOWSTATE )
    hb_retni( wp.showCmd );
 }
 
-HB_FUNC ( REDRAWWINDOW )
+HB_FUNC( REDRAWWINDOW )
 {
-   RedrawWindow( HWNDparam( 1 ), NULL, NULL,
-      RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW
-   );
+   RedrawWindow( HWNDparam( 1 ), NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }
 
 HB_FUNC( REDRAWWINDOWCONTROLRECT )
@@ -722,10 +703,7 @@ HB_FUNC( REDRAWWINDOWCONTROLRECT )
    r.bottom= hb_parni( 4 );
    r.right = hb_parni( 5 );
 
-   RedrawWindow( HWNDparam( 1 ), &r, NULL,
-      RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW
-   );
-
+   RedrawWindow( HWNDparam( 1 ), &r, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 }
 
 HB_FUNC( C_SETWINDOWRGN )
@@ -753,38 +731,40 @@ HB_FUNC( C_SETWINDOWRGN )
 
 HB_FUNC( C_SETPOLYWINDOWRGN )
 {
- HRGN hrgn;
- POINT lppt[512];
- int i,fnPolyFillMode;
- int cPoints = hb_parinfa(2,0);
+   HRGN hrgn;
+   POINT lppt[512];
+   int i, fnPolyFillMode;
+   int cPoints = hb_parinfa( 2, 0 );
 
- if(hb_parni(4)==1)
-         fnPolyFillMode=WINDING;
- else
-         fnPolyFillMode=ALTERNATE;
+   if( hb_parni( 4 ) == 1 )
+      fnPolyFillMode = WINDING;
+   else
+      fnPolyFillMode = ALTERNATE;
 
- for(i = 0; i <= cPoints-1; i++)
-  {
-   lppt[i].x=HB_PARNI(2,i+1);
-   lppt[i].y=HB_PARNI(3,i+1);
-  }
-  hrgn=CreatePolygonRgn(lppt,cPoints,fnPolyFillMode);
-  SetWindowRgn(GetActiveWindow(),hrgn,TRUE);
+   for( i = 0; i <= cPoints - 1; i++ )
+   {
+      lppt[i].x = HB_PARNI( 2, i + 1 );
+      lppt[i].y = HB_PARNI( 3, i + 1 );
+   }
+   hrgn = CreatePolygonRgn( lppt, cPoints, fnPolyFillMode );
+   SetWindowRgn( GetActiveWindow(), hrgn, TRUE );
 }
 
 HB_FUNC( GETHELPDATA )
 {
-   hb_retnl( (LONG) (((HELPINFO FAR *) hb_parnl(1))->hItemHandle) );
+   hb_retnl( (LONG) ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
 }
 
 HB_FUNC( GETMSKTEXTMESSAGE )
 {
-   hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->msg) );
+   hb_retnl( (LONG) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->msg ) );
 }
+
 HB_FUNC( GETMSKTEXTWPARAM )
 {
    hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->wParam) );
 }
+
 HB_FUNC( GETMSKTEXTLPARAM )
 {
    hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->lParam) );
@@ -797,20 +777,12 @@ HB_FUNC( GETWINDOW )
 
 HB_FUNC( GETGRIDOLDSTATE )
 {
-   #define pnm ((NM_LISTVIEW *) hb_parnl(1) )
-
-   hb_retnl( ( LPARAM ) ( pnm->uOldState ) );
-
-   #undef pnm
+   hb_retni( (UINT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
 }
 
 HB_FUNC( GETGRIDNEWSTATE )
 {
-   #define pnm ((NM_LISTVIEW *) hb_parnl(1) )
-
-   hb_retnl ( (LPARAM) (pnm->uNewState) ) ;
-
-   #undef pnm
+   hb_retni( (UINT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
 }
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
@@ -845,17 +817,17 @@ HB_FUNC( SETGRIDQUERYIMAGE )
 
 HB_FUNC( GETESCAPESTATE )
 {
-     hb_retni ( GetKeyState( VK_ESCAPE ) );
+     hb_retni( GetKeyState( VK_ESCAPE ) );
 }
 
 HB_FUNC( GETCONTROLSTATE )
 {
-     hb_retni ( GetKeyState( VK_CONTROL ) );
+     hb_retni( GetKeyState( VK_CONTROL ) );
 }
 
 HB_FUNC( GETALTSTATE )
 {
-     hb_retni ( GetKeyState( VK_MENU ) );
+     hb_retni( GetKeyState( VK_MENU ) );
 }
 
 HB_FUNC( GETCURSORROW )
@@ -889,17 +861,13 @@ HB_FUNC( ISNUMLOCKACTIVE )
 
 HB_FUNC( FINDWINDOWEX )
 {
-   HWNDret( FindWindowEx( HWNDparam( 1 ),
-                          HWNDparam( 2 ),
-                          ( LPCSTR ) hb_parc( 3 ),
-                          ( LPCSTR ) hb_parc( 4 )
-                                ) ) ;
+   HWNDret( FindWindowEx( HWNDparam( 1 ), HWNDparam( 2 ), (LPCSTR) hb_parc( 3 ), (LPCSTR) hb_parc( 4 ) ) );
 }
 
-WORD DIBNumColors(LPSTR);
-WORD PaletteSize(LPSTR);
-WORD SaveDIB(HDIB , LPSTR);
-HANDLE DDBToDIB(HBITMAP , HPALETTE );
+WORD DIBNumColors( LPSTR );
+WORD PaletteSize( LPSTR );
+WORD SaveDIB( HDIB, LPSTR );
+HANDLE DDBToDIB( HBITMAP, HPALETTE );
 
 #ifndef DWMWA_EXTENDED_FRAME_BOUNDS
    #define DWMWA_EXTENDED_FRAME_BOUNDS 9
@@ -1008,7 +976,7 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    DeleteDC( hMemDC );
    if( bAll )
    {
-      ReleaseDC( HWND_DESKTOP, hDC ) ;
+      ReleaseDC( HWND_DESKTOP, hDC );
    }
    else
    {
@@ -1021,12 +989,12 @@ HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
 {
    HANDLE hDIB;
 
-   hDIB = DDBToDIB( ( HBITMAP ) HWNDparam( 1 ), NULL );
-   SaveDIB( hDIB, ( LPSTR ) hb_parc( 2 ) );
+   hDIB = DDBToDIB( (HBITMAP) HWNDparam( 1 ), NULL );
+   SaveDIB( hDIB, (LPSTR) hb_parc( 2 ) );
    GlobalFree( hDIB );
 }
 
-HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipboard!
+HB_FUNC( WNDCOPY )  //  hWnd, bAll, cFile        Copies any Window to the Clipboard!
 {
    HWND hWnd = HWNDparam( 1 );
    BOOL bAll = hb_parl( 2 );
@@ -1034,7 +1002,7 @@ HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipb
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
    HPALETTE hPal = NULL;
-   LPSTR myFile = (char *) hb_parc( 3 ) ;
+   LPSTR myFile = (char *) hb_parc( 3 );
    HANDLE hDIB;
    int iTop, iLeft;
 
@@ -1067,7 +1035,7 @@ HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipb
    GlobalFree( hDIB );
    if( bAll )
    {
-      ReleaseDC( HWND_DESKTOP, hDC ) ;
+      ReleaseDC( HWND_DESKTOP, hDC );
    }
    else
    {
@@ -1075,292 +1043,247 @@ HB_FUNC( WNDCOPY  )  //  hWnd, bAll, cFile        Copies any Window to the Clipb
    }
 }
 
-WORD PaletteSize(LPSTR lpDIB)
+WORD PaletteSize( LPSTR lpDIB )
 {
-    // calculate the size required by the palette
-    if (IS_WIN30_DIB (lpDIB))
-        return (WORD) (DIBNumColors(lpDIB) * sizeof(RGBQUAD));
-    else
-        return (WORD) (DIBNumColors(lpDIB) * sizeof(RGBTRIPLE));
+   // calculate the size required by the palette
+   if( IS_WIN30_DIB( lpDIB ) )
+      return (WORD) ( DIBNumColors( lpDIB ) * sizeof( RGBQUAD ) );
+   else
+      return (WORD) ( DIBNumColors( lpDIB ) * sizeof( RGBTRIPLE ) );
 }
 
-WORD DIBNumColors(LPSTR lpDIB)
+WORD DIBNumColors( LPSTR lpDIB )
 {
-    WORD wBitCount;  // DIB bit count
+   WORD wBitCount;  // DIB bit count
 
-    // If this is a Windows-style DIB, the number of colors in the
-    // color table can be less than the number of bits per pixel
-    // allows for (i.e. lpbi->biClrUsed can be set to some value).
-    // If this is the case, return the appropriate value.
+   // If this is a Windows-style DIB, the number of colors in the
+   // color table can be less than the number of bits per pixel
+   // allows for (i.e. lpbi->biClrUsed can be set to some value).
+   // If this is the case, return the appropriate value.
 
-
-    if (IS_WIN30_DIB(lpDIB))
-    {
-        DWORD dwClrUsed;
-
-        dwClrUsed = ((LPBITMAPINFOHEADER)lpDIB)->biClrUsed;
-        if (dwClrUsed)
-
-        return (WORD)dwClrUsed;
-    }
-
-    // Calculate the number of colors in the color table based on
-    // the number of bits per pixel for the DIB.
-
-    if (IS_WIN30_DIB(lpDIB))
-        wBitCount = ((LPBITMAPINFOHEADER)lpDIB)->biBitCount;
-    else
-        wBitCount = ((LPBITMAPCOREHEADER)lpDIB)->bcBitCount;
-
-    // return number of colors based on bits per pixel
-
-    switch (wBitCount)
-    {
-        case 1:
-            return 2;
-
-        case 4:
-            return 16;
-
-        case 8:
-            return 256;
-
-        default:
-            return 0;
-    }
-}
-
-HANDLE DDBToDIB(HBITMAP hBitmap, HPALETTE hPal)
-{
-    BITMAP              bm;         // bitmap structure
-    BITMAPINFOHEADER    bi;         // bitmap header
-    LPBITMAPINFOHEADER  lpbi;       // pointer to BITMAPINFOHEADER
-    DWORD               dwLen;      // size of memory block
-    HANDLE              hDIB, h;    // handle to DIB, temp handle
-    HDC                 hDC;        // handle to DC
-    WORD                biBits;     // bits per pixel
-
-    // check if bitmap handle is valid
-
-    if (!hBitmap)
-        return NULL;
-
-    // fill in BITMAP structure, return NULL if it didn't work
-
-    if (!GetObject(hBitmap, sizeof(bm), (LPSTR)&bm))
-        return NULL;
-
-   // if no palette is specified, use default palette
-
-   if( hPal == NULL )
+   if( IS_WIN30_DIB( lpDIB ) )
    {
-      hPal = ( HPALETTE ) GetStockObject(DEFAULT_PALETTE);
+      DWORD dwClrUsed;
+
+      dwClrUsed = ( (LPBITMAPINFOHEADER) lpDIB )->biClrUsed;
+      if( dwClrUsed )
+         return (WORD) dwClrUsed;
    }
 
-    // calculate bits per pixel
+   // Calculate the number of colors in the color table based on
+   // the number of bits per pixel for the DIB.
 
-    biBits = ( WORD ) ( bm.bmPlanes * bm.bmBitsPixel );
+   if( IS_WIN30_DIB( lpDIB ) )
+      wBitCount = ( (LPBITMAPINFOHEADER) lpDIB )->biBitCount;
+   else
+      wBitCount = ( (LPBITMAPCOREHEADER) lpDIB )->bcBitCount;
 
-    // make sure bits per pixel is valid
+   // return number of colors based on bits per pixel
 
-    if (biBits <= 1)
-        biBits = 1;
-    else if (biBits <= 4)
-        biBits = 4;
-    else if (biBits <= 8)
-        biBits = 8;
-    else // if greater than 8-bit, force to 24-bit
-        biBits = 24;
-
-    // initialize BITMAPINFOHEADER
-
-    bi.biSize = sizeof(BITMAPINFOHEADER);
-    bi.biWidth = bm.bmWidth;
-    bi.biHeight = bm.bmHeight;
-    bi.biPlanes = 1;
-    bi.biBitCount = biBits;
-    bi.biCompression = BI_RGB;
-    bi.biSizeImage = 0;
-    bi.biXPelsPerMeter = 0;
-    bi.biYPelsPerMeter = 0;
-    bi.biClrUsed = 0;
-    bi.biClrImportant = 0;
-
-    // calculate size of memory block required to store BITMAPINFO
-
-    dwLen = bi.biSize + PaletteSize((LPSTR)&bi);
-
-    // get a DC
-
-    hDC = GetDC(NULL);
-
-    // select and realize our palette
-
-    hPal = SelectPalette(hDC, hPal, FALSE);
-    RealizePalette(hDC);
-
-    // alloc memory block to store our bitmap
-
-    hDIB = GlobalAlloc(GHND, dwLen);
-
-    // if we couldn't get memory block
-
-    if (!hDIB)
-    {
-      // clean up and return NULL
-
-      SelectPalette(hDC, hPal, TRUE);
-      RealizePalette(hDC);
-      ReleaseDC(NULL, hDC);
-      return NULL;
-    }
-
-    // lock memory and get pointer to it
-
-    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
-
-    /// use our bitmap info. to fill BITMAPINFOHEADER
-
-    *lpbi = bi;
-
-    // call GetDIBits with a NULL lpBits param, so it will calculate the
-    // biSizeImage field for us
-
-    GetDIBits(hDC, hBitmap, 0, (UINT)bi.biHeight, NULL, (LPBITMAPINFO)lpbi,
-        DIB_RGB_COLORS);
-
-    // get the info. returned by GetDIBits and unlock memory block
-
-    bi = *lpbi;
-    GlobalUnlock(hDIB);
-
-    // if the driver did not fill in the biSizeImage field, make one up
-    if (bi.biSizeImage == 0)
-        bi.biSizeImage = ((((DWORD)bm.bmWidth * biBits)+ 31) / 32 * 4) * bm.bmHeight;
-    // realloc the buffer big enough to hold all the bits
-
-    dwLen = bi.biSize + PaletteSize((LPSTR)&bi) + bi.biSizeImage;
-
-    h = GlobalReAlloc(hDIB, dwLen, 0);
-    if ( h )
-    {
-        hDIB = h;
-    }
-    else
-    {
-        // clean up and return NULL
-
-        GlobalFree(hDIB);
-///        hDIB = NULL;
-        SelectPalette(hDC, hPal, TRUE);
-        RealizePalette(hDC);
-        ReleaseDC(NULL, hDC);
-        return NULL;
-    }
-
-    // lock memory block and get pointer to it */
-
-    lpbi = (LPBITMAPINFOHEADER)GlobalLock(hDIB);
-
-    // call GetDIBits with a NON-NULL lpBits param, and actualy get the
-    // bits this time
-
-    if (GetDIBits(hDC, hBitmap, 0, (UINT)bi.biHeight, (LPSTR)lpbi +
-            (WORD)lpbi->biSize + PaletteSize((LPSTR)lpbi), (LPBITMAPINFO)lpbi,
-            DIB_RGB_COLORS) == 0)
-    {
-        // clean up and return NULL
-
-        GlobalFree(hDIB);
-
-///////        hDIB = NULL;
-
-        SelectPalette(hDC, hPal, TRUE);
-        RealizePalette(hDC);
-        ReleaseDC(NULL, hDC);
-        return NULL;
-    }
-
-    bi = *lpbi;
-
-    // clean up
-    GlobalUnlock(hDIB);
-    SelectPalette(hDC, hPal, TRUE);
-    RealizePalette(hDC);
-    ReleaseDC(NULL, hDC);
-
-    // return handle to the DIB
-    return hDIB;
+   switch( wBitCount )
+   {
+      case 1:
+         return 2;
+      case 4:
+         return 16;
+      case 8:
+         return 256;
+      default:
+         return 0;
+   }
 }
 
-WORD SaveDIB(HDIB hDib, LPSTR lpFileName)
+HANDLE DDBToDIB( HBITMAP hBitmap, HPALETTE hPal )
 {
-    BITMAPFILEHEADER    bmfHdr;     // Header for Bitmap file
-    LPBITMAPINFOHEADER  lpBI;       // Pointer to DIB info structure
-    HANDLE              fh;         // file handle for opened file
-    DWORD               dwDIBSize;
-    DWORD               dwWritten;
-    DWORD               dwBmBitsSize;
+   BITMAP bm;                     // bitmap structure
+   BITMAPINFOHEADER bi;           // bitmap header
+   LPBITMAPINFOHEADER lpbi;       // pointer to BITMAPINFOHEADER
+   DWORD dwLen;                   // size of memory block
+   HANDLE hDIB, h;                // handle to DIB, temp handle
+   HDC hDC;                       // handle to DC
+   WORD biBits;                   // bits per pixel
 
-    fh = CreateFile(lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+   // check if bitmap handle is valid
+   if( ! hBitmap )
+      return NULL;
 
+   // fill in BITMAP structure, return NULL if it didn't work
+   if( ! GetObject( hBitmap, sizeof( bm ), (LPSTR) &bm ) )
+      return NULL;
 
-    // Get a pointer to the DIB memory, the first of which contains
-    // a BITMAPINFO structure
+   // if no palette is specified, use default palette
+   if( hPal == NULL )
+   {
+      hPal = (HPALETTE) GetStockObject( DEFAULT_PALETTE );
+   }
 
-    lpBI = (LPBITMAPINFOHEADER)GlobalLock(hDib);
-    if (!lpBI)
-    {
-        CloseHandle(fh);
-        return 1;
-    }
+   // calculate bits per pixel
+   biBits = (WORD) ( bm.bmPlanes * bm.bmBitsPixel );
 
-    if (lpBI->biSize != sizeof(BITMAPINFOHEADER))
-    {
-        GlobalUnlock(hDib);
-        CloseHandle(fh);
-        return 1;
-    }
+   // make sure bits per pixel is valid
+   if( biBits <= 1 )
+      biBits = 1;
+   else if( biBits <= 4 )
+      biBits = 4;
+   else if( biBits <= 8 )
+      biBits = 8;
+   else // if greater than 8-bit, force to 24-bit
+      biBits = 24;
 
+   // initialize BITMAPINFOHEADER
+   bi.biSize = sizeof( BITMAPINFOHEADER );
+   bi.biWidth = bm.bmWidth;
+   bi.biHeight = bm.bmHeight;
+   bi.biPlanes = 1;
+   bi.biBitCount = biBits;
+   bi.biCompression = BI_RGB;
+   bi.biSizeImage = 0;
+   bi.biXPelsPerMeter = 0;
+   bi.biYPelsPerMeter = 0;
+   bi.biClrUsed = 0;
+   bi.biClrImportant = 0;
 
-    bmfHdr.bfType = ((WORD) ('M' << 8) | 'B'); // is always "BM"
+   // calculate size of memory block required to store BITMAPINFO
+   dwLen = bi.biSize + PaletteSize( (LPSTR) &bi );
 
-    dwDIBSize = *(LPDWORD)lpBI + PaletteSize((LPSTR)lpBI);
+   // get a DC
+   hDC = GetDC( NULL );
 
+   // select and realize our palette
+   hPal = SelectPalette( hDC, hPal, FALSE );
+   RealizePalette( hDC );
 
-    dwBmBitsSize = ((((lpBI->biWidth)*((DWORD)lpBI->biBitCount))+ 31) / 32 * 4) *  lpBI->biHeight;
-    dwDIBSize += dwBmBitsSize;
-    lpBI->biSizeImage = dwBmBitsSize;
+   // alloc memory block to store our bitmap
+   hDIB = GlobalAlloc( GHND, dwLen );
 
+   // if we couldn't get memory block
+   if( ! hDIB )
+   {
+      // clean up and return NULL
+      SelectPalette( hDC, hPal, TRUE );
+      RealizePalette( hDC );
+      ReleaseDC( NULL, hDC );
+      return NULL;
+   }
 
-    bmfHdr.bfSize = dwDIBSize + sizeof(BITMAPFILEHEADER);
-    bmfHdr.bfReserved1 = 0;
-    bmfHdr.bfReserved2 = 0;
+   // lock memory and get pointer to it
+   lpbi = (LPBITMAPINFOHEADER) GlobalLock( hDIB );
 
-    // Now, calculate the offset the actual bitmap bits will be in
-    // the file -- It's the Bitmap file header plus the DIB header,
-    // plus the size of the color table.
+   /// use our bitmap info to fill BITMAPINFOHEADER
+   *lpbi = bi;
 
-    bmfHdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + lpBI->biSize +
-            PaletteSize((LPSTR)lpBI);
+   // call GetDIBits with a NULL lpBits param, so it will calculate the biSizeImage field for us
+   GetDIBits( hDC, hBitmap, 0, (UINT) bi.biHeight, NULL, (LPBITMAPINFO) lpbi, DIB_RGB_COLORS );
 
-    // Write the file header
+   // get the info. returned by GetDIBits and unlock memory block
+   bi = *lpbi;
+   GlobalUnlock( hDIB );
 
-    WriteFile(fh, (LPSTR)&bmfHdr, sizeof(BITMAPFILEHEADER), &dwWritten, NULL);
+   // if the driver did not fill in the biSizeImage field, make one up
+   if( bi.biSizeImage == 0 )
+      bi.biSizeImage = ( ( ( (DWORD) bm.bmWidth * biBits ) + 31 ) / 32 * 4 ) * bm.bmHeight;
 
-    // Write the DIB header and the bits -- use local version of
-    // MyWrite, so we can write more than 32767 bytes of data
+   // realloc the buffer big enough to hold all the bits
+   dwLen = bi.biSize + PaletteSize( (LPSTR) &bi ) + bi.biSizeImage;
 
-    WriteFile(fh, (LPSTR)lpBI, dwDIBSize, &dwWritten, NULL);
+   h = GlobalReAlloc( hDIB, dwLen, 0 );
+   if( h )
+   {
+      hDIB = h;
+   }
+   else
+   {
+      // clean up and return NULL
+      GlobalFree( hDIB );
+      SelectPalette( hDC, hPal, TRUE );
+      RealizePalette( hDC );
+      ReleaseDC( NULL, hDC );
+      return NULL;
+   }
 
-    GlobalUnlock(hDib);
-    CloseHandle(fh);
+   // lock memory block and get pointer to it */
+   lpbi = (LPBITMAPINFOHEADER) GlobalLock( hDIB );
 
-    if (dwWritten == 0)
-        return 1; // oops, something happened in the write
-    else
-        return 0; // Success code
+   // call GetDIBits with a NON-NULL lpBits param, and actualy get the bits this time
+   if( GetDIBits( hDC, hBitmap, 0, (UINT) bi.biHeight, (LPSTR) lpbi + (WORD) lpbi->biSize + PaletteSize( (LPSTR) lpbi ), (LPBITMAPINFO) lpbi, DIB_RGB_COLORS ) == 0 )
+   {
+      // clean up and return NULL
+      GlobalFree( hDIB );
+      SelectPalette( hDC, hPal, TRUE );
+      RealizePalette( hDC );
+      ReleaseDC( NULL, hDC );
+      return NULL;
+   }
+
+   bi = *lpbi;
+
+   // clean up
+   GlobalUnlock( hDIB );
+   SelectPalette( hDC, hPal, TRUE );
+   RealizePalette( hDC );
+   ReleaseDC( NULL, hDC );
+
+   // return handle to the DIB
+   return hDIB;
+}
+
+WORD SaveDIB( HDIB hDib, LPSTR lpFileName )
+{
+   BITMAPFILEHEADER bmfHdr;       // Header for Bitmap file
+   LPBITMAPINFOHEADER lpBI;       // Pointer to DIB info structure
+   HANDLE fh;                     // file handle for opened file
+   DWORD dwDIBSize, dwWritten, dwBmBitsSize;
+
+   fh = CreateFile( lpFileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL );
+
+   // Get a pointer to the DIB memory, the first of which contains
+   // a BITMAPINFO structure
+
+   lpBI = (LPBITMAPINFOHEADER) GlobalLock( hDib );
+   if( ! lpBI )
+   {
+      CloseHandle( fh );
+      return 1;
+   }
+
+   if( lpBI->biSize != sizeof( BITMAPINFOHEADER ) )
+   {
+      GlobalUnlock( hDib );
+      CloseHandle( fh );
+      return 1;
+   }
+
+   bmfHdr.bfType = ( (WORD) ( 'M' << 8 ) | 'B' ); // is always "BM"
+
+   dwDIBSize = ( * (LPDWORD) lpBI ) + PaletteSize( (LPSTR) lpBI );
+
+   dwBmBitsSize = ( ( ( ( lpBI->biWidth ) * ( (DWORD) lpBI->biBitCount ) ) + 31 ) / 32 * 4 ) * lpBI->biHeight;
+   dwDIBSize += dwBmBitsSize;
+   lpBI->biSizeImage = dwBmBitsSize;
+
+   bmfHdr.bfSize = dwDIBSize + sizeof( BITMAPFILEHEADER );
+   bmfHdr.bfReserved1 = 0;
+   bmfHdr.bfReserved2 = 0;
+
+   // Now, calculate the offset the actual bitmap bits will be in
+   // the file -- It's the Bitmap file header plus the DIB header,
+   // plus the size of the color table.
+   bmfHdr.bfOffBits = (DWORD) sizeof( BITMAPFILEHEADER ) + lpBI->biSize + PaletteSize( (LPSTR) lpBI );
+
+   // Write the file header
+   WriteFile( fh, (LPSTR) &bmfHdr, sizeof( BITMAPFILEHEADER ), &dwWritten, NULL );
+
+   // Write the DIB header and the bits -- use local version of
+   // MyWrite, so we can write more than 32767 bytes of data
+   WriteFile( fh, (LPSTR) lpBI, dwDIBSize, &dwWritten, NULL );
+
+   GlobalUnlock( hDib );
+   CloseHandle( fh );
+
+   if( dwWritten == 0 )
+       return 1; // oops, something happened in the write
+   else
+       return 0; // Success code
 }
 
 HB_FUNC( _UPDATERTL )
@@ -1373,14 +1296,14 @@ HB_FUNC( _UPDATERTL )
    if( hb_parnl( 2 ) )
    {
       myret = myret |  WS_EX_LTRREADING |  WS_EX_LEFT |  WS_EX_LEFTSCROLLBAR;
-//      myret = myret                    &~ WS_EX_LTRREADING &~ WS_EX_LEFT;
-//      myret = myret |  WS_EX_LAYOUTRTL |  WS_EX_RTLREADING |  WS_EX_RIGHT;
+//    myret = myret                    &~ WS_EX_LTRREADING &~ WS_EX_LEFT;
+//    myret = myret |  WS_EX_LAYOUTRTL |  WS_EX_RTLREADING |  WS_EX_RIGHT;
    }
    else
    {
       myret = myret &~ WS_EX_LTRREADING &~ WS_EX_LEFT &~ WS_EX_LEFTSCROLLBAR;
-//      myret = myret                    |  WS_EX_LTRREADING |  WS_EX_LEFT;
-//      myret = myret &~ WS_EX_LAYOUTRTL &~ WS_EX_RTLREADING &~ WS_EX_RIGHT;
+//    myret = myret                    |  WS_EX_LTRREADING |  WS_EX_LEFT;
+//    myret = myret &~ WS_EX_LAYOUTRTL &~ WS_EX_RTLREADING &~ WS_EX_RIGHT;
    }
    SetWindowLongPtr( hwnd, GWL_EXSTYLE, myret );
 
@@ -1396,7 +1319,7 @@ DWORD _OOHG_RTL_Status( BOOL bRtl )
       #ifdef WS_EX_LAYOUTRTL
          dwStyle = WS_EX_LAYOUTRTL | WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
       #else
-         dwStyle =                   WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
+         dwStyle = WS_EX_RIGHTSCROLLBAR | WS_EX_RTLREADING;
       #endif
    }
    else
@@ -1409,7 +1332,7 @@ DWORD _OOHG_RTL_Status( BOOL bRtl )
 
 HB_FUNC( GETSYSTEMMETRICS )
 {
-    hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
+   hb_retni( GetSystemMetrics( hb_parni( 1 ) ) );
 }
 
 HB_FUNC( GETWINDOWEXSTYLE )
@@ -1471,7 +1394,7 @@ HB_FUNC( WINDOWEXSTYLEFLAG )
    lMask = HB_PARNL( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( hb_parnl( 3 ) & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( HB_PARNL( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
@@ -1500,7 +1423,7 @@ HB_FUNC( OSISWINXPORLATER )
 {
    OSVERSIONINFO osvi;
    getwinver( &osvi );
-   hb_retl( osvi.dwMajorVersion > 5 || (osvi.dwMajorVersion==5 && osvi.dwMinorVersion >= 1) );
+   hb_retl( osvi.dwMajorVersion > 5 || ( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion >= 1 ) );
 }
 
 HB_FUNC( OSISWINVISTAORLATER )
@@ -1527,7 +1450,8 @@ HBRUSH GetTabBrush( HWND hWnd )
 
    hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
 
-   SendMessage( hWnd, WM_PRINT, (WPARAM) hDCMem, (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
+   // This sends a WM_PRINTCLIENT message
+   SendMessage( hWnd, WM_PRINT, (WPARAM) hDCMem, (LPARAM) ( PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED ) );
 
    hBrush = CreatePatternBrush( hBmp );
 
@@ -1542,10 +1466,10 @@ HBRUSH GetTabBrush( HWND hWnd )
 
 HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
 {
-   HWND     hWnd    = HWNDparam( 1 );
-   COLORREF crKey   = ( COLORREF ) hb_parnl( 2 );
-   BYTE     bAlpha  = ( BYTE ) hb_parni( 3 );
-   DWORD    dwFlags = ( DWORD ) hb_parnl( 4 );
+   HWND hWnd = HWNDparam( 1 );
+   COLORREF crKey = (COLORREF) hb_parnl( 2 );
+   BYTE bAlpha = (BYTE) hb_parni( 3 );
+   DWORD dwFlags = (DWORD) hb_parnl( 4 );
 
 #if defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION )
    if( ! ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & WS_EX_LAYERED ) )
@@ -1584,10 +1508,10 @@ HB_FUNC( FLASHWINDOWEX )   // hWnd, dwFlags, uCount, dwTimeout
    FLASHWINFO FlashWinInfo;
 
    FlashWinInfo.cbSize    = sizeof( FLASHWINFO );
-   FlashWinInfo.hwnd      = HWNDparam( 1 );;
-   FlashWinInfo.dwFlags   = ( DWORD ) hb_parnl( 2 );
-   FlashWinInfo.uCount    = ( UINT ) hb_parnl( 3 );
-   FlashWinInfo.dwTimeout = ( DWORD ) hb_parnl( 4 );
+   FlashWinInfo.hwnd      = HWNDparam( 1 );
+   FlashWinInfo.dwFlags   = (DWORD) hb_parnl( 2 );
+   FlashWinInfo.uCount    = (UINT) hb_parnl( 3 );
+   FlashWinInfo.dwTimeout = (DWORD) hb_parnl( 4 );
 
-   hb_retl( ( BOOL ) FlashWindowEx( &FlashWinInfo ) );
+   hb_retl( FlashWindowEx( &FlashWinInfo ) );
 }
