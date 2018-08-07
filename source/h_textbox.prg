@@ -455,8 +455,8 @@ METHOD Events_Command( wParam ) CLASS TText
 
             ::SetFocus()
 
-            //::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
-            //::SetFont( ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout )
+            // TControl's Events_Command method is responsible for
+            // setting the focus effect and firing the OnGotFocus event.
          Else
             If GetKeyState( VK_TAB ) < 0 .AND. GetKeyFlagState() == MOD_SHIFT
                _SetPrevFocus()
