@@ -73,8 +73,8 @@ STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_32_USED
-   #define HB_OS_WIN_32_USED
+#ifndef HB_OS_WIN_USED
+   #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -676,6 +676,11 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
 
    switch( message )
    {
+      case WM_PRINTCLIENT:
+         SendMessage( hWnd, WM_PAINT, wParam, lParam );
+         hb_retni( 0 );
+         break;
+
       case WM_CTLCOLORBTN:
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
