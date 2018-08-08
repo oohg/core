@@ -294,7 +294,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
 
    ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO" DEFAULT ALIAS()
    If ValType( ::aFields ) != "A"
-      ::aFields := ::oWorkArea:DbStruct()
+      ::aFields := ::oWorkArea:dbStruct()
       aEval( ::aFields, { |x,i| ::aFields[ i ] := ::oWorkArea:cAlias__ + "->" + x[ 1 ] } )
    EndIf
 
@@ -360,9 +360,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ::lChangeBeforeEdit := .T.
    ::lNoneUnsels := .F.
 
-   ::SizePos()
-
-   // Value
+   // Load items and set value
    ::Define3( uValue )
 
    IF lNoHSB
@@ -811,7 +809,7 @@ METHOD VScrollUpdate CLASS TXBrowse
 
    LOCAL aPosition
 
-   IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
+   IF HB_ISOBJECT( ::VScroll )
       IF ::lRecCount
          aPosition := { ::oWorkArea:ordKeyNo(), ::oWorkArea:RecCount() }
       ELSE
@@ -868,26 +866,27 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TXBrowse
    ASSIGN ::nWidth  VALUE Width  TYPE "N"
    ASSIGN ::nHeight VALUE Height TYPE "N"
 
-   IF ! ::lNoVSB
+   IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
       nWidth := ::VScroll:Width
 
       IF ::lRtl .AND. ! ::Parent:lRtl
          ::VScroll:Col      := - nWidth
          ::ScrollButton:Col := - nWidth
+         ::ScrollButton:Row := ::nHeight - ::ScrollButton:Height
          // This fires WM_NCCALCSIZE
          uRet := MoveWindow( ::hWnd, ::ContainerCol + nWidth, ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
       ELSE
          ::VScroll:Col      := ::Width - ::VScroll:Width
          ::ScrollButton:Col := ::Width - ::VScroll:Width
+         ::ScrollButton:Row := ::nHeight - ::ScrollButton:Height
          // This fires WM_NCCALCSIZE
          uRet := MoveWindow( ::hWnd, ::ContainerCol,          ::ContainerRow, ::nWidth - nWidth, ::nHeight, .T. )
       ENDIF
-
-      AEval( ::aControls, { |o| o:SizePos() } )
    ELSE
       // This fires WM_NCCALCSIZE
       uRet := MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, .T. )
    ENDIF
+   ::AdjustRightScroll()
 
    RETURN uRet
 
@@ -2627,7 +2626,7 @@ METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
 
 METHOD VScrollVisible( lState ) CLASS TXBrowse
 
-   IF HB_ISLOGICAL( lState ) .AND. lState # ! ::lNoVSB
+   IF HB_ISLOGICAL( lState ) .AND. lState # ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
       IF ! ::lNoVSB
          ::VScroll:Visible := .F.
          ::VScroll := NIL
@@ -2673,10 +2672,10 @@ METHOD HScrollVisible( lState ) CLASS TXBrowse
 
 METHOD AdjustRightScroll CLASS TXBrowse
 
-   IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll ) .AND. IsWindowStyle( ::hWnd, WS_VSCROLL )
+   IF HB_ISOBJECT( ::VScroll )
       IF ! ::lNoHSB .AND. IsWindowStyle( ::hWnd, WS_HSCROLL )
          ::VScroll:Height := ::Height - ::ScrollButton:Height
-         ::ScrollButton:Visible := .T.
+         ::ScrollButton:Visible := ! ::lNoVSB
       ELSE
          ::VScroll:Height := ::Height
          ::ScrollButton:Visible := .F.
