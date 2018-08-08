@@ -8,6 +8,39 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     ! RTE "Method Width does not exist" at ::SizePos (872).
+     ! Support of SET AUTOAJUST ON.
+
+2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_registry.prg
+     * Some changes for 64 bit support.
+
+2018-08-08 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     * Some defines for 64 bit support.
+   * core\source\bostaurus.prg
+   * core\source\c_controlmisc.c
+   * core\source\c_dialogs.c
+   * core\source\c_windows.c
+   * core\source\h_form.prg
+   * core\source\h_menu.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_registry.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_tree.prg
+   * core\source\miniprint.prg
+   * core\source\winprint.prg
+     * Some changes for 64 bit support.
+
+2018-08-07 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textbox.prg
+     * Comment.
+   * core\source\h_windows.prg
+     * Changed obsolete define.
+     + WM_PRINTCLIENT handler.
+
 2018-08-06 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_datepicker.ch
