@@ -501,20 +501,20 @@ HB_FUNC( GETWINDOWRECT )
 {
    RECT rect;
    hb_retl( GetWindowRect( HWNDparam( 1 ), &rect ) );
-   HB_STORNL( rect.left, 2, 1 );
-   HB_STORNL( rect.top, 2, 2 );
-   HB_STORNL( rect.right, 2, 3 );
-   HB_STORNL( rect.bottom, 2, 4 );
+   HB_STORNL3( rect.left, 2, 1 );
+   HB_STORNL3( rect.top, 2, 2 );
+   HB_STORNL3( rect.right, 2, 3 );
+   HB_STORNL3( rect.bottom, 2, 4 );
 }
 
 HB_FUNC( GETCLIENTRECT )
 {
    RECT rect;
    hb_retl( GetClientRect( HWNDparam( 1 ), &rect ) );
-   HB_STORNL( rect.left, 2, 1 );
-   HB_STORNL( rect.top, 2, 2 );
-   HB_STORNL( rect.right, 2, 3 );
-   HB_STORNL( rect.bottom, 2, 4 );
+   HB_STORNL3( rect.left, 2, 1 );
+   HB_STORNL3( rect.top, 2, 2 );
+   HB_STORNL3( rect.right, 2, 3 );
+   HB_STORNL3( rect.bottom, 2, 4 );
 }
 
 HB_FUNC( SETWINDOWBACKCOLOR )

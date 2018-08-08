@@ -78,7 +78,8 @@
    #define HB_STORL( n, x, y )        hb_storl( n, x, y )
    #define HB_STORND( n, x, y )       hb_stornd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storni( n, x, y )
-   #define HB_STORNL( n, x, y )       hb_stornll( n, x, y )
+   #define HB_STORNL2( n, x )         hb_stornll( n, x )
+   #define HB_STORNL3( n, x, y )      hb_stornll( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_stornll( n, x, y )
 #else
@@ -97,7 +98,8 @@
    #define HB_STORL( n, x, y )        hb_storvl( n, x, y )
    #define HB_STORND( n, x, y )       hb_storvnd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storvni( n, x, y )
-   #define HB_STORNL( n, x, y )       hb_storvnll( n, x, y )
+   #define HB_STORNL2( n, x )         hb_stornll( n, x )
+   #define HB_STORNL3( n, x, y )      hb_storvnll( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storvptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_storvnll( n, x, y )
 #endif /* __XHARBOUR__ */
@@ -121,7 +123,8 @@
    #define HB_STORL( n, x, y )        hb_storl( n, x, y )
    #define HB_STORND( n, x, y )       hb_stornd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storni( n, x, y )
-   #define HB_STORNL( n, x, y )       hb_stornl( n, x, y )
+   #define HB_STORNL2( n, x )         hb_stornl( n, x )
+   #define HB_STORNL3( n, x, y )      hb_stornl( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_stornl( n, x, y )
 #else
@@ -140,7 +143,8 @@
    #define HB_STORL( n, x, y )        hb_storvl( n, x, y )
    #define HB_STORND( n, x, y )       hb_storvnd( n, x, y )
    #define HB_STORNI( n, x, y )       hb_storvni( n, x, y )
-   #define HB_STORNL( n, x, y )       hb_storvnl( n, x, y )
+   #define HB_STORNL2( n, x )         hb_stornl( n, x )
+   #define HB_STORNL3( n, x, y )      hb_storvnl( n, x, y )
    #define HB_STORPTR( n, x, y )      hb_storvptr( n, x, y )
    #define HB_STORVNL( n, x, y )      hb_storvnl( n, x, y )
 #endif /* __XHARBOUR__ */

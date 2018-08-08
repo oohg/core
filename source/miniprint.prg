@@ -2387,7 +2387,7 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )
       pDevMode = (LPDEVMODE) GlobalLock( pd.hDevMode );
 
       hb_reta( 5 );
-      HB_STORNL( (LONG) pd.hDC, -1, 1 );
+      HB_STORNL3( (LONG_PTR) pd.hDC, -1, 1 );
       HB_STORC( ( char * ) pDevMode->dmDeviceName, -1, 2 );
       HB_STORNI( pDevMode->dmCopies, -1, 3 );
       HB_STORNI( pDevMode->dmCollate, -1, 4 );
@@ -2398,7 +2398,7 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )
    else
    {
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -2921,7 +2921,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_OPEN_PRINTER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -2941,7 +2941,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_GET_PRINTER_BUFFER_SIZE)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -2959,7 +2959,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_ALLOCATE_PRINTER_BUFFER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -2978,7 +2978,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_GET_PRINTER_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -2998,7 +2998,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             MessageBox( 0, "Printer Configuration Failed! (ERR_GET_DOCUMENT_BUFFER_SIZE)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
          }
          hb_reta( 5 );
-         HB_STORNL( 0, -1, 1 );
+         HB_STORNL3( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
@@ -3016,7 +3016,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             MessageBox( 0, "Printer Configuration Failed! (ERR_ALLOCATE_DOCUMENT_BUFFER)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
          }
          hb_reta( 5 );
-         HB_STORNL( 0, -1, 1 );
+         HB_STORNL3( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
@@ -3034,7 +3034,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             MessageBox( 0, "Printer Configuration Failed! (ERR_GET_DOCUMENT_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
          }
          hb_reta( 5 );
-         HB_STORNL( 0, -1, 1 );
+         HB_STORNL3( 0, -1, 1 );
          HB_STORC( "", -1, 2 );
          HB_STORNI( 0, -1, 3 );
          HB_STORNI( 0, -1, 4 );
@@ -3069,7 +3069,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3103,7 +3103,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3137,7 +3137,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3171,7 +3171,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3205,7 +3205,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3239,7 +3239,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3273,7 +3273,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3307,7 +3307,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3341,7 +3341,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3375,7 +3375,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3409,7 +3409,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
             GlobalFree( pi2 );
             ClosePrinter( hPrinter );
             hb_reta( 5 );
-            HB_STORNL( 0, -1, 1 );
+            HB_STORNL3( 0, -1, 1 );
             HB_STORC( "", -1, 2 );
             HB_STORNI( 0, -1, 3 );
             HB_STORNI( 0, -1, 4 );
@@ -3445,7 +3445,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_SET_DOCUMENT_SETTINGS)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -3475,7 +3475,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          MessageBox( 0, "Printer Configuration Failed! (ERR_CREATING_DC)", "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
       }
       hb_reta( 5 );
-      HB_STORNL( 0, -1, 1 );
+      HB_STORNL3( 0, -1, 1 );
       HB_STORC( "", -1, 2 );
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
@@ -3484,7 +3484,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    }
 
    hb_reta( 5 );
-   HB_STORNL( (LONG) hdcPrint, -1, 1 );
+   HB_STORNL3( (LONG_PTR) hdcPrint, -1, 1 );
    HB_STORC( hb_parc( 1 ), -1, 2 );
    HB_STORNI( (INT) pi2->pDevMode->dmCopies, -1, 3 );
    HB_STORNI( (INT) pi2->pDevMode->dmCollate, -1, 4 );
@@ -3516,7 +3516,7 @@ HB_FUNC( _HMG_PRINTER_ENDPAGE_PREVIEW )
 HB_FUNC( _HMG_PRINTER_SHOWPAGE )
 {
    HENHMETAFILE hemf;
-   HWND hWnd = (HWND) hb_parnl( 2 );
+   HWND hWnd = HWNDparam( 2 );
    HDC hDC;
    RECT rct;
    RECT aux;
@@ -3624,27 +3624,27 @@ HB_FUNC( _HMG_PRINTER_PRINTPAGE )
 
 HB_FUNC( _HMG_PRINTER_PREVIEW_ENABLESCROLLBARS )
 {
-   EnableScrollBar( (HWND) hb_parnl( 1 ), SB_BOTH, ESB_ENABLE_BOTH );
+   EnableScrollBar( HWNDparam( 1 ), SB_BOTH, ESB_ENABLE_BOTH );
 }
 
 HB_FUNC( _HMG_PRINTER_PREVIEW_DISABLESCROLLBARS )
 {
-   EnableScrollBar( (HWND) hb_parnl( 1 ), SB_BOTH, ESB_DISABLE_BOTH );
+   EnableScrollBar( HWNDparam( 1 ), SB_BOTH, ESB_DISABLE_BOTH );
 }
 
 HB_FUNC( _HMG_PRINTER_PREVIEW_DISABLEHSCROLLBAR )
 {
-   EnableScrollBar( (HWND) hb_parnl( 1 ), SB_HORZ, ESB_DISABLE_BOTH );
+   EnableScrollBar( HWNDparam( 1 ), SB_HORZ, ESB_DISABLE_BOTH );
 }
 
 HB_FUNC( _HMG_PRINTER_SETVSCROLLVALUE )
 {
-   SendMessage( (HWND) hb_parnl( 1 ), WM_VSCROLL, MAKEWPARAM( SB_THUMBPOSITION, hb_parni( 2 ) ), 0 );
+   SendMessage( HWNDparam( 1 ), WM_VSCROLL, MAKEWPARAM( SB_THUMBPOSITION, hb_parni( 2 ) ), 0 );
 }
 
 HB_FUNC( _HMG_PRINTER_GETPRINTERWIDTH )
 {
-   HDC hdc = (HDC) hb_parnl( 1 );
+   HDC hdc = (HDC) HB_PARNL( 1 );
    hb_retnl( GetDeviceCaps( hdc, HORZSIZE ) );
 }
 

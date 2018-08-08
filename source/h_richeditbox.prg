@@ -780,10 +780,10 @@ HB_FUNC( GETFONTRTF )
 
    hb_reta( 8 );
    HB_STORC( cF.szFaceName, -1, 1 );
-   HB_STORNL( (LONG) PointSize, -1, 2 );
+   HB_STORNL3( (LONG) PointSize, -1, 2 );
    HB_STORL( bold, -1, 3 );
    HB_STORL( Italic, -1, 4 );
-   HB_STORNL( cF.crTextColor, -1, 5 );
+   HB_STORNL3( (LONG) cF.crTextColor, -1, 5 );
    HB_STORL( Underline, -1, 6 );
    HB_STORL( StrikeOut, -1, 7 );
    HB_STORNI( cF.bCharSet, -1, 8 );

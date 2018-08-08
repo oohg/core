@@ -1489,16 +1489,16 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
    hb_reta( 50 );    // Return array = { Type, hWnd, hBitmap, hDC, PaintStruct ... }
 
    HB_STORNI( (INT)      BT.Type, -1, 1 );    // Type
-   HB_STORNL( (LONG_PTR) BT.hWnd, -1, 2 );    // hWnd
-   HB_STORNL( (LONG_PTR) BT.hDC,  -1, 3 );    // hDC
+   HB_STORNL3( (LONG_PTR) BT.hWnd, -1, 2 );    // hWnd
+   HB_STORNL3( (LONG_PTR) BT.hDC,  -1, 3 );    // hDC
 
    // PAINTSTRUCT
-   HB_STORNL( (LONG_PTR) BT.PaintStruct.hdc,            -1,  4 );        // HDC  hdc;
+   HB_STORNL3( (LONG_PTR) BT.PaintStruct.hdc,            -1,  4 );        // HDC  hdc;
    HB_STORNI( (INT)      BT.PaintStruct.fErase,         -1,  5 );        // BOOL fErase;
-   HB_STORNL( (LONG)     BT.PaintStruct.rcPaint.left,   -1,  6 );        // RECT rcPaint.left;
-   HB_STORNL( (LONG)     BT.PaintStruct.rcPaint.top,    -1,  7 );        // RECT rcPaint.top;
-   HB_STORNL( (LONG)     BT.PaintStruct.rcPaint.right,  -1,  8 );        // RECT rcPaint.right;
-   HB_STORNL( (LONG)     BT.PaintStruct.rcPaint.bottom, -1,  9 );        // RECT rcPaint.bottom;
+   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.left,   -1,  6 );        // RECT rcPaint.left;
+   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.top,    -1,  7 );        // RECT rcPaint.top;
+   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.right,  -1,  8 );        // RECT rcPaint.right;
+   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.bottom, -1,  9 );        // RECT rcPaint.bottom;
    HB_STORNI( (INT)      BT.PaintStruct.fRestore,       -1, 10 );        // BOOL fRestore;
    HB_STORNI( (INT)      BT.PaintStruct.fIncUpdate,     -1, 11 );        // BOOL fIncUpdate;
    for( i = 0; i < 32; i++ )
@@ -2130,8 +2130,8 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    SIZE SizeText;
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 2 );
-   HB_STORNL( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
+   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
 */
 
    SelectObject( hDC, hOldFont );
@@ -2265,8 +2265,8 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
 
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 6 );
-   HB_STORNL( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
+   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
 
    iFirstChar = (UINT) Text[ 0 ];
    iLastChar  = (UINT) Text[ 0 ];
@@ -4075,8 +4075,8 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
 
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 2 );
-   HB_STORNL( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
+   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
 
    SelectObject( hDC, hOldFont );
    DeleteObject( hFont );
@@ -4193,7 +4193,7 @@ HB_FUNC( BT_REGIONCOMBINE )    // ( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode 
       }
       else
       {
-         hb_stornl( (LONG_PTR) hRgnDest, 1 );
+         HB_STORNL2( (LONG_PTR) hRgnDest, 1 );
       }
       hb_retni( ret );
    }

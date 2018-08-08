@@ -746,8 +746,8 @@ TODO: detect AERO and set background color accordingly
    SetMenuItemBitmaps( hMenu, hb_parni( 2 ), MF_BYCOMMAND, himage1, himage2 );
 
    hb_reta( 2 );
-   HB_STORNL( ( LONG_PTR ) himage1, -1, 1 );
-   HB_STORNL( ( LONG_PTR ) himage2, -1, 2 );
+   HB_STORNL3( ( LONG_PTR ) himage1, -1, 1 );
+   HB_STORNL3( ( LONG_PTR ) himage2, -1, 2 );
 }
 
 HB_FUNC( SETMENUDEFAULTITEM )

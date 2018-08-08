@@ -148,10 +148,10 @@ HB_FUNC( CHOOSEFONT )
    {
       hb_reta( 8 );
       HB_STORC( "" , -1, 1 );
-      HB_STORNL( (LONG) 0 , -1, 2 );
+      HB_STORNL3( 0 , -1, 2 );
       HB_STORL( 0 , -1, 3 );
       HB_STORL( 0 , -1, 4 );
-      HB_STORNL( 0 , -1, 5 );
+      HB_STORNL3( 0 , -1, 5 );
       HB_STORL( 0 , -1, 6 );
       HB_STORL( 0 , -1, 7 );
       HB_STORNI( 0 , -1, 8 );
@@ -171,10 +171,10 @@ HB_FUNC( CHOOSEFONT )
 
    hb_reta( 8 );
    HB_STORC( lf.lfFaceName , -1, 1 );
-   HB_STORNL( (LONG) PointSize , -1, 2 );
+   HB_STORNL3( (LONG) PointSize , -1, 2 );
    HB_STORL( bold , -1, 3 );
    HB_STORL( lf.lfItalic , -1, 4 );
-   HB_STORNL( cf.rgbColors , -1, 5 );
+   HB_STORNL3( cf.rgbColors , -1, 5 );
    HB_STORL( lf.lfUnderline , -1, 6 );
    HB_STORL( lf.lfStrikeOut , -1, 7 );
    HB_STORNI( lf.lfCharSet , -1, 8 );

@@ -314,9 +314,9 @@ BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
    if( *lColor != -1 )
    {
       hb_reta( 3 );
-      HB_STORNL( GetRValue( *lColor ), -1, 1 );
-      HB_STORNL( GetGValue( *lColor ), -1, 2 );
-      HB_STORNL( GetBValue( *lColor ), -1, 3 );
+      HB_STORNL3( GetRValue( *lColor ), -1, 1 );
+      HB_STORNL3( GetGValue( *lColor ), -1, 2 );
+      HB_STORNL3( GetBValue( *lColor ), -1, 3 );
    }
    else
    {
