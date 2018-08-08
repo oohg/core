@@ -211,59 +211,60 @@ METHOD KeyDelete( cSubKey ) CLASS TReg32
 
 #include <windows.h>
 #include <commctrl.h>
+#include <winreg.h>
+#include <tchar.h>
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
-#include "winreg.h"
-#include "tchar.h"
+#include "oohg.h"
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGCLOSEKEY )
 //------------------------------------------------------------------------------
 {
-   hb_retnl( RegCloseKey( (HKEY) hb_parnl( 1 ) ) );
+   HB_RETNL( RegCloseKey( (HKEY) HB_PARNL( 1 ) ) );
 }
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGOPENKEYEXA )
 //------------------------------------------------------------------------------
 {
-   long lError;
+   LSTATUS lError;
    HKEY phwHandle;
 
-   lError = RegOpenKeyExA( (HKEY) hb_parnl( 1 ), (LPCTSTR) hb_parc( 2 ), 0, KEY_ALL_ACCESS, &phwHandle );
+   lError = RegOpenKeyExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), 0, KEY_ALL_ACCESS, &phwHandle );
    if ( lError == ERROR_SUCCESS )
    {
-      hb_stornl( PtrToLong( phwHandle ), 3 );
+      HB_STORNL2( (LONG_PTR) phwHandle, 3 );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGQUERYVALUEEXA )
 //------------------------------------------------------------------------------
 {
-   long lError;
+   LSTATUS lError;
    DWORD lpType = hb_parnl( 4 );
    DWORD lpcbData = 0;
 
-   lError = RegQueryValueExA( (HKEY) hb_parnl( 1 ), (LPTSTR) hb_parc( 2 ), NULL, &lpType, NULL, &lpcbData );
+   lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, NULL, &lpcbData );
    if ( lError == ERROR_SUCCESS )
    {
       BYTE * lpData;
       lpData = (BYTE *) hb_xgrab( (int) lpcbData + 1 );
 
-      lError = RegQueryValueExA( (HKEY) hb_parnl( 1 ), (LPTSTR) hb_parc( 2 ), NULL, &lpType, (BYTE *) lpData, &lpcbData );
+      lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, (BYTE *) lpData, &lpcbData );
       if ( lError == ERROR_SUCCESS )
       {
-         hb_stornl( (long) lpType, 4 );
+         HB_STORNL2( (LONG) lpType, 4 );
          hb_storc( (char *) lpData, 5 );
-         hb_stornl( (long) lpcbData, 6 );
+         HB_STORNL2( (LONG) lpcbData, 6 );
       }
       hb_xfree( (BYTE *) lpData );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 //------------------------------------------------------------------------------
@@ -271,28 +272,28 @@ HB_FUNC( REGENUMKEYEXA )
 //------------------------------------------------------------------------------
 {
    FILETIME ft;
-   long lError;
+   LSTATUS lError;
    TCHAR Buffer[255];
    DWORD dwBuffSize = 255;
    TCHAR Class[255];
    DWORD dwClass = 255;
 
-   lError = RegEnumKeyEx( (HKEY) hb_parnl( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, Class, &dwClass, &ft );
+   lError = RegEnumKeyEx( (HKEY) HB_PARNL( 1 ), (DWORD) hb_parnl( 2 ), (LPSTR) Buffer, &dwBuffSize, NULL, (LPSTR) Class, &dwClass, &ft );
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      hb_stornl( (long) dwBuffSize, 4 );
+      HB_STORNL2( (LONG) dwBuffSize, 4 );
       hb_storc( Class , 6 );
-      hb_stornl( (long) dwClass, 7 );
+      HB_STORNL2( (LONG) dwClass, 7 );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGSETVALUEEXA )
 //------------------------------------------------------------------------------
 {
-   hb_retnl( RegSetValueExA( (HKEY) hb_parnl( 1 ), hb_parc( 2 ), (DWORD) NULL, hb_parnl( 4 ), (BYTE *) hb_parc( 5 ), hb_parnl( 6 ) ) );
+   HB_RETNL( RegSetValueExA( (HKEY) hb_parnl( 1 ), (LPCSTR) hb_parc( 2 ), (DWORD) NULL, (DWORD) hb_parnl( 4 ), (BYTE *) hb_parc( 5 ), (DWORD) hb_parnl( 6 ) ) );
 }
 
 //------------------------------------------------------------------------------
@@ -300,14 +301,14 @@ HB_FUNC( REGCREATEKEY )
 //------------------------------------------------------------------------------
 {
    HKEY hKey;
-   long lError;
+   LSTATUS lError;
 
-   lError = RegCreateKey( (HKEY) hb_parnl( 1 ), hb_parc( 2 ), &hKey );
+   lError = RegCreateKey( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), &hKey );
    if ( lError == ERROR_SUCCESS )
    {
-      hb_stornl( PtrToLong( hKey ), 3 );
+      HB_STORNL2( (LONG_PTR) hKey, 3 );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 //------------------------------------------------------------------------------
@@ -318,31 +319,31 @@ HB_FUNC( REGENUMVALUEA )
    TCHAR Buffer[255];
    DWORD dwBuffSize = 255;
    DWORD dwClass = 255;
-   long lError;
+   LSTATUS lError;
 
-   lError = RegEnumValueA( (HKEY) hb_parnl( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, &lpType, NULL, &dwClass );
+   lError = RegEnumValueA( (HKEY) HB_PARNL( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, &lpType, NULL, &dwClass );
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      hb_stornl( (long) dwBuffSize, 4 );
-      hb_stornl( (long) lpType, 6 );
-      hb_stornl( (long) dwClass, 8 );
+      HB_STORNL2( (LONG) dwBuffSize, 4 );
+      HB_STORNL2( (LONG) lpType, 6 );
+      HB_STORNL2( (LONG) dwClass, 8 );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGDELETEKEY )
 //------------------------------------------------------------------------------
 {
-   hb_retnl( RegDeleteKey( (HKEY) hb_parnl( 1 ), hb_parc( 2 ) ) );
+   HB_RETNL( RegDeleteKey( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ) ) );
 }
 
 //------------------------------------------------------------------------------
 HB_FUNC( REGDELETEVALUEA )
 //------------------------------------------------------------------------------
 {
-   hb_retnl( RegDeleteValueA( (HKEY) hb_parnl( 1 ), hb_parc( 2 ) ) );
+   HB_RETNL( RegDeleteValueA( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ) ) );
 }
 
 //------------------------------------------------------------------------------
@@ -350,23 +351,23 @@ HB_FUNC( REGCONNECTREGISTRY )
 //------------------------------------------------------------------------------
 {
    LPCTSTR lpValue = hb_parc( 1 );
-   HKEY hwKey = (HKEY) hb_parnl( 2 );
-   long lError;
+   HKEY hwKey = (HKEY) HB_PARNL( 2 );
+   LSTATUS lError;
    HKEY phwHandle;
 
    lError = RegConnectRegistry( lpValue, hwKey, &phwHandle );
 
    if( lError == ERROR_SUCCESS )
    {
-      hb_stornl( PtrToLong( phwHandle ), 3 );
+      HB_STORNL2( (LONG_PTR) phwHandle, 3 );
    }
-   hb_retnl( lError );
+   HB_RETNL( lError );
 }
 
 #pragma ENDDUMP
 
 /*
- * This functions were adapted from HMG Extended
+ * These functions were adapted from HMG Extended
  */
 
 
