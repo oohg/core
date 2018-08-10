@@ -141,7 +141,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlOnSelChange            => _OOHG_ActiveControlInfo \[ 126 \]
 #xtranslate _OOHG_ActiveControlOnListDisplay          => _OOHG_ActiveControlInfo \[ 127 \]
 #xtranslate _OOHG_ActiveControlOnListClose            => _OOHG_ActiveControlInfo \[ 128 \]
-
+#xtranslate _OOHG_ActiveControlNoCheckDepth           => _OOHG_ActiveControlInfo \[ 129 \]
 
 #xtranslate _OOHG_ActiveControlFixedWidths            => _OOHG_ActiveControlInfo \[ 131 \]
 #xtranslate _OOHG_ActiveControlAbortEdit              => _OOHG_ActiveControlInfo \[ 132 \]
@@ -1630,7 +1630,8 @@ IMAGE
       _OOHG_ActiveControlOnMClick          := NIL ;;
       _OOHG_ActiveControlOnDblClick        := NIL ;;
       _OOHG_ActiveControlOnRDblClick       := NIL ;;
-      _OOHG_ActiveControlOnMDblClick       := NIL
+      _OOHG_ActiveControlOnMDblClick       := NIL ;;
+      _OOHG_ActiveControlNoCheckDepth       := NIL
 
 #xcommand STRETCH <stretch> ;
    => ;
@@ -1643,6 +1644,10 @@ IMAGE
 #xcommand WHITEBACKGROUND <whitebackground> ;
    => ;
       _OOHG_ActiveControlWhiteBackground := iif( <whitebackground>, 0xFFFFFF, _OOHG_ActiveControlBackColor )
+
+#xcommand NOCHECKDEPTH <nocheckdepth> ;
+   => ;
+      _OOHG_ActiveControlNoCheckDepth := <nocheckdepth>
 
 #xcommand NORESIZE <noresize> ;
    => ;
@@ -1719,7 +1724,8 @@ IMAGE
             _OOHG_ActiveControlOnMClick, ;
             _OOHG_ActiveControlOnDblClick, ;
             _OOHG_ActiveControlOnRDblClick, ;
-            _OOHG_ActiveControlOnMDblClick )
+            _OOHG_ActiveControlOnMDblClick, ;
+            _OOHG_ActiveControlNoCheckDepth )
 
 /*---------------------------------------------------------------------------
 ANIGIF

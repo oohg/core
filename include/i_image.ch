@@ -92,6 +92,7 @@
       [ <dummy6: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
       [ <dummy7: ONRDBLCLICK, ON RDBLCLICK> <rdblclk> ] ;
       [ <dummy8: ONMDBLCLICK, ON MDBLCLICK> <mdblclk> ] ;
+      [ <nocheck: NOCHECKDEPTH> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
@@ -100,4 +101,4 @@
             ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
             <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
             <area>, <.disabled.>, <{change}>, <{rclk}>, <{mclk}>, <{dblclk}>, ;
-            <{rdblclk}>, <{mdblclk}> )
+            <{rdblclk}>, <{mdblclk}>, <.nocheck.> )

@@ -75,9 +75,11 @@ CLASS TImage FROM TControl
    DATA bOnMDblClick              INIT ""
    DATA bOnRClick                 INIT ""
    DATA bOnRDblClick              INIT ""
+   DATA cBuffer                   INIT ""
    DATA cPicture                  INIT ""
    DATA hImage                    INIT NIL
    DATA ImageSize                 INIT .F.
+   DATA lCheckDepth               INIT .T.
    DATA lNo3DColors               INIT .F.
    DATA lNoDIBSection             INIT .F.
    DATA lNoTransparent            INIT .F.
@@ -113,7 +115,7 @@ CLASS TImage FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
       lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
       lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange, bOnDblClick, ;
-      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick ) CLASS TImage
+      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth ) CLASS TImage
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -129,6 +131,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
    ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
+
+   IF HB_ISLOGICAL( lNoCheckDepth ) .AND. lNoCheckDepth
+      ::lCheckDepth := .F.
+   ENDIF
 
    ::SetForm( cControlName, uParentForm, , , , uBackColor, , lRtl )
    IF HB_ISLOGICAL( lWhiteBackground ) .AND. lWhiteBackground
@@ -168,23 +174,30 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Picture( cPicture ) CLASS TImage
 
-   LOCAL nAttrib, aPictSize
+   LOCAL nAttrib, aPictSize, lSet
 
    IF ValType( cPicture ) $ "CM"
       DELETEOBJECT( ::hImage )
       ::cPicture := cPicture
+      ::cBuffer := ""
 
       IF ::lNoDIBSection
-         aPictSize := _OOHG_SIZEOFBITMAPFROMFILE( cPicture )      // {width, height, depth}
-
          nAttrib := LR_DEFAULTCOLOR
-         IF aPictSize[ 3 ] <= 8
-           IF ! ::lNo3DColors
-              nAttrib += LR_LOADMAP3DCOLORS
-           ENDIF
-           IF ! ::lNoTransparent
-              nAttrib += LR_LOADTRANSPARENT
-           ENDIF
+         IF ! ::lNo3DColors .OR. ! ::lNoTransparent
+            IF ::lNoCheckDepth
+               lSet := .T.
+            ELSE
+               aPictSize := _OOHG_SIZEOFBITMAPFROMFILE( cPicture )      // {width, height, depth}
+               lSet := aPictSize[ 3 ] <= 8
+            ENDIF
+            IF lSet
+              IF ! ::lNo3DColors
+                 nAttrib += LR_LOADMAP3DCOLORS
+              ENDIF
+              IF ! ::lNoTransparent
+                 nAttrib += LR_LOADTRANSPARENT
+              ENDIF
+            ENDIF
          ENDIF
       ELSE
          nAttrib := LR_CREATEDIBSECTION
@@ -192,9 +205,13 @@ METHOD Picture( cPicture ) CLASS TImage
 
       // load image at full size
       ::hImage := _OOHG_BITMAPFROMFILE( Self, cPicture, nAttrib, .F. )
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+      IF VALIDHANDLER( ::hImage )
+         IF ::ImageSize
+            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
 
@@ -208,13 +225,19 @@ METHOD HBitMap( hBitMap ) CLASS TImage
 
    IF ValType( hBitMap ) $ "NP"
       DELETEOBJECT( ::hImage )
-      ::hImage := hBitMap
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+      ::cPicture := ""
+      ::cBuffer := ""
+
+      IF VALIDHANDLER( hBitMap )
+         ::hImage := hBitMap
+         IF ::ImageSize
+            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
-      ::cPicture := ""
 
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
@@ -226,14 +249,20 @@ METHOD Buffer( cBuffer ) CLASS TImage
 
    IF ValType( cBuffer ) $ "CM"
       DELETEOBJECT( ::hImage )
+      ::cPicture := ""
+      ::cBuffer := cBuffer
+
       // load image at full size
       ::hImage := _OOHG_BITMAPFROMBUFFER( Self, cBuffer, .F. )
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-         ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+      IF VALIDHANDLER( ::hImage )
+         IF ::ImageSize
+            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
+            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
-      ::cPicture := ""
 
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
@@ -410,6 +439,9 @@ METHOD RePaint() CLASS TImage
 METHOD Release() CLASS TImage
 
    DELETEOBJECT( ::hImage )
+   ::hImage := NIL
+   ::cPicture := ""
+   ::cBuffer := ""
 
    RETURN ::Super:Release()
 
