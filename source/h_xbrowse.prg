@@ -1606,31 +1606,32 @@ METHOD GoBottom( lAppend ) CLASS TXBrowse
 
 METHOD SetScrollPos( nPos, VScroll ) CLASS TXBrowse
 
-   Local aPosition
+   LOCAL nRecCount
 
-   If ::lLocked
+   IF ::lLocked
       // Do nothing!
-   ElseIf nPos <= VScroll:RangeMin
+   ELSEIF nPos <= VScroll:RangeMin
       ::GoTop()
-   ElseIf nPos >= VScroll:RangeMax
+   ELSEIF nPos >= VScroll:RangeMax
       ::GoBottom()
-   Else
-      If ::lRecCount
-         aPosition := { ::oWorkArea:ordKeyNo(), ::oWorkArea:RecCount() }
-      Else
-         aPosition := { ::oWorkArea:ordKeyNo(), ::oWorkArea:ordKeyCount() }
-      EndIf
-      nPos := nPos * aPosition[ 2 ] / VScroll:RangeMax
-      If ! ::lDescending
-         ::oWorkArea:ordKeyGoto( nPos )
-      Else
-         ::oWorkArea:ordKeyGoto( aPosition[ 2 ] + 1 - nPos )
-      EndIf
+   ELSE
+      IF ::lRecCount
+         nRecCount := ::oWorkArea:RecCount()
+      ELSE
+         nRecCount := ::oWorkArea:ordKeyCount()
+      ENDIF
+      IF ::lDescending
+         nPos := nRecCount + 1 - Max( Int( nPos * nRecCount / VScroll:RangeMax ), 1 )
+      ELSE
+         nPos := Max( Int( nPos * nRecCount / VScroll:RangeMax ), 1 )
+      ENDIF
+      ::oWorkArea:ordKeyGoto( nPos )
+      ::VScroll:Value := nPos
       ::Refresh( , .T. )
       ::DoChange()
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Delete() CLASS TXBrowse
 
@@ -2626,8 +2627,8 @@ METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
 
 METHOD VScrollVisible( lState ) CLASS TXBrowse
 
-   IF HB_ISLOGICAL( lState ) .AND. lState # ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
-      IF ! ::lNoVSB
+   IF HB_ISLOGICAL( lState ) .AND. lState # ! ::lNoVSB
+      IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
          ::VScroll:Visible := .F.
          ::VScroll := NIL
       ELSE
