@@ -8,6 +8,55 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-11 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     ! Scrollbutton is visible when there's no horizontal scrollbar.
+
+2018-08-11 16:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     - DATA RecCount.
+     * Some format.
+     % Method FastUpdate: call to Method CurrentRow replaced by
+       calls to it's needed functions only.
+     ! Method VScrollUpdate.
+     % Method CurrentRow no longer checks if a row is selected
+       when clearing the selection.
+     ! Method Refresh when last value record has become filtered.
+     ! Search by column is not setting control's value when a
+       match is found.
+     ! Method SetScrollPos is not working properly.
+
+2018-08-11 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_image.ch
+     + NOPARENTREDRAW clause.
+   * core\source\h_image.prg
+     + DATA lParentRedraw INIT .T.
+       .F. suppresses sending Redraw message to control's parent
+       thus reducing flicker.
+
+2018-08-10 19:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     ! Vertical scrollbar is not positioned properly.
+
+2018-08-10 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_image.ch
+     + NOCHECKDEPTH clause
+   * core\source\h_image.prg
+     + DATA cBuffer.
+     + DATA lCheckDepth INIT .T.
+     % Do not call some functions when the handles is not valid.
+     % Do not check image's depth when NOLOADTRANSPARENT nor
+       NO3DCOLORS clauses are set.
+     % Do not check image's depth when lNoCheckDepth is .T. and
+       NOLOADTRANSPARENT and/or NO3DCOLORS clauses are set.
+       This may have impredictable results if the image has a
+       depth greater than 8 bpp.
+     + METHOD hBitmap checks if it's parameter is a valid handle.
+     * DATA hBitmap is set to NIL when the picture can't be loaded.
+     * On release DATAs cPicture, cBuffer and hBitmap are cleared.
+
 2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_xbrowse.prg
      ! RTE "Method Width does not exist" at ::SizePos (872).
