@@ -360,6 +360,8 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ::lChangeBeforeEdit := .T.
    ::lNoneUnsels := .F.
 
+   ::SizePos()
+
    // Load items and set value
    ::Define3( uValue )
 
