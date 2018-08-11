@@ -83,6 +83,7 @@ CLASS TImage FROM TControl
    DATA lNo3DColors               INIT .F.
    DATA lNoDIBSection             INIT .F.
    DATA lNoTransparent            INIT .F.
+   DATA lParentRedraw             INIT .T.
    DATA nHeight                   INIT 100
    DATA nWidth                    INIT 100
    DATA Stretch                   INIT .F.
@@ -115,7 +116,7 @@ CLASS TImage FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
       lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
       lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange, bOnDblClick, ;
-      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth ) CLASS TImage
+      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth, lNoRedraw ) CLASS TImage
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -134,6 +135,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
 
    IF HB_ISLOGICAL( lNoCheckDepth ) .AND. lNoCheckDepth
       ::lCheckDepth := .F.
+   ENDIF
+
+   IF HB_ISLOGICAL( lNoRedraw ) .AND. lNoRedraw
+      ::lParentRedraw := .F.
    ENDIF
 
    ::SetForm( cControlName, uParentForm, , , , uBackColor, , lRtl )
@@ -428,7 +433,9 @@ METHOD RePaint() CLASS TImage
       ELSE
          SENDMESSAGE( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF
-      ::Parent:Redraw()
+      IF ::lParentRedraw
+         ::Parent:Redraw()
+      ENDIF
    ELSE
       PAINTBKGND( ::hWnd, ::BackColor )
    ENDIF
