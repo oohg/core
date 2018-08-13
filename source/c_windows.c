@@ -1450,8 +1450,7 @@ HBRUSH GetTabBrush( HWND hWnd )
 
    hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
 
-   // This sends a WM_PRINTCLIENT message
-   SendMessage( hWnd, WM_PRINT, (WPARAM) hDCMem, (LPARAM) ( PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED ) );
+   SendMessage( hWnd, WM_PRINTCLIENT, (WPARAM) hDCMem, (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
 
    hBrush = CreatePatternBrush( hBmp );
 
