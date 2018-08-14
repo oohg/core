@@ -79,7 +79,7 @@ CLASS TImage FROM TControl
    DATA cPicture                  INIT ""
    DATA hImage                    INIT NIL
    DATA ImageSize                 INIT .F.
-   DATA lCheckDepth               INIT .T.
+   DATA lNoCheckDepth             INIT .F.
    DATA lNo3DColors               INIT .F.
    DATA lNoDIBSection             INIT .F.
    DATA lNoTransparent            INIT .F.
@@ -134,7 +134,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
    ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
    IF HB_ISLOGICAL( lNoCheckDepth ) .AND. lNoCheckDepth
-      ::lCheckDepth := .F.
+      ::lNoCheckDepth := .T.
    ENDIF
 
    IF HB_ISLOGICAL( lNoRedraw ) .AND. lNoRedraw
