@@ -8,6 +8,54 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-14 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_report.prg
+     * TReport() no longer sets or gets _OOHG_PrintLibrary.
+     ; The class fully relies on TPrint() for the creation of the
+       print object (see above).
+
+2018-08-14 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     * DATA cPrintLibrary initial value is now "".
+     * 'DEFAULT var TO value' changed to 'ASSIGN var ...'
+     * TPrint() no longer sets _OOHG_PrintLibrary.
+     ; TPrint() with a parameter returns an object of the class
+       indicate by the parameter. If this variable does not
+       exist of it's value is invalid then a TMiniPrint() object
+       is returned.
+     ; TPrint() without a parameter returns an object of the class
+       indicate by _OOHG_PrintLibrary. If this variable does not
+       exist of it's value is invalid then a TMiniPrint() object
+       is returned.
+
+2018-08-14 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+   * core\include\i_var.ch
+     + _OOHG_ComboRefresh global var.
+   * core\source\h_combo.prg
+     - Function SetComboRefresh.
+     - STATIC _OOHG_ComboRefresh.
+   * core\include\i_pseudofunc.ch
+     + Translate for SetComboRefresh pseudofunction.
+     * The parameters of some pseudofunctions are now optional
+       to allow getting the current value.
+
+2018-08-14 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_image.ch
+     ! RTE TIMAGE:lNoCheckDepth not found.
+
+2018-08-13 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     * Some comments.
+     * Some changes for 64 bit support.
+
+2018-08-13 20:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * WM_PRINTCLIENT changed back to WM_PRINT.
+   * core\source\h_windows.prg
+     - WM_PRINTCLIENT handler.
+   ; This changes were reverted because they break OOHG painting.
+
 2018-08-11 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_xbrowse.prg
      ! Scrollbutton is visible when there's no horizontal scrollbar.
