@@ -76,7 +76,6 @@ MEMVAR WFIELDT
 MEMVAR CROMPE
 MEMVAR Npapersize
 MEMVAR ipaper
-MEMVAR _OOHG_printlibrary
 MEMVAR lgroupeject
 MEMVAR lexcel
 MEMVAR LUSELETTER
@@ -221,73 +220,47 @@ METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,
       repobject:nfsize=12
    ENDIF
 
-   IF ldos
-      oprint:=tprint("DOSPRINT")
-      oprint:init()
+   IF lDos
+      oPrint := TPrint( "DOSPRINT" )
+      oPrint:Init()
       IF ncpl<= 80
-         oprint:normaldos()
+         oPrint:NormalDos()
       ELSE
-         oprint:condendos()
+         oPrint:CondenDos()
       ENDIF
    ELSE
-      IF type("_OOHG_printlibrary")#"C"
-         oprint:=tprint("MINIPRINT")
-         oprint:init()
-         _OOHG_printlibrary="MINIPRINT"
-      ENDIF
-      IF _OOHG_printlibrary="HBPRINTER"
-         oprint:=tprint("HBPRINTER")
-         oprint:init()
-      ELSEIF _OOHG_printlibrary="MINIPRINT"
-         oprint:=tprint("MINIPRINT")
-         oprint:init()
-      ELSEIF _OOHG_printlibrary="PDFPRINT"
-         oprint:=tprint("PDFPRINT")
-         oprint:init()
-      ELSEIF _OOHG_printlibrary="EXCELPRINT"
-         oprint:=tprint("EXCELPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="RTFPRINT"
-         oprint:=tprint("RTFPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="CALCPRINT"
-         oprint:=tprint("CALCPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="CSVPRINT"
-         oprint:=tprint("CSVPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="SPREADSHEETPRINT"
-         oprint:=tprint("SPREADSHEETPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="HTMLPRINT"
-         oprint:=tprint("HTMLPRINT")
-         oprint:init()
-         lexcel:=.T.
-      ELSEIF _OOHG_printlibrary="DOSPRINT"
-         oprint:=tprint("DOSPRINT")
-         oprint:init()
-         IF ncpl<=80
-            oprint:normaldos()
+      oPrint := TPrint()
+      oPrint:Init()
+      IF     oPrint:cPrintLibrary := "MINIPRINT"
+      ELSEIF oPrint:cPrintLibrary := "HBPRINTER"
+      ELSEIF oPrint:cPrintLibrary := "DOSPRINT"
+         IF ncpl <= 80
+            oPrint:NormalDos()
          ELSE
-            oprint:condendos()
+            oPrint:CondenDos()
          ENDIF
-      ELSEIF _OOHG_printlibrary="RAWPRINT"
-         oprint:=tprint("RAWPRINT")
-         oprint:init()
-         IF ncpl<=80
-            oprint:normaldos()
+      ELSEIF oPrint:cPrintLibrary := "TXTPRINT"
+      ELSEIF oPrint:cPrintLibrary := "RAWPRINT"
+         IF ncpl <= 80
+            oPrint:NormalDos()
          ELSE
-            oprint:condendos()
+            oPrint:CondenDos()
          ENDIF
-      ELSE
-         oprint:=tprint("MINIPRINT")
-         oprint:init()
-         _OOHG_printlibrary="MINIPRINT"
+      ELSEIF oPrint:cPrintLibrary := "EXCELPRINT"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "SPREADSHEETPRINT"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "HTMLPRINTFROMEXCEL"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "HTMLPRINTFROMCALC"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "RTFPRINT"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "CSVPRINT"
+         lExcel := .T.
+      ELSEIF oPrint:cPrintLibrary := "PDFPRINT"
+      ELSEIF oPrint:cPrintLibrary := "CALCPRINT"
+         lExcel := .T.
       ENDIF
    ENDIF
 
