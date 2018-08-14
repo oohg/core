@@ -103,6 +103,7 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_ErrorLevel             => TApplication():Define():Value_Pos38
 #xtranslate _OOHG_WinReleaseSameOrder    => TApplication():Define():Value_Pos39
 #xtranslate _OOHG_InitTGridControlDatas  => TApplication():Define():Value_Pos40
+#xtranslate _OOHG_ComboRefresh           => TApplication():Define():Value_Pos41
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

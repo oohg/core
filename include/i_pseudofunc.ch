@@ -109,33 +109,37 @@
    => ;
       MsgExclamation( <c>, <t> )
 
-#xtranslate _OOHG_SetMultiple( <lMultiple>, <lWarning> ) ;
+#xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
    => ;
-      TApplication():Define():MultipleInstances( <lMultiple>, <lWarning> )
+      TApplication():Define():MultipleInstances( [ <lMultiple>, <lWarning> ] )
 
-#xtranslate SetBrowseFixedBlocks( <lValue> ) ;
+#xtranslate SetBrowseFixedBlocks( [ <lValue> ] ) ;
    => ;
-      _OOHG_BrowseFixedBlocks := <lValue>
+      _OOHG_BrowseFixedBlocks [ := <lValue> ]
 
-#xtranslate SetBrowseFixedControls( <lValue> ) ;
+#xtranslate SetBrowseFixedControls( [ <lValue> ] ) ;
    => ;
-      _OOHG_BrowseFixedControls := <lValue>
+      _OOHG_BrowseFixedControls [ := <lValue> ]
 
-#xtranslate SetBrowseSync( <lValue> ) ;
+#xtranslate SetBrowseSync( [ <lValue> ] ) ;
    => ;
-      _OOHG_BrowseSyncStatus := <lValue>
+      _OOHG_BrowseSyncStatus [ := <lValue> ]
 
-#xtranslate SetXBrowseFixedBlocks( <lValue> ) ;
+#xtranslate SetXBrowseFixedBlocks( [ <lValue> ] ) ;
    => ;
-      _OOHG_XBrowseFixedBlocks := <lValue>
+      _OOHG_XBrowseFixedBlocks [ := <lValue> ]
 
-#xtranslate SetXBrowseFixedControls( <lValue> ) ;
+#xtranslate SetXBrowseFixedControls( [ <lValue> ] ) ;
    => ;
-      _OOHG_XBrowseFixedControls := <lValue>
+      _OOHG_XBrowseFixedControls := [ <lValue> ]
 
-#xtranslate SetGridFixedControls( <lValue> ) ;
+#xtranslate SetGridFixedControls( [ <lValue> ] ) ;
    => ;
-      _OOHG_GridFixedControls := <lValue>
+      _OOHG_GridFixedControls := [ <lValue> ]
+
+#xtranslate SetComboRefresh( [ <lValue> ] ) ;
+   => ;
+      _OOHG_ComboRefresh [ := <lValue> ]
 
 #xtranslate MiniGuiVersion() ;
    => ;

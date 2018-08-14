@@ -64,8 +64,6 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_ComboRefresh := .T.
-
 CLASS TCombo FROM TLabel
 
    DATA Type                  INIT "COMBO" READONLY
@@ -1664,14 +1662,6 @@ HB_FUNC( INITLISTCOMBO )
 
 #pragma ENDDUMP
 
-
-Function SetComboRefresh( lValue )
-
-   If HB_IsLogical( lValue )
-      _OOHG_ComboRefresh := lValue
-   EndIf
-
-   Return _OOHG_ComboRefresh
 
 CLASS TEditCombo FROM TControl STATIC
 
