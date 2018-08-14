@@ -86,87 +86,49 @@ MEMVAR _HMG_PRINTER_TimeStamp
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TPrint( cLibX )
 
-   LOCAL o_Print_
+   LOCAL oPrint
 
-   IF cLibX == NIL
-      IF Type("_OOHG_PrintLibrary") == "C"
-         IF _OOHG_PrintLibrary == "HBPRINTER"
-            o_Print_ := thbprinter()
-         ELSEIF _OOHG_PrintLibrary == "MINIPRINT"
-            o_Print_ := tminiprint()
-         ELSEIF _OOHG_PrintLibrary == "DOSPRINT"
-            o_Print_ := tdosprint()
-         ELSEIF _OOHG_PrintLibrary == "TXTPRINT"
-            o_Print_ := ttxtprint()
-         ELSEIF _OOHG_PrintLibrary == "EXCELPRINT"
-            o_Print_ := texcelprint()
-         ELSEIF _OOHG_PrintLibrary == "CALCPRINT"
-            o_Print_ := tcalcprint()
-         ELSEIF _OOHG_PrintLibrary == "RTFPRINT"
-            o_Print_ := trtfprint()
-         ELSEIF _OOHG_PrintLibrary == "CSVPRINT"
-            o_Print_ := tcsvprint()
-         ELSEIF _OOHG_PrintLibrary == "HTMLPRINT"
-            o_Print_ := thtmlprint()
-         ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMCALC"
-            o_Print_ := thtmlprintfromcalc()
-         ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMEXCEL"
-            o_Print_ := thtmlprintfromexcel()
-         ELSEIF _OOHG_PrintLibrary == "PDFPRINT"
-            o_Print_ := tpdfprint()
-         ELSEIF _OOHG_PrintLibrary == "RAWPRINT"
-            o_Print_ := trawprint()
-         ELSEIF _OOHG_PrintLibrary == "SPREADSHEETPRINT"
-            o_Print_ := tspreadsheetprint()
-
-         ELSE
-            o_Print_ := thbprinter()
-         ENDIF
+   IF cLibX == NIL .OR. ! ValType( cLibX ) == "C"
+      IF Type( "_OOHG_PrintLibrary" ) == "C"
+         cLibX := _OOHG_PrintLibrary
       ELSE
-         o_Print_ := tminiprint()
-         _OOHG_PrintLibrary := "MINIPRINT"
-      ENDIF
-   ELSE
-      IF ValType( cLibX ) == "C"
-         IF cLibX == "HBPRINTER"
-            o_Print_ := thbprinter()
-         ELSEIF cLibX == "MINIPRINT"
-            o_Print_ := tminiprint()
-         ELSEIF cLibX == "DOSPRINT"
-            o_Print_ := tdosprint()
-         ELSEIF cLibX == "TXTPRINT"
-            o_Print_ := ttxtprint()
-         ELSEIF cLibX == "EXCELPRINT"
-            o_Print_ := texcelprint()
-         ELSEIF cLibX == "CALCPRINT"
-            o_Print_ := tcalcprint()
-         ELSEIF cLibX == "RTFPRINT"
-            o_Print_ := trtfprint()
-         ELSEIF cLibX == "CSVPRINT"
-            o_Print_ := tcsvprint()
-         ELSEIF cLibX == "HTMLPRINT"
-            o_Print_ := thtmlprint()
-         ELSEIF cLibX == "HTMLPRINTFROMCALC"
-            o_Print_ := thtmlprintfromcalc()
-         ELSEIF cLibX == "HTMLPRINTFROMEXCEL"
-            o_Print_ := thtmlprintfromexcel()
-         ELSEIF cLibX == "PDFPRINT"
-            o_Print_ := tpdfprint()
-         ELSEIF cLibX == "RAWPRINT"
-            o_Print_ := trawprint()
-         ELSEIF cLibX == "SPREADSHEETPRINT"
-            o_Print_ := tspreadsheetprint()
-
-         ELSE
-            o_Print_ := tminiprint()
-         ENDIF
-      ELSE
-         o_Print_ := tminiprint()
-         _OOHG_PrintLibrary := "MINIPRINT"
+         cLibX := "MINIPRINT"
       ENDIF
    ENDIF
 
-   RETURN o_Print_
+   IF cLibX == "HBPRINTER"
+      oPrint := THBPrinter()
+   ELSEIF cLibX == "MINIPRINT"
+      oPrint := TMiniPrint()
+   ELSEIF cLibX == "DOSPRINT"
+      oPrint := TDosPrint()
+   ELSEIF cLibX == "TXTPRINT"
+      oPrint := TTxtPrint()
+   ELSEIF cLibX == "EXCELPRINT"
+      oPrint := TExcelPrint()
+   ELSEIF cLibX == "CALCPRINT"
+      oPrint := TCalcPrint()
+   ELSEIF cLibX == "RTFPRINT"
+      oPrint := TRtfPrint()
+   ELSEIF cLibX == "CSVPRINT"
+      oPrint := TCsvPrint()
+   ELSEIF cLibX == "HTMLPRINT"
+      oPrint := THtmlPrint()
+   ELSEIF cLibX == "HTMLPRINTFROMCALC"
+      oPrint := THtmlPrintFromCalc()
+   ELSEIF cLibX == "HTMLPRINTFROMEXCEL"
+      oPrint := THtmlPrintFromExcel()
+   ELSEIF cLibX == "PDFPRINT"
+      oPrint := TPdfPrint()
+   ELSEIF cLibX == "RAWPRINT"
+      oPrint := TRawPrint()
+   ELSEIF cLibX == "SPREADSHEETPRINT"
+      oPrint := TSpreadsheetPrint()
+   ELSE
+      oPrint := TMiniPrint()
+   ENDIF
+
+   RETURN oPrint
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TPRINTBASE
@@ -184,7 +146,7 @@ CLASS TPRINTBASE
    DATA cPageName                 INIT ""                    READONLY    // current page name
    DATA cPort                     INIT "PRN"                 READONLY
    DATA cPrinter                  INIT ""                    READONLY
-   DATA cPrintLibrary             INIT "HBPRINTER"           READONLY
+   DATA cPrintLibrary             INIT ""                    READONLY
    DATA cTempFile                 INIT TEMP_FILE_NAME        READONLY
    DATA cUnits                    INIT "ROWCOL"              READONLY
    DATA cVersion                  INIT "(oohg-tprint)V 4.20" READONLY
@@ -330,7 +292,7 @@ METHOD SetSeparateSheets( lSeparateSheets ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetShowErrors( lShow ) CLASS TPRINTBASE
 
-   DEFAULT lShow TO .T.
+   ASSIGN lShow VALUE lShow TYPE "L" DEFAULT .T.
    ::lShowErrors := lShow
 
    RETURN Self
@@ -343,7 +305,7 @@ METHOD SetPreviewSize( nSize ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetProp( lMode ) CLASS TPRINTBASE
 
-   DEFAULT lMode TO .F.
+   ASSIGN lMode VALUE lMode TYPE "L" DEFAULT .F.
    ::lProp := lMode
 
    RETURN Self
@@ -351,7 +313,7 @@ METHOD SetProp( lMode ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetCpl( nCpl ) CLASS TPRINTBASE
 
-   DEFAULT nCpl TO 80
+   ASSIGN nCpl VALUE nCpl TYPE "N" DEFAULT 80
    DO CASE
    CASE nCpl == 60
       ::nFontSize := 14
@@ -404,10 +366,10 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
       RETURN NIL
    ENDIF
 
-   DEFAULT lSelect    TO .T.
-   DEFAULT lPreview   TO .T.
-   DEFAULT lLandscape TO .F.
-   DEFAULT lHide      TO .F.
+   ASSIGN lSelect    VALUE lSelect    TYPE "L" DEFAULT .T.
+   ASSIGN lPreview   VALUE lPreview   TYPE "L" DEFAULT .T.
+   ASSIGN lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
+   ASSIGN lHide      VALUE lHide      TYPE "L" DEFAULT .F.
 
    ::ImPreview := lPreview
    ::lLandscape := lLandscape
@@ -477,7 +439,7 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetLMargin( nLMar ) CLASS TPRINTBASE
 
-   DEFAULT nLMar TO 0
+   ASSIGN nLMar VALUE nLMar TYPE "N" DEFAULT 0
    ::nLMargin := nLMar
 
    RETURN Self
@@ -485,7 +447,7 @@ METHOD SetLMargin( nLMar ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetTMargin( nTMar ) CLASS TPRINTBASE
 
-   DEFAULT nTMar TO 0
+   ASSIGN nTMar VALUE nTMar TYPE "N" DEFAULT 0
    ::nTMargin := nTMar
 
    RETURN Self
@@ -503,7 +465,7 @@ STATIC FUNCTION Action_Timer( oLabel, oImage )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndDoc( lSaveTemp ) CLASS TPRINTBASE
 
-   DEFAULT lSaveTemp TO .F.
+   ASSIGN lSaveTemp VALUE lSaveTemp TYPE "L" DEFAULT .F.
    ::lSaveTemp := lSaveTemp
 
    ::EndDocX()
@@ -518,7 +480,7 @@ METHOD EndDoc( lSaveTemp ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetColor( atColor ) CLASS TPRINTBASE
 
-   DEFAULT atColor TO {0, 0, 0}
+   ASSIGN atColor VALUE atColor TYPE "A" DEFAULT {0, 0, 0}
    ::aColor := atColor
    ::SetColorX()
 
@@ -527,7 +489,7 @@ METHOD SetColor( atColor ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetBarColor( atColor ) CLASS TPRINTBASE
 
-   DEFAULT atColor TO {1, 1, 1}
+   ASSIGN atColor VALUE atColor TYPE "A" DEFAULT {1, 1, 1}
    ::aBarColor := atColor
 
    RETURN Self
@@ -535,15 +497,15 @@ METHOD SetBarColor( atColor ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPRINTBASE
 
-   DEFAULT cFont   TO ::cFontName
-   DEFAULT nSize   TO ::nFontSize
-   DEFAULT aColor  TO ::aFontColor
-   DEFAULT lBold   TO ::lFontBold
-   DEFAULT lItalic TO ::lFontItalic
-   DEFAULT nAngle  TO ::nFontAngle
-   DEFAULT lUnder  TO ::lFontUnderline
-   DEFAULT lStrike TO ::lFontStrikeout
-   DEFAULT nWidth  TO ::nFontWidth
+   ASSIGN cFont   VALUE cFont   TYPE "C" DEFAULT ::cFontName
+   ASSIGN nSize   VALUE nSize   TYPE "N" DEFAULT ::nFontSize
+   ASSIGN aColor  VALUE aColor  TYPE "A" DEFAULT ::aFontColor
+   ASSIGN lBold   VALUE lBold   TYPE "L" DEFAULT ::lFontBold
+   ASSIGN lItalic VALUE lItalic TYPE "L" DEFAULT ::lFontItalic
+   ASSIGN nAngle  VALUE nAngle  TYPE "N" DEFAULT ::nFontAngle
+   ASSIGN lUnder  VALUE lUnder  TYPE "L" DEFAULT ::lFontUnderline
+   ASSIGN lStrike VALUE lStrike TYPE "L" DEFAULT ::lFontStrikeout
+   ASSIGN nWidth  VALUE nWidth  TYPE "N" DEFAULT ::nFontWidth
 
    ::cFontName      := cFont
    ::nFontSize      := nSize
@@ -592,15 +554,12 @@ METHOD GetDefPrinter() CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetUnits( cUnitsX, nUnitsLinX ) CLASS TPRINTBASE
 
-   DEFAULT cUnitsX TO "ROWCOL"
-   cUnitsX := Upper( cUnitsX )
-   IF cUnitsX == "MM"
+   IF HB_ISSTRING( cUnitsX ) .AND. Upper( cUnitsX ) == "MM"
       ::cUnits := "MM"
    ELSE
       ::cUnits := "ROWCOL"
    ENDIF
-   DEFAULT nUnitsLinX TO 1
-   ::nUnitsLin := nUnitsLinX
+   ASSIGN ::nUnitsLin VALUE nUnitsLinX TYPE "N" DEFAULT 1
 
    RETURN Self
 
@@ -609,19 +568,19 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
 
    LOCAL cText, cSpace, uAux, cType
 
-   DEFAULT nLin    TO 1
-   DEFAULT nCol    TO 1
-   DEFAULT cFont   TO ::cFontName
-   DEFAULT nSize   TO ::nFontSize
-   DEFAULT lBold   TO ::lFontBold
-   DEFAULT aColor  TO ::aFontColor
-   DEFAULT cAlign  TO "L"
-   DEFAULT nLen    TO 15
-   DEFAULT lItalic TO ::lFontItalic
-   DEFAULT nAngle  TO ::nFontAngle
-   DEFAULT lUnder  TO ::lFontUnderline
-   DEFAULT lStrike TO ::lFontStrikeout
-   DEFAULT nWidth  TO ::nFontWidth
+   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   ASSIGN cFont   VALUE cFont   TYPE "C" DEFAULT ::cFontName
+   ASSIGN nSize   VALUE nSize   TYPE "N" DEFAULT ::nFontSize
+   ASSIGN lBold   VALUE lBold   TYPE "L" DEFAULT ::lFontBold
+   ASSIGN aColor  VALUE aColor  TYPE "A" DEFAULT ::aFontColor
+   ASSIGN cAlign  VALUE cAlign  TYPE "C" DEFAULT "L"
+   ASSIGN nLen    VALUE nLen    TYPE "N" DEFAULT 15
+   ASSIGN lItalic VALUE lItalic TYPE "L" DEFAULT ::lFontItalic
+   ASSIGN nAngle  VALUE nAngle  TYPE "N" DEFAULT ::nFontAngle
+   ASSIGN lUnder  VALUE lUnder  TYPE "L" DEFAULT ::lFontUnderline
+   ASSIGN lStrike VALUE lStrike TYPE "L" DEFAULT ::lFontStrikeout
+   ASSIGN nWidth  VALUE nWidth  TYPE "N" DEFAULT ::nFontWidth
 
    cType := ValType( uData )
    DO WHILE cType == "B"
@@ -691,14 +650,14 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
 
    LOCAL nSize := 10
 
-   DEFAULT nHeight  TO 10
-   DEFAULT nWidth   TO NIL
-   DEFAULT cBarcode TO ""
-   DEFAULT lHori    TO .T.
-   DEFAULT aColor   TO ::aBarColor
-   DEFAULT cType    TO "CODE128C"
-   DEFAULT nLin     TO 1
-   DEFAULT nCol     TO 1
+   ASSIGN nHeight  VALUE nHeight  TYPE "N" DEFAULT 10
+   ASSIGN nWidth   VALUE nWidth   TYPE "N" DEFAULT NIL
+   ASSIGN cBarcode VALUE cBarcode TYPE "C" DEFAULT ""
+   ASSIGN lHori    VALUE lHori    TYPE "L" DEFAULT .T.
+   ASSIGN aColor   VALUE aColor   TYPE "A" DEFAULT ::aBarColor
+   ASSIGN cType    VALUE cType    TYPE "C" DEFAULT "CODE128C"
+   ASSIGN nLin     VALUE nLin     TYPE "N" DEFAULT 1
+   ASSIGN nCol     VALUE nCol     TYPE "N" DEFAULT 1
 
    cBarcode := Upper( cBarcode )
 
@@ -750,14 +709,9 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL nLen := 0
+   ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
-   DEFAULT nHeigth TO 1.5
-   IF lHorz
-      ::Go_Code( _Upc( cCode, 7 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ELSE
-      ::Go_Code( _Upc( cCode, 7 ), nRow, nCol + nLen, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ENDIF
+   ::Go_Code( _Upc( cCode, 7 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
    ::Go_Code( _Ean13bl( 8 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
@@ -765,14 +719,9 @@ METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBAS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL nLen := 0
+   ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
-   DEFAULT nHeigth TO 1.5
-   IF lHorz
-      ::Go_Code( _Ean13( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ELSE
-      ::Go_Code( _Ean13( cCode, ::lShowErrors ), nRow, nCol + nLen, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ENDIF
+   ::Go_Code( _Ean13( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
    ::Go_Code( _Ean13bl( 12 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
@@ -787,32 +736,23 @@ METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL lCheck := .T.
-
-   ::Go_Code( _Code3_9( cCode, lCheck, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Code3_9( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL lCheck := .T.
-
-   ::Go_Code( _Int25( cCode, lCheck, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Int25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL nLen := 0
+   ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
-   DEFAULT nHeigth TO 1.5
-   IF lHorz
-      ::Go_Code( _Upc( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ELSE
-      ::Go_Code( _Upc( cCode ), nRow, nCol + nLen, lHorz, aColor, nWidth, nHeigth * 0.90 )
-   ENDIF
+   ::Go_Code( _Upc( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
    ::Go_Code( _Upcabl( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
@@ -834,18 +774,14 @@ METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL lCheck := .T.
-
-   ::Go_Code( _Ind25( cCode, lCheck, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Ind25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
 
-   LOCAL lCheck := .T.
-
-   ::Go_Code( _Mat25( cCode, lCheck, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ::Go_Code( _Mat25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
 
@@ -854,12 +790,12 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
 
    LOCAL n
 
-   DEFAULT ny     TO 0
-   DEFAULT nx     TO 0
-   DEFAULT aColor TO { 0, 0, 0 }
-   DEFAULT lHorz  TO .T.
-   DEFAULT nWidth TO 0.495           // 1/3 M/mm 0.25 width
-   DEFAULT nLen   TO 15             // mm height
+   ASSIGN ny     VALUE ny     TYPE "N" DEFAULT 0
+   ASSIGN nx     VALUE nx     TYPE "N" DEFAULT 0
+   ASSIGN aColor VALUE aColor TYPE "A" DEFAULT { 0, 0, 0 }
+   ASSIGN lHorz  VALUE lHorz  TYPE "L" DEFAULT .T.
+   ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT 0.495           // 1/3 M/mm 0.25 width
+   ASSIGN nLen   VALUE nLen   TYPE "N" DEFAULT 15              // mm height
 
    FOR n := 1 TO Len( cBarcode )
       IF SubStr( cBarcode, n, 1 ) == '1'
@@ -884,11 +820,11 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPRINTBASE
 
-   DEFAULT nLin   TO 1
-   DEFAULT nCol   TO 1
-   DEFAULT cImage TO ""
-   DEFAULT nLinF  TO 4
-   DEFAULT nColF  TO 4
+   ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
+   ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
+   ASSIGN cImage VALUE cImage TYPE "C" DEFAULT ""
+   ASSIGN nLinF  VALUE nLinF  TYPE "N" DEFAULT 4
+   ASSIGN nColF  VALUE nColF  TYPE "N" DEFAULT 4
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -913,13 +849,13 @@ METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPRIN
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPRINTBASE
 
-   DEFAULT nLin    TO 1
-   DEFAULT nCol    TO 1
-   DEFAULT nLinF   TO 4
-   DEFAULT nColF   TO 4
-   DEFAULT atColor TO ::aColor
-   DEFAULT ntwPen  TO ::nwPen
-   DEFAULT lSolid  TO .T.
+   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
+   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
+   ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
+   ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
+   ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -944,14 +880,14 @@ METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPRI
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPRINTBASE
 
-   DEFAULT nLin    TO 1
-   DEFAULT nCol    TO 1
-   DEFAULT nLinF   TO 4
-   DEFAULT nColF   TO 4
-   DEFAULT atColor TO ::aColor
-   DEFAULT ntwPen  TO ::nwPen
-   DEFAULT lSolid  TO .T.
-   DEFAULT arColor TO {255, 255, 255}
+   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
+   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
+   ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
+   ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
+   ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
+   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT {255, 255, 255}
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -976,14 +912,14 @@ METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPRINTBASE
 
-   DEFAULT nLin    TO 1
-   DEFAULT nCol    TO 1
-   DEFAULT nLinF   TO 4
-   DEFAULT nColF   TO 4
-   DEFAULT atColor TO ::aColor
-   DEFAULT ntwPen  TO ::nwPen
-   DEFAULT lSolid  TO .T.
-   DEFAULT arColor TO {255, 255, 255}
+   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
+   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
+   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
+   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
+   ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
+   ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
+   ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
+   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT {255, 255, 255}
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -1620,14 +1556,14 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    LOCAL nOrientation, lSucess, nCollate, nColor
 
-   DEFAULT nPaperSize   TO -999
-   DEFAULT nRes         TO -999
-   DEFAULT nBin         TO -999
-   DEFAULT nDuplex      TO -999
-   DEFAULT nCopies      TO -999
-   DEFAULT nScale       TO -999
-   DEFAULT nPaperLength TO -999
-   DEFAULT nPaperWidth  TO -999
+   ASSIGN nPaperSize   VALUE nPaperSize   TYPE "N" DEFAULT -999
+   ASSIGN nRes         VALUE nRes         TYPE "N" DEFAULT -999
+   ASSIGN nBin         VALUE nBin         TYPE "N" DEFAULT -999
+   ASSIGN nDuplex      VALUE nDuplex      TYPE "N" DEFAULT -999
+   ASSIGN nCopies      VALUE nCopies      TYPE "N" DEFAULT -999
+   ASSIGN nScale       VALUE nScale       TYPE "N" DEFAULT -999
+   ASSIGN nPaperLength VALUE nPaperLength TYPE "N" DEFAULT -999
+   ASSIGN nPaperWidth  VALUE nPaperWidth  TYPE "N" DEFAULT -999
 
    IF lLandscape
       nOrientation := PRINTER_ORIENT_LANDSCAPE
@@ -2633,7 +2569,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
 
-   DEFAULT lPreview TO .T.
+   ASSIGN lPreview VALUE lPreview TYPE "L" DEFAULT .T.
    ::ImPreview := lPreview
 
    ::cPrinter := "TXT"
@@ -3409,7 +3345,7 @@ METHOD InitX() CLASS TRTFPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetCpl( nCpl ) CLASS TRTFPRINT
 
-   DEFAULT nCpl to 96
+   ASSIGN nCpl VALUE nCpl TYPE "N" DEFAULT 96
    DO CASE
    CASE nCpl == 60
       ::nFontSize := 14
@@ -4058,7 +3994,7 @@ FUNCTION ParseName( cName, cExt, lInvSlash )
 
    LOCAL i, cLongName, lExt
 
-   DEFAULT lInvSlash TO .F.
+   ASSIGN lInvSlash VALUE lInvSlash TYPE "L" DEFAULT .F.
    cExt := Lower( cExt )
 
    // remove extension if there's one
@@ -4274,8 +4210,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
 
-   DEFAULT lLandscape TO .F.
-   DEFAULT nPaperSize TO 0
+   ASSIGN lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
+   ASSIGN nPaperSize VALUE nPaperSize TYPE "N" DEFAULT 0
 
    ::cPageOrient := iif( lLandscape, "L", "P" )
    nPos := AScan( ::aPaper, { | x | x[ 1 ] == nPaperSize } )
@@ -4700,7 +4636,7 @@ FUNCTION _Codabar( cCode, lShowErrors )
 
    LOCAL n, cBarcode := '', nCar
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
@@ -4831,7 +4767,7 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
    LOCAL cTemp, n, nCar, nCount := 0
    LOCAL lCodeC := .F., lCodeA := .F.
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
@@ -4976,14 +4912,14 @@ FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
 
    LOCAL cCar, m, n, cBarcode := '', nCheck := 0
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
-   DEFAULT lCheck TO .F.
+   ASSIGN lCheck VALUE lCheck TYPE "L" DEFAULT .F.
 
    cCode := Upper( cCode )
    IF Len( cCode ) > 32
@@ -5015,7 +4951,7 @@ FUNCTION _Ean13( cCode, lShowErrors )
 
    LOCAL cBarcode, nChar, cLeft, cRight, cString, cMask, k, n
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
@@ -5092,8 +5028,8 @@ FUNCTION _Upc( cCode, nLen )
 
    LOCAL n, cBarcode, nChar, cLeft, cRight, k
 
-   DEFAULT cCode TO '0'
-   DEFAULT nLen TO 11
+   ASSIGN cCode VALUE cCode TYPE "C" DEFAULT '0'
+   ASSIGN nLen  VALUE nLen  TYPE "N" DEFAULT 11
    nLen := iif( nLen == 11, 11, 7 )               // valid values for nLen are 11 and 7
 
    k := Left( AllTrim( cCode ) + '000000000000', nLen )
@@ -5177,7 +5113,7 @@ FUNCTION _Sup5( cCode, lShowErrors )
 
    LOCAL k, cControl, n, cBarcode := '1011', nCar
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
@@ -5224,14 +5160,14 @@ FUNCTION _Int25( cCode, lMode, lShowErrors )
 
    LOCAL n, cBarCode :='', cLeft, cRight, nLen, nCheck := 0, cPre, m
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
-   DEFAULT lMode TO .T.
+   ASSIGN lMode VALUE lMode TYPE "L" DEFAULT .T.
 
    cCode := Transform( cCode, '@9' )     // get rid of characters
    nLen := Len( cCode )
@@ -5282,14 +5218,14 @@ FUNCTION _Mat25( cCode, lCheck, lShowErrors )
 
    LOCAL cPre, cBarcode := '', nCheck, n
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
-   DEFAULT lCheck TO .F.
+   ASSIGN lCheck VALUE lCheck TYPE "L" DEFAULT .F.
 
    cCode := Transform( cCode, '@9' ) // get rid of characters
    IF lCheck
@@ -5326,14 +5262,14 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
 
    LOCAL cPre, cBarCode := '', nCheck, n
 
-   DEFAULT lShowErrors TO .T.
+   ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
          MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
       ENDIF
       RETURN NIL
    ENDIF
-   DEFAULT lCheck TO .F.
+   ASSIGN lCheck VALUE lCheck TYPE "L" DEFAULT .F.
 
    cCode := Transform( cCode, '@9' ) // // get rid of characters
    IF lCheck
