@@ -1350,7 +1350,8 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
    ::ParentDefaults( FontName, FontSize, FontColor, lNoProc )
 
    If HB_IsLogical( lEditBox ) .AND. lEditBox
-      // Background Color (edit or listbox):
+      /* Background color for browse, combobox, datepicker, editbox, grid, hotkeybox,
+         ipaddress, listbox, richeditbox, spinner, textbox, tree and xbrowse controls */
       If ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
@@ -1366,7 +1367,10 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
           // Default
       EndIf
    Else
-      // Background Color (static):
+      /* Background color for activex, animatebox, button, checkbox, frame, hotkey, image,
+         internal, label, menu, menuitem, monthcal, multipage, notifyicon, picture, player,
+         progressbar, progressmeter, radiogroup, radioitem, scrollbar, scrollbutton, slider,
+         splitbox, messagebar, tab, textarray, timer, toolbar, toolbutton and tooltip controls */
       If ValType( BkColor ) $ "ANCM"
          // Specified color
          ::BackColor := BkColor
@@ -1857,10 +1861,10 @@ METHOD DoChange() CLASS TControl
 HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
 // -----------------------------------------------------------------------------
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    ULONG lData;
 
@@ -1920,19 +1924,17 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          _OOHG_Send( pSelf, s_Super );
          hb_vmSend( 0 );
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-         hb_vmPushLong( ( LONG ) hWnd );
+         HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
    }
 }
 
-/*
- * METHOD Events_Color( wParam, nDefColor ) CLASS TControl
- */
-HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor ) CLASS TControl -> hBrush */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1944,6 +1946,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
       SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
    }
 
+   /* Note: this works for STATIC controls only (e.g. LABEL) */
    _OOHG_Send( pSelf, s_Transparent );
    hb_vmSend( 0 );
    if( hb_parl( -1 ) )
@@ -1952,7 +1955,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
       oSelf->lOldBackColor = -1;
-      hb_retnl( (LONG) oSelf->BrushHandle );
+      HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
       return;
    }
 
@@ -1968,8 +1971,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = CreateSolidBrush( lBackColor );
    }
-   hb_retnl( ( LONG ) oSelf->BrushHandle );
-
+   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
 }
 
 /*
@@ -1991,11 +1993,13 @@ HB_FUNC( EVENTS_COLOR_INTAB )
    PHB_ITEM pBkGrnd;
    POCTRL oBkGrnd;
 
+   /* Set font's color */
    if( oSelf->lFontColor != -1 )
    {
       SetTextColor( hdc, (COLORREF) oSelf->lFontColor );
    }
 
+   /* Check if the control has a valid BACKGROUND object */
    _OOHG_Send( pSelf, s_oBkGrnd );
    hb_vmSend( 0 );
    pBkGrnd = hb_param( -1, HB_IT_OBJECT );
@@ -2005,6 +2009,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       hwnd = oBkGrnd->hWnd;
    }
 
+   /* If it has no BACKGROUND then check if it's inside a TAB */
    if( ! ValidHandler( hwnd ) )
    {
       _OOHG_Send( pSelf, s_TabHandle );
@@ -2038,7 +2043,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
                oSelf->lOldBackColor = -1;
                OldBrush = SelectObject( hdc, oSelf->BrushHandle );
                DeleteObject( OldBrush );
-               hb_retnl( (LONG) oSelf->BrushHandle );
+               HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
                return;
             }
 
@@ -2054,15 +2059,12 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             DeleteObject( oSelf->BrushHandle );
             oSelf->BrushHandle = GetTabBrush( hwnd );
             oSelf->lOldBackColor = -1;
-
-            pt.x = 0;
-            pt.y = 0;
+            pt.x = 0; pt.y = 0;
             MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
             SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
             OldBrush = SelectObject( hdc, oSelf->BrushHandle );
             DeleteObject( OldBrush );
-
-            hb_retnl( (LONG) oSelf->BrushHandle );
+            HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
             return;
          }
       }
@@ -2082,47 +2084,48 @@ HB_FUNC( EVENTS_COLOR_INTAB )
             hb_vmSend( 0 );
             hwnd = HWNDparam( -1 );
 
+            /* Paint using a brush derived from the BACKGROUND object or the TAB */
             if( ValidHandler( hwnd ) )
             {
                SetBkMode( hdc, TRANSPARENT );
                DeleteObject( oSelf->BrushHandle );
                oSelf->BrushHandle = GetTabBrush( hwnd );
                oSelf->lOldBackColor = -1;
-
-               pt.x = 0;
-               pt.y = 0;
+               pt.x = 0; pt.y = 0;
                MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
                SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
                OldBrush = SelectObject( hdc, oSelf->BrushHandle );
                DeleteObject( OldBrush );
-
-               hb_retnl( (LONG) oSelf->BrushHandle );
+               HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
                return;
             }
          }
       }
 
+      /* Check if the control has TRANSPARENT clause */
       _OOHG_Send( pSelf, s_Transparent );
       hb_vmSend( 0 );
       if( hb_parl( -1 ) )
       {
+         /* Paint using a NULL brush */
          SetBkMode( hdc, TRANSPARENT );
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
          oSelf->lOldBackColor = -1;
          OldBrush = SelectObject( hdc, oSelf->BrushHandle );
          DeleteObject( OldBrush );
-         hb_retnl( (LONG) oSelf->BrushHandle );
+         HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
          return;
       }
 
+      /* Paint using BACKCOLOR */
+      /* Note: this works for STATIC controls only (e.g. LABEL) */
       lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
       if( lBackColor == -1 )
       {
          lBackColor = hb_parnl( 3 );           // nDefColor
       }
    }
-
    SetBkColor( hdc, (COLORREF) lBackColor );
    if( lBackColor != oSelf->lOldBackColor )
    {
@@ -2132,8 +2135,7 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       OldBrush = SelectObject( hdc, oSelf->BrushHandle );
       DeleteObject( OldBrush );
    }
-
-   hb_retnl( (LONG) oSelf->BrushHandle );
+   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP
