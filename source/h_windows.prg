@@ -679,7 +679,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_CTLCOLORBTN:
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushLong( wParam );
+         hb_vmPushNumInt( wParam );
          hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
          hb_vmSend( 2 );
          break;
@@ -687,15 +687,15 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushLong( wParam );
+         hb_vmPushNumInt( wParam );
          hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
          hb_vmSend( 2 );
          break;
 
       case WM_NOTIFY:
          _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom ), s_Events_Notify );
-         hb_vmPushLong( wParam );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 2 );
          break;
 
@@ -764,7 +764,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                hb_itemRelease( pControl );
                // By handle
                _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Command );
-               hb_vmPushLong( wParam );
+               hb_vmPushNumInt( wParam );
                hb_vmSend( 1 );
             }
          }
@@ -777,7 +777,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
 
       case WM_DRAWITEM:
          _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
          break;
 
@@ -790,7 +790,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          {
             _OOHG_Send( _OOHG_LastSelf, s_Events_MeasureItem );
          }
-         hb_vmPushLong( lParam );
+         hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
          break;
 
@@ -887,13 +887,13 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          if( lParam )
          {
             _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_HScroll );
-            hb_vmPushLong( wParam );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_HScroll );
-            hb_vmPushLong( wParam );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          break;
@@ -902,13 +902,13 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          if( lParam )
          {
             _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_VScroll );
-            hb_vmPushLong( wParam );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( wParam );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          break;
@@ -956,7 +956,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          if( message == _OOHG_ListBoxDragNotification )
          {
             _OOHG_Send( GetControlObjectByHandle( ( (LPDRAGLISTINFO) lParam )->hWnd ), s_Events_Drag );
-            hb_vmPushLong( lParam );
+            hb_vmPushNumInt( lParam );
             hb_vmSend( 1 );
          }
          else
@@ -973,8 +973,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
                HWNDpush( hWnd );
                hb_vmPushLong( message );
-               hb_vmPushLong( wParam );
-               hb_vmPushLong( lParam );
+               hb_vmPushNumInt( wParam );
+               hb_vmPushNumInt( lParam );
                hb_vmPush( pSelf );
                hb_vmDo( 5 );
             }
