@@ -88,6 +88,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD Define
    METHOD Define3
    METHOD Delete
+   METHOD DeleteItem
    METHOD DoChange
    METHOD Down
    METHOD EditAllCells
@@ -167,7 +168,6 @@ CLASS TOBrowse FROM TXBrowse
       CountPerPage
       Define2
       DeleteAllItems
-      DeleteItem
       EditCell2
       EditItem2
       Events_Enter
@@ -1013,6 +1013,13 @@ METHOD Delete() CLASS TOBrowse
 
    Return Self
 
+METHOD DeleteItem( nItem ) CLASS TOBrowse
+
+   _OOHG_DeleteArrayItem( ::GridForeColor, nItem )
+   _OOHG_DeleteArrayItem( ::GridBackColor, nItem )
+
+   RETURN ListViewDeleteString( ::hWnd, nItem )
+
 METHOD EditItem_B( lAppend ) CLASS TOBrowse
 
    Local _RecNo, nItem, cWorkArea, lRet, nNewRec
@@ -1611,10 +1618,16 @@ METHOD DoChange() CLASS TOBrowse
 
 METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 
+   /* This method is intended to be called by the class
+    * and must be followed by ::BrowseOnChange before
+    * returning to the calling program so the position
+    * of the DFB and ::nRecLastValue are updated and
+    * the OnChange event is fired.
+    */
+
    If nRow < 1 .OR. nRow > Len( ::aRecMap )
       ListView_ClearCursel( ::hWnd, 0 )
    Else
-      ::nRecLastValue := ::aRecMap[ nRow ]
       ListView_SetCursel( ::hWnd, nRow )
       If ! ::lNoVSB
          ::VScroll:Value += d
@@ -1624,22 +1637,6 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
 
    Return Self
 
-/*
-METHOD FastUpdate( d, nRow ) CLASS TOBrowse
-
-   HB_SYMBOL_UNUSED( d )
-
-   If nRow < 1 .OR. nRow > Len( ::aRecMap )
-      ListView_ClearCursel( ::hWnd, 0 )
-   Else
-      ::nRecLastValue := ::aRecMap[ nRow ]
-      ListView_SetCursel( ::hWnd, nRow )
-   EndIf
-   ::nRowPos := ::FirstSelectedItem
-   ::VScrollUpdate()
-
-   Return Self
-*/
 METHOD VScrollUpdate() CLASS TOBrowse
 
    LOCAL cWorkArea, nRecCount, nRecNo, _RecNo, nPos
@@ -1699,7 +1696,6 @@ METHOD VScrollUpdate() CLASS TOBrowse
 
    RETURN NIL
 
-
 METHOD CurrentRow( nValue ) CLASS TOBrowse
 
    If ValType( nValue ) == "N"
@@ -1710,6 +1706,7 @@ METHOD CurrentRow( nValue ) CLASS TOBrowse
       EndIf
       ::nRowPos := ::FirstSelectedItem
       ::VScrollUpdate()
+      RETURN ::nRowPos
    EndIf
 
    Return ::FirstSelectedItem
@@ -1770,15 +1767,14 @@ METHOD Refresh() CLASS TOBrowse
    ::Update()
 
    ::CurrentRow := aScan( ::aRecMap, v )
-   ::nRecLastValue := v
 
    ::DbGoTo( _RecNo )
+
+   // Don't call ::BrowseOnChange, the record wasn't changed.
 
    Return Self
 
 METHOD Value( uValue ) CLASS TOBrowse
-
-   Local nItem
 
    If ValType( uValue ) == "N"
       ::SetValue( uValue )
@@ -1786,9 +1782,9 @@ METHOD Value( uValue ) CLASS TOBrowse
    If Select( ::WorkArea ) == 0
       uValue := 0
    Else
-      nItem := ::CurrentRow
-      If nItem > 0 .AND. nItem <= Len( ::aRecMap )
-         uValue := ::aRecMap[ nItem ]
+      ::nRowPos := ::CurrentRow
+      If ::RowPos > 0 .AND. ::nRowPos <= Len( ::aRecMap )
+         uValue := ::aRecMap[ ::nRowPos ]
       Else
          uValue := 0
       EndIf
@@ -2219,6 +2215,7 @@ CLASS TOBrowseByCell FROM TOBrowse
       DbGoTo
       DbSkip
       Define
+      DeleteItem
       FastUpdate
       Refresh
       RefreshData
@@ -2236,7 +2233,6 @@ CLASS TOBrowseByCell FROM TOBrowse
       ColumnsAutoFit
       ColumnsAutoFitH
       ColumnWidth
-      CurrentRow
       Define4
       EditItem
       Enabled
@@ -2273,7 +2269,6 @@ CLASS TOBrowseByCell FROM TOBrowse
       CountPerPage
       Define2
       DeleteAllItems
-      DeleteItem
       EditItem2
       Events_Enter
       FirstColInOrder
@@ -2462,7 +2457,7 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TOBrowseByCell
 
 METHOD Value( uValue ) CLASS TOBrowseByCell
 
-   Local nItem
+   Local nItem, nRowPos, nColPos
 
    If HB_IsArray( uValue ) .AND. Len( uValue ) > 1
       If HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 0
@@ -2477,22 +2472,13 @@ METHOD Value( uValue ) CLASS TOBrowseByCell
    EndIf
 
    If Select( ::WorkArea ) == 0
-      ::CurrentRow := 0
-      ::nColPos := 0
-      ::nRecLastValue := 0
-      uValue := { 0, 0 }
-   ElseIf ::ItemCount == 0
-      ::CurrentRow := 0
-      ::nColPos := 0
-      ::nRecLastValue := 0
       uValue := { 0, 0 }
    Else
-      ::nRowPos := ::CurrentRow
-      If ::nRowPos > 0 .AND. ::nRowPos <= Len( ::aRecMap ) .AND. ::nColPos >= 1 .AND. ::nColPos <= Len( ::aHeaders )
-         uValue := { ::aRecMap[ ::nRowPos ], ::nColPos }
+      nRowPos := ::CurrentRow
+      nColPos := ::CurrentCol
+      If nRowPos > 0 .AND. nRowPos <= Len( ::aRecMap ) .AND. nColPos >= 1 .AND. nColPos <= Len( ::aHeaders )
+         uValue := { ::aRecMap[ nRowPos ], nColPos }
       Else
-         ::CurrentRow := 0
-         ::nColPos := 0
          uValue := { 0, 0 }
       EndIf
    EndIf
@@ -2856,9 +2842,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
             ::BrowseOnChange()
          ElseIf ::lNoneUnsels
             ::CurrentRow := 0
+            ::CurrentCol := 0
             ::BrowseOnChange()
          Else
             ::CurrentRow := ::nRowPos
+            ::CurrentCol := ::nColPos
          EndIf
       EndIf
       Return Nil
@@ -3609,12 +3597,14 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
       Else
          If ::lNoneUnsels
             ::CurrentRow := 0
+            ::CurrentCol := 0
             ::BrowseOnChange()
          EndIf
       EndIf
    Else
       If ::lNoneUnsels
          ::CurrentRow := 0
+         ::CurrentCol := 0
          ::BrowseOnChange()
       EndIf
    EndIf
@@ -3863,6 +3853,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
          ::CurrentRow := s
       Else
          ::CurrentRow := Len( ::aRecMap )
+         ::CurrentCol := aBefore[ 2 ]
       EndIf
    Else
       ::FastUpdate( ::CountPerPage - s, Len( ::aRecMap ) )
