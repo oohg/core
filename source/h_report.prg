@@ -231,35 +231,35 @@ METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,
    ELSE
       oPrint := TPrint()
       oPrint:Init()
-      IF     oPrint:cPrintLibrary := "MINIPRINT"
-      ELSEIF oPrint:cPrintLibrary := "HBPRINTER"
-      ELSEIF oPrint:cPrintLibrary := "DOSPRINT"
+      IF     oPrint:cPrintLibrary == "MINIPRINT"
+      ELSEIF oPrint:cPrintLibrary == "HBPRINTER"
+      ELSEIF oPrint:cPrintLibrary == "DOSPRINT"
          IF ncpl <= 80
             oPrint:NormalDos()
          ELSE
             oPrint:CondenDos()
          ENDIF
-      ELSEIF oPrint:cPrintLibrary := "TXTPRINT"
-      ELSEIF oPrint:cPrintLibrary := "RAWPRINT"
+      ELSEIF oPrint:cPrintLibrary == "TXTPRINT"
+      ELSEIF oPrint:cPrintLibrary == "RAWPRINT"
          IF ncpl <= 80
             oPrint:NormalDos()
          ELSE
             oPrint:CondenDos()
          ENDIF
-      ELSEIF oPrint:cPrintLibrary := "EXCELPRINT"
+      ELSEIF oPrint:cPrintLibrary == "EXCELPRINT"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "SPREADSHEETPRINT"
+      ELSEIF oPrint:cPrintLibrary == "SPREADSHEETPRINT"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "HTMLPRINTFROMEXCEL"
+      ELSEIF oPrint:cPrintLibrary == "HTMLPRINTFROMEXCEL"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "HTMLPRINTFROMCALC"
+      ELSEIF oPrint:cPrintLibrary == "HTMLPRINTFROMCALC"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "RTFPRINT"
+      ELSEIF oPrint:cPrintLibrary == "RTFPRINT"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "CSVPRINT"
+      ELSEIF oPrint:cPrintLibrary == "CSVPRINT"
          lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary := "PDFPRINT"
-      ELSEIF oPrint:cPrintLibrary := "CALCPRINT"
+      ELSEIF oPrint:cPrintLibrary == "PDFPRINT"
+      ELSEIF oPrint:cPrintLibrary == "CALCPRINT"
          lExcel := .T.
       ENDIF
    ENDIF
