@@ -8,6 +8,58 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-08-16 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     - DATA DefBkColorTab.
+     - DATA DefBkColorTabPage.
+   * core\include\i_tab.ch
+     + LEFT clause to TAB, equivalent to VERTICAL.
+     + ON CLICK, ON RCLICK, RIGHT, BOTTOM, FIXEDWIDTH, LABELLEFT,
+       ICONLEFT, ITEMSIZE, MINWIDTH, PADDING, RIGHTJUSTIFY,
+       RAGGEDRIGHT and SCROLLOP clauses.
+       ; LEFT and RIGHT controls use old XP style (gray background)
+         TOP and BOTTOM controls use new style (white background).
+       ; ITEMSIZE must be used with FIXEDWIDTH.
+       ; ICONLEFT must be used with FIXEDWIDTH.
+         LABELLEFT must be used with FIXEDWIDTH and ICONLEFT.
+         Note that, by default, the icon and the text are centered.
+       ; MULTILINE implies RIGHJUSTIFY.
+       ; RAGGEDRIGHT must be used with MULTILINE.
+       ; SCROLLOP implies MULTILINE.
+     + POSITION and TOOLTIP clauses to TAB pages.
+   * core\source\h_tab.prg
+     * Some format.
+     + Support for new clauses.
+     + DATA aToolTips to TTabRaw class.
+     + DATA DefaultToolTip to TTabRaw class.
+     + METHOD TabToolTip to TTabRaw class.
+     + METHOD MinTabWidth to TTabRaw class.
+     + METHOD ItemSize to TTabRaw class.
+     + METHOD ItemAtPos to TTabRaw class.
+     + METHOD SetPadding to TTabRaw class.
+     - WM_RBUTTONDOWN handler from TTabRaw:Events.
+     * The backcolor is no longer set to -1. When the app has no
+       visual style or when the TAB has TCS_BUTTONS or TCS_VERTICAL
+       style, backcolor is set to COLOR_BTNFACE. In other cases is
+       set to COLOR_WINDOW.
+     + DATA cToolTip to TTabPageInternal.
+     + METHOD ToolTip to TTabPageInternal.
+     % Function TabCtrl_SetCurSel.
+     + Function TabCtrl_HitTest at C level.
+     + Function TabCtrl_SetItemSize at C level.
+     + Function TabCtrl_SetMinTabWidth at C level.
+     + Function TabCtrl_SetPadding at C level.
+     ! Controls inside the TAB are not displayed properly when the
+       TAB is defined outside DEFINE WINDOW / END WINDOW structure.
+
+2018-08-16 10:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     ! RTE "TBrowse:RowPos not found".
+
 2018-08-14 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_report.prg
      * TReport() no longer sets or gets _OOHG_PrintLibrary.
