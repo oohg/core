@@ -232,6 +232,8 @@ CLASS TWindow
    DATA lProcMsgsOnVisible        INIT .T.
 
    DATA DefBkColorEdit            INIT Nil
+   DATA DefBkColorTab             INIT NIL
+   DATA DefBkColorTabPage         INIT NIL
 
    DATA ClientAdjust              INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
    DATA IsAdjust                  INIT .F.

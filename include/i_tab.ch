@@ -61,7 +61,7 @@
 
 #command DEFINE TAB <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
       AT <row>, <col> ;
       WIDTH <w> ;
       HEIGHT <h> ;
@@ -76,8 +76,7 @@
       [ <buttons: BUTTONS> ] ;
       [ <flat: FLAT> ] ;
       [ <hottrack: HOTTRACK> ] ;
-      [ <vertical: VERTICAL, LEFT> ] ;
-      [ <dummy02: ONRCLICK, ON RCLICK> <rclick> ] ;
+      [ <vertical: VERTICAL> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <rtl: RTL> ] ;
@@ -87,56 +86,40 @@
       [ <disabled: DISABLED> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <noproc: DELAYMSGS> ] ;
-      [ <right: RIGHT> ] ;
-      [ <bottom: BOTTOM> ] ;
-      [ <ragged: RAGGEDRIGHT> ] ;
-      [ <fwidth: FIXEDWIDTH> ] ;
-      [ ITEMSIZE <nw>, <nh> ] ;
-      [ MINWIDTH <min> ] ;
-      [ PADDING <hor>, <ver> ] ;
-      [ BACKCOLOR <backcolor> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
             <value>, <f>, <s>, <tooltip>, <{change}>, <.buttons.>, <.flat.>, ;
-            <.hottrack.>, <.vertical.>, <.notabstop.>, NIL, <.bold.>, <.italic.>, ;
+            <.hottrack.>, <.vertical.>, <.notabstop.>,, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
-            <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.>, ;
-            <.right.>, <.bottom.>, <{rclick}>, <.ragged.>, <.fwidth.>, NIL, ;
-            <nw>, <nh>, <min>, <hor>, <ver>, <backcolor> )
+            <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.> )
 
 #command PAGE <caption> ;
       [ IMAGE <image> ] ;
       [ NAME <name> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ POSITION <position> ] ;
-      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command DEFINE PAGE <caption> ;
       [ IMAGE <image> ] ;
       [ NAME <name> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ POSITION <position> ] ;
-      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command DEFINE TAB PAGE <caption> ;
       [ IMAGE <image> ] ;
       [ NAME <name> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ POSITION <position> ] ;
-      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>,, <(name)>, [ <subclass>() ] )
 
 #command END PAGE ;
    => ;

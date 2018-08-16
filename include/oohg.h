@@ -208,7 +208,7 @@ typedef struct OOHG_Window {
    DATA OnMouseMove    INIT nil
    DATA aKeys          INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
    DATA aHotKeys       INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
-   DATA DefBkColorEdit INIT nil
+   DATA DefBkColorEdit  INIT nil
 */
 } OCTRL, *POCTRL;
 

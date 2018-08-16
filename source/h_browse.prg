@@ -1783,7 +1783,7 @@ METHOD Value( uValue ) CLASS TOBrowse
       uValue := 0
    Else
       ::nRowPos := ::CurrentRow
-      If ::nRowPos > 0 .AND. ::nRowPos <= Len( ::aRecMap )
+      If ::RowPos > 0 .AND. ::nRowPos <= Len( ::aRecMap )
          uValue := ::aRecMap[ ::nRowPos ]
       Else
          uValue := 0

@@ -104,29 +104,31 @@ CLASS TTabDirect FROM TTabRaw
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, bChange, lButtons, lFlatBut, ;
-               lHotTrack, lVertical, lNoTabStop, aMnemonic, lBold, lItalic, ;
-               lUnderline, lStrikeout, Images, lRtl, lInternals, lInvisible, ;
-               lDisabled, lMultiLin, lNoProc, lRight, lBottom, bRClick, ;
-               lRagged, lFixWidth, aTabToolTips, itemW, itemH, minW, hPad, vPad, ;
-               uBackColor, lIcoLeft, lLblLeft, lRightJus, lScrollOp ) CLASS TTabDirect
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+               lDisabled, multiline, lNoProc ) CLASS TTabDirect
 
-   LOCAL z, Caption, Image, aControls, Mnemonic, uToolTip
+   LOCAL z, Caption, Image, aControls, Mnemonic
 
-   ::Super:Define( cControlName, uParentForm, x, y, w, h, NIL, NIL, ;
-                   fontname, fontsize, tooltip, NIL, lButtons, lFlatBut, ;
-                   lHotTrack, lVertical, lNoTabStop, lBold, lItalic, lUnderline, ;
-                   lStrikeout, NIL, lRtl, lInvisible, lDisabled, lMultiLin, ;
-                   lRight, lBottom, NIL, lRagged, lFixWidth, NIL, itemW, ;
-                   itemH, minW, hPad, vPad, uBackColor, lIcoLeft, lLblLeft, ;
-                   lRightJus, lScrollOp )
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, , ;
+                   , fontname, fontsize, tooltip, , Buttons, Flat, ;
+                   HotTrack, Vertical, notabstop, bold, italic, ;
+                   underline, strikeout, , lRtl, Invisible, ;
+                   lDisabled, multiline )
 
    IF HB_IsLogical( lNoProc )
       ::lProcMsgsOnVisible := ! lNoProc
    ENDIF
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
+
+   IF ! ::lInternals
+      // Since we still can't set a TAB's backcolor, we assume it (and
+      // internal controls) as system-default backcolor  :(
+      ::BackColor := -1
+   ENDIF
 
    IF ! ::lInternals .AND. ! Empty( ::Container )
       SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
@@ -146,9 +148,6 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
    ENDIF
    IF ! HB_ISARRAY( aMnemonic )
       aMnemonic := {}
-   ENDIF
-   IF ! HB_ISARRAY( aTabToolTips )
-      aTabToolTips := {}
    ENDIF
    z := 1
    DO WHILE z <= Len( aCaptions ) .AND. z <= Len( Images ) .AND. z <= Len( aPageMap )
@@ -172,12 +171,7 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ELSE
          Mnemonic := Nil
       ENDIF
-      IF z <= Len( aTabToolTips ) .AND. ( ValType( aTabToolTips[ z ] ) $ "CM" .OR. HB_ISBLOCK( aTabToolTips[ z ] ) )
-         uToolTip := aTabToolTips[ z ]
-      ELSE
-         uToolTip := ""
-      ENDIF
-      ::AddPage( , Caption, Image, aControls, Mnemonic, NIL, NIL, uToolTip )
+      ::AddPage( , Caption, Image, aControls, Mnemonic )
       z++
    ENDDO
 
@@ -187,8 +181,7 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ::Value := 1
    ENDIF
 
-   ASSIGN ::OnChange VALUE bChange TYPE "B"
-   ASSIGN ::OnRClick VALUE bRClick TYPE "B"
+   ASSIGN ::OnChange VALUE Change TYPE "B"
 
    RETURN Self
 
@@ -202,7 +195,6 @@ METHOD EndTab() CLASS TTabDirect
    IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ENDIF
-   ::SizePos()
 
    RETURN Nil
 
@@ -328,7 +320,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabDirect
 
    RETURN Nil
 
-METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, uToolTip ) CLASS TTabDirect
+METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTabDirect
 
    LOCAL oPage, nPos
 
@@ -348,10 +340,6 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
       ENDIF
    ENDIF
 
-   IF ! ValType( uToolTip ) $ 'CM' .AND. ! HB_ISBLOCK( uToolTip )
-      uToolTip := ''
-   ENDIF
-
    IF HB_IsObject( oSubClass )
       oPage := oSubClass
    ELSEIF ::lInternals
@@ -364,7 +352,6 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
    oPage:Caption   := Caption
    oPage:Picture   := Image
    oPage:Position  := Position
-   oPage:ToolTip   := uToolTip
 
    AADD( ::aPages, Nil )
    AINS( ::aPages, Position )
@@ -376,7 +363,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
       oPage:nImage := ::AddBitMap( Image ) - 1
    ENDIF
 
-   ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage, uToolTip )
+   ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage )
 
    IF HB_ISARRAY( aControls )
       AEVAL( aControls, { |o| ::AddControl( o, Position ) } )
@@ -400,7 +387,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
 
    RETURN oPage
 
-FUNCTION _BeginTabPage( caption, image, Position, Name, oSubClass, uToolTip )
+FUNCTION _BeginTabPage( caption, image, Position, Name, oSubClass )
 
    LOCAL oCtrl, oPage
 
@@ -410,7 +397,7 @@ FUNCTION _BeginTabPage( caption, image, Position, Name, oSubClass, uToolTip )
    ENDIF
    ///// IF _OOHG_LastFrame() == "TAB" ...
    oCtrl := ATAIL( _OOHG_ActiveFrame )
-   oPage := oCtrl:AddPage( Position, Caption, Image,,, Name, oSubClass, uToolTip )
+   oPage := oCtrl:AddPage( Position, Caption, Image,,, Name, oSubClass )
    _OOHG_AddFrame( oPage )
 
    RETURN oPage
@@ -534,7 +521,7 @@ METHOD ShowPage( nPage ) CLASS TTabDirect
    IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
       ::aPages[ nPage ]:lHidden := .F.
       nRealPosition := ::RealPosition( nPage )
-      ::InsertItem( nRealPosition, ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage, ::aPages[ nPage ]:ToolTip )
+      ::InsertItem( nRealPosition, ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage )
       IF ::Value == nPage
          ::Refresh()
       ENDIF
@@ -595,20 +582,20 @@ CLASS TTabCombo FROM TMultiPage
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, bChange, Buttons, Flat, ;
-               HotTrack, lVertical, notabstop, aMnemonic, bold, italic, ;
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc, bRClick ) CLASS TTabCombo
+               lDisabled, multiline, lNoProc ) CLASS TTabCombo
 
-   ::Super:Define( cControlName, uParentForm, x, y, w, h, , , ;
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, bChange, value, lNoProc )
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    HB_SYMBOL_UNUSED( Buttons )
    HB_SYMBOL_UNUSED( Flat )
    HB_SYMBOL_UNUSED( HotTrack )
-   HB_SYMBOL_UNUSED( lVertical )
+   HB_SYMBOL_UNUSED( Vertical )
    HB_SYMBOL_UNUSED( multiline )
 
    @ 0,0 COMBOBOX 0 OBJ ::oContainerBase PARENT ( Self ) ;
@@ -625,7 +612,6 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
    ::CreatePages( aCaptions, Images, aPageMap, aMnemonic )
 
    ::oContainerBase:OnChange := { || ::Refresh() , ::DoChange() }
-   ::oContainerBase:OnRClick := bRClick
 
    RETURN Self
 
@@ -639,25 +625,25 @@ CLASS TTabRadio FROM TMultiPage
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, bChange, Buttons, Flat, ;
-               HotTrack, lVertical, notabstop, aMnemonic, bold, italic, ;
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
                underline, strikeout, Images, lRtl, lInternals, Invisible, ;
-               lDisabled, multiline, lNoProc, bRClick, aTabToolTips ) CLASS TTabRadio
+               lDisabled, multiline, lNoProc ) CLASS TTabRadio
 
-   ::Super:Define( cControlName, uParentForm, x, y, w, h, , , ;
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
                    FontName, FontSize, bold, italic, underline, strikeout, ;
-                   Invisible, lDisabled, lRtl, bChange, value, lNoProc )
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    HB_SYMBOL_UNUSED( Buttons )
    HB_SYMBOL_UNUSED( Flat )
    HB_SYMBOL_UNUSED( HotTrack )
    HB_SYMBOL_UNUSED( multiline )
 
-   @ 0,0 RADIOGROUP 0 OBJ ::oContainerBase PARENT ( Self ) ;
+   @ 0,0 RADIO 0 OBJ ::oContainerBase PARENT ( Self ) ;
          OPTIONS {} TOOLTIP tooltip HORIZONTAL
-   IF HB_ISLOGICAL( lVertical )
-      ::oContainerBase:lHorizontal := ! lVertical
+   IF HB_ISLOGICAL( Vertical )
+      ::oContainerBase:lHorizontal := ! Vertical
    ENDIF
    IF HB_ISLOGICAL( notabstop ) .and. notabstop
       ::oContainerBase:TabStop := .F.
@@ -668,10 +654,9 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ::oPageClass := TTabPageInternal()
    ENDIF
 
-   ::CreatePages( aCaptions, Images, aPageMap, aMnemonic, aTabToolTips )
+   ::CreatePages( aCaptions, Images, aPageMap, aMnemonic )
 
    ::oContainerBase:OnChange := { || ::Refresh() , ::DoChange() }
-   ::oContainerBase:OnRClick := bRClick
 
    RETURN Self
 
@@ -686,29 +671,30 @@ CLASS TTabMulti FROM TMultiPage
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
-               value, fontname, fontsize, tooltip, bChange, lButtons, lFlatBut, ;
-               lHotTrack, lVertical, lNoTabStop, aMnemonic, lBold, lItalic, ;
-               lUnderline, lStrikeout, Images, lRtl, lInternals, lInvisible, ;
-               lDisabled, lMultiLin, lNoProc, lRight, lBottom, bRClick, ;
-               lRagged, lFixWidth, aTabToolTips, itemW, itemH, minW, hPad, ;
-               vPad, uBackColor, lIcoLeft, lLblLeft, lRightJus, lScrollOp ) CLASS TTabMulti
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, aPageMap, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, aMnemonic, bold, italic, ;
+               underline, strikeout, Images, lRtl, lInternals, Invisible, ;
+               lDisabled, multiline, lNoProc ) CLASS TTabMulti
 
-   ::Super:Define( cControlName, uParentForm, x, y, w, h, NIL, NIL, ;
-                   FontName, FontSize, lBold, lItalic, lUnderline, lStrikeout, ;
-                   lInvisible, lDisabled, lRtl, bChange, value, lNoProc )
+   ::Super:Define( ControlName, ParentForm, x, y, w, h, , , ;
+                   FontName, FontSize, bold, italic, underline, strikeout, ;
+                   Invisible, lDisabled, lRtl, change, value, lNoProc )
 
    ::oContainerBase := TTabRaw()
-   ::oContainerBase:Define( NIL, Self, 0, 0, w, h, NIL, NIL, ;
-                            NIL, NIL, tooltip, NIL, lButtons, lFlatBut, ;
-                            lHotTrack, lVertical, lNoTabStop, NIL, NIL, NIL, ;
-                            NIL, NIL, NIL, NIL, NIL, lMultiLin, ;
-                            lRight, lBottom, NIL, lRagged, lFixWidth, NIL, itemW, ;
-                            itemH, minW, hPad, vPad, uBackColor, lIcoLeft, lLblLeft, ;
-                            lRightJus, lScrollOp )
+   ::oContainerBase:Define( , Self, 0, 0, w, h, , ;
+                            , , , tooltip, , Buttons, Flat, ;
+                            HotTrack, Vertical, notabstop, , , ;
+                            , , , , , ;
+                            , multiline )
 
    ASSIGN ::lInternals VALUE lInternals TYPE "L"
+
    IF ! ::lInternals
+      // Since we still can't set a TAB's backcolor, we assume it (and
+      // internal controls) as system-default backcolor  :(
+      ::BackColor := -1
+
       IF ! EMPTY( ::Container )
          SetWindowPos( ::oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
       ENDIF
@@ -716,18 +702,17 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, aPageMap, ;
       ::oPageClass := TTabPageInternal()
    ENDIF
 
-   ::CreatePages( aCaptions, Images, aPageMap, aMnemonic, aTabToolTips )
+   ::CreatePages( aCaptions, Images, aPageMap, aMnemonic )
 
    ::oContainerBase:OnChange := { || ::Refresh(), ::DoChange() }
-   ::oContainerBase:OnRClick := bRClick
 
    RETURN Self
 
-METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, uToolTip ) CLASS TTabMulti
+METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TTabMulti
 
    LOCAL oPage
 
-   oPage := ::Super:AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, uToolTip )
+   oPage := ::Super:AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass )
    oPage:nFixedHeightUsed := ::oContainerBase:TabsAreaHeight()
 
    RETURN oPage
@@ -771,27 +756,28 @@ CLASS TMultiPage FROM TControlGroup
    METHOD ContainerValue          SETGET
    METHOD ContainerCaption(x,y)   BLOCK { |Self,x,y| ::oContainerBase:Caption(x,y) }
    METHOD ContainerItemCount      BLOCK { |Self| ::oContainerBase:ItemCount() }
-   METHOD InsertItem(w,x,y,z)     BLOCK { |Self,w,x,y,z| ::oContainerBase:InsertItem(w,x,y,z) }
+   METHOD InsertItem(x,y,z)       BLOCK { |Self,x,y,z| ::oContainerBase:InsertItem(x,y,z) }
    METHOD DeleteItem
    METHOD hWnd                    BLOCK { |Self| IF( ::oContainerBase == nil, 0, ::oContainerBase:hWnd ) }
    METHOD bBeforeChange           SETGET
-   METHOD ItemAtPos( x, y )       BLOCK { |Self, x, y| ::oContainerBase:ItemAtPos( x, y ) }
+   METHOD OnClick                 SETGET
+   METHOD OnRClick                SETGET
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, FontColor, BackColor, ;
+METHOD Define( ControlName, ParentForm, x, y, w, h, FontColor, BackColor, ;
                FontName, FontSize, bold, italic, underline, strikeout, ;
-               Invisible, lDisabled, lRtl, bChange, value, lNoProc ) CLASS TMultiPage
+               Invisible, lDisabled, lRtl, change, value, lNoProc ) CLASS TMultiPage
 
    ASSIGN ::nWidth  VALUE w TYPE "N"
    ASSIGN ::nHeight VALUE h TYPE "N"
    ASSIGN ::nRow    VALUE y TYPE "N"
    ASSIGN ::nCol    VALUE x TYPE "N"
 
-   ::SetForm( cControlName, uParentForm, FontName, FontSize, FontColor, BackColor, NIL, lRtl, NIL, lNoProc )
-   ::InitStyle( NIL, NIL, Invisible, NIL, lDisabled )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl, , lNoProc )
+   ::InitStyle( ,, Invisible, , lDisabled )
    ::Register( 0 )
-   ::SetFont( NIL, NIL, bold, italic, underline, strikeout )
+   ::SetFont( ,, bold, italic, underline, strikeout )
 
    IF HB_ISNUMERIC( value )
       ::nFirstValue := value
@@ -799,16 +785,16 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, FontColor, BackColor, ;
 
    _OOHG_AddFrame( Self )
 
-   ASSIGN ::OnChange VALUE bChange TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
    // ::oContainerBase is not created yet!
    // ::oContainerBase:OnChange := { || ::Refresh() , ::DoChange() }
 
    RETURN Self
 
-METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic, aTabToolTips ) CLASS TMultiPage
+METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic ) CLASS TMultiPage
 
-   LOCAL z, Caption, Image, aControls, Mnemonic, uToolTip
+   LOCAL z, Caption, Image, aControls, Mnemonic
 
    IF ! HB_ISARRAY( aCaptions )
       aCaptions := {}
@@ -821,9 +807,6 @@ METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic, aTabToolTips ) CLASS
    ENDIF
    IF ! HB_ISARRAY( aMnemonic )
       aMnemonic := {}
-   ENDIF
-   IF ! HB_ISARRAY( aTabToolTips )
-      aTabToolTips := {}
    ENDIF
 
    z := 1
@@ -848,12 +831,7 @@ METHOD CreatePages( aCaptions, Images, aPageMap, aMnemonic, aTabToolTips ) CLASS
       ELSE
          Mnemonic := Nil
       ENDIF
-      IF z <= Len( aTabToolTips ) .AND. ( ValType( aTabToolTips[ z ] ) $ "CM" .OR. HB_ISBLOCK( aTabToolTips[ z ] ) )
-         uToolTip := aTabToolTips[ z ]
-      ELSE
-         uToolTip := ""
-      ENDIF
-      ::AddPage( , Caption, Image, aControls, Mnemonic, uToolTip )
+      ::AddPage( , Caption, Image, aControls, Mnemonic )
       z++
    ENDDO
 
@@ -982,7 +960,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TMultiPage
 
    RETURN Nil
 
-METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, uToolTip ) CLASS TMultiPage
+METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass ) CLASS TMultiPage
 
    LOCAL oPage, nPos
 
@@ -1002,10 +980,6 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
       ENDIF
    ENDIF
 
-   IF ! ValType( uToolTip ) $ 'CM' .AND. ! HB_ISBLOCK( uToolTip )
-      uToolTip := ''
-   ENDIF
-
    IF HB_ISOBJECT( oSubClass )
       oPage := oSubClass
    ELSE
@@ -1016,7 +990,6 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
    oPage:Caption   := Caption
    oPage:Picture   := Image
    oPage:Position  := Position
-   oPage:ToolTip   := uToolTip
 
    AAdd( ::aPages, Nil )
    AIns( ::aPages, Position )
@@ -1028,7 +1001,7 @@ METHOD AddPage( Position, Caption, Image, aControls, Mnemonic, Name, oSubClass, 
       oPage:nImage := ::oContainerBase:AddBitMap( Image ) - 1
    ENDIF
 
-   ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage, uToolTip )
+   ::InsertItem( ::RealPosition( Position ), Caption, oPage:nImage )
 
    IF HB_ISARRAY( aControls )
       AEval( aControls, { |o| ::AddControl( o, Position ) } )
@@ -1156,7 +1129,7 @@ METHOD ShowPage( nPage ) CLASS TMultiPage
 
    IF nPage >= 1 .AND. nPage <= Len( ::aPages ) .AND. ::aPages[ nPage ]:lHidden
       ::aPages[ nPage ]:lHidden := .F.
-      ::InsertItem( ::RealPosition( nPage ), ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage, ::aPages[ nPage ]:ToolTip )
+      ::InsertItem( ::RealPosition( nPage ), ::aPages[ nPage ]:Caption, ::aPages[ nPage ]:nImage )
       IF ::Value == nPage
          ::Refresh()
       ENDIF
@@ -1212,7 +1185,6 @@ METHOD EndTab() CLASS TMultiPage
    ELSEIF ::Value == 0
       ::Value := 1
    ENDIF
-   ::SizePos()
 
    RETURN Nil
 
@@ -1244,6 +1216,22 @@ METHOD bBeforeChange( bCode ) CLASS TMultiPage
 
    RETURN ::oContainerBase:bBeforeChange
 
+METHOD OnClick( bCode ) CLASS TMultiPage
+
+   IF PCount() > 0
+      ::oContainerBase:OnClick := bCode
+   ENDIF
+
+   RETURN ::oContainerBase:OnClick
+
+METHOD OnRClick( bCode ) CLASS TMultiPage
+
+   IF PCount() > 0
+      ::oContainerBase:OnRClick := bCode
+   ENDIF
+
+   RETURN ::oContainerBase:OnRClick
+
 METHOD SaveData() CLASS TMultiPage
 
    _OOHG_EVAL( ::Block, ::Value )
@@ -1259,8 +1247,6 @@ CLASS TTabRaw FROM TControl
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
    DATA SetImageListCommand       INIT TCM_SETIMAGELIST
    DATA bBeforeChange             INIT Nil
-   DATA aToolTips                 INIT {}
-   DATA DefaultToolTip            INIT ""
 
    METHOD Define
    METHOD Value                   SETGET
@@ -1269,27 +1255,22 @@ CLASS TTabRaw FROM TControl
    METHOD DeleteItem
    METHOD Caption
    METHOD Picture
-   METHOD TabToolTip
+   METHOD Events
    METHOD Events_Notify
    METHOD TabsAreaHeight
-   METHOD MinTabWidth             SETGET
-   METHOD ItemSize                SETGET
-   METHOD ItemAtPos( y, x )       BLOCK { |Self, y, x| TabCtrl_HitTest( ::hWnd, y, x ) }
-   METHOD SetPadding( w, h )      BLOCK { |Self, w, h| TabCtrl_SetPadding( ::hWnd, w, h ) }    // defaults is {6,3}
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, value, ;
-               fontname, fontsize, tooltip, bChange, lButtons, lFlatBut, ;
-               lHotTrack, lVertical, lNoTabStop, bold, italic, underline, ;
-               strikeout, Images, lRtl, lInvisible, lDisabled, lMultiLin, ;
-               lRight, lBottom, bRClick, lRagged, lFixWidth, aToolTips, itemW, ;
-               itemH, minW, hPad, vPad, uBackColor, lIcoLeft, lLblLeft, ;
-               lRightJus, lScrollOp ) CLASS TTabRaw
+METHOD Define( ControlName, ParentForm, x, y, w, h, aCaptions, ;
+               value, fontname, fontsize, tooltip, change, Buttons, Flat, ;
+               HotTrack, Vertical, notabstop, bold, italic, ;
+               underline, strikeout, Images, lRtl, Invisible, ;
+               lDisabled, multiline ) CLASS TTabRaw
 
-   LOCAL Caption, Image, z, nStyle, ControlHandle, bToolTip, uToolTip
+   LOCAL Caption, Image, z, nStyle
+   LOCAL ControlHandle
 
-   ::SetForm( cControlName, uParentForm, FontName, FontSize, NIL, NIL, NIL, lRtl )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize,,,, lRtl )
 
    IF ! HB_ISARRAY( aCaptions )
       aCaptions := {}
@@ -1297,105 +1278,23 @@ METHOD Define( cControlName, uParentForm, x, y, w, h, aCaptions, value, ;
    IF ! HB_ISARRAY( Images )
       Images := {}
    ENDIF
-   IF ! HB_ISARRAY( aToolTips )
-      aToolTips := {}
-   ENDIF
-   ASize( aToolTips, Max( Max( Len( aCaptions ), Len( Images ) ), Len( aToolTips ) ) )
 
-   ASSIGN ::nWidth  VALUE w         TYPE "N"
-   ASSIGN ::nHeight VALUE h         TYPE "N"
-   ASSIGN ::nRow    VALUE y         TYPE "N"
-   ASSIGN ::nCol    VALUE x         TYPE "N"
+   ASSIGN ::nWidth  VALUE w TYPE "N"
+   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nRow    VALUE y TYPE "N"
+   ASSIGN ::nCol    VALUE x TYPE "N"
 
-   ASSIGN itemW     VALUE itemW     TYPE "N" DEFAULT -1
-   ASSIGN itemH     VALUE itemH     TYPE "N" DEFAULT -1
-   ASSIGN minW      VALUE minW      TYPE "N" DEFAULT -1
-   ASSIGN hPad      VALUE hPad      TYPE "N" DEFAULT -1
-   ASSIGN vPad      VALUE vPad      TYPE "N" DEFAULT -1
-
-   ASSIGN lButtons  VALUE lButtons  TYPE "L" DEFAULT .F.
-   ASSIGN lHotTrack VALUE lHotTrack TYPE "L" DEFAULT .F.
-   ASSIGN lFlatBut  VALUE lFlatBut  TYPE "L" DEFAULT .F.
-   ASSIGN lRagged   VALUE lRagged   TYPE "L" DEFAULT .F.
-   ASSIGN lFixWidth VALUE lFixWidth TYPE "L" DEFAULT .F.
-   ASSIGN lMultiLin VALUE lMultiLin TYPE "L" DEFAULT .F.
-   ASSIGN lIcoLeft  VALUE lIcoLeft  TYPE "L" DEFAULT .F.
-   ASSIGN lLblLeft  VALUE lLblLeft  TYPE "L" DEFAULT .F.
-   ASSIGN lRightJus VALUE lRightJus TYPE "L" DEFAULT .F.
-   ASSIGN lScrollOp VALUE lScrollOp TYPE "L" DEFAULT .F.
-
-   ASSIGN lVertical VALUE lVertical TYPE "L" DEFAULT .F.
-   ASSIGN lRight    VALUE lRight    TYPE "L" DEFAULT .F.
-   ASSIGN lBottom   VALUE lBottom   TYPE "L" DEFAULT .F.
-   /*
-   lVertical +    lBottom +    lRight    -> Intended result:
-   .T.            .F.          .F.          Tabs at LEFT
-   .T.            .F.          .T.          Tabs at RIGHT
-   .T.            .T.          .F.          Tabs at LEFT
-   .T.            .T.          .T.          Tabs at RIGHT
-   .F.            .F.          .F.          Tabs at TOP
-   .F.            .T.          .F.          Tabs at BOTTOM
-   .F.            .F.          .T.          Tabs at RIGHT
-   .F.            .T.          .T.          Tabs at TOP
-
-   TCS_VERTICAL + TCS_BOTTOM + TCS_RIGHT -> What Windows does
-   .T.            .F.          .F.          Tabs at LEFT
-   .T.            .F.          .T.          Tabs at RIGHT
-   .T.            .T.          .F.          Tabs at LEFT
-   .T.            .T.          .T.          Tabs at RIGHT
-   .F.            .F.          .F.          Tabs at TOP
-   .F.            .T.          .F.          Tabs at BOTTOM
-   .F.            .F.          .T.          Tabs at BOTTOM because for Windows TCS_RIGHT is equivalent to TCS_BOTTOM
-   .F.            .T.          .T.          Tabs at TOP
-   */
-   IF ! lVertical .AND. ! lBottom .AND. lRight
-      // To place Tabs at RIGHT we need this
-      lVertical := .T.
-   ENDIF
-
-   nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
-             iif( lBottom,   TCS_BOTTOM,         0 ) + ;
-             iif( lButtons,  TCS_BUTTONS,        0 ) + ;
-             iif( lFixWidth, TCS_FIXEDWIDTH,     0 ) + ;
-             iif( lFlatBut,  TCS_FLATBUTTONS,    0 ) + ;
-             iif( lIcoLeft,  TCS_FORCEICONLEFT,  0 ) + ;
-             iif( lLblLeft,  TCS_FORCELABELLEFT, 0 ) + ;
-             iif( lHotTrack, TCS_HOTTRACK,       0 ) + ;
-             iif( lMultiLin, TCS_MULTILINE,      0 ) + ;
-             iif( lRagged,   TCS_RAGGEDRIGHT,    0 ) + ;
-             iif( lRight,    TCS_RIGHT,          0 ) + ;
-             iif( lRightJus, TCS_RIGHTJUSTIFY,   0 ) + ;
-             iif( lScrollOp, TCS_SCROLLOPPOSITE, 0 ) + ;
-             iif( lVertical, TCS_VERTICAL,       0 )
-/*
-TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper right unused rectangle.
-*/
+   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
+             IF( ValType( Vertical ) == "L"  .AND. Vertical,   TCS_VERTICAL, 0 ) + ;
+             IF( ValType( HotTrack ) == "L"  .AND. HotTrack,   TCS_HOTTRACK, 0 ) + ;
+             IF( ValType( Flat ) == "L"      .AND. Flat,       TCS_FLATBUTTONS, 0 ) + ;
+             IF( ValType( Buttons ) == "L"   .AND. Buttons,    TCS_BUTTONS, 0 ) + ;
+             IF( ValType( multiline ) == "L" .AND. multiline,  TCS_MULTILINE, 0 )
 
    ControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, value, nStyle, ::lRtl )
 
-   IF ValType( tooltip ) $ "CM" .OR. HB_ISBLOCK( tooltip )
-      ::DefaultToolTip := tooltip
-   ENDIF
-   bToolTip := { |oCtrl| oCtrl:TabToolTip( TabCtrl_HitTest( oCtrl:hWnd, GetCursorRow() - GetWindowRow( oCtrl:hWnd ), GetCursorCol() - GetWindowCol( oCtrl:hWnd ) ) ) }
-
-   ::Register( ControlHandle, cControlName, , , bToolTip )
+   ::Register( ControlHandle, ControlName, , , ToolTip )
    ::SetFont( , , bold, italic, underline, strikeout )
-
-   // Since we still can't set the TabPage's backcolor lets assume it's the system's default
-   IF ( ! ::IsVisualStyled .OR. lButtons .OR. lVertical )
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_BTNFACE )
-   ELSE
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
-   ENDIF
-   ::BackColor := uBackColor
-
-   ::MinTabWidth( minW )       // win10 returns 42
-   IF hPad >= 0 .AND. vPad >= 0
-      ::SetPadding( hPad, vPad )                                             // TODO
-   ENDIF
-   IF lFixWidth .AND. itemW > 0 .AND. itemH > 0
-      ::ItemSize( itemW, itemH )      // win10 returns {96,0} when no tabs are defined and {96,20} after a tab is defined
-   ENDIF
 
    // Add page by page
    z := 1
@@ -1410,12 +1309,7 @@ TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper 
       ELSE
          Caption := ""
       ENDIF
-      IF z <= Len( aToolTips ) .AND. ( ValType( aToolTips[ z ] ) $ "CM" .OR. HB_ISBLOCK( aToolTips[ z ] ) )
-         uToolTip := aToolTips[ z ]
-      ELSE
-         uToolTip := ""
-      ENDIF
-      ::InsertItem( ::ItemCount + 1, Caption, Image, uToolTip )
+      ::InsertItem( ::ItemCount + 1, Caption, Image )
       z++
    ENDDO
 
@@ -1425,45 +1319,9 @@ TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper 
       ::Value := 1
    ENDIF
 
-   ASSIGN ::OnChange VALUE bChange TYPE "B"
-   ASSIGN ::OnRClick VALUE bRClick TYPE "B"
+   ASSIGN ::OnChange    VALUE Change    TYPE "B"
 
    RETURN Self
-
-METHOD ItemSize( w, h ) CLASS TTabRaw
-
-   LOCAL aRect
-
-   IF HB_ISNUMERIC( w ) .AND. w >= 0 .AND. HB_ISNUMERIC( h ) .AND. h >= 0
-      TabCtrl_SetItemSize( ::hWnd, w, h )
-   ELSE
-      IF ::ItemCount > 0
-         aRect := TabCtrl_GetItemRect( ::hWnd, 0 )
-
-         w := aRect[3] - aRect[1]
-         h := aRect[4] - aRect[2]
-      ELSE
-         // default is {96,20} under win10
-         w := -1
-         h := -1
-      ENDIF
-   ENDIF
-
-   RETURN { w, h }
-
-METHOD MinTabWidth( w ) CLASS TTabRaw
-
-   IF HB_ISNUMERIC( w ) .AND. ( w := Int( w ) ) >= -1
-      TabCtrl_SetMinTabWidth( ::hWnd, w )
-      IF w == -1
-         w := TabCtrl_SetMinTabWidth( ::hWnd, -1 )   // -1 means default width
-      ENDIF
-   ELSE
-      w := TabCtrl_SetMinTabWidth( ::hWnd, -1 )
-      TabCtrl_SetMinTabWidth( ::hWnd, w )
-   ENDIF
-
-   RETURN w
 
 METHOD Value( nValue ) CLASS TTabRaw
 
@@ -1474,7 +1332,7 @@ METHOD Value( nValue ) CLASS TTabRaw
 
    RETURN TABCTRL_GETCURSEL( ::hWnd )
 
-METHOD InsertItem( nPosition, cCaption, xImage, uToolTip ) CLASS TTabRaw
+METHOD InsertItem( nPosition, cCaption, xImage ) CLASS TTabRaw
 
    TABCTRL_INSERTITEM( ::hWnd, nPosition - 1, cCaption )
 
@@ -1485,23 +1343,11 @@ METHOD InsertItem( nPosition, cCaption, xImage, uToolTip ) CLASS TTabRaw
       SetTabPageImage( ::hWnd, nPosition, xImage )
    ENDIF
 
-   AAdd( ::aToolTips, NIL )
-   AIns( ::aToolTips, nPosition )
-
-   IF ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip )
-      ::aToolTips[ nPosition ] := uToolTip
-   ELSEIF ValType( ::DefaultToolTip ) $ "CM" .OR. HB_ISBLOCK( ::DefaultToolTip )
-      ::aToolTips[ nPosition ] := ::DefaultToolTip
-   ELSE
-      ::aToolTips[ nPosition ] := ""
-   ENDIF
-
-   RETURN NIL
+   RETURN Nil
 
 METHOD DeleteItem( nPosition ) CLASS TTabRaw
 
    TabCtrl_DeleteItem( ::hWnd, nPosition - 1 )
-   _OOHG_DeleteArrayItem( ::aToolTips, nPosition )
 
    RETURN Nil
 
@@ -1527,13 +1373,21 @@ METHOD Picture( nColumn, uValue ) CLASS TTabRaw
 
    RETURN Nil
 
-METHOD TabToolTip( nColumn, uToolTip ) CLASS TTabRaw
+METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
 
-   IF ValType( uToolTip ) $ "CM" .OR. HB_ISBLOCK( uToolTip )
-      ::aToolTips[ nColumn ] := uToolTip
+   IF nMsg == WM_LBUTTONDOWN
+      IF ! ::NestedClick
+         ::NestedClick := ! _OOHG_NestedSameEvent()
+         ::DoEventMouseCoords( ::OnClick, "CLICK" )
+         ::NestedClick := .F.
+      ENDIF
+
+   ELSEIF nMsg == WM_RBUTTONDOWN
+      ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+
    ENDIF
 
-   RETURN ::aToolTips[ nColumn ]
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 METHOD Events_Notify( wParam, lParam ) CLASS TTabRaw
 
@@ -1644,24 +1498,23 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA nImage     INIT -1
    DATA lHidden    INIT .F.
    DATA Caption    INIT ""
-   DATA cToolTip   INIT ""
 
    METHOD Define
    METHOD EndPage             BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
    METHOD AdjustResize
-   METHOD ToolTip             SETGET
+
    METHOD SetFocus            BLOCK { |Self| ::Container:SetFocus() , ::Container:Value := ::Position , ::Super:SetFocus() , Self }
 
    ENDCLASS
 
-METHOD Define( cControlName, uParentForm ) CLASS TTabPageInternal
+METHOD Define( ControlName, ParentForm ) CLASS TTabPageInternal
 
    LOCAL aArea
 
-   ::SearchParent( uParentForm )
+   ::SearchParent( ParentForm )
    aArea := _OOHG_TabPage_GetArea( ::Container )
-   ::Super:Define( cControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], uParentForm )
+   ::Super:Define( ControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], ParentForm )
    END WINDOW
    ::ContainerhWndValue := ::hWnd
 
@@ -1706,21 +1559,6 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
 
    RETURN Nil
 
-METHOD ToolTip( cToolTip ) CLASS TTabPageInternal
-
-   IF PCount() > 0
-      IF ValType( cToolTip ) $ "CM" .OR. HB_ISBLOCK( cToolTip )
-         ::cToolTip := cToolTip
-      ELSE
-         ::cToolTip := ""
-      ENDIF
-      IF HB_ISOBJECT( ::Parent:oToolTip )
-         ::Parent:oToolTip:Item( ::hWnd, cToolTip )
-      ENDIF
-   ENDIF
-
-   RETURN ::cToolTip
-
 STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 
    LOCAL aRect
@@ -1730,6 +1568,9 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 
    RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
 
+
+EXTERN InitTabControl, SetTabCaption
+EXTERN TabCtrl_SetCurSel, TabCtrl_GetCurSel, TabCtrl_InsertItem, TabCtrl_DeleteItem, TabCtrl_GetItemRect, TabCtrl_GetRowCount
 
 #pragma BEGINDUMP
 
@@ -1792,7 +1633,16 @@ HB_FUNC( INITTABCONTROL )
 
 HB_FUNC (TABCTRL_SETCURSEL)
 {
-   TabCtrl_SetCurSel( HWNDparam( 1 ),  hb_parni( 2 ) - 1 );
+
+   HWND hwnd;
+   int s;
+
+   hwnd = HWNDparam( 1 );
+
+   s = hb_parni (2);
+
+   TabCtrl_SetCurSel( hwnd , s-1 );
+
 }
 
 HB_FUNC( TABCTRL_GETCURSEL )
@@ -1874,38 +1724,6 @@ HB_FUNC( TABCTRL_GETITEMRECT )
 HB_FUNC( TABCTRL_GETROWCOUNT )
 {
    hb_retni( TabCtrl_GetRowCount( HWNDparam( 1 ) ) ) ;
-}
-
-HB_FUNC( TABCTRL_HITTEST )
-{
-   POINT point ;
-   TC_HITTESTINFO hti;
-
-   point.y = hb_parni( 2 );
-   point.x = hb_parni( 3 );
-
-   hti.pt = point;
-
-   hb_retni( TabCtrl_HitTest( HWNDparam( 1 ), &hti ) + 1 );
-}
-
-HB_FUNC( TABCTRL_SETITEMSIZE )
-{
-   DWORD oldvals = TabCtrl_SetItemSize( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ) );
-
-   hb_reta( 2 );
-   HB_STORNI( (int) LOWORD( oldvals ), -1, 1 );
-   HB_STORNI( (int) HIWORD( oldvals ), -1, 2 );
-}
-
-HB_FUNC( TABCTRL_SETMINTABWIDTH )
-{
-   hb_retni( TabCtrl_SetMinTabWidth( HWNDparam( 1 ), hb_parni( 2 ) ) );
-}
-
-HB_FUNC( TABCTRL_SETPADDING )
-{
-   TabCtrl_SetPadding( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
 #pragma ENDDUMP
