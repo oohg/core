@@ -8,6 +8,32 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-16 09:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     ! RTE "TBrowse:RowPos not found".
+
+2018-08-15 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_report.prg
+     ! RTE "Scope violation (protected): TMINIPRINT:_CPRINTLIBRARY".
+
+2018-08-15 17:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Some changes for 64 bit support.
+
+2018-08-15 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     + METHOD DeleteItem.
+   * Some comments.
+   % Methods FastUpdate, CurrentRow and Refresh of TOBrowse.
+   * Value no longer changes ::nRowPos nor ::nColPos on get.
+   ! Missing ::nColPos assignments.
+   ! Method PageDown of TOBrowseByCell wasn't selecting the
+     last record when it reaches the last page.
+
+2018-08-15 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
 2018-08-14 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_report.prg
      * TReport() no longer sets or gets _OOHG_PrintLibrary.
@@ -54,7 +80,7 @@
      * WM_PRINTCLIENT changed back to WM_PRINT.
    * core\source\h_windows.prg
      - WM_PRINTCLIENT handler.
-   ; This changes were reverted because they break OOHG painting.
+   ; These changes were reverted because they break OOHG painting.
 
 2018-08-11 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_xbrowse.prg
