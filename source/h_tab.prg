@@ -1618,11 +1618,18 @@ METHOD Picture( nColumn, uValue ) CLASS TTabRaw
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD TabToolTip( nColumn, uToolTip ) CLASS TTabRaw
 
-   IF ValType( uToolTip ) $ "CM" .OR. HB_ISBLOCK( uToolTip )
-      ::aToolTips[ nColumn ] := uToolTip
+   LOCAL cRet
+
+   IF HB_ISNUMERIC( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aToolTips )
+      IF ValType( uToolTip ) $ "CM" .OR. HB_ISBLOCK( uToolTip )
+         ::aToolTips[ nColumn ] := uToolTip
+      ENDIF
+      cRet := ::aToolTips[ nColumn ]
+   ELSE
+      cRet := ""
    ENDIF
 
-   RETURN ::aToolTips[ nColumn ]
+   RETURN cRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
