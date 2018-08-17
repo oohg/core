@@ -601,7 +601,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
    register IEventHandler *    selfobj;
    DWORD                       dwCookie = 0;
 
-   device_interface*           pdevice_interface = (device_interface*) HB_PARPTR( 1 );
+   device_interface*           pdevice_interface = (device_interface*) HB_PARNL( 1 );
    MyRealIEventHandler*        pThis;
 
    // Allocate our IEventHandler object (actually a MyRealIEventHandler)
@@ -696,7 +696,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 #endif
 
       pThis->pEvents = hb_itemNew( hb_param( 3, HB_IT_ANY ) );
-      hb_storptr( pThis, 2 );
+      HB_STORNL2( (LONG_PTR) pThis, 2 );
    }
 
    HWNDret( hr );
@@ -705,7 +705,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 //------------------------------------------------------------------------------
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *self = ( MyRealIEventHandler * ) HB_PARPTR( 1 );
+   MyRealIEventHandler *self = ( MyRealIEventHandler * ) HB_PARNL( 1 );
    if( self->pIConnectionPoint )
    {
       self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );
