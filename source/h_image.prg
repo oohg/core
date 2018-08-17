@@ -182,7 +182,7 @@ METHOD Picture( cPicture ) CLASS TImage
    LOCAL nAttrib, aPictSize, lSet
 
    IF ValType( cPicture ) $ "CM"
-      DELETEOBJECT( ::hImage )
+      DeleteObject( ::hImage )
       ::cPicture := cPicture
       ::cBuffer := ""
 
@@ -192,7 +192,7 @@ METHOD Picture( cPicture ) CLASS TImage
             IF ::lNoCheckDepth
                lSet := .T.
             ELSE
-               aPictSize := _OOHG_SIZEOFBITMAPFROMFILE( cPicture )      // {width, height, depth}
+               aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // {width, height, depth}
                lSet := aPictSize[ 3 ] <= 8
             ENDIF
             IF lSet
@@ -209,11 +209,11 @@ METHOD Picture( cPicture ) CLASS TImage
       ENDIF
 
       // load image at full size
-      ::hImage := _OOHG_BITMAPFROMFILE( Self, cPicture, nAttrib, .F. )
-      IF VALIDHANDLER( ::hImage )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      IF ValidHandler( ::hImage )
          IF ::ImageSize
-            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+            ::nHeight := _OOHG_BitMapHeight( ::hImage )
          ENDIF
       ELSE
          ::hImage := NIL
@@ -229,15 +229,15 @@ METHOD Picture( cPicture ) CLASS TImage
 METHOD HBitMap( hBitMap ) CLASS TImage
 
    IF ValType( hBitMap ) $ "NP"
-      DELETEOBJECT( ::hImage )
+      DeleteObject( ::hImage )
       ::cPicture := ""
       ::cBuffer := ""
 
-      IF VALIDHANDLER( hBitMap )
+      IF ValidHandler( hBitMap )
          ::hImage := hBitMap
          IF ::ImageSize
-            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+            ::nHeight := _OOHG_BitMapHeight( ::hImage )
          ENDIF
       ELSE
          ::hImage := NIL
@@ -253,16 +253,16 @@ METHOD HBitMap( hBitMap ) CLASS TImage
 METHOD Buffer( cBuffer ) CLASS TImage
 
    IF ValType( cBuffer ) $ "CM"
-      DELETEOBJECT( ::hImage )
+      DeleteObject( ::hImage )
       ::cPicture := ""
       ::cBuffer := cBuffer
 
       // load image at full size
-      ::hImage := _OOHG_BITMAPFROMBUFFER( Self, cBuffer, .F. )
-      IF VALIDHANDLER( ::hImage )
+      ::hImage := _OOHG_BitMapFromBuffer( Self, cBuffer, .F. )
+      IF ValidHandler( ::hImage )
          IF ::ImageSize
-            ::nWidth  := _OOHG_BITMAPWIDTH( ::hImage )
-            ::nHeight := _OOHG_BITMAPHEIGHT( ::hImage )
+            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+            ::nHeight := _OOHG_BitMapHeight( ::hImage )
          ENDIF
       ELSE
          ::hImage := NIL
@@ -272,7 +272,7 @@ METHOD Buffer( cBuffer ) CLASS TImage
       ::DoEvent( ::OnChange, "CHANGE" )
    ENDIF
 
-   RETURN NIL
+   RETURN ::cBuffer
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD OnClick( bOnClick ) CLASS TImage
