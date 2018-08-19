@@ -1714,7 +1714,7 @@ static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 HB_FUNC( INITEDITCOMBO )
 {
-   lpfnOldWndProcCE = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG ) SubClassFuncCE );
+   lpfnOldWndProcCE = ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCE );
 }
 
 #pragma ENDDUMP
