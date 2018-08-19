@@ -3258,10 +3258,13 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
 
       If ::IsColumnReadOnly( nCol, nRow )
          // Read only column
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       ElseIf ! ::IsColumnWhen( nCol, nRow )
          // Not a valid WHEN
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       ElseIf aScan( ::aHiddenCols, nCol ) > 0
          // Hidden column
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       Else
          ::DbGoTo( _RecNo )
 
