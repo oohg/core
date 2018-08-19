@@ -97,6 +97,7 @@ CLASS TGrid FROM TControl
    DATA ClickOnCheckbox           INIT .T.
    DATA cRowEditTitle             INIT Nil
    DATA cText                     INIT ""
+   DATA ColType                   INIT NIL
    DATA DelMsg                    INIT Nil
    DATA DynamicBackColor          INIT {}
    DATA DynamicForeColor          INIT {}
@@ -424,6 +425,14 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       ASize( ::Picture, Len( ::aHeaders ) )
    EndIf
    AEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
+   ::ColType := Array( Len( ::aHeaders ) )
+   IF Len( aRows ) > 0
+      FOR i := 1 TO Len( ::aHeaders )
+         ::ColType[ i ] := ValType( aRows[ 1, i ] )
+      NEXT i
+   ELSE
+      AFill( ::ColType, "C")
+   ENDIF
 
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
@@ -1553,7 +1562,7 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, i, Self )
       If ! HB_IsObject( EditControl )
          If ValType( ::Picture[ i ] ) $ "CM"
-            EditControl := TGridControlTextBox():New( ::Picture[ i ], , "C", , , , Self )
+            EditControl := TGridControlTextBox():New( ::Picture[ i ], NIL, ::ColType[ i ], NIL, NIL, NIL, Self )
          ElseIf ValType( ::Picture[ i ] ) == "L" .AND. ::Picture[ i ]
             EditControl := TGridControlImageList():New( Self )
          Else
@@ -1807,7 +1816,7 @@ METHOD IsColumnWhen( nCol, nRow ) CLASS TGrid
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly ) CLASS TGrid
+                  uReadOnly, cColType ) CLASS TGrid
 
    Local nColumns, uGridColor, uDynamicColor, i
 
@@ -1847,6 +1856,11 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ASize( ::Picture, nColumns )
    AIns( ::Picture, nColIndex )
    ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+
+   // Update Types
+   ASize( ::ColType, nColumns )
+   AIns( ::ColType, nColIndex )
+   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDNL", Left( cColType, 1 ), "C" )
 
    // Update Widths
    ASize( ::aWidths, nColumns )
@@ -2012,7 +2026,7 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWi
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadonly ) CLASS TGrid
+                  uReadonly, cColType ) CLASS TGrid
 
    Local nColumns, uGridColor, uDynamicColor
 
@@ -2042,6 +2056,9 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
 
    // Update Pictures
    ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+
+   // Update Types
+   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDNL", Left( cColType, 1 ), "C" )
 
    // Update Widths
    ::aWidths[ nColIndex ] := nWidth
@@ -2205,6 +2222,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
    _OOHG_DeleteArrayItem( ::aHeaders, nColIndex )
    _OOHG_DeleteArrayItem( ::aWidths, nColIndex )
    _OOHG_DeleteArrayItem( ::Picture, nColIndex )
+   _OOHG_DeleteArrayItem( ::ColType, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadClick, nColIndex )
    _OOHG_DeleteArrayItem( ::aJust, nColIndex )
    _OOHG_DeleteArrayItem( ::Valid, nColIndex )
@@ -2465,7 +2483,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       // EditControl specified
    ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
       // Picture-based
-      EditControl := TGridControlTextBox():New( ::Picture[ nCol ], , ValType( uValue ), , , , Self )
+      EditControl := TGridControlTextBox():New( ::Picture[ nCol ], NIL, ::ColType[ nCol ], NIL, NIL, NIL, Self )
    ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
       EditControl := TGridControlImageList():New( Self )
    Else
@@ -4350,12 +4368,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly ) CLASS TGridByCell
+                  uReadOnly, cColType ) CLASS TGridByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                                    lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                                    uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReadOnly )
+                                   uReadOnly, cColType )
 
    If nColIndex <= ::nColPos
       ::Value := { ::nRowPos, ::nColPos + 1 }
@@ -4542,15 +4560,17 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
 
       If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
          // Read only column
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       ElseIf ! ::IsColumnWhen( ::nColPos, ::nRowPos )
          // WHEN returned .F.
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       ElseIf AScan( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
+         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
       Else
          ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F. )
          ::lCalledFromClass := .F.
-
          If ::lAppendMode
             ::lAppendMode := .F.
             If lRet
