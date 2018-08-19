@@ -463,7 +463,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
 
    if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
    {
-      oSelf->ImageList = ( HIMAGELIST ) hb_parnl( 1 );
+      oSelf->ImageList = ( HIMAGELIST ) HB_PARNL( 1 );
    }
 
    HWNDret( oSelf->ImageList );
