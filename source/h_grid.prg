@@ -429,7 +429,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ::ColType := Array( Len( ::aHeaders ) )
    IF Len( aRows ) > 0
       FOR i := 1 TO Len( ::aHeaders )
-         ::ColType[ i ] := ValType( aRows[ 1, i ] )
+         ::ColType[ i ] := iif( ValType( aRows[ 1, i ] ) $ "CDLNT", ValType( aRows[ 1, i ] ), "C" )
       NEXT i
    ELSE
       AFill( ::ColType, "C")
@@ -1861,7 +1861,7 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update Types
    ASize( ::ColType, nColumns )
    AIns( ::ColType, nColIndex )
-   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDNL", Left( cColType, 1 ), "C" )
+   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDLNT", Left( cColType, 1 ), "C" )
 
    // Update Widths
    ASize( ::aWidths, nColumns )
@@ -2059,7 +2059,7 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
 
    // Update Types
-   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDNL", Left( cColType, 1 ), "C" )
+   ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDLNT", Left( cColType, 1 ), "C" )
 
    // Update Widths
    ::aWidths[ nColIndex ] := nWidth
@@ -3495,6 +3495,14 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
                uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
             EndIf
             uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
+         ElseIf ::ColType[ nColumn ] == "D"
+            uValue[ nColumn ] := CToD( uValue[ nColumn ] )
+         ElseIf ::ColType[ nColumn ] == "L"
+            uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
+         ElseIf ::ColType[ nColumn ] == "N"
+            uValue[ nColumn ] := &( uValue[ nColumn ] )
+         ElseIf ::ColType[ nColumn ] == "T"
+            uValue[ nColumn ] := CToT( uValue[ nColumn ] )
          EndIf
       Next
    Else
@@ -3509,6 +3517,14 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
                   uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
                EndIf
                uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
+            ElseIf ::ColType[ nColumn ] == "D"
+               uValue[ nColumn ] := CToD( uValue[ nColumn ] )
+            ElseIf ::ColType[ nColumn ] == "L"
+               uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
+            ElseIf ::ColType[ nColumn ] == "N"
+               uValue[ nColumn ] := &( uValue[ nColumn ] )
+            ElseIf ::ColType[ nColumn ] == "T"
+               uValue[ nColumn ] := SToT( uValue[ nColumn ] )
             EndIf
          Next
       EndIf
@@ -6081,7 +6097,7 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
 
    If ValType( cType ) $ "CM" .AND. ! Empty( cType )
       cType := Upper( Left( AllTrim( cType ), 1 ) )
-      ::cType := If( ( ! cType $ "CDNL" ), "C", cType )
+      ::cType := iif( cType $ "CDLNT", cType, "C" )
    Else
       ::cType := "C"
    EndIf
@@ -6261,8 +6277,10 @@ FUNCTION TGridControlTextBox_ReleaseKeys( oControl, cEditKey )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBox
 
-   If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
+   If ValType( uValue ) == "C" .AND. ::cType $ "DLN"
       uValue := ::Str2Val( uValue )
+   ElseIf ValType( uValue ) == "T"
+      uValue := ::GridValue( uValue )
    EndIf
    If ! Empty( ::cMask )
       If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
@@ -6305,7 +6323,7 @@ METHOD Str2Val( uValue ) CLASS TGridControlTextBox
    Case ::cType == "N"
       uValue := Val( StrTran( _OOHG_UnTransform( uValue, ::cMask, ::cType ), " ", "" ) )
    Case ::cType == "T"
-      uValue := CtoT( uValue )
+      uValue := CToT( uValue )
    Otherwise
       If ! Empty( ::cMask )
          uValue := _OOHG_UnTransform( uValue, ::cMask, ::cType )
@@ -6326,7 +6344,7 @@ METHOD GridValue( uValue ) CLASS TGridControlTextBox
       ElseIf ::cType $ "CM"
          uValue := Trim( uValue )
       ElseIf ::cType == "T"
-         uValue := TtoC( uValue )
+         uValue := TToC( uValue )
       EndIf
    Else
       uValue := Trim( Transform( uValue, ::cMask ) )
@@ -6364,7 +6382,7 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel,
 
    If ValType( cType ) $ "CM" .AND. ! Empty( cType )
       cType := Upper( Left( AllTrim( cType ), 1 ) )
-      ::cType := If( ( ! cType $ "CDNL" ), "C", cType )
+      ::cType := iif( cType $ "CDLNT", cType, "C" )
    Else
       ::cType := "C"
    EndIf
@@ -6409,8 +6427,10 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel,
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlTextBoxAction
 
-   If ValType( uValue ) == "C" .AND. ::cType $ "DNL"
+   If ValType( uValue ) == "C" .AND. ::cType $ "DLN"
       uValue := ::Str2Val( uValue )
+   ElseIf ValType( uValue ) == "T"
+      uValue := ::GridValue( uValue )
    EndIf
    If ! Empty( ::cMask )
       If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
