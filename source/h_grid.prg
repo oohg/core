@@ -239,6 +239,7 @@ CLASS TGrid FROM TControl
    METHOD Left
    METHOD LoadHeaderImages
    METHOD NextColInOrder
+   METHOD NextPosToEdit
    METHOD OnEnter                 SETGET
    METHOD PageDown
    METHOD PageUp
@@ -4081,6 +4082,21 @@ METHOD LastColInOrder() CLASS TGrid
 
    Return nRet
 
+METHOD NextPosToEdit() CLASS TGrid
+
+   SWITCH ::bPosition
+   CASE 2                // right
+      RETURN 2
+   CASE 3                // left
+      RETURN 3
+   CASE 4                // home
+      RETURN 2
+   CASE 5                // end
+      RETURN 4
+   ENDSWITCH
+
+   RETURN 0              // -1:enter 0:esc 1:up 6:down 7:prior 8:next 9:mouse 12:ctrl+right 13:ctrl+left 14:ctrl+home 15:ctrl+end 17:ctrl+prior 18:ctrl+next
+
 METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TGrid
 
    Local nCols, i
@@ -4560,13 +4576,13 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
 
       If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
          // Read only column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf ! ::IsColumnWhen( ::nColPos, ::nRowPos )
          // WHEN returned .F.
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf AScan( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       Else
          ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F. )
@@ -4757,7 +4773,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
             EndIf
          EndIf
          Exit
-      Else                                           // OK
+      Else                                           // OK, ::bPosition == -1
          If ::nRowPos < 1 .OR. ::nRowPos > ::ItemCount .OR. ::nColPos < 1 .OR. ::nColPos > Len( ::aHeaders )
             Exit
          Else

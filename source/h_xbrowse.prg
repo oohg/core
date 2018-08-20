@@ -3276,13 +3276,13 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
 
       If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
          // Read only column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf ! ::IsColumnWhen( ::nColPos, ::nRowPos )
          // Not a valid WHEN
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf aScan( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       Else
          ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
@@ -3491,13 +3491,13 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
 
       If ::IsColumnReadOnly( ::nColPos, ::nRowPos )
          // Read only column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf ! ::IsColumnWhen( ::nColPos, ::nRowPos )
          // Not a valid WHEN
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       ElseIf aScan( ::aHiddenCols, ::nColPos ) > 0
          // Hidden column
-         ::bPosition := {0, 2, 3, 2, 4, 0, 0, 0}[ ::bPosition ]
+         ::bPosition := ::NextPosToEdit()
       Else
          ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
