@@ -8,6 +8,59 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-19 22:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Method Item was wrongly returning a string instead of real type
+       for columns edited with INPUTMASK.
+
+2018-08-19 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+   * core\source\h_browse.prg
+   * core\source\h_xbrowse.prg
+     ! RTE "Bound error: array access" when the cell edition is
+       ended by Enter key.
+     + METHOD NextPosToEdit to TGrid class.
+
+2018-08-19 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Infinite loop when the exit key of a cell edition of a FullMove
+       control, selects the next cell to edit into a readonly, not when
+       or hidden column.
+     ! INPUTMASK not working properly when the column is numeric or date.
+     + DATA ColType.
+
+2018-08-19 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+   * core\source\h_xbrowse.prg
+     ! Infinite loop when the exit key of a cell edition of a FullMove
+       control, selects the next cell to edit into a readonly, not when
+       or hidden column.
+
+2018-08-17 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Some changes for 64 bit support.
+
+2018-08-17 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Some changes for 64 bit support.
+
+2018-08-17 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.c
+     + DATA cBuffer.
+
+2018-08-17 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_activex.c
+     ! RTE at function SetupConnectionPoint caused by wrong casting.
+     ! Other wrong castings.
+
+2018-08-17 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_image.prg
+     ! Method Buffer is not returning the current buffer.
+
+2018-08-17 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tab.prg
+     ! RTE at TTabRaw:TabToolTip when no tooltip is defined.
+
 2018-08-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
@@ -68,7 +121,7 @@
 
 2018-08-14 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
-     * DATA cPrintLibrary initial value is now "".
+     * Data cPrintLibrary initial value is now "".
      * 'DEFAULT var TO value' changed to 'ASSIGN var ...'
      * TPrint() no longer sets _OOHG_PrintLibrary.
      ; TPrint() with a parameter returns an object of the class
@@ -116,7 +169,7 @@
    * core\source\h_browse.prg
      - DATA RecCount.
      * Some format.
-     % Method FastUpdate: call to Method CurrentRow replaced by
+     % Method FastUpdate: call to method CurrentRow replaced by
        calls to it's needed functions only.
      ! Method VScrollUpdate.
      % Method CurrentRow no longer checks if a row is selected
@@ -154,8 +207,8 @@
        This may have impredictable results if the image has a
        depth greater than 8 bpp.
      + METHOD hBitmap checks if it's parameter is a valid handle.
-     * DATA hBitmap is set to NIL when the picture can't be loaded.
-     * On release DATAs cPicture, cBuffer and hBitmap are cleared.
+     * Data hBitmap is set to NIL when the picture can't be loaded.
+     * On release, datas cPicture, cBuffer and hBitmap are cleared.
 
 2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_xbrowse.prg
@@ -198,7 +251,7 @@
 
 2018-08-06 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_image.prg
-     + METHOD Save to write the control's content to a file.
+     + Method Save to write the control's content to a file.
      * Some changes for 64 bit support.
 
 2018-08-06 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -266,7 +319,7 @@
    * core\source\c_controlmisc.c
      ! ImageList_Init function is not returning a valid object.
    * core\source\h_browse.prg
-     * METHOD ScrollUpdate renamed to METHOD VScrollUpdate.
+     * METHOD ScrollUpdate renamed to VScrollUpdate.
        ; INCOMPATIBLE.
      * Some format.
      ! Control shows two scrollbars.
@@ -276,7 +329,7 @@
      * METHOD HScrollAdjust renamed to HScrollUpdate.
      * METHOD VScrollAdjust renamed to VScrollUpdate.
        ; INCOMPATIBLE.
-     ! METHODs FirstVisibleColumn, LastVisibleColumn an EditCell2
+     ! Methods FirstVisibleColumn, LastVisibleColumn an EditCell2
        do not scroll properly.
      ! Control disapears when a column divider is dragged.
      ! In some cases NOVSCROLL and NOHSCROLL are not honored.
@@ -290,7 +343,7 @@
      ! Control shows two scrollbars.
      ! Value of vertical scrollbar is wrong.
      + Handler for WM_NCCALCSIZE message.
-     * METHOD AdjustRightScroll moved to PRG level.
+     * Method AdjustRightScroll moved to PRG level.
 
 2018-08-05 00:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
@@ -298,7 +351,7 @@
 
 2018-08-05 00:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_scrollbutton.prg
-     + lSunken parameter to METHOD Define.
+     + lSunken parameter to method Define.
        Defaults to .F. if the app is using visual styles, thus
        showing a flat gray square.
        Before this change it was always .T., thus showing a
@@ -308,7 +361,7 @@
 
 2018-08-05 00:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_error.prg
-     * METHOD PutMsg now prints ProcFile info.
+     * Method PutMsg now prints ProcFile info.
 
 2018-08-03 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_winapimisc.c
@@ -484,11 +537,11 @@
 2018-07-15 11:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_browse.prg
      ! CHANGEBEFOREEDIT clause is ignored because TOBrowse
-       forces Data lChangeBeforeEdit to .F.
+       forces data lChangeBeforeEdit to .F.
 
 2018-07-15 10:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_browse.prg
-     ! RTE at Method PageDown of TOBrowseByCell with KEYSLIKECLIPPER
+     ! RTE at method PageDown of TOBrowseByCell with KEYSLIKECLIPPER
        clause and no value set.
 
 2018-07-03 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -538,7 +591,7 @@
 
 2018-06-26 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_combo.prg
-     + Method ItemValue. Returns the combo's value for a given
+     + METHOD ItemValue. Returns the combo's value for a given
        item (displayed string).
 
 2018-06-23 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -634,7 +687,7 @@
      * The initialization of some properties was moved before
        the setting of the control's events.
    * core\source\h_window.prg
-     + Method BringToTop.
+     + METHOD BringToTop.
    * core\source\h_window.prg
      * Extra space removed from function call.
 
@@ -750,7 +803,7 @@
      * Minor corrections.
 
 2018-04-30 13:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   ; DATA nOnFocusPos controls the behaviour of textbox, editbox and
+   ; Data nOnFocusPos controls the behaviour of textbox, editbox and
      richeditbox controls whenever those controls got the focus.
 
    ; When nOnFocusPos is < -3, no text is selected, and the caret
@@ -789,7 +842,7 @@
    * core\source\h_monthcal.prg
      + DATA OldValue. It's set to control's previous value
        before calling event OnChange.
-     ; Do not use DATA xOldValue because is meant to be used
+     ; Do not use data xOldValue because is meant to be used
        internally by controls.
    * core\source\h_init.prg
      * Spanish translation of 'Warning' is now "Advertencia".
@@ -808,7 +861,7 @@
 
 2018-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
-     ! CheckItem method wrongly returns .T. instead of .F.
+     ! Method CheckItem wrongly returns .T. instead of .F.
        for non-existent items.
      * Some format.
      * TGrid_AddColumnColor, TGrid_CreateColorArray and TGrid_FillColorArea
@@ -854,11 +907,11 @@
 
 2018-03-05 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_richeditbox.prg
-     + Methods GetSelFont and SetSelFont to get/set the font of
+     + METHODs GetSelFont and SetSelFont to get/set the font of
        the control's selected text.
-     + Messages GetSelectionFont and SetSelectionFont as aliases
+     + MESSAGEs GetSelectionFont and SetSelectionFont as aliases
        of methods GetSelFont and SetSelFont.
-     + Messages SetSelTextColor and SetSelBackColor as aliases
+     + MESSAGEs SetSelTextColor and SetSelBackColor as aliases
        of method SetSelectionTextColor and SetSelectionBackColor.
 
 2018-03-05 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -884,9 +937,9 @@
      ! COMBOBOX with DISPLAYEDIT clause does not display select item
        after the form is resized when SET AUTOADJUST is ON.
      * TEditCombo control is explicitly released on Combo's release.
-     + Data Type and method Release to TEditCombo.
+     + DATA Type and METHOD Release to TEditCombo.
    * core\source\h_controlmisc.prg
-     + Methods AddToCtrlsArrays and DelFromCtrlsArrays to add/delete
+     + METHODs AddToCtrlsArrays and DelFromCtrlsArrays to add/delete
        controls from _OOHG_aControlhWnd, _OOHG_aControlObjects,
        _OOHG_aControlIds and _OOHG_aControlNames arrays.
 
@@ -1319,7 +1372,7 @@
        See below.
    * core\source\h_browse.prg
      + Added support for KEYSLIKECLIPPER clause to TOBrowseByCell's methods.
-     + Added methods MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+     + Added METHODs MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
        and MoveToLastVisibleCol to class TOBrowseByCell.
      * Methods Home and End of class TOBrowseByCell no longer move record
        pointer when KEYSLIKECLIPPER clause is present. They just change the
@@ -1334,7 +1387,7 @@
    * core\source\h_xbrowse.prg
      + Added support for KEYSLIKECLIPPER clause to TXBrowseByCell's methods.
      * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
-     + Added methods MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+     + Added METHODs MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
        and MoveToLastVisibleCol to class TXBrowseByCell.
      * Methods Home and End of class TXBrowseByCell no longer move record
        pointer when KEYSLIKECLIPPER clause is present. They just change the
