@@ -1531,18 +1531,20 @@ METHOD Property( cProperty, xValue ) CLASS TWindow
 
 METHOD ReleaseAttached() CLASS TWindow
 
+   LOCAL oCtrl
+
    // Release hot keys
-   aEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   AEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aHotKeys := {}
-   aEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   AEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aAcceleratorKeys := {}
 
    // Remove Child Controls
-   DO WHILE LEN( ::aControls ) > 0
-      ::aControls[ 1 ]:Release()
-   ENDDO
+   FOR EACH oCtrl IN ::aControls
+      oCtrl:Release()
+   NEXT oCtrl
 
-   Return nil
+   RETURN NIL
 
 METHOD SetRedraw( lRedraw ) CLASS TWindow
 
