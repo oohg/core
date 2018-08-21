@@ -396,7 +396,7 @@ METHOD Events_VScroll( wParam ) CLASS TScrollBar
    ELSEIF Lo_wParam == SB_THUMBTRACK
       uRet := ::Track( HiWord( wParam ) )
 
-   ELSEIF Lo_wParam == TB_ENDTRACK
+   ELSEIF Lo_wParam == SB_ENDSCROLL
       uRet := _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
       ::DoChange()
 
