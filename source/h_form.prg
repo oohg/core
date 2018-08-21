@@ -645,16 +645,10 @@ METHOD Release() CLASS TForm
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
       Endif
 
-      _ReleaseWindowList( { Self } )
-
-      // Release Window
-
       If ValidHandler( ::hWnd )
          EnableWindow( ::hWnd )
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
       EndIf
-
-      ::Events_Destroy()
    Endif
 
    Return Nil
@@ -1113,14 +1107,10 @@ METHOD Events_Destroy() CLASS TForm
 
    Local mVar
 
-   ::ReleaseAttached()
-
    // Any data must be destroyed... regardless FORM is active or not.
 
-   If ::oMenu != NIL
-      ::oMenu:Release()
-      ::oMenu := nil
-   EndIf
+   // This was done by function _ReleaseWindowList()
+   // ::ReleaseAttached()
 
    // Update Form Index Variable
    If ! Empty( ::Name )
@@ -1647,13 +1637,14 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          Return 1
       EndIf
 
-      // Destroy window
-      _ReleaseWindowList( { Self } )
-
       If ::Type == "A"
          // Main window
          ReleaseAllWindows()
+         // Processing will never reach this point
       Else
+         // Other windows
+         _ReleaseWindowList( { Self } )
+
          ::OnHideFocusManagement()
       EndIf
 
@@ -1668,6 +1659,10 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
    case nMsg == WM_DESTROY
 
+      /*
+       * This will be executed for all windows except MAIN
+       * but only if ReleaseAllWindows() is not executed
+       */
       ::Events_Destroy()
 
    otherwise
@@ -1932,8 +1927,8 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
 
 METHOD Release() CLASS TFormMain
 
-   _ReleaseWindowList( { Self } )
    ReleaseAllWindows()
+   // Processing will never reach this point
 
    Return ::Super:Release()
 
@@ -2728,6 +2723,7 @@ FUNCTION ReleaseAllWindows()
    _ReleaseWindowList( _OOHG_aFormObjects )
    dbCloseAll()
    ExitProcess( _OOHG_ErrorLevel )
+   // Processing will never reach this point
 
    RETURN NIL
 
@@ -2752,33 +2748,38 @@ FUNCTION _ReleaseWindowList( aWindows )
       IF ! oWnd:lReleasing
          oWnd:lReleasing := .T.
 
-         IF ! lSameOrder
-            // ON RELEASE for child windows
-            _ReleaseWindowList( oWnd:aChildPopUp )
-            oWnd:aChildPopUp := {}
-         ENDIF
-
-         IF oWnd:Active
-            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
-         ENDIF
-         oWnd:lDestroyed := .T.
-         oWnd:PreRelease()
-
          IF lSameOrder
-            // ON RELEASE for child windows
+            IF oWnd:Active
+               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            ENDIF
+
+            // Disable form's doevent
+            oWnd:lDestroyed := .T.
+
+            // Prepare all child forms and controls to be destroyed
+            oWnd:PreRelease()
+
+            // Release child windows
             _ReleaseWindowList( oWnd:aChildPopUp )
             oWnd:aChildPopUp := {}
+         ELSE
+            // Prepare all child forms and controls to be destroyed
+            oWnd:PreRelease()
+
+            // Release child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
+
+            IF oWnd:Active
+               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            ENDIF
+
+            // Disable form's doevent
+            oWnd:lDestroyed := .T.
          ENDIF
       ENDIF
 
-      IF ! Empty( oWnd:NotifyIcon )
-         oWnd:NotifyIconObject:Release()
-      ENDIF
-
-      aeval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-      oWnd:aHotKeys := {}
-      aeval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-      oWnd:aAcceleratorKeys := {}
+      oWnd:ReleaseAttached()
    NEXT i
 
    RETURN NIL
