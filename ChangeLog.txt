@@ -8,6 +8,13 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-20 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! When closed, main form is realeased before all other forms.
+     % Method Release of TForm class.
+     % Method Events_Destroy of TForm class.
+     % Function _ReleaseWindowList.
+
 2018-08-19 22:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! Method Item was wrongly returning a string instead of real type
