@@ -158,7 +158,7 @@ CLASS TForm FROM TWindow
    DATA MaxHeight      INIT 0
    DATA ForceRow       INIT nil     // Must be NIL instead of 0
    DATA ForceCol       INIT nil     // Must be NIL instead of 0
-
+   DATA lIgnoreInteractiveClose INIT .F. PROTECTED
    DATA GraphControls  INIT {}
    DATA GraphTasks     INIT {}
    DATA GraphCommand   INIT nil
@@ -219,7 +219,7 @@ CLASS TForm FROM TWindow
    METHOD ProcessInitProcedure
    METHOD DeleteControl
    METHOD OnHideFocusManagement
-   METHOD CheckInteractiveClose()
+   METHOD CheckInteractiveClose
    METHOD DoEvent
 
    METHOD Events
@@ -640,18 +640,24 @@ METHOD MessageLoop() CLASS TForm
 
 METHOD Release() CLASS TForm
 
-   If ! ::lReleasing
-      If ! ::Active
+   IF ! ::lReleasing
+      IF ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
-      Endif
+      ENDIF
 
-      If ValidHandler( ::hWnd )
+      IF ValidHandler( ::hWnd )
+         ::lIgnoreInteractiveClose := .T.
          EnableWindow( ::hWnd )
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
-      EndIf
-   Endif
+      ELSE
+         _ReleaseWindowList( { Self } )
+         ::OnHideFocusManagement()
+         ::Events_Destroy()
+         ::Events_NCDestroy()
+      ENDIF
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD RefreshData() CLASS TForm
 
@@ -1068,21 +1074,23 @@ METHOD Closable( lCloseable ) CLASS TForm
 
 METHOD CheckInteractiveClose() CLASS TForm
 
-   Local lRet := .T.
+   LOCAL lRet := .T.
    /*
    0 - close is not allowed
    1 - close is allowed, no question is asked before
    2 - close is allowed when question is answered yes
    */
-   Do Case
-      Case _OOHG_InteractiveClose == 0
-         MsgStop( _OOHG_Messages( 1, 3 ) )
-         lRet := .F.
-      Case _OOHG_InteractiveClose == 2
-         lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   EndCase
+   DO CASE
+   CASE ::lIgnoreInteractiveClose
+      lRet := .T.
+   CASE _OOHG_InteractiveClose == 0
+      MsgStop( _OOHG_Messages( 1, 3 ) )
+      lRet := .F.
+   CASE _OOHG_InteractiveClose == 2
+      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+   ENDCASE
 
-   Return lRet
+   RETURN lRet
 
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
@@ -1109,7 +1117,7 @@ METHOD Events_Destroy() CLASS TForm
 
    // Any data must be destroyed... regardless FORM is active or not.
 
-   // This was done by function _ReleaseWindowList()
+   // This is done by function _ReleaseWindowList()
    // ::ReleaseAttached()
 
    // Update Form Index Variable
@@ -1934,15 +1942,18 @@ METHOD Release() CLASS TFormMain
 
 METHOD CheckInteractiveClose() CLASS TFormMain
 
-   Local lRet
+   LOCAL lRet
 
-   If _OOHG_InteractiveClose == 3
+   DO CASE
+   CASE ::lIgnoreInteractiveClose
+      lRet := .T.
+   CASE _OOHG_InteractiveClose == 3
       lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   Else
+   OTHERWISE
       lRet := ::Super:CheckInteractiveClose()
-   EndIf
+   ENDCASE
 
-   Return lRet
+   RETURN lRet
 
 
 CLASS TFormModal FROM TForm
