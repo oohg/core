@@ -83,6 +83,9 @@ CLASS TLabel FROM TControl
    METHOD AutoSize   SETGET
    METHOD Align      SETGET
    METHOD SetFont
+   METHOD LeftAlign   BLOCK { |Self| ::Align( SS_LEFT ) }
+   METHOD RightAlign  BLOCK { |Self| ::Align( SS_RIGHT ) }
+   METHOD CenterAlign BLOCK { |Self| ::Align( SS_CENTER ) }
 
    ENDCLASS
 
@@ -195,7 +198,20 @@ METHOD AutoSize( lValue ) CLASS TLabel
 
 METHOD Align( nAlign ) CLASS TLabel
 
-   Return WindowStyleFlag( ::hWnd, 0x3F, nAlign )
+   LOCAL cAlign
+
+   IF ValType( nAlign ) $ "CM"
+      cAlign := Left( nAlign, 1 )
+      IF cAlign == "L"
+         nAlign := SS_LEFT
+      ELSEIF cAlign == "C"
+         nAlign := SS_CENTER
+      ELSEIF cAlign == "R"
+         nAlign := SS_RIGHT
+      ENDIF
+   ENDIF
+
+   RETURN WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
 
 EXTERN InitLabel
