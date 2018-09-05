@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-05 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     + METHOD LeftAlign to TLabel.
+     + METHOD RightAlign to TLabel.
+     + METHOD CenterAlign to TLabel.
+     * METHOD Align of TLabel now supports "LEFT", "RIGHT" and
+       "CENTER" as parameters.
+
+2018-09-05 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! RTE: Control already defined when re-entering a previously
+       closed form.
+
 2018-08-20 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
      ! When closed, main form is realeased before all other forms.
