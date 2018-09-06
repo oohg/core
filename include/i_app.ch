@@ -61,7 +61,7 @@
 
 
 #xtranslate App . <p: ArgC, Args, BackColor, Cargo, ClientHeight, ClientWidth, Col, Cursor, ;
-      DoEvents, Drive, ExeName, FormName, FormObject, Handle, Height, HelpButton, hWnd, Icon, ;
+      DoEvents, Drive, ExeName, FileName, FormName, FormObject, Handle, Height, HelpButton, hWnd, Icon, ;
       MainName, MainObject, MultipleInstances, Name, Path, Row, Title, Topmost, Width> ;
    => ;
       Application.<p>
@@ -84,6 +84,7 @@
 #xtranslate Application.Drive                      => TApplication():Define():Drive
 #xtranslate Application.ErrorLevel                 => TApplication():Define():ErrorLevel
 #xtranslate Application.ExeName                    => TApplication():Define():ExeName
+#xtranslate Application.FileName                   => TApplication():Define():FileName
 #xtranslate Application.FormName                   => TApplication():Define():MainName()
 #xtranslate Application.FormObject                 => TApplication():Define():MainObject()
 #xtranslate Application.Handle                     => TApplication():Define():Handle()
