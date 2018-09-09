@@ -965,4 +965,44 @@ DRAWTEXT PARAMETERS
 #define DT_VCENTER                    4
 #define DT_BOTTOM                     8
 
+/*---------------------------------------------------------------------------
+INTERNET EXPLORER EVENTS
+---------------------------------------------------------------------------*/
+
+#define AX_SE2_STATUSTEXTCHANGE           102
+#define AX_SE2_PROGRESSCHANGE             108
+#define AX_SE2_COMMANDSTATECHANGE         105
+#define AX_SE2_DOWNLOADBEGIN              106
+#define AX_SE2_DOWNLOADCOMPLETE           104
+#define AX_SE2_TITLECHANGE                113
+#define AX_SE2_PROPERTYCHANGE             112
+#define AX_SE2_BEFORENAVIGATE2            250
+#define AX_SE2_NEWWINDOW2                 251
+#define AX_SE2_NAVIGATECOMPLETE2          252
+#define AX_SE2_DOCUMENTCOMPLETE           259
+#define AX_SE2_ONQUIT                     253
+#define AX_SE2_ONVISIBLE                  254
+#define AX_SE2_ONTOOLBAR                  255
+#define AX_SE2_ONMENUBAR                  256
+#define AX_SE2_ONSTATUSBAR                257
+#define AX_SE2_ONFULLSCREEN               258
+#define AX_SE2_ONTHEATERMODE              260
+#define AX_SE2_WINDOWSETRESIZABLE         262
+#define AX_SE2_WINDOWSETLEFT              264
+#define AX_SE2_WINDOWSETTOP               265
+#define AX_SE2_WINDOWSETWIDTH             266
+#define AX_SE2_WINDOWSETHEIGHT            267
+#define AX_SE2_WINDOWCLOSING              263
+#define AX_SE2_CLIENTTOHOSTWINDOW         268
+#define AX_SE2_SETSECURELOCKICON          269
+#define AX_SE2_FILEDOWNLOAD               270
+#define AX_SE2_NAVIGATEERROR              271
+#define AX_SE2_PRINTTEMPLATEINSTANTIATION 225
+#define AX_SE2_PRINTTEMPLATETEARDOWN      226
+#define AX_SE2_UPDATEPAGESTATUS           227
+#define AX_SE2_PRIVACYIMPACTEDSTATECHANGE 272
+#define AX_SE2_NEWWINDOW3                 273
+#define AX_SE2_SETPHISHINGFILTERSTATUS    282
+#define AX_SE2_WINDOWSTATECHANGED         283
+
 #endif
