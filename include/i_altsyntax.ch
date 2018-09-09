@@ -2400,7 +2400,8 @@ LABEL
       _OOHG_ActiveControlNoWordWrap  := .F.    ;;
       _OOHG_ActiveControlNoPrefix    := .F.    ;;
       _OOHG_ActiveControlInputMask   := NIL    ;;
-      _OOHG_ActiveControlVCenter     := .F.
+      _OOHG_ActiveControlVCenter     := .F.    ;;
+      _OOHG_ActiveControlOnDblClick  := NIL
 
 #xcommand VCENTERALIGN <vcenter> ;
    => ;
@@ -2482,7 +2483,8 @@ LABEL
             _OOHG_ActiveControlNoPrefix, ;
             _OOHG_ActiveControlInputMask, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlVCenter )
+            _OOHG_ActiveControlVCenter, ;
+            _OOHG_ActiveControlOnDblClick )
 
 #xcommand DEFINE IPADDRESS <name> ;
    => ;

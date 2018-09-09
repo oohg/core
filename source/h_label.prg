@@ -94,7 +94,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
                lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
                HelpId, invisible, italic, underline, strikeout, autosize, ;
                rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
-               cPicture, lDisabled, lCenterAlign ) CLASS TLabel
+               cPicture, lDisabled, lCenterAlign, bDblClk ) CLASS TLabel
 
    Local ControlHandle, nStyle, nStyleEx
 
@@ -137,8 +137,11 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
    EndIf
 
-   ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
-   ASSIGN ::OnClick  VALUE ProcedureName TYPE "B"
+   ASSIGN ::AutoSize VALUE autosize      TYPE "L" DEFAULT ::AutoSize
+
+   // OnClick takes precedence over OnDblClick
+   ASSIGN ::OnClick    VALUE ProcedureName TYPE "B"
+   ASSIGN ::OnDblClick VALUE bDblClk       TYPE "B"
 
    Return Self
 

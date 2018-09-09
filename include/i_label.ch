@@ -63,7 +63,7 @@
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ VALUE <value> ] ;
-      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ <autosize: AUTOSIZE> ] ;
@@ -91,7 +91,8 @@
       [ INPUTMASK <picture> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
-      [ <lcenteralign: VCENTERALIGN> ] ;
+      [ <vcntralign: VCENTERALIGN> ] ;
+      [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
@@ -100,4 +101,4 @@
             [ <fontcolor> ], <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
-            <.noprefix.>, <picture>, <.disabled.>, <.lcenteralign.> )
+            <.noprefix.>, <picture>, <.disabled.>, <.vcntralign.>, <{dblclk}> )
