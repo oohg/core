@@ -106,21 +106,25 @@ TODO: Check KEY_READ, KEY_EXECUTE and KEY_ALL_ACCESS defines.
 #define KEY_WRITE                6          // Create, set and write.
 #define KEY_EXECUTE              25         // Read, query, enumerate and notify.
 #define KEY_ALL_ACCESS           63         // All actions.
+#define KEY_WOW64_64KEY          0x0100     // Access a 64-bit key from either a 32-bit or 64-bit application
 
 /*---------------------------------------------------------------------------
 VALUE TYPES
 http://msdn.microsoft.com/en-us/library/windows/desktop/ms724884(v=vs.85).aspx
 ---------------------------------------------------------------------------*/
 
-#define REG_NONE                 0          // No value type.
-#define REG_SZ                   1          // String.
-#define REG_EXPAND_SZ            2          // String with envvar.
-#define REG_BINARY               3          // Binary.
+#define REG_NONE                 0          // No value type
+#define REG_SZ                   1          // String
+#define REG_EXPAND_SZ            2          // String with envvar
+#define REG_BINARY               3          // Binary
 #define REG_DWORD                4          // A 32-bit number
+#define REG_DWORD_LITTLE_ENDIAN  4          // A 32-bit number
 #define REG_DWORD_BIG_ENDIAN     5          // A 32-bit number
-#define REG_LINK                 6          // Symbolic link.
-#define REG_MULTI_SZ             7          // Array of strings.
-#define REG_RESOURCE_LIST        8          // Resource list.
+#define REG_LINK                 6          // Symbolic link
+#define REG_MULTI_SZ             7          // Array of strings
+#define REG_RESOURCE_LIST        8          // Resource list
+#define REG_QWORD                11         // 64-bit number
+#define REG_QWORD_LITTLE_ENDIAN  11         // 64-bit number
 
 #endif
 
