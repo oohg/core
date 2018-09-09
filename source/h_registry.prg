@@ -63,6 +63,7 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TReg32
 
    DATA cRegKey
@@ -71,142 +72,265 @@ CLASS TReg32
    DATA nError
    DATA lError
 
-   METHOD New( nKey, cRegKey, lShowError )
-   METHOD Create( nKey, cRegKey, lShowError )
-   METHOD Get( cSubKey, uVar )
-   METHOD Set( cSubKey, uVar, nType )
-   METHOD Delete( cSubKey )
-   METHOD KeyDelete( cSubKey )
-   METHOD Close() BLOCK {| Self | If( ::lError, , ( ::nError := RegCloseKey( ::nHandle ) ) ) }
+   METHOD New
+   METHOD Create
+   METHOD Get
+   METHOD Set
+   METHOD Delete
+   METHOD KeyDelete
+   METHOD Close      BLOCK { |Self| iif( ::lError, NIL, ( ::nError := RegCloseKey( ::nHandle ) ) ) }
 
    ENDCLASS
 
 METHOD New( nKey, cRegKey, lShowError ) CLASS TReg32
 
-   Local nReturn, nHandle := 0
+   LOCAL nReturn, nHandle := 0
 
    ASSIGN cRegKey VALUE cRegKey TYPE "C" DEFAULT ""
 
-   If ( nReturn := RegOpenKeyExA( nKey, cRegKey, @nHandle ) ) == ERROR_SUCCESS
+   IF ( nReturn := RegOpenKeyExA( nKey, cRegKey, iif( IsWow64(), hb_bitOr( KEY_ALL_ACCESS, KEY_WOW64_64KEY ), KEY_ALL_ACCESS ), @nHandle ) ) == ERROR_SUCCESS
       ::lError := .F.
-   Else
-      ::lError := .T.
-      If ! HB_IsLogical( lShowError ) .OR. lShowError
-         MsgStop( "Error creating TReg32 object (" + LTrim( Str( nReturn ) ) + ")" )
-      EndIf
-   EndIf
+   ELSE
+      IF ( nReturn := RegOpenKeyExA( nKey, cRegKey, KEY_READ, @nHandle ) ) == ERROR_SUCCESS
+         ::lError := .F.
+      ELSE
+         ::lError := .T.
+         IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
+            MsgStop( "Error creating TReg32 object (" + LTrim( Str( nReturn ) ) + ")" )
+         ENDIF
+      ENDIF
+   ENDIF
 
    ::nError := nReturn
    ::nHandle := nHandle
    ::cRegKey := cRegKey
 
-   Return Self
+   RETURN Self
 
 METHOD Create( nKey, cRegKey, lShowError ) CLASS TReg32
 
-   Local nReturn, nHandle := 0
+   LOCAL nReturn, nHandle := 0
 
    ASSIGN cRegKey VALUE cRegKey TYPE "C" DEFAULT ""
 
-   If ( nReturn := RegCreateKey( nKey, cRegKey, @nHandle ) ) == ERROR_SUCCESS
+   IF ( nReturn := RegCreateKey( nKey, cRegKey, @nHandle ) ) == ERROR_SUCCESS
       ::lError := .F.
-   Else
+   ELSE
       ::lError := .T.
-      If ! HB_IsLogical( lShowError ) .OR. lShowError
+      IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
          MsgStop( "Error creating TReg32 object (" + LTrim( Str( nReturn ) ) + ")" )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   ::nError := RegOpenKeyExA( nKey, cRegKey, @nHandle )
+   ::nError := RegOpenKeyExA( nKey, cRegKey, iif( IsWow64(), hb_BitOr( KEY_ALL_ACCESS, KEY_WOW64_64KEY ), KEY_ALL_ACCESS ), @nHandle )
 
    ::lError := ( ::nError != ERROR_SUCCESS )
    ::nHandle := nHandle
    ::cRegKey := cRegKey
 
-   Return Self
+   RETURN Self
 
-METHOD Get( cSubkey, uVar ) CLASS TReg32
+METHOD Get( cRegVar, uVar ) CLASS TReg32
 
-   Local cValue := "", nType := 0, nLen := 0, cType
+   LOCAL cValue := "", nType := 0, nLen := 0, cType, i
 
-   If ! ::lError
-      ::nError := RegQueryValueExA( ::nHandle, cSubkey, 0, @nType, @cValue, @nLen )
+   ASSIGN cRegVar VALUE cRegVar TYPE "C" DEFAULT ""
 
-      cType := ValType( uVar )
-      uVar := cValue
-      Do Case
-      Case cType == "D"
-         uVar := CToD( uVar )
-      Case cType == "L"
-         uVar := ( Upper( uVar ) == ".T." )
-      Case cType == "N"
-         uVar := Val( uVar )
-      Case cType == "T"
-         uVar := CToT( uVar )
-      EndCase
-   EndIf
+   IF ! ::lError
+      ::nError := RegQueryValueExA( ::nHandle, cRegVar, 0, @nType, @cValue, @nLen )
 
-   Return uVar
+      IF Empty( ::nError )
+         cType := ValType( uVar )
+         DO CASE
+         CASE cType == "A"
+            uVar := Array( nLen )
+            FOR i := 1 TO nLen
+               uVar[ i ] := Asc( SubStr( cValue, i, 1 ) )
+            NEXT i
+         CASE cType == "L"
+            uVar := ( Upper( cValue ) == ".T." )
+         CASE cType == "D"
+            uVar := CToD( cValue )
+         CASE cType == "N"
+            IF nType == REG_SZ
+               uVar := Val( cValue )
+            ELSE
+               uVar := Bin2U( cValue )
+            ENDIF
+         CASE cType == "T"
+            uVar := CToT( cValue )
+         OTHERWISE                      
+            uVar := cValue
+         ENDCASE
+      ENDIF
+   ENDIF
 
-METHOD Set( cSubKey, uVar, nType ) CLASS TReg32
+   RETURN uVar
 
-   Local cType, nLen
+METHOD Set( cRegVar, uVar, nType ) CLASS TReg32
 
-   If ! ::lError
-      cType := ValType( uVar )
+   LOCAL uData, nByte, nLen := 0
 
-      If ValType( nType ) != "N"
-         nType := REG_SZ
-         Do Case
-         Case cType == "D"
-            uVar := DToC( uVar )
-         Case cType == "L"
-            uVar := If( uVar, ".T.", ".F." )
-         Case cType == "N"
-            uVar := LTrim( Str( uVar ) )
-         Case cType == "T"
-            uVar := TToC( uVar )
-         EndCase
-      Else
-         nLen := Len( uVar )
-         If nLen == 0
-            uVar := Chr( 0 )
+   IF ! ::lError
+      SWITCH ValType( uVar )
+      CASE "A"   // array of binary values
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_BINARY
+         ELSEIF nType != REG_BINARY
+            // Not supported
+            RETURN NIL
+         ENDIF
+         uData := ""
+         FOR EACH nByte IN uVar
+            IF ! HB_ISNUMERIC( nByte ) .OR. nByte < 0 .OR. nByte > 255
+               RETURN NIL
+            ENDIF
+            uData += Chr( nByte )
+         NEXT
+         nLen := Len( uData )
+         EXIT
+      CASE "L"
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_SZ
+            uData := iif( uVar, ".T.", ".F." )
+         ELSEIF nType == REG_SZ
+            uData := iif( uVar, ".T.", ".F." )
+         ELSEIF nType == REG_DWORD
+            uData := iif( uVar, 1, 0 )
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      CASE "D"
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_SZ
+            uData := DToC( uVar )
+         ELSEIF nType == REG_SZ
+            uData := DToC( uVar )
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      CASE "N"
+         IF ! HB_ISNUMERIC( nType )
+            IF _OOHG_SaveAsDWORD
+               nType := REG_DWORD
+               uData := uVar
+            ELSE
+               nType := REG_SZ
+               uData := LTrim( Str( uVar ) )
+            ENDIF
+         ELSEIF nType == REG_DWORD .OR. ;
+                nType == REG_DWORD_LITTLE_ENDIAN .OR. ;
+                nType == REG_DWORD_BIG_ENDIAN .OR. ;
+                nType == REG_QWORD .OR. ;
+                nType == REG_QWORD_LITTLE_ENDIAN
+               uData := uVar
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      CASE "T"
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_SZ
+            uData := TToC( uVar )
+         ELSEIF nType == REG_SZ
+            uData := TToC( uVar )
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      CASE "C"
+      CASE "M"
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_SZ
+            uData := uVar
+         ELSEIF nType == REG_SZ .OR. ;
+                nType == REG_EXPAND_SZ .OR. ;
+                nType == REG_BINARY .OR. ;
+                nType == REG_MULTI_SZ
+            uData := uVar
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      CASE "B"
+      CASE "O"
+         // Not supported
+         RETURN NIL
+      OTHERWISE
+         IF ! HB_ISNUMERIC( nType )
+            nType := REG_NONE
+            uData := NIL
+         ELSEIF nType == REG_NONE
+            uData := NIL
+         ELSE
+            // Not supported
+            RETURN NIL
+         ENDIF
+         EXIT
+      ENDSWITCH
+
+      SWITCH nType
+      CASE REG_SZ
+      CASE REG_EXPAND_SZ
+         IF ValType( uData ) $ "CM"
+            nLen := At( Chr( 0 ), uData )
+            IF nLen == 0
+               uData += Chr( 0 )
+               nLen := Len( uData )
+            ENDIF
+         ELSE
+            uData := Chr( 0 )
             nLen := 1
-         EndIf
-      EndIf
+         ENDIF
+         EXIT
+      CASE REG_MULTI_SZ
+         IF ValType( uData ) $ "CM"
+            nLen := At( Chr( 0 ) + Chr( 0 ), uData )
+            IF nLen == 0
+               uData += Chr( 0 ) + Chr( 0 )
+               nLen := 1
+            ENDIF
+            nLen ++
+         ELSE
+            uData := Chr( 0 ) + Chr( 0 )
+            nLen := 2
+         ENDIF
+         EXIT
+      ENDSWITCH
 
-      If nType == REG_SZ .OR. nType == REG_EXPAND_SZ
-         nLen := At( Chr( 0 ), uVar )
-         If nLen == 0
-            nLen := Len( uVar ) + 1
-            If nLen == 1
-               uVar := Chr( 0 )
-            EndIf
-         EndIf
-      EndIf
+      ASSIGN cRegVar VALUE cRegVar TYPE "C" DEFAULT ""
 
-      ::nError := RegSetValueExA( ::nHandle, cSubkey, 0, nType, @uVar, nLen )
-   EndIf
+      ::nError := RegSetValueExA( ::nHandle, cRegVar, 0, nType, @uData, nLen )
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
-METHOD Delete( cSubKey ) CLASS TReg32
+METHOD Delete( cRegVar ) CLASS TReg32
 
-   If ! ::lError
-      ::nError := RegDeleteValueA( ::nHandle, cSubkey )
-   EndIf
+   IF ! ::lError
+      ASSIGN cRegVar VALUE cRegVar TYPE "C" DEFAULT ""
 
-   Return Nil
+      ::nError := RegDeleteValueA( ::nHandle, cRegVar )
+   ENDIF
+
+   RETURN NIL
 
 METHOD KeyDelete( cSubKey ) CLASS TReg32
 
-   If ! ::lError
+   IF ! ::lError
       ::nError := RegDeleteKey( ::nHandle, cSubkey )
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include <windows.h>
@@ -219,31 +343,28 @@ METHOD KeyDelete( cSubKey ) CLASS TReg32
 #include "hbapiitm.h"
 #include "oohg.h"
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGCLOSEKEY )
-//------------------------------------------------------------------------------
 {
    HB_RETNL( RegCloseKey( (HKEY) HB_PARNL( 1 ) ) );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGOPENKEYEXA )
-//------------------------------------------------------------------------------
 {
    LSTATUS lError;
    HKEY phwHandle;
 
-   lError = RegOpenKeyExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), 0, KEY_ALL_ACCESS, &phwHandle );
+   lError = RegOpenKeyExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), 0, (REGSAM) HB_PARNL( 3 ), &phwHandle );
    if ( lError == ERROR_SUCCESS )
    {
-      HB_STORNL2( (LONG_PTR) phwHandle, 3 );
+      HB_STORNL2( (LONG_PTR) phwHandle, 4 );
    }
    HB_RETNL( lError );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGQUERYVALUEEXA )
-//------------------------------------------------------------------------------
 {
    LSTATUS lError;
    DWORD lpType = hb_parnl( 4 );
@@ -267,9 +388,8 @@ HB_FUNC( REGQUERYVALUEEXA )
    HB_RETNL( lError );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGENUMKEYEXA )
-//------------------------------------------------------------------------------
 {
    FILETIME ft;
    LSTATUS lError;
@@ -289,16 +409,31 @@ HB_FUNC( REGENUMKEYEXA )
    HB_RETNL( lError );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGSETVALUEEXA )
-//------------------------------------------------------------------------------
 {
-   HB_RETNL( RegSetValueExA( (HKEY) hb_parnl( 1 ), (LPCSTR) hb_parc( 2 ), (DWORD) NULL, (DWORD) hb_parnl( 4 ), (BYTE *) hb_parc( 5 ), (DWORD) hb_parnl( 6 ) ) );
+   DWORD dwType = (DWORD) hb_parnl( 4 );
+
+   if( dwType == REG_DWORD )
+   {
+      DWORD nSpace = (DWORD) hb_parnl( 5 );
+      HB_RETNL( RegSetValueExA( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), 0, dwType, (const BYTE *) &nSpace, sizeof( DWORD ) ) );
+   }
+#if defined( REG_QWORD )
+   else if( dwType == REG_QWORD )
+   {
+      HB_U64 nSpace = (HB_U64) hb_parnint( 5 );
+      HB_RETNL( RegSetValueExA( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), 0, dwType, (const BYTE *) &nSpace, sizeof( HB_U64 ) ) );
+   }
+#endif
+   else
+   {
+      HB_RETNL( RegSetValueExA( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), 0, dwType, (const BYTE *) hb_parc( 5 ), (DWORD) hb_parnl( 6 ) ) );
+   }
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGCREATEKEY )
-//------------------------------------------------------------------------------
 {
    HKEY hKey;
    LSTATUS lError;
@@ -311,9 +446,8 @@ HB_FUNC( REGCREATEKEY )
    HB_RETNL( lError );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGENUMVALUEA )
-//------------------------------------------------------------------------------
 {
    DWORD lpType = 1;
    TCHAR Buffer[255];
@@ -332,23 +466,20 @@ HB_FUNC( REGENUMVALUEA )
    HB_RETNL( lError );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGDELETEKEY )
-//------------------------------------------------------------------------------
 {
    HB_RETNL( RegDeleteKey( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ) ) );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGDELETEVALUEA )
-//------------------------------------------------------------------------------
 {
    HB_RETNL( RegDeleteValueA( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ) ) );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGCONNECTREGISTRY )
-//------------------------------------------------------------------------------
 {
    LPCTSTR lpValue = hb_parc( 1 );
    HKEY hwKey = (HKEY) HB_PARNL( 2 );
@@ -364,100 +495,129 @@ HB_FUNC( REGCONNECTREGISTRY )
    HB_RETNL( lError );
 }
 
+typedef BOOL ( WINAPI *LPFN_ISWOW64PROCESS ) ( HANDLE, PBOOL );
+
+HB_FUNC( ISWOW64 )
+{
+   BOOL bIsWow64 = FALSE;
+
+   LPFN_ISWOW64PROCESS fnIsWow64Process;
+
+   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
+   if( NULL != fnIsWow64Process )
+   {
+      fnIsWow64Process( GetCurrentProcess(), &bIsWow64 );
+   }
+
+   hb_retl( bIsWow64 );
+}
+
 #pragma ENDDUMP
 
-/*
- * These functions were adapted from HMG Extended
- */
-
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION IsRegistryKey( nKey, cRegKey )
 
-   Local oReg, lExist
+   LOCAL oReg, lExist
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
    lExist := ! oReg:lError
    oReg:Close()
 
-   Return lExist
+   RETURN lExist
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION CreateRegistryKey( nKey, cRegKey )
 
-   Local oReg, lSuccess
+   LOCAL oReg, lSuccess
 
    oReg := TReg32():Create( nKey, cRegKey, .F. )
    lSuccess := ! oReg:lError
    oReg:Close()
 
-   Return lSuccess
+   RETURN lSuccess
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION GetRegistryValue( nKey, cRegKey, cRegVar, cType )
 
-   Local oReg, uVal
+   LOCAL oReg, uVal
 
-   DEFAULT cRegVar TO '', cType TO 'C'
+   ASSIGN cType VALUE cType TYPE "C" DEFAULT "C"
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
-   If ! oReg:lError
-      Do Case
-      Case cType == 'N'
+   IF ! oReg:lError
+      DO CASE
+      CASE cType == "A"
+         uVal := {}
+      CASE cType == "N"
          uVal := 0
-      Case cType == 'D'
-         uVal := CToD( '' )
-      Case cType == 'L'
+      CASE cType == "D"
+         uVal := CToD( "" )
+      CASE cType == "L"
          uVal := .F.
-      Otherwise
-         uVal := ''
-      EndCase
+      OTHERWISE
+         uVal := ""
+      ENDCASE
 
       uVal := oReg:Get( cRegVar, uVal )
       IF oReg:nError != ERROR_SUCCESS
          uVal := NIL
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
    oReg:Close()
 
-   Return uVal
+   RETURN uVal
 
-FUNCTION SetRegistryValue( nKey, cRegKey, cRegVar, uVal )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION SetRegistryValue( nKey, cRegKey, cRegVar, uVal, nType )
 
-   Local oReg, lSuccess
-
-   DEFAULT cRegVar TO ''
+   LOCAL oReg, lSuccess
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
-   If ( lSuccess := ! oReg:lError )
-      oReg:Set( cRegVar, uVal )
+   IF oReg:lError
+      lSuccess := .F.
+   ELSE
+      oReg:Set( cRegVar, uVal, nType )
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
-   EndIf
+   ENDIF
    oReg:Close()
 
-   Return lSuccess
+   RETURN lSuccess
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION DeleteRegistryVar( nKey, cRegKey, cRegVar )
 
-   Local oReg, lSuccess
-
-   DEFAULT cRegVar TO ''
+   LOCAL oReg, lSuccess
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
-   If ( lSuccess := ! oReg:lError )
+   IF oReg:lError
+      lSuccess := .F.
+   ELSE
       oReg:Delete( cRegVar )
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
-   EndIf
+   ENDIF
    oReg:Close()
 
-   Return lSuccess
+   RETURN lSuccess
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION DeleteRegistryKey( nKey, cRegKey, cSubKey )
 
-   Local oReg, lSuccess
+   LOCAL oReg, lSuccess
 
    oReg := TReg32():New( nKey, cRegKey, .F. )
-   If ( lSuccess := ! oReg:lError )
+   IF oReg:lError
+      lSuccess := .F.
+   ELSE
       oReg:KeyDelete( cSubKey )
       lSuccess := ( oReg:nError == ERROR_SUCCESS )
-   EndIf
+   ENDIF
    oReg:Close()
 
-   Return lSuccess
+   RETURN lSuccess
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION Bin2U( c )
+
+   LOCAL l := Bin2L( c )
+
+   RETURN iif( l < 0, l + 4294967296, l )
