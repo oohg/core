@@ -8,6 +8,35 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-08-16 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-09-08 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_registry.prg
+     * Some format.
+     + Numeric values can be saved as REG_DWORD.
+     + Support for 64 bits.
+     + Support for saving/getting an array of binary values.
+
+2018-09-08 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_registry.ch
+     + Some registry related defines.
+
+2018-09-08 23:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + Internet Explorer related defines.
+
+2018-09-08 23:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     + Variable _OOHG_SaveAsDWORD. When .T. numeric values are
+       save as REG_DWORD instead of REG_SZ. Defaults to .F.
+
+2018-09-06 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     + App.Filename.
+
 2018-09-05 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_label.prg
      + METHOD LeftAlign to TLabel.
