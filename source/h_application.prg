@@ -108,7 +108,8 @@
 #define NDX_OOHG_WINRELEASESAMEORDER   39
 #define NDX_OOHG_INITTGRIDCONTROLDATAS 40
 #define NDX_OOHG_COMBOREFRESH          41
-#define NUMBER_OF_APP_WIDE_VARS        41
+#define NDX_OOHG_SAVEASDWORD           42
+#define NUMBER_OF_APP_WIDE_VARS        42
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -184,6 +185,7 @@ CLASS TApplication
    METHOD Value_Pos39             SETGET
    METHOD Value_Pos40             SETGET
    METHOD Value_Pos41             SETGET
+   METHOD Value_Pos42             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -245,6 +247,7 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ]   := .T.
       ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ] := NIL
       ::aVars[ NDX_OOHG_COMBOREFRESH ]          := .T.
+      ::aVars[ NDX_OOHG_SAVEASDWORD ]           := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1143,6 +1146,20 @@ METHOD Value_Pos41( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_COMBOREFRESH ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_COMBOREFRESH ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos42( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_OOHG_SAVEASDWORD ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_SAVEASDWORD ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )

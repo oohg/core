@@ -104,6 +104,7 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_WinReleaseSameOrder    => TApplication():Define():Value_Pos39
 #xtranslate _OOHG_InitTGridControlDatas  => TApplication():Define():Value_Pos40
 #xtranslate _OOHG_ComboRefresh           => TApplication():Define():Value_Pos41
+#xtranslate _OOHG_SaveAsDWORD            => TApplication():Define():Value_Pos42
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES
