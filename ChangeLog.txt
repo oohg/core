@@ -8,7 +8,41 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2018-08-16 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-08-22 16:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * DATAs aHeadClick, aJust, ColType and Picture of TGrid class
+       are now initialized to {} instead of NIL.
+     * DATA DynamicBackColor of TGrid class renamed to
+       aDynamicBackColor.
+     * DATA DynamicForeColor of TGrid class renamed to
+       aDynamicForeColor.
+     + METHOD aItems to TGrid class. Set/gets an array
+       containing all the data of all the items.
+     + METHOD DynamicBackColor to TGrid class.
+     + METHOD DynamicForeColor to TGrid class.
+     + METHOD RefreshColors to TGrid class.
+     ! Potencial crashes caused by using full oop syntax with
+       ommited parameters. See samples\oohg\maindemooop.prg
+     + FUNCTION GetPictureFromArray.
+     + FUNCTION GetColTypeFromArray.
+     % METHOD AddColumn of TGrid class.
+     % FUNCTION TGrid_AddColumnColor.
+     % METHOD SetColumn of TGrid class.
+     * METHOD SetItemColor return value.
+     % FUNCTION TGrid_CreateColorArray.
+     ! OnDelete event of a TGridMulti with ::lDeleteAll set to .T.
+       was receiving an array with the data of the deleted item
+       instead of an array with one item containing the data of
+       the deleted item.
+
+2018-09-12 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     + DATA nMaxLength to TEditCombo class.
+     + METHOD MaxLength to TEditCombo class.
+
+2018-09-09 08:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_label.ch
    * core\include\oohg_dyns.hbx
      * Updated.
 

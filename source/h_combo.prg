@@ -1666,10 +1666,12 @@ HB_FUNC( INITLISTCOMBO )
 CLASS TEditCombo FROM TControl STATIC
 
    DATA LastKey                   INIT 0
+   DATA nMaxLength                INIT 0
    DATA Type                      INIT "EDITCOMBO"
 
    METHOD Define
    METHOD Events
+   METHOD MaxLength               SETGET
    METHOD Release
 
    ENDCLASS
@@ -1696,6 +1698,15 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
    ENDIF
 
    RETURN NIL
+
+METHOD MaxLength( nLen ) CLASS TEditCombo
+
+   IF HB_ISNUMERIC( nLen )
+      ::nMaxLength := If( nLen >= 1, nLen, 0 )
+      SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
+   ENDIF
+
+   RETURN SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
 METHOD Release() CLASS TEditCombo
 
