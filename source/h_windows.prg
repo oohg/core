@@ -1539,9 +1539,16 @@ METHOD ReleaseAttached() CLASS TWindow
    AEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aAcceleratorKeys := {}
 
-   FOR i := Len( ::aControls ) TO 1 STEP -1
-      ::aControls[ i ]:Release()
-   NEXT i
+   // Remove Child Controls
+   IF _OOHG_WinReleaseSameOrder
+      FOR i := 1 TO Len( ::aControls )
+         ::aControls[ i ]:Release()
+      NEXT i
+   ELSE
+      FOR i := Len( ::aControls ) TO 1 STEP -1
+         ::aControls[ i ]:Release()
+      NEXT i
+   ENDIF
 
    RETURN NIL
 
