@@ -68,12 +68,12 @@ CLASS TGrid FROM TControl
 
    DATA aEditControls             INIT Nil
    DATA aEditKeys                 INIT Nil
-   DATA aHeadClick                INIT Nil
+   DATA aHeadClick                INIT {}
    DATA aHeaderImage              INIT {}
    DATA aHeaderImageAlign         INIT {}
    DATA aHeaders                  INIT {}
    DATA aHiddenCols               INIT {}
-   DATA aJust                     INIT Nil
+   DATA aJust                     INIT {}
    DATA AllowAppend               INIT .F.
    DATA AllowChangeSize           INIT .T.
    DATA AllowDelete               INIT .F.
@@ -97,10 +97,10 @@ CLASS TGrid FROM TControl
    DATA ClickOnCheckbox           INIT .T.
    DATA cRowEditTitle             INIT Nil
    DATA cText                     INIT ""
-   DATA ColType                   INIT NIL
+   DATA ColType                   INIT {}
    DATA DelMsg                    INIT Nil
-   DATA DynamicBackColor          INIT {}
-   DATA DynamicForeColor          INIT {}
+   DATA aDynamicBackColor         INIT {}
+   DATA aDynamicForeColor         INIT {}
    DATA EditControls              INIT Nil
    DATA FullMove                  INIT .F.
    DATA GridBackColor             INIT {}
@@ -158,7 +158,7 @@ CLASS TGrid FROM TControl
    DATA OnEditCell                INIT Nil
    DATA OnEditCellEnd             INIT Nil
    DATA OnInsert                  INIT Nil
-   DATA Picture                   INIT Nil
+   DATA Picture                   INIT {}
    DATA RClickOnCheckbox          INIT .T.
    DATA ReadOnly                  INIT Nil
    DATA SearchCol                 INIT 0
@@ -177,6 +177,7 @@ CLASS TGrid FROM TControl
    METHOD AdjustResize
    METHOD Append                  SETGET
    METHOD AppendItem
+   METHOD aItems                  SETGET
    METHOD BackColor               SETGET
    METHOD Cell
    METHOD CellCaption             BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
@@ -202,6 +203,8 @@ CLASS TGrid FROM TControl
    METHOD DeleteColumn
    METHOD DeleteItem
    METHOD Down
+   METHOD DynamicBackColor         SETGET
+   METHOD DynamicForeColor         SETGET
    METHOD EditAllCells
    METHOD EditCell
    METHOD EditCell2
@@ -244,6 +247,7 @@ CLASS TGrid FROM TControl
    METHOD PageDown
    METHOD PageUp
    METHOD PriorColInOrder
+   METHOD RefreshColors
    METHOD Release
    METHOD Right
    METHOD ScrollToCol
@@ -370,8 +374,6 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       ::AllowChangeSize := ! lFixedWidths
    EndIf
 
-   ASSIGN ::aJust             VALUE aJust             TYPE "A"
-   ASSIGN ::Picture           VALUE aPicture          TYPE "A"
    ASSIGN ownerdata           VALUE ownerdata         TYPE "L" DEFAULT .F.
    ASSIGN ::lNoGrid           VALUE nogrid            TYPE "L"
    ASSIGN ::lCheckBoxes       VALUE lCheckBoxes       TYPE "L"
@@ -413,19 +415,21 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
              If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
 
-   If ! HB_IsArray( ::aJust )
+   IF ! HB_ISARRAY( aJust )
       ::aJust := AFill( Array( Len( ::aHeaders ) ), 0 )
-   Else
+   ELSE
+      ::aJust := aJust
       ASize( ::aJust, Len( ::aHeaders ) )
       AEval( ::aJust, { |x,i| ::aJust[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
-   EndIf
+   ENDIF
 
-   If ! HB_IsArray( ::Picture )
+   IF ! HB_ISARRAY( aPicture )
       ::Picture := Array( Len( ::aHeaders ) )
-   Else
+   ELSE
+      ::Picture := aPicture
       ASize( ::Picture, Len( ::aHeaders ) )
-   EndIf
-   AEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, Nil ) } )
+   ENDIF
+   AEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, NIL ) } )
    ::ColType := Array( Len( ::aHeaders ) )
    IF Len( aRows ) > 0
       FOR i := 1 TO Len( ::aHeaders )
@@ -438,23 +442,25 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ::SetSplitBoxInfo( Break )
    ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
 
-   If HB_IsArray( aImage )
-      // Can't use ::AddBitMap( aImage ) because control is not registered yet
-      aImageList := ImageList_Init( aImage, ::ImageListColor, ::ImageListFlags )
-      If ValidHandler( aImageList[ 1 ] )
-         SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
-         ::ImageList := aImageList[ 1 ]
-         i := AScan( ::Picture, .T. )
-         If i == 0
-            ::Picture[ 1 ] := .T.
-            ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Ensure there's enough room for bitmap plus checkboxes
-         Else
-            ::aWidths[ i ] := Max( ::aWidths[ i ], aImageList[ 2 ] )  // Ensure there's enough room for bitmap
-         EndIf
-      EndIf
-   ElseIf ::lCheckBoxes
-      ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 4 ) // Set Column 1 width to checkboxes width
-   EndIf
+   IF Len( ::aHeaders ) > 0
+      IF HB_ISARRAY( aImage )
+         // Can't use ::AddBitMap( aImage ) because control is not registered yet
+         aImageList := ImageList_Init( aImage, ::ImageListColor, ::ImageListFlags )
+         IF ValidHandler( aImageList[ 1 ] )
+            SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
+            ::ImageList := aImageList[ 1 ]
+            i := AScan( ::Picture, .T. )
+            IF i == 0
+               ::Picture[ 1 ] := .T.
+               ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Ensure there's enough room for bitmap plus checkboxes
+            ELSE
+               ::aWidths[ i ] := Max( ::aWidths[ i ], aImageList[ 2 ] )  // Ensure there's enough room for bitmap
+            ENDIF
+         ENDIF
+      ELSEIF ::lCheckBoxes
+         ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], GetStateListWidth( ControlHandle ) + 4 ) // Set Column 1 width to checkboxes width
+      ENDIF
+   ENDIF
 
    InitListViewColumns( ControlHandle, ::aHeaders, ::aWidths, ::aJust )
 
@@ -465,12 +471,20 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ::BackColor := ::Super:BackColor
 
    ::DynamicForeColor := dynamicforecolor
-   ::DynamicBackColor := dynamicbackcolor
+   ::DynamicBackColor := dynamicBackcolor
    ::Readonly := readonly
    ::Valid := valid
    ::ValidMessages := validmessages
    ::aEditKeys := aEditKeys
-   ::aWhen := aWhenFields
+
+   IF HB_ISARRAY( aWhenFields )
+      ::aWhen := aWhenFields
+      ASize( ::aWhen, Len( ::aHeaders ) )
+   ELSEIF HB_ISBLOCK( aWhenFields )
+      ::aWhen := Array( Len( ::aHeaders ) )
+      AFill( ::aWhen, aWhenFields )
+   ENDIF
+
    ASSIGN ::InPlace   VALUE inplace  TYPE "L"
    ASSIGN ::FullMove  VALUE FullMove TYPE "L"
 
@@ -559,49 +573,54 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
 
 METHOD AddBitMap( uImage ) CLASS TGrid
 
-   Local aImageList, nPos, nCount, i
+   LOCAL aImageList, nPos, nCount, i
 
-   If ValidHandler( ::ImageList )
+   IF ValidHandler( ::ImageList )
       nCount := ImageList_GetImageCount( ::ImageList )
-      If HB_IsArray( uImage )
+      IF HB_ISARRAY( uImage )
          nPos := ImageList_Add( ::ImageList, uImage[ 1 ], ::ImageListFlags, ::ImageListColor )
          AEval( uImage, { |c| ImageList_Add( ::ImageList, c, ::ImageListFlags, ::ImageListColor ) }, 2 )
-      Else
+      ELSE
          nPos := ImageList_Add( ::ImageList, uImage, ::ImageListFlags, ::ImageListColor )
-      EndIf
-      If nCount == ImageList_GetImageCount( ::ImageList )
+      ENDIF
+      IF nCount == ImageList_GetImageCount( ::ImageList )
          nPos := 0
-      EndIf
+      ENDIF
       SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, ::ImageList )
-   Else
-      If HB_IsArray( uImage )
+   ELSEIF Len( ::aHeaders ) > 0
+      IF HB_ISARRAY( uImage )
          aImageList := ImageList_Init( uImage, ::ImageListColor, ::ImageListFlags )
-      Else
+      ELSE
          aImageList := ImageList_Init( { uImage }, ::ImageListColor, ::ImageListFlags )
-      EndIf
-      If ValidHandler( aImageList[ 1 ] )
+      ENDIF
+      IF ValidHandler( aImageList[ 1 ] )
          ::ImageList := aImageList[ 1 ]
          nPos := 1
          SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
+         IF ! HB_ISARRAY( ::Picture )
+            ::Picture := Array( Len( ::aHeaders ) )
+         ENDIF
          i := AScan( ::Picture, .T. )
-         If i == 0
+         IF i == 0
             ::Picture[ 1 ] := .T.
             ::aWidths[ 1 ] := Max( ::ColumnWidth( 1 ), aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 4, 4 ) ) // Ensure there's enough room for bitmap plus checkboxes
-         Else
+         ELSE
             ::aWidths[ i ] := Max( ::ColumnWidth( i ), aImageList[ 2 ] )  // Ensure there's enough room for bitmap
-         EndIf
-      Else
+         ENDIF
+      ELSE
          nPos := 0
-      EndIf
-   Endif
+      ENDIF
+   ELSE
+      nPos := 0
+   ENDIF
 
-   Return nPos
+   RETURN nPos
 
 METHOD FirstVisibleItem CLASS TGrid
 
    Local nRet
 
-   If ::ItemCount > 0
+   If ::ItemCount> 0
       nRet := ListView_GetTopIndex( ::hWnd )
       If nRet < 1 .OR. nRet > ::ItemCount
          nRet := 0
@@ -1419,7 +1438,7 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
 METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TGrid
 
-   Local aItems, lSomethingEdited := .F.
+   Local aItemValues, lSomethingEdited := .F.
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1457,11 +1476,11 @@ METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TGrid
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
 
    Do While .T.
-      aItems := ::Item( nItem )
+      aItemValues := ::Item( nItem )
 
-      aItems := ::EditItem2( nItem, aItems, , , If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
+      aItemValues := ::EditItem2( nItem, aItemValues, , , If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
 
-      If Empty( aItems )
+      If Empty( aItemValues )
          ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nItem, 0 } )
          If ::lAppendMode
             ::DeleteItem( ::ItemCount )
@@ -1473,7 +1492,7 @@ METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TGrid
       EndIf
 
       lSomethingEdited := .T.
-      ::Item( nItem, ASize( aItems, Len( ::aHeaders ) ) )
+      ::Item( nItem, ASize( aItemValues, Len( ::aHeaders ) ) )
 
       _SetThisCellInfo( ::hWnd, nItem, 1, Nil )
       ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nItem, 0 } )
@@ -1512,11 +1531,11 @@ METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TGrid
 
    Return lSomethingEdited
 
-METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
+METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TGrid
 
    Local l, actpos := {0,0,0,0}, GCol, iRow, i, oWnd, nWidth, nMaxHigh, oMain
    Local EditControl, aEditControls2, nRow, lSplitWindow, nControlsMaxHeight
-   Local aReturn, lHidden
+   Local aReturn, lHidden, cPicture
 
    If ::FirstVisibleColumn == 0
       Return {}
@@ -1532,15 +1551,15 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
    EndIf
    ::lNested := .T.
 
-   If ! HB_IsArray( aItems ) .OR. Len( aItems ) == 0
-      aItems := ::Item( nItem )
+   If ! HB_IsArray( aItemValues ) .OR. Len( aItemValues ) == 0
+      aItemValues := ::Item( nItem )
    EndIf
-   aItems := AClone( aItems )
-   If Len( aItems ) > Len( ::aHeaders )
-       ASize( aItems, Len( ::aHeaders ) )
+   aItemValues := AClone( aItemValues )
+   If Len( aItemValues ) > Len( ::aHeaders )
+       ASize( aItemValues, Len( ::aHeaders ) )
    EndIf
 
-   l := Len( aItems )
+   l := Len( aItemValues )
 
    iRow := ListViewGetItemRow( ::hWnd, nItem )
 
@@ -1562,13 +1581,16 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
       EditControl := GetEditControlFromArray( EditControl, aEditControls, i, Self )
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, i, Self )
       If ! HB_IsObject( EditControl )
-         If ValType( ::Picture[ i ] ) $ "CM"
-            EditControl := TGridControlTextBox():New( ::Picture[ i ], NIL, ::ColType[ i ], NIL, NIL, NIL, Self )
-         ElseIf ValType( ::Picture[ i ] ) == "L" .AND. ::Picture[ i ]
-            EditControl := TGridControlImageList():New( Self )
-         Else
-            EditControl := TGridControlTextBox():New( , , , , , , Self )
-         EndIf
+         cPicture := GetPictureFromArray( Self, i )
+         IF ValType( cPicture ) $ "CM"
+            EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, i ), NIL, NIL, NIL, Self )
+         ELSE
+            IF ValType( cPicture ) == "L" .AND. cPicture
+               EditControl := TGridControlImageList():New( Self )
+            ELSE
+               EditControl := TGridControlTextBox():New( , , , , , , Self )
+            ENDIF
+         ENDIF
       EndIf
       aEditControls2[ i ] := EditControl
       nWidth := Max( nWidth, EditControl:nDefWidth )
@@ -1610,7 +1632,7 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
       If ! lHidden
         @ nRow + 3, 10 LABEL 0 PARENT ( oWnd ) VALUE AllTrim( ::aHeaders[ i ] ) + ":" WIDTH 110 NOWORDWRAP
       EndIf
-      aEditControls2[ i ]:CreateControl( aItems[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
+      aEditControls2[ i ]:CreateControl( aItemValues[ i ], oWnd:Name, nRow, 120, aEditControls2[ i ]:nDefWidth, aEditControls2[ i ]:nDefHeight )
       nRow += aEditControls2[ i ]:nDefHeight + 6
       If HB_IsArray( aMemVars ) .AND. Len( aMemVars ) >= i
          aEditControls2[ i ]:cMemVar := aMemVars[ i ]
@@ -1686,7 +1708,7 @@ METHOD EditItem2( nItem, aItems, aEditControls, aMemVars, cTitle ) CLASS TGrid
    EndIf
 
    @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 6 ) ;
-         ACTION ( TGrid_EditItem_Check( aEditControls2, aItems, oMain, aReturn ) )
+         ACTION ( TGrid_EditItem_Check( aEditControls2, aItemValues, oMain, aReturn ) )
 
    @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 7 ) ;
          ACTION oMain:Release()
@@ -1743,7 +1765,7 @@ STATIC FUNCTION TGrid_EditItem_When( aEditControls )
 
    Return aValues
 
-STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItems, oWnd, aReturn )
+STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn )
 
    Local lRet, nItem, aValues, lValid, cValidMessage
 
@@ -1773,10 +1795,10 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItems, oWnd, aReturn )
       EndIf
    Next
 
-   // If all controls are valid, save values into "aItems"
+   // If all controls are valid, save values into "aItemValues"
    If lRet
-      ASize( aReturn, Len( aItems ) )
-      AEval( aValues, { |u,i| aItems[ i ] := aReturn[ i ] := u } )
+      ASize( aReturn, Len( aItemValues ) )
+      AEval( aValues, { |u,i| aItemValues[ i ] := aReturn[ i ] := u } )
       oWnd:Release()
    EndIf
 
@@ -1819,7 +1841,7 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
                   uReadOnly, cColType ) CLASS TGrid
 
-   Local nColumns, uGridColor, uDynamicColor, i
+   Local nColumns, i
 
    // Set Default Values
    nColumns := Len( ::aHeaders ) + 1
@@ -1873,18 +1895,10 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    EndIf
 
    // Update Foreground Color
-   uGridColor := ::GridForeColor
-   uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
-   ::GridForeColor := uGridColor
-   ::DynamicForeColor := uDynamicColor
+   TGrid_AddColumnColor( ::GridForeColor, nColIndex, uForeColor, ::DynamicForeColor, nColumns, ::ItemCount, lNoDelete, Self )
 
    // Update Background Color
-   uGridColor := ::GridBackColor
-   uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
-   ::GridBackColor := uGridColor
-   ::DynamicBackColor := uDynamicColor
+   TGrid_AddColumnColor( ::GridBackColor, nColIndex, uBackColor, ::DynamicBackColor, nColumns, ::ItemCount, lNoDelete, Self )
 
    // Update edit control
    If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
@@ -1916,7 +1930,9 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
       AIns( ::Valid, nColIndex )
       ::Valid[ nColIndex ] := uValid
    ElseIf uValid != Nil
+      i := ::Valid
       ::Valid := Array( nColumns )
+      AFill( ::Valid, i )
       ::Valid[ nColIndex ] := uValid
    EndIf
 
@@ -1926,7 +1942,9 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
       AIns( ::ValidMessages, nColIndex )
       ::ValidMessages[ nColIndex ] := uValidMessage
    ElseIf uValidMessage != Nil
+      i := ::ValidMessages
       ::ValidMessages := Array( nColumns )
+      AFill( ::ValidMessages, i )
       ::ValidMessages[ nColIndex ] := uValidMessage
    EndIf
 
@@ -1936,7 +1954,9 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
       AIns( ::aWhen, nColIndex )
       ::aWhen[ nColIndex ] := uWhen
    ElseIf uWhen != Nil
+      i := ::aWhen
       ::aWhen := Array( nColumns )
+      AFill( ::aWhen, i )
       ::aWhen[ nColIndex ] := uWhen
    EndIf
 
@@ -1946,7 +1966,9 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
       AIns( ::Readonly, nColIndex )
       ::Readonly[ nColIndex ] := uReadOnly
    ElseIf uReadOnly != Nil
+      i := ::Readonly
       ::Readonly := Array( nColumns )
+      AFill( ::Readonly, i )
       ::Readonly[ nColIndex ] := uReadOnly
    EndIf
 
@@ -1971,27 +1993,63 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
 
    Return nColIndex
 
-// aGrid and uDynamicColor may be passed by reference
-STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWidth, nItemCount, lNoDelete, Self )
+METHOD DynamicForeColor( uColor ) CLASS TGrid
 
-   LOCAL uTemp, x
-
-   IF ValType( uDynamicColor ) == "A"
-      IF Len( uDynamicColor ) < nWidth
-         ASize( uDynamicColor, nWidth )
-      ENDIF
-      AIns( uDynamicColor, nColumn )
-      uDynamicColor[ nColumn ] := uColor
-   ELSEIF ValType( uColor ) $ "ANB"
-      uTemp := uDynamicColor
-      uDynamicColor := Array( nWidth )
-      AFill( uDynamicColor, uTemp )
-      uDynamicColor[ nColumn ] := uColor
+   IF HB_ISARRAY( ::aDynamicForeColor )
+      ASize( ::aDynamicForeColor, Len( ::aHeaders ) )
+   ELSE
+      ::aDynamicForeColor := Array( Len( ::aHeaders ) )
    ENDIF
 
+   IF PCount() > 0
+      IF HB_ISARRAY( uColor )
+         ASize( uColor, Len( ::aHeaders ) )
+         ::aDynamicForeColor := AClone( uColor )
+      ELSE
+         ::aDynamicForeColor := Array( Len( ::aHeaders ) )
+         IF ValType( uColor ) $ "NB"
+            AFill( ::aDynamicForeColor, uColor )
+         ENDIF
+      ENDIF
+      AEval( ::aDynamicForeColor, { |x, i| iif( ValType( x ) $ "ANB", NIL, ::aDynamicForeColor[ i ] := NIL ) } )
+   ENDIF
+
+   RETURN ::aDynamicForeColor
+
+METHOD DynamicBackColor( uColor ) CLASS TGrid
+
+   IF HB_ISARRAY( ::aDynamicBackColor )
+      ASize( ::aDynamicBackColor, Len( ::aHeaders ) )
+   ELSE
+      ::aDynamicBackColor := Array( Len( ::aHeaders ) )
+   ENDIF
+
+   IF PCount() > 0
+      IF HB_ISARRAY( uColor )
+         ASize( uColor, Len( ::aHeaders ) )
+         ::aDynamicBackColor := AClone( uColor )
+      ELSE
+         ::aDynamicBackColor := Array( Len( ::aHeaders ) )
+         IF ValType( uColor ) $ "NB"
+            AFill( ::aDynamicBackColor, uColor )
+         ENDIF
+      ENDIF
+      AEval( ::aDynamicBackColor, { |x, i| iif( ValType( x ) $ "ANB", NIL, ::aDynamicBackColor[ i ] := NIL ) } )
+   ENDIF
+
+   RETURN ::aDynamicBackColor
+
+STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, aDynamicColor, nWidth, nItemCount, lNoDelete, Self )
+
+   LOCAL x
+
    IF ! lNoDelete
-      uDynamicColor := NIL
-   ELSEIF HB_ISARRAY( aGrid ) .OR. ValType( uColor ) $ "ANB" .OR. ValType( uDynamicColor ) $ "ANB"
+      aDynamicColor := Array( nWidth )
+   ELSE
+      IF ValType( uColor ) $ "ANB"
+         aDynamicColor[ nColumn ] := uColor
+      ENDIF
+
       IF HB_ISARRAY( aGrid )
          IF Len( aGrid ) < nItemCount
             ASize( aGrid, nItemCount )
@@ -2001,6 +2059,7 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWi
       ELSE
          aGrid := Array( nItemCount )
       ENDIF
+
       _PushEventInfo()
       _OOHG_ThisForm    := ::Parent
       _OOHG_ThisType    := "C"
@@ -2016,7 +2075,7 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, uDynamicColor, nWi
             aGrid[ x ] := Array( nWidth )
          ENDIF
          _SetThisCellInfo( Self:hWnd, x, nColumn, NIL )
-         aGrid[ x ][ nColumn ] := _OOHG_GetArrayItem( uDynamicColor, nColumn, x )
+         aGrid[ x ][ nColumn ] := _OOHG_GetArrayItem( aDynamicColor, nColumn, x )
          _ClearThisCellInfo()
       NEXT
       _PopEventInfo()
@@ -2029,7 +2088,7 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
                   uReadonly, cColType ) CLASS TGrid
 
-   Local nColumns, uGridColor, uDynamicColor
+   Local nColumns, i
 
    // Set Default Values
    nColumns := Len( ::aHeaders )
@@ -2056,12 +2115,15 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ::aHeaders[ nColIndex ] := cCaption
 
    // Update Pictures
+   ASize( ::Picture, nColumns )
    ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
 
    // Update Types
+   ASize( ::ColType, nColumns )
    ::ColType[ nColIndex ] := iif( ValType( cColType ) $ "CM" .AND. Left( cColType, 1 ) $ "CDLNT", Left( cColType, 1 ), "C" )
 
    // Update Widths
+   ASize( ::aWidths, nColumns )
    ::aWidths[ nColIndex ] := nWidth
 
    If ! HB_IsLogical( lNoDelete )
@@ -2069,18 +2131,10 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    EndIf
 
    // Update Foreground Color
-   uGridColor := ::GridForeColor
-   uDynamicColor := ::DynamicForeColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uForeColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
-   ::GridForeColor := uGridColor
-   ::DynamicForeColor := uDynamicColor
+   TGrid_AddColumnColor( ::GridForeColor, nColIndex, uForeColor, ::DynamicForeColor, nColumns, ::ItemCount, lNoDelete, Self )
 
    // Update Background Color
-   uGridColor := ::GridBackColor
-   uDynamicColor := ::DynamicBackColor
-   TGrid_AddColumnColor( @uGridColor, nColIndex, uBackColor, @uDynamicColor, nColumns, ::ItemCount, lNoDelete, Self )
-   ::GridBackColor := uGridColor
-   ::DynamicBackColor := uDynamicColor
+   TGrid_AddColumnColor( ::GridBackColor, nColIndex, uBackColor, ::DynamicBackColor, nColumns, ::ItemCount, lNoDelete, Self )
 
    // Update edit control
    If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
@@ -2096,50 +2150,66 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    EndIf
 
    // Update justification
+   ASize( ::aJust, nColumns )
    ::aJust[ nColIndex ] := nJustify
 
    // Update on head click codeblock
+   ASize( ::aHeadClick, nColumns )
    ::aHeadClick[ nColIndex ] := uHeadClick
 
    // Update valid
    If HB_IsArray( ::Valid )
+      ASize( ::Valid, nColumns )
       ::Valid[ nColIndex ] := uValid
    ElseIf uValid != Nil
+      i := ::Valid
       ::Valid := Array( nColumns )
+      AFill( ::Valid, i )
       ::Valid[ nColIndex ] := uValid
    EndIf
 
    // Update validmessages
    If HB_IsArray( ::ValidMessages )
+      ASize( ::ValidMessages, nColumns )
       ::ValidMessages[ nColIndex ] := uValidMessage
    ElseIf uValidMessage != Nil
+      i := ::ValidMessages
       ::ValidMessages := Array( nColumns )
+      AFill( ::ValidMessages, i )
       ::ValidMessages[ nColIndex ] := uValidMessage
    EndIf
 
    // Update when
    If HB_IsArray( ::aWhen )
+      ASize( ::aWhen, nColumns )
       ::aWhen[ nColIndex ] := uWhen
    ElseIf uWhen != Nil
+      i := ::aWhen
       ::aWhen := Array( nColumns )
+      AFill( ::aWhen, i )
       ::aWhen[ nColIndex ] := uWhen
    EndIf
 
    // Update readonly
    If HB_IsArray( ::Readonly )
+      ASize( ::Readonly, nColumns )
       ::Readonly[ nColIndex ] := uReadOnly
    ElseIf uReadOnly != Nil
+      i := ::Readonly
       ::Readonly := Array( nColumns )
+      AFill( ::Readonly, i )
       ::Readonly[ nColIndex ] := uReadOnly
    EndIf
 
    // Update header image
+   ASize( ::aHeaderImage, nColumns )
    If ! HB_IsNumeric( nHeaderImage ) .OR. nHeaderImage < 0
       nHeaderImage := 0
    EndIf
    ::HeaderImage( nColIndex, nHeaderImage )
 
    // Update header image alignment
+   ASize( ::aHeaderImageAlign, nColumns )
    If ! HB_IsNumeric( nHeaderImageAlign ) .OR. nHeaderImageAlign != HEADER_IMG_AT_RIGHT
       nHeaderImageAlign := HEADER_IMG_AT_LEFT
    EndIf
@@ -2272,16 +2342,16 @@ METHOD Value( uValue ) CLASS TGrid
 
 METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
 
-   Local aItem, uValue2 := Nil
+   Local aItemValues, uValue2 := Nil
 
    If nRow >= 1 .AND. nRow <= ::ItemCount
-      aItem := ::Item( nRow )
-      If nCol >= 1 .AND. nCol <= Len( aItem )
+      aItemValues := ::Item( nRow )
+      If nCol >= 1 .AND. nCol <= Len( aItemValues )
          If PCount() > 2
-            aItem[ nCol ] := uValue
-            ::Item( nRow, aItem )
+            aItemValues[ nCol ] := uValue
+            ::Item( nRow, aItemValues )
          EndIf
-         uValue2 := aItem[ nCol ]
+         uValue2 := aItemValues[ nCol ]
       EndIf
    EndIf
 
@@ -2421,7 +2491,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 // nRow, nCol, EditControl and uValue may be passed by reference
 METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos ) CLASS TGrid
 
-   Local r, r2, lRet := .F., nClientWidth, nScrollWidth
+   Local r, r2, lRet := .F., nClientWidth, nScrollWidth, cPicture
 
    If ! ValType( cMemVar ) $ "CM" .OR. Empty( cMemVar )
       cMemVar := "_OOHG_NULLVAR_"
@@ -2480,17 +2550,20 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       EditControl := ::aEditControls[ nCol ]
    EndIf
    EditControl := GetEditControlFromArray( EditControl, ::EditControls, nCol, Self )
-   If HB_IsObject( EditControl )
+   IF HB_ISOBJECT( EditControl )
       // EditControl specified
-   ElseIf ValType( ::Picture[ nCol ] ) $ "CM"
-      // Picture-based
-      EditControl := TGridControlTextBox():New( ::Picture[ nCol ], NIL, ::ColType[ nCol ], NIL, NIL, NIL, Self )
-   ElseIf ValType( ::Picture[ nCol ] ) == "L" .AND. ::Picture[ nCol ]
-      EditControl := TGridControlImageList():New( Self )
-   Else
-      // Derive from data type
-      EditControl := GridControlObjectByType( uValue, Self )
-   EndIf
+   ELSE
+      cPicture := GetPictureFromArray( Self, nCol )
+      IF ValType( cPicture ) $ "CM"
+         // Picture-based
+         EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nCol ), NIL, NIL, NIL, Self )
+      ELSEIF ValType( cPicture ) == "L" .AND. cPicture
+         EditControl := TGridControlImageList():New( Self )
+      ELSE
+         // Derive from data type
+         EditControl := GridControlObjectByType( uValue, Self )
+      ENDIF
+   ENDIF
 
    If ! HB_IsObject( EditControl )
       MsgExclamation( _OOHG_Messages( 1, 12 ), _OOHG_Messages( 1, 5 ) )
@@ -3133,7 +3206,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          EndIf
 
          // Repaint the grid
-         RedrawWindow( ::ContainerhWnd )
+         RedrawWindow( ::ContainerhWnd )       
 
          // Update column's width in array
          _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
@@ -3151,7 +3224,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          EndIf
 
          // Repaint the grid
-         RedrawWindow( ::ContainerhWnd )
+         RedrawWindow( ::ContainerhWnd )    
 
          // Update column's width in array
          _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
@@ -3191,7 +3264,7 @@ METHOD Events_Enter() CLASS TGrid
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
    Local nNotify := GetNotifyCode( lParam )
-   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItem
+   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItemValues
 
    If nNotify == NM_CUSTOMDRAW
       IF ::lNeedsAdjust .AND. ::lEndTrack
@@ -3233,10 +3306,10 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
             If lGo
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
-                  aItem := ::Item( uValue )
+                  aItemValues := ::Item( uValue )
                   ::DeleteItem( uValue )
                   ::Value := Min( uValue, ::ItemCount )
-                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
@@ -3284,7 +3357,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
    ElseIf nNotify == LVN_COLUMNCLICK
       lvc := GetGridColumn( lParam ) + 1
-      If HB_IsBlock( ::aHeadClick[ lvc ] )
+      IF lvc > 0 .AND. lvc <= Len( ::aHeadClick ) .AND. HB_ISBLOCK( ::aHeadClick[ lvc ] )
          _SetThisCellInfo( ::hWnd, 0, lvc )
          ::DoEvent( ::aHeadClick[ lvc ], "HEADCLICK", { lvc } )
          _ClearThisCellInfo()
@@ -3379,18 +3452,68 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
    Return ::Super:Events_Notify( wParam, lParam )
 
+METHOD aItems( aRows ) CLASS TGrid
+
+   LOCAL i, uValue, aItems
+
+   IF PCount() > 0
+      IF ! HB_ISARRAY( aRows )
+         MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
+      ENDIF
+
+      FOR i := 1 to Len( aRows )
+         IF Len( aRows[ i ] ) != Len( ::aHeaders )
+            MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
+         ENDIF
+      NEXT i
+
+      uValue := ::Value
+
+      ListViewReset( ::hWnd )
+      ::DoChange()
+
+      AEval( aRows, { |u| ::AddItem( u ) } )
+
+      ::Value := uValue
+   ENDIF
+
+   aItems := {}
+
+   FOR i := 1 TO ::ItemCount
+      AAdd( aItems, ::Item( i ) )
+   NEXT i
+
+   RETURN aItems
+
 METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
 
-   Local aText
+   LOCAL aText, nItem
 
-   If Len( ::aHeaders ) != Len( aRow )
+   IF Len( ::aHeaders ) != Len( aRow )
       MsgOOHGError( "Grid.AddItem: Item size mismatch. Program terminated." )
-   EndIf
+   ENDIF
 
    aText := TGrid_SetArray( Self, aRow )
-   ::SetItemColor( ::ItemCount + 1, uForeColor, uBackColor, aRow )
 
-   Return AddListViewItems( ::hWnd, aText )
+   nItem := ::ItemCount + 1
+
+   IF ! HB_ISARRAY( ::GridForeColor )
+      ::GridForeColor := Array( nItem )
+   ENDIF
+   IF Len( ::GridForeColor ) < nItem
+      ASize( ::GridForeColor, nItem )
+   ENDIF
+
+   IF ! HB_ISARRAY( ::GridBackColor )
+      ::GridBackColor := Array( nItem )
+   ENDIF
+   IF Len( ::GridBackColor ) < nItem
+      ASize( ::GridBackColor, nItem )
+   ENDIF
+
+   ::SetItemColor( nItem, uForeColor, uBackColor, aRow )
+
+   RETURN AddListViewItems( ::hWnd, aText )
 
 METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
 
@@ -3434,15 +3557,20 @@ METHOD InsertBlank( nItem ) CLASS TGrid
     */
 
    aGrid := ::GridForeColor
-   If HB_IsArray( aGrid ) .AND. Len( aGrid ) >= nItem
-      AAdd( aGrid, Nil )
-      AIns( aGrid, nItem )
-   EndIf
+   IF ! HB_ISARRAY( aGrid )
+      aGrid := Array( nItem )
+   ENDIF
+   IF Len( aGrid ) < nItem
+      ASize( aGrid, nItem )
+   ENDIF
+
    aGrid := ::GridBackColor
-   If HB_IsArray( aGrid ) .AND. Len( aGrid ) >= nItem
-      AAdd( aGrid, Nil )
-      AIns( aGrid, nItem )
-   EndIf
+   IF ! HB_ISARRAY( aGrid )
+      aGrid := Array( nItem )
+   ENDIF
+   IF Len( aGrid ) < nItem
+      ASize( aGrid, nItem )
+   ENDIF
 
    nItem := InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
 
@@ -3478,7 +3606,7 @@ METHOD DeleteItem( nItem ) CLASS TGrid
 
 METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 
-   Local nColumn, aTemp, oEditControl
+   Local nColumn, aTemp, oEditControl, cColType
 
    If PCount() > 1
       aTemp := TGrid_SetArray( Self, uValue )
@@ -3495,14 +3623,17 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
                uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
             EndIf
             uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
-         ElseIf ::ColType[ nColumn ] == "D"
-            uValue[ nColumn ] := CToD( uValue[ nColumn ] )
-         ElseIf ::ColType[ nColumn ] == "L"
-            uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
-         ElseIf ::ColType[ nColumn ] == "N"
-            uValue[ nColumn ] := &( uValue[ nColumn ] )
-         ElseIf ::ColType[ nColumn ] == "T"
-            uValue[ nColumn ] := CToT( uValue[ nColumn ] )
+         Else
+            cColType := GetColTypeFromArray( Self, nColumn )
+            If cColType == "D"
+               uValue[ nColumn ] := CToD( uValue[ nColumn ] )
+            ElseIf cColType == "L"
+               uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
+            ElseIf cColType == "N"
+               uValue[ nColumn ] := &( uValue[ nColumn ] )
+            ElseIf cColType == "T"
+               uValue[ nColumn ] := CToT( uValue[ nColumn ] )
+            EndIf
          EndIf
       Next
    Else
@@ -3517,14 +3648,17 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
                   uValue[ nColumn ] := { ::CellCaption( nItem, nColumn ), ::CellImage( nItem, nColumn ) }
                EndIf
                uValue[ nColumn ] := oEditControl:Str2Val( uValue[ nColumn ] )
-            ElseIf ::ColType[ nColumn ] == "D"
-               uValue[ nColumn ] := CToD( uValue[ nColumn ] )
-            ElseIf ::ColType[ nColumn ] == "L"
-               uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
-            ElseIf ::ColType[ nColumn ] == "N"
-               uValue[ nColumn ] := &( uValue[ nColumn ] )
-            ElseIf ::ColType[ nColumn ] == "T"
-               uValue[ nColumn ] := SToT( uValue[ nColumn ] )
+            Else
+               cColType := GetColTypeFromArray( Self, nColumn )
+               If cColType == "D"
+                  uValue[ nColumn ] := CToD( uValue[ nColumn ] )
+               ElseIf cColType == "L"
+                  uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
+               ElseIf cColType == "N"
+                  uValue[ nColumn ] := &( uValue[ nColumn ] )
+               ElseIf cColType == "T"
+                  uValue[ nColumn ] := CToT( uValue[ nColumn ] )
+               EndIf
             EndIf
          Next
       EndIf
@@ -3534,96 +3668,108 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
 
 FUNCTION TGrid_SetArray( Self, uValue )
 
-   Local aTemp, nColumn, xValue, oEditControl
+   LOCAL aTemp, nColumn, xValue, oEditControl, cPicture
 
    aTemp := Array( Len( uValue ) )
-   If ::FixControls()
-      For nColumn := 1 To Len( uValue )
+   IF ::FixControls()
+      FOR nColumn := 1 TO Len( uValue )
          xValue := uValue[ nColumn ]
          oEditControl := ::aEditControls[ nColumn ]
-         If HB_IsObject( oEditControl )
+         IF HB_ISOBJECT( oEditControl )
             aTemp[ nColumn ] := oEditControl:GridValue( xValue )
-         ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
-            aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
-         Else
-            aTemp[ nColumn ] := xValue
-         EndIf
-      Next
-   Else
+         ELSE
+            cPicture := GetPictureFromArray( Self, nColumn )
+            IF ValType( cPicture ) $ "CM"
+               aTemp[ nColumn ] := Trim( Transform( xValue, cPicture ) )
+            ELSE
+               aTemp[ nColumn ] := xValue
+            ENDIF
+         ENDIF
+      NEXT
+   ELSE
       ::aEditControls := Array( Len( uValue ) )
-      For nColumn := 1 To Len( uValue )
+      FOR nColumn := 1 TO Len( uValue )
          xValue := uValue[ nColumn ]
-         oEditControl := GetEditControlFromArray( Nil, ::EditControls, nColumn, Self )
-         ::aEditControls[ nColumn ] := oEditControl
-         If HB_IsObject( oEditControl )
+         oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
+         IF HB_ISOBJECT( oEditControl )
             aTemp[ nColumn ] := oEditControl:GridValue( xValue )
-         ElseIf ValType( ::Picture[ nColumn ] ) $ "CM"
-            aTemp[ nColumn ] := Trim( Transform( xValue, ::Picture[ nColumn ] ) )
-         Else
-            aTemp[ nColumn ] := xValue
-         EndIf
-      Next
-   EndIf
+         ELSE
+            cPicture := GetPictureFromArray( Self, nColumn )
+            IF ValType( cPicture ) $ "CM"
+               aTemp[ nColumn ] := Trim( Transform( xValue, cPicture ) )
+            ELSE
+               aTemp[ nColumn ] := xValue
+            ENDIF
+         ENDIF
+      NEXT
+   ENDIF
 
-   Return aTemp
+   RETURN aTemp
 
 METHOD SetItemColor( nItem, uForeColor, uBackColor, uExtra, lSetThisCellInfo ) CLASS TGrid
 
-   Local nWidth
+   LOCAL nWidth
 
    nWidth := Len( ::aHeaders )
-   If ! HB_IsArray( uExtra )
-      uExtra := Array( nWidth )
-   ElseIf Len( uExtra ) < nWidth
+
+   IF HB_ISARRAY( uExtra )
       ASize( uExtra, nWidth )
-   EndIf
+   ELSE
+      uExtra := Array( nWidth )
+   ENDIF
+
    ::GridForeColor := TGrid_CreateColorArray( ::GridForeColor, nItem, uForeColor, ::DynamicForeColor, nWidth, uExtra, Self, lSetThisCellInfo )
    ::GridBackColor := TGrid_CreateColorArray( ::GridBackColor, nItem, uBackColor, ::DynamicBackColor, nWidth, uExtra, Self, lSetThisCellInfo )
 
-   Return Self
+   RETURN { ::GridForeColor, ::GridBackColor }
 
 STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWidth, uExtra, Self, lSetThisCellInfo )
 
-   LOCAL aTemp, nLen
+   LOCAL aTemp, nLen, uAux
 
-   IF ! ValType( uColor ) $ "ANB" .AND. ValType( uDynamicColor ) $ "ANB"
-      uColor := uDynamicColor
+   IF HB_ISARRAY( aGrid )
+      IF Len( aGrid ) < nItem
+         ASize( aGrid, nItem )
+      ENDIF
+   ELSE
+      aGrid := Array( nItem )
    ENDIF
-   IF ValType( uColor ) $ "ANB"
-      IF HB_ISARRAY( aGrid )
-         IF Len( aGrid ) < nItem
-            ASize( aGrid, nItem )
-         ENDIF
+
+   IF HB_ISARRAY( uColor )
+      nLen := Len( uColor )
+      ASize( uColor, nWidth )
+      IF nLen < nWidth
+         AEval( uColor, { |x, i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
+      ENDIF
+   ELSE
+      uAux := uColor
+      IF ValType( uAux ) $ "NB"
+         uColor := Array( nWidth )
+         AFill( uColor, uAux )
       ELSE
-         aGrid := Array( nItem )
+         uColor := AClone( uDynamicColor )
       ENDIF
-      aTemp := Array( nWidth )
-      IF HB_ISARRAY( uColor ) .AND. Len( uColor ) < nWidth
-         nLen := Len( uColor )
-         uColor := AClone( uColor )
-         IF ValType( uDynamicColor ) $ "NB"
-            ASize( uColor, nWidth )
-            AFill( uColor, uDynamicColor, nLen + 1 )
-         ELSEIF HB_ISARRAY( uDynamicColor ) .AND. Len( uDynamicColor ) > nLen
-            ASize( uColor, Min( nWidth, Len( uDynamicColor ) ) )
-            AEval( uColor, { |x,i| uColor[ i ] := uDynamicColor[ i ], x }, nLen + 1 )
-         ENDIF
-      ENDIF
-      _PushEventInfo()
-      _OOHG_ThisForm    := ::Parent
-      _OOHG_ThisType    := "C"
-      _OOHG_ThisControl := Self
-      _OOHG_ThisObject  := Self
-      IF HB_ISLOGICAL( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
-         // Set lSetThisCellInfo to .F. to avoid endless loop when calling this function inside the ON QUERYDATA block.
-         AEval( aTemp, { |x,i| aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
-      ELSE
-         AEval( aTemp, { |x,i| _SetThisCellInfo( Self:hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
-         _ClearThisCellInfo()
-      ENDIF
-      aGrid[ nItem ] := aTemp
-      _PopEventInfo()
    ENDIF
+   AEval( uColor, { |x, i| iif( ValType( x ) $ "ANB", NIL, uColor[ i ] := NIL ) } )
+
+   aTemp := Array( nWidth )
+
+   _PushEventInfo()
+   _OOHG_ThisForm    := ::Parent
+   _OOHG_ThisType    := "C"
+   _OOHG_ThisControl := Self
+   _OOHG_ThisObject  := Self
+
+   IF HB_ISLOGICAL( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
+      // Set lSetThisCellInfo to .F. to avoid endless loop when calling this function inside the ON QUERYDATA block.
+      AEval( aTemp, { |x,i| aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+   ELSE
+      AEval( aTemp, { |x,i| _SetThisCellInfo( Self:hWnd, nItem, i, uExtra[ i ] ), aTemp[ i ] := _OOHG_GetArrayItem( uColor, i, nItem, uExtra ), x } )
+      _ClearThisCellInfo()
+   ENDIF
+   aGrid[ nItem ] := aTemp
+
+   _PopEventInfo()
 
    RETURN aGrid
 
@@ -3668,6 +3814,13 @@ METHOD Justify( uPar1, uPar2, uPar3 ) CLASS TGrid
  *      uPar1's current justification.
  */
 
+   If ! HB_IsArray( ::aJust )
+      ::aJust := AFill( Array( Len( ::aHeaders ) ), 0 )
+   Else
+      ASize( ::aJust, Len( ::aHeaders ) )
+      AEval( ::aJust, { |x,i| ::aJust[ i ] := If( ! HB_IsNumeric( x ), 0, x ) } )
+   EndIf
+
    If HB_IsArray( uPar1 )
       aNew := aClone( uPar1 )
       nLen := Len( ::aHeaders )
@@ -3676,7 +3829,7 @@ METHOD Justify( uPar1, uPar2, uPar3 ) CLASS TGrid
       For i := 1 to nLen
          If HB_IsNumeric( aNew[i] )
             uRet := SetGridColumnJustify( ::hWnd, i, aNew[i] )
-            If uRet != ::aJust[ i ]
+            IF i <= Len( ::aJust ) .AND. uRet != ::aJust[ i ]
                ::aJust[ i ] := uRet
             EndIf
          EndIf
@@ -3784,6 +3937,20 @@ METHOD Release() CLASS TGrid
    EndIf
 
    Return ::Super:Release()
+
+METHOD RefreshColors( uForeColor, uBackColor ) CLASS TGrid
+
+   IF uForeColor # NIL
+      ::DynamicForeColor := uForeColor
+   ENDIF
+   IF uBackColor # NIL
+      ::DynamicBackColor := uBackColor
+   ENDIF
+   ::SetRangeColor( ::DynamicForeColor, ::DynamicBackColor, 1, 1, ::ItemCount, ::ColumnCount )
+   ::Redraw()
+
+   RETURN NIL
+
 
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nLeft, nBottom, nRight ) CLASS TGrid
 
@@ -4257,7 +4424,7 @@ METHOD DoChange() CLASS TGridMulti
 
 METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
 
-   Local nvkey, uValue, lGo, aSel, aItems, i, nNotify := GetNotifyCode( lParam )
+   Local nvkey, uValue, lGo, aSel, aDeletedItemsData, i, nNotify := GetNotifyCode( lParam )
 
    If nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -4278,20 +4445,20 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
             If lGo
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
                   If ::lDeleteAll
-                     aItems := {}
+                     aDeletedItemsData := {}
                      aSel := ::Value
                      For i := Len( aSel ) To 1 Step -1
-                        ASize( aItems, Len( aItems ) + 1 )
-                        AIns( aItems, 1 )
-                        aItems[ 1 ] := ::Item( aSel[ i ] )
+                        ASize( aDeletedItemsData, Len( aDeletedItemsData ) + 1 )
+                        AIns( aDeletedItemsData, 1 )
+                        aDeletedItemsData[ 1 ] := ::Item( aSel[ i ] )
                         ::DeleteItem( aSel[ i ] )
                      Next i
                   Else
-                     aItems := ::Item( uValue )
+                     aDeletedItemsData := { ::Item( uValue ) }
                      ::DeleteItem( uValue )
                   EndIf
                   ::Value := { Min( uValue, ::ItemCount ) }
-                  ::DoEvent( ::OnDelete, "DELETE", { aItems } )
+                  ::DoEvent( ::OnDelete, "DELETE", { aDeletedItemsData } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
@@ -5455,7 +5622,7 @@ Return lDone
 METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
 
    Local nNotify := GetNotifyCode( lParam )
-   Local nvkey, lGo, aItem, nRow, nCol, uValue, aCellData
+   Local nvkey, lGo, aItemValues, nRow, nCol, uValue, aCellData
 
    If nNotify == NM_CUSTOMDRAW
       IF ::lNeedsAdjust .AND. ::lEndTrack
@@ -5560,14 +5727,14 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
                   nRow := ::nRowPos
                   nCol := ::nColPos
-                  aItem := ::Item( nRow )
+                  aItemValues := ::Item( nRow )
                   ::DeleteItem( nRow )
                   If ::ItemCount > 0
                      ::Value := { Min( nRow, ::ItemCount ), nCol }
                   Else
                      ::Value := { 0, 0 }
                   Endif
-                  ::DoEvent( ::OnDelete, "DELETE", { aItem } )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
@@ -5869,6 +6036,47 @@ FUNCTION GridControlObjectByType( uValue, oGrid )
    EndCase
 
    Return oGridControl
+
+FUNCTION GetColTypeFromArray( Self, nCol )
+
+   LOCAL aItemValues, i
+
+   IF HB_ISARRAY( ::ColType )
+      ASize( ::ColType, Len( ::aHeaders ) )
+   ELSE
+      ::ColType := Array( Len( ::aHeaders ) )
+      IF ::ItemCount > 0
+         aItemValues := ::Item( 1 )
+         FOR i := 1 TO Len( ::aHeaders )
+            ::ColType[ i ] := iif( ValType( aItemValues[ i ] ) $ "CDLNT", ValType( aItemValues[ i ] ), "C" )
+         NEXT i
+      ELSE
+         AFill( ::ColType, "C")
+      ENDIF
+   ENDIF
+
+   IF ! ::ColType[ nCol ] $ "CDLNT"
+      ::ColType[ nCol ] := "C"
+   ENDIF
+
+   RETURN ::ColType[ nCol ]
+
+FUNCTION GetPictureFromArray( Self, nCol )
+
+   LOCAL cPicture
+
+   IF HB_ISARRAY( ::Picture )
+      ASize( ::Picture, Len( ::aHeaders ) )
+   ELSE
+      ::Picture := Array( Len( ::aHeaders ) )
+   ENDIF
+
+   cPicture := ::Picture[ nCol ]
+   IF ! ( ( ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture ) ) .OR. HB_ISLOGICAL( cPicture ) )
+      ::Picture[ nCol ] := cPicture := NIL
+   ENDIF
+
+   RETURN cPicture
 
 FUNCTION GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
 
