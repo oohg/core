@@ -143,10 +143,13 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
    ASSIGN ::nButtonWidth  VALUE w         TYPE "N"
    ASSIGN ::nButtonHeight VALUE h         TYPE "N"
    ASSIGN flat            VALUE flat      TYPE "L" DEFAULT .F.
-   ASSIGN ::lTop          VALUE ! bottom  TYPE "L"
    ASSIGN righttext       VALUE righttext TYPE "L" DEFAULT .F.
    ASSIGN border          VALUE border    TYPE "L" DEFAULT .F.
    ASSIGN ::lVertical     VALUE lVertical TYPE "L"
+
+   IF HB_ISLOGICAL( bottom )
+      ::lTop := ! bottom
+   ENDIF
 
    If ! ::lTop .AND. ::lVertical
       MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program terminated." )
