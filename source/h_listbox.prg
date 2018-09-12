@@ -100,6 +100,7 @@ CLASS TList FROM TControl
    METHOD ColumnWidth             SETGET
    METHOD TopIndex                SETGET
    METHOD EnsureVisible
+   METHOD aItems                  SETGET
 
    ENDCLASS
 
@@ -323,6 +324,29 @@ METHOD AddItem( uValue ) CLASS TList
    ENDIF
 
    RETURN ListBoxAddstring2( Self, uValue )
+
+METHOD aItems( aRows ) CLASS TList
+
+   LOCAL i, uValue, aItems
+
+   IF PCount() > 0
+      uValue := ::Value
+
+      ListBoxReset( ::hWnd )
+      ::DoChange()
+
+      AEval( aRows, { |u| ::AddItem( u ) } )
+
+      ::Value := uValue
+   ENDIF
+
+   aItems := {}
+
+   FOR i := 1 TO ::ItemCount
+      AAdd( aItems, ::Item( i ) )
+   NEXT i
+
+   RETURN aItems
 
 METHOD Item( nItem, uValue ) CLASS TList
 
