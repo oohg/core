@@ -8,7 +8,7 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2018-08-22 16:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-09-12 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      * DATAs aHeadClick, aJust, ColType and Picture of TGrid class
        are now initialized to {} instead of NIL.
@@ -43,6 +43,11 @@
 2018-09-09 08:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_label.ch
+   * core\source\h_label.prg
+     + ON DBLCLICK clause.
+     ; ACTION (aka ON CLICK) takes precedence over ON DBLCLICK.
+
+2018-09-08 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
 
@@ -83,6 +88,23 @@
    * core\source\h_windows.prg
      ! RTE: Control already defined when re-entering a previously
        closed form.
+
+2018-08-23 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! Form is not released by Release method when Interactive
+       close is set to OFF.
+     + DATA lIgnoreInteractiveClose.
+
+2018-08-21 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scroll.prg
+     * Use SB_ENDSCROLL instead of SB_ENDSCROLL.
+
+2018-08-21 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! Infinite loop at method ReleaseAttached when a control
+       has been renamed.
+     ; Note that control renaming is not supported and may
+       cause RTE or impredictable behaviour.
 
 2018-08-20 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
