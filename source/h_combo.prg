@@ -103,7 +103,7 @@ CLASS TCombo FROM TLabel
    METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ), ::Super:ForceHide() }
    METHOD RefreshData
    METHOD DisplayValue        SETGET    /// Caption Alias
-   METHOD PreRelease
+   METHOD Release
    METHOD Events
    METHOD Events_Command
    METHOD Events_DrawItem
@@ -242,8 +242,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::OnGotFocus    VALUE GotFocus                 TYPE "B"
    ASSIGN ::OnChange      VALUE ChangeProcedure          TYPE "B"
    ASSIGN ::OnEnter       VALUE uEnter                   TYPE "B"
-   ASSIGN ::onListDisplay VALUE onListDisplay            TYPE "B"
-   ASSIGN ::onListClose   VALUE onListClose              TYPE "B"
+   ASSIGN ::OnListDisplay VALUE onListDisplay            TYPE "B"
+   ASSIGN ::OnListClose   VALUE onListClose              TYPE "B"
 
    RETURN Self
 
@@ -360,10 +360,7 @@ METHOD Refresh() CLASS TCombo
       ( nArea )->( DBGoTo( BackRec ) )
 
       If lRefreshImages
-         If ValidHandler( ::ImageList )
-           ImageList_Destroy( ::ImageList )
-         EndIf
-         ::ImageList := 0
+         ::ClearBitMaps()
 
          ::AddBitMap( aImages )
       EndIf
@@ -434,17 +431,13 @@ METHOD RefreshData() CLASS TCombo
 
    RETURN ::Super:RefreshData()
 
-METHOD PreRelease() CLASS TCombo
-
-   IF ! SendMessage( ::hWnd, CB_GETDROPPEDSTATE, 0, 0 ) == 0
-      SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
-   ENDIF
+METHOD Release() CLASS TCombo
 
    IF HB_ISOBJECT( ::oEditBox )
       ::oEditBox:Release()
    ENDIF
 
-   RETURN ::Super:PreRelease()
+   RETURN ::Super:Release()
 
 METHOD ShowDropDown( lShow ) CLASS TCombo
 
@@ -1490,9 +1483,9 @@ CLASS TListCombo FROM TControl STATIC
 
    ENDCLASS
 
-METHOD Define( Container, hWnd ) CLASS TListCombo
+METHOD Define( ParentForm, hWnd ) CLASS TListCombo
 
-   ::SetForm( , Container )
+   ::SetForm( , ParentForm )
    InitListCombo( hWnd )
    ::Register( hWnd )
 
