@@ -8,6 +8,76 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-13 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     - DATA lIgnoreInteractiveClose.
+     * Restored default behaviour of form's release modified on
+       2018-08-23 18:43 UTC-0300, with the addition of the release
+       of all the form's controls (method ReleaseAttached).
+       Before that date, when the MAIN form was released, the
+       controls in the forms were not being released and thus
+       the app ended quickly at the cost of leaking resources.
+       To replicate this behaviour set _OOHG_QuitFastButDirty
+       global var to .T.
+       To avoid leaking resources, release controls manually
+       at the ON RELEASE event.
+     * Static function Carga renamed to LoadObjData.
+     * Static function Valor renamed to ValueToStr.
+     * Static function Selecciona renamed to ChangeObjValue.
+     ! Handling of timestamp values in function ValueToStr.
+     * Some format.
+     * Inspector control's are now defined without fixed names
+       to allow reentrancy.
+
+2018-09-13 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     - METHOD PreRelease.
+     + METHOD Release.
+     * Use method ClearBitMaps instead of directly handling
+       the control's imagelist.
+     * Some format.
+
+2018-09-13 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_image.prg
+   * core\source\h_picture.prg
+     + DATA aCopies to hold the handles to the bitmaps created
+       by METHOD Copy.
+     * METHOD Release now deletes the copied bitmaps so the user
+       no longer needs to delete then manually.
+
+2018-09-13 17:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+   * core\source\h_dll.prg
+     * Some changes for 64 bit support.
+
+2018-09-13 17:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+   * core\include\i_var.ch
+     + _OOHG_ActiveMessageBar global var.
+     + _OOHG_ActiveIniFile global var.
+     + _OOHG_QuitFastButDirty global var.
+   * core\source\h_status.prg
+     - STATIC _OOHG_ActiveMessageBar.
+   * core\source\h_ini.prg
+     - STATIC _OOHG_ActiveIniFile.
+
+2018-09-13 17:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+     + DragImageList destroy at method release.
+
+2018-09-12 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_listbox.prg
+     + METHOD aItems.
+
+2018-09-12 19:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_toolbar.prg
+     ! RTE at controls defined when bottom parameter is NIL.
+
+2018-09-12 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! The release of child controls is always reversed because
+       method ReleaseAttached does not honor _OOHG_WinReleaseSameOrder.
+
 2018-09-12 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      * DATAs aHeadClick, aJust, ColType and Picture of TGrid class
