@@ -80,6 +80,7 @@ CLASS TPicture FROM TControl
    DATA lNo3DColors        INIT .F.
    DATA lNoTransparent     INIT .F.
    DATA aExcludeArea       INIT {}
+   DATA aCopies            INIT {}
 
    METHOD Define
    METHOD RePaint
@@ -301,7 +302,12 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TPicture
 
 METHOD Release() CLASS TPicture
 
+   LOCAL i
+
    DeleteObject( ::hImage )
+   FOR i := 1 TO Len( ::aCopies )
+      DeleteObject( ::aCopies[i] )
+   NEXT i
 
    RETURN ::Super:Release()
 
@@ -375,7 +381,9 @@ METHOD Copy( lAsDIB ) CLASS TPicture
    DEFAULT lAsDIB TO ! ::lNoDIBSection
    // Do not forget to call DeleteObject
 
-   RETURN _OOHG_CopyBitmap( ::hImage, 0, 0 )
+   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0 ) )
+
+   RETURN ATail( ::aCopies )
 
 
 #pragma BEGINDUMP

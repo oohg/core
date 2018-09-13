@@ -67,6 +67,7 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TImage FROM TControl
 
+   DATA aCopies                   INIT {}
    DATA aExcludeArea              INIT {}
    DATA AutoFit                   INIT .T.
    DATA bOnClick                  INIT ""
@@ -445,10 +446,15 @@ METHOD RePaint() CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TImage
 
+   LOCAL i
+
    DELETEOBJECT( ::hImage )
    ::hImage := NIL
    ::cPicture := ""
    ::cBuffer := ""
+   FOR i := 1 TO Len( ::aCopies )
+      DeleteObject( ::aCopies[i] )
+   NEXT i
 
    RETURN ::Super:Release()
 
@@ -493,8 +499,9 @@ METHOD Copy( lAsDIB ) CLASS TImage
 
    DEFAULT lAsDIB TO ! ::lNoDIBSection
 
-   RETURN _OOHG_COPYBITMAP( ::hImage, 0, 0 )      // Do not forget to call DeleteObject
+   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0 ) )
 
+   RETURN ATail( ::aCopies )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
@@ -564,7 +571,6 @@ METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
    ENDIF
 
    RETURN FILE( cFile )
-
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
