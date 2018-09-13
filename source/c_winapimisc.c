@@ -335,7 +335,7 @@ HB_FUNC( MEMORYSTATUS )
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) hb_parnl(3) );
+   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARNL(3) );
 }
 
 HB_FUNC( PAINTBKGND )

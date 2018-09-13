@@ -235,12 +235,12 @@ HB_FUNC( CALLDLL32 )
 HB_FUNC( STRPTR )
 {
    char *cString = ( char * ) hb_parc( 1 );
-   hb_retnl( ( LONG_PTR ) cString );
+   HB_RETNL( ( LONG_PTR ) cString );
 }
 
 HB_FUNC( PTRSTR )
 {
-   hb_retc( ( LPSTR ) hb_parnl( 1 ) );
+   hb_retc( ( LPSTR ) HB_PARNL( 1 ) );
 }
 
 #pragma ENDDUMP
