@@ -2232,6 +2232,11 @@ METHOD Release() CLASS TTree
       ImageList_Destroy( StateImageList )
    EndIf
 
+   If ValidHandler( ::DragImageList )
+      ImageList_Destroy( ::DragImageList )
+      ::DragImageList := 0
+   EndIf
+
    Return ::Super:Release()
 
 
