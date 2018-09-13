@@ -105,6 +105,9 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_InitTGridControlDatas  => TApplication():Define():Value_Pos40
 #xtranslate _OOHG_ComboRefresh           => TApplication():Define():Value_Pos41
 #xtranslate _OOHG_SaveAsDWORD            => TApplication():Define():Value_Pos42
+#xtranslate _OOHG_QuitFastButDirty       => TApplication():Define():Value_Pos43
+#xtranslate _OOHG_ActiveIniFile          => TApplication():Define():Value_Pos44
+#xtranslate _OOHG_ActiveMessageBar       => TApplication():Define():Value_Pos45
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

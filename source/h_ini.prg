@@ -64,8 +64,6 @@
 #include 'common.ch'
 #include 'fileio.ch'
 
-STATIC _OOHG_ActiveIniFile := ''
-
 FUNCTION BeginIni(name, cIniFile )
 
    LOCAL hFile

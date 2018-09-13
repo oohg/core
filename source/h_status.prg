@@ -64,8 +64,6 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_ActiveMessageBar := Nil
-
 CLASS TMessageBar FROM TControl
 
    DATA Type        INIT "MESSAGEBAR" READONLY

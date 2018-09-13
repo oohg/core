@@ -109,7 +109,10 @@
 #define NDX_OOHG_INITTGRIDCONTROLDATAS 40
 #define NDX_OOHG_COMBOREFRESH          41
 #define NDX_OOHG_SAVEASDWORD           42
-#define NUMBER_OF_APP_WIDE_VARS        42
+#define NDX_OOHG_QUITFASTBUTDIRTY      43
+#define NDX_OOHG_ACTIVEINIFILE         44
+#define NDX_OOHG_ACTIVEMESSAGEBAR      45
+#define NUMBER_OF_APP_WIDE_VARS        45
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -186,6 +189,9 @@ CLASS TApplication
    METHOD Value_Pos40             SETGET
    METHOD Value_Pos41             SETGET
    METHOD Value_Pos42             SETGET
+   METHOD Value_Pos43             SETGET
+   METHOD Value_Pos44             SETGET
+   METHOD Value_Pos45             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -248,6 +254,9 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ] := NIL
       ::aVars[ NDX_OOHG_COMBOREFRESH ]          := .T.
       ::aVars[ NDX_OOHG_SAVEASDWORD ]           := .F.
+      ::aVars[ NDX_OOHG_QUITFASTBUTDIRTY ]      := .F.
+      ::aVars[ NDX_OOHG_ACTIVEINIFILE ]         := ""
+      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1160,6 +1169,48 @@ METHOD Value_Pos42( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_SAVEASDWORD ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_SAVEASDWORD ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos43( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF PCount() > 0
+      ::aVars[ NDX_OOHG_QUITFASTBUTDIRTY ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_QUITFASTBUTDIRTY ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos44( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_OOHG_ACTIVEINIFILE ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_ACTIVEINIFILE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos45( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF PCount() > 0
+      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
