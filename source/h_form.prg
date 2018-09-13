@@ -158,7 +158,7 @@ CLASS TForm FROM TWindow
    DATA MaxHeight      INIT 0
    DATA ForceRow       INIT nil     // Must be NIL instead of 0
    DATA ForceCol       INIT nil     // Must be NIL instead of 0
-   DATA lIgnoreInteractiveClose INIT .F. PROTECTED
+
    DATA GraphControls  INIT {}
    DATA GraphTasks     INIT {}
    DATA GraphCommand   INIT nil
@@ -640,21 +640,22 @@ METHOD MessageLoop() CLASS TForm
 
 METHOD Release() CLASS TForm
 
-   IF ! ::lReleasing
-      IF ! ::Active
+   If ! ::lReleasing
+      If ! ::Active
          MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
-      ENDIF
+      Endif
 
-      IF ValidHandler( ::hWnd )
-         ::lIgnoreInteractiveClose := .T.
+      _ReleaseWindowList( { Self } )
+
+      If ValidHandler( ::hWnd )
          EnableWindow( ::hWnd )
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
       ELSE
-         _ReleaseWindowList( { Self } )
          ::OnHideFocusManagement()
-         ::Events_Destroy()
-         ::Events_NCDestroy()
       ENDIF
+
+      ::Events_Destroy()
+      ::Events_NCDestroy()
    ENDIF
 
    RETURN NIL
@@ -1074,23 +1075,21 @@ METHOD Closable( lCloseable ) CLASS TForm
 
 METHOD CheckInteractiveClose() CLASS TForm
 
-   LOCAL lRet := .T.
+   Local lRet := .T.
    /*
    0 - close is not allowed
    1 - close is allowed, no question is asked before
    2 - close is allowed when question is answered yes
    */
-   DO CASE
-   CASE ::lIgnoreInteractiveClose
-      lRet := .T.
-   CASE _OOHG_InteractiveClose == 0
-      MsgStop( _OOHG_Messages( 1, 3 ) )
-      lRet := .F.
-   CASE _OOHG_InteractiveClose == 2
-      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   ENDCASE
+   Do Case
+      Case _OOHG_InteractiveClose == 0
+         MsgStop( _OOHG_Messages( 1, 3 ) )
+         lRet := .F.
+      Case _OOHG_InteractiveClose == 2
+         lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+   EndCase
 
-   RETURN lRet
+   Return lRet
 
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
@@ -1115,10 +1114,16 @@ METHOD Events_Destroy() CLASS TForm
 
    Local mVar
 
+   ::ReleaseAttached()
+
    // Any data must be destroyed... regardless FORM is active or not.
 
-   // This is done by function _ReleaseWindowList()
-   // ::ReleaseAttached()
+   If ::oMenu != NIL
+      ::oMenu:Release()
+      ::oMenu := nil
+   EndIf
+
+   DeleteObject( ::hBackImage )
 
    // Update Form Index Variable
    If ! Empty( ::Name )
@@ -1447,7 +1452,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
    Local i, NextControlHandle, xRetVal
-   Local oCtrl, lMinim, nOffset,nDesp
+   Local oCtrl, lMinim, nOffset, nDesp
 
    Do Case
 
@@ -1645,16 +1650,19 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          Return 1
       EndIf
 
-      If ::Type == "A"
-         // Main window
+      IF ::Type == "A"
+         IF _OOHG_WinReleaseSameOrder
+            // Destroy Main first
+            _ReleaseWindowList( { Self } )
+         ENDIF
+         // Destroy other windows
          ReleaseAllWindows()
          // Processing will never reach this point
-      Else
-         // Other windows
+      ELSE
+         // Destroy window
          _ReleaseWindowList( { Self } )
-
          ::OnHideFocusManagement()
-      EndIf
+      ENDIF
 
       /*
        * This function must return NIL after processing WM_CLOSE so the
@@ -1935,25 +1943,25 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
 
 METHOD Release() CLASS TFormMain
 
+   IF _OOHG_WinReleaseSameOrder
+      _ReleaseWindowList( { Self } )
+   ENDIF
    ReleaseAllWindows()
    // Processing will never reach this point
 
-   Return ::Super:Release()
+   RETURN ::Super:Release()
 
 METHOD CheckInteractiveClose() CLASS TFormMain
 
-   LOCAL lRet
+   Local lRet
 
-   DO CASE
-   CASE ::lIgnoreInteractiveClose
-      lRet := .T.
-   CASE _OOHG_InteractiveClose == 3
+   If _OOHG_InteractiveClose == 3
       lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   OTHERWISE
+   Else
       lRet := ::Super:CheckInteractiveClose()
-   ENDCASE
+   EndIf
 
-   RETURN lRet
+   Return lRet
 
 
 CLASS TFormModal FROM TForm
@@ -2740,26 +2748,14 @@ FUNCTION ReleaseAllWindows()
 
 FUNCTION _ReleaseWindowList( aWindows )
 
-   LOCAL i, oWnd, nFrom, nTo, nStep, lSameOrder
+   LOCAL i, oWnd, nLen := Len( aWindows )
 
-   lSameOrder := _OOHG_WinReleaseSameOrder
+   IF _OOHG_WinReleaseSameOrder
+      FOR i := 1 TO nLen
+         oWnd := aWindows[ i ]
+         IF ! oWnd:lReleasing
+            oWnd:lReleasing := .T.
 
-   IF lSameOrder
-      nFrom := 1
-      nTo := Len( aWindows )
-      nStep := 1
-   ELSE
-      nFrom := Len( aWindows )
-      nTo := 1
-      nStep := -1
-   ENDIF
-
-   FOR i := nFrom TO nTo STEP nStep
-      oWnd := aWindows[ i ]
-      IF ! oWnd:lReleasing
-         oWnd:lReleasing := .T.
-
-         IF lSameOrder
             IF oWnd:Active
                oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
             ENDIF
@@ -2773,25 +2769,57 @@ FUNCTION _ReleaseWindowList( aWindows )
             // Release child windows
             _ReleaseWindowList( oWnd:aChildPopUp )
             oWnd:aChildPopUp := {}
-         ELSE
-            // Prepare all child forms and controls to be destroyed
-            oWnd:PreRelease()
 
-            // Release child windows
-            _ReleaseWindowList( oWnd:aChildPopUp )
-            oWnd:aChildPopUp := {}
-
-            IF oWnd:Active
-               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            IF ! Empty( oWnd:NotifyIcon )
+               oWnd:NotifyIconObject:Release()
             ENDIF
 
-            // Disable form's doevent
-            oWnd:lDestroyed := .T.
+            IF _OOHG_QuitFastButDirty
+               AEval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+               oWnd:aHotKeys := {}
+               AEval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+               oWnd:aAcceleratorKeys := {}
+            ELSE
+               oWnd:ReleaseAttached()
+            ENDIF
          ENDIF
-      ENDIF
+      NEXT i
+   ELSE
+      // Reverse order: release first the latest defined forms
+      FOR i := nLen TO 1 STEP -1
+         oWnd := aWindows[ i ]
+         IF ! oWnd:lReleasing
+            oWnd:lReleasing := .T.
 
-      oWnd:ReleaseAttached()
-   NEXT i
+            // Release child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
+
+            IF oWnd:Active
+               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            ENDIF
+
+               // Disable form's doevent
+            oWnd:lDestroyed := .T.
+
+               // Prepare all child forms and controls to be destroyed
+            oWnd:PreRelease()
+
+            IF ! Empty( oWnd:NotifyIcon )
+               oWnd:NotifyIconObject:Release()
+            ENDIF
+
+            IF _OOHG_QuitFastButDirty
+               AEval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+               oWnd:aHotKeys := {}
+               AEval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
+               oWnd:aAcceleratorKeys := {}
+            ELSE
+               oWnd:ReleaseAttached()
+            ENDIF
+         ENDIF
+      NEXT i
+   ENDIF
 
    RETURN NIL
 
@@ -3314,29 +3342,33 @@ Function SetInteractiveClose( nValue )
 
    Return nRet
 
-function inspector( oWind )
+FUNCTION Inspector( oWind )
 
-   local oWnd, oGrd, oCombo,n
-   local aControls,aControlsNames,aData,s,ooobj_data
+   LOCAL oWnd, oGrd, oCombo, n
+   LOCAL aControls, aControlsNames, aData := {}, s, ooObj_Data
 
-   aControls := owind:aControls
-   aControlsNames:=owind:aControlsNames
+   aControls := oWind:aControls
+   aControlsNames := oWind:aControlsNames
 
-   DEFINE WINDOW __OOHG_OBJ_INSPECTOR OBJ oWnd ;
+   DEFINE WINDOW TEMPLATE OBJ oWnd ;
       AT 0,0 ;
       WIDTH 400 ;
       HEIGHT 300 ;
       TITLE 'Object Inspector' ;
-      MODAL NOSIZE nomaximize nominimize
+      MODAL ;
+      NOSIZE ;
+      NOMAXIMIZE ;
+      NOMINIMIZE
 
-      @ 24,0 grid __oohg_obj_Inspector_Grid obj oGrd ;
-         height 240 width 394 ;
-         headers {"DATA","Values"};
-         widths {150,180};
-         on dblclick (selecciona(aControls[oCombo:value],aControlsNames[oCombo:value],oooBj_Data[this.cellrowindex]),carga(aControls[oCombo:value],oGrd,@ooobj_data))
-
-   aData := {}
-   n:=''
+      @ 24,0 GRID 0 OBJ oGrd ;
+         HEIGHT 240 ;
+         WIDTH 394 ;
+         HEADERS { "Data", "Values" } ;
+         WIDTHS { 150, 180 } ;
+         ON DBLCLICK { || ChangeObjValue( aControls[ oCombo:value ], ;
+                                          aControlsNames[ oCombo:value ], ;
+                                          ooObj_Data[ This.CellRowIndex ] ), ;
+                          LoadObjData( aControls[ oCombo:value ], oGrd, @ooObj_Data ) }
 
 #ifdef __XHARBOUR__
    #define ENUMINDEX hb_enumindex()
@@ -3344,108 +3376,123 @@ function inspector( oWind )
    #define ENUMINDEX n:__enumindex
 #endif
 
-   for each n in aControlsNames
-       s:=alltrim(n)
-      s:=left(s,len(s)-1)
-                aadd (aData,aControls[ ENUMINDEX ]:type+' >> '+s)
-                aControlsNames[ ENUMINDEX ]:=S
-   next
+      FOR EACH n IN aControlsNames
+         s := AllTrim( n )
+         s := Left( s, Len( s ) - 1 )
+         AAdd( aData, aControls[ ENUMINDEX ]:Type + ' >> ' + s )
+         aControlsNames[ ENUMINDEX ] := s
+      NEXT
 
-   @ 0,0 combobox __OOHG_OBJ_INSPECTOR_combo obj oCombo;
-      items aData value 1 width 394;
-      on change carga(aControls[oCombo:value],oGrd,@ooobj_data)
-   carga(aControls[1],oGrd,@ooobj_data)
+      @ 0,0 COMBOBOX 0 OBJ oCombo;
+         ITEMS aData ;
+         VALUE 1 ;
+         WIDTH 394 ;
+         ON CHANGE LoadObjData( aControls[ oCombo:value ], oGrd, @ooObj_Data )
 
+      LoadObjData( aControls[ 1 ], oGrd, @ooObj_Data )
 
-   end window
-   ownd:activate()
+   END WINDOW
 
-   return nil
+   oWnd:Activate()
 
-static function carga(oooBj,oGrd,oooBj_Data)
+   RETURN NIL
 
-   local aData:={},n
+STATIC FUNCTION LoadObjData( ooObj, oGrd, ooObj_Data )
+
+   LOCAL aData:= {}, n
 
    oGrd:DeleteAllItems()
-   #ifdef __XHARBOUR__
-   try
-    aData  := __objGetValueList( oooBj, .T. )
-      if len(aData)>1
-         for n:=1 to len ( aData )
-            oGrd:additem({aData[n,1],valor(aData[n,2])})
-         next
-      end if
-        catch
-   end
-   #else
-   begin sequence
-    aData  := __objGetValueList( oooBj,.T.)
-      if len(aData)>1
-         for n:=1 to len ( aData )
-            oGrd:additem({aData[n,1],valor(aData[n,2])})
-         next
-      end if
-   end sequence
-   #endif
+
+#ifdef __XHARBOUR__
+   TRY
+      aData := __objGetValueList( ooObj, .T. )
+      IF Len( aData ) > 1
+         FOR n := 1 to Len( aData )
+            oGrd:AddItem( { aData[ n, 1 ], ValueToStr( aData[ n, 2 ] ) } )
+         NEXT
+      ENDIF
+   CATCH
+   END
+#else
+   BEGIN SEQUENCE
+      aData := __objGetValueList( ooObj, .T. )
+      IF Len( aData ) > 1
+         FOR n := 1 TO Len( aData )
+            oGrd:AddItem( { aData[ n, 1 ], ValueToStr( aData[ n, 2 ] ) } )
+         NEXT
+      END IF
+   END SEQUENCE
+#endif
+
    oGrd:ColumnsBetterAutoFit()
-   oooBj_Data:=aData // retorna en variable por referencia
 
-   return nil
+   ooObj_Data := aData
 
-static function valor(xValue)
+   RETURN NIL
 
-   local tipo,ret
+STATIC FUNCTION ValueToStr( uValue )
 
-   tipo := valtype(xValue)
+   LOCAL cType, cRet
 
-   // TODO: use AutoType()
-   do case
-   case tipo $'CSM' ; ret := 'String "' + xValue + '"'
-   case tipo = 'N'  ; ret := 'Numeric ' + str( xValue )
-   case tipo = 'A'  ; ret := 'Array, len ' + alltrim( str( len( xValue ) ) )
-   case tipo = 'L'  ; ret := 'Boolean : ' + iif( xValue, 'True', 'False' )
-   case tipo = 'B'  ; Ret := 'Codeblock {|| ... }'
-   case tipo = 'D'  ; ret := 'Date ' + dtoc( xValue )
-   case tipo = 't'  ; ret := 'DateTime ' + ttoc( xValue )
-   case tipo = 'O'  ; ret := 'Object, class ' + xValue:Classname()
-   otherwise        ; Ret := 'Unknow type ...'
-   end case
+   cType := ValType( uValue )
 
-   return ret
+   DO CASE
+   CASE cType $'CSM' ; cRet := 'String "' + uValue + '"'
+   CASE cType = 'N'  ; cRet := 'Numeric ' + Str( uValue )
+   CASE cType = 'A'  ; cRet := 'Array, len ' + AllTrim( Str( Len( uValue ) ) )
+   CASE cType = 'L'  ; cRet := 'Boolean : ' + iif( uValue, 'True', 'False' )
+   CASE cType = 'B'  ; cRet := 'Codeblock {|| ... }'
+   CASE cType = 'D'  ; cRet := 'Date ' + DToC( uValue )
+   CASE cType = 'T'  ; cRet := 'DateTime ' + TToC( uValue )
+   CASE cType = 'O'  ; cRet := 'Object, class ' + uValue:ClassName()
+   OTHERWISE         ; cRet := 'Unknow type ...'
+   END CASE
 
-static function selecciona(ooBj,name,Values)
+   RETURN cRet
 
-   local oWnd, tipo ,lOk:=.f., oget
+STATIC FUNCTION ChangeObjValue( ooObj, cName, aValues )
 
-   tipo=valtype(values[2])
-   if tipo$"CNDL"
-      Define window _oohg_change_value obj oWnd;
-         at 50,50 width 400 height 150;
-         title "Change value : "+name+'=>'+Values[1];
-         modal NOSIZE nomaximize nominimize
+   LOCAL oWnd, cType, lOk := .F., oGet
 
-      @ 10,10 label _oohg_change_value_lbl value "New value for "+name+'=>'+Values[1] autosize
+   cType := ValType( aValues[ 2 ] )
+   IF cType $ "CNDL"
+      DEFINE WINDOW 0 OBJ oWnd ;
+         AT 50,50 ;
+         WIDTH 400 ;
+         HEIGHT 150 ;
+         TITLE "Change value : " + cName + ' => ' + aValues[ 1 ] ;
+         MODAL ;
+         NOSIZE ;
+         NOMAXIMIZE ;
+         NOMINIMIZE
 
-      if tipo='C'
-         @ 40,20 textbox _oohg_change_value_txt obj oGet value Values[2]
-      elseif tipo='N'
-         @ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] numeric
-      elseif tipo='D'
-         @ 40,20 textbox _oohg_change_value_txt obj oGet  value Values[2] date
-      elseif tipo='L'
-         @ 40,20 checkbox _oohg_change_value_txt obj oGet  value Values[2] caption "( Checked for true value )" autosize
-      end
-      @ 70,10 button _oohg_change_value_btnOK caption "Set value" action (Values[2]:=oGet:value , lOk:=.t., oWnd:release())
-      @ 70,150 button _oohg_change_value_btnno caption "Cancel" cancel action oWnd:release()
-      end window
-      oWnd:activate()
-      if lOk
-         __ObjSetValueList( ooBj , {Values} )
-         ooBj:refresh()
-      end
-   Else
-      msginfo('This value is not editable')
-   end
-   msginfo(name+' '+Values[1]+' '+valor(Values[2]))
+         @ 10,10 LABEL 0 ;
+            VALUE "New value for " + cName + ' => ' + aValues[ 1 ] ;
+            AUTOSIZE
 
-   return nil
+         IF cType == 'C'
+            @ 40,20 TEXTBOX 0 OBJ oGet VALUE aValues[ 2 ]
+         ELSEIF cType == 'N'
+            @ 40,20 TEXTBOX 0 OBJ oGet VALUE aValues[ 2 ] NUMERIC
+         ELSEIF cType == 'D'
+            @ 40,20 TEXTBOX 0 OBJ oGet VALUE aValues[ 2 ] DATE
+         ELSEIF cType == 'L'
+            @ 40,20 CHECKBOX 0 OBJ oGet VALUE aValues[ 2 ] CAPTION "Check for .T." AUTOSIZE
+         ENDIF
+
+         @ 70,10 BUTTON 0 CAPTION "Set value" ACTION ( aValues[ 2 ] := oGet:value, lOk := .T., oWnd:Release() )
+         @ 70,150 BUTTON 0 CAPTION "Cancel" CANCEL ACTION oWnd:Release()
+      END WINDOW
+
+      oWnd:Activate()
+
+      IF lOk
+         __objSetValueList( ooObj, { aValues } )
+         ooObj:Refresh()
+      END
+   ELSE
+      MsgInfo( 'This value is not editable!' )
+   ENDIF
+   MsgInfo( cName + ' ' + aValues[ 1 ] + ' ' + ValueToStr( aValues[ 2 ] ) )
+
+   RETURN NIL
