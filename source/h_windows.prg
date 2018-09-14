@@ -1531,8 +1531,6 @@ METHOD Property( cProperty, xValue ) CLASS TWindow
 
 METHOD ReleaseAttached() CLASS TWindow
 
-   LOCAL i
-
    // Release hot keys
    AEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
    ::aHotKeys := {}
@@ -1540,15 +1538,9 @@ METHOD ReleaseAttached() CLASS TWindow
    ::aAcceleratorKeys := {}
 
    // Remove Child Controls
-   IF _OOHG_WinReleaseSameOrder
-      FOR i := 1 TO Len( ::aControls )
-         ::aControls[ i ]:Release()
-      NEXT i
-   ELSE
-      FOR i := Len( ::aControls ) TO 1 STEP -1
-         ::aControls[ i ]:Release()
-      NEXT i
-   ENDIF
+   DO WHILE Len( ::aControls ) > 0
+      ATail( ::aControls ):Release()
+   ENDDO
 
    RETURN NIL
 
