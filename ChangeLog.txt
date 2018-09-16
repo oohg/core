@@ -8,6 +8,17 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-16 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-09-16 10:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_combobox.ch
+     + MAXLENGTH clause.
+   * core\source\h_combo.prg
+     + Parameter to METHOD Define.
+
 2018-09-15 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\x_browse.prg
      % Return data instead of calling super class.
