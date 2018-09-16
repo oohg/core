@@ -444,7 +444,7 @@ METHOD ToolTip( cToolTip ) CLASS TXBrowse
       EndIf
    EndIf
 
-   Return ::Super:ToolTip()
+   Return ::cToolTip
 
 METHOD HelpId( nHelpId ) CLASS TXBrowse
 
