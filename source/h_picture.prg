@@ -251,9 +251,10 @@ METHOD ToolTip( cToolTip ) CLASS TPicture
 
    If PCOUNT() > 0
       TPicture_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
+      ::Super:ToolTip( cToolTip )
    EndIf
 
-   Return ::Super:ToolTip( cToolTip )
+   Return ::cToolTip
 
 METHOD RePaint( lMoving ) CLASS TPicture
 
@@ -426,6 +427,7 @@ static LRESULT CALLBACK _OOHG_PictureControl_WndProc( HWND hWnd, UINT message, W
 
 // lAux[ 0 ] = lSetNotify
 // lAux[ 1 ] = nDegree
+// lAux[ 2 ] = cToolTip
 
 void _OOHG_PictureControl_Register( void )
 {
@@ -637,12 +639,12 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 
 HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TPicture
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
    switch( message )
    {
