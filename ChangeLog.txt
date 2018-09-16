@@ -8,6 +8,74 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-15 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\x_browse.prg
+     % Return data instead of calling super class.
+
+2018-09-15 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Some changes for 64 bit support.
+
+2018-09-15 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textbox.prg
+     * Some changes for 64 bit support.
+
+2018-09-15 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textarray.prg
+     * Some changes for 64 bit support.
+
+2018-09-15 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_richeditbox.prg
+     * Some changes for 64 bit support.
+
+2018-09-15 22:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_progressmeter.prg
+     * Some changes for 64 bit support.
+
+2018-09-15 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_picture.prg
+     ! METHOD Tooltip clears the tooltip when you try to get
+       the current tooltip.
+     * Some changes for 64 bit support.
+
+2018-09-15 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_internal.prg
+     * Some changes for 64 bit support.
+     * Some format.
+     * A C-level module static var was moved to a C-level
+       function static var, thus making the class thread safe.
+
+2018-09-15 22:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_image.prg
+     ! METHOD Tooltip clears the tooltip when you try to get
+       the current tooltip.
+     * Some changes for 64 bit support.
+
+2018-09-15 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     - _OOHG_QuitFastButDirty global var.
+   * core\source\h_form.prg
+     * Some changes for 64 bit support.
+     ! All controls are now released properly when the MAIN form
+       is released, thus _OOHG_QuitFastButDirty is no longer
+       needed. See 2018-09-13 19:05 UTC-0300.
+
+2018-09-15 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_frame.ch
+     + TOOLTIP and EXCLUDEAREA clauses.
+   * core\source\h_frame.prg
+     + DATA aExcludeArea.
+     + METHOD Events.
+     + METHOD ToolTip.
+     + FUNCTION TFrame_SetToolTip at C level.
+
+2018-09-14 16:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! RTE: Control already defined when re-entering a previously
+       closed form.
+
 2018-09-13 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
      - DATA lIgnoreInteractiveClose.
