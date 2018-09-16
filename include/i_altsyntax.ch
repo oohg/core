@@ -1947,7 +1947,9 @@ COMBOBOX
       _OOHG_ActiveControlNoRefresh         := NIL  ;;
       _OOHG_ActiveControlSourceOrder       := NIL  ;;
       _OOHG_ActiveControlOnRefresh         := NIL  ;;
-      _OOHG_ActiveControlSearchLapse       := NIL
+      _OOHG_ActiveControlSearchLapse       := NIL  ;;
+      _OOHG_ActiveControlMaxLength         := NIL
+
 
 #xcommand DELAYEDLOAD <delayedload> ;
    => ;
@@ -2092,7 +2094,8 @@ COMBOBOX
             _OOHG_ActiveControlNoRefresh, ;
             _OOHG_ActiveControlSourceOrder, ;
             _OOHG_ActiveControlOnRefresh, ;
-            _OOHG_ActiveControlSearchLapse )
+            _OOHG_ActiveControlSearchLapse, ;
+            _OOHG_ActiveControlMaxLength )
 
 /*---------------------------------------------------------------------------
 DATEPICKER

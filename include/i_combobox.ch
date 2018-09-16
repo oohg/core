@@ -73,7 +73,7 @@ STANDARD VERSION
       [ ITEMIMAGENUMBER <itemimagenumber> ] ;
       [ VALUE <value> ] ;
       [ VALUESOURCE <valuesource> ] ;
-      [ <displayedit: DISPLAYEDIT> ] ;
+      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] ] ;
       [ FONT <f> ] ;
       [ SIZE <n> ] ;
       [ <bold: BOLD> ] ;
@@ -123,7 +123,7 @@ STANDARD VERSION
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-            <(sourceorder)>, <{refresh}>, <nLapse> )
+            <(sourceorder)>, <{refresh}>, <nLapse>, <max> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -139,7 +139,7 @@ SPLITBOX VERSION
       [ ITEMIMAGENUMBER <itemimagenumber> ] ;
       [ VALUE <value> ] ;
       [ VALUESOURCE <valuesource> ] ;
-      [ <displayedit: DISPLAYEDIT> ] ;
+      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] ] ;
       [ FONT <f> ] ;
       [ SIZE <n> ] ;
       [ <bold: BOLD> ] ;
@@ -191,7 +191,7 @@ SPLITBOX VERSION
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-            <(sourceorder)>, <{refresh}>, <nLapse> )
+            <(sourceorder)>, <{refresh}>, <nLapse>, <max> )
 
 #command SET COMBOREFRESH ON ;
    => ;

@@ -140,7 +140,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
-               sourceorder, onrefresh, nLapse ) CLASS TCombo
+               sourceorder, onrefresh, nLapse, nMaxLen ) CLASS TCombo
 
    Local ControlHandle, WorkArea, uField, nStyle
 
@@ -233,6 +233,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
    If displaychange
       ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
+      IF HB_ISNUMERIC( nMaxLen ) .AND. nMaxLen > 0
+         ::oEditBox:MaxLength := nMaxLen
+      ENDIF
    EndIf
 
    ::Value := Value
