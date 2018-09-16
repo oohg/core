@@ -539,12 +539,12 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextArray -> uRetVal */
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
    switch( message )
    {
