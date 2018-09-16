@@ -1300,7 +1300,7 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
     *
     * nTimes           Number of times to flash the window.
     *                  Set to 0 when using FLASHW_TIMER to obtain non-stop flashing.
-    *                  Set to 0 when usingh FLASHW_CAPTION, FLASHW_TRAY or FLASHW_ALL to toggle the current flash status.
+    *                  Set to 0 when using FLASHW_CAPTION, FLASHW_TRAY or FLASHW_ALL to toggle the current flash status.
     *
     * nMilliseconds    Flashing interval. 0 means use the default cursor blink rate
     *
@@ -1321,8 +1321,8 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -2770,18 +2770,12 @@ FUNCTION _ReleaseWindowList( aWindows )
             _ReleaseWindowList( oWnd:aChildPopUp )
             oWnd:aChildPopUp := {}
 
+            // Release attached controls
+            DefWindowProc( oWnd:hWnd, WM_SETREDRAW, 0, 0 )
             IF ! Empty( oWnd:NotifyIcon )
                oWnd:NotifyIconObject:Release()
             ENDIF
-
-            IF _OOHG_QuitFastButDirty
-               AEval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-               oWnd:aHotKeys := {}
-               AEval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-               oWnd:aAcceleratorKeys := {}
-            ELSE
-               oWnd:ReleaseAttached()
-            ENDIF
+            oWnd:ReleaseAttached()
          ENDIF
       NEXT i
    ELSE
@@ -2805,18 +2799,12 @@ FUNCTION _ReleaseWindowList( aWindows )
                // Prepare all child forms and controls to be destroyed
             oWnd:PreRelease()
 
+            // Release attached controls
+            DefWindowProc( oWnd:hWnd, WM_SETREDRAW, 0, 0 )
             IF ! Empty( oWnd:NotifyIcon )
                oWnd:NotifyIconObject:Release()
             ENDIF
-
-            IF _OOHG_QuitFastButDirty
-               AEval( oWnd:aHotKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-               oWnd:aHotKeys := {}
-               AEval( oWnd:aAcceleratorKeys, { |a| ReleaseHotKey( oWnd:hWnd, a[ HOTKEY_ID ] ) } )
-               oWnd:aAcceleratorKeys := {}
-            ELSE
-               oWnd:ReleaseAttached()
-            ENDIF
+            oWnd:ReleaseAttached()
          ENDIF
       NEXT i
    ENDIF
