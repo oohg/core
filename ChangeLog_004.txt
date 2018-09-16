@@ -2853,7 +2853,7 @@
      + DATA aExcludeArea.
      + Method OriginalSize, returns the original image's size as
        an array { width, height }.
-     + Method CurrenteSize, returns the size of the currently
+     + Method CurrentSize, returns the size of the currently
        displayed image as an array { width, height }.
      + New parameters to method Define.
      + Support for WS_EX_TRANSPARENT in method Define.
