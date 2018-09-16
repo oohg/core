@@ -99,7 +99,7 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
                MouseDragProcedure, MouseMoveProcedure, ;
                NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
 
-   Local ControlHandle, nStyle, nStyleEx := 0
+   Local ControlHandle, nStyle, nStyleEx
 
    ASSIGN ::nCol        VALUE x TYPE "N"
    ASSIGN ::nRow        VALUE y TYPE "N"
@@ -121,9 +121,9 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
              if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )  + ;
              SS_NOTIFY
 
-   nStyleEx += if( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 ) + ;
-               if( ::Transparent, WS_EX_TRANSPARENT, 0 )
-   nStyleEx += WS_EX_CONTROLPARENT
+   nStyleEx := WS_EX_CONTROLPARENT
+   nStyleEx += iif( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += iif( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
@@ -257,14 +257,22 @@ Function _EndInternal()
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+static WNDPROC _OOHG_TInternal_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
+}
 
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TInternal_lpfnOldWndProc( 0 ) );
 }
-
-static BOOL bRegistered = 0;       // TODO: Thread safe ?
 
 static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
@@ -273,37 +281,38 @@ static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM
 
 void _OOHG_TInternal_Register( void )
 {
-   WNDCLASS WndClass;
+   static BOOL bRegistered = FALSE; 
 
-   memset( &WndClass, 0, sizeof( WndClass ) );
-   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-   WndClass.lpfnWndProc   = _OOHG_TInternal_WndProc;
-   WndClass.lpszClassName = "_OOHG_TINTERNAL";
-   WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
-
-   if( ! RegisterClass( &WndClass ) )
+   if( ! bRegistered )
    {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "_OOHG_TINTERNAL Registration Failed! Error %i", ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      ExitProcess( 1 );
-   }
+      WNDCLASS WndClass;
 
-   bRegistered = 1;
+      memset( &WndClass, 0, sizeof( WndClass ) );
+      WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+      WndClass.lpfnWndProc   = _OOHG_TInternal_WndProc;
+      WndClass.lpszClassName = "_OOHG_TINTERNAL";
+      WndClass.hInstance     = GetModuleHandle( NULL );
+      WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
+
+      if( ! RegisterClass( &WndClass ) )
+      {
+         char cBuffError[ 1000 ];
+         sprintf( cBuffError, "_OOHG_TINTERNAL Registration Failed! Error %i", ( int ) GetLastError() );
+         MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         ExitProcess( 1 );
+      }
+
+      bRegistered = TRUE;
+   }
 }
 
 HB_FUNC( INITINTERNAL )
 {
    HWND hwnd;
    HWND hbutton;
-
    int Style, ExStyle;
 
-   if( ! bRegistered )
-   {
-      _OOHG_TInternal_Register();
-   }
+   _OOHG_TInternal_Register();
 
    hwnd = HWNDparam( 1 );
    Style = hb_parni( 6 ) | WS_CHILD;
@@ -313,19 +322,18 @@ HB_FUNC( INITINTERNAL )
              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
              hwnd, NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TInternal_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hbutton );
 }
 
 HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TInternal
 {
-   HWND hWnd      = ( HWND )   hb_parnl( 1 );
+   HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) hb_parni( 3 );
-   LPARAM lParam  = ( LPARAM ) hb_parnl( 4 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
- //////  POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    switch( message )
    {
