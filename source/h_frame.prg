@@ -65,35 +65,46 @@
 
 CLASS TFrame FROM TControl
 
-   DATA Type      INIT "FRAME" READONLY
-   DATA nWidth    INIT 140
-   DATA nHeight   INIT 140
-   DATA TabHandle INIT 0
+   DATA Type           INIT "FRAME" READONLY
+   DATA nWidth         INIT 140
+   DATA nHeight        INIT 140
+   DATA TabHandle      INIT 0
+   DATA aExcludeArea   INIT {}
 
-   METHOD Caption SETGET
+   METHOD Caption      SETGET
    METHOD Define
+   METHOD Events
    METHOD Events_Color
+   METHOD ToolTip      SETGET
 
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
                fontsize, opaque, bold, italic, underline, strikeout, ;
-               backcolor, fontcolor, transparent, lRtl, invisible, lDisabled ) CLASS TFrame
+               backcolor, fontcolor, transparent, lRtl, invisible, lDisabled, ;
+               tooltip, aArea ) CLASS TFrame
 
    Local ControlHandle, nStyle
    Local oTab
 
-   ASSIGN ::nCol      VALUE x           TYPE "N"
-   ASSIGN ::nRow      VALUE y           TYPE "N"
-   ASSIGN ::nWidth    VALUE w           TYPE "N"
-   ASSIGN ::nHeight   VALUE h           TYPE "N"
-   ASSIGN caption     VALUE caption     TYPE "CM" DEFAULT ""
-   ASSIGN opaque      VALUE opaque      TYPE "L"  DEFAULT .F.
-   ASSIGN transparent VALUE transparent TYPE "L"  DEFAULT .T.
+   ASSIGN ::nCol         VALUE x           TYPE "N"
+   ASSIGN ::nRow         VALUE y           TYPE "N"
+   ASSIGN ::nWidth       VALUE w           TYPE "N"
+   ASSIGN ::nHeight      VALUE h           TYPE "N"
+   ASSIGN caption        VALUE caption     TYPE "CM" DEFAULT ""
+   ASSIGN opaque         VALUE opaque      TYPE "L"  DEFAULT .F.
+   ASSIGN transparent    VALUE transparent TYPE "L"  DEFAULT .F.
+   ASSIGN ::aExcludeArea VALUE aArea       TYPE "A"
 
-   If opaque .AND. transparent
-      MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program terminated." )
-   EndIf
+   IF transparent
+      IF opaque
+         MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program terminated." )
+      ELSE
+         ::Transparent := .T.
+      ENDIF
+   ELSE
+      ::Transparent := ! opaque
+   ENDIF
 
    If valtype( caption ) == 'U'
       caption := ""
@@ -105,9 +116,9 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
 
    nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
 
-   Controlhandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption, opaque, ::lRtl, nStyle )
+   ControlHandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption, opaque, ::lRtl, nStyle )
 
-   ::Register( ControlHandle, ControlName )
+   ::Register( ControlHandle, ControlName,,, tooltip )
    ::SetFont( , , bold, italic, underline, strikeout )
 
    IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
@@ -118,7 +129,6 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
       ENDIF
    ENDIF
 
-   ::Transparent := transparent
    ::Caption := Caption
 
    Return Self
@@ -138,7 +148,16 @@ METHOD Caption( cCaption ) CLASS TFrame
 
 METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
 
-   Return Events_Color_InTab( Self, wParam, nDefColor )    // see h_controlmisc.prg
+   RETURN ::Super:Events_Color( wParam, nDefColor )
+
+METHOD ToolTip( uToolTip ) CLASS TFrame
+
+   IF PCount() > 0
+      TFrame_SetToolTip( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+      ::Super:ToolTip( uToolTip )
+   ENDIF
+
+   RETURN ::cToolTip
 
 
 #pragma BEGINDUMP
@@ -163,16 +182,18 @@ METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
    #define _WIN32_WINNT 0x0400
 #endif
 
-#include <shlobj.h>
-#include <windows.h>
-#include <commctrl.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "hbapiitm.h"
-#include "winreg.h"
-#include "tchar.h"
+#include <windows.h>
+#include <windowsx.h>
+#include <commctrl.h>
 #include "oohg.h"
+
+BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
+
+#define s_Super s_TControl
 
 static WNDPROC lpfnOldWndProcA = 0;
 
@@ -203,6 +224,63 @@ HB_FUNC( INITFRAME )
    lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    HWNDret( hbutton );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TFrame -> uRetVal */
+{
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = (UINT) hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
+   POINT pt;
+   PHB_ITEM pArea;
+   BOOL bPtInExcludeArea;
+
+   switch( message )
+   {
+      case WM_NCHITTEST:
+         _OOHG_Send( pSelf, s_aExcludeArea );
+         hb_vmSend( 0 );
+         pArea = hb_param( -1, HB_IT_ARRAY );
+         pt.x = GET_X_LPARAM( lParam );
+         pt.y = GET_Y_LPARAM( lParam );
+         MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
+         bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
+
+         if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )
+         {
+            hb_retni( HTCLIENT );
+         }
+         else
+         {
+            hb_retni( HTTRANSPARENT );
+         }
+         break;
+
+      default:
+         _OOHG_Send( pSelf, s_Super );
+         hb_vmSend( 0 );
+         _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
+         HWNDpush( hWnd );
+         hb_vmPushLong( message );
+         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( lParam );
+         hb_vmSend( 4 );
+         break;
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TFRAME_SETTOOLTIP )          /* FUNCTION TFrame_SetToolTip( Self, lShow ) -> NIL */
+{
+   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   oSelf->lAux[ 0 ] = hb_parl( 2 );
+   hb_ret();
 }
 
 #pragma ENDDUMP

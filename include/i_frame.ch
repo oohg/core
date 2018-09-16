@@ -79,9 +79,11 @@
       [ <invisible: INVISIBLE> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
+      [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> ] ] ;
 => ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
          Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
          <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
-         <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.> )
+         <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.>, <tooltip>, ;
+         <area> )

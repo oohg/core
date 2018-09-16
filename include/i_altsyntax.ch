@@ -574,7 +574,8 @@ FRAME
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
       _OOHG_ActiveControlCaption     := NIL    ;;
       _OOHG_ActiveControlTransparent := .F.    ;;
-      _OOHG_ActiveControlOpaque      := .F.
+      _OOHG_ActiveControlOpaque      := .F.    ;;
+      _OOHG_ActiveControlExcludeArea := NIL
 
 #xcommand OPAQUE <opaque> ;
    => ;
@@ -602,7 +603,9 @@ FRAME
             _OOHG_ActiveControlTransparent, ;
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlInvisible, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlTooltip, ;
+            _OOHG_ActiveControlExcludeArea )
 
 #xcommand HEADERS <headers> ;
    => ;
