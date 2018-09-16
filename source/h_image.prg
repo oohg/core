@@ -406,9 +406,10 @@ METHOD ToolTip( uToolTip ) CLASS TImage
 
    IF PCount() > 0
       TIMAGE_SETTOOLTIP( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+      ::Super:ToolTip( uToolTip )
    ENDIF
 
-   RETURN ::Super:ToolTip( uToolTip )
+   RETURN ::cToolTip
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TImage
@@ -653,12 +654,12 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TImage -> uRetVal */
 {
-   HWND hWnd = HWNDparam( 1 );
-   UINT message = (UINT) hb_parni( 2 );
-   WPARAM wParam = (WPARAM) hb_parni( 3 );
-   LPARAM lParam = (LPARAM) HB_PARNL( 4 );
+   HWND hWnd      = HWNDparam( 1 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
    POINT pt;
    PHB_ITEM pArea;
    BOOL bPtInExcludeArea;
