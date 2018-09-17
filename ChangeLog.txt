@@ -8,7 +8,7 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2018-09-16 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-09-16 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_button.ch
      + SOLID clause: use with OOHGDRAW and BACKCOLOR clause to
