@@ -8,6 +8,25 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-16 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_button.ch
+     + SOLID clause: use with OOHGDRAW and BACKCOLOR clause to
+       paint the button as a solid rectangle.
+   * core\source\h_button.prg
+     + Support SOLID clause.
+     + DATA cBuffer.
+     + DATA lSolid.
+     + New parameter to METHOD Define of TButton class.
+     + New parameter to METHOD DefineImage of TButton class.
+     ! Transparent color of images with more than 8 bpp.
+     * METHOD Buffer now returns DATA cBuffer.
+     % Small optimization of METHOD Value.
+     * Some format.
+     * Some changes for 64 bit support.
+     + New parameter to METHOD Define of TButtonCheck class.
+     + New parameter to METHOD DefineImage of TButtonCheck class.
+
 2018-09-16 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
@@ -297,10 +316,6 @@
 2018-08-17 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      * Some changes for 64 bit support.
-
-2018-08-17 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\h_button.c
-     + DATA cBuffer.
 
 2018-08-17 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_activex.c
