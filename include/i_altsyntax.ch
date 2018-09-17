@@ -92,6 +92,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlSolid                  => _OOHG_ActiveControlInfo \[  79 \]
 #xtranslate _OOHG_ActiveControlMultiTab               => _OOHG_ActiveControlInfo \[  80 \]
 #xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  81 \]
 #xtranslate _OOHG_ActiveControlTitleFontColor         => _OOHG_ActiveControlInfo \[  82 \]
@@ -1411,7 +1412,8 @@ BUTTON
       _OOHG_ActiveControlNo3DColors        := .F. ;;
       _OOHG_ActiveControlAutoFit           := .F. ;;
       _OOHG_ActiveControlNoDIBSection      := .T. ;;
-      _OOHG_ActiveControlNoToday           := .F.
+      _OOHG_ActiveControlNoToday           := .F. ;;
+      _OOHG_ActiveControlSolid             := .F.
 
 #xcommand CAPTION <caption> ;
    => ;
@@ -1563,6 +1565,10 @@ BUTTON
    => ;
       _OOHG_ActiveControlNoToday := <nohotlight>
 
+#xcommand SOLID <solid> ;
+   => ;
+      _OOHG_ActiveControlSolid := <solid>
+
 #xcommand END BUTTON ;
    => ;
       _OOHG_SelectSubClass( TButton(), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;
@@ -1605,7 +1611,8 @@ BUTTON
             _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlBackColor, ;
-            _OOHG_ActiveControlNoToday )
+            _OOHG_ActiveControlNoToday, ;
+            _OOHG_ActiveControlSolid )
 
 /*---------------------------------------------------------------------------
 IMAGE
@@ -1949,7 +1956,6 @@ COMBOBOX
       _OOHG_ActiveControlOnRefresh         := NIL  ;;
       _OOHG_ActiveControlSearchLapse       := NIL  ;;
       _OOHG_ActiveControlMaxLength         := NIL
-
 
 #xcommand DELAYEDLOAD <delayedload> ;
    => ;
@@ -3065,7 +3071,7 @@ BROWSE
 #xcommand CELLTOOLTIP <ctt> ;
    => ;
       _OOHG_ActiveControlCellToolTip := <ctt>
-            
+
 #xcommand END BROWSE ;
    => ;
       _OOHG_SelectSubClass( iif( _OOHG_ActiveControlByCell, TOBrowseByCell(), TOBrowse() ), _OOHG_ActiveControlSubClass, _OOHG_ActiveControlAssignObject ):Define( ;

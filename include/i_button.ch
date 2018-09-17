@@ -98,7 +98,7 @@
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <autofit: AUTOFIT, ADJUST> ] ;
       [ <lDIB: DIBSECTION> ] ;
-      [ BACKCOLOR <backcolor> ] ;
+      [ BACKCOLOR <backcolor> [ <solidbk: SOLID> ] ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
@@ -110,7 +110,7 @@
             <.scale.>, <.cancel.>, <"imgalign">, <.multiline.>, ;
             IIF( #<drawby> == "OOHGDRAW", .T., IIF( #<drawby> == "WINDRAW", .F., NIL ) ), ;
             <aImageMargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
-            ! <.lDIB.>, <backcolor>, <.nohotlight.> )
+            ! <.lDIB.>, <backcolor>, <.nohotlight.>, <.solidbk.> )
 
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
@@ -143,7 +143,7 @@
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <autofit: AUTOFIT, ADJUST> ] ;
       [ <lDIB: DIBSECTION> ] ;
-      [ BACKCOLOR <backcolor> ] ;
+      [ BACKCOLOR <backcolor> [ <solidbk: SOLID> ] ] ;
       [ <disabled: DISABLED> ] ;
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aImageMargin> ] ;
@@ -162,4 +162,4 @@
             <.no3dcolors.>, <.autofit.>, ! <.lDIB.>, <backcolor>, <.disabled.>, ;
             IIF( #<drawby> == "OOHGDRAW", .T., IIF( #<drawby> == "WINDRAW", .F., NIL ) ), ;
             <aImageMargin>, <{onmousemove}>, <"imgalign">, <.multiline.>, ;
-            <.flat.>, <.nohotlight.> )
+            <.flat.>, <.nohotlight.>, <.solidbk.> )

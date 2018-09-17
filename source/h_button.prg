@@ -72,6 +72,7 @@ CLASS TButton FROM TControl
    DATA nHeight         INIT 28
    DATA AutoFit         INIT .F.
    DATA nAlign          INIT BUTTON_IMAGELIST_ALIGN_TOP
+   DATA cBuffer         INIT ""
    DATA cPicture        INIT ""
    DATA Stretch         INIT .F.
    DATA hImage          INIT nil
@@ -81,6 +82,7 @@ CLASS TButton FROM TControl
    DATA lNo3DColors     INIT .F.
    DATA lNoDIBSection   INIT .T.
    DATA lNoHotLight     INIT .F.
+   DATA lSolid          INIT .F.
 
    METHOD Define
    METHOD DefineImage
@@ -103,7 +105,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
                strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-               lNoDIB, backcolor, lNoHotLight ) CLASS TButton
+               lNoDIB, backcolor, lNoHotLight, lSolid ) CLASS TButton
 
    Local ControlHandle, nStyle, lBitMap, i
 
@@ -149,6 +151,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h, ;
    ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
+   ASSIGN ::lSolid         VALUE lSolid       TYPE "L"
 
    If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
         ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
@@ -203,7 +206,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                     cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                     drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                    lNoDIB, backcolor, lNoHotLight ) CLASS TButton
+                    lNoDIB, backcolor, lNoHotLight, lSolid ) CLASS TButton
 
    If Empty( cBuffer )
       cBuffer := ""
@@ -215,7 +218,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, ProcedureName, w, h,
                     strikeout, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, ;
                     cImage, lNoLoadTrans, lScale, lCancel, cAlign, lMultiLine, ;
                     drawby, aImageMargin, OnMouseMove, lNo3DColors, lAutoFit, ;
-                    lNoDIB, backcolor, lNoHotLight )
+                    lNoDIB, backcolor, lNoHotLight, lSolid )
 
 METHOD SetFocus() CLASS TButton
 
@@ -225,67 +228,94 @@ METHOD SetFocus() CLASS TButton
 
 METHOD Picture( cPicture ) CLASS TButton
 
-   LOCAL nAttrib, aPictSize
+   LOCAL nAttrib, aPictSize, hNew
 
    IF ValType( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
+      ::cBuffer := ""
 
       IF ::lNoDIBSection
-         aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // width, height, depth
-
          nAttrib := LR_DEFAULTCOLOR
-         IF aPictSize[ 3 ] <= 8
-           IF ! ::lNo3DColors
-              nAttrib += LR_LOADMAP3DCOLORS
-           ENDIF
-           IF ! ::lNoTransparent
-              nAttrib += LR_LOADTRANSPARENT
-           ENDIF
+         IF ! ::lNo3DColors .OR. ! ::lNoTransparent
+            aPictSize := _OOHG_SizeOfBitmapFromFile( cPicture )      // {width, height, depth}
+            IF aPictSize[ 3 ] <= 8
+               IF ! ::lNo3DColors
+                  nAttrib += LR_LOADMAP3DCOLORS
+               ENDIF
+               IF ! ::lNoTransparent
+                  nAttrib += LR_LOADTRANSPARENT
+               ENDIF
+            ENDIF
          ENDIF
       ELSE
          nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
       ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch, .F. )
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+      IF ValidHandler( ::hImage )
+         IF ::lNoDIBSection .AND. aPictSize[ 3 ] > 8
+            hNew := _OOHG_ReplaceColor( ::hImage, 0, 0, -1 )
+            DeleteObject( ::hImage )
+            ::hImage := hNew
+         ENDIF
+         IF ValidHandler( ::hImage )
+            IF ::ImageSize
+               ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+               ::nHeight := _OOHG_BitMapHeight( ::hImage )
+            ENDIF
+         ELSE
+            ::hImage := NIL
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
    ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
 METHOD HBitMap( hBitMap ) CLASS TButton
 
-   If ValType( hBitMap ) $ "NP"
+   IF ValType( hBitMap ) $ "NP"
       DeleteObject( ::hImage )
-      ::hImage := hBitMap
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+      ::cPicture := ""
+      ::cBuffer := ""
+
+      IF ValidHandler( hBitMap )
+         ::hImage := hBitMap
+         IF ::ImageSize
+            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+            ::nHeight := _OOHG_BitMapHeight( ::hImage )
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
-      ::cPicture := ""
-   EndIf
+   ENDIF
 
-   Return ::hImage
+   RETURN ::hImage
 
 METHOD Buffer( cBuffer ) CLASS TButton
 
    If ValType( cBuffer ) $ "CM"
       DeleteObject( ::hImage )
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch )
-      IF ::ImageSize
-         ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-         ::nHeight := _OOHG_BitMapHeight( ::hImage )
+      ::cPicture := ""
+      ::cBuffer := cBuffer
+
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch, ::lNoTransparent )
+      IF ValidHandler( ::hImage )
+         IF ::ImageSize
+            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
+            ::nHeight := _OOHG_BitMapHeight( ::hImage )
+         ENDIF
+      ELSE
+         ::hImage := NIL
       ENDIF
       ::RePaint()
-      ::cPicture := ""
-   EndIf
+   ENDIF
 
-   Return nil
+   RETURN ::cBuffer
 
 METHOD Value( uValue ) CLASS TButton
 
@@ -299,13 +329,11 @@ METHOD RePaint() CLASS TButton
       ENDIF
       ::AuxHandle := NIL
       ::TControl:SizePos()
-      IF OSisWinXPorLater() .AND. ( LEN( ::Caption ) > 0 .OR. ( ::lLibDraw .AND. ::IsVisualStyled ) )
+      IF ::IsVisualStyled
          ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, -1, ::aImageMargin[1], ::aImageMargin[2], ::aImageMargin[3], ::aImageMargin[4], ::Stretch, ::AutoFit )
          ::ReDraw()
-      ELSEIF ::Stretch .OR. ::AutoFit
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
       ELSE
-         SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit )
       ENDIF
    ENDIF
 
@@ -328,15 +356,15 @@ METHOD Release() CLASS TButton
 
 METHOD Events_Notify( wParam, lParam ) CLASS TButton
 
-   Local nNotify := GetNotifyCode( lParam )
+   LOCAL nNotify := GetNotifyCode( lParam )
 
-   If nNotify == NM_CUSTOMDRAW
-      If ::lLibDraw .AND. ::IsVisualStyled
-         Return TButton_Notify_CustomDraw( lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ) )
-      EndIf
-   EndIf
+   IF nNotify == NM_CUSTOMDRAW
+      IF ::lLibDraw .AND. ::IsVisualStyled
+         RETURN TButton_Notify_CustomDraw( Self, lParam, ! ::lNoHotLight, ( GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl == ::hWnd ), ::lSolid )
+      ENDIF
+   ENDIF
 
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD ImageMargin( aMargins ) CLASS TButton
 
@@ -384,8 +412,6 @@ METHOD ImageMargin( aMargins ) CLASS TButton
 #include <hbapi.h>
 #include <windows.h>
 #include <commctrl.h>
-//#include <uxtheme.h>
-//#include <tmschema.h>
 #include "oohg.h"
 
 #ifndef BCM_FIRST
@@ -409,6 +435,7 @@ typedef struct _MARGINS {
    int cyTopHeight;
    int cyBottomHeight;
 } MARGINS, *PMARGINS;
+
 typedef HANDLE HTHEME;
 
 enum {
@@ -512,7 +539,7 @@ HB_FUNC( SETIMAGEXP )
       SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
       DeleteObject( hBmp2 );
       // This handle must be explicitly released !!!
-      hb_retnl( (LONG) himl );
+      HB_RETNL( (LONG_PTR) himl );
    }
 }
 
@@ -521,61 +548,30 @@ The following function was derived from CImageButtonWithStyle Class by Stephen C
 http://www.codeproject.com/KB/buttons/imagebuttonwithstyle.aspx
 */
 
-typedef int (CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
-typedef int (CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
-typedef int (CALLBACK *CALL_GETTHEMEBACKGROUNDCONTENTRECT )( HTHEME, HDC, int, int, const RECT*, RECT* );
-typedef int (CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
-typedef int (CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
+typedef int ( CALLBACK *CALL_CLOSETHEMEDATA )( HTHEME );
+typedef int ( CALLBACK *CALL_DRAWTHEMEBACKGROUND )( HTHEME, HDC, int, int, const RECT*, const RECT* );
+typedef int ( CALLBACK *CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT* );
+typedef int ( CALLBACK *CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT )( HTHEME, int, int );
+typedef int ( CALLBACK *CALL_OPENTHEMEDATA )( HWND, LPCWSTR );
 
-int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
+int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BOOL bFocused, BOOL bSolidBack )
 {
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HMODULE hInstDLL;
-   LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
+   LPNMCUSTOMDRAW pCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
+   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
+   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
    CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
+   CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT dwProcIsThemeBackgroundPartiallyTransparent;
    CALL_OPENTHEMEDATA dwProcOpenThemeData;
    HTHEME hTheme;
    LONG_PTR style;
    int state_id;
-   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
-   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
-   RECT content_rect;
-   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
+   LONG lBackColor;
+   HBRUSH hBrush;
 
-   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-   if( ! hInstDLL )
+   if( pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT )
    {
-      return CDRF_DODEFAULT;
-   }
-
-   if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
-   {
-      /* erase background (according to parent window's themed background) */
-      dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
-      if( ! dwProcDrawThemeParentBackground )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-      ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
-   }
-
-   if (pCustomDraw->dwDrawStage == CDDS_PREERASE || pCustomDraw->dwDrawStage == CDDS_PREPAINT)
-   {
-      /* get theme handle */
-      dwProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hInstDLL, "OpenThemeData" );
-      if( ! dwProcOpenThemeData )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-
-      hTheme = (HTHEME) ( dwProcOpenThemeData )( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
-      if( ! hTheme )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-
       /* determine state for DrawThemeBackground()
          note: order of these tests is significant */
       style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
@@ -599,29 +595,60 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
          state_id = PBS_DEFAULTED;
       }
 
-      /* draw themed button background appropriate to button state */
-      dwProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeBackground" );
-      if( ! dwProcDrawThemeBackground )
+      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+      if( ! hInstDLL )
       {
-         FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
       }
-      ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
 
-      /* get content rectangle (space inside button for image) */
-      dwProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
-      if( ! dwProcGetThemeBackgroundContentRect )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-      ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
-
-      /* close theme */
       dwProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hInstDLL, "CloseThemeData" );
-      if( dwProcCloseThemeData )
+      dwProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hInstDLL, "OpenThemeData" );
+
+      if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
       {
-         ( dwProcCloseThemeData )( hTheme );
+         dwProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hInstDLL, "IsThemeBackgroundPartiallyTransparent" );
+         dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
+
+         if( dwProcOpenThemeData && dwProcIsThemeBackgroundPartiallyTransparent && dwProcDrawThemeParentBackground && dwProcCloseThemeData )
+         {
+            hTheme = ( HTHEME ) ( dwProcOpenThemeData )( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+            if( hTheme )
+            {
+               if( ( dwProcIsThemeBackgroundPartiallyTransparent )( hTheme, BP_PUSHBUTTON, state_id ) )
+               {
+                  ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+               }
+
+               ( dwProcCloseThemeData )( hTheme );
+            }
+         }
+      }
+      else   // pCustomDraw->dwDrawStage == CDDS_PREPAINT
+      {
+         dwProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeBackground" );
+
+         if( dwProcOpenThemeData && dwProcDrawThemeBackground && dwProcCloseThemeData )
+         {
+            hTheme = ( HTHEME ) ( dwProcOpenThemeData )( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+            if( hTheme )
+            {
+               lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+               if( lBackColor != -1 )
+               {
+                     hBrush = CreateSolidBrush( lBackColor );
+                     FillRect( pCustomDraw->hdc, &pCustomDraw->rc, hBrush );
+                     DeleteObject( hBrush );
+               }
+
+               if( ! bSolidBack )
+               {
+                  /* draw themed button background appropriate to button state */
+                  ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
+               }
+
+               ( dwProcCloseThemeData )( hTheme );
+            }
+         }
       }
 
       FreeLibrary( hInstDLL );
@@ -632,7 +659,7 @@ int TButton_Notify_CustomDraw( LPARAM lParam, BOOL bHotLight, BOOL bFocused )
 
 HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TButton_Notify_CustomDraw( (LPARAM) hb_parnl( 1 ), hb_parl( 2 ), hb_parl( 3 ) ) );
+   hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), hb_parl( 3 ), hb_parl( 4 ), hb_parl( 5 ) ) );
 }
 
 #pragma ENDDUMP
@@ -657,7 +684,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-               flat, lNoHotLight ) CLASS TButtonCheck
+               flat, lNoHotLight, lSolid ) CLASS TButtonCheck
 
    Local ControlHandle, nStyle, lBitMap, i
 
@@ -704,6 +731,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
    ASSIGN ::lNo3DColors    VALUE lNo3DColors  TYPE "L"
    ASSIGN ::lNoDIBSection  VALUE lNoDIB       TYPE "L"
    ASSIGN ::lNoHotLight    VALUE lNoHotLight  TYPE "L"
+   ASSIGN ::lSolid         VALUE lSolid       TYPE "L"
 
    If ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
         ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
@@ -763,7 +791,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                     lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                     lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-                    flat, lNoHotLight ) CLASS TButtonCheck
+                    flat, lNoHotLight, lSolid ) CLASS TButtonCheck
 
    If Empty( cBuffer )
       cBuffer := ""
@@ -775,7 +803,7 @@ METHOD DefineImage( ControlName, ParentForm, x, y, Caption, Value, fontname, ;
                     strikeout, field, lRtl, cImage, cBuffer, hBitMap, ;
                     lNoLoadTrans, lScale, lNo3DColors, lAutoFit, lNoDIB, backcolor, ;
                     lDisabled, drawby, aImageMargin, OnMouseMove, cAlign, lMultiLine, ;
-                    flat, lNoHotLight )
+                    flat, lNoHotLight, lSolid )
 
 METHOD Value( uValue ) CLASS TButtonCheck
 
