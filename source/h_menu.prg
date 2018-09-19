@@ -97,7 +97,7 @@ METHOD DisableVisualStyle CLASS TMenu
    IF ::IsVisualStyled
       ::Parent:DisableVisualStyle()
       IF ! ::Parent:IsVisualStyled
-         ::lVisualStyled := .F.
+         ::IsVisualStyled := .F.
       ENDIF
    ENDIF
 
