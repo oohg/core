@@ -85,7 +85,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, lSunken )
    ASSIGN ::nCol    VALUE nCol    TYPE "N"
    ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
    ASSIGN ::nHeight VALUE nHeight TYPE "N"
-   ASSIGN lSunken   VALUE lSunken TYPE "L" DEFAULT ! _OOHG_UsesVisualStyle()
+   ASSIGN lSunken   VALUE lSunken TYPE "L" DEFAULT ! ::IsVisualStyled
 
    nControlHandle := InitVScrollBarButton( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, iif( lSunken, SS_SUNKEN, 0 ) )
 
