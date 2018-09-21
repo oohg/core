@@ -279,7 +279,7 @@ static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
-void _OOHG_TInternal_Register( void )
+static void _OOHG_TInternal_Register( void )
 {
    static BOOL bRegistered = FALSE; 
 
