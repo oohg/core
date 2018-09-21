@@ -74,7 +74,7 @@
       [ <dummy3: PICTURE, ICON> <filename> ] ;
       [ BUFFER <buffer> ] ;
       [ HBITMAP <hbitmap> ] ;
-      [ <scale: FORCESCALE> ] ;
+      [ <autofit: AUTOFIT, ADJUST, FORCESCALE> ] ;
       [ <border: BORDER> ] ;
       [ <clientedge: CLIENTEDGE> ] ;
       [ TOOLTIP <tooltip> ] ;
@@ -88,7 +88,7 @@
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
-            <buffer>, <hbitmap>, <.stretch.>, <.scale.>, <.imagesize.>, ;
+            <buffer>, <hbitmap>, <.stretch.>, <.autofit.>, <.imagesize.>, ;
             <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
             <helpid>, <.rtl.>, <.invisible.>, <.notrans.>, <.no3dcolors.>, ;
             <.nodib.>, <.style.>, <area>, <.disabled.> )
