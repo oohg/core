@@ -183,12 +183,83 @@ typedef struct {
 #define SELF_CURSORTIME( xSelf ) xSelf->lAux[ 7 ]
 #define SELF_FIXED( xSelf )      xSelf->lAux[ 8 ]
 
-static WNDPROC lpfnOldWndProc = 0;
-
 #define RANGEMINMAX( iMin, iValue, iMax ) if( iValue < ( iMin ) ) { iValue = (iMin); } else if( iValue > ( iMax ) ) { iValue = ( iMax ); }
 #define LO_HI_AUX( _Lo, _Hi, _Aux )       if( _Lo > _Hi ) { _Aux = _Hi; _Hi = _Lo; _Lo = _Aux; }
 
-static BOOL bRegistered = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TTextArray_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TTextArray_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT CALLBACK _OOHG_TTextArray_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+{
+   return DefWindowProc( hWnd, message, wParam, lParam );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static void _OOHG_TTextArray_Register( void )
+{
+   static BOOL bRegistered = FALSE;
+
+   if( ! bRegistered )
+   {
+      WNDCLASS WndClass;
+
+      memset( &WndClass, 0, sizeof( WndClass ) );
+      WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
+      WndClass.lpfnWndProc   = _OOHG_TTextArray_WndProc;
+      WndClass.lpszClassName = "_OOHG_TTEXTARRAY";
+      WndClass.hInstance     = GetModuleHandle( NULL );
+      WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
+
+      if( ! RegisterClass( &WndClass ) )
+      {
+         char cBuffError[ 1000 ];
+         sprintf( cBuffError, "_OOHG_TTEXTARRAY Registration Failed! Error %i", ( int ) GetLastError() );
+         MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
+         ExitProcess( 1 );
+      }
+
+      bRegistered = TRUE;
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
+{
+   HWND hwnd;
+   HWND hbutton;
+   int Style, ExStyle;
+
+   _OOHG_TTextArray_Register();
+
+   hwnd = HWNDparam( 1 );
+   Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
+   ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
+
+   hbutton = CreateWindowEx( ExStyle, "_OOHG_TEXTARRAY", "", Style,
+             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+             hwnd, NULL, GetModuleHandle( NULL ), NULL );
+
+   _OOHG_TTextArray_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+
+   HWNDret( hbutton );
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static BOOL IsSameChar( PCHARCELL pCell1, PCHARCELL pCell2 )
@@ -202,12 +273,6 @@ static void TTextArray_Empty( PCHARCELL pCell, POCTRL oSelf )
    pCell->character = ' ';
    pCell->FontColor = oSelf->lFontColor;
    pCell->BackColor = oSelf->lBackColor;
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1333,60 +1398,6 @@ HB_FUNC_STATIC( TTEXTARRAY_ASSUMEFIXED )          /* METHOD AssumeFixed( lAssume
    }
 
    hb_retl( SELF_FIXED( oSelf ) );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-static LRESULT CALLBACK _OOHG_TextArray_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-   return DefWindowProc( hWnd, message, wParam, lParam );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-static void _OOHG_TextArray_Register( void )
-{
-   WNDCLASS WndClass;
-
-   memset( &WndClass, 0, sizeof( WndClass ) );
-   WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-   WndClass.lpfnWndProc   = _OOHG_TextArray_WndProc;
-   WndClass.lpszClassName = "_OOHG_TEXTARRAY";
-   WndClass.hInstance     = GetModuleHandle( NULL );
-   WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
-
-   if( ! RegisterClass( &WndClass ) )
-   {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "_OOHG_TEXTARRAY Registration Failed! Error %i", ( int ) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      ExitProcess( 1 );
-   }
-
-   bRegistered = 1;
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
-{
-   HWND hwnd;
-   HWND hbutton;
-   int Style, ExStyle;
-
-   if( ! bRegistered )
-   {
-      _OOHG_TextArray_Register();
-   }
-
-   hwnd = HWNDparam( 1 );
-   Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
-   ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
-
-   hbutton = CreateWindowEx( ExStyle, "_OOHG_TEXTARRAY", "", Style,
-             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-             hwnd, NULL, GetModuleHandle( NULL ), NULL );
-
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-
-   HWNDret( hbutton );
 }
 
 #pragma ENDDUMP
