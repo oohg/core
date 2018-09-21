@@ -196,7 +196,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlNoResize               => _OOHG_ActiveControlInfo \[ 180 \]
 #xtranslate _OOHG_ActiveControlBuffer                 => _OOHG_ActiveControlInfo \[ 181 \]
 #xtranslate _OOHG_ActiveControlHBitmap                => _OOHG_ActiveControlInfo \[ 182 \]
-#xtranslate _OOHG_ActiveControlScale                  => _OOHG_ActiveControlInfo \[ 183 \]
+
 #xtranslate _OOHG_ActiveControlCancel                 => _OOHG_ActiveControlInfo \[ 184 \]
 #xtranslate _OOHG_ActiveControlAlignment              => _OOHG_ActiveControlInfo \[ 185 \]
 #xtranslate _OOHG_ActiveControlHeaderImages           => _OOHG_ActiveControlInfo \[ 186 \]
@@ -1403,7 +1403,7 @@ BUTTON
       _OOHG_ActiveControlNoPrefix          := .F. ;;
       _OOHG_ActiveControlBuffer            := NIL ;;
       _OOHG_ActiveControlHBitmap           := NIL ;;
-      _OOHG_ActiveControlScale             := .F. ;;
+      _OOHG_ActiveControlAutoFit           := .F. ;;
       _OOHG_ActiveControlCancel            := .F. ;;
       _OOHG_ActiveControlAlignment         := NIL ;;
       _OOHG_ActiveControlMultiLine         := .F. ;;
@@ -1479,9 +1479,9 @@ BUTTON
    => ;
       _OOHG_ActiveControlHBitmap := <hbitmap>
 
-#xcommand SCALE <scale> ;
+#xcommand SCALE <autofit> ;
    => ;
-      _OOHG_ActiveControlScale := <scale>
+      _OOHG_ActiveControlAutoFit := <autofit>
 
 #xcommand CANCEL <cancel> ;
    => ;
@@ -1600,7 +1600,7 @@ BUTTON
             _OOHG_ActiveControlHBitmap, ;
             _OOHG_ActiveControlPicture, ;
             _OOHG_ActiveControlNoLoadTransparent, ;
-            _OOHG_ActiveControlScale, ;
+            _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlCancel, ;
             _OOHG_ActiveControlAlignment, ;
             _OOHG_ActiveControlMultiLine, ;
@@ -1870,7 +1870,7 @@ CHECKBUTTON
       _OOHG_ActiveControlBuffer       := NIL   ;;
       _OOHG_ActiveControlHBitmap      := NIL   ;;
       _OOHG_ActiveControlTransparent  := .T.   ;;
-      _OOHG_ActiveControlScale        := .F.   ;;
+      _OOHG_ActiveControlAutoFit      := .F.   ;;
       _OOHG_ActiveControlNo3DColors   := .F.   ;;
       _OOHG_ActiveControlAutoFit      := .F.   ;;
       _OOHG_ActiveControlNoDIBSection := .T.   ;;
@@ -1912,7 +1912,7 @@ CHECKBUTTON
             _OOHG_ActiveControlBuffer, ;
             _OOHG_ActiveControlHBitmap, ;
             ! _OOHG_ActiveControlTransparent, ;
-            _OOHG_ActiveControlScale, ;
+            _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlNoDIBSection, ;
@@ -3573,7 +3573,7 @@ PICTURE
       _OOHG_ActiveControlClientEdge        := .F. ;;
       _OOHG_ActiveControlImagesize         := .F. ;;
       _OOHG_ActiveControlBorder            := .F. ;;
-      _OOHG_ActiveControlScale             := .F. ;;
+      _OOHG_ActiveControlAutoFit           := .F. ;;
       _OOHG_ActiveControlStretch           := .F. ;;
       _OOHG_ActiveControlNoDIBSection      := .F. ;;
       _OOHG_ActiveControlNo3DColors        := .F. ;;
@@ -3585,9 +3585,9 @@ PICTURE
    => ;
       _OOHG_ActiveControlPicture := <icon>
 
-#xcommand FORCESCALE <scale> ;
+#xcommand FORCESCALE <autofit> ;
    => ;
-      _OOHG_ActiveControlScale := <scale>
+      _OOHG_ActiveControlAutoFit := <autofit>
 
 #xcommand END PICTURE;
    => ;
@@ -3602,7 +3602,7 @@ PICTURE
             _OOHG_ActiveControlBuffer, ;
             _OOHG_ActiveControlHBitmap, ;
             _OOHG_ActiveControlStretch, ;
-            _OOHG_ActiveControlScale, ;
+            _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlImagesize, ;
             _OOHG_ActiveControlBorder, ;
             _OOHG_ActiveControlClientEdge, ;
