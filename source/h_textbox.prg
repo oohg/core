@@ -109,6 +109,7 @@ CLASS TText FROM TLabel
    METHOD Events_Command
    METHOD Events
    METHOD ControlArea                  SETGET
+   METHOD ControlPosition              SETGET
    METHOD ScrollCaret                  BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
    METHOD GetSelection
    METHOD SetSelection
@@ -133,7 +134,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TText
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
+               lAtLeft ) CLASS TText
 
    Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -147,7 +149,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType )
+              OnTextFilled, nInsType, lAtLeft )
 
    Return Self
 
@@ -158,7 +160,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
-                lCenter, OnTextFilled, nInsType ) CLASS TText
+                lCenter, OnTextFilled, nInsType, lAtLeft ) CLASS TText
 
    Local nControlHandle
    Local break := Nil
@@ -214,6 +216,9 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
    ASSIGN ::lAutoSkip    VALUE lAutoSkip    TYPE "L"
    ASSIGN ::nOnFocusPos  VALUE OnFocusPos   TYPE "N"
    ASSIGN nBtnwidth      VALUE nBtnwidth    TYPE "N" DEFAULT 20
+   ASSIGN lAtLeft        VALUE lAtLeft      TYPE "L" DEFAULT .F.
+
+   ::ControlPosition := iif( lAtLeft, 0, 1 )
 
    If ! HB_IsArray( aBitmap )
       aBitmap := { aBitmap, Nil }
@@ -222,23 +227,39 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
       aSize( aBitmap, 2 )
    EndIf
 
-   If HB_IsBlock( bAction )
-      IF Empty( aBitmap[ 1 ] )
-         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
+   IF HB_ISBLOCK( bAction )
+      IF lAtLeft
+         IF Empty( aBitmap[ 1 ] )
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
+         ELSE
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+         ENDIF
       ELSE
-         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+         IF Empty( aBitmap[ 1 ] )
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
+         ELSE
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+         ENDIF
       ENDIF
-   EndIf
+   ENDIF
 
-   If HB_IsBlock( bAction2 )
-      IF Empty( aBitmap[ 2 ] )
-         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) CAPTION '...' OBJ ::oButton2
+   IF HB_ISBLOCK( bAction2 )
+      IF lAtLeft
+         IF Empty( aBitmap[ 2 ] )
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) CAPTION '...' OBJ ::oButton2
+         ELSE
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+         ENDIF
       ELSE
-         @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+         IF Empty( aBitmap[ 2 ] )
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton2
+         ELSE
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+         ENDIF
       ENDIF
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD RefreshData() CLASS TText
 
@@ -288,31 +309,40 @@ METHOD Visible( lVisible ) CLASS TText
 
 METHOD AddControl( oCtrl ) CLASS TText
 
-   Local aRect
+   LOCAL nArea
 
    ::Super:AddControl( oCtrl )
    oCtrl:Container := Self
-   ::ControlArea := ::ControlArea + oCtrl:Width
-   aRect := { 0, 0, 0, 0 }
-   GetClientRect( ::hWnd, @aRect )
+
+   nArea := ::ControlArea
+   ::ControlArea := nArea + oCtrl:Width
+
    oCtrl:Visible := oCtrl:Visible
-   oCtrl:SizePos( 2, ::ClientWidth + 2,, ::ClientHeight )
+   IF ::ControlPosition == 1   // on the right
+      oCtrl:SizePos( 2, ::ClientWidth + 2, NIL, ::ClientHeight )
+   ELSE
+      oCtrl:SizePos( 2, nArea + 2, NIL, ::ClientHeight )
+   ENDIF
    oCtrl:Anchor := ::nDefAnchor
 
-   Return Nil
+   RETURN NIL
 
 METHOD DeleteControl( oCtrl ) CLASS TText
 
-   Local nCount
+   LOCAL nCount
 
    nCount := Len( ::aControls )
    ::Super:DeleteControl( oCtrl )
-   If Len( ::aControls ) < nCount
+   IF Len( ::aControls ) < nCount
       ::ControlArea := ::ControlArea - oCtrl:Width
-      aEval( ::aControls, { |o| If( o:Col < oCtrl:Col + oCtrl:Width, o:Col += oCtrl:Width, ) } )
-   EndIf
+      IF ::ControlPosition == 1   // on the right
+         aEval( ::aControls, { |o| iif( o:Col < oCtrl:Col + oCtrl:Width, o:Col += oCtrl:Width, NIL ) } )
+      ELSE
+         aEval( ::aControls, { |o| iif( o:Col > oCtrl:Col, o:Col -= oCtrl:Width, NIL ) } )
+      ENDIF
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 METHOD Value( uValue ) CLASS TText
 
@@ -564,6 +594,7 @@ HB_FUNC( INITTEXTBOX )
 #define s_Super s_TLabel
 
 // oSelf->lAux[ 0 ] -> Client's area (width used by attached controls)
+// oSelf->lAux[ 1 ] -> 1=attached controls are on the right, 0=on the left
 
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TText
@@ -587,9 +618,16 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
          if( oSelf->lAux[ 0 ] )
          {
-
             rect2 = ( RECT * ) lParam;
-            rect2->right = rect2->right - oSelf->lAux[ 0 ];
+
+            if( oSelf->lAux[ 1 ] )
+            {
+               rect2->right = rect2->right - oSelf->lAux[ 0 ];
+            }
+            else
+            {
+               rect2->left = rect2->left + oSelf->lAux[ 0 ];
+            }
          }
 
          hb_retni( iRet );
@@ -650,6 +688,24 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
    }
 
    hb_retni( oSelf->lAux[ 0 ] );
+}
+
+// -----------------------------------------------------------------------------
+HB_FUNC_STATIC( TTEXT_CONTROLPOSITION )   // METHOD ControlPosition( nPosition ) CLASS TText
+// -----------------------------------------------------------------------------
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rect;
+
+   if( HB_ISNUM( 1 ) && ! oSelf->lAux[ 0 ] )
+   {
+      oSelf->lAux[ 1 ] = hb_parni( 1 );
+      GetWindowRect( oSelf->hWnd, &rect );
+      SetWindowPos( oSelf->hWnd, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOREDRAW | SWP_NOSIZE );
+   }
+
+   hb_retni( oSelf->lAux[ 1 ] );
 }
 
 // -----------------------------------------------------------------------------
@@ -834,7 +890,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-               nInsType ) CLASS TTextPicture
+               nInsType, lAtLeft ) CLASS TTextPicture
 
    Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -865,7 +921,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType )
+              OnTextFilled, nInsType, lAtLeft )
 
    Return Self
 
@@ -1557,7 +1613,8 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                HelpId, readonly, bold, italic, underline, strikeout, field , ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType ) CLASS TTextNum
+               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
+               lAtLeft ) CLASS TTextNum
 
    Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1571,7 +1628,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType )
+              OnTextFilled, nInsType, lAtLeft )
 
    Return Self
 
@@ -1627,7 +1684,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
                         aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, ;
-                        OnTextFilled, nInsType )
+                        OnTextFilled, nInsType, lAtLeft )
 
    Local Self, lInsert
 
@@ -1676,7 +1733,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
                 nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-                nInsType )
+                nInsType, lAtLeft )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1685,7 +1742,8 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                 HelpId, readonly, bold, italic, underline, strikeout, field, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                 lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType )
+                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
+                lAtLeft )
    EndIf
 
    ASSIGN ::InsertStatus VALUE lInsert TYPE "L"

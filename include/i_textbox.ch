@@ -108,6 +108,7 @@
       [ BUTTONWIDTH <btnwidth> ] ;
       [ WHEN <bWhen> ] ;
       [ INSERTTYPE <nInsType> ] ;
+      [ <place: CTRLSATLEFT> ] ;
    => ;
       [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, ;
             <height>, <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
@@ -118,4 +119,4 @@
             <.autoskip.>, <.noborder.>, <focusedpos>, <.disabled.>, <{valid}>, ;
             <.date.>, <.numeric.>, <inputmask>, <format>, [ <subclass>() ], ;
             <{action}>, <abitmap>, <btnwidth>, <{action2}>, <{bWhen}>, ;
-            <.centeralign.>, <year>, <{textfilled}>, <nInsType> )
+            <.centeralign.>, <year>, <{textfilled}>, <nInsType>, <.place.> )

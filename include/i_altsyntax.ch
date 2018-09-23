@@ -196,7 +196,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlNoResize               => _OOHG_ActiveControlInfo \[ 180 \]
 #xtranslate _OOHG_ActiveControlBuffer                 => _OOHG_ActiveControlInfo \[ 181 \]
 #xtranslate _OOHG_ActiveControlHBitmap                => _OOHG_ActiveControlInfo \[ 182 \]
-
+#xtranslate _OOHG_ActiveControlCtrlsAtLeft            => _OOHG_ActiveControlInfo \[ 183 \]
 #xtranslate _OOHG_ActiveControlCancel                 => _OOHG_ActiveControlInfo \[ 184 \]
 #xtranslate _OOHG_ActiveControlAlignment              => _OOHG_ActiveControlInfo \[ 185 \]
 #xtranslate _OOHG_ActiveControlHeaderImages           => _OOHG_ActiveControlInfo \[ 186 \]
@@ -1180,7 +1180,12 @@ TEXT BOX
       _OOHG_ActiveControlCenter       := NIL   ;;
       _OOHG_ActiveControlDefaultYear  := NIL   ;;
       _OOHG_ActiveControlOnTextFilled := NIL   ;;
-      _OOHG_ActiveControlInsertType   := NIL
+      _OOHG_ActiveControlInsertType   := NIL   ;;
+      _OOHG_ActiveControlCtrlAtLeft   := .F.
+
+#xcommand CTRLSATLEFT <atleft> ;
+   => ;
+      _OOHG_ActiveControlInsertType := <atleft>
 
 #xcommand INSERTTYPE <inserttype> ;
    => ;
@@ -1294,7 +1299,8 @@ TEXT BOX
             _OOHG_ActiveControlCenter, ;
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlOnTextFilled, ;
-            _OOHG_ActiveControlInsertType ), NIL, _OOHG_ActiveControlAssignObject )
+            _OOHG_ActiveControlInsertType, ;
+            _OOHG_ActiveControlCtrlAtLeft ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*---------------------------------------------------------------------------
 MONTH CALENDAR
