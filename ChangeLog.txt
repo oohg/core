@@ -8,13 +8,52 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-09-22 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_textbox.ch
+     + CTRLSATLEFT clause: places textbox's client controls at
+       the left side of the clientarea instead of the right.
+   * core\source\h_textbox.prg
+     + Support for new clause.
+     + METHOD ControlPosition to TText class.
+       Note that the position of the client controls can be
+       changed at runtime but only if no control is defined.
+     + New parameter to methods Define and Define2 of TText class,
+       method Define of TTextPicture, method Define of TTextNum
+       and function DefineTextBox.
+
+2018-09-21 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + Use _OOHG_ActiveControlAutoFit instead of _OOHG_ActiveControlScale.
+
+2018-09-21 18:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_picture.ch
+     + Added AUTOFIT and ADJUST as equivalents to FORCESCALE.
+
+2018-09-21 18:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_internal.prg
+     * A C-level function is now static.
+
+2018-09-21 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textarray.prg
+     * A C-level module-static var was moved to a C-level
+       function-static var, thus making the class thread safe.
+
+2018-09-19 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_menu.prg
+     * Use ::IsVisualStyled instead of ::lVisualStyled.
+
+2018-09-19 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scrollbutton.prg
+     * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+
 2018-09-16 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_button.ch
      + SOLID clause: use with OOHGDRAW and BACKCOLOR clause to
-       paint the button as a solid rectangle.
+       paint the button as a solid colored rectangle.
    * core\source\h_button.prg
-     + Support SOLID clause.
+     + Support for SOLID clause.
      + DATA cBuffer.
      + DATA lSolid.
      + New parameter to METHOD Define of TButton class.
@@ -72,8 +111,8 @@
    * core\source\h_internal.prg
      * Some changes for 64 bit support.
      * Some format.
-     * A C-level module static var was moved to a C-level
-       function static var, thus making the class thread safe.
+     * A C-level module-static var was moved to a C-level
+       function-static var, thus making the class thread safe.
 
 2018-09-15 22:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_image.prg
