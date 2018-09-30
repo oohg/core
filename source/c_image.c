@@ -870,7 +870,7 @@ HB_FUNC( _OOHG_REPLACECOLOR )          // ( hBitmap, nCol, nRow, uNewColor )
 {
    LONG lColor = -1;
 
-   _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lColor );
+   _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lColor );
    if( lColor == -1 )
    {
       lColor = GetSysColor( COLOR_BTNFACE );
