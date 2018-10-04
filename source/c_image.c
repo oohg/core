@@ -850,7 +850,7 @@ HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor )
                   // Replace with the new color
                   if( GetPixel( hdcDst, nCol, nRow ) == clrTP )
                   {
-                     SetPixel( hdcDst, nCol, nRow, lNewColor );
+                     SetPixel( hdcDst, nCol, nRow, (COLORREF) lNewColor );
                   }
                }
             }
