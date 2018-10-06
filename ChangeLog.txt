@@ -8,6 +8,19 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-10-06 09:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     ! Methods DeleteItem and DeleteAllItems do not update Data
+       aValues resulting in wrong values when using VALUESOURCE.
+     * Method DeleteItem returns .T. if the item was deleted.
+     ! Method AddItem does not admit adding to an empty combobox
+       an item with valuesource.
+     * Function ComboBoxDeleteString now returns .T. on success.
+
+2018-10-06 09:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! Window is still visible after close under WinXP.
+
 2018-10-04 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_image.c
      + Casting.
