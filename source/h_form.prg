@@ -2771,7 +2771,7 @@ FUNCTION _ReleaseWindowList( aWindows )
             oWnd:aChildPopUp := {}
 
             // Release attached controls
-            DefWindowProc( oWnd:hWnd, WM_SETREDRAW, 0, 0 )
+            HideWindow( oWnd:hWnd )
             IF ! Empty( oWnd:NotifyIcon )
                oWnd:NotifyIconObject:Release()
             ENDIF
@@ -2800,7 +2800,7 @@ FUNCTION _ReleaseWindowList( aWindows )
             oWnd:PreRelease()
 
             // Release attached controls
-            DefWindowProc( oWnd:hWnd, WM_SETREDRAW, 0, 0 )
+            HideWindow( oWnd:hWnd )
             IF ! Empty( oWnd:NotifyIcon )
                oWnd:NotifyIconObject:Release()
             ENDIF
