@@ -109,8 +109,8 @@ CLASS TCombo FROM TLabel
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
    METHOD AddItem
-   METHOD DeleteItem(nPos)    BLOCK { |Self,nPos| ComboboxDeleteString( ::hWnd, nPos ) }
-   METHOD DeleteAllItems      BLOCK { |Self| ComboboxReset( ::hWnd ), ::xOldValue := NIL, ::OldValue := NIL }
+   METHOD DeleteItem
+   METHOD DeleteAllItems
    METHOD Item                BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
    METHOD ItemBySource
    METHOD ItemValue           
@@ -1047,9 +1047,9 @@ METHOD ItemBySource( nItem, uValue ) CLASS TCombo
 
 METHOD AddItem( uValue, uSource ) CLASS TCombo
 
-   If PCOUNT() > 1 .AND. LEN( ::aValues ) > 0
-      AADD( ::aValues, uSource )
-   EndIf
+   IF PCount() > 1 .AND. ( Len( ::aValues ) > 0 .OR. ( Len( ::aValues ) == 0 .AND. ::ItemCount == 0 ) )
+      AAdd( ::aValues, uSource )
+   ENDIF
 
    RETURN TCombo_Add_Item( Self, uValue )
 
@@ -1062,6 +1062,26 @@ METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
    EndIf
 
    RETURN TCombo_Insert_Item( Self, nItem, uValue )
+
+METHOD DeleteItem( nPos ) CLASS TCombo
+
+  LOCAL nSize := Len( ::aValues )
+
+   IF nSize >= nPos
+      ADel( ::aValues, nPos )
+      ASize( ::aValues, nSize - 1 )
+   ENDIF
+
+   RETURN ComboboxDeleteString( ::hWnd, nPos )
+
+METHOD DeleteAllItems() CLASS TCombo
+
+   ::aValues := {}
+   ::xOldValue := NIL
+   ::OldValue := NIL
+   ComboboxReset( ::hWnd )
+
+   RETURN NIL
 
 
 #pragma BEGINDUMP
@@ -1145,7 +1165,14 @@ HB_FUNC( COMBOSETDROPPEDWIDTH )
 
 HB_FUNC( COMBOBOXDELETESTRING )
 {
-   SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 );
+   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 ) >= 0 )
+   {
+      hb_retl( TRUE );
+   }
+   else
+   {
+      hb_retl( FALSE );
+   }
 }
 
 HB_FUNC( COMBOBOXRESET )
