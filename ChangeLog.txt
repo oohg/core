@@ -8,6 +8,10 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-10-08 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     ! Warning at _OOHG_ActiveControlCtrlAtLeft.
+
 2018-10-06 09:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_combo.prg
      ! Methods DeleteItem and DeleteAllItems do not update Data
