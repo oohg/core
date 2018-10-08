@@ -313,6 +313,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlNoMenu                 => _OOHG_ActiveControlInfo \[ 297 \]
 #xtranslate _OOHG_ActiveControlNoOpen                 => _OOHG_ActiveControlInfo \[ 298 \]
 #xtranslate _OOHG_ActiveControlNoPlayBar              => _OOHG_ActiveControlInfo \[ 299 \]
+#xtranslate _OOHG_ActiveControlCtrlAtLeft             => _OOHG_ActiveControlInfo \[ 300 \]
 
 #xcommand _OOHG_ClearActiveControlInfo( <name> ) => ;
       _OOHG_ActiveControlInfo          := ARRAY( 300 ) ;;
@@ -1185,7 +1186,7 @@ TEXT BOX
 
 #xcommand CTRLSATLEFT <atleft> ;
    => ;
-      _OOHG_ActiveControlInsertType := <atleft>
+      _OOHG_ActiveControlCtrlAtLeft := <atleft>
 
 #xcommand INSERTTYPE <inserttype> ;
    => ;
