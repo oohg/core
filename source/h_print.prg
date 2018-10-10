@@ -156,8 +156,10 @@ CLASS TPRINTBASE
    DATA lFontItalic               INIT .F.                   READONLY
    DATA lFontStrikeout            INIT .F.                   READONLY
    DATA lFontUnderline            INIT .F.                   READONLY
+   DATA lIgnorePropertyError      INIT .T.                   READONLY
    DATA lIndentAll                INIT .F.                   READONLY    // Indent RicheEdit lines
    DATA lLandscape                INIT .F.                   READONLY    // Page orientation
+   DATA lNoErrMsg                 INIT .T.                   READONLY
    DATA lPrError                  INIT .F.                   READONLY
    DATA lProp                     INIT .F.                   READONLY
    DATA lSaveTemp                 INIT .F.                   READONLY
@@ -1599,63 +1601,199 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
             RETURN NIL
          ENDIF
 
-         IF lPreview
-            SELECT PRINTER ::cPrinter TO lSucess ;
-               ORIENTATION nOrientation ;
-               PAPERSIZE nPaperSize ;
-               QUALITY nRes ;
-               DEFAULTSOURCE nBin ;
-               DUPLEX nDuplex ;
-               COLLATE nCollate ;
-               COPIES nCopies ;
-               COLOR nColor ;
-               SCALE nScale ;
-               PAPERLENGTH nPaperLength ;
-               PAPERWIDTH nPaperWidth ;
-               PREVIEW
+         IF ::lIgnorePropertyError
+            IF ::lNoErrMsg
+               IF lPreview
+                  SELECT PRINTER ::cPrinter TO lSucess ;
+                     ORIENTATION nOrientation ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     PREVIEW ;
+                     IGNOREERRORS ;
+                     NOERRORMSGS
+               ELSE
+                  SELECT PRINTER ::cPrinter TO lSucess ;
+                     ORIENTATION nOrientation ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     IGNOREERRORS ;
+                     NOERRORMSGS
+               ENDIF
+            ELSE
+               IF lPreview
+                  SELECT PRINTER ::cPrinter TO lSucess ;
+                     ORIENTATION nOrientation ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     PREVIEW ;
+                     IGNOREERRORS
+               ELSE
+                  SELECT PRINTER ::cPrinter TO lSucess ;
+                     ORIENTATION nOrientation ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     IGNOREERRORS
+               ENDIF
+            ENDIF
          ELSE
-            SELECT PRINTER ::cPrinter TO lSucess ;
-               ORIENTATION nOrientation ;
-               PAPERSIZE nPaperSize ;
-               QUALITY nRes ;
-               DEFAULTSOURCE nBin ;
-               DUPLEX nDuplex ;
-               COLLATE nCollate ;
-               COPIES nCopies ;
-               COLOR nColor ;
-               SCALE nScale ;
-               PAPERLENGTH nPaperLength ;
-               PAPERWIDTH nPaperWidth
+            IF lPreview
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  PREVIEW
+            ELSE
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth
+            ENDIF
          ENDIF
       ELSE
          ::cPrinter := ::GetDefPrinter()
-         IF lPreview
-            SELECT PRINTER DEFAULT TO lSucess ;
-               ORIENTATION nOrientation  ;
-               PAPERSIZE nPaperSize ;
-               QUALITY nRes ;
-               DEFAULTSOURCE nBin ;
-               DUPLEX nDuplex ;
-               COLLATE nCollate ;
-               COPIES nCopies ;
-               COLOR nColor ;
-               SCALE nScale ;
-               PAPERLENGTH nPaperLength ;
-               PAPERWIDTH nPaperWidth ;
-               PREVIEW
+         IF ::lIgnorePropertyError
+            IF ::lNoErrMsg
+               IF lPreview
+                  SELECT PRINTER DEFAULT TO lSucess ;
+                     ORIENTATION nOrientation  ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     PREVIEW ;
+                     IGNOREERRORS ;
+                     NOERRORMSGS
+               ELSE
+                  SELECT PRINTER DEFAULT TO lSucess  ;
+                     ORIENTATION nOrientation  ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     IGNOREERRORS ;
+                     NOERRORMSGS
+               ENDIF
+            ELSE
+               IF lPreview
+                  SELECT PRINTER DEFAULT TO lSucess ;
+                     ORIENTATION nOrientation  ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     PREVIEW ;
+                     IGNOREERRORS
+               ELSE
+                  SELECT PRINTER DEFAULT TO lSucess  ;
+                     ORIENTATION nOrientation  ;
+                     PAPERSIZE nPaperSize ;
+                     QUALITY nRes ;
+                     DEFAULTSOURCE nBin ;
+                     DUPLEX nDuplex ;
+                     COLLATE nCollate ;
+                     COPIES nCopies ;
+                     COLOR nColor ;
+                     SCALE nScale ;
+                     PAPERLENGTH nPaperLength ;
+                     PAPERWIDTH nPaperWidth ;
+                     IGNOREERRORS
+               ENDIF
+            ENDIF
          ELSE
-            SELECT PRINTER DEFAULT TO lSucess  ;
-               ORIENTATION nOrientation  ;
-               PAPERSIZE nPaperSize ;
-               QUALITY nRes ;
-               DEFAULTSOURCE nBin ;
-               DUPLEX nDuplex ;
-               COLLATE nCollate ;
-               COPIES nCopies ;
-               COLOR nColor ;
-               SCALE nScale ;
-               PAPERLENGTH nPaperLength ;
-               PAPERWIDTH nPaperWidth
+            IF lPreview
+               SELECT PRINTER DEFAULT TO lSucess ;
+                  ORIENTATION nOrientation  ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  PREVIEW
+            ELSE
+               SELECT PRINTER DEFAULT TO lSucess  ;
+                  ORIENTATION nOrientation  ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth
+            ENDIF
          ENDIF
       ENDIF
    ELSE
@@ -1665,33 +1803,101 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          RETURN NIL
       ENDIF
 
-      IF lPreview
-         SELECT PRINTER ::cPrinter TO lSucess ;
-            ORIENTATION nOrientation ;
-            PAPERSIZE nPaperSize ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            DUPLEX nDuplex ;
-            COLLATE nCollate ;
-            COPIES nCopies ;
-            COLOR nColor ;
-            SCALE nScale ;
-            PAPERLENGTH nPaperLength ;
-            PAPERWIDTH nPaperWidth ;
-            PREVIEW
+      IF ::lIgnorePropertyError
+         IF ::lNoErrMsg
+            IF lPreview
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  PREVIEW ;
+                  IGNOREERRORS ;
+                  NOERRORMSGS
+            ELSE
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  IGNOREERRORS ;
+                  NOERRORMSGS
+            ENDIF
+         ELSE
+            IF lPreview
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  PREVIEW ;
+                  IGNOREERRORS
+            ELSE
+               SELECT PRINTER ::cPrinter TO lSucess ;
+                  ORIENTATION nOrientation ;
+                  PAPERSIZE nPaperSize ;
+                  QUALITY nRes ;
+                  DEFAULTSOURCE nBin ;
+                  DUPLEX nDuplex ;
+                  COLLATE nCollate ;
+                  COPIES nCopies ;
+                  COLOR nColor ;
+                  SCALE nScale ;
+                  PAPERLENGTH nPaperLength ;
+                  PAPERWIDTH nPaperWidth ;
+                  IGNOREERRORS
+            ENDIF
+         ENDIF
       ELSE
-         SELECT PRINTER ::cPrinter TO lSucess ;
-            ORIENTATION nOrientation ;
-            PAPERSIZE nPaperSize ;
-            QUALITY nRes ;
-            DEFAULTSOURCE nBin ;
-            DUPLEX nDuplex ;
-            COLLATE nCollate ;
-            COPIES nCopies ;
-            COLOR nColor ;
-            SCALE nScale ;
-            PAPERLENGTH nPaperLength ;
-            PAPERWIDTH nPaperWidth
+         IF lPreview
+            SELECT PRINTER ::cPrinter TO lSucess ;
+               ORIENTATION nOrientation ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth ;
+               PREVIEW
+         ELSE
+            SELECT PRINTER ::cPrinter TO lSucess ;
+               ORIENTATION nOrientation ;
+               PAPERSIZE nPaperSize ;
+               QUALITY nRes ;
+               DEFAULTSOURCE nBin ;
+               DUPLEX nDuplex ;
+               COLLATE nCollate ;
+               COPIES nCopies ;
+               COLOR nColor ;
+               SCALE nScale ;
+               PAPERLENGTH nPaperLength ;
+               PAPERWIDTH nPaperWidth
+         ENDIF
       ENDIF
    ENDIF
 
