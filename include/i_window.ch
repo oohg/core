@@ -240,6 +240,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ <mdi: MDI> ] ;
       [ <mdiclient: MDICLIENT> ] ;
       [ <mdichild: MDICHILD> ] ;
+      [ <TabNav: MDITABNAV> ] ;
       [ <internal: INTERNAL> ] ;
       [ <noshow: NOSHOW> ] ;
       [ <topmost: TOPMOST> ] ;
@@ -315,7 +316,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor> )
+            <backimage>, <.stretch.>, <FontColor>, <.TabNav.> )
 
 #xcommand LOAD WINDOW <w> ;
    => ;
@@ -412,6 +413,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ <mdi: MDI> ] ;
       [ <mdiclient: MDICLIENT> ] ;
       [ <mdichild: MDICHILD> ] ;
+      [ <TabNav: MDITABNAV> ] ;
       [ <internal: INTERNAL> ] ;
       [ <noshow: NOSHOW> ] ;
       [ <topmost: TOPMOST> ] ;
@@ -486,7 +488,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor> )
+            <backimage>, <.stretch.>, <FontColor>, <.TabNav.> )
 
 /*---------------------------------------------------------------------------
 AUTOADJUST
