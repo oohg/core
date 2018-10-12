@@ -8,7 +8,7 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
-2018-10-11 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-10-11 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_window.ch
      + Clause MDITABNAV. Enables tabbing navigation on MDICHILD
        forms. Note that, after going through all the controls of
@@ -16,9 +16,7 @@
        opened MDICHILD window. Defaults to .F.
    * core\source\h_form.prg
      + DATA TabNavMDI. Defaults to .F.
-     + METHOD Define2 of TForm class will assign WS_EX_CONTROLPARENT
-       extended style to MDI, MDICLIENT and MDICHILD forms when
-       DATA TabNavMDI is .T.
+     + Support for tabbing navigation on MDICHILD forms.
      * Some format.
 
 2018-10-09 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
