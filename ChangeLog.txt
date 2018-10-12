@@ -8,6 +8,32 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-10-11 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + Clause MDITABNAV. Enables tabbing navigation on MDICHILD
+       forms. Note that, after going through all the controls of
+       a MDICHILD form, the navigation will continue on the next
+       opened MDICHILD window. Defaults to .F.
+   * core\source\h_form.prg
+     + DATA TabNavMDI. Defaults to .F.
+     + METHOD Define2 of TForm class will assign WS_EX_CONTROLPARENT
+       extended style to MDI, MDICLIENT and MDICHILD forms when
+       DATA TabNavMDI is .T.
+     * Some format.
+
+2018-10-09 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     + DATA lIgnorePropertyError.
+       ; When .F. TMINIPRINT class will abort printing if a
+         property set in SELECT PRINTER is not supported by
+         the printer's driver.
+         Defaults to .T.
+     + DATA lNoErrMsg.
+       ; When .F. TMINIPRINT class will not show an error
+         message if a property set in SELECT PRINTER is not
+         supported by the printer's driver.
+         Defaults to .T.
+
 2018-10-08 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
      ! Warning at _OOHG_ActiveControlCtrlAtLeft.
