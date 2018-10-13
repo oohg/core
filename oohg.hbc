@@ -34,4 +34,4 @@ libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf 
 #libs=socket mysqldll dll hbmysql rddleto
 
 # system
-libs=msvfw32 vfw32
+libs=msvfw32 vfw32 iphlpapi
