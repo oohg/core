@@ -64,871 +64,1038 @@
 #include 'hbclass.ch'
 #include 'common.ch'
 
-MEMVAR NPOS
-MEMVAR LIN
-MEMVAR SW
-MEMVAR CREPORT
-MEMVAR cgraphicalt
-MEMVAR NGRPBY
-MEMVAR WFIELD
-MEMVAR WFIELDA
-MEMVAR WFIELDT
-MEMVAR CROMPE
-MEMVAR Npapersize
-MEMVAR ipaper
-MEMVAR lgroupeject
-MEMVAR lexcel
-MEMVAR LUSELETTER
-MEMVAR LFIRSTPASS
+MEMVAR _OOHG_PrintLibrary
 
-STATIC oprint,nposrow,nposcol,areportdata,LP,NPAP, npagenumber, nmaxlinesavail,nlinesleft,areporttotals,agrouptotals
-STATIC clengthsbuff,coffsetsbuff,cexprbuff,repobject,sicvar
+#define DOUBLE_QUOTATION_MARK '"'
+#define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
-FUNCTION easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION EasyReport( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
+      lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
+      lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
 
-   PRIVATE ctitle1
+   LOCAL nPrevious
 
-   IF lgroupeject=NIL
-      lgroupeject:=.F.
-   ENDIF
-
-   IF cheader=NIL
-      cheader:=""
-   ENDIF
-
-   IF lnoprop=NIL
-      lnoprop=.F.
-   ENDIF
-
-   IF nlpp=NIL
-      nlpp:=58
-   ENDIF
-   IF ncpl=NIL
-      ncpl:=80
-   ENDIF
-
-   _listreport(CTITLE,AHEADERS1,AHEADERS2,AFIELDS,AWIDTHS,ATOTALS,NLPP,LDOS,LPREVIEW,CGRAPHIC,NFI,NCI,NFF,NCF,LMUL,CGRPBY,CHDRGRP,LLANDSCAPE,NCPL,LSELECT,CALIAS,NLLMARGIN,AFORMATS,NPAPERSIZE,CHEADER,lnoprop,lgroupeject)
-
-   RETURN NIL
-
-static FUNCTION _listreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
-
-   repobject:=TREPORT()
-   sicvar:=setinteractiveclose()
+   nPrevious := SetInteractiveClose()
    SET INTERACTIVECLOSE ON
-   repobject:easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
-   setinteractiveclose(sicvar)
-   release repobject
 
-   RETURN nil
+   TReport():EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
+      lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
+      lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
 
-FUNCTION extreport(cfilerep,cheader)
-
-   repobject:=TREPORT()
-   repobject:extreport1(cfilerep,cheader)
-   release repobject
+   SetInteractiveClose( nPrevious )
 
    RETURN NIL
 
-function JUSTIFICALINEA(WPR_LINE,WTOPE)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ExtReport( cFileRep, cHeader )
 
-   LOCAL I,WLARLIN
+   LOCAL nPrevious
 
-   WLARLIN=LEN(TRIM(WPR_LINE))
-   FOR I=1 TO WLARLIN
-      IF WLARLIN=WTOPE
+   nPrevious := SetInteractiveClose()
+   SET INTERACTIVECLOSE ON
+
+   TReport():ExtReport1( cFilerep, cHeader )
+
+   SetInteractiveClose( nPrevious )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION JustificaLinea( cLine, nLastCol )
+
+   LOCAL i, nCant
+
+   nCant := Len( RTrim( cLine ) )
+   FOR i := 1 TO nCant
+      IF nCant == nLastCol
          EXIT
       ENDIF
-      IF SUBSTR(WPR_LINE,I,1)=SPACE(1) .AND. SUBSTR(WPR_LINE,I-1,1)#SPACE(1) ////// .AND. SUBSTR(WPR_LINE,I+1,1)#SPACE(1)
-         WPR_LINE=LTRIM(SUBSTR(WPR_LINE,1,I-1))+SPACE(2)+LTRIM(SUBSTR(WPR_LINE,I+1,LEN(WPR_LINE)-I))
-         WLARLIN=WLARLIN+1
+      IF SubStr( cLine, i, 1 ) == " " .AND. SubStr( cLine, i - 1, 1 ) # " "
+         cLine := LTrim( SubStr( cLine, 1, i - 1 ) ) + "  " + LTrim( SubStr( cLine, i + 1, Len( cLine ) - i ) )
+         nCant ++
       ENDIF
-   NEXT I
+   NEXT i
 
-   RETURN WPR_LINE
+   RETURN cLine
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+CLASS TReport FROM TPRINTBASE
 
-CREATE CLASS TREPORT FROM TPRINTBASE
+   DATA Type                      INIT "REPORT"
+   DATA aLine                     INIT {}
+   DATA aNGrpBy                   INIT {}
+   DATA lExcel                    INIT .F.
+   DATA nFSize                    INIT 0
+   DATA nLMargin                  INIT 0
+   DATA nLinesLeft                INIT 0
+   DATA nPageNumber               INIT 0
+   DATA oPrint                    INIT NIL
 
-   VAR npager    INIT 0
-   VAR angrpby   INIT {}
-   VAR nlmargin  INIT 0
-   VAR nfsize    INIT 0
-   VAR swt       INIT .F.
-   VAR nmhor     INIT 0
-   VAR nmver     INIT 0
-   VAR nhfij     INIT 0
-   VAR nvfij     INIT 0
-
-   VAR aline     INIT {}
-
-   METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
-   METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-   METHOD extreport1(cfilerep,cheader)
-   METHOD leadato(cName,cPropmet,cDefault)
-   METHOD leaimage(cName,cPropmet,cDefault)
-   METHOD leadatoh(cName,cPropmet,cDefault,npar)
-   METHOD leadatologic(cName,cPropmet,cDefault)
-   METHOD clean(cfvalue)
-   METHOD learowi(cname,npar)
-   METHOD leacoli(cname,npar)
+   METHOD Clean
+   METHOD EasyReport1
+   METHOD ExtReport1
+   METHOD Headers
+   METHOD LeaColI
+   METHOD LeaDato
+   METHOD LeaDatoH
+   METHOD LeaDatoLogic
+   METHOD LeaImage
+   METHOD LeaRowI
 
    ENDCLASS
 
-METHOD easyreport1(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject) CLASS TREPORT
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
+      lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
+      lSelect, cAlias, nLLMargin, aFormats, nPapersize, cHeader, lNoProp, lGroupEject, ;
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth ) CLASS TReport
 
-   local nlin,i,aresul,lmode,swt:=0,grpby,k,swmemo,clinea,ti,nmemo,nspace,wtipo
-   private  wfield,wfielda,wfieldt,lexcel:=.F.
+   LOCAL nFieldsCount, i, lHasTotals, aResul, nOldArea, nLin, cRompe, nCount
+   LOCAL cLinea, aLenMemo, aValues, nCantLin, cField, uValue, cType, j
 
-   IF nllmargin = NIL
-      repobject:nlmargin:=0
-   ELSE
-      repobject:nlmargin:=nllmargin
+   ASSIGN cTitle      VALUE cTitle      TYPE "CM" DEFAULT ""
+   ASSIGN nLPP        VALUE nLPP        TYPE "N"  DEFAULT 58
+   ASSIGN lDos        VALUE lDos        TYPE "L"  DEFAULT .F.
+   ASSIGN lPreview    VALUE lPreview    TYPE "L"  DEFAULT .F.
+   ASSIGN cGraphic    VALUE cGraphic    TYPE "CM" DEFAULT NIL
+   ASSIGN nFI         VALUE nFI         TYPE "N"  DEFAULT 0
+   ASSIGN nCI         VALUE nCI         TYPE "N"  DEFAULT 0
+   ASSIGN nFF         VALUE nFF         TYPE "N"  DEFAULT 0
+   ASSIGN nCF         VALUE nCF         TYPE "N"  DEFAULT 0
+   ASSIGN lMul        VALUE lMul        TYPE "L"  DEFAULT .F.
+   ASSIGN cHdrGrp     VALUE cHdrGrp     TYPE "CM" DEFAULT ""
+   ASSIGN lLandscape  VALUE lLandscape  TYPE "L"  DEFAULT .F.
+   ASSIGN nCPL        VALUE nCPL        TYPE "N"  DEFAULT 80
+   ASSIGN lSelect     VALUE lSelect     TYPE "L"  DEFAULT .F.
+   ASSIGN cAlias      VALUE cAlias      TYPE "C"  DEFAULT NIL
+   ASSIGN ::nLMargin  VALUE nLLMargin   TYPE "N"  DEFAULT 0
+   ASSIGN nPaperSize  VALUE nPaperSize  TYPE "N"  DEFAULT NIL
+   ASSIGN cHeader     VALUE cHeader     TYPE "CM" DEFAULT ""
+   ASSIGN lNoProp     VALUE lNoProp     TYPE "L"  DEFAULT .F.
+   ASSIGN lGroupEject VALUE lGroupEject TYPE "L"  DEFAULT .F.
+   ASSIGN nRes        VALUE nRes        TYPE "N"  DEFAULT -2    // low resolution
+   ASSIGN nBin        VALUE nBin        TYPE "N"  DEFAULT NIL
+   ASSIGN nDuplex     VALUE nDuplex     TYPE "N"  DEFAULT NIL
+   ASSIGN lCollate    VALUE lCollate    TYPE "L"  DEFAULT .F.
+   ASSIGN nCopies     VALUE nCopies     TYPE "N"  DEFAULT NIL
+   ASSIGN lColor      VALUE lColor      TYPE "L"  DEFAULT .F.
+   ASSIGN nLength     VALUE nLength     TYPE "N"  DEFAULT NIL
+   ASSIGN nLength     VALUE nLength     TYPE "N"  DEFAULT NIL
+   ASSIGN nWidth      VALUE nWidth      TYPE "N"  DEFAULT NIL
+
+   IF ! HB_ISARRAY( aFields ) .OR. ( nFieldsCount := Len( aFields ) ) < 1
+      MsgOOHGError( "REPORT: Parameter FIELDS is not a valid array of strings. Program terminated." )
    ENDIF
-   IF aformats==NIL
-      aformats:=array(len(afields))
-      FOR i:=1 to len(afields)
-         aformats[i]:=NIL
-      NEXT i
-   ENDIF
-   IF atotals==NIL
-      atotals:=array(len(afields))
-      FOR i:=1 to len(afields)
-         atotals[i]:=.F.
-      NEXT i
-   ENDIF
-   repobject:npager:=0
-   grpby:=cgrpby
-   aresul:=array(len(afields))
-   repobject:angrpby:=array(len(afields))
-   FOR i:=1 to len(afields)
-      afields[i]:=upper(afields[i])
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISSTRING( aFields[ i ] )
+         MsgOOHGError( "REPORT: Parameter FIELDS is not a valid array of strings. Program terminated." )
+      ENDIF
    NEXT i
-   IF grpby<>NIL
-      grpby:=upper(grpby)
-      grpby:=strtran(grpby,'"','')   //// añadi esto por inconvenientes en el rompimiento de control
-      grpby:=strtran(grpby,"'","")   //// añadi esto por inconvenientes en el rompimiento de control
+   IF ! HB_ISARRAY( aHeaders1 )
+      aHeaders1 := Array( nFieldsCount )
    ENDIF
-   select(calias)
-   lmode:=.T.
-   IF nlpp= NIL
-      nlpp=50
+   IF Len( aHeaders1 ) < nFieldsCount
+      ASize( aHeaders1, nFieldsCount )
    ENDIF
-   setprc(0,0)
-   IF ncpl = NIL
-      ncpl:=80
-      repobject:nfsize=12
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISSTRING( aHeaders1[ i ] )
+         aHeaders1[ i ] := ""
+      ENDIF
+   NEXT i
+   IF ! HB_ISARRAY( aHeaders2 )
+      aHeaders2 := Array( nFieldsCount )
    ENDIF
+   IF Len( aHeaders2 ) < nFieldsCount
+      ASize( aHeaders2, nFieldsCount )
+   ENDIF
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISSTRING( aHeaders2[ i ] )
+         aHeaders2[ i ] := ""
+      ENDIF
+   NEXT i
+   IF ! HB_ISARRAY( aWidths )
+      aWidths := Array( nFieldsCount )
+   ENDIF
+   IF Len( aWidths ) < nFieldsCount
+      ASize( aWidths, nFieldsCount )
+   ENDIF
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISNUMERIC( aWidths[ i ] )
+         aWidths[ i ] := 10
+      ENDIF
+   NEXT i
+   IF ! HB_ISARRAY( aTotals )
+      aTotals := Array( nFieldsCount )
+   ENDIF
+   IF Len( aTotals ) < nFieldsCount
+      ASize( aTotals, nFieldsCount )
+   ENDIF
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISLOGICAL( aTotals[ i ] )
+         aTotals[ i ] := .F.
+      ENDIF
+   NEXT i
+   lHasTotals := ( AScan( aTotals, .T. ) > 0 )
+   IF HB_ISSTRING( cGrpBy ) .AND. ! Empty( cGrpBy )
+      cGrpBy := Upper( cGrpBy )
+      // To avoid problems at control break
+      cGrpBy := StrTran( cGrpBy, '"', "" )
+      cGrpBy := StrTran( cGrpBy, "'", "" )
+   ELSE
+      cGrpBy := NIL
+   ENDIF
+   IF ! HB_ISARRAY( aFormats )
+      aFormats := Array( nFieldsCount )
+   ENDIF
+   IF Len( aFormats ) < nFieldsCount
+      ASize( aFormats, nFieldsCount )
+   ENDIF
+   FOR i := 1 TO nFieldsCount
+      IF ! HB_ISSTRING( aFormats[ i ] )
+         aFormats[ i ] := NIL
+      ENDIF
+   NEXT i
+
+   aResul := Array( nFieldsCount )
+   ::aNGrpBy := Array( nFieldsCount )
 
    IF lDos
-      oPrint := TPrint( "DOSPRINT" )
-      oPrint:Init()
-      IF ncpl<= 80
-         oPrint:NormalDos()
+      ::oPrint := TPrint( "DOSPRINT" )              // this does not change _OOHG_PrintLibrary
+      ::oPrint:Init()
+      IF nCPL <= 80
+         ::oPrint:NormalDos()
       ELSE
-         oPrint:CondenDos()
+         ::oPrint:CondenDos()
       ENDIF
    ELSE
-      oPrint := TPrint()
-      oPrint:Init()
-      IF     oPrint:cPrintLibrary == "MINIPRINT"
-      ELSEIF oPrint:cPrintLibrary == "HBPRINTER"
-      ELSEIF oPrint:cPrintLibrary == "DOSPRINT"
-         IF ncpl <= 80
-            oPrint:NormalDos()
+      ::oPrint := TPrint()                          // if _OOHG_PrintLibrary is not set defaults TO MINIPRINT
+      ::oPrint:Init()
+      IF _OOHG_PrintLibrary == "EXCELPRINT"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "RTFPRINT"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "CALCPRINT"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "CSVPRINT"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "SPREADSHEETPRINT"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMCALC"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMEXCEL"
+         ::lExcel := .T.
+      ELSEIF _OOHG_PrintLibrary == "DOSPRINT"
+         IF nCPL <= 80
+            ::oPrint:NormalDos()
          ELSE
-            oPrint:CondenDos()
+            ::oPrint:CondenDos()
          ENDIF
-      ELSEIF oPrint:cPrintLibrary == "TXTPRINT"
-      ELSEIF oPrint:cPrintLibrary == "RAWPRINT"
-         IF ncpl <= 80
-            oPrint:NormalDos()
+      ELSEIF _OOHG_PrintLibrary == "RAWPRINT"
+         IF nCPL <= 80
+            ::oPrint:NormalDos()
          ELSE
-            oPrint:CondenDos()
+            ::oPrint:CondenDos()
          ENDIF
-      ELSEIF oPrint:cPrintLibrary == "EXCELPRINT"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "SPREADSHEETPRINT"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "HTMLPRINTFROMEXCEL"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "HTMLPRINTFROMCALC"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "RTFPRINT"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "CSVPRINT"
-         lExcel := .T.
-      ELSEIF oPrint:cPrintLibrary == "PDFPRINT"
-      ELSEIF oPrint:cPrintLibrary == "CALCPRINT"
-         lExcel := .T.
       ENDIF
    ENDIF
 
-   do case
-   case ncpl= 80
-      // ncvcopt:=1
-      repobject:nfsize:=12
-      IF lnoprop
-         oprint:setcpl(80)
+   DO CASE
+   CASE nCPL == 80
+      ::nFSize := 12
+      IF lNoProp
+         ::oPrint:SetCPL( 80 )
       ENDIF
-   case ncpl= 96
-      // ncvcopt:=2
-      repobject:nfsize=10
-      IF lnoprop
-         oprint:setcpl(96)
+   CASE nCPL == 96
+      ::nFSize=10
+      IF lNoProp
+         ::oPrint:SetCPL( 96 )
       ENDIF
-   case ncpl= 120
-      // ncvcopt:=3
-      repobject:nfsize:=8
-      IF lnoprop
-         oprint:setcpl(120)
+   CASE nCPL == 120
+      ::nFSize := 8
+      IF lNoProp
+         ::oPrint:SetCPL( 120 )
       ENDIF
-   case ncpl= 140
-      // ncvcopt:=4
-      repobject:nfsize:=7
-      IF lnoprop
-         oprint:setcpl(140)
+   CASE nCPL == 140
+      ::nFSize := 7
+      IF lNoProp
+         ::oPrint:SetCPL( 140 )
       ENDIF
-   case ncpl= 160
-      // ncvcopt:=5
-      repobject:nfsize:=6
-      IF lnoprop
-         oprint:setcpl(160)
+   CASE nCPL == 160
+      ::nFSize := 6
+      IF lNoProp
+         ::oPrint:SetCPL( 160 )
       ENDIF
-   otherwise
-      // ncvcopt:=1
-      repobject:nfsize:=12
-      IF lnoprop
-         oprint:setcpl(80)
+   OTHERWISE
+      ::nFSize := 12
+      IF lNoProp
+         ::oPrint:SetCPL( 80 )
       ENDIF
-   endcase
+   ENDCASE
 
-   oprint:selprinter(lselect,lpreview,llandscape,npapersize)
-   IF oprint:lprerror
-      oprint:release()
+   ::oPrint:SelPrinter( lSelect, lPreview, lLandscape, nPapersize, NIL, NIL, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+   IF ::oPrint:lPrError
+      ::oPrint:Release()
       RETURN NIL
    ENDIF
-   oprint:begindoc()
-   oprint:beginpage()
-   nlin:=1
-   IF cgraphic<>NIL
-      IF .not. File(cgraphic)
-         msgstop('graphic file not found','error')
+
+   nOldArea := Select( cAlias )
+
+   ::oPrint:BeginDoc()
+   ::oPrint:BeginPage()
+   ::nPageNumber := 0
+
+   IF ! Empty( cGraphic )
+      IF File( cGraphic )
+         ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
       ELSE
-         oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf+repobject:nlmargin,cgraphic)
+         MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
       ENDIF
    ENDIF
-   ngrpby:=0
-   nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-   FOR i:=1 to len(afields)
-       aresul[i]:=0
-       repobject:angrpby[i]:=0
+   nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
+   FOR i := 1 TO nFieldsCount
+       aResul[ i ] := 0
+       ::aNGrpBy[ i ] := 0
    NEXT i
-   IF grpby<> NIL
-      crompe:=&(grpby)
+   IF cGrpBy <> NIL
+      cRompe := &( cGrpBy )
    ENDIF
-   do while .not. eof()
-      do events
-      ////   ncol:=repobject:nlmargin
-      swt:=0
-      IF grpby<>NIL
-         IF .not.(&(grpby) = crompe)
-            IF ascan(atotals,.T.)>0
-               oprint:printdata(nlin,repobject:nlmargin, '** Subtotal **',,repobject:nfsize,.T.)
-               nlin++
+
+   nCount := 0
+
+   DO WHILE ! Eof()
+      nCount ++
+      IF nCount % 10 == 0
+         DO EVENTS
+         nCount := 0
+      ENDIF
+
+      IF cGrpBy <> NIL
+         IF ! ( &( cGrpBy ) == cRompe )
+            IF lHasTotals
+               ::oPrint:PrintData( nLin, ::nLMargin, '** Subtotal **', NIL, ::nFSize, .T. )
+               nLin ++
             ENDIF
-            **************
-            clinea:=""
-            FOR i:=1 to len(afields)
-               IF atotals[i]
-                  clinea:=clinea +iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])))   )+" "
+
+            cLinea := ""
+            FOR i := 1 TO nFieldsCount
+               IF aTotals[ i ]
+                  cLinea += iif( aFormats[ i ] == NIL, ;
+                                 Str( ::aNGrpBy[ i ], aWidths[ i ] ), ;
+                                 ( Space( aWidths[ i ] - Len( Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) ) + Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) ;
+                               ) + ;
+                            Space( aWidths[ i ] - ;
+                                   Len( iif( Empty( aFormats[ i ] ), ;
+                                             Str( ::aNGrpBy[ i ], aWidths[ i ] ), ;
+                                             ( Space( aWidths[ i ] - Len( Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) ) + Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) ;
+                                           ) ;
+                                      ) + ;
+                                   1 )
                ELSE
-                  clinea:=clinea+ space(awidths[i])+" "
+                  cLinea := cLinea + Space( aWidths[ i ] + 1 )
                ENDIF
             NEXT i
-            oprint:printdata(nlin,0+repobject:nlmargin,clinea,,repobject:nfsize ,.T.)
-            **************
-            FOR i:=1 to len(afields)
-               repobject:angrpby[i]:=0
+            ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize, .T. )
+
+            FOR i := 1 TO nFieldsCount
+               ::aNGrpBy[ i ] := 0
             NEXT i
-            ********
-            ******** seria aqui si decido hacer el rompe por pagina
-            *********** IF EJECTGROUP  oprint:endpage()
-            IF lgroupeject
-               nlin:=1
-               oprint:endpage()
-               oprint:beginpage()
-               nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-               nlin--
+
+            IF lGroupEject
+               ::oPrint:EndPage()
+               ::oPrint:BeginPage()
+               nLin := ( ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader ) - 1 )
             ENDIF
 
-            *************
-            ********
-            crompe:=&(grpby)
-            nlin++
-            oprint:printdata(nlin,repobject:nlmargin,  '** ' + (chdrgrp)+' '+ (&(grpby)),,repobject:nfsize,.T.)
-            nlin++
+            cRompe := &( cGrpBy )
+            nLin ++
+            ::oPrint:PrintData( nLin, ::nLMargin, '** ' + cHdrGrp + " " + &( cGrpBy ), NIL, ::nFSize, .T. )
+            nLin ++
          ENDIF
       ENDIF
-      **********
-      clinea:=""
-      swmemo:=.F.
-      FOR i:=1 to len(afields)
-         wfielda:=afields[i]
-         IF type('&wfielda')=='B'
-            wfield:=eval(&wfielda)
-            wtipo:=valtype(wfield)
-         ELSE
-            wfield:=&(wfielda)
-            wtipo=type('&wfielda')
-            IF type('&wfielda')=='M'
-               swmemo=.T.
-               wfieldt:=wfield
-               ti:=i
-            ENDIF
-            IF type('&wfielda')=='O'
-               wfield:="< Object >"
-               wtipo:="C"
-            ENDIF
-            IF type('&wfielda')=='A'
-               wfield:="< Array >"
-               wtipo:="C"
-            ENDIF
-         ENDIF
-         do case
-         case wtipo == 'C'
-            clinea:=clinea+substr(wfield,1,awidths[i])+space(awidths[i]-len(substr(wfield,1,awidths[i]) ))+" "
-         case wtipo == 'N'
-            clinea:=clinea + iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(wfield,aformats[i])))+transform(wfield,aformats[i]),str(wfield,awidths[i])))   )+" "
-         case wtipo == 'D'
-            clinea:=clinea+ substr(dtoc(wfield),1,awidths[i])+space(awidths[i]-len(substr(dtoc(wfield),1,awidths[i])) )+" "
-         case wtipo == 'L'
-            clinea:=clinea+iif(wfield,"T","F")+space(awidths[i]-1)+" "
 
-         case wtipo == 'M' .or. wtipo == 'C' //// ojo no quitar la a
-            nmemo:=mlcount(rtrim(wfield),awidths[i])
-            IF nmemo>0
-               clinea:=clinea + rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i]))+space(awidths[i]-len(rtrim(justificalinea(memoline(rtrim(wfield),awidths[i] ,1),awidths[i])) ) )+" "
+      aLenMemo := Array( nFieldsCount )
+      AFill( aLenMemo, 0 )
+      aValues := Array( nFieldsCount )
+      AFill( aValues, NIL )
+      nCantLin := 0
+      cLinea := ""
+
+      FOR i := 1 TO nFieldsCount
+         cField := aFields[ i ]
+         IF Type( aFields[ i ] ) == "B"
+            uValue := Eval( &( cField ) )
+         ELSE
+            uValue := &( cField )
+         ENDIF
+         cType := ValType( uValue )
+         IF cType == "O"
+            uValue := "<Object>"
+            cType  := "C"
+         ELSEIF cType == "A"
+            uValue := "<Array>"
+            cType  := "C"
+         ELSEIF cType == "C" .AND. aFormats[ i ] == "M"
+            cType := "M"
+         ENDIF
+
+         DO CASE
+         CASE cType == "C"
+            cLinea := cLinea + SubStr( uValue, 1, aWidths[ i ] ) + Space( aWidths[ i ] - Len( SubStr( uValue, 1, aWidths[ i ] ) ) )
+         CASE cType == "N"
+            cLinea := cLinea + iif( ! ( aFormats[ i ] == NIL ), Space( aWidths[ i ] - Len( Transform( uValue, aFormats[ i ] ) ) ) + Transform( uValue, aFormats[ i ] ), Str( uValue, aWidths[ i ] ) ) + Space( aWidths[ i ] - Len( iif( ! ( aFormats[ i ] == "" ), Space( aWidths[ i ] - Len( Transform( uValue, aFormats[ i ] ) ) ) + Transform( uValue, aFormats[ i ] ), Str( uValue, aWidths[ i ] ) ) ) )
+         CASE cType == "D"
+            cLinea := cLinea + SubStr( DToC( uValue ), 1, aWidths[ i ] ) + Space( aWidths[ i ] - Len( SubStr( DToC( uValue ), 1, aWidths[ i ] ) ) )
+         CASE cType == "L"
+            cLinea := cLinea + iif( uValue, "T", "F" ) + Space( aWidths[ i ] - 1 )
+         CASE cType == "M"
+            aValues[ i ] := RTrim( uValue )
+            aLenMemo[ i ] := MLCount( aValues[ i ], aWidths[ i ] )
+            IF aLenMemo[ i ] > 0
+               cLinea := cLinea + RTrim( JustificaLinea( MemoLine( aValues[ i ], aWidths[ i ], 1 ), aWidths[ i ] ) ) + Space( aWidths[ i ] - Len( RTrim( JustificaLinea( MemoLine( aValues[ i ], aWidths[ i ], 1 ), aWidths[ i ] ) ) ) )
+               nCantLin := Max( nCantLin, aLenMemo[ i ] )
             ELSE
-               clinea:=clinea + space(awidths[i])+" "
+               cLinea := cLinea + Space( aWidths[ i ] )
             ENDIF
-         otherwise
-            clinea:=clinea+replicate('_',awidths[i])+" "
-         endcase
-         IF atotals[i]
-            aresul[i]:=aresul[i]+wfield
-            swt:=1
-            IF grpby<>NIL
-               repobject:angrpby[i]:=repobject:angrpby[i]+wfield
+         OTHERWISE
+            cLinea := cLinea + Replicate( "_", aWidths[ i ] )
+         ENDCASE
+
+         IF aTotals[ i ]
+            aResul[ i ] := aResul[ i ] + uValue
+            IF cGrpBy <> NIL
+               ::aNGrpBy[ i ] := ::aNGrpBy[ i ] + uValue
             ENDIF
          ENDIF
       NEXT i
-      oprint:printdata(nlin,repobject:nlmargin,clinea,,repobject:nfsize)
-      nlin++
-      IF nlin>nlpp
-         nlin:=1
-         IF .not. ldos
-            oprint:endpage()
-            oprint:beginpage()
-            IF cgraphic<>NIL .and. lmul
-               IF .not. File(cgraphic)
-                  msgstop('graphic file not found','error')
+      ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
+
+      nLin ++
+      IF nLin > nLPP
+         IF ! lDos      
+            ::oPrint:EndPage()
+            ::oPrint:BeginPage()
+            IF ! Empty( cGraphic ) .AND. lMul
+               IF File( cGraphic )
+                  ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
                ELSE
-                  oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
+                  MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
                ENDIF
             ENDIF
          ENDIF
-         nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
+         nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
       ENDIF
-      **************resto de memo
-      IF swmemo
-         IF nmemo > 1
-            // clinea:=""
-            nspace:=0
-            FOR k:=1 to ti-1
-               nspace:=nspace+awidths[k]+1
-            NEXT k
-            FOR k:=2 to nmemo
-               clinea:=space(nspace)+justificalinea(memoline(rtrim(wfieldt),awidths[ti] ,k),awidths[ti] )
-               oprint:printdata(nlin,0+repobject:nlmargin,clinea , , repobject:nfsize ,  )
-               nlin++
-               IF nlin>nlpp
-                  nlin:=1
-                  oprint:endpage()
-                  oprint:beginpage()
-                  IF cgraphic<>NIL .and. lmul
-                     IF .not. File(cgraphic)
-                        msgstop('graphic file not found','error')
-                     ELSE
-                        oprint:printimage(nfi,nci+repobject:nlmargin,nff,ncf,cgraphic )
-                     ENDIF
+
+      FOR j := 2 TO nCantLin
+         cLinea := ""
+         FOR i := 1 TO nFieldsCount
+            IF aLenMemo[ i ] >= j
+               cLinea := cLinea + JustificaLinea( MemoLine( aValues[ i ], aWidths[ i ], j ), aWidths[ i ] )
+            ELSE
+               cLinea := cLinea + Space( aWidths[ i ] )
+            ENDIF
+         NEXT i
+         ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize, )
+
+         nLin ++
+         IF nLin > nLPP
+            IF ! lDos
+               ::oPrint:EndPage()
+               ::oPrint:BeginPage()
+               IF ! Empty( cGraphic ) .AND. lmul
+                  IF File( cGraphic )
+                     ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
+                  ELSE
+                     MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
                   ENDIF
-                  nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
                ENDIF
-            NEXT k
-            ////    nlin--
-         ENDIF
-      ENDIF
-      **************
-      skip
-   enddo
-
-   IF swt==1
-      IF grpby<>NIL
-         IF .not.(&(grpby) == crompe)
-            IF ascan(atotals,.T.)>0
-               oprint:printdata(nlin,repobject:nlmargin,  '** Subtotal **',,repobject:nfsize,.T.)
-               **** ojo
-               nlin++
             ENDIF
-            clinea:=""
-            FOR i:=1 to len(afields)
-                IF atotals[i]
-                   clinea:=clinea +iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(repobject:angrpby[i],aformats[i])))+transform(repobject:angrpby[i],aformats[i]),str(repobject:angrpby[i],awidths[i])))   )+" "
-                ELSE
-                   clinea:=clinea+ space(awidths[i])+" "
-                ENDIF
-            NEXT i
-            oprint:printdata(nlin,repobject:nlmargin, clinea , ,repobject:nfsize ,.T. )
-            FOR i:=1 to len(afields)
-               repobject:angrpby[i]:=0
-            NEXT i
-            crompe:=&(grpby)
+            nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
          ENDIF
-      ENDIF
-      ************** rompe por pagina si tiene el parametro
-      IF lgroupeject
-         nlin:=1
-         oprint:endpage()
-         oprint:beginpage()
-         nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-         nlin--
-      ENDIF
+      NEXT j
 
-      **************
-      nlin++
-      IF nlin>nlpp
-         nlin:=1
-         oprint:endpage()
-         oprint:beginpage()
-         nlin:=repobject:headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader)
-      ENDIF
-      IF ascan(atotals,.T.)>0
-         oprint:printdata(nlin, 0+repobject:nlmargin,'*** Total ***',,repobject:nfsize,.T.)
-      ENDIF
-      nlin++
-      clinea:=""
-      FOR i:=1 to len(afields)
-         IF atotals[i]
-            clinea:=clinea +iif(.not.(aformats[i]==NIL),space(awidths[i]-len(transform(aresul[i],aformats[i])))+transform(aresul[i],aformats[i]),str(aresul[i],awidths[i]))+ space(awidths[i] -   len(  iif(.not.(aformats[i]==''),space(awidths[i]-len(transform(aresul[i],aformats[i])))+transform(aresul[i],aformats[i]),str(aresul[i],awidths[i])))   )+" "
-         ELSE
-            clinea:=clinea+ space(awidths[i])+" "
+      SKIP
+   ENDDO
+
+   IF cGrpBy <> NIL
+      IF ! ( &( cGrpBy ) == cRompe )
+         IF lHasTotals
+            ::oPrint:PrintData( nLin, ::nLMargin, '** Subtotal **', NIL, ::nFSize, .T. )
+            nLin ++
          ENDIF
-      NEXT i
-      oprint:printdata(nlin,0+repobject:nlmargin,clinea, ,repobject:nfsize ,.T.)
-      nlin++
-      oprint:printdata(nlin,repobject:nlmargin," ")
-   ENDIF
-   oprint:endpage()
-   oprint:enddoc()
-   oprint:release()
 
-   RETURN Nil
+         cLinea := ""
+         FOR i := 1 TO nFieldsCount
+             IF aTotals[ i ]
+                cLinea := cLinea + iif( ! ( aFormats[ i ] == NIL ), Space( aWidths[ i ] - Len( Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) ) + Transform( ::aNGrpBy[ i ], aFormats[ i ] ), Str( ::aNGrpBy[ i ], aWidths[ i ] ) ) + Space( aWidths[ i ] - Len( iif( ! ( aFormats[ i ] == '' ), Space( aWidths[ i ] - Len( Transform( ::aNGrpBy[ i ], aFormats[ i ] ) ) )+Transform( ::aNGrpBy[ i ], aFormats[ i ] ), Str( ::aNGrpBy[ i ], aWidths[ i ] ) ) ) )
+             ELSE
+                cLinea := cLinea + Space( aWidths[ i ] )
+             ENDIF
+         NEXT i
+         ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize, .T. )
+         FOR i := 1 TO nFieldsCount
+            ::aNGrpBy[ i ] := 0
+         NEXT i
 
-METHOD headers(aheaders1,aheaders2,awidths,nlin,ctitle,lmode,grpby,chdrgrp,cheader) CLASS TREPORT
+         IF lgroupeject
+            ::oPrint:EndPage()
+            ::oPrint:BeginPage()
+            nLin := ( ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader ) - 1 )
+         ENDIF
 
-   local i,nsum,ncenter,ncenter2,npostitle,ctitle1,ctitle2,clinea,clinea1,clinea2
-
-   empty(lmode)
-   nsum:=0
-   FOR i:=1 to len(awidths)
-      nsum:=nsum+awidths[i]
-   NEXT i
-   npostitle:=at('|',ctitle)
-   IF npostitle>0
-      ctitle1:=left(ctitle,npostitle-1)
-      ctitle2:=trim(substr(ctitle,npostitle+1,len(ctitle)))
-   ELSE
-      ctitle1:=ctitle
-      ctitle2:=''
-   ENDIF
-   ctitle1:=trim(ctitle1)+cheader
-   ncenter:=((nsum-len(ctitle1))/2)-1
-   IF len(ctitle2)>0
-      ncenter2:=((nsum-len(ctitle2))/2)-1
-   ENDIF
-   repobject:npager++
-   IF .not. lexcel
-      clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)
-      clinea1:=space(ncenter)+ctitle1
-      clinea2:=space(nsum+len(awidths)-11)+dtoc(date())
-      oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
-      oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize+1,.T. )
-      oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
-   ELSE
-      clinea:=trim(_oohg_MESSAGES(1,8) )+ space(6-len(trim(_OOHG_MESSAGES(1,8) ))) + str(repobject:npager,4)+"       "+ctitle1+"       "+dtoc(date())
-      oprint:printdata(nlin,repobject:nlmargin , clinea,,repobject:nfsize )
-   ENDIF
-   IF .not. lexcel
-      IF len(ctitle2)>0
-         nlin++
-         clinea1:=space(ncenter2)+ctitle2
-         clinea2:=space(nsum+len(awidths)-11)+time()
-         oprint:printdata(nlin,repobject:nlmargin, clinea1,,repobject:nfsize+1,.T. )
-         oprint:printdata(nlin,repobject:nlmargin, clinea2,,repobject:nfsize )
-      ELSE
-         nlin++
-         clinea2:=space(nsum+len(awidths)-11)+time()
-         oprint:printdata(nlin,repobject:nlmargin , clinea2,,repobject:nfsize )
-      ENDIF
-   ELSE
-      IF len(ctitle2)>0
-         nlin++
-         clinea1:=space(ncenter2)+ctitle2+"       "+time()
-         oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize )
-      ELSE
-         nlin++
-         clinea1:=space(nsum+len(awidths)-11)+time()
-         oprint:printdata(nlin,repobject:nlmargin , clinea1,,repobject:nfsize )
-      ENDIF
-   ENDIF
-
-   nlin++
-   nlin++
-   clinea:=""
-   FOR i:=1 to  len(awidths)
-      clinea:=clinea+ replicate('-',awidths[i])+" "
-   NEXT i
-   oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize  )
-   nlin++
-
-   clinea:=""
-   FOR i:=1 to len(awidths)
-      clinea:= clinea + substr(aheaders1[i],1,awidths[i] ) + space( awidths[i]-len(aheaders1[i] )) +" "
-   NEXT i
-   oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize ,.T.)
-   nlin++
-
-   clinea:=""
-   FOR i:=1 to len(awidths)
-      clinea:= clinea + substr(aheaders2[i],1,awidths[i] ) + space( awidths[i]-len(aheaders2[i] )) +" "
-   NEXT i
-   oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize ,.T.)
-   nlin++
-
-   clinea:=""
-   FOR i:=1 to  len(awidths)
-      clinea:=clinea + replicate('-',awidths[i])+" "
-   NEXT i
-   oprint:printdata(nlin,repobject:nlmargin, clinea,,repobject:nfsize   )
-   nlin:=nlin+2
-
-   IF repobject:npager=1 .and. grpby#NIL
-      oprint:printdata(nlin,repobject:nlmargin, '** ' +chdrgrp+' '+  &(grpby) , ,repobject:nfsize ,.T.   )
-      nlin++
-   ENDIF
-
-   RETURN nlin
-
-METHOD extreport1(cfilerep,cheader) CLASS TREPORT
-
-   local nContlin,i,ctitle,aheaders1,aheaders2,afields,awidths,atotals,aformats
-   local nlpp,ncpl,nllmargin,calias,ldos,lpreview,lselect,cgraphic,lmul,nfi,nci
-   local nff,ncf,cgrpby,chdrgrp,llandscape,lnoprop
-
-   IF .not. file(cfilerep+'.rpt')
-      msginfo('('+cfilerep+'.rpt)  File not found','Information')
-      RETURN Nil
-   ENDIF
-
-   creport:=memoread(cfilerep+'.rpt')
-   nContlin:=mlcount(Creport)
-   FOR i:=1 to nContlin
-      aAdd (repobject:Aline,memoline(Creport,500,i))
-   NEXT i
-   ctitle:=repobject:leadato('REPORT','TITLE','')
-   IF len(ctitle)>0
-      ctitle:=&ctitle
-   ENDIF
-   aheaders1:=repobject:leadatoh('REPORT','HEADERS','{}',1)
-   aheaders1:=&aheaders1
-   aheaders2:=repobject:leadatoh('REPORT','HEADERS','{}',2)
-   aheaders2:=&aheaders2
-   afields:=repobject:leadato('REPORT','FIELDS','{}')
-   IF len(afields)=0
-      msginfo('Fields not defined','Information')
-      RETURN Nil
-   ENDIF
-   afields:=&afields
-   awidths:=repobject:leadato('REPORT','WIDTHS','{}')
-   IF len(awidths)=0
-      msginfo('Widths not defined','Information')
-      RETURN Nil
-   ENDIF
-   awidths:=&awidths
-   atotals:=repobject:leadato('REPORT','TOTALS',NIL)
-   IF atotals<>NIL
-      atotals:=&atotals
-   ENDIF
-   aformats:=repobject:leadato('REPORT','NFORMATS',NIL)
-   IF aformats<>NIL
-      aformats:=&aformats
-   ENDIF
-   nlpp:=val(repobject:leadato('REPORT','LPP',''))
-   ncpl:=val(repobject:leadato('REPORT','CPL',''))
-   nllmargin:=val(repobject:leadato('REPORT','LMARGIN','0'))
-   npapersize:=repobject:leadato('REPORT','PAPERSIZE','DMPAPER_LETTER')
-   IF npapersize='DMPAPER_USER'
-      npapersize=255
-   ENDIF
-   IF len(npapersize)=0
-      npapersize:=NIL
-   ELSE
-      ipaper := ascan ( apapeles , npapersize )
-      IF ipaper=0
-         ipaper=1
-      ENDIF
-      npapersize:=ipaper
-   ENDIF
-   calias:=repobject:leadato('REPORT','WORKAREA','')
-   ldos:=repobject:leadatologic('REPORT','DOSMODE',.F.)
-   lpreview:=repobject:leadatologic('REPORT','PREVIEW',.F.)
-   lselect:=repobject:leadatologic('REPORT','SELECT',.F.)
-   lmul:=repobject:leadatologic('REPORT','MULTIPLE',.F.)
-   lnoprop:=repobject:leadatologic('REPORT','NOFIXED',.F.)
-
-   cgraphic:=repobject:clean(repobject:leaimage('REPORT','IMAGE',''))
-   IF len(cgraphic)==0
-      cgraphic:=NIL
-   ENDIF
-   nfi:=val((repobject:learowi('IMAGE',1)))
-   nci:=val((repobject:leacoli('IMAGE',1)))
-   nff:=val((repobject:learowi('IMAGE',2)))
-   ncf:=val((repobject:leacoli('IMAGE',2)))
-   cgraphicalt:=(repobject:leadato('DEFINE REPORT','IMAGE',''))
-   IF len(cgraphicalt)>0  // para sintaxis DEFINE REPORT
-      cgraphicalt:=&cgraphicalt
-      cgraphic:=cgraphicalt[1]
-      nfi:=cgraphicalt[2]
-      nci:=cgraphicalt[3]
-      nff:=cgraphicalt[4]
-      ncf:=cgraphicalt[5]
-   ENDIF
-   cgrpby:=repobject:leadato('REPORT','GROUPED BY','')
-   IF len(cgrpby)=0
-      cgrpby=NIL
-   ENDIF
-   chdrgrp:=repobject:clean(repobject:leadato('REPORT','HEADRGRP',''))
-   llandscape:=repobject:leadatologic('REPORT','LANDSCAPE',.F.)
-   lgroupeject:=repobject:leadatologic('REPORT','GROUPEJECT',.F.)
-
-   easyreport(ctitle,aheaders1,aheaders2,afields,awidths,atotals,nlpp,ldos,lpreview,cgraphic,nfi,nci,nff,ncf,lmul,cgrpby,chdrgrp,llandscape,ncpl,lselect,calias,nllmargin,aformats,npapersize,cheader,lnoprop,lgroupeject)
-
-   RETURN Nil
-
-METHOD leadato(cName,cPropmet,cDefault) CLASS TREPORT
-
-   local i,sw,cfvalue
-
-   sw:=0
-   FOR i:=1 to len(repobject:aline)
-      IF .not. at(upper(cname)+' ',upper(repobject:aline[i]))==0
-         sw:=1
-      ELSE
-         IF sw==1
-            npos:=at(upper(cPropmet)+' ',upper(repobject:aline[i]))
-            IF len(trim(repobject:aline[i]))==0
-               // i=len(repobject:aline)+1
-               RETURN cDefault
+         nLin ++
+         IF nLin > nLPP
+            ::oPrint:EndPage()
+            ::oPrint:BeginPage()
+            nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
+         ENDIF
+         IF AScan( aTotals, .T. ) > 0
+            ::oPrint:PrintData( nLin, 0 + ::nLMargin, '*** Total ***', NIL, ::nFSize, .T. )
+         ENDIF
+         nLin ++
+         cLinea := ""
+         FOR i := 1 TO nFieldsCount
+            IF aTotals[ i ]
+               cLinea := cLinea + iif( ! ( aFormats[ i ] == NIL ), Space( aWidths[ i ] - Len( Transform( aResul[ i ], aFormats[ i ] ) ) ) + Transform( aResul[ i ], aFormats[ i ] ), Str( aResul[ i ], aWidths[ i ] ) ) + Space( aWidths[ i ] - Len( iif( ! ( aFormats[ i ] == '' ), Space( aWidths[ i ] - Len( Transform( aResul[ i ], aFormats[ i ] ) ) ) + Transform( aResul[ i ], aFormats[ i ] ), Str( aResul[ i ], aWidths[ i ] ) ) ) )
+            ELSE
+               cLinea := cLinea + Space( aWidths[ i ] )
             ENDIF
-            IF npos>0
-               cfvalue:=substr(repobject:aline[i],npos+len(Cpropmet),len(repobject:aline[i]))
-               // i:=len(repobject:aline)+1
-               cfvalue:=trim(cfvalue)
-               IF right(cfvalue,1)=';'
-                  cfvalue:=substr(cfvalue,1,len(cfvalue)-1)
+         NEXT i
+         ::oPrint:PrintData( nLin, 0 + ::nLMargin, cLinea, NIL, ::nFSize, .T. )
+         nLin ++
+         ::oPrint:PrintData( nLin, ::nLMargin, " " )
+      ENDIF
+   ENDIF
+
+   ::oPrint:EndPage()
+   ::oPrint:EndDoc()
+   ::oPrint:Release()
+
+   Select( nOldArea )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Headers( aHeaders1, aHeaders2, aWidths, nLin, cTitle, lMode, cGrpBy, cHdrGrp, cHeader ) CLASS TReport
+
+   LOCAL i, nSum, nCenter1, nCenter2, nPosTitle, cTitle1, cTitle2, cLinea
+
+   HB_SYMBOL_UNUSED( lMode )
+
+   nSum := 0
+   FOR i := 1 TO Len( aWidths )
+      nSum := nSum + aWidths[ i ]
+   NEXT i
+   nPosTitle := At( '|', cTitle )
+   IF nPosTitle > 0
+      cTitle1 := Left( cTitle, nPosTitle - 1 )
+      cTitle2 := RTrim( SubStr( cTitle, nPosTitle + 1 ) )
+   ELSE
+      cTitle1 := cTitle
+      cTitle2 := ''
+   ENDIF
+   cTitle1 := RTrim( cTitle1 ) + cHeader
+   nCenter1 := ( ( nSum - Len( cTitle1 ) ) / 2 ) - 1
+   IF Len( cTitle2 ) > 0
+      nCenter2 := ( ( nSum - Len( cTitle2 ) ) / 2 ) - 1
+   ENDIF
+
+   ::nPageNumber ++
+
+   IF ::lExcel
+      cLinea := PadR( _OOHG_Messages( 1, 8 ), 6 ) + Str( ::nPageNumber, 4 ) + Space( 7 ) + cTitle1 + Space( 7 ) + DToC( Date() )
+      ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
+      nLin ++
+      IF Len( cTitle2 ) > 0
+         ::oPrint:PrintData( nLin, ::nLMargin + nCenter2, cTitle2 + Space( 7 ) + Time(), NIL, ::nFSize )
+      ELSE
+         ::oPrint:PrintData( nLin, ::nLMargin + nSum + Len( aWidths ) - 11, Time(), NIL, ::nFSize )
+      ENDIF
+      nLin ++
+   ELSE
+      cLinea := PadR( _OOHG_Messages( 1, 8 ), 6 ) + Str( ::nPageNumber, 4 )
+      ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
+      ::oPrint:PrintData( nLin, ::nLMargin + nCenter1, cTitle1, NIL, ::nFSize + 1, .T. )
+      ::oPrint:PrintData( nLin, ::nLMargin + nSum + Len( aWidths ) - 11, DToC( Date() ), NIL, ::nFSize )
+      nLin ++
+      IF Len( cTitle2 ) > 0
+         ::oPrint:PrintData( nLin, ::nLMargin + nCenter2, cTitle2, NIL, ::nFSize + 1, .T. )
+      ENDIF
+       ::oPrint:PrintData( nLin, ::nLMargin + nSum + Len( aWidths ) - 11, Time(), NIL, ::nFSize )
+       nLin ++
+   ENDIF
+
+   cLinea := ""
+   FOR i := 1 TO  Len( aWidths )
+      cLinea := cLinea + Replicate( '-', aWidths[ i ] )
+   NEXT i
+   nLin ++
+   ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
+   nLin ++
+
+   cLinea := ""
+   FOR i := 1 TO Len( aWidths )
+      cLinea := cLinea + SubStr( aHeaders1[ i ], 1, aWidths[ i ] ) + Space( aWidths[ i ] - Len( aHeaders1[ i ] ) )
+   NEXT i
+   ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize, .T. )
+   nLin ++
+
+   cLinea := ""
+   FOR i := 1 TO Len( aWidths )
+      cLinea := cLinea + SubStr( aHeaders2[ i ], 1, aWidths[ i ] ) + Space( aWidths[ i ] - Len( aHeaders2[ i ] ) )
+   NEXT i
+   ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize, .T. )
+   nLin ++
+
+   cLinea := ""
+   FOR i := 1 TO  Len( aWidths )
+      cLinea := cLinea + Replicate( '-', aWidths[ i ] )
+   NEXT i
+   ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
+   nLin += 2
+
+   IF ::nPageNumber == 1 .AND. cGrpBy # NIL
+      ::oPrint:PrintData( nLin, ::nLMargin, '** ' + cHdrGrp + " " + &( cGrpBy ), NIL, ::nFSize, .T. )
+      nLin ++
+   ENDIF
+
+   RETURN nLin
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
+
+   LOCAL nCount, i, cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, aFormats, lGroupEject
+   LOCAL nLPP, nCPL, nLLMargin, cAlias, lDos, lPreview, lSelect, cGraphic, lMul, nFI, nCI, cData
+   LOCAL nFF, nCF, cGrpBy, cHdrGrp, lLandscape, lNoProp, cReport, nPaperSize, cGraphicAlt
+   LOCAL nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cLine
+
+   IF ! File( cFileRep + '.rpt' )
+      MsgExclamation( "File " + DQM( AllTrim( cFileRep ) + ".rpt" ) + " not found.", "Report" )
+      RETURN NIL
+   ENDIF
+
+   // load file
+   cReport := MemoRead( cFileRep + '.rpt' )
+   // count lines
+   nCount := MLCount( cReport )
+   // find "DO REPORT" or "DEFINE REPORT" line
+   FOR i := 1 TO nCount
+      cLine := AllTrim( MemoLine( cReport, 500, i ) )
+      IF Right( cLine, 1 ) == ";"
+         cLine := RTrim( Left( cLine, Len( cLine ) - 1 ) )
+      ENDIF
+      cLine := " " + cLine + " "
+      IF ( ( Upper( Left( cLine, 4 ) ) == " DO " .AND. Upper( Left( LTrim( SubStr( cLine, 5 ) ), 7 ) ) == "REPORT " ) .OR. ;
+           ( Upper( Left( cLine, 8 ) ) == " DEFINE " .AND. Upper( Left( LTrim( SubStr( cLine, 9 ) ), 7 ) ) == "REPORT " ) )
+         AAdd ( ::aLines, cLine )
+         EXIT
+      ENDIF
+   NEXT i
+   IF i > nCount
+      MsgExclamation( "No " + DQM( "DO REPORT" ) + " nor " + DQM( "DEFINE REPORT" ) + "clauses found.", "Report" )
+      RETURN NIL
+   ENDIF
+   // load lines until EOF or END REPORT line
+   i ++
+   DO WHILE i <= nCount
+      cLine := AllTrim( MemoLine( cReport, 500, i ) )
+      IF Right( cLine, 1 ) == ";"
+         cLine := RTrim( Left( cLine, Len( cLine ) - 1 ) )
+      ENDIF
+      cLine := " " + cLine + " "
+      IF Upper( Left( cLine, 12 ) ) == " END REPORT "
+         EXIT
+      ENDIF
+      AAdd ( ::aLines, cLine )
+      i ++
+   ENDDO
+
+   // load title
+   cTitle := ::LeaDato( 'REPORT', 'TITLE', '' )
+   IF Len( cTitle ) > 0
+      cTitle := &cTitle
+   ENDIF
+   // load headers
+   aHeaders1 := ::LeaDatoH( 'REPORT', 'HEADERS', '{}', 1 )
+   aHeaders1 := &aHeaders1
+   aHeaders2 := ::LeaDatoH( 'REPORT', 'HEADERS', '{}', 2 )
+   aHeaders2 := &aHeaders2
+   // load fields
+   aFields := ::LeaDato( 'REPORT', 'FIELDS', '{}' )
+   IF Len( aFields ) == 0
+      MsgExclamation( "Fields not defined.", "Report" )
+      RETURN NIL
+   ENDIF
+   aFields := &aFields
+   IF ! HB_ISARRAY( aFields ) .OR. Len( aFields ) == 0
+      MsgExclamation( "Fields not defined.", "Report" )
+      RETURN NIL
+   ENDIF
+   // load widths
+   aWidths := ::LeaDato( 'REPORT', 'WIDTHS', '{}' )
+   IF Len( aWidths )=0
+      MsgExclamation( "Widths not defined.", "Report" )
+      RETURN NIL
+   ENDIF
+   aWidths := &aWidths
+   IF ! HB_ISARRAY( aWidths ) .OR. Len( aWidths ) == 0
+      MsgExclamation( "Widths not defined.", "Report" )
+      RETURN NIL
+   ENDIF
+   // load totals
+   aTotals := ::LeaDato( 'REPORT', 'TOTALS', NIL )
+   IF aTotals <> NIL
+      aTotals := &aTotals
+   ENDIF
+   // load formats
+   aFormats := ::LeaDato( 'REPORT', 'NFORMATS', NIL )
+   IF aFormats <> NIL
+      aFormats := &aFormats
+   ENDIF
+   // load workarea
+   cAlias := ::LeaDato( 'REPORT', 'WORKAREA', '' )
+   // load lines per page
+   cData := ::LeaDato( 'REPORT', 'LPP', '' )
+   IF Empty( cData )
+      nLPP := NIL
+   ELSE
+      nLPP := Val( cData )
+   ENDIF
+   // load characters per line
+   cData := ::LeaDato( 'REPORT', 'CPL', '' )
+   IF Empty( cData )
+      nCPL := NIL
+   ELSE
+      nCPL := Val( cData )
+   ENDIF
+   // load left margin
+   nLLMargin := Val( ::LeaDato( 'REPORT', 'LMARGIN', '0' ) )
+   // load papersize
+   nPaperSize := ::LeaDato( 'REPORT', 'PAPERSIZE', 'DMPAPER_LETTER' )
+   IF nPaperSize == 'DMPAPER_USER'
+      nPaperSize := 255
+   ELSE
+      i := AScan( _OOHG_PaperConstants, nPaperSize )
+      IF i == 0
+         i := 1
+      ENDIF
+      nPaperSize := i
+   ENDIF
+   // load no fixed (proportional) font
+   lNoProp := ::LeaDatoLogic( 'REPORT', 'NOFIXED' )
+   // load dos mode
+   lDos := ::LeaDatoLogic( 'REPORT', 'DOSMODE' )
+   // load preview
+   lPreview := ::LeaDatoLogic( 'REPORT', 'PREVIEW' )
+   // load select
+   lSelect := ::LeaDatoLogic( 'REPORT', 'SELECT' )
+   // load image
+   nFI := nCI := nFF := nCF := 0
+   cGraphic := ::Clean( ::LeaImage() )   // IMAGE <cgraphic> AT <nfi>, <nci> TO <nff>, <ncf>
+   IF Empty( cGraphic )
+      cGraphicAlt := ::LeaDato( 'DEFINE REPORT', 'IMAGE', '' )   // IMAGE { <cgraphic>, <nfi>, <nci> TO <nff>, <ncf> }
+      IF ! Empty( cGraphicAlt )
+         cGraphicAlt := &( cGraphicalt )
+         IF HB_ISARRAY( cGraphicAlt )
+            ASize( cGraphicAlt, 5 )
+            IF HB_ISSTRING( cGraphicAlt[ 1 ] )
+               cGraphic := cGraphicAlt[ 1 ]
+               ASSIGN nFI VALUE cGraphicAlt[ 2 ] TYPE "N"
+               ASSIGN nCI VALUE cGraphicAlt[ 3 ] TYPE "N"
+               ASSIGN nFF VALUE cGraphicAlt[ 4 ] TYPE "N"
+               ASSIGN nCF VALUE cGraphicAlt[ 5 ] TYPE "N"
+            ENDIF
+         ENDIF
+      ENDIF
+   ELSE
+      nFI := Val( ::LeaRowI( 1 ) )
+      nCI := Val( ::LeaColI( 1 ) )
+      nFF := Val( ::LeaRowI( 2 ) )
+      nCF := Val( ::LeaColI( 2 ) )
+   ENDIF
+   // load multiple
+   lMul := ::LeaDatoLogic( 'REPORT', 'MULTIPLE' )
+   // load grouped by
+   cGrpBy := ::LeaDato( 'REPORT', 'GROUPED BY', '' )
+   // load group header
+   cHdrGrp := ::Clean( ::LeaDato( 'REPORT', 'HEADRGRP', '' ) )
+   // load landscape
+   lLandscape := ::LeaDatoLogic( 'REPORT', 'LANDSCAPE' )
+   // load eject on group
+   lGroupEject := ::LeaDatoLogic( 'REPORT', 'GROUPEJECT' )
+   // load report header if not already defined
+   IF Empty( cHeader )
+      cHeader := ::Clean( ::LeaDato( 'REPORT', 'HEADING', '' ) )
+   ENDIF
+   // load print quality
+   cData := ::LeaDato( 'REPORT', 'QUALITY', '' )
+   IF Empty( cData )
+      nRes := NIL
+   ELSE
+      nRes := Val( cData )
+   ENDIF
+   // load printer tray
+   cData := ::LeaDato( 'REPORT', 'DEFAULTSOURCE', '' )
+   IF Empty( cData )
+      nBin := NIL
+   ELSE
+      nBin := Val( cData )
+   ENDIF
+   // load duplex priting
+   cData := ::LeaDato( 'REPORT', 'DUPLEX', '' )
+   IF Empty( cData )
+      nDuplex := NIL
+   ELSE
+      nDuplex := Val( cData )
+   ENDIF
+   // load output collation
+   lCollate := ::LeaDatoLogic( 'REPORT', 'COLLATE' )
+   // load number of copies
+   cData := ::LeaDato( 'REPORT', 'COPIES', '' )
+   IF Empty( cData )
+      nCopies := NIL
+   ELSE
+      nCopies := Val( cData )
+   ENDIF
+   // load color printing
+   lColor := ::LeaDatoLogic( 'REPORT', 'COLOR' )
+   // load scaled printing
+   cData := ::LeaDato( 'REPORT', 'SCALE', '' )
+   IF Empty( cData )
+      nScale := NIL
+   ELSE
+      nScale := Val( cData )
+   ENDIF
+   // load paper length
+   cData := ::LeaDato( 'REPORT', 'PAPERLENGTH', '' )
+   IF Empty( cData )
+      nLength := NIL
+   ELSE
+      nLength := Val( cData )
+   ENDIF
+   // load paper width
+   cData := ::LeaDato( 'REPORT', 'PAPERWIDTH', '' )
+   IF Empty( cData )
+      nWidth := NIL
+   ELSE
+      nWidth := Val( cData )
+   ENDIF
+
+   // execute report
+   ::EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
+      lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
+      lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaDato( cName, cKey, cDefault ) CLASS TReport
+
+   LOCAL i, nPos
+
+   cName := " " + Upper( cName ) + " "
+   i := AScan( ::aLines, { |l| At( cName, Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      cKey := " " + Upper( cKey ) + " "
+      DO WHILE i <= Len( ::aLines )
+         nPos := At( cKey, Upper( ::aLines[ i ] ) )
+         IF nPos > 0
+            RETURN AllTrim( SubStr( ::aLines[ i ], nPos + Len( cKey ) ) )
+         ENDIF
+         i ++
+      ENDDO
+   ENDIF
+
+   RETURN cDefault
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaImage() CLASS TReport
+
+   LOCAL i, nPos1, nPos2, cLine
+
+   i := AScan( ::aLines, { |l| At( ' REPORT ', Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      DO WHILE i <= Len( ::aLines )
+         nPos1 := At( ' IMAGE ', Upper( ::aLines[ i ] ) )
+         IF nPos1 > 0
+            nPos2 := At( ' AT ', Upper( SubStr( ::aLines[ i ], nPos1 + 6 ) ) )
+            IF nPos2 > 0
+               cLine := AllTrim( SubStr( ::aLines[ i ], nPos1 + 6,  nPos2 ) )
+            ELSE
+               cLine := AllTrim( SubStr( ::aLines[ i ], nPos1 + 6 ) )
+            ENDIF
+            RETURN cLine
+         ENDIF
+         i ++
+      ENDDO
+   ENDIF
+
+   RETURN ''
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaDatoH( cName, cKey, cDefault, nPar ) CLASS TReport           
+
+   LOCAL i, nPos, nPos1, nPos2, cLine
+
+   cName := " " + Upper( cName ) + " "
+   i := AScan( ::aLines, { |l| At( cName, Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      cKey := " " + Upper( cKey ) + " "
+      DO WHILE i <= Len( ::aLines )
+         nPos := At( cKey, Upper( ::aLines[ i ] ) )
+         IF nPos > 0
+            cLine := SubStr( ::aLines[ i ], nPos )
+            IF nPar == 1
+               nPos1 := At( '{', cLine )
+               nPos2 := At( '}', cLine )
+            ELSE
+               nPos1 := RAt( '{', cLine )
+               nPos2 := RAt( '}', cLine )
+            ENDIF
+            RETURN SubStr( cLine, nPos1, nPos2 - nPos1 + 1 )
+         ENDIF
+         i ++
+      ENDDO
+   ENDIF
+
+   RETURN cDefault
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaDatoLogic( cName, cKey ) CLASS TReport           
+
+   LOCAL i
+
+   cName := " " + Upper( cName ) + " "
+   i := AScan( ::aLines, { |l| At( cName, Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      cKey := " " + Upper( cKey ) + " "
+      DO WHILE i <= Len( ::aLines )
+         IF At( cKey, Upper( ::aLines[ i ] ) ) > 0
+            RETURN .T.
+         ENDIF
+         i ++
+      ENDDO
+   ENDIF
+
+   RETURN .F.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Clean( cValue ) CLASS TReport
+
+   cValue := StrTran( cValue, '"', '' )
+   cValue := StrTran( cValue, "'", "" )
+
+   RETURN cValue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaRowI( nPar ) CLASS TReport
+
+   LOCAL i, nPos1, nPos2, nPos3, cLine, nRow := "0"
+
+   i := AScan( ::aLines, { |l| At( ' REPORT ', Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      DO WHILE i <= Len( ::aLines )
+         nPos1 := At( ' IMAGE ', Upper( ::aLines[ i ] ) )
+         IF nPos1 > 0
+            cLine := SubStr( ::aLines[ i ], nPos1 + 6 )
+            nPos2 := At( ' AT ', Upper( cLine ) )
+            nPos3 := At( ' TO ', Upper( cLine ) )
+            IF nPos2 > 0 .AND. nPos3 > 0 .AND. nPos2 < nPos3
+               IF nPar == 1
+                  cLine := SubStr( cLine, nPos2 + 4, nPos3 - 4 )
                ELSE
-                  cfvalue:=substr(cfvalue,1,len(cfvalue))
+                  cLine := SubStr( cLine, nPos3 + 4 )
                ENDIF
-               RETURN alltrim(cfvalue)
+               nPos3 := At( ",", cLine )
+               IF nPos3 > 0
+                  nRow := AllTrim( SubStr( cLine, 1, nPos3 - 1 ) )
+               ENDIF
             ENDIF
+            EXIT
          ENDIF
-      ENDIF
-   NEXT i
-
-   RETURN cDefault
-
-METHOD leaimage(cName,cPropmet,cDefault) CLASS TREPORT
-
-   local i,sw1,npos1,npos2
-
-   sw1:=0
-   lin:=0
-   cname:=''
-   cpropmet:=''
-   FOR i:=1 to len(repobject:aline)
-      IF at(upper('IMAGE'),repobject:aline[i])>0
-         npos1:=at(upper('IMAGE'),upper(repobject:aline[i]))+6
-         npos2:=at(upper('AT'),upper(repobject:aline[i]))-1
-         lin:=i
-         i:=len(repobject:aline)+1
-         sw1:=1
-      ENDIF
-   NEXT i
-   IF sw1=1
-      RETURN substr(repobject:aline[lin],npos1,npos2-npos1+1)
+         i ++
+      ENDDO
    ENDIF
 
-   RETURN cDefault
+   RETURN nRow
 
-METHOD leadatoh(cName,cPropmet,cDefault,npar) CLASS TREPORT
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LeaColI( nPar ) CLASS TReport
 
-   local i,npos1,npos2,sw1
+   LOCAL i, nPos1, nPos2, nPos3, cLine, nCol := "0"
 
-   sw1:=0
-   lin:=0
-   cName:=''
-   cPropmet:=''
-   FOR i:=1 to len(repobject:aline)
-      IF at(upper('HEADERS'),repobject:aline[i])>0
-         IF npar=1
-            npos1:=at(upper('{'),upper(repobject:aline[i]))
-            npos2:=at(upper('}'),upper(repobject:aline[i]))
-         ELSE
-            npos1:=rat(upper('{'),upper(repobject:aline[i]))
-            npos2:=rat(upper('}'),upper(repobject:aline[i]))
+   i := AScan( ::aLines, { |l| At( ' REPORT ', Upper( l ) ) > 0 } ) + 1
+   IF i > 1
+      DO WHILE i <= Len( ::aLines )
+         nPos1 := At( ' IMAGE ', Upper( ::aLines[ i ] ) )
+         IF nPos1 > 0
+            cLine := SubStr( ::aLines[ i ], nPos1 + 6 )
+            nPos2 := At( ' AT ', Upper( cLine ) )
+            nPos3 := At( ' TO ', Upper( cLine ) )
+            IF nPos2 > 0 .AND. nPos3 > 0 .AND. nPos2 < nPos3
+               IF nPar == 1
+                  cLine := SubStr( cLine, nPos2 + 4, nPos3 - 4 )
+               ELSE
+                  cLine := SubStr( cLine, nPos3 + 4 )
+               ENDIF
+               nPos3 := At( ",", cLine )
+               IF nPos3 > 0
+                  nCol := AllTrim( SubStr( cLine, nPos3 + 1 ) )
+               ENDIF
+            ENDIF
+            EXIT
          ENDIF
-         lin:=i
-         i:=len(repobject:aline)+1
-         sw1:=1
-      ENDIF
-   NEXT i
-   IF sw1=1
-      RETURN substr(repobject:aline[lin],npos1,npos2-npos1+1)
+         i ++
+      ENDDO
    ENDIF
 
-   RETURN cDefault
+   RETURN nCol
 
-METHOD leadatologic(cName,cPropmet,cDefault) CLASS TREPORT
+/*
+ * MINIFRM-Print FRM files TO TPRINT
+ * V. 1.0  
+ * Created by Daniel Piperno
+ * Modified by Ciro Vargas Clemow
+ *
+ * Characteristics:
+ * Works like the standard FRM.
+ * TO PRINT clause sends the report to the printer, when omited a preview is shown.
+ * Prints to the default printer.
+ * When report width is <= 80 it uses Courier New 12, if not uses Courier New 7.
+ *
+ * Differences width standard FRM:
+ * Added:
+ *   Numbers are displayed usend thousand separators unless NOSEPARATORS clause is specified.
+ *   Prints titles, subtotals and total using BOLD.
+ * Not supported:
+ *   PLAIN option.
+ *   TO FILE option.
+ *   Translations of special characters, CHR( x ).
+ *   Page eject before report start.
+ */
 
-   local i,sw
-
-   sw:=0
-   FOR i:=1 to len(repobject:aline)
-      IF at(upper(cname)+' ',upper(repobject:aline[i]))#0
-         sw:=1
-      ELSE
-         IF sw==1
-            IF at(upper(cPropmet)+' ',upper(repobject:aline[i]))>0
-               RETURN .T.
-            ENDIF
-            IF len(trim(repobject:aline[i]))==0
-               // i=len(repobject:aline)+1
-               RETURN cDefault
-            ENDIF
-         ENDIF
-      ENDIF
-   NEXT i
-
-   RETURN cDefault
-
-METHOD clean(cfvalue) CLASS TREPORT
-
-   cfvalue:=strtran(cfvalue,'"','')
-   cfvalue:=strtran(cfvalue,"'","")
-
-   RETURN cfvalue
-
-METHOD learowi(cname,npar) CLASS TREPORT
-
-   local i,npos1,nrow
-
-   sw:=0
-   nrow:='0'
-   cname:=''
-   FOR i:=1 to len(repobject:aline)
-       IF at(upper('IMAGE')+' ',upper(repobject:aline[i]))#0
-          IF npar=1
-             npos1:=at("AT",upper(repobject:aline[i]))
-          ELSE
-             npos1:=at("TO",upper(repobject:aline[i]))
-          ENDIF
-          nrow:=substr(repobject:aline[i],npos1+3,4)
-          i:=len(repobject:aline)
-       ENDIF
-   NEXT i
-
-   RETURN nrow
-
-METHOD leacoli(cname,npar) CLASS TREPORT
-
-   local i,npos,ncol
-
-   ncol:='0'
-   cname:=''
-   FOR i:=1 to len(repobject:aline)
-      IF at(upper('IMAGE')+' ',upper(repobject:aline[i]))#0
-         IF npar=1
-            npos:=at(",",repobject:aline[i])
-         ELSE
-            npos:=rat(",",repobject:aline[i])
-        ENDIF
-         ncol:=substr(repobject:aline[i],npos+1,4)
-         i:=len(repobject:aline)
-      ENDIF
-   NEXT i
-
-   RETURN ncol
-
-*****************************************************************************
-*                                                                           *
-*          MINIFRM - Print FRM files to TPRINT                              *
-*                                                                           *
-*                                V 1.0                                      *
-*  Creador Daniel Piperno                                                   *
-*  Modificado Ciro Vargas Clemow                                            *
-*                                                                           *
-*****************************************************************************
-
-***************************************** Características *******************************************
-* Funciona en forma similar que con el FRM estándar.
-* Si está la opción TO PRINT, imprime directamente a la impresora. Si no lo está, hace un preview.
-* Usa la impresora por defecto.
-* Si el ancho es <= 80 usa Courier New 12, simulando el modo normal.
-* Si no usa Courier New  7 simulando condensada.
-*
-* Diferencias con el FRM estandar
-* -------------------------------
-* Agregados:
-*   - Agrega separadores de miles en los números
-*   - Imprime en BOLD los títulos, totales y subtotales
-*
-* Eliminados:
-*   - Está deshabilitada la opción PLAIN
-*   - Está deshabilitada la opción TO FILE
-*   - No traduce caracteres especiales CHR(xx)
-*   - Está deshabilitado el salto de hoja antes del reporte
-***************************************************************************************************
 
 #include "error.ch"
 
-********* Parámetros del reporte ************
-#define _RF_FIRSTCOL  0  // Offset Primer columna
-#define _RF_FIRSTROW  1  // Offset Primer fila
-#define _RF_ROWINC    4  // Interlineado
-#define _RF_FONT      "Courier New"  // Font a usar (No usar proporcional!)
-#define _RF_SIZECONDENSED 7   // Tamaño de font a usar cuando el ancho es mayor de 80 columnas (132)
-#define _RF_SIZENORMAL   12   // Tamaño de font a usar cuando el ancho es menor de 80 columnas
-#define _RF_ROWSINLETTER  60  // Cantidad de Filas máximo que soporta el tamaño carta. Si hay mas líneas, se usa Legal
+// Report parameters
+#define  _RF_FIRSTCOL               0               // First column offset
+#define  _RF_FIRSTROW               1               // First row offset
+#define  _RF_ROWINC                 4               // Line spacing
+#define  _RF_FONT                   "Courier New"   // Use monospaced fonts not proporcional ones
+#define  _RF_SIZECONDENSED          7               // Font size for widths greater than 80 columns ( 132 )
+#define  _RF_SIZENORMAL             12              // Font size for widths lesser than 80 columns
+#define  _RF_ROWSINLETTER           60              // Max number of rows for letter size paper before changing to legal size.
 
+// Nation Message
+#define  _RF_PAGENO                 3               // Page
+#define  _RF_SUBTOTAL               4               // Subtotal
+#define  _RF_SUBSUBTOTAL            5               // Sub-subtotal
+#define  _RF_TOTAL                  6               // Total
 
-**** Constantes para el Nation Message ********
-#define _RF_PAGENO       3     // Página
-#define _RF_SUBTOTAL     4     // Subtotal
-#define _RF_SUBSUBTOTAL  5     // SubSubtotal
-#define _RF_TOTAL        6     // Total
-
-********** Tamaños de buffer *************
+// Buffer sizes
 #define  SIZE_FILE_BUFF             1990
 #define  SIZE_LENGTHS_BUFF          110
 #define  SIZE_OFFSETS_BUFF          110
@@ -936,7 +1103,7 @@ METHOD leacoli(cname,npar) CLASS TREPORT
 #define  SIZE_FIELDS_BUFF           300
 #define  SIZE_PARAMS_BUFF           24
 
-**************** offsets *******************
+// Offsets
 #define  LENGTHS_OFFSET             5
 #define  OFFSETS_OFFSET             115
 #define  EXPR_OFFSET                225
@@ -962,245 +1129,273 @@ METHOD leacoli(cname,npar) CLASS TREPORT
 #define  PE_OFFSET                  23
 #define  OPTION_OFFSET              24
 
-********* Definiciones para el Array del reporte *************
-#define RP_HEADER   1
-#define RP_WIDTH    2
-#define RP_LMARGIN  3
-#define RP_RMARGIN  4
-#define RP_LINES    5
-#define RP_SPACING  6
-#define RP_BEJECT   7
-#define RP_AEJECT   8
-#define RP_PLAIN    9
-#define RP_SUMMARY  10
-#define RP_COLUMNS  11
-#define RP_GROUPS   12
-#define RP_HEADING  13
+// Elements of the report's array
+#define  RP_HEADER                  1
+#define  RP_WIDTH                   2
+#define  RP_LMARGIN                 3
+#define  RP_RMARGIN                 4
+#define  RP_LINES                   5
+#define  RP_SPACING                 6
+#define  RP_BEJECT                  7
+#define  RP_AEJECT                  8
+#define  RP_PLAIN                   9
+#define  RP_SUMMARY                 10
+#define  RP_COLUMNS                 11
+#define  RP_GROUPS                  12
+#define  RP_HEADING                 13
+#define  RP_COUNT                   13
 
-#define RP_COUNT    13
+// Elements of the report's RP_COLUMNS subarray
+#define  RC_EXP                     1
+#define  RC_TEXT                    2
+#define  RC_TYPE                    3
+#define  RC_HEADER                  4
+#define  RC_WIDTH                   5
+#define  RC_DECIMALS                6
+#define  RC_TOTAL                   7
+#define  RC_PICT                    8
+#define  RC_COUNT                   8
 
+// Elements of the report's RP_GROUPS subarray
+#define  RG_EXP                     1
+#define  RG_TEXT                    2
+#define  RG_TYPE                    3
+#define  RG_HEADER                  4
+#define  RG_AEJECT                  5
+#define  RG_COUNT                   5
 
-******** Columnas ************
-#define RC_EXP      1
-#define RC_TEXT     2
-#define RC_TYPE     3
-#define RC_HEADER   4
-#define RC_WIDTH    5
+// Errors
+#define  F_OK                       0               // No error
+#define  F_EMPTY                    -3              // Empty file
+#define  F_ERROR                    -1              // Unknown error
+#define  F_NOEXIST                  2               // File not found
 
-#define RC_DECIMALS 6
-#define RC_TOTAL    7
-#define RC_PICT     8
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION __ReportFormWin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
+      lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
+      nCopies, lColor, nScale, nLength, nWidth )
 
-#define RC_COUNT    8
+   LOCAL nPrevious
 
-****** Grupos ***********
-#define RG_EXP      1
-#define RG_TEXT     2
-#define RG_TYPE     3
-#define RG_HEADER   4
-#define RG_AEJECT   5
-
-#define RG_COUNT    5
-
-********** Errores ************
-#define  F_OK                       0   // Ok!
-#define  F_EMPTY                   -3   // Archivo vacío
-#define  F_ERROR                   -1   // Error desconocido
-#define  F_NOEXIST                  2   // Archivo inexistente
-
-////#include "oohg.ch"
-
-PROCEDURE __ReportFormwin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
-                       bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
-                       lBEject, lSummary )
-
-   LOCAL nCol, nGroup
-   LOCAL xBreakVal, lBroke := .F.
-   LOCAL err, sAuxST
-   LOCAL lAnyTotals
-   LOCAL lAnySubTotals ,lSale
-   Private  lUseLetter
-
-   empty(cAltFile)
-   empty(lNoConsole)
-   empty(lplain)
-
-   sicvar:=setinteractiveclose()
+   nPrevious := SetInteractiveClose()
    SET INTERACTIVECLOSE ON
-   ********* Parametros ************
+
+   TReportFormWin():DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
+      lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
+      nCopies, lColor, nScale, nLength, nWidth )
+
+   SetInteractiveClose( nPrevious )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+CLASS TReportFormWin FROM TPRINTBASE
+
+   DATA aGroupTotals              INIT NIL
+   DATA aReportData               INIT NIL
+   DATA aReportTotals             INIT NIL
+   DATA cExprBuff                 INIT NIL
+   DATA cLengthsBuff              INIT NIL
+   DATA cOffsetsBuff              INIT NIL
+   DATA lFirstPass                INIT .T.
+   DATA lNoSeps                   INIT .F.
+   DATA nLinesLeft                INIT 0
+   DATA nMaxLinesAvail            INIT 0
+   DATA nPageNumber               INIT 0
+   DATA nPoscol                   INIT 0
+   DATA nPosrow                   INIT 0
+   DATA oPrint                    INIT NIL
+   DATA Type                      INIT "REPORTFORMWIN"
+
+   METHOD DoEvents
+   METHOD DoReport
+   METHOD EjectPage
+   METHOD GetExpr
+   METHOD LoadFRM
+   METHOD PrintHeader
+   METHOD PrintLine
+   METHOD PrintRecord
+
+   ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
+      lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
+      nCopies, lColor, nScale, nLength, nWidth ) CLASS TReportFormWin
+
+   LOCAL oError, lSale := .F., nCol, nGroup, lAnySubTotals, sAuxST, lAnyTotals, xBreakVal, lBroke := .F.
+
+   HB_SYMBOL_UNUSED( cAltFile )
+   HB_SYMBOL_UNUSED( lNoConsole )
+   HB_SYMBOL_UNUSED( lPlain )
+
    IF cFRMName == NIL
-      err := ErrorNew()
-      err:severity := ES_ERROR
-      err:genCode := EG_ARG
-      err:subSystem := "FRMLBL"
-      Eval(ErrorBlock(), err)
+      oError := ErrorNew()
+      oError:severity  := ES_ERROR
+      oError:genCode   := EG_ARG
+      oError:subSystem := "FRMLBL"
+      Eval( ErrorBlock(), oError )
    ELSE
-      IF AT( ".", cFRMName ) == 0
-         cFRMName := TRIM( cFRMName ) + ".FRM"
+      IF At( ".", cFRMName ) == 0
+         cFRMName := RTrim( cFRMName ) + ".FRM"
       ENDIF
    ENDIF
 
-   IF lPrinter == NIL
-      lPrinter   := .F.
-   ENDIF
+   ASSIGN lPrinter   VALUE lPrinter   TYPE "L"  DEFAULT .F.
+   ASSIGN cHeading   VALUE cHeading   TYPE "CM" DEFAULT ""
+   ASSIGN ::lNoSeps  VALUE lNoSeps    TYPE "L"
+   ASSIGN lSelect    VALUE lSelect    TYPE "L"  DEFAULT .T.
+   ASSIGN lPreview   VALUE lPreview   TYPE "L"  DEFAULT ! lPrinter
+   ASSIGN lLandscape VALUE lLandscape TYPE "L"  DEFAULT NIL
+   ASSIGN nRes       VALUE nRes       TYPE "N"  DEFAULT -2    // low resolution
+   ASSIGN nBin       VALUE nBin       TYPE "N"  DEFAULT NIL
+   ASSIGN nDuplex    VALUE nDuplex    TYPE "N"  DEFAULT NIL
+   ASSIGN lCollate   VALUE lCollate   TYPE "L"  DEFAULT .F.
+   ASSIGN nCopies    VALUE nCopies    TYPE "N"  DEFAULT NIL
+   ASSIGN lColor     VALUE lColor     TYPE "L"  DEFAULT .F.
+   ASSIGN nLength    VALUE nLength    TYPE "N"  DEFAULT NIL
+   ASSIGN nLength    VALUE nLength    TYPE "N"  DEFAULT NIL
+   ASSIGN nWidth     VALUE nWidth     TYPE "N"  DEFAULT NIL
 
-   IF cHeading == NIL
-      cHeading := ""
-   ENDIF
-
-   lSale:=.F.  //variable para salir si hay algun error o cancela el dialogo
    BEGIN SEQUENCE
 
-      ********** Cargo los datos del FRM en el vector aReportData ***********
-      aReportData := __FrmLoad( cFRMName )
-      nMaxLinesAvail := aReportData[RP_LINES]
+      ::aReportData := ::LoadFRM( cFRMName )
 
-      ********** Determino el tipo de papel a usar **********
-      lUseLetter  := (aReportData[ RP_LINES ] <= _RF_ROWSINLETTER)
-      oprint:=tprint()
-      oprint:init()
-      lp:=.T.
-      IF lprinter
-         lp:=.F.
+      IF ValType( nPaperSize ) # "N"
+         IF ::aReportData[ RP_LINES ] <= _RF_ROWSINLETTER
+            nPaperSize := 1
+         ELSE
+            nPaperSize := 5
+         ENDIF
       ENDIF
-      IF luseletter
-         npap:=1
-      ELSE
-         npap:=5
-      ENDIF
-      oprint:selprinter(.T. , lp, ,npap  )  /// select,preview,landscape,papersize
-      IF oprint:lprerror
-         oprint:release()
-         lSale:=.T.
+
+      ::oPrint := Tprint()
+      ::oPrint:Init()
+      ::oPrint:SelPrinter( lSelect, lPreview, lLandscape, nPapersize, NIL, NIL, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+      IF ::oPrint:lPrError
+         ::oPrint:Release()
+         lSale := .T.
          BREAK
       ENDIF
-      ********************** MINIPRINT *******************
-      IF lSummary != NIL
-         aReportData[ RP_SUMMARY ] := lSummary
+
+      ::nMaxLinesAvail := ::aReportData[ RP_LINES ]
+      IF lSummary # NIL
+         ::aReportData[ RP_SUMMARY ] := lSummary
       ENDIF
-      IF lBEject != NIL .AND. lBEject
-         aReportData[ RP_BEJECT ]  := .F.
+      IF lBEject # NIL .AND. lBEject
+         ::aReportData[ RP_BEJECT ] := .F.
       ENDIF
+      ::aReportData[ RP_HEADING ] := cHeading
 
-      aReportData[ RP_HEADING ]    := cHeading
+      ::nPageNumber := 1
+      ::nLinesLeft := ::aReportData[ RP_LINES ]
 
-      nPageNumber := 1      // Primer página
-      lFirstPass  := .T.
+      ::oPrint:BeginDoc()
+      ::oPrint:BeginPage()
 
-      nLinesLeft  := aReportData[ RP_LINES ]
+      ::nPosRow := _RF_FIRSTROW
+      ::nPosCol := _RF_FIRSTCOL
 
-      *********** Inicializo documento **************
+      // Print header
+      ::PrintHeader()
 
-      oprint:begindoc()
-      oprint:beginpage()
-
-      nPosRow := _RF_FIRSTROW
-      nPosCol := _RF_FIRSTCOL
-
-      ******* Imprimo cabezal *********
-      CabezalReporte()
-
-      ******* Inicializo totales *********
-      aReportTotals := ARRAY( LEN(aReportData[RP_GROUPS]) + 1, LEN(aReportData[RP_COLUMNS]) )
-      FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-         IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-            FOR nGroup := 1 TO LEN(aReportTotals)
-              aReportTotals[nGroup,nCol] := 0
+      // Initialize totals
+      ::aReportTotals := Array( Len( ::aReportData[ RP_GROUPS ] ) + 1, Len( ::aReportData[ RP_COLUMNS ] ) )
+      FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+         IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+            FOR nGroup := 1 TO Len( ::aReportTotals )
+              ::aReportTotals[ nGroup, nCol ] := 0
             NEXT
          ENDIF
       NEXT
-      aGroupTotals := ARRAY( LEN(aReportData[RP_GROUPS]) )
+      ::aGroupTotals := Array( Len( ::aReportData[ RP_GROUPS ] ) )
 
-      ********** Ejecuto el reporte ! ***********
-      DBEval( { || EjecutoReporte() }, bFor, bWhile, nNext, nRecord, lRest )
+      // Generate the report
+      ::nCount := 0
+      dbEval( { || ::DoEvents(), ::PrintRecord() }, bFor, bWhile, nNext, nRecord, lRest )
 
-      ********* Imprimo los totales, si tiene ***********
-      FOR nGroup := LEN(aReportData[RP_GROUPS]) TO 1 STEP -1
+      // Print totals
+      FOR nGroup := Len( ::aReportData[ RP_GROUPS ] ) TO 1 STEP -1
 
-         ****** El grupo tiene subtotales? **********
+         // The group has a total?
          lAnySubTotals := .F.
-         FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-            IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
+         FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
                lAnySubTotals := .T.
                EXIT
             ENDIF
          NEXT
 
-         IF !lAnySubTotals
+         IF ! lAnySubTotals
             LOOP
          ENDIF
 
-         ************ Verifico salto de hoja **********
-         IF nLinesLeft < 2
-            EjectPage()
-            IF aReportData[ RP_PLAIN ]
-               nLinesLeft := 1000
+         IF ::nLinesLeft < 2
+            ::EjectPage()
+            IF ::aReportData[ RP_PLAIN ]
+               ::nLinesLeft := 1000
             ELSE
-               CabezalReporte()
+               ::PrintHeader()
             ENDIF
          ENDIF
 
-         ********** Imprimo Mensaje de Subtotal **************
-         PrintIt(IF(nGroup==1,NationMsg(_RF_SUBTOTAL), NationMsg(_RF_SUBSUBTOTAL)) , .t.)
+         // Print subtotal
+         ::PrintLine( iif( nGroup == 1, NationMsg( _RF_SUBTOTAL ), NationMsg( _RF_SUBSUBTOTAL ) ), .T. )
 
-         ***** Armo la linea de subtotales *****
+         // Build subtotal line
          sAuxSt := ""
-         FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-            IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-               sAuxSt := sAuxSt + " " +  TRANSFORM(aReportTotals[nGroup+1,nCol], ConvPic(aReportData[RP_COLUMNS,nCol,RC_PICT]))
+         FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+               sAuxSt := sAuxSt + " " + Transform( ::aReportTotals[ nGroup + 1, nCol ], ConvPic( ::aReportData[ RP_COLUMNS, nCol, RC_PICT ] ) )
             ELSE
-               sAuxSt := sAuxSt + " " + SPACE(aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+               sAuxSt := sAuxSt + " " + Space( ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
             ENDIF
          NEXT
 
-         **** Imprimo la linea de subtotales ****
-         ImprimoUnaLinea(Substr(sAuxSt,2), .t.)
-         SaltoLin()
+         // Print subtotals
+         ::PrintLine( SubStr( sAuxSt, 2 ), .T. )
       NEXT
 
-      ******* Genero el Total general ******
-      **** Si me quedan menos de 2 lineas, salto de hoja  ****
-      IF nLinesLeft < 2
-         EjectPage()
-         IF aReportData[ RP_PLAIN ]
-            nLinesLeft := 1000
+      // Build the grand total
+      IF ::nLinesLeft < 2
+         ::EjectPage()
+         IF ::aReportData[ RP_PLAIN ]
+            ::nLinesLeft := 1000
          ELSE
-            CabezalReporte()
+            ::PrintHeader()
          ENDIF
       ENDIF
 
-      *********** Veo si hay que imprimir totales ***********
+      // Print the totals
       lAnyTotals := .F.
-      FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-         IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
+      FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+         IF ::aReportData [ RP_COLUMNS, nCol, RC_TOTAL ]
             lAnyTotals := .T.
             EXIT
          ENDIF
       NEXT nCol
-
       IF lAnyTotals
-
-         ********** Mensaje de total *************
-         PrintIt(NationMsg(_RF_TOTAL ) , .t.)
-
-         **** Armo la linea de totales *****
+         // Print message
+         ::PrintLine( NationMsg( _RF_TOTAL ), .T. )
+         // Build the totals
          sAuxSt := ""
-         FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-            IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-               sAuxSt := sAuxSt + " " + TRANSFORM(aReportTotals[1,nCol], ConvPic(aReportData[RP_COLUMNS,nCol,RC_PICT]))
+         FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+               sAuxSt := sAuxSt + " " + Transform( ::aReportTotals[ 1, nCol ], ConvPic( ::aReportData[ RP_COLUMNS, nCol, RC_PICT ] ) )
             ELSE
-               sAuxSt := sAuxSt + " " + SPACE(aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+               sAuxSt := sAuxSt + " " + Space( ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
             ENDIF
          NEXT nCol
-
-         ImprimoUnaLinea(Substr(sAuxSt,2), .t.)
-         SaltoLin()
+         // Print the totals
+         ::PrintLine( SubStr( sAuxSt, 2 ), .T. )
       ENDIF
 
-      ******* Si pidió un eject al final del reporte, lo largo *********
-      IF aReportData[ RP_AEJECT ]
-         //// EjectPage()  en windows es mejor no mandar este eject en dos si es valido
+      // Eject the paper. Needed under DOS. It's better not to send this under Windows.
+      /*
+      IF ::aReportData[ RP_AEJECT ]
+         ::EjectPage()
       ENDIF
+      */
 
    RECOVER USING xBreakVal
 
@@ -1208,206 +1403,184 @@ PROCEDURE __ReportFormwin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, ;
 
    END SEQUENCE
 
-   IF lSale
-      setinteractiveclose(sicvar)
-      RETURN
+   IF ! lSale
+      ::oPrint:EndPage()
+      ::oPrint:EndDoc()
+
+      IF lBroke
+         BREAK xBreakVal
+      END
    ENDIF
 
-   ******** Libero memoria *********
-   aReportData   := NIL
-   aReportTotals  := NIL
-   aGroupTotals   := NIL
-   nPageNumber   := NIL
-   lFirstPass    := NIL
-   nLinesLeft    := NIL
-   nMaxLinesAvail := NIL
+   RETURN NIL
 
-   ****** Cierro el reporte *******
-   oprint:endpage()
-   oprint:enddoc()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DoEvents CLASS TReportFormWin
 
-   IF lBroke
-      BREAK xBreakVal
-   END
-   setinteractiveclose(sicvar)
+   IF ++ ::nCount % 10 == 0
+      DO EVENTS
+      ::nCount := 0
+   ENDIF
 
-   RETURN
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintRecord() CLASS TReportFormWin
 
-STATIC PROCEDURE EjecutoReporte
+   LOCAL aRecordHeader := {}, aRecordToPrint := {}
+   LOCAL nCol, nGroup, lEjectGrp := .F., nMaxLines
+   LOCAL nLine, cLine, lAnySubTotals
 
-   *  Ejecutado por DBEVAL() cada vez que un registro está en el scope
-   LOCAL aRecordHeader  := {}
-   LOCAL aRecordToPrint := {}
-   LOCAL nCol
-   LOCAL nGroup
-   //LOCAL lGroupChanged  := .F.
-   LOCAL lEjectGrp := .F.
-   LOCAL nMaxLines
-   LOCAL nLine
-   LOCAL cLine
-
-   LOCAL lAnySubTotals
-
-   ******** si la columna tiene totales, los sumo ***********
-   FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-      IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-         aReportTotals[ 1 ,nCol] += EVAL( aReportData[RP_COLUMNS,nCol,RC_EXP] )
+   // Add column total
+   FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+      IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+         ::aReportTotals[ 1, nCol ] += Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] )
       ENDIF
    NEXT
 
-   ********** veo si cambio alguno de los grupos. Si cambió, totalizo los anteriores *********
-   IF !lFirstPass
-      FOR nGroup := LEN(aReportData[RP_GROUPS]) TO 1 STEP -1
+   // If some group changed, sum total
+   IF ! ::lFirstPass
+      FOR nGroup := Len( ::aReportData[ RP_GROUPS ] ) TO 1 STEP -1
          lAnySubTotals := .F.
-         FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-            IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
+         FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
                lAnySubTotals := .T.
                EXIT
             ENDIF
          NEXT
 
-         IF !lAnySubTotals
+         IF ! lAnySubTotals
             LOOP
          ENDIF
 
-         ******** Veo si cambio el grupo *********
-         IF HB_VALTOSTR(EVAL(aReportData[RP_GROUPS,nGroup,RG_EXP]),;
-            aReportData[RP_GROUPS,nGroup,RG_TYPE]) != aGroupTotals[nGroup]
-            AADD( aRecordHeader, IF(nGroup==1,NationMsg(_RF_SUBTOTAL),;
-                                              NationMsg(_RF_SUBSUBTOTAL)) )
-            AADD( aRecordHeader, "" )
+         // Check if the group changed
+         IF hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ;
+            ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] ) # ::aGroupTotals[ nGroup ]
+            AAdd( aRecordHeader, iif( nGroup == 1, NationMsg( _RF_SUBTOTAL ), NationMsg( _RF_SUBSUBTOTAL ) ) )
+            AAdd( aRecordHeader, "" )
 
             IF ( nGroup == 1 )
-               lEjectGrp := aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]
+               lEjectGrp := ::aReportData[ RP_GROUPS, nGroup, RG_AEJECT ]
             ENDIF
 
-            ********** Recorro las columnas totalizando *************
-            FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-               IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-                  aRecordHeader[ LEN(aRecordHeader) ] += TRANSFORM(aReportTotals[nGroup+1,nCol], ConvPic(aReportData[RP_COLUMNS,nCol,RC_PICT]))
-                  aReportTotals[nGroup+1,nCol] := 0
+            // Sum columns
+            FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+               IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+                  aRecordHeader[ Len( aRecordHeader ) ] += Transform( ::aReportTotals[ nGroup + 1, nCol ], ConvPic( ::aReportData[ RP_COLUMNS, nCol, RC_PICT ] ) )
+                  ::aReportTotals[ nGroup + 1, nCol ] := 0
                ELSE
-                  aRecordHeader[ LEN(aRecordHeader) ] += SPACE(aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+                  aRecordHeader[ Len( aRecordHeader ) ] += Space( ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
                ENDIF
-               aRecordHeader[ LEN(aRecordHeader) ] += " "
+               aRecordHeader[ Len( aRecordHeader ) ] += " "
             NEXT
-            aRecordHeader[LEN(aRecordHeader)] := LEFT( aRecordHeader[LEN(aRecordHeader)], LEN(aRecordHeader[LEN(aRecordHeader)]) - 1 )
+            aRecordHeader[ Len( aRecordHeader ) ] := Left( aRecordHeader[ Len( aRecordHeader ) ], Len( aRecordHeader[ Len( aRecordHeader ) ] ) - 1 )
          ENDIF
       NEXT
 
    ENDIF
 
-   lFirstPass = .F.
+   ::lFirstPass := .F.
 
-   IF ( LEN( aRecordHeader ) > 0 ) .AND. lEjectGrp
-      IF LEN( aRecordHeader ) > nLinesLeft
-         EjectPage()
-         IF ( aReportData[ RP_PLAIN ] )
-            nLinesLeft := 1000
+   IF ( Len( aRecordHeader ) > 0 ) .AND. lEjectGrp
+      IF Len( aRecordHeader ) > ::nLinesLeft
+         ::EjectPage()
+         IF ( ::aReportData[ RP_PLAIN ] )
+            ::nLinesLeft := 1000
          ELSE
-            CabezalReporte()
+            ::PrintHeader()
          ENDIF
       ENDIF
-      AEVAL( aRecordHeader, { | HeaderLine | PrintIt(HeaderLine, .t. ) })
+      AEval( aRecordHeader, { |HeaderLine| ::PrintLine( HeaderLine, .T. ) } )
+
       aRecordHeader := {}
-      EjectPage()
-      IF ( aReportData[ RP_PLAIN ] )
-         nLinesLeft := 1000
+      ::EjectPage()
+      IF ( ::aReportData[ RP_PLAIN ] )
+         ::nLinesLeft := 1000
       ELSE
-         CabezalReporte()
+         ::PrintHeader()
       ENDIF
    ENDIF
 
-   ********* Agrego un cabezal en los grupos que cambiaron **************
-   FOR nGroup := 1 TO LEN(aReportData[RP_GROUPS])
-      IF HB_VALTOSTR(EVAL(aReportData[RP_GROUPS,nGroup,RG_EXP]),aReportData[RP_GROUPS,nGroup,RG_TYPE]) == aGroupTotals[nGroup]
+   // Add a header to the changed groups
+   FOR nGroup := 1 TO Len( ::aReportData[ RP_GROUPS ] )
+      IF hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] ) == ::aGroupTotals[ nGroup ]
       ELSE
-         AADD( aRecordHeader, "" )
-         AADD( aRecordHeader, IF(nGroup==1,"** ","* ") +;
-            aReportData[RP_GROUPS,nGroup,RG_HEADER] + " " +;
-            HB_VALTOSTR(EVAL(aReportData[RP_GROUPS,nGroup,RG_EXP]), ;
-            aReportData[RP_GROUPS,nGroup,RG_TYPE]) )
+         AAdd( aRecordHeader, "" )
+         AAdd( aRecordHeader, iif( nGroup == 1, "** ", "* " ) + ;
+            ::aReportData[ RP_GROUPS, nGroup, RG_HEADER ] + " " + ;
+            hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ;
+            ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] ) )
       ENDIF
    NEXT
 
-   *********** Generé cabezal? ************
-   IF LEN( aRecordHeader ) > 0
-      **** Si entra, lo imprimo ******
-      IF LEN( aRecordHeader ) > nLinesLeft
-         EjectPage()
-         IF aReportData[ RP_PLAIN ]
-            nLinesLeft := 1000
+   // Was a header generated?
+   IF Len( aRecordHeader ) > 0
+      // Print if it fits
+      IF Len( aRecordHeader ) > ::nLinesLeft
+         ::EjectPage()
+         IF ::aReportData[ RP_PLAIN ]
+            ::nLinesLeft := 1000
          ELSE
-            CabezalReporte()
+            ::PrintHeader()
          ENDIF
       ENDIF
 
-      ******** Imprimo cabezal ***********
-      AEVAL( aRecordHeader, { | HeaderLine | PrintIt(HeaderLine, .t. ) } )
+      // Print header
+      AEval( aRecordHeader, { |HeaderLine| ::PrintLine( HeaderLine, .T. ) } )
 
-      ******* Decremento las lineas disponibles *********
-      nLinesLeft -= LEN( aRecordHeader )
-
-      ******* Controlo el salto de hoja ***********
-      IF nLinesLeft == 0
-         EjectPage()
-         IF aReportData[ RP_PLAIN ]
-            nLinesLeft := 1000
+      ::nLinesLeft -= Len( aRecordHeader )
+      IF ::nLinesLeft == 0
+         ::EjectPage()
+         IF ::aReportData[ RP_PLAIN ]
+            ::nLinesLeft := 1000
          ELSE
-            CabezalReporte()
+            ::PrintHeader()
          ENDIF
       ENDIF
    ENDIF
 
-   ************** Sumo los totales ********************
-   FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-      IF aReportData[RP_COLUMNS,nCol,RC_TOTAL]
-         FOR nGroup := 1 TO LEN( aReportTotals ) - 1
-            aReportTotals[nGroup+1,nCol] += EVAL( aReportData[RP_COLUMNS,nCol,RC_EXP] )
+   // Sum totals
+   FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+      IF ::aReportData[ RP_COLUMNS, nCol, RC_TOTAL ]
+         FOR nGroup := 1 TO Len( ::aReportTotals ) - 1
+            ::aReportTotals[ nGroup + 1, nCol ] += Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] )
          NEXT
       ENDIF
    NEXT
 
-   ************ Reseteo grupos ************
-   FOR nGroup := 1 TO LEN(aReportData[RP_GROUPS])
-      aGroupTotals[nGroup] := HB_VALTOSTR(EVAL(aReportData[RP_GROUPS,nGroup,RG_EXP]),;
-                                   aReportData[RP_GROUPS,nGroup,RG_TYPE])
+   // Reset groups
+   FOR nGroup := 1 TO Len( ::aReportData[ RP_GROUPS ] )
+      ::aGroupTotals[ nGroup ] := hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] )
    NEXT
 
-   IF !aReportData[ RP_SUMMARY ]
-      **** Calculo cuantas lineas necesita ****
+   IF ! ::aReportData[ RP_SUMMARY ]
+      // Calculate the lines needed and size the printing array
       nMaxLines := 1
-      FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
-         IF aReportData[RP_COLUMNS,nCol,RC_TYPE] $ "CM"
-            nMaxLines := MAX(XMLCOUNT(EVAL(aReportData[RP_COLUMNS,nCol,RC_EXP]),;
-                         aReportData[RP_COLUMNS,nCol,RC_WIDTH]), nMaxLines)
+      FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+         IF ::aReportData[ RP_COLUMNS, nCol, RC_TYPE ] $ "CM"
+            nMaxLines := MAX( xMLCount( Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] ), ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] ), nMaxLines )
          ENDIF
       NEXT
+      ASize( aRecordToPrint, nMaxLines )
+      aFill( aRecordToPrint, "" )
 
-      ********* Defino un array con la cantidad de lineas necesarias para imprimir *****
-      ASIZE( aRecordToPrint, nMaxLines )
-      AFILL( aRecordToPrint, "" )
-
-      ***** Cargo el registro en el array para imprimir ************
-      FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
+      // Load the record in the array to print it
+      FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
          FOR nLine := 1 TO nMaxLines
-            ***** Cargo las variables tipo MEMO o CHARACTER **********
-            IF aReportData[RP_COLUMNS,nCol,RC_TYPE] $ "CM"
-               cLine := XMEMOLINE(TRIM(EVAL(aReportData[RP_COLUMNS,nCol,RC_EXP])),;
-                             aReportData[RP_COLUMNS,nCol,RC_WIDTH], nLine )
-               cLine := PADR( cLine, aReportData[RP_COLUMNS,nCol,RC_WIDTH] )
+            // Load MEMO and CHARACTER variables
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TYPE ] $ "CM"
+               cLine := xMemoLine( RTrim( Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] ) ), ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ], nLine )
+               cLine := PadR( cLine, ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
             ELSE
                IF nLine == 1
-                  ********* Aqui le puse los separadores de miles, que no está por defecto en los frm
-                  ********* Si se desea quitar, descomentar estas líneas y comentar las siguientes
-                  * cLine := TRANSFORM(EVAL(aReportData[RP_COLUMNS,nCol,RC_EXP]),;
-                  *               aReportData[RP_COLUMNS,nCol,RC_PICT])
-                  cLine := TRANSFORM(EVAL(aReportData[RP_COLUMNS,nCol,RC_EXP]),;
-                           ConvPic(aReportData[RP_COLUMNS,nCol,RC_PICT]))
-                  cLine := PADR( cLine, aReportData[RP_COLUMNS,nCol,RC_WIDTH] )
+                  IF ::lNoSeps
+                     cLine := Transform( Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] ), ::aReportData[ RP_COLUMNS, nCol, RC_PICT ] )
+                  ELSE
+                     cLine := Transform( Eval( ::aReportData[ RP_COLUMNS, nCol, RC_EXP ] ), ConvPic( ::aReportData[ RP_COLUMNS, nCol, RC_PICT ] ) )
+                  ENDIF
+                  cLine := PadR( cLine, ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
                ELSE
-                  cLine := SPACE( aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+                  cLine := Space( ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
                ENDIF
             ENDIF
             IF nCol > 1
@@ -1417,180 +1590,164 @@ STATIC PROCEDURE EjecutoReporte
          NEXT
       NEXT
 
-      ********* Entra el registro en la página?? ********
-      IF LEN( aRecordToPrint ) > nLinesLeft
-         ***** Si no entra en la página actual, verifico si entra en una página completa
-         ***** Si no entra: Lo parto y lo imprimo
-         IF LEN( aRecordToPrint ) > nMaxLinesAvail
+      // The record fits in the remaining lines?
+      IF Len( aRecordToPrint ) > ::nLinesLeft
+         // If the record does not fit in a page, split it.
+         IF Len( aRecordToPrint ) > ::nMaxLinesAvail
             nLine := 1
-            DO WHILE nLine < LEN( aRecordToPrint )
-               PrintIt(aRecordToPrint[nLine], .f. )
-               nLine++
-               nLinesLeft--
-               IF nLinesLeft == 0
-                  EjectPage()
-                  IF aReportData[ RP_PLAIN ]
-                     nLinesLeft := 1000
+            DO WHILE nLine < Len( aRecordToPrint )
+               ::PrintLine( aRecordToPrint[ nLine ], .F. )
+
+               nLine ++
+               ::nLinesLeft --
+               IF ::nLinesLeft == 0
+                  ::EjectPage()
+                  IF ::aReportData[ RP_PLAIN ]
+                     ::nLinesLeft := 1000
                   ELSE
-                     CabezalReporte()
+                     ::PrintHeader()
                   ENDIF
                ENDIF
             ENDDO
          ELSE
-            EjectPage()
-            IF aReportData[ RP_PLAIN ]
-               nLinesLeft := 1000
+            ::EjectPage()
+            IF ::aReportData[ RP_PLAIN ]
+               ::nLinesLeft := 1000
             ELSE
-               CabezalReporte()
+               ::PrintHeader()
             ENDIF
-            AEVAL( aRecordToPrint, ;
-                 { | RecordLine | ;
-                 PrintIt(RecordLine, .f. ) ;
-                 } ;
-                 )
-            nLinesLeft -= LEN( aRecordToPrint )
+            AEval( aRecordToPrint, { |RecordLine| ::PrintLine( RecordLine, .F. ) } )
+
+            ::nLinesLeft -= Len( aRecordToPrint )
          ENDIF
       ELSE
-         AEVAL( aRecordToPrint, ;
-              { | RecordLine | ;
-              PrintIt(RecordLine, .f. ) ;
-              } ;
-              )
-         nLinesLeft -= LEN( aRecordToPrint )
+         AEval( aRecordToPrint, { |RecordLine| ::PrintLine( RecordLine, .F. ) } )
+
+         ::nLinesLeft -= Len( aRecordToPrint )
       ENDIF
 
-      ***** Verifico salto de hoja ******
-      IF nLinesLeft == 0
-         EjectPage()
-         IF aReportData[ RP_PLAIN ]
-            nLinesLeft := 1000
+      IF ::nLinesLeft == 0
+         ::EjectPage()
+         IF ::aReportData[ RP_PLAIN ]
+            ::nLinesLeft := 1000
          ELSE
-            CabezalReporte()
+            ::PrintHeader()
          ENDIF
       ENDIF
 
-      **** Si seleccionó espaciado distinto de 1, dejo los renglones en blanco *******
-      IF aReportData[ RP_SPACING ] > 1
-         IF nLinesLeft > aReportData[ RP_SPACING ] - 1
-            FOR nLine := 2 TO aReportData[ RP_SPACING ]
-               PrintIt("", .f.)
-               nLinesLeft--
+      // Line spacing
+      IF ::aReportData[ RP_SPACING ] > 1
+         IF ::nLinesLeft > ::aReportData[ RP_SPACING ] - 1
+            FOR nLine := 2 TO ::aReportData[ RP_SPACING ]
+               ::PrintLine( "", .F. )
+               ::nLinesLeft --
             NEXT
          ENDIF
       ENDIF
-
    ENDIF
 
-   RETURN
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintHeader() CLASS TReportFormWin
 
-STATIC PROCEDURE CabezalReporte
+   LOCAL nLinesInHeader, aPageHeader := {}
+   LOCAL nHeadingLength := ::aReportData[ RP_WIDTH ] - ::aReportData[ RP_LMARGIN ] - 30
+   LOCAL nCol, nLine, nMaxColLength, cHeader, nHeadLine, nRPageSize, aTempPgHeader
 
-   LOCAL nLinesInHeader // := 0
-   LOCAL aPageHeader    := {}
-   LOCAL nHeadingLength := aReportData[RP_WIDTH] - aReportData[RP_LMARGIN] - 30
-   LOCAL nCol, nLine, nMaxColLength,  cHeader
-   LOCAL nHeadLine
-   LOCAL nRPageSize
-   LOCAL aTempPgHeader
+   nRPageSize := ::aReportData[ RP_WIDTH ] - ::aReportData[ RP_RMARGIN ]
 
-   nRPageSize := aReportData[RP_WIDTH] - aReportData[RP_RMARGIN]
-
-   ****** Creo el cabezal y lo pongo en el array aPageHeader *****
-
-   IF aReportData[RP_HEADING] == ""
-      AADD( aPageHeader, NationMsg(_RF_PAGENO) + STR(nPageNumber,6) )
+   // Build the header into aPageHeader array
+   IF ::aReportData[ RP_HEADING ] == ""
+      AAdd( aPageHeader, NationMsg( _RF_PAGENO ) + Str( ::nPageNumber, 6 ) )
    ELSE
-      aTempPgHeader := ParseHeader( aReportData[ RP_HEADING ], Occurs( ";", aReportData[ RP_HEADING ] ) + 1 )
+      aTempPgHeader := ParseHeader( ::aReportData[ RP_HEADING ], Occurs( ";", ::aReportData[ RP_HEADING ] ) + 1 )
 
-      FOR nLine := 1 TO LEN( aTempPgHeader )
-         **** Calculo cuantas lineas lleva el cabezal ****
-         nLinesInHeader := MAX( XMLCOUNT( LTRIM( aTempPgHeader[ nLine ] ),  nHeadingLength ), 1 )
+      FOR nLine := 1 TO Len( aTempPgHeader )
+         // Compute the amount of lines needed
+         nLinesInHeader := Max( xMLCount( LTrim( aTempPgHeader[ nLine ] ), nHeadingLength ), 1 )
 
-         ****** Agrego las líneas del cabezal al array *****
+         // Add header lines to the array
          FOR nHeadLine := 1 TO nLinesInHeader
-            AADD( aPageHeader, SPACE( 15 ) + PADC( TRIM( XMEMOLINE( LTRIM( aTempPgHeader[ nLine ] ),;
-                  nHeadingLength, nHeadLine ) ), nHeadingLength ) )
+            AAdd( aPageHeader, Space( 15 ) + PadC( RTrim( xMemoLine( LTrim( aTempPgHeader[ nLine ] ), nHeadingLength, nHeadLine ) ), nHeadingLength ) )
          NEXT nHeadLine
       NEXT nLine
-      aPageHeader[ 1 ] := STUFF( aPageHeader[ 1 ], 1, 14, NationMsg(_RF_PAGENO) + STR(nPageNumber,6) )
+      aPageHeader[ 1 ] := Stuff( aPageHeader[ 1 ], 1, 14, NationMsg( _RF_PAGENO ) + Str( ::nPageNumber, 6 ) )
    ENDIF
-   AADD( aPageHeader, DTOC(DATE()) )
-   /////AADD( aPageHeader, TIME() )
+   AAdd( aPageHeader, DToC( Date() ) )
 
-   ********** Agrego el header ************
-   FOR nLine := 1 TO LEN( aReportData[RP_HEADER] )
-      ****** calculo la cantidad de lineas necesarias **********
-      nLinesInHeader := MAX( XMLCOUNT( LTRIM( aReportData[RP_HEADER, nLine ] ), nRPageSize ), 1 )
+   // Add header
+   FOR nLine := 1 TO Len( ::aReportData[ RP_HEADER ] )
+      // Compute the amount of lines needed
+      nLinesInHeader := MAX( xMLCount( LTrim( ::aReportData[ RP_HEADER, nLine ] ), nRPageSize ), 1 )
 
-      **** Lo agrego al array *******
+      // Add it to the array
       FOR nHeadLine := 1 TO nLinesInHeader
-         cHeader := TRIM( XMEMOLINE( LTRIM( aReportData[ RP_HEADER, nLine ] ), nRPageSize, nHeadLine) )
-         AADD( aPageHeader, SPACE( ( nRPageSize - aReportData[ RP_LMARGIN ] - LEN( cHeader ) ) / 2 ) + cHeader )
+         cHeader := RTrim( xMemoLine( LTrim( ::aReportData[ RP_HEADER, nLine ] ), nRPageSize, nHeadLine ) )
+         AAdd( aPageHeader, Space( ( nRPageSize - ::aReportData[ RP_LMARGIN ] - Len( cHeader ) ) / 2 ) + cHeader )
       NEXT nHeadLine
 
    NEXT nLine
 
-   ******** Agrego cabezales de las columnas *********
-   nLinesInHeader := LEN( aPageHeader )
+   // Add columns headers
+   nLinesInHeader := Len( aPageHeader )
 
-   **** Busco el cabezal mas ancho *****
+   // Look for the widest header
    nMaxColLength := 0
-   FOR nCol := 1 TO LEN( aReportData[ RP_COLUMNS ] )
-      nMaxColLength := MAX( LEN(aReportData[RP_COLUMNS,nCol,RC_HEADER]), nMaxColLength )
+   FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+      nMaxColLength := Max( Len( ::aReportData[ RP_COLUMNS, nCol, RC_HEADER ] ), nMaxColLength )
    NEXT
-   FOR nCol := 1 TO LEN( aReportData[ RP_COLUMNS ] )
-      ASIZE( aReportData[RP_COLUMNS,nCol,RC_HEADER], nMaxColLength )
+   FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
+      ASize( ::aReportData[ RP_COLUMNS, nCol, RC_HEADER ], nMaxColLength )
    NEXT
 
    FOR nLine := 1 TO nMaxColLength
-      AADD( aPageHeader, "" )
+      AAdd( aPageHeader, "" )
    NEXT
 
-   FOR nCol := 1 TO LEN(aReportData[RP_COLUMNS])
+   FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
       FOR nLine := 1 TO nMaxColLength
          IF nCol > 1
             aPageHeader[ nLinesInHeader + nLine ] += " "
          ENDIF
-         IF aReportData[RP_COLUMNS,nCol,RC_HEADER,nLine] == NIL
-            aPageHeader[ nLinesInHeader + nLine ] += SPACE( aReportData[RP_COLUMNS,nCol,RC_WIDTH] )
+         IF ::aReportData[ RP_COLUMNS, nCol, RC_HEADER, nLine ] == NIL
+            aPageHeader[ nLinesInHeader + nLine ] += Space( ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
          ELSE
-            IF aReportData[RP_COLUMNS,nCol,RC_TYPE] == "N"
-               aPageHeader[ nLinesInHeader + nLine ] += PADL(aReportData[RP_COLUMNS,nCol,RC_HEADER,nLine],;
-                         aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+            IF ::aReportData[ RP_COLUMNS, nCol, RC_TYPE ] == "N"
+               aPageHeader[ nLinesInHeader + nLine ] += PadL( ::aReportData[ RP_COLUMNS, nCol, RC_HEADER, nLine ], ;
+                                                               ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
             ELSE
-               aPageHeader[ nLinesInHeader + nLine ] += PADR(aReportData[RP_COLUMNS,nCol,RC_HEADER,nLine],;
-                       aReportData[RP_COLUMNS,nCol,RC_WIDTH])
+               aPageHeader[ nLinesInHeader + nLine ] += PadR( ::aReportData[ RP_COLUMNS, nCol, RC_HEADER, nLine ], ;
+                                                               ::aReportData[ RP_COLUMNS, nCol, RC_WIDTH ] )
             ENDIF
          ENDIF
       NEXT
    NEXT
 
-   ***** Dejo 2 lineas en blanco ******
-   AADD( aPageHeader, "" )
-   AADD( aPageHeader, "" )
+   // Skip 2 lines
+   AAdd( aPageHeader, "" )
+   AAdd( aPageHeader, "" )
 
-   ******** Imprimo el cabezal **********
-   AEVAL( aPageHeader, { | HeaderLine | PrintIt(HeaderLine, .t. ) } )
+   // Print header
+   AEval( aPageHeader, { |HeaderLine| ::PrintLine( HeaderLine, .T. ) } )
 
-   *** Incremento el numero de pagina ****
-   nPageNumber++
+   ::nLinesLeft := ::aReportData[ RP_LINES ] - Len( aPageHeader )
+   ::nMaxLinesAvail := ::aReportData[ RP_LINES ] - Len( aPageHeader )
+   ::nPageNumber ++
 
-   nLinesLeft := aReportData[RP_LINES] - LEN( aPageHeader )
-   nMaxLinesAvail := aReportData[RP_LINES] - LEN( aPageHeader )
+   RETURN NIL
 
-   RETURN
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION Occurs( cSearch, cTarget )
 
-   *  Cuantas veces aparece <cSearch> en <cTarget>
+   // How many times <cSearch> appears in <cTarget>
 
    LOCAL nPos, nCount := 0
 
-   DO WHILE !EMPTY( cTarget )
-      IF (nPos := AT( cSearch, cTarget )) != 0
-         nCount++
-         cTarget := SUBSTR( cTarget, nPos + 1 )
+   DO WHILE ! Empty( cTarget )
+      IF ( nPos := At( cSearch, cTarget ) ) # 0
+         nCount ++
+         cTarget := SubStr( cTarget, nPos + 1 )
       ELSE
          cTarget := ""
       ENDIF
@@ -1598,434 +1755,342 @@ STATIC FUNCTION Occurs( cSearch, cTarget )
 
    RETURN nCount
 
-STATIC PROCEDURE PrintIt( cString, lBold )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EjectPage() CLASS TReportFormWin
 
-   IF cString == NIL
-      cString := ""
-   ENDIF
+   ::oPrint:EndPage()
+   ::oPrint:BeginPage()
+   ::nPosRow := _RF_FIRSTROW
 
-   ImprimoUnaLinea(cString , lBold)
-   SaltoLin()
+   RETURN NIL
 
-   RETURN
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION xMLCount( cString, nLineLength, nTabSize, lWrap )
 
-STATIC PROCEDURE EjectPage
-
-   *  Finalizo una página y comienzo la siguiente.....
-   oprint:endpage()
-   oprint:beginpage()
-
-   nPosRow := _RF_FIRSTROW
-
-   RETURN
-
-STATIC FUNCTION XMLCOUNT( cString, nLineLength, nTabSize, lWrap )
-
-
-   nLineLength := IF( nLineLength == NIL, 79, nLineLength )
-   nTabSize := IF( nTabSize == NIL, 4, nTabSize )
-   lWrap := IF( lWrap == NIL, .T., .F. )
+   ASSIGN nLineLength VALUE nLineLength TYPE "N" DEFAULT 79
+   ASSIGN nTabSize    VALUE nTabSize    TYPE "N" DEFAULT 4
+   ASSIGN lWrap       VALUE lWrap       TYPE "L" DEFAULT .T.
    IF nTabSize >= nLineLength
       nTabSize := nLineLength - 1
    ENDIF
 
-   RETURN( MLCOUNT( TRIM(cString), nLineLength, nTabSize, lWrap ) )
+   RETURN MLCount( RTrim( cString ), nLineLength, nTabSize, lWrap )
 
-STATIC FUNCTION XMEMOLINE( cString, nLineLength, nLineNumber, nTabSize, lWrap )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION xMemoLine( cString, nLineLength, nLineNumber, nTabSize, lWrap )
 
-   nLineLength := IF( nLineLength == NIL, 79, nLineLength )
-   nLineNumber := IF( nLineNumber == NIL, 1, nLineNumber )
-   nTabSize := IF( nTabSize == NIL, 4, nTabSize )
-   lWrap := IF( lWrap == NIL, .T., lWrap )
-
+   ASSIGN nLineLength VALUE nLineLength TYPE "N" DEFAULT 79
+   ASSIGN nLineNumber VALUE nLineNumber TYPE "N" DEFAULT 1
+   ASSIGN nTabSize    VALUE nTabSize    TYPE "N" DEFAULT 4
+   ASSIGN lWrap       VALUE lWrap       TYPE "L" DEFAULT .T.
    IF nTabSize >= nLineLength
       nTabSize := nLineLength - 1
    ENDIF
 
-   RETURN( MEMOLINE( cString, nLineLength, nLineNumber, nTabSize, lWrap ) )
+   RETURN MemoLine( cString, nLineLength, nLineNumber, nTabSize, lWrap )
 
-STATIC FUNCTION ConvPic(sPic)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION ConvPic( sPic )
 
-   * Agrego separador de miles, que el FRM estandar no lo hace....
-   * Ojo, esto puede hacer que de un overflow si no se prevee el espacio en la columna
+   // Add thousand separators because standard FRM does not.
+   // Note that an overflow may occur it there is not enough space at the column
 
-   Local nPto, nEnt, nDec, sResult
-   Local aPics := {"9","99","999","9999","9,999","99,999","999,999","9999,999","9,999,999","99,999,999","999,999,999","9999,999,999","9,999,999,999","99,999,999,999","999,999,999,999"}
+   LOCAL nPto, nEnt, nDec, sResult
+   LOCAL aPics := { "9", "99", "999", "9999", "9,999", "99,999", "999,999", "9999,999", "9,999,999", "99,999,999", "999,999,999", ;
+                    "9999,999,999", "9,999,999,999", "99,999,999,999", "999,999,999,999" }
 
-   nPto = at(".",sPic)
-
-   IF (Left(sPic,1) <> "9") .or. (nPto = 0)
+   nPto := At( ".", sPic )
+   IF Left( sPic, 1 ) # "9" .OR. nPto == 0
       RETURN sPic
    ENDIF
 
-   nDec = Substr(sPic, nPto)
-   nEnt = Left(sPic, nPto - 1)
+   nDec := SubStr( sPic, nPto )
+   nEnt := Left( sPic, nPto - 1 )
 
-   IF Len(nEnt) > 15
-      sResult = sPic
+   IF Len( nEnt ) > 15
+      sResult := sPic
    ELSE
-      sResult = aPics[Len(nEnt)] + nDec
+      sResult := aPics[ Len( nEnt ) ] + nDec
    ENDIF
 
    RETURN sResult
 
-STATIC Function SaltoLin()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintLine( sLin, lBold ) CLASS TReportFormWin
 
-   //////nPosRow := nPosRow + _RF_ROWINC    ///para asar a rowcol y quitar mm
-   nPosRow++
-   nPosCol := _RF_FIRSTCOL
+   ASSIGN sLin  VALUE sLin  TYPE "CM" DEFAULT ""
+   ASSIGN lBold VALUE lBold TYPE "L"  DEFAULT .F.
 
-   RETURN .t.
-
-STATIC Function ImprimoUnaLinea(sLin, lBold)
-
-   Local sAux
-
-   sAux := HB_OEMTOANSI(sLin)
-   IF aReportData[RP_WIDTH] <= 80
-      oprint:printdata(nPosrow,nPoscol+aReportData[RP_LMARGIN],sAux, ,_RF_SIZENORMAL ,lbold)
+   IF ::aReportData[ RP_WIDTH ] <= 80
+      ::oPrint:PrintData( ::nPosRow, ::nPosCol + ::aReportData[ RP_LMARGIN ], hb_OEMToANSI( sLin ), NIL, _RF_SIZENORMAL, lBold )
    ELSE
-      oprint:printdata(nPosrow,nPoscol+aReportData[RP_LMARGIN],sAux, ,_RF_SIZECONDENSED ,lbold)
+      ::oPrint:PrintData( ::nPosRow, ::nPosCol + ::aReportData[ RP_LMARGIN ], hb_OEMToANSI( sLin ), NIL, _RF_SIZECONDENSED, lBold )
    ENDIF
-   nPosCol := nPosCol + Len(sAux)
 
-   RETURN .t.
+   ::nPosRow ++
+   ::nPosCol := _RF_FIRSTCOL
 
-STATIC FUNCTION __FrmLoad( cFrmFile )
+   RETURN NIL
 
-   * Cargo el archivo FRM en un array
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LoadFRM( cFrmFile ) CLASS TReportFormWin
 
-   LOCAL cFieldsBuff
-   LOCAL cParamsBuff
-   LOCAL nFieldOffset   := 0
-   LOCAL cFileBuff      := SPACE(SIZE_FILE_BUFF)
-   LOCAL cGroupExp      // := SPACE(200)
-   LOCAL cSubGroupExp   // := SPACE(200)
-   LOCAL nColCount
-   LOCAL nCount
-   LOCAL nFrmHandle
-   LOCAL nBytesRead
-   LOCAL nPointer       // := 0
-   LOCAL nFileError
-   LOCAL cOptionByte
+   LOCAL nFieldOffset, cFileBuff := Space( SIZE_FILE_BUFF )
+   LOCAL cGroupExp, cSubGroupExp, nColCount, nCount, nFrmHandle, nBytesRead
+   LOCAL nPointer, nFileError, cOptionByte, aReport[ RP_COUNT ], oError
+   LOCAL cDefPath, aPaths, nPathIndex, aHeader, nHeaderIndex, cParamsBuff
+   LOCAL aColumn, cType, cFieldsBuff
 
-   LOCAL aReport[ RP_COUNT ]
-   LOCAL err
+   aReport[ RP_HEADER ]  := {}
+   aReport[ RP_WIDTH ]   := 80
+   aReport[ RP_LMARGIN ] := 8
+   aReport[ RP_RMARGIN ] := 0
+   aReport[ RP_LINES ]   := 58
+   aReport[ RP_SPACING ] := 1
+   aReport[ RP_BEJECT ]  := .F.
+   aReport[ RP_AEJECT ]  := .F.
+   aReport[ RP_PLAIN ]   := .F.
+   aReport[ RP_SUMMARY ] := .F.
+   aReport[ RP_COLUMNS ] := {}
+   aReport[ RP_GROUPS ]  := {}
+   aReport[ RP_HEADING ] := ""
 
-   LOCAL cDefPath
-   LOCAL aPaths
-   LOCAL nPathIndex // := 0
-
-   LOCAL aHeader
-   LOCAL nHeaderIndex
-
-   cLengthsBuff  := ""
-   cOffsetsBuff  := ""
-   cExprBuff     := ""
-
-   ********** Valores por defecto ***********
-   aReport[ RP_HEADER ]    := {}
-   aReport[ RP_WIDTH ]     := 80
-   aReport[ RP_LMARGIN ]   := 8
-   aReport[ RP_RMARGIN ]   := 0
-   aReport[ RP_LINES ]     := 58
-   aReport[ RP_SPACING ]   := 1
-   aReport[ RP_BEJECT ]    := .F.
-   aReport[ RP_AEJECT ]    := .F.
-   aReport[ RP_PLAIN ]     := .F.
-   aReport[ RP_SUMMARY ]   := .F.
-   aReport[ RP_COLUMNS ]   := {}
-   aReport[ RP_GROUPS ]    := {}
-   aReport[ RP_HEADING ]   := ""
-
-   ******** Abro el FRM **********
-   nFrmHandle := FOPEN( cFrmFile )
-
-   IF ( !EMPTY( nFileError := FERROR() ) ) .AND. !( "\" $ cFrmFile .OR. ":" $ cFrmFile )
-
-      **** Busco en el path ********
+   // Open FRM
+   nFrmHandle := FOpen( cFrmFile )
+   IF ( ! Empty( nFileError := FError() ) ) .AND. ! ( '\' $ cFrmFile .OR. ":" $ cFrmFile )
       cDefPath := SET( _SET_DEFAULT ) + ";" + SET( _SET_PATH )
-      cDefPath := STRTRAN( cDefPath, ",", ";" )
-      aPaths := ListAsArray( cDefPath, ";" )
-
-      FOR nPathIndex := 1 TO LEN( aPaths )
-         nFrmHandle := FOPEN( aPaths[ nPathIndex ] + "\" + cFrmFile )
-         IF EMPTY( nFileError := FERROR() )
+      cDefPath := StrTran( cDefPath, ",", ";" )
+      aPaths   := ListAsArray( cDefPath, ";" )
+      // Try to open
+      FOR nPathIndex := 1 TO Len( aPaths )
+         nFrmHandle := FOpen( aPaths[ nPathIndex ] + '\' + cFrmFile )
+         IF Empty( nFileError := FError() )
             EXIT
          ENDIF
       NEXT nPathIndex
-
+   ENDIF
+   IF nFileError # F_OK
+      oError := ErrorNew()
+      oError:severity  := ES_ERROR
+      oError:genCode   := EG_OPEN
+      oError:subSystem := "FRMLBL"
+      oError:osCode    := nFileError
+      oError:filename  := cFrmFile
+      Eval( ErrorBlock(), oError )
    ENDIF
 
-   ******* No pude abrirlo? ********
-   IF nFileError != F_OK
-      err := ErrorNew()
-      err:severity := ES_ERROR
-      err:genCode := EG_OPEN
-      err:subSystem := "FRMLBL"
-      err:osCode := nFileError
-      err:filename := cFrmFile
-      Eval(ErrorBlock(), err)
-   ENDIF
-
-   ******* Pude abrirlo? ********
-   IF nFileError = F_OK
-
-      FSEEK(nFrmHandle, 0)
-
-      nFileError = FERROR()
-      IF nFileError = F_OK
-
-         **** Cargo el FRM al buffer ****
-         nBytesRead = FREAD(nFrmHandle, @cFileBuff, SIZE_FILE_BUFF)
-         IF nBytesRead = 0
-            nFileError = F_EMPTY
+   // Read FRM
+   IF nFileError == F_OK
+      FSeek( nFrmHandle, 0 )
+      nFileError := FError()
+      IF nFileError == F_OK
+         nBytesRead := FRead( nFrmHandle, @cFileBuff, SIZE_FILE_BUFF )
+         IF nBytesRead == 0
+            nFileError := F_EMPTY
          ELSE
-            nFileError = FERROR()
+            nFileError := FError()
          ENDIF
-
-         IF nFileError = F_OK
-            *** Verifico que sea un FRM ****
-            IF BIN2W(SUBSTR(cFileBuff, 1, 2)) = 2 .AND.;
-               BIN2W(SUBSTR(cFileBuff, SIZE_FILE_BUFF - 1, 2)) = 2
-               nFileError = F_OK
+         IF nFileError == F_OK
+            IF Bin2W( SubStr( cFileBuff, 1, 2 ) ) == 2 .AND. Bin2W( SubStr( cFileBuff, SIZE_FILE_BUFF - 1, 2 ) ) == 2
+               nFileError := F_OK
             ELSE
-               nFileError = F_ERROR
+               nFileError := F_ERROR
             ENDIF
          ENDIF
       ENDIF
-
-      ******* Cierro el archivo *********
-      IF !FCLOSE(nFrmHandle)
-         nFileError = FERROR()
+      IF ! FClose( nFrmHandle )
+         nFileError := FError()
       ENDIF
-
    ENDIF
 
-   ****** Todo ok *********
-   IF nFileError = F_OK
+   IF nFileError == F_OK
+      // Load FRM
+      ::cLengthsBuff := SubStr( cFileBuff, LENGTHS_OFFSET, SIZE_LENGTHS_BUFF )
+      ::cOffsetsBuff := SubStr( cFileBuff, OFFSETS_OFFSET, SIZE_OFFSETS_BUFF )
+      ::cExprBuff    := SubStr( cFileBuff, EXPR_OFFSET, SIZE_EXPR_BUFF )
+      cFieldsBuff    := SubStr( cFileBuff, FIELDS_OFFSET, SIZE_FIELDS_BUFF )
+      cParamsBuff    := SubStr( cFileBuff, PARAMS_OFFSET, SIZE_PARAMS_BUFF )
 
-      ***** Cargo el FRM en los buffers *******
-      cLengthsBuff = SUBSTR(cFileBuff, LENGTHS_OFFSET, SIZE_LENGTHS_BUFF)
-      cOffsetsBuff = SUBSTR(cFileBuff, OFFSETS_OFFSET, SIZE_OFFSETS_BUFF)
-      cExprBuff    = SUBSTR(cFileBuff, EXPR_OFFSET, SIZE_EXPR_BUFF)
-      cFieldsBuff  = SUBSTR(cFileBuff, FIELDS_OFFSET, SIZE_FIELDS_BUFF)
-      cParamsBuff  = SUBSTR(cFileBuff, PARAMS_OFFSET, SIZE_PARAMS_BUFF)
+      // Width, lines per page, left and right margin
+      aReport[ RP_WIDTH ]   := Bin2W( SubStr( cParamsBuff, PAGE_WIDTH_OFFSET, 2 ) )
+      aReport[ RP_LINES ]   := Bin2W( SubStr( cParamsBuff, LNS_PER_PAGE_OFFSET, 2 ) )
+      aReport[ RP_LMARGIN ] := Bin2W( SubStr( cParamsBuff, LEFT_MRGN_OFFSET, 2 ) )
+      aReport[ RP_RMARGIN ] := Bin2W( SubStr( cParamsBuff, RIGHT_MGRN_OFFSET, 2 ) )
 
-      aReport[ RP_WIDTH ]   := BIN2W(SUBSTR(cParamsBuff, PAGE_WIDTH_OFFSET, 2))
-      aReport[ RP_LINES ]   := BIN2W(SUBSTR(cParamsBuff, LNS_PER_PAGE_OFFSET, 2))
-      aReport[ RP_LMARGIN ] := BIN2W(SUBSTR(cParamsBuff, LEFT_MRGN_OFFSET, 2))
-      aReport[ RP_RMARGIN ] := BIN2W(SUBSTR(cParamsBuff, RIGHT_MGRN_OFFSET, 2))
+      //Spacing
+      aReport[ RP_SPACING ] := iif( SubStr( cParamsBuff, DBL_SPACE_OFFSET, 1 ) $ "YyTt", 2, 1 )
 
-      nColCount  = BIN2W(SUBSTR(cParamsBuff, COL_COUNT_OFFSET, 2))
-      * Espaciado
-      aReport[ RP_SPACING ] := IF(SUBSTR(cParamsBuff, DBL_SPACE_OFFSET, 1) $ "YyTt", 2, 1)
-      * Resumen?
-      aReport[ RP_SUMMARY ] := IF(SUBSTR(cParamsBuff, SUMMARY_RPT_OFFSET, 1) $ "YyTt", .T., .F.)
-      cOptionByte = ASC(SUBSTR(cParamsBuff, OPTION_OFFSET, 1))
-      * Eject antes?
-      IF INT(cOptionByte / 2) = 1
+      // Summary
+      aReport[ RP_SUMMARY ] := ( SubStr( cParamsBuff, SUMMARY_RPT_OFFSET, 1 ) $ "YyTt" )
+      cOptionByte := Asc( SubStr( cParamsBuff, OPTION_OFFSET, 1 ) )
+
+      // Eject
+      IF Int( cOptionByte / 2 ) == 1
          aReport[ RP_AEJECT ] := .T.
-         // cOptionByte -= 2
       ENDIF
-      nPointer = BIN2W(SUBSTR(cParamsBuff, PAGE_HDR_OFFSET, 2))
+
+      // Headers
+      nPointer := Bin2W( SubStr( cParamsBuff, PAGE_HDR_OFFSET, 2 ) )
       nHeaderIndex := 4
-      aHeader := ParseHeader( GetExpr( nPointer ), nHeaderIndex )
-      * Elimino los cabezales vacíos...
-      DO WHILE ( nHeaderIndex > 0 )
-         IF ! EMPTY( aHeader[ nHeaderIndex ] )
+      aHeader := ParseHeader( ::GetExpr( nPointer ), nHeaderIndex )
+      DO WHILE nHeaderIndex > 0
+         IF ! Empty( aHeader[ nHeaderIndex ] )
             EXIT
          ENDIF
-         nHeaderIndex--
+         nHeaderIndex --
       ENDDO
+      aReport[ RP_HEADER ] := iif( Empty( nHeaderIndex ), {}, ASize( aHeader, nHeaderIndex ) )
 
-      aReport[ RP_HEADER ] := IIF( EMPTY( nHeaderIndex ) , {}, ASIZE( aHeader, nHeaderIndex ) )
-
-      nPointer = BIN2W(SUBSTR(cParamsBuff, GRP_EXPR_OFFSET, 2))
-
-      IF !EMPTY(cGroupExp := GetExpr( nPointer ))
-
-         ** Agrego un grupo ...
-         AADD( aReport[ RP_GROUPS ], ARRAY( RG_COUNT ))
-         aReport[ RP_GROUPS ][1][ RG_TEXT ] := cGroupExp
-         aReport[ RP_GROUPS ][1][ RG_EXP ] := &( "{ || " + cGroupExp + "}" )
-         IF USED()
-            aReport[ RP_GROUPS ][1][ RG_TYPE ] := VALTYPE( EVAL( aReport[ RP_GROUPS ][1][ RG_EXP ] ) )
+      // Groups
+      nPointer := Bin2W( SubStr( cParamsBuff, GRP_EXPR_OFFSET, 2 ) )
+      IF ! Empty( cGroupExp := ::GetExpr( nPointer ) )
+         AAdd( aReport[ RP_GROUPS ], Array( RG_COUNT ) )
+         aReport[ RP_GROUPS ][ 1 ][ RG_TEXT ] := cGroupExp
+         aReport[ RP_GROUPS ][ 1 ][ RG_EXP ] := &( "{ || " + cGroupExp + "}" )
+         IF Used()
+            aReport[ RP_GROUPS ][ 1 ][ RG_TYPE ] := ValType( Eval( aReport[ RP_GROUPS ][ 1 ][ RG_EXP ] ) )
          ENDIF
-         * Cabezal del grupo
-         nPointer = BIN2W(SUBSTR(cParamsBuff, GRP_HDR_OFFSET, 2))
-         aReport[ RP_GROUPS ][1][ RG_HEADER ] := GetExpr( nPointer )
-         * Salto de hoja al finalizar el grupo?
-         aReport[ RP_GROUPS ][1][ RG_AEJECT ] := IF(SUBSTR(cParamsBuff, PE_OFFSET, 1) $ "YyTt", .T., .F.)
+         nPointer := Bin2W( SubStr( cParamsBuff, GRP_HDR_OFFSET, 2 ) )
+         aReport[ RP_GROUPS ][ 1 ][ RG_HEADER ] := ::GetExpr( nPointer )
+         aReport[ RP_GROUPS ][ 1 ][ RG_AEJECT ] := ( SubStr( cParamsBuff, PE_OFFSET, 1 ) $ "YyTt" )
       ENDIF
 
-      * Hay Subgrupos?
-      nPointer = BIN2W(SUBSTR(cParamsBuff, SUB_EXPR_OFFSET, 2))
-
-      IF !EMPTY(cSubGroupExp := GetExpr( nPointer ))
-
-         * Agrego el subgrupo
-         AADD( aReport[ RP_GROUPS ], ARRAY( RG_COUNT ))
-         aReport[ RP_GROUPS ][2][ RG_TEXT ] := cSubGroupExp
-         aReport[ RP_GROUPS ][2][ RG_EXP ] := &( "{ || " + cSubGroupExp + "}" )
-         IF USED()
-            aReport[ RP_GROUPS ][2][ RG_TYPE ] := VALTYPE( EVAL( aReport[ RP_GROUPS ][2][ RG_EXP ] ) )
+      // Subgroups
+      nPointer := Bin2W( SubStr( cParamsBuff, SUB_EXPR_OFFSET, 2 ) )
+      IF ! Empty( cSubGroupExp := ::GetExpr( nPointer ) )
+         AAdd( aReport[ RP_GROUPS ], Array( RG_COUNT ) )
+         aReport[ RP_GROUPS ][ 2 ][ RG_TEXT ] := cSubGroupExp
+         aReport[ RP_GROUPS ][ 2 ][ RG_EXP ] := &( "{ || " + cSubGroupExp + "}" )
+         IF Used()
+            aReport[ RP_GROUPS ][ 2 ][ RG_TYPE ] := ValType( Eval( aReport[ RP_GROUPS ][ 2 ][ RG_EXP ] ) )
          ENDIF
-
-         * Cabezal del subgrupo
-         nPointer = BIN2W(SUBSTR(cParamsBuff, SUB_HDR_OFFSET, 2))
-         aReport[ RP_GROUPS ][2][ RG_HEADER ] := GetExpr( nPointer )
-         * Salto de hoja al finalizar el subgrupo?
-         aReport[ RP_GROUPS ][2][ RG_AEJECT ] := .F.
-
+         nPointer := Bin2W( SubStr( cParamsBuff, SUB_HDR_OFFSET, 2 ) )
+         aReport[ RP_GROUPS ][ 2 ][ RG_HEADER ] := ::GetExpr( nPointer )
+         aReport[ RP_GROUPS ][ 2 ][ RG_AEJECT ] := .F.
       ENDIF
 
-      ********* Agrego columnas ************
+      // Columns
       nFieldOffset := 12
-      FOR nCount := 1 to nColCount
-         AADD( aReport[ RP_COLUMNS ], GetColumn( cFieldsBuff, @nFieldOffset ) )
+      nColCount := Bin2W( SubStr( cParamsBuff, COL_COUNT_OFFSET, 2 ) )
+      FOR nCount := 1 TO nColCount
+         aColumn := Array( RC_COUNT )
+         // Column width
+         aColumn[ RC_WIDTH ] := Bin2W( SubStr( cFieldsBuff, nFieldOffset + FIELD_WIDTH_OFFSET, 2 ) )
+         // Has total?
+         aColumn[ RC_TOTAL ] := ( SubStr( cFieldsBuff, nFieldOffset + FIELD_TOTALS_OFFSET, 1 ) $ "YyTt" )
+         // Number of decimals
+         aColumn[ RC_DECIMALS ] := Bin2W( SubStr( cFieldsBuff, nFieldOffset + FIELD_DECIMALS_OFFSET, 2 ) )
+         // Column content
+         nPointer := Bin2W( SubStr( cFieldsBuff, nFieldOffset + FIELD_CONTENT_EXPR_OFFSET, 2 ) )
+         aColumn[ RC_TEXT ] := ::GetExpr( nPointer )
+         aColumn[ RC_EXP ] := &( "{ || " + ::GetExpr( nPointer ) + "}" )
+         // Column header
+         nPointer := Bin2W( SubStr( cFieldsBuff, nFieldOffset + FIELD_HEADER_EXPR_OFFSET, 2 ) )
+         aColumn[ RC_HEADER ] := ListAsArray( ::GetExpr( nPointer ), ";" )
+         // Column picture
+         IF Used()
+            cType := ValType( Eval( aColumn[ RC_EXP ] ) )
+            aColumn[ RC_TYPE ] := cType
+            DO CASE
+            CASE cType == "C" .OR. cType == "M"
+               aColumn[ RC_PICT ] := Replicate( "X", aColumn[ RC_WIDTH ] )
+            CASE cType == "D"
+               aColumn[ RC_PICT ] := "@D"
+            CASE cType == "N"
+               IF aColumn[ RC_DECIMALS ] # 0
+                  aColumn[ RC_PICT ] := Replicate( "9", aColumn[ RC_WIDTH ] - aColumn[ RC_DECIMALS ] - 1 ) + "." + Replicate( "9", aColumn[ RC_DECIMALS ] )
+               ELSE
+                  aColumn[ RC_PICT ] := Replicate( "9", aColumn[ RC_WIDTH ] )
+               ENDIF
+            CASE cType == "L"
+               aColumn[ RC_PICT ] := "@L" + Replicate( "X", aColumn[ RC_WIDTH ] - 1 )
+            ENDCASE
+         ENDIF
+         // Add
+         AAdd( aReport[ RP_COLUMNS ], aColumn )
+         // Next
+         nFieldOffset += 12
       NEXT nCount
-
    ENDIF
 
    RETURN aReport
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION ParseHeader( cHeaderString, nFields )
 
-   LOCAL cItem
-   LOCAL nItemCount := 0
-   LOCAL aPageHeader := {}
-   LOCAL nHeaderLen := 254
-   LOCAL nPos
+   LOCAL cItem, nItemCount := 0, aPageHeader := {}, nHeaderLen := 254, nPos
 
-   DO WHILE ( ++nItemCount <= nFields )
-      cItem := SUBSTR( cHeaderString, 1, nHeaderLen )
-      * Busco delimitador....
-      nPos := AT( ";", cItem )
-      IF ! EMPTY( nPos )
-         AADD( aPageHeader, SUBSTR( cItem, 1, nPos - 1 ) )
+   DO WHILE ++ nItemCount <= nFields
+      cItem := SubStr( cHeaderString, 1, nHeaderLen )
+      nPos := At( ";", cItem )
+      IF ! Empty( nPos )
+         AAdd( aPageHeader, SubStr( cItem, 1, nPos - 1 ) )
       ELSE
-         IF EMPTY( cItem )
-            AADD( aPageHeader, "" )
+         IF Empty( cItem )
+            AAdd( aPageHeader, "" )
          ELSE
-            AADD( aPageHeader, cItem )
+            AAdd( aPageHeader, cItem )
          ENDIF
          nPos := nHeaderLen
       ENDIF
-      cHeaderString := SUBSTR( cHeaderString, nPos + 1 )
+      cHeaderString := SubStr( cHeaderString, nPos + 1 )
    ENDDO
 
-   RETURN( aPageHeader )
+   RETURN aPageHeader
 
-STATIC FUNCTION GetExpr( nPointer )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetExpr( nPointer ) CLASS TReportFormWin
 
-   LOCAL nExprOffset   // := 0
-   LOCAL nExprLength   // := 0
-   LOCAL nOffsetOffset := 0
-   LOCAL cString := ""
+   LOCAL nExprOffset, nExprLength, nOffsetOffset := 0, cString := ""
 
-   IF nPointer != 65535
-      nPointer++
+   IF nPointer # 65535
+      nPointer ++
 
       IF nPointer > 1
-         nOffsetOffset = (nPointer * 2) - 1
+         nOffsetOffset := ( nPointer * 2 ) - 1
       ENDIF
 
-      nExprOffset = BIN2W(SUBSTR(cOffsetsBuff, nOffsetOffset, 2))
-      nExprLength = BIN2W(SUBSTR(cLengthsBuff, nOffsetOffset, 2))
+      nExprOffset := Bin2W( SubStr( ::cOffsetsBuff, nOffsetOffset, 2 ) )
+      nExprLength := Bin2W( SubStr( ::cLengthsBuff, nOffsetOffset, 2 ) )
 
-      nExprOffset++
-      nExprLength--
+      nExprOffset ++
+      nExprLength --
 
-      cString = SUBSTR(cExprBuff, nExprOffset, nExprLength)
+      cString := SubStr( ::cExprBuff, nExprOffset, nExprLength )
 
-      IF CHR(0) == SUBSTR(cString, 1, 1) .AND. LEN(SUBSTR(cString,1,1)) = 1
-         cString = ""
+      IF Chr( 0 ) == SubStr( cString, 1, 1 ) .AND. Len( SubStr( cString, 1, 1 ) ) == 1
+         cString := ""
       ENDIF
    ENDIF
 
-   RETURN (cString)
+   RETURN cString
 
-STATIC FUNCTION GetColumn( cFieldsBuffer, nOffset )
-
-   LOCAL nPointer, aColumn[ RC_COUNT ], cType
-
-   ** Ancho de la columna
-   aColumn[ RC_WIDTH ] := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_WIDTH_OFFSET, 2))
-
-   ** tiene totales?
-   aColumn[ RC_TOTAL ] := IF(SUBSTR(cFieldsBuffer, nOffset + FIELD_TOTALS_OFFSET, 1) $ "YyTt", .T., .F.)
-
-   ** Cantidad de decimales
-   aColumn[ RC_DECIMALS ] := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_DECIMALS_OFFSET, 2))
-
-   ** Expresión con Contenido de la columna
-   nPointer := BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_CONTENT_EXPR_OFFSET, 2))
-   aColumn[ RC_TEXT ] := GetExpr( nPointer )
-   aColumn[ RC_EXP ] := &( "{ || " + GetExpr( nPointer ) + "}" )
-
-   ** Cabezal de la columna
-   nPointer = BIN2W(SUBSTR(cFieldsBuffer, nOffset + FIELD_HEADER_EXPR_OFFSET, 2))
-
-   aColumn[ RC_HEADER ] := ListAsArray(GetExpr( nPointer ), ";")
-
-   ** Picture de la columna
-   IF USED()
-      cType := VALTYPE( EVAL(aColumn[ RC_EXP ]) )
-      aColumn[ RC_TYPE ] := cType
-      DO CASE
-      CASE cType = "C" .OR. cType = "M"
-         aColumn[ RC_PICT ] := REPLICATE("X", aColumn[ RC_WIDTH ])
-      CASE cType = "D"
-         aColumn[ RC_PICT ] := "@D"
-      CASE cType = "N"
-         IF aColumn[ RC_DECIMALS ] != 0
-            aColumn[ RC_PICT ] := REPLICATE("9", aColumn[ RC_WIDTH ] - aColumn[ RC_DECIMALS ] -1) + "." + REPLICATE("9", aColumn[ RC_DECIMALS ])
-         ELSE
-            aColumn[ RC_PICT ] := REPLICATE("9", aColumn[ RC_WIDTH ])
-         ENDIF
-      CASE cType = "L"
-         aColumn[ RC_PICT ] := "@L" + REPLICATE("X",aColumn[ RC_WIDTH ]-1)
-      ENDCASE
-   ENDIF
-
-   nOffset += 12
-
-   RETURN ( aColumn )
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION ListAsArray( cList, cDelimiter )
 
-   * Convierto un string delimitado (por comas) a un array
-   LOCAL nPos
-   LOCAL aList := {}
-   LOCAL lDelimLast := .F.
+   // Builds an array from a comma delimited string
 
-   IF cDelimiter == NIL
-      cDelimiter := ","
-   ENDIF
+   LOCAL nPos, aList := {}, lDelimLast := .F.
 
-   DO WHILE ( LEN(cList) <> 0 )
+   ASSIGN cDelimiter VALUE cDelimiter TYPE "C" DEFAULT ","
 
-      nPos := AT(cDelimiter, cList)
-
-      IF ( nPos == 0 )
-         nPos := LEN(cList)
+   DO WHILE Len( cList ) # 0
+      nPos := At( cDelimiter, cList )
+      IF nPos == 0
+         nPos := Len( cList )
       ENDIF
-
-      IF ( SUBSTR( cList, nPos, 1 ) == cDelimiter )
+      IF SubStr( cList, nPos, 1 ) == cDelimiter
          lDelimLast := .T.
-         AADD(aList, SUBSTR(cList, 1, nPos - 1))
+         AAdd( aList, SubStr( cList, 1, nPos - 1 ) )
       ELSE
          lDelimLast := .F.
-         AADD(aList, SUBSTR(cList, 1, nPos))
+         AAdd( aList, SubStr( cList, 1, nPos ) )
       ENDIF
-
-      cList := SUBSTR(cList, nPos + 1)
-
+      cList := SubStr( cList, nPos + 1 )
    ENDDO
 
-   IF ( lDelimLast )
-      AADD(aList, "")
+   IF lDelimLast
+      AAdd( aList, "" )
    ENDIF
 
    RETURN aList

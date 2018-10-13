@@ -82,12 +82,22 @@
       [ <llandscape: LANDSCAPE> ] ;
       [ <lgroupeject: GROUPEJECT> ] ;
       [ HEADING <cheader> ] ;
+      [ QUALITY <nres> ] ;
+      [ DEFAULTSOURCE <nbin> ] ;
+      [ DUPLEX <nduplex> ] ;
+      [ <lcollate: COLLATE> ] ;
+      [ COPIES <ncopies> ] ;
+      [ <lcolor: COLOR> ] ;
+      [ SCALE <nscale> ] ;
+      [ PAPERLENGTH <nlength> ] ;
+      [ PAPERWIDTH <nwidth> ] ;
    => ;
       EasyReport( <ctitle>, <aheaders1>, <aheaders2>, <a>, <awidths>, <ato>, ;
             <nlpp>, <.ldos.>, <.lpreview.>, <cgraphic>, <nfi>, <nci>, <nff>, ;
             <ncf>, <.lmul.>, <"cgrpby">, <chdrgrp>, <.llandscape.>, <ncpl>, ;
             <.lselect.>, <(calias)>, <nllmargin>, <aformats>, <npapersize>, ;
-            <cheader>, <.lnoprop.>, <.lgroupeject.> )
+            <cheader>, <.lnoprop.>, <.lgroupeject.>, <nres>, <nbin>, <nduplex>, ;
+            <.lcollate.>, <ncopies>, <.lcolor.>, <nscale>, <nlength>, <nwidth> )
 
 #command REPORTFORMWIN <frm> ;
       [ HEADING <head> ] ;
@@ -102,9 +112,26 @@
       [ RECORD <rec> ] ;
       [ <rest: REST> ] ;
       [ ALL ] ;
+      [ <nosep: NOSEPARATORS> ] ;
+      [ <lselect: SELECT> ] ;
+      [ <lpreview: PREVIEW> ] ;
+      [ <llandscape: LANDSCAPE> ] ;
+      [ PAPERSIZE <npapersize> ] ;
+      [ QUALITY <nres> ] ;
+      [ DEFAULTSOURCE <nbin> ] ;
+      [ DUPLEX <nduplex> ] ;
+      [ <lcollate: COLLATE> ] ;
+      [ COPIES <ncopies> ] ;
+      [ <lcolor: COLOR> ] ;
+      [ SCALE <nscale> ] ;
+      [ PAPERLENGTH <nlength> ] ;
+      [ PAPERWIDTH <nwidth> ] ;
    => ;
-      __ReportFormwin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, <{for}>, <{while}>, ;
-            <next>, <rec>, <.rest.>, <.plain.>, <head>, <.noej.>, <.sum.> )
+      __ReportFormWin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, <{for}>, <{while}>, ;
+            <next>, <rec>, <.rest.>, <.plain.>, <head>, <.noej.>, <.sum.>, ;
+            <.nosep.>, <.lselect.>, <.lpreview.>, <.llandscape.>, <npapersize>, ;
+            <nres>, <nbin>, <nduplex>, <.lcollate.>, <ncopies>, <.lcolor.>, ;
+            <nscale>, <nlength>, <nwidth> )
 
 #xcommand DO REPORT FORM <cfilerep> ;
       [ HEADING <cheading> ] ;
@@ -241,7 +268,7 @@ PREDEFINED VALUES FOR SETMODE PAPERSIZE
 
 #endif
 
-#define apapeles { ;
+#define _OOHG_PaperConstants { ;
       "DMPAPER_LETTER", ;
       "DMPAPER_LETTERSMALL", ;
       "DMPAPER_TABLOID", ;
@@ -360,3 +387,5 @@ PREDEFINED VALUES FOR SETMODE PAPERSIZE
       "DMPAPER_PENV_8_ROTATED", ;
       "DMPAPER_PENV_9_ROTATED", ;
       "DMPAPER_PENV_10_ROTATED" }
+
+#define apapeles _OOHG_PaperConstants
