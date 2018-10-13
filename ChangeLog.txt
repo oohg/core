@@ -8,6 +8,26 @@
  * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
  */
 
+2018-10-12 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_report.ch
+     + Clauses QUALITY, DEFAULTSOURCE, DUPLEX, COLLATE, COPIES,
+       COLOR, SCALE, PAPERLENGTH and PAPERWIDTH to DO REPORT
+       command.
+     + Clauses NOSEPARATORS, SELECT, PREVIEW, LANDSCAPE,
+       PAPERSIZE, QUALITY, DEFAULTSOURCE, DUPLEX, COLLATE,
+       COPIES, COLOR, SCALE, PAPERLENGTH and PAPERWIDTH to 
+       REPORTFORMWIN command.
+   * core\source\h_report.prg
+     + Support for new clauses.
+     + Support for missing TPrint subclasses.
+     * Format.
+     * Comments.
+     - All static and private variables.
+     + Class TReport.
+     + Class TReportFormWin.
+     ! Memo printing in DO REPORT.
+     % DO EVENTS is now executed every 10 records.
+
 2018-10-11 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_window.ch
      + Clause MDITABNAV. Enables tabbing navigation on MDICHILD
