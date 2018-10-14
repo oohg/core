@@ -6,6 +6,7 @@
  * Menu definitions
  *
  * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -184,6 +185,17 @@
       [ <right: RIGHT> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <breakmenu: BREAKMENU> ] ;
+
+	FONTNAME <fontname>   ;
+	[ SIZE <fontsize> ]   ;
+	[ <bold : BOLD> ]     ;
+	[ <italic : ITALIC> ] ;
+	[ <underline : UNDERLINE> ] ;
+	[ <strikeout : STRIKEOUT> ] ;
+	[ CHARSET <charset> ]	;
+	[ ANGLE <Angle> ]	;
+
+      [ WIDTH <width> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefinePopUp( <caption>, <(name)>, <.checked.>, <.disabled.>, ;

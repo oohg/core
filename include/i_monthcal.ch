@@ -6,6 +6,7 @@
  * Monthcal definitions
  *
  * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>

@@ -6,6 +6,7 @@
  * Compatibility file
  *
  * Copyright 2017-2018 Fernando Yurisich <fyurisich@oohg.org>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
