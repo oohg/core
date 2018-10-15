@@ -587,9 +587,9 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             rct.right  = pData->right;
 
             /*
-              HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation )
+              HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation, bool Advanced )
             */
-            hFont = PrepareFont( (char *) &pData->points, (int) pData->width, (int) pData->top2, (int) pData->left2, (int) pData->bottom2, (int) pData->right2, 0, DEFAULT_CHARSET, 0, 0 );
+            hFont = PrepareFont( (char *) &pData->points, (int) pData->width, (int) pData->top2, (int) pData->left2, (int) pData->bottom2, (int) pData->right2, 0, DEFAULT_CHARSET, 0, 0, FALSE );
             hOldFont = ( HFONT ) SelectObject( hDC, hFont );
 
             // Draw string
