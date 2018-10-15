@@ -163,15 +163,13 @@ METHOD Value( uValue ) CLASS TMonthCal
 
    Return GetMonthCalDate( ::hWnd )
 
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout ) CLASS TMonthCal
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TMonthCal
 
-   Local uRet
-
-   uRet := ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout )
+   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
    ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
 
-   Return uRet
+   RETURN NIL
 
 METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
 
