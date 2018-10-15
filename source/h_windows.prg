@@ -162,6 +162,7 @@ CLASS TWindow
    DATA FntCharset                INIT DEFAULT_CHARSET
    DATA FntWidth                  INIT 0
    DATA FntOrientation            INIT 0
+   DATA FntAdvancedGM             INIT .F.
    DATA cFocusFontName            INIT ""
    DATA nFocusFontSize            INIT 0
    DATA FocusBold                 INIT .F.
