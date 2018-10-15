@@ -158,8 +158,10 @@ CLASS TWindow
    DATA Italic                    INIT .F.
    DATA Underline                 INIT .F.
    DATA Strikeout                 INIT .F.
-   DATA FntWidth                  INIT 0
    DATA FntAngle                  INIT 0
+   DATA FntCharset                INIT DEFAULT_CHARSET
+   DATA FntWidth                  INIT 0
+   DATA FntOrientation            INIT 0
    DATA cFocusFontName            INIT ""
    DATA nFocusFontSize            INIT 0
    DATA FocusBold                 INIT .F.
