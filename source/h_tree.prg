@@ -2869,7 +2869,7 @@ HB_FUNC( TREEVIEW_BEGINDRAG )
    /* needed in some XP systems to show text in the drag image */
    iIndent = TreeView_GetIndent( hTree );
    oldFont = (HFONT) SendMessage( hTree, (UINT) WM_GETFONT, (WPARAM) 0, (LPARAM )0 );
-   newFont = (HFONT) PrepareFont( "MS Sans Serif", 10, FW_NORMAL, 0, 0, 0, 0, 0 );
+   newFont = (HFONT) PrepareFont( "MS Sans Serif", 10, FW_NORMAL, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0 );
    SendMessage( hTree, (UINT) WM_SETFONT, (WPARAM) newFont, (LPARAM) 1 );
 
    /* tell the treeview control to create an image to use for dragging */
