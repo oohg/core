@@ -215,9 +215,9 @@ METHOD GroupWidth() CLASS TRadioGroup
 
    RETURN nRet
 
-METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TRadioGroup
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TRadioGroup
 
-   AEVAL( ::aOptions, { |o| o:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) } )
+   AEVAL( ::aOptions, { |o| o:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) } )
 
    RETURN Nil
 

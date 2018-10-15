@@ -163,9 +163,9 @@ METHOD Value( uValue ) CLASS TMonthCal
 
    Return GetMonthCalDate( ::hWnd )
 
-METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TMonthCal
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TMonthCal
 
-   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
+   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
    ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
 
