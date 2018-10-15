@@ -138,17 +138,3 @@
    => ;
       _SetStatusKeybrd( <nSize>, <cToolTip>, <{uAction}>, <cBitmap>, ;
             <(styl)>, <(align)> )
-
-#xcommand SET STATUSBAR FONT TO <fontname>, <fontsize> ;
-      [ <bold : BOLD> ] ;
-      [ <italic : ITALIC> ] ;
-      [ <underline : UNDERLINE> ] ;
-      [ <strikeout : STRIKEOUT> ] ;
-      [ <langle: ANGLE, ESCAPEMENT> <angle> ] ;
-      [ CHARSET <charset> ] ;
-      [ WIDTH <width> ] ;
-      [ <lorient: ORIENT, ORIENTATION> <orient> ] ;
-   => ;
-      _SetStatusFont( <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
-            <.underline.>, <.strikeout.>, <angle>, <charset>, <width>, ;
-            <orient>, <.langle.> .AND. <.lorient.> )
