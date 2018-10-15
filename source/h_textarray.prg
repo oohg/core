@@ -136,9 +136,9 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout ) CLASS TTextArray
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TTextArray
 
-   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout )
+   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
    TTextArray_SetFontSize( Self )
 
    RETURN NIL
