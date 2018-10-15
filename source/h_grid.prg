@@ -3902,27 +3902,29 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 
    Return ::aHeaderImageAlign[ nColumn ]
 
-METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntwidth ) CLASS TGrid
+METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharSet, nWidth, nOrientation ) CLASS TGrid
 
-   Local HeaderHandle
+   LOCAL HeaderHandle
 
-   If ValidHandler( ::HeaderFontHandle )
+   IF ValidHandler( ::HeaderFontHandle )
       DeleteObject( ::HeaderFontHandle )
-   EndIf
-   ASSIGN cFontName  VALUE cFontName  TYPE "CM" DEFAULT ""
-   ASSIGN nFontSize  VALUE nFontSize  TYPE "N"  DEFAULT 0
-   ASSIGN lBold      VALUE lBold      TYPE "L"  DEFAULT .F.
-   ASSIGN lItalic    VALUE lItalic    TYPE "L"  DEFAULT .F.
-   ASSIGN lUnderline VALUE lUnderline TYPE "L"  DEFAULT .F.
-   ASSIGN lStrikeout VALUE lStrikeout TYPE "L"  DEFAULT .F.
-   ASSIGN nFntAngle  VALUE nFntAngle  TYPE "N"  DEFAULT 0
-   ASSIGN nFntWidth  VALUE nFntWidth  TYPE "N"  DEFAULT 0
+   ENDIF
+   ASSIGN cFontName    VALUE cFontName    TYPE "CM" DEFAULT ""
+   ASSIGN nFontSize    VALUE nFontSize    TYPE "N"  DEFAULT 0
+   ASSIGN lBold        VALUE lBold        TYPE "L"  DEFAULT .F.
+   ASSIGN lItalic      VALUE lItalic      TYPE "L"  DEFAULT .F.
+   ASSIGN lUnderline   VALUE lUnderline   TYPE "L"  DEFAULT .F.
+   ASSIGN lStrikeout   VALUE lStrikeout   TYPE "L"  DEFAULT .F.
+   ASSIGN nAngle       VALUE nAngle       TYPE "N"  DEFAULT 0
+   ASSIGN nCharset     VALUE nCharset     TYPE "N"  DEFAULT DEFAULT_CHARSET
+   ASSIGN nWidth       VALUE nWidth       TYPE "N"  DEFAULT 0
+   ASSIGN nOrientation VALUE nOrientation TYPE "N"  DEFAULT 0
    HeaderHandle := GetHeader( ::hWnd )
-   If ValidHandler( HeaderHandle )
-      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nFntAngle, nFntWidth )
-   EndIf
+   IF ValidHandler( HeaderHandle )
+      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Release() CLASS TGrid
 
