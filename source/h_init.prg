@@ -164,7 +164,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Edit', ;
                          'Ok', ;
                          'Cancel', ;
-                         'Pag.', ;
+                         'Page', ;
                          'Error', ;
                          'Warning', ;
                          'Edit Memo', ;
@@ -1591,7 +1591,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Editar', ;
                          'Aceptar', ;
                          'Cancelar', ;
-                         'Pag.', ;
+                         'Pág.', ;
                          'Error', ;
                          'Advertencia', ;
                          'Editar Memo', ;
