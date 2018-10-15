@@ -2056,7 +2056,7 @@ Align
 */
 
 
-HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text_Color, Back_color, Type, Align, Orientation )
+HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text_Color, Back_color, Type, Align, Orientation, Escapement )
 {
    HDC      hDC;
    INT      x, y;
@@ -2066,6 +2066,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    COLORREF Text_Color, Back_Color;
    INT      Type, Align;
    INT      Orientation;
+   INT      Escapement;
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
 
@@ -2080,11 +2081,17 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    Type        = (INT)      hb_parni( 9 );
    Align       = (INT)      hb_parni( 10 );
    Orientation = (INT)      hb_parni( 11 );
+   Escapement  = (INT)      hb_parni( 12 );
 
    if( ( Orientation < -360 ) || ( Orientation > 360 ) )
       Orientation = 0;
 
    Orientation = Orientation * 10;   // Angle in tenths of degrees
+
+   if( ( Escapement < -360 ) || ( Escapement > 360 ) )
+      Escapement = 0;
+
+   Escapement = Escapement * 10;   // Angle in tenths of degrees
 
    if( ( Type & BT_TEXT_TRANSPARENT ) == BT_TEXT_TRANSPARENT )
       SetBkMode( hDC, TRANSPARENT );
@@ -2111,7 +2118,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    FontSize = FontSize * GetDeviceCaps( hDC, LOGPIXELSY ) / 72;
 
    // CreateFont( Height, Width, Escapement, Orientation, Weight, Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision, Quality, PitchAndFamily, Face );
-   hFont = CreateFont( 0 - FontSize, 0, Orientation, Orientation, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
+   hFont = CreateFont( 0 - FontSize, 0, Escapement, Orientation, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
 
    hOldFont = (HFONT) SelectObject( hDC, hFont );
 
@@ -2229,6 +2236,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
    INT      FontSize;
    INT      Type;
    INT      Orientation = 0;
+   INT      Escapement = 0;
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
    HFONT    hFont, hOldFont;
@@ -2259,7 +2267,7 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
    FontSize = FontSize * GetDeviceCaps( hDC, LOGPIXELSY ) / 72;
 
    // CreateFont( Height, Width, Escapement, Orientation, Weight, Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision, Quality, PitchAndFamily, Face );
-   hFont = CreateFont( 0 - FontSize, 0, Orientation, Orientation, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
+   hFont = CreateFont( 0 - FontSize, 0, Escapement, Orientation, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
 
    hOldFont = (HFONT) SelectObject( hDC, hFont );
 
@@ -4038,6 +4046,8 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
    INT   Type;
    INT   Bold = FW_NORMAL;
    INT   Italic = 0, Underline = 0, StrikeOut = 0;
+   INT   Orientation = 0;
+   INT   Escapement = 0;
 
    hWnd        = HWNDparam( 1 );
    Text        = (TCHAR *)  hb_parc( 2 );
@@ -4061,7 +4071,7 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
 
    FontSize = FontSize * GetDeviceCaps( hDC, LOGPIXELSY ) / 72;    // Size of font in logic points
 
-   hFont = CreateFont( 0 - FontSize, 0, 0, 0, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
+   hFont = CreateFont( 0 - FontSize, 0, Escapement, Orientation, Bold, Italic, Underline, StrikeOut, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, FontName );
 
    hOldFont = (HFONT) SelectObject( hDC, hFont );
 
