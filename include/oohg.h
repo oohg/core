@@ -236,7 +236,7 @@ int _OOHG_SearchFormHandleInArray( HWND hWnd );
 int _OOHG_SearchControlHandleInArray( HWND hWnd );
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 HBRUSH GetTabBrush( HWND hWnd );
-HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation );
+HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation, int Advanced );
 BOOL SaveHBitmapToFile( void *, const char *, UINT, UINT, const char *, ULONG, ULONG );
 HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor );
 wchar_t * AnsiToWide( const char * szString );
