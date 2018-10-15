@@ -1131,7 +1131,7 @@ Function cFileNoExt( cPathMask )
 
    Return AllTrim( If( n > 0, Left( cName, n - 1 ), cName ) )
 
-Function NoArray (OldArray)
+Function NoArray( OldArray )
 
    Local NewArray := {}
    Local i
@@ -1154,21 +1154,97 @@ Function NoArray (OldArray)
 
    Return NewArray
 
-Function _SetFontColor ( ControlName, ParentForm , Value  )
+FUNCTION _GetFontName( ControlName, ParentForm )
 
-   Return ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
+   RETURN GetControlObject( ControlName, ParentForm ):cFontName
 
-Function _SetBackColor ( ControlName, ParentForm , Value  )
+FUNCTION _GetFontSize( ControlName, ParentForm )
 
-   Return ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
+   RETURN GetControlObject( ControlName, ParentForm ):nFontSize
 
-Function _SetStatusIcon( ControlName , ParentForm , Item , Icon )
+FUNCTION _GetFontBold( ControlName, ParentForm )
 
-   Return SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item , Icon )
+   RETURN GetControlObject( ControlName, ParentForm ):Bold
 
-Function _GetCaption( ControlName , ParentForm )
+FUNCTION _GetFontItalic( ControlName, ParentForm )
 
-   Return GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
+   RETURN GetControlObject( ControlName, ParentForm ):Italic
+
+FUNCTION _GetFontUnderline( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):Underline
+
+FUNCTION _GetFontStrikeOut( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):Strikeout
+
+FUNCTION _GetFontAngle( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):FntAngle
+
+FUNCTION _GetFontWidth( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):FntWidth
+
+FUNCTION _GetFontCharset( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):FntCharset
+
+FUNCTION _SetFontName( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( Value )
+
+FUNCTION _SetFontSize( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , Value )
+
+FUNCTION _SetFontBold( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , Value )
+
+FUNCTION _SetFontItalic( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , Value )
+
+FUNCTION _SetFontUnderline( ControlName, ParentForm, Value ) 
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , Value )
+
+FUNCTION _SetFontStrikeOut( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , Value )
+
+FUNCTION _SetFontAngle( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , Value )
+
+FUNCTION _SetFontCharset( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , , Value )
+
+FUNCTION _SetFontWidth( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , , , Value )
+
+FUNCTION _SetFontOrientation( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , , , , Value )
+
+FUNCTION _SetFontColor( ControlName, ParentForm, Value )
+
+   RETURN ( GetControlObject( ControlName, ParentForm ):FontColor := Value )
+
+FUNCTION _SetBackColor( ControlName, ParentForm, Value )
+
+   RETURN ( GetControlObject( ControlName, ParentForm ):BackColor := Value )
+
+FUNCTION _SetStatusIcon( ControlName, ParentForm, Item, Icon )
+
+   RETURN SetStatusItemIcon( GetControlObject( ControlName, ParentForm ):hWnd, Item, Icon )
+
+FUNCTION _GetCaption( ControlName, ParentForm )
+
+   RETURN GetWindowText( GetControlObject( ControlName, ParentForm ):hWnd )
 
 
 CLASS TControl FROM TWindow
@@ -1192,7 +1268,7 @@ CLASS TControl FROM TWindow
    DATA OldValue             INIT nil
    DATA OldColor
    DATA OldBackColor
-   DATA oBkGrnd                   INIT NIL
+   DATA oBkGrnd              INIT NIL
 
    METHOD Row                SETGET
    METHOD Col                SETGET
@@ -1219,7 +1295,9 @@ CLASS TControl FROM TWindow
    METHOD FontUnderline      SETGET
    METHOD FontStrikeout      SETGET
    METHOD FontAngle          SETGET
+   METHOD FontCharset        SETGET
    METHOD FontWidth          SETGET
+   METHOD FontOrientation    SETGET
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
@@ -1561,110 +1639,134 @@ METHOD Release() CLASS TControl
 
    Return ::Super:Release()
 
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Fntwidth ) CLASS TControl
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TControl
 
    IF ::FontHandle > 0
       DeleteObject( ::FontHandle )
    ENDIF
-   IF ! EMPTY( FontName ) .AND. VALTYPE( FontName ) $ "CM"
-      ::cFontName := FontName
+   IF ! Empty( cFontName ) .AND. ValType( cFontName ) $ "CM"
+      ::cFontName := cFontName
    ENDIF
-   IF ! EMPTY( FontSize ) .AND. HB_IsNumeric( FontSize )
-      ::nFontSize := FontSize
+   IF ! Empty( nFontSize ) .AND. HB_ISNUMERIC( nFontSize )
+      ::nFontSize := nFontSize
    ENDIF
-   IF HB_Islogical( Bold )
-      ::Bold := Bold
+   IF HB_ISLOGICAL( lBold )
+      ::Bold := lBold
    ENDIF
-   IF HB_IsLogical( Italic )
-      ::Italic := Italic
+   IF HB_ISLOGICAL( lItalic )
+      ::Italic := lItalic
    ENDIF
-   IF HB_IsLogical( Underline )
-      ::Underline := Underline
+   IF HB_ISLOGICAL( lUnderline )
+      ::Underline := lUnderline
    ENDIF
-   IF HB_IsLogical( Strikeout )
-      ::Strikeout := Strikeout
+   IF HB_ISLOGICAL( lStrikeout )
+      ::Strikeout := lStrikeout
    ENDIF
-   IF ! EMPTY( Angle ) .AND. HB_IsNumeric( Angle )
-      ::FntAngle := Angle
+   IF ! Empty( nAngle ) .AND. HB_ISNUMERIC( nAngle )
+      ::FntAngle := nAngle
    ENDIF
-   IF ! EMPTY( FntWidth ) .AND. HB_IsNumeric( FntWidth )
-      ::Fntwidth := FntWidth
+   IF ! Empty( nCharset ) .AND. HB_ISNUMERIC( nCharset )
+      ::FntCharset := nCharset
    ENDIF
-   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntWidth )
+   IF ! Empty( nWidth ) .AND. HB_ISNUMERIC( nWidth )
+      ::FntWidth := nWidth
+   ENDIF
+   IF ! Empty( nOrientation ) .AND. HB_ISNUMERIC( nOrientation )
+      ::FntOrientation := nOrientation
+   ENDIF
+   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation )
 
-   Return Nil
+   RETURN NIL
 
 METHOD FontName( cFontName ) CLASS TControl
 
-   If ValType( cFontName ) $ "CM"
-      ::cFontName:=cFontName
+   IF ValType( cFontName ) $ "CM"
+      ::cFontName := cFontName
       ::SetFont( cFontName )
-   EndIf
+   ENDIF
 
-   Return ::cFontName
+   RETURN ::cFontName
 
 METHOD FontSize( nFontSize ) CLASS TControl
 
-   If HB_IsNumeric( nFontSize )
-      ::nFontSize:=nFontSize
+   IF HB_ISNUMERIC( nFontSize )
+      ::nFontSize := nFontSize
       ::SetFont( , nFontSize )
-   EndIf
+   ENDIF
 
-   Return ::nFontSize
+   RETURN ::nFontSize
 
 METHOD FontBold( lBold ) CLASS TControl
 
-   If HB_IsLogical( lBold )
-      ::Bold:=lBold
-      ::SetFont( ,, lBold )
-   EndIf
+   IF HB_ISLOGICAL( lBold )
+      ::Bold := lBold
+      ::SetFont( , , lBold )
+   ENDIF
 
-   Return ::Bold
+   RETURN ::Bold
 
 METHOD FontItalic( lItalic ) CLASS TControl
 
-   If HB_IsLogical( lItalic )
-      ::Italic:=lItalic
-      ::SetFont( ,,, lItalic )
-   EndIf
+   IF HB_ISLOGICAL( lItalic )
+      ::Italic := lItalic
+      ::SetFont( , , , lItalic )
+   ENDIF
 
-   Return ::Italic
+   RETURN ::Italic
 
 METHOD FontUnderline( lUnderline ) CLASS TControl
 
-   If HB_IsLogical( lUnderline )
-      ::Underline:=lUnderline
-      ::SetFont( ,,,, lUnderline )
-   EndIf
+   IF HB_ISLOGICAL( lUnderline )
+      ::Underline := lUnderline
+      ::SetFont( , , , , lUnderline )
+   ENDIF
 
-   Return ::Underline
+   RETURN ::Underline
 
 METHOD FontStrikeout( lStrikeout ) CLASS TControl
 
-   If HB_Islogical( lStrikeout )
-      ::StrikeOut:=lStrikeout
-      ::SetFont( ,,,,, lStrikeout )
-   EndIf
+   IF HB_ISLOGICAL( lStrikeout )
+      ::StrikeOut := lStrikeout
+      ::SetFont( , , , , , lStrikeout )
+   ENDIF
 
-   Return ::Strikeout
+   RETURN ::Strikeout
 
 METHOD FontAngle( nAngle ) CLASS TControl
 
-   If HB_IsNumeric( nAngle )
-     ::FntAngle:=nAngle
-      ::SetFont( ,,,,,, nAngle )
-   EndIf
+   IF HB_ISNUMERIC( nAngle )
+     ::FntAngle := nAngle
+      ::SetFont( , , , , , , nAngle )
+   ENDIF
 
-   Return ::FntAngle
+   RETURN ::FntAngle
+
+METHOD FontCharset( nCharset ) CLASS TControl
+
+   IF HB_ISNUMERIC( nCharset )
+     ::FntCharset := nCharset
+      ::SetFont( , , , , , , , nCharset )
+   ENDIF
+
+   RETURN ::FntCharset
 
 METHOD FontWidth( nWidth ) CLASS TControl
 
-   If HB_IsNumeric( nWidth )
-     ::FntWidth:=nWidth
-      ::SetFont( ,,,,,,, nWidth )
-   EndIf
+   IF HB_ISNUMERIC( nWidth )
+     ::FntWidth := nWidth
+      ::SetFont( , , , , , , , , nWidth )
+   ENDIF
 
-   Return ::FntWidth
+   RETURN ::FntWidth
+
+METHOD FontOrientation( nOrientation ) CLASS TControl
+
+   IF HB_ISNUMERIC( nOrientation )
+     ::FntOrientation := nOrientation
+      ::SetFont( , , , , , , , , , nOrientation )
+   ENDIF
+
+   RETURN ::FntOrientation
 
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
 
@@ -2264,7 +2366,7 @@ METHOD FocusEffect CLASS TControl
          ::FocusStrikeout := ::Strikeout
       EndIf
 
-      ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntWidth )
+      ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation )
    EndIf
 
    If ! Empty( ::FocusColor )
