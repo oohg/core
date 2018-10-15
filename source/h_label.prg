@@ -173,9 +173,9 @@ METHOD Caption( cValue ) CLASS TLabel
 
    RETURN cValue
 
-METHOD SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width ) CLASS Tlabel
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS Tlabel
 
-   ::Super:SetFont( FontName, FontSize, Bold, Italic, Underline, Strikeout, Angle, Width )
+   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
    IF ::lAutosize
       ::AutoSize( .T. )
    ELSEIF ::Transparent .AND. ::lVisible
