@@ -86,6 +86,10 @@
          <var> := ( <default> ) ;;
       ENDIF
 
+#xtranslate SetFontNameSize( [ <param,...> ] ) ;
+   => ;
+      _SetFont( <param> )
+
 #xtranslate GetDefaultFontName() ;
    => ;
       GetSystemFont() \[1\]
