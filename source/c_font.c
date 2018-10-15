@@ -76,17 +76,17 @@ HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Und
    HDC hDC = GetDC( HWND_DESKTOP );
    int cyp = GetDeviceCaps( hDC, LOGPIXELSY );
 
+   int nEscapement = Escapement;                             // Angle between the escapement vector and the x-axis
+   int nOrientation;
    if( Advanced )
    {
       SetGraphicsMode( hDC, GM_ADVANCED );
-      int nEscapement  = Escapement;                    // Angle between the escapement vector and the x-axis
-      int nOrientation = Orientation;                   // Angle between character's base line and the x-axis
+      nOrientation = Orientation;                             // Angle between character's base line and the x-axis
    }
    else
    {
       SetGraphicsMode( hDC, GM_COMPATIBLE );
-      int nEscapement  = Escapement;                    // Angle between the escapement vector and the x-axis
-      int nOrientation = Escapement;                    // Angle between character's base line and the x-axis
+      nOrientation = Escapement;                              // Angle between character's base line and the x-axis
    }
    ReleaseDC( HWND_DESKTOP, hDC );
 
@@ -114,13 +114,13 @@ HB_FUNC( INITFONT )   // ( cFontName, nFontSize, lBold, lItalic, lUnderline, lSt
    int italic      = hb_parl( 4 ) ? 1 : 0;
    int underline   = hb_parl( 5 ) ? 1 : 0;
    int strikeout   = hb_parl( 6 ) ? 1 : 0;
-   int angle       = ( ISNUM( 7 ) ? hb_parni( 7 ) : 0 );
-   int charset     = ( ISNUM( 8 ) ? hb_parni( 8 ) : DEFAULT_CHARSET );
-   int width       = ( ISNUM( 9 ) ? hb_parni( 9 ) : 0 );
-   int orientation = ( ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
+   int angle       = ( HB_ISNUM( 7 ) ? hb_parni( 7 ) : 0 );
+   int charset     = ( HB_ISNUM( 8 ) ? hb_parni( 8 ) : DEFAULT_CHARSET );
+   int width       = ( HB_ISNUM( 9 ) ? hb_parni( 9 ) : 0 );
+   int orientation = ( HB_ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
    int advanced    = hb_parl( 11 ) ? 1 : 0;
 
-   HFONT font = PrepareFont( hb_parc( 1 ), hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
+   HFONT font = PrepareFont( (char *) hb_parc( 1 ), hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
    HB_RETNL( (LONG_PTR) font );
 }
 
@@ -131,13 +131,13 @@ HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderlin
    int italic      = hb_parl( 5 ) ? 1 : 0;
    int underline   = hb_parl( 6 ) ? 1 : 0;
    int strikeout   = hb_parl( 7 ) ? 1 : 0;
-   int angle       = ( ISNUM( 8 ) ? hb_parni( 8 ) : 0 );
-   int charset     = ( ISNUM( 9 ) ? hb_parni( 9 ) : DEFAULT_CHARSET );
-   int width       = ( ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
-   int orientation = ( ISNUM( 11 ) ? hb_parni( 11 ) : 0 );
+   int angle       = ( HB_ISNUM( 8 ) ? hb_parni( 8 ) : 0 );
+   int charset     = ( HB_ISNUM( 9 ) ? hb_parni( 9 ) : DEFAULT_CHARSET );
+   int width       = ( HB_ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
+   int orientation = ( HB_ISNUM( 11 ) ? hb_parni( 11 ) : 0 );
    int advanced    = hb_parl( 12 ) ? 1 : 0;
 
-   HFONT font = PrepareFont( hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
+   HFONT font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
    SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
    HB_RETNL( (LONG_PTR) font );
 }
