@@ -100,7 +100,7 @@ CLASS TMessageBar FROM TControl
    METHOD SetClock
    METHOD SetKeybrd
    METHOD SetDate
-
+   METHOD SetFont
    METHOD Events_Notify
    METHOD Events_Size
    METHOD RefreshData
@@ -522,7 +522,14 @@ METHOD MinHeight( nWidth ) CLASS TMessageBar
 
    Return ::ClientHeightUsed()
 
-Function _EndMessageBar()
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TMessageBar
+
+   ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+   ::RefreshData()
+
+   RETURN NIL
+
+FUNCTION _EndMessageBar()
 
    _OOHG_ActiveMessageBar := Nil
    _OOHG_DeleteFrame( "MESSAGEBAR" )
@@ -540,6 +547,10 @@ FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction, icon, cstyl, cAlign )
 FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
 
    Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
+
+FUNCTION _SetStatusFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+
+   RETURN _OOHG_ActiveMessageBar:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
 
 
 #pragma BEGINDUMP
