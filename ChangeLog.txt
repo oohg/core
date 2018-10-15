@@ -1,12 +1,236 @@
 /*
- * $Id:$
+ * $Id: ChangeLog.txt $
+ */
+/*
+ * Use this format for the entry headers:
+ *    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Name or Username and/or <your_email@address>
+ * Use this marks for file entries:
+ *   '*', '+' or '-' to mean the file was modified, added or deleted.
+ * Use this marks for detail entries:
+ *    '*' Changed: ...           '!' Fixed: ....
+ *    '+' Added: ...             '%' Optimized: ...
+ *    '-' Removed: ...           ';' Comment
  */
 
-/* Use this format for the entry headers:
- * YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Name or Username and/or <your_email@address>
- * For example:
- * 2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
- */
+2018-10-15 14:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     + Functions _GetFontOrientation, _GetFontAdvancedGM and
+       _SetFontAdvancedGM.
+     + METHOD FontAdvancedGM to TControl.
+     + Parameter AdvancedGM to METHOD SetFont.
+     * METHOD SetFont sets Orientation parameter to Escapement
+       when AdvancedGM is .F. (default).
+
+2018-10-15 14:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     * Declaration of function PrepareFont.
+
+2018-10-15 14:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     + Function SetFontNameSize.
+
+2018-10-15 14:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_radio.prg
+   * core\source\h_textarray.prg
+     + New parameter to METHOD SetFont.
+
+2018-10-15 14:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+     ! Restored behaviour of function PrepareFont (by default
+       Escapement and Orientation are the same value).
+     + Parameter AdvancedGM to function PrepareFont.
+       Set to 1 to set Escapement and Orientation to different
+       values. Defaults to 0.
+     + Parameter AdvancedGM to function _SetFont.
+     + Function InitFont. Returns a pointer to a font object.
+       The object must be released using DeleteObject.
+     - Function SetFontNameSize. Replaced by pseudofunction.
+
+2018-10-15 14:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + Parameter AdvencedGM to METHOD HeaderSetFont.
+
+2018-10-15 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+   * core\source\c_graph.c
+     + Parameter in call to function PrepareFont.
+
+2018-10-15 14:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + DATA FntAdvancedGM INIT .F..
+
+2018-10-15 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_status.ch
+     + Reference to https://oohg.github.io/
+
+2018-10-15 10:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_menu.ch
+     ! Not ready to use code.
+
+2018-10-14 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-10-14 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_radio.prg
+   * core\source\h_textarray.prg
+     + New parameters to METHOD SetFont.
+
+2018-10-14 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + DATA FntCharset.
+     + DATA FntOrientation.
+
+2018-10-14 22:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+     + Parameters in call to function PrepareFont.
+
+2018-10-14 22:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_monthcal.prg
+     + Parameters Charset and Orientation to METHOD SetFont.
+     * Position of parameter FntWidth at METHOD SetFont to
+       maintain coherence. INCOMPATIBLE.
+     * METHOD SetFont now returns NIL instead of the font handle
+       like TControl. INCOMPATIBLE.
+
+2018-10-14 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     + Parameters Charset and Orientation to METHOD SetFont.
+     * Position of parameter FntWidth at METHOD SetFont to
+       maintain coherence. INCOMPATIBLE.
+
+2018-10-14 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * Some messages.
+
+2018-10-14 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + Parameters Charset and Orientation to METHOD HeaderSetFont.
+     * Position of parameter FntWidth at METHOD HeaderSetFont to
+       maintain coherence. INCOMPATIBLE.
+
+2018-10-14 22:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   - core\source\h_font.prg
+     ; Functions were moved to h_controlmisc.prg
+
+2018-10-14 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     + Functions _GetFontName, _GetFontSize, _GetFontBold,
+       _GetFontItalic, _GetFontUnderline, _GetFontStrikeOut,
+       _GetFontAngle, _GetFontWidth, _GetFontCharset, _SetFontName,
+       _SetFontSize, _SetFontBold, _SetFontItalic, _SetFontUnderline,
+       _SetFontStrikeOut, _SetFontAngle, _SetFontCharset,
+       _SetFontWidth and _SetFontOrientation. Moved from h_font.prg
+     + METHOD FontCharset and METHOD FontOrientation to TControl.
+     + Parameters Charset and Orientation to method SetFont.
+     * Position of parameter FntWidth at METHOD SetFont to maintain
+       coherence. INCOMPATIBLE.
+     + New parameters to _SetFont call at METHOD FocusEffect.
+
+2018-10-14 21:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_graph.c
+     + Parameters in call to function PrepareFont.
+
+2018-10-14 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     + Parameter Escapement to function BT_DRAW_HDC_TEXTOUT.
+     * Function BT_DRAW_HDC_TEXTOUT: Escapement can be different
+       from Orientation.
+     + Parameter Escapement to function BT_DRAW_HDC_TEXTSIZE.
+     * Function BT_DRAW_HDC_TEXTSIZE: Escapement can be different
+       from Orientation.
+
+2018-10-14 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     * Declaration of function PrepareFont.
+     + Reference to https://oohg.github.io/
+
+2018-10-14 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+     + Parameters Charset and Width to function PrepareFont.
+     * Position of parameter Orientation in function PrepareFont
+       to make it compatible with HMG Extended. INCOMPATIBLE.
+     * Function PrepareFont now sets graphic mode to advance so
+       Escapement and Orientation may be different.
+     + Parameters Charset and Width to function _SetFont.
+     * Position of parameter Orientation in function _SetFont
+       to maintain coherence. INCOMPATIBLE.
+     + Parameters Charset and Width to function SetFontNameSize.
+     * Position of parameter Orientation in function SetFontNameSize
+       to maintain coherence. INCOMPATIBLE.
+
+2018-10-14 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\hmg.ch
+   * core\include\i_activex.ch
+   * core\include\i_anigif.ch
+   * core\include\i_checkbox.ch
+   * core\include\i_checklist.ch
+   * core\include\i_color.ch
+   * core\include\i_combobox.ch
+   * core\include\i_comm.ch
+   * core\include\i_datepicker.ch
+   * core\include\i_dll.ch
+   * core\include\i_edit.ch
+   * core\include\i_editbox.ch
+   * core\include\i_encrypt.ch
+   * core\include\i_exec.ch
+   * core\include\i_frame.ch
+   * core\include\i_graph.ch
+   * core\include\i_grid.ch
+   * core\include\i_hb_compat.ch
+   * core\include\i_help.ch
+   * core\include\i_hmg_compat.ch
+   * core\include\i_hotkeybox.ch
+   * core\include\i_hyperlink.ch
+   * core\include\i_image.ch
+   * core\include\i_ini.ch
+   * core\include\i_internal.ch
+   * core\include\i_ipaddress.ch
+   * core\include\i_keybd.ch
+   * core\include\i_label.ch
+   * core\include\i_lang.ch
+   * core\include\i_listbox.ch
+   * core\include\i_media.ch
+   * core\include\i_menu.ch
+   * core\include\i_misc.ch
+   * core\include\i_monthcal.ch
+   * core\include\i_picture.ch
+   * core\include\i_progressbar.ch
+   * core\include\i_progressmeter.ch
+   * core\include\i_pseudofunc.ch
+   * core\include\i_radiogroup.ch
+   * core\include\i_region.ch
+   * core\include\i_registry.ch
+   * core\include\i_report.ch
+   * core\include\i_richeditbox.ch
+   * core\include\i_scroll.ch
+   * core\include\i_scrsaver.ch
+   * core\include\i_slider.ch
+   * core\include\i_spinner.ch
+   * core\include\i_splitbox.ch
+   * core\include\i_tab.ch
+   * core\include\i_textarray.ch
+   * core\include\i_textbox.ch
+   * core\include\i_this.ch
+   * core\include\i_timer.ch
+   * core\include\i_toolbar.ch
+   * core\include\i_tooltip.ch
+   * core\include\i_tree.ch
+   * core\include\i_var.ch
+   * core\include\i_windefs.ch
+   * core\include\i_window.ch
+   * core\include\i_xbrowse.ch
+   * core\include\i_zip.ch
+   * core\include\minigui.ch
+   * core\include\miniprint.ch
+     + Reference to https://oohg.github.io/
+
+2018-10-13 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_MINGW.BAT
+   * core\oohg.hbc
+     + iphlpapi.dll to build chain.
 
 2018-10-12 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_report.ch
