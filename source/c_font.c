@@ -70,99 +70,80 @@
 #include "hbapi.h"
 #include "oohg.h"
 
-HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation, int Advanced )
 {
    HDC hDC = GetDC( HWND_DESKTOP );
    int cyp = GetDeviceCaps( hDC, LOGPIXELSY );
 
-   SetGraphicsMode( hDC, GM_ADVANCED );
+   if( Advanced )
+   {
+      SetGraphicsMode( hDC, GM_ADVANCED );
+      int nEscapement  = Escapement;                    // Angle between the escapement vector and the x-axis
+      int nOrientation = Orientation;                   // Angle between character's base line and the x-axis
+   }
+   else
+   {
+      SetGraphicsMode( hDC, GM_COMPATIBLE );
+      int nEscapement  = Escapement;                    // Angle between the escapement vector and the x-axis
+      int nOrientation = Escapement;                    // Angle between character's base line and the x-axis
+   }
    ReleaseDC( HWND_DESKTOP, hDC );
 
-   int     nHeight            = 0 - ( FontSize * cyp ) / 72;
-   int     nWidth             = Width;                         // Width of characters in the requested font
-   int     nEscapement        = Escapement;                    // Angle between the escapement vector and the x-axis
-   int     nOrientation       = Orientation;                   // Angle between character's base line and the x-axis
-   int     fnWeight           = Weight;                        // Bold
-   DWORD   fdwItalic          = (DWORD) Italic;
-   DWORD   fdwUnderline       = (DWORD) Underline;
-   DWORD   fdwStrikeOut       = (DWORD) StrikeOut;
-   DWORD   fdwCharSet         = (DWORD) Charset;
-   DWORD   fdwOutputPrecision = (DWORD) OUT_TT_PRECIS;
-   DWORD   fdwClipPrecision   = (DWORD) CLIP_DEFAULT_PRECIS;
-   DWORD   fdwQuality         = (DWORD) DEFAULT_QUALITY;
-   DWORD   fdwPitchAndFamily  = (DWORD) FF_DONTCARE;
-   LPCTSTR lpszFace           = (LPCTSTR) FontName;
+   int     nHeight           = 0 - ( FontSize * cyp ) / 72;
+   int     nWidth            = Width;                         // Width of characters in the requested font
+   int     nWeight           = Weight;                        // Bold
+   DWORD   dwItalic          = (DWORD) Italic;
+   DWORD   dwUnderline       = (DWORD) Underline;
+   DWORD   dwStrikeOut       = (DWORD) StrikeOut;
+   DWORD   dwCharSet         = (DWORD) Charset;
+   DWORD   dwOutputPrecision = (DWORD) OUT_TT_PRECIS;
+   DWORD   dwClipPrecision   = (DWORD) CLIP_DEFAULT_PRECIS;
+   DWORD   dwQuality         = (DWORD) DEFAULT_QUALITY;
+   DWORD   dwPitchAndFamily  = (DWORD) FF_DONTCARE;
+   LPCTSTR lpszFace          = (LPCTSTR) FontName;
 
-   return CreateFont( nHeight, nWidth, nEscapement, nOrientation, fnWeight, fdwItalic, fdwUnderline, fdwStrikeOut,
-      fdwCharSet, fdwOutputPrecision, fdwClipPrecision, fdwQuality, fdwPitchAndFamily, lpszFace );
+   return CreateFont( nHeight, nWidth, nEscapement, nOrientation, nWeight, dwItalic, dwUnderline, dwStrikeOut,
+      dwCharSet, dwOutputPrecision, dwClipPrecision, dwQuality, dwPitchAndFamily, lpszFace );
 }
 
-HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITFONT )   // ( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
 {
-   HFONT font;
-   int bold = FW_NORMAL;
-   int italic = 0;
-   int underline = 0;
-   int strikeout = 0;
+   int bold        = hb_parl( 3 ) ? FW_BOLD : FW_NORMAL;
+   int italic      = hb_parl( 4 ) ? 1 : 0;
+   int underline   = hb_parl( 5 ) ? 1 : 0;
+   int strikeout   = hb_parl( 6 ) ? 1 : 0;
+   int angle       = ( ISNUM( 7 ) ? hb_parni( 7 ) : 0 );
+   int charset     = ( ISNUM( 8 ) ? hb_parni( 8 ) : DEFAULT_CHARSET );
+   int width       = ( ISNUM( 9 ) ? hb_parni( 9 ) : 0 );
+   int orientation = ( ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
+   int advanced    = hb_parl( 11 ) ? 1 : 0;
 
-   if ( hb_parl( 4 ) )
-   {
-      bold = FW_BOLD;
-   }
+   HFONT font = PrepareFont( hb_parc( 1 ), hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
+   HB_RETNL( (LONG_PTR) font );
+}
 
-   if ( hb_parl( 5 ) )
-   {
-      italic = 1;
-   }
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+{
+   int bold        = hb_parl( 4 ) ? FW_BOLD : FW_NORMAL;
+   int italic      = hb_parl( 5 ) ? 1 : 0;
+   int underline   = hb_parl( 6 ) ? 1 : 0;
+   int strikeout   = hb_parl( 7 ) ? 1 : 0;
+   int angle       = ( ISNUM( 8 ) ? hb_parni( 8 ) : 0 );
+   int charset     = ( ISNUM( 9 ) ? hb_parni( 9 ) : DEFAULT_CHARSET );
+   int width       = ( ISNUM( 10 ) ? hb_parni( 10 ) : 0 );
+   int orientation = ( ISNUM( 11 ) ? hb_parni( 11 ) : 0 );
+   int advanced    = hb_parl( 12 ) ? 1 : 0;
 
-   if ( hb_parl( 6 ) )
-   {
-      underline = 1;
-   }
-
-   if ( hb_parl( 7 ) )
-   {
-      strikeout = 1;
-   }
-
-   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parni( 8 ), hb_parni( 9 ), hb_parni( 10 ), hb_parni( 11 ) );
+   HFONT font = PrepareFont( hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
    SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
    HB_RETNL( (LONG_PTR) font );
 }
 
-HB_FUNC( SETFONTNAMESIZE )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeOut, nEscapement, nCharset, nWidth, nOrientation )
-{
-   HFONT font;
-   int bold = FW_NORMAL;
-   int italic = 0;
-   int underline = 0;
-   int strikeout = 0;
-
-   if ( hb_parl( 4 ) )
-   {
-      bold = FW_BOLD;
-   }
-
-   if ( hb_parl( 5 ) )
-   {
-      italic = 1;
-   }
-
-   if ( hb_parl( 6 ) )
-   {
-      underline = 1;
-   }
-
-   if ( hb_parl( 7 ) )
-   {
-      strikeout = 1;
-   }
-
-   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parni( 8 ), hb_parni( 9 ), hb_parni( 10 ), hb_parni( 11 ) );
-   SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
-}
-
-HB_FUNC( GETSYSTEMFONT )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETSYSTEMFONT )   // No parameters
 {
    LOGFONT lfDlgFont;
    NONCLIENTMETRICS ncm;
