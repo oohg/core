@@ -1182,13 +1182,21 @@ FUNCTION _GetFontAngle( ControlName, ParentForm )
 
    RETURN GetControlObject( ControlName, ParentForm ):FntAngle
 
+FUNCTION _GetFontCharset( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):FntCharset
+
 FUNCTION _GetFontWidth( ControlName, ParentForm )
 
    RETURN GetControlObject( ControlName, ParentForm ):FntWidth
 
-FUNCTION _GetFontCharset( ControlName, ParentForm )
+FUNCTION _GetFontOrientation( ControlName, ParentForm )
 
-   RETURN GetControlObject( ControlName, ParentForm ):FntCharset
+   RETURN GetControlObject( ControlName, ParentForm ):FntOrientation
+
+FUNCTION _GetFontAdvancedGM( ControlName, ParentForm )
+
+   RETURN GetControlObject( ControlName, ParentForm ):FntAdvancedGM
 
 FUNCTION _SetFontName( ControlName, ParentForm, Value )
 
@@ -1229,6 +1237,10 @@ FUNCTION _SetFontWidth( ControlName, ParentForm, Value )
 FUNCTION _SetFontOrientation( ControlName, ParentForm, Value )
 
    RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , , , , Value )
+
+FUNCTION _SetFontAdvancedGM( ControlName, ParentForm, Value )
+
+   RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , , , , , , , Value )
 
 FUNCTION _SetFontColor( ControlName, ParentForm, Value )
 
@@ -1298,6 +1310,7 @@ CLASS TControl FROM TWindow
    METHOD FontCharset        SETGET
    METHOD FontWidth          SETGET
    METHOD FontOrientation    SETGET
+   METHOD FontAdvancedGM     SETGET
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
@@ -1639,7 +1652,7 @@ METHOD Release() CLASS TControl
 
    Return ::Super:Release()
 
-METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation ) CLASS TControl
+METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TControl
 
    IF ::FontHandle > 0
       DeleteObject( ::FontHandle )
@@ -1671,10 +1684,17 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
    IF ! Empty( nWidth ) .AND. HB_ISNUMERIC( nWidth )
       ::FntWidth := nWidth
    ENDIF
-   IF ! Empty( nOrientation ) .AND. HB_ISNUMERIC( nOrientation )
-      ::FntOrientation := nOrientation
+   IF HB_ISLOGICAL( lAdvanced )
+      ::FntAdvancedGM := lAdvanced
    ENDIF
-   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation )
+   IF ::FntAdvancedGM
+      IF ! Empty( nOrientation ) .AND. HB_ISNUMERIC( nOrientation )
+         ::FntOrientation := nOrientation
+      ENDIF
+   ELSE
+      ::FntOrientation := ::FntAngle
+   ENDIF
+   ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation, ::FntAdvancedGM )
 
    RETURN NIL
 
@@ -1761,12 +1781,20 @@ METHOD FontWidth( nWidth ) CLASS TControl
 
 METHOD FontOrientation( nOrientation ) CLASS TControl
 
-   IF HB_ISNUMERIC( nOrientation )
+   IF HB_ISNUMERIC( nOrientation ) .AND. ::FntAdvancedGM
      ::FntOrientation := nOrientation
       ::SetFont( , , , , , , , , , nOrientation )
    ENDIF
 
    RETURN ::FntOrientation
+
+METHOD FontAdvancedGM( lAdvanced ) CLASS TControl
+
+   IF HB_ISLOGICAL( lAdvanced )
+      ::SetFont( , , , , , , , , , , lAdvanced )
+   ENDIF
+
+   RETURN ::FntAdvancedGM
 
 METHOD SizePos( Row, Col, Width, Height ) CLASS TControl
 
@@ -2366,7 +2394,7 @@ METHOD FocusEffect CLASS TControl
          ::FocusStrikeout := ::Strikeout
       EndIf
 
-      ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation )
+      ::FontHandle := _SetFont( ::hWnd, ::cFocusFontName, ::nFocusFontSize, ::FocusBold, ::FocusItalic, ::FocusUnderline, ::FocusStrikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation, ::FntAdvancedGM )
    EndIf
 
    If ! Empty( ::FocusColor )
