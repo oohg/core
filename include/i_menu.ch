@@ -185,17 +185,6 @@
       [ <right: RIGHT> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <breakmenu: BREAKMENU> ] ;
-
-	FONTNAME <fontname>   ;
-	[ SIZE <fontsize> ]   ;
-	[ <bold : BOLD> ]     ;
-	[ <italic : ITALIC> ] ;
-	[ <underline : UNDERLINE> ] ;
-	[ <strikeout : STRIKEOUT> ] ;
-	[ CHARSET <charset> ]	;
-	[ ANGLE <Angle> ]	;
-
-      [ WIDTH <width> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefinePopUp( <caption>, <(name)>, <.checked.>, <.disabled.>, ;
