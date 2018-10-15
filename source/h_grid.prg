@@ -3902,7 +3902,7 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 
    Return ::aHeaderImageAlign[ nColumn ]
 
-METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharSet, nWidth, nOrientation ) CLASS TGrid
+METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharSet, nWidth, nOrientation, lAdvanced ) CLASS TGrid
 
    LOCAL HeaderHandle
 
@@ -3919,9 +3919,10 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
    ASSIGN nCharset     VALUE nCharset     TYPE "N"  DEFAULT DEFAULT_CHARSET
    ASSIGN nWidth       VALUE nWidth       TYPE "N"  DEFAULT 0
    ASSIGN nOrientation VALUE nOrientation TYPE "N"  DEFAULT 0
+   ASSIGN lAdvanced    VALUE lAdvanced    TYPE "L"  DEFAULT .F.
    HeaderHandle := GetHeader( ::hWnd )
    IF ValidHandler( HeaderHandle )
-      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
+      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
    ENDIF
 
    RETURN Self
