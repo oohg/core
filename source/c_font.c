@@ -70,35 +70,34 @@
 #include "hbapi.h"
 #include "oohg.h"
 
-HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Orientation )
+HFONT PrepareFont( char *FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation )
 {
-   HDC hDC;
-   int cyp;
+   HDC hDC = GetDC( HWND_DESKTOP );
+   int cyp = GetDeviceCaps( hDC, LOGPIXELSY );
 
-   hDC = GetDC( HWND_DESKTOP );
-   cyp = GetDeviceCaps( hDC, LOGPIXELSY );
+   SetGraphicsMode( hDC, GM_ADVANCED );
    ReleaseDC( HWND_DESKTOP, hDC );
 
-  int     nHeight            = 0 - ( FontSize * cyp ) / 72;
-  int     nWidth             = 0;
-  int     nEscapement        = Escapement;
-  int     nOrientation       = Orientation;
-  int     fnWeight           = Weight;
-  DWORD   fdwItalic          = (DWORD) Italic;
-  DWORD   fdwUnderline       = (DWORD) Underline;
-  DWORD   fdwStrikeOut       = (DWORD) StrikeOut;
-  DWORD   fdwCharSet         = (DWORD) DEFAULT_CHARSET;
-  DWORD   fdwOutputPrecision = (DWORD) OUT_TT_PRECIS;
-  DWORD   fdwClipPrecision   = (DWORD) CLIP_DEFAULT_PRECIS;
-  DWORD   fdwQuality         = (DWORD) DEFAULT_QUALITY;
-  DWORD   fdwPitchAndFamily  = (DWORD) FF_DONTCARE;
-  LPCTSTR lpszFace           = (LPCTSTR) FontName;
+   int     nHeight            = 0 - ( FontSize * cyp ) / 72;
+   int     nWidth             = Width;                         // Width of characters in the requested font
+   int     nEscapement        = Escapement;                    // Angle between the escapement vector and the x-axis
+   int     nOrientation       = Orientation;                   // Angle between character's base line and the x-axis
+   int     fnWeight           = Weight;                        // Bold
+   DWORD   fdwItalic          = (DWORD) Italic;
+   DWORD   fdwUnderline       = (DWORD) Underline;
+   DWORD   fdwStrikeOut       = (DWORD) StrikeOut;
+   DWORD   fdwCharSet         = (DWORD) Charset;
+   DWORD   fdwOutputPrecision = (DWORD) OUT_TT_PRECIS;
+   DWORD   fdwClipPrecision   = (DWORD) CLIP_DEFAULT_PRECIS;
+   DWORD   fdwQuality         = (DWORD) DEFAULT_QUALITY;
+   DWORD   fdwPitchAndFamily  = (DWORD) FF_DONTCARE;
+   LPCTSTR lpszFace           = (LPCTSTR) FontName;
 
    return CreateFont( nHeight, nWidth, nEscapement, nOrientation, fnWeight, fdwItalic, fdwUnderline, fdwStrikeOut,
       fdwCharSet, fdwOutputPrecision, fdwClipPrecision, fdwQuality, fdwPitchAndFamily, lpszFace );
 }
 
-HB_FUNC( _SETFONT )
+HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation )
 {
    HFONT font;
    int bold = FW_NORMAL;
@@ -126,12 +125,12 @@ HB_FUNC( _SETFONT )
       strikeout = 1;
    }
 
-   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parnl( 8 ), hb_parnl( 9 ) );
+   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parni( 8 ), hb_parni( 9 ), hb_parni( 10 ), hb_parni( 11 ) );
    SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
    HB_RETNL( (LONG_PTR) font );
 }
 
-HB_FUNC( SETFONTNAMESIZE )
+HB_FUNC( SETFONTNAMESIZE )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeOut, nEscapement, nCharset, nWidth, nOrientation )
 {
    HFONT font;
    int bold = FW_NORMAL;
@@ -159,7 +158,7 @@ HB_FUNC( SETFONTNAMESIZE )
       strikeout = 1;
    }
 
-   font = PrepareFont( (char *) hb_parc( 2 ), (LPARAM) hb_parni( 3 ), bold, italic, underline, strikeout, hb_parnl( 8 ), hb_parnl( 9 ) );
+   font = PrepareFont( (char *) hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, hb_parni( 8 ), hb_parni( 9 ), hb_parni( 10 ), hb_parni( 11 ) );
    SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
 }
 
