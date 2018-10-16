@@ -6,6 +6,7 @@
  * Main include calls
  *
  * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -81,6 +82,7 @@
 #include "i_editbox.ch"
 #include "i_encrypt.ch"
 #include "i_exec.ch"
+#include "i_font.ch"
 #include "i_frame.ch"
 #include "i_graph.ch"
 #include "i_grid.ch"
