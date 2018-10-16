@@ -6,6 +6,7 @@
  * Miscelaneous control definitions
  *
  * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -127,17 +128,6 @@ STANDARD CURSORS
 #command RELEASE CONTROL <control> OF <form> ;
    => ;
       DoMethod( <(form)>, <(control)>, 'Release' )
-
-#command SET FONT TO <fontname>, <fontsize> ;
-   => ;
-      _OOHG_DefaultFontName := <fontname> ;;
-      _OOHG_DefaultFontSize := <fontsize>
-
-#command SET FONT TO <fontname>, <fontsize>, <fontcolor> ;
-   => ;
-      _OOHG_DefaultFontName := <fontname> ;;
-      _OOHG_DefaultFontSize := <fontsize> ;;
-      _OOHG_DefaultFontColor := <fontcolor>
 
 #xcommand DEFINE PROPERTY <property> TO [ CONTROL ] [ <control> OF ] <form> VALUE <value> ;
    => ;
