@@ -129,6 +129,8 @@ CLASS TCombo FROM TLabel
    METHOD VisibleItems
    METHOD Field               SETGET
    METHOD ValueSource         SETGET
+   METHOD EditHeight          SETGET
+   METHOD OptionsHeight       SETGET
 
    ENDCLASS
 
@@ -140,7 +142,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
-               sourceorder, onrefresh, nLapse, nMaxLen ) CLASS TCombo
+               sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight ) CLASS TCombo
 
    Local ControlHandle, WorkArea, uField, nStyle
 
@@ -240,6 +242,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
 
    ::Value := Value
 
+   ::EditHeight := editheight
+   ::OptionsHeight := optheight
+
    ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
    ASSIGN ::OnLostFocus   VALUE LostFocus                TYPE "B"
    ASSIGN ::OnGotFocus    VALUE GotFocus                 TYPE "B"
@@ -289,6 +294,22 @@ METHOD nHeight( nHeight ) CLASS TCombo
    EndIf
 
    RETURN ::nHeight2
+
+METHOD EditHeight( nHeight )
+
+   IF HB_ISNUMERIC( nHeight ) .and. nHeight > 0
+      SendMessage( ::hWnd, CB_SETITEMHEIGHT, -1, nHeight )
+   ENDIF
+
+   RETURN SendMessage( ::hWnd, CB_GETITEMHEIGHT, -1, nHeight )
+
+METHOD OptionsHeight( nHeight )
+
+   IF HB_ISNUMERIC( nHeight ) .and. nHeight > 0
+      SendMessage( ::hWnd, CB_SETITEMHEIGHT, 0, nHeight )
+   ENDIF
+
+   RETURN SendMessage( ::hWnd, CB_GETITEMHEIGHT, 0, nHeight )
 
 METHOD VisibleItems() CLASS TCombo
 

@@ -820,6 +820,8 @@ COMBOBOX CONTROL
 #define CB_SHOWDROPDOWN               0x014F
 #define CB_GETEDITSEL                 0x0140
 #define CB_SETEDITSEL                 0x0142
+#define CB_SETITEMHEIGHT              0x0153
+#define CB_GETITEMHEIGHT              0x0154
 #define CB_GETMINVISIBLE              0x1702
 #define CBN_EDITCHANGE                5
 #define CBN_KILLFOCUS                 4

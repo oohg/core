@@ -96,6 +96,8 @@ STANDARD VERSION
       [ <sort: SORT> ] ;
       [ <rtl: RTL> ] ;
       [ TEXTHEIGHT <textheight> ] ;
+      [ EDITHEIGHT <editheight> ] ;
+      [ OPTIONSHEIGHT <optheight> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <firstitem: FIRSTITEM> ] ;
@@ -124,7 +126,8 @@ STANDARD VERSION
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-            <(sourceorder)>, <{refresh}>, <nLapse>, <max> )
+            <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
+            <optheight> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
