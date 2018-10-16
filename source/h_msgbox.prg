@@ -385,6 +385,24 @@ FUNCTION AutoType( Message )
 
    RETURN cMessage
 
+FUNCTION MsgDebug( ... )
+
+   LOCAL i, cMessage, nCnt := PCount()
+
+   cMessage := "Called from: " + ;
+               ProcName( 1 ) + ;
+               " (" + AllTrim( Str( ProcLine( 1 ) ) ) + ")" + ;
+               iif( Empty( ProcFile( 1 ) ), "", " in " + ProcFile( 1 ) ) + ;
+               CRLF + CRLF
+
+   FOR i = 1 TO nCnt
+      cMessage += ValToPrgExp( PValue( i ) ) + iif( i < nCnt, ", ", "" )
+   NEXT
+
+   MsgInfo( cMessage, "DEBUG INFO" )
+
+RETURN cMessage
+
 FUNCTION _MsgBox( Message, Title, Style, Icon, SysModal, TopMost )
 
    LOCAL cMessage

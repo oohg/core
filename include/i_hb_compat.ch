@@ -62,6 +62,10 @@
 
 #ifndef __XHARBOUR__                                 // This pp rules are only needed for Harbour compilers
 
+   #xtranslate ValToPrgExp( [<x,...>] ) ;
+      => ;
+         hb_ValToExp( <x> )
+
    #xtranslate HexToNum( [<x>] ) ;
       => ;
          hb_HexToNum( <x> )
