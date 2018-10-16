@@ -6,6 +6,7 @@
  * HBPRINTER printing library definitions
  *
  * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
+ * https://oohg.github.io/
  *
  * Portions of this project are based upon Harbour MiniGUI library.
  * Copyright 2002-2005 Roberto Lopez <roblez@ciudad.com.ar>
@@ -850,6 +851,8 @@ DRAWTEXT() FORMAT FLAGS
 CHARSET CONSTANTS
 ---------------------------------------------------------------------------*/
 
+#ifndef __OOHG_I_FONT__
+
 #define ANSI_CHARSET                          0
 #define DEFAULT_CHARSET                       1
 #define SYMBOL_CHARSET                        2
@@ -870,6 +873,8 @@ CHARSET CONSTANTS
 #define RUSSIAN_CHARSET                       204
 #define MAC_CHARSET                           77
 #define BALTIC_CHARSET                        186
+
+#endif
 
 /*---------------------------------------------------------------------------
 STOCK LOGICAL OBJECTS
