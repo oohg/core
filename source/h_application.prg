@@ -111,7 +111,9 @@
 #define NDX_OOHG_SAVEASDWORD           42
 #define NDX_OOHG_ACTIVEINIFILE         43
 #define NDX_OOHG_ACTIVEMESSAGEBAR      44
-#define NUMBER_OF_APP_WIDE_VARS        44
+#define NDX_OOHG_BKEYDOWN              45
+#define NDX_OOHG_HOTKEYS               46
+#define NUMBER_OF_APP_WIDE_VARS        46
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -119,6 +121,8 @@ CLASS TApplication
    CLASSVAR oAppObj               INIT NIL HIDDEN
    CLASSVAR hClsMtx               INIT NIL HIDDEN
 
+   DATA aEventStack               INIT {}  HIDDEN
+   DATA aFonts                    INIT {}  READONLY
    DATA aVars                     INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
    DATA Args                      INIT NIL READONLY
@@ -128,12 +132,15 @@ CLASS TApplication
    DATA FileName                  INIT NIL READONLY
    DATA Path                      INIT NIL READONLY
 
-   METHOD Define
+   METHOD Define                  CONSTRUCTOR
 
    METHOD BackColor               SETGET
    METHOD Col                     SETGET
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
+   METHOD EventInfoList
+   METHOD EventInfoPop
+   METHOD EventInfoPush
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
    METHOD hWnd
@@ -190,6 +197,8 @@ CLASS TApplication
    METHOD Value_Pos42             SETGET
    METHOD Value_Pos43             SETGET
    METHOD Value_Pos44             SETGET
+   METHOD Value_Pos45             SETGET
+   METHOD Value_Pos46             
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -253,6 +262,8 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_COMBOREFRESH ]          := .T.
       ::aVars[ NDX_OOHG_SAVEASDWORD ]           := .F.
       ::aVars[ NDX_OOHG_ACTIVEINIFILE ]         := ""
+      ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
+      ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
       ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
 
       ::ArgC     := hb_argc()
@@ -346,6 +357,126 @@ METHOD hWnd CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EventInfoList() CLASS TApplication
+
+   LOCAL aEvents, nLen
+
+   IF Empty( _OOHG_ThisObject )
+      aEvents := {}
+   ELSE
+      ::EventInfoPush()
+      nLen := Len( ::aEventsStack )
+      aEvents := Array( nLen )
+      AEval( ::aEventsStack, ;
+             { | a, i | aEvents[ nLen - i + 1 ] := a[ 1 ]:Name + iif( a[ 4 ] == NIL, "", "." + a[ 4 ]:Name ) + "." + a[ 2 ] }, 2 )
+      ASize( aEvents, nLen - 1 )
+      ::EventInfoPop()
+   ENDIF
+
+   RETURN aEvents
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EventInfoPop() CLASS TApplication
+
+   LOCAL nLen, i, nThreadID := GetThreadId()
+
+   i := nLen := Len( ::aEventsStack )
+   DO WHILE i > 0
+      IF ::aEventsStack[ i ][ 01 ] == nThreadID
+         _OOHG_ThisForm           := ::aEventsStack[ i ][ 02 ]
+         _OOHG_ThisEventType      := ::aEventsStack[ i ][ 03 ]
+         _OOHG_ThisType           := ::aEventsStack[ i ][ 04 ]
+         _OOHG_ThisControl        := ::aEventsStack[ i ][ 05 ]
+         _OOHG_ThisObject         := ::aEventsStack[ i ][ 06 ]
+         _OOHG_ThisItemRowIndex   := ::aEventsStack[ i ][ 07 ]
+         _OOHG_ThisItemColIndex   := ::aEventsStack[ i ][ 08 ]
+         _OOHG_ThisItemCellRow    := ::aEventsStack[ i ][ 09 ]
+         _OOHG_ThisItemCellCol    := ::aEventsStack[ i ][ 10 ]
+         _OOHG_ThisItemCellWidth  := ::aEventsStack[ i ][ 11 ]
+         _OOHG_ThisItemCellHeight := ::aEventsStack[ i ][ 12 ]
+         _OOHG_ThisItemCellValue  := ::aEventsStack[ i ][ 13 ]
+         ADel( ::aEventsStack, i )
+         ASize( ::aEventsStack, nLen - 1 )
+         RETURN NIL
+      ENDIF
+      i ++
+   ENDDO
+   _OOHG_ThisForm           := NIL
+   _OOHG_ThisType           := ''
+   _OOHG_ThisEventType      := ''
+   _OOHG_ThisControl        := NIL
+   _OOHG_ThisObject         := NIL
+   _OOHG_ThisItemRowIndex   := 0
+   _OOHG_ThisItemColIndex   := 0
+   _OOHG_ThisItemCellRow    := 0
+   _OOHG_ThisItemCellCol    := 0
+   _OOHG_ThisItemCellWidth  := 0
+   _OOHG_ThisItemCellHeight := 0
+   _OOHG_ThisItemCellValue  := NIL
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EventInfoPush() CLASS TApplication
+
+   AAdd( ::aEventsStack, { GetThreadId(), ;
+                           _OOHG_ThisForm, ;
+                           _OOHG_ThisEventType, ;
+                           _OOHG_ThisType, ;
+                           _OOHG_ThisControl, ;
+                           _OOHG_ThisObject, ;
+                           _OOHG_ThisItemRowIndex, ;
+                           _OOHG_ThisItemColIndex, ;
+                           _OOHG_ThisItemCellRow, ;
+                           _OOHG_ThisItemCellCol, ;
+                           _OOHG_ThisItemCellWidth, ;
+                           _OOHG_ThisItemCellHeight, ;
+                           _OOHG_ThisItemCellValue } )
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Height( nHeight ) CLASS TApplication
+
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   IF PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      IF HB_ISOBJECT( oMain )
+         uRet := oMain:Height( nHeight )
+      ENDIF
+   ELSE
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      IF HB_ISOBJECT( oMain )
+         uRet := oMain:Height()
+      ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD HelpButton( lShow ) CLASS TApplication
+
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   IF PCount() > 0
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      IF HB_ISOBJECT( oMain )
+         uRet := oMain:HelpButton( lShow )
+      ENDIF
+   ELSE
+      oMain := ::aVars[ NDX_OOHG_MAIN ]
+      IF HB_ISOBJECT( oMain )
+         uRet := oMain:HelpButton()
+      ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainClientHeight( nHeight ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -427,48 +558,6 @@ METHOD MainStyle( nStyle ) CLASS TApplication
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Style()
-      ENDIF
-   ENDIF
-   hb_mutexUnlock( ::hClsMtx )
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Height( nHeight ) CLASS TApplication
-
-   LOCAL oMain, uRet := NIL
-
-   hb_mutexLock( ::hClsMtx )
-   IF PCount() > 0
-      oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_ISOBJECT( oMain )
-         uRet := oMain:Height( nHeight )
-      ENDIF
-   ELSE
-      oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_ISOBJECT( oMain )
-         uRet := oMain:Height()
-      ENDIF
-   ENDIF
-   hb_mutexUnlock( ::hClsMtx )
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD HelpButton( lShow ) CLASS TApplication
-
-   LOCAL oMain, uRet := NIL
-
-   hb_mutexLock( ::hClsMtx )
-   IF PCount() > 0
-      oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_ISOBJECT( oMain )
-         uRet := oMain:HelpButton( lShow )
-      ENDIF
-   ELSE
-      oMain := ::aVars[ NDX_OOHG_MAIN ]
-      IF HB_ISOBJECT( oMain )
-         uRet := oMain:HelpButton()
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1194,6 +1283,53 @@ METHOD Value_Pos44( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos45( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   uRet := ::aVars[ NDX_OOHG_BKEYDOWN ]
+   IF PCount() > 0
+      ::aVars[ NDX_OOHG_BKEYDOWN ] := iif( HB_ISBLOCK( uValue ), uValue, NIL )
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+#define HOTKEY_ID        1
+#define HOTKEY_MOD       2
+#define HOTKEY_KEY       3
+#define HOTKEY_ACTION    4
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos46( nKey, nFlags, bAction ) CLASS TApplication
+
+   LOCAL nPos, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   nPos := AScan( ::aVars[ NDX_OOHG_HOTKEYS ], { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   IF nPos > 0
+      uRet := ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ][ HOTKEY_ACTION ]
+   ENDIF
+   IF PCount() > 2
+      IF HB_ISBLOCK( bAction )
+         IF nPos > 0
+            ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ] := { 0, nFlags, nKey, bAction }
+         ELSE
+            AAdd( ::aVars[ NDX_OOHG_HOTKEYS ], { 0, nFlags, nKey, bAction } )
+         ENDIF
+      ELSE
+         IF nPos > 0
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_HOTKEYS ], nPos )
+         ENDIF
+      ENDIF
+   ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )

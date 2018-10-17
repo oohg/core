@@ -114,9 +114,41 @@
    => ;
       MsgExclamation( <c>, <t> )
 
+#xtranslate GetUserProfileFolder() ;
+   => ;
+      GetSpecialFolder( CSIDL_PROFILE )
+
+#xtranslate GetUserTempFolder() ;
+   => ;
+      iif( IsVistaOrLater(), GetUserProfileFolder() + "\AppData\Local\Temp", cFilePath( GetTempDir() ) )
+
+#xtranslate GetApplicationDataFolder() ;
+   => ;
+      GetSpecialFolder( CSIDL_APPDATA )
+
 #xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
    => ;
       TApplication():Define():MultipleInstances( [ <lMultiple>, <lWarning> ] )
+
+#xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
+   => ;
+      TApplication():Value_Pos46( <nKey>, <nFlags>, <bAction> )
+
+#xtranslate _PushEventInfo() ;
+   => ;
+      TApplication():EventInfoPush()
+
+#xtranslate _PopEventInfo() ;
+   => ;
+      TApplication():EventInfoPop()
+
+#xtranslate _PushEventList() ;
+   => ;
+      TApplication():EventInfoList()
+
+#xtranslate _OOHG_SetbKeyDown( [ <bValue> ] ) ;
+   => ;
+      _OOHG_bKeyDown [ := <bValue> ]
 
 #xtranslate SetBrowseFixedBlocks( [ <lValue> ] ) ;
    => ;

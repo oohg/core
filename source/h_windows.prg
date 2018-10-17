@@ -61,15 +61,8 @@
 
 
 #include "oohg.ch"
-#include "i_windefs.ch"
-#include "common.ch"
-#include "error.ch"
-
-STATIC _OOHG_aEventInfo := {}        // Event's stack
-STATIC _OOHG_HotKeys := {}           // Application-wide hot keys
-STATIC _OOHG_bKeyDown := nil         // Application-wide WM_KEYDOWN handler
-
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 #pragma BEGINDUMP
 
@@ -219,7 +212,7 @@ CLASS TWindow
    DATA aHotKeys                  INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
    DATA aAcceleratorKeys          INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
    DATA aProperties               INIT {}  // { cProperty, xValue }      Pseudo-properties
-   DATA bKeyDown                  INIT Nil     // WM_KEYDOWN handler
+   DATA bKeyDown                  INIT Nil // WM_KEYDOWN handler
    DATA NestedClick               INIT .F.
    DATA HScrollBar                INIT Nil
    DATA VScrollBar                INIT Nil
@@ -1081,8 +1074,8 @@ METHOD ExStyle( nExStyle ) CLASS TWindow
 METHOD RTL( lRTL ) CLASS TWindow
 
    If HB_IsLogical( lRTL )
-      _UpdateRTL( ::hWnd, lRtl )
-      ::lRtl := lRtl
+      _UpdateRTL( ::hWnd, lRTL )
+      ::lRtl := lRTL
    EndIf
 
    Return ::lRtl
@@ -1471,7 +1464,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TWindow
    Else
       If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, TForm() )
          lDone := .T.
-      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags, TForm() )
+      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags, TForm() )   // Application-wide WM_KEYDOWN handler
          lDone := .T.
       Else
          lDone := .F.
@@ -2494,104 +2487,18 @@ Procedure _SetPrevFocus()
 
    Return
 
-Procedure _PushEventInfo()
+FUNCTION SetAppHotKeyByName( cKey, bAction )
 
-   aAdd( _OOHG_aEventInfo, { _OOHG_ThisForm, ;
-                             _OOHG_ThisEventType, ;
-                             _OOHG_ThisType, ;
-                             _OOHG_ThisControl, ;
-                             _OOHG_ThisObject, ;
-                             _OOHG_ThisItemRowIndex, ;
-                             _OOHG_ThisItemColIndex, ;
-                             _OOHG_ThisItemCellRow, ;
-                             _OOHG_ThisItemCellCol, ;
-                             _OOHG_ThisItemCellWidth, ;
-                             _OOHG_ThisItemCellHeight, ;
-                             _OOHG_ThisItemCellValue } )
-   Return
-
-Procedure _PopEventInfo()
-
-   Local l
-
-   l := Len( _OOHG_aEventInfo )
-   If l > 0
-      _OOHG_ThisForm           := _OOHG_aEventInfo[ l ][ 01 ]
-      _OOHG_ThisEventType      := _OOHG_aEventInfo[ l ][ 02 ]
-      _OOHG_ThisType           := _OOHG_aEventInfo[ l ][ 03 ]
-      _OOHG_ThisControl        := _OOHG_aEventInfo[ l ][ 04 ]
-      _OOHG_ThisObject         := _OOHG_aEventInfo[ l ][ 05 ]
-      _OOHG_ThisItemRowIndex   := _OOHG_aEventInfo[ l ][ 06 ]
-      _OOHG_ThisItemColIndex   := _OOHG_aEventInfo[ l ][ 07 ]
-      _OOHG_ThisItemCellRow    := _OOHG_aEventInfo[ l ][ 08 ]
-      _OOHG_ThisItemCellCol    := _OOHG_aEventInfo[ l ][ 09 ]
-      _OOHG_ThisItemCellWidth  := _OOHG_aEventInfo[ l ][ 10 ]
-      _OOHG_ThisItemCellHeight := _OOHG_aEventInfo[ l ][ 11 ]
-      _OOHG_ThisItemCellValue  := _OOHG_aEventInfo[ l ][ 12 ]
-      aSize( _OOHG_aEventInfo, l - 1 )
-   Else
-      _OOHG_ThisForm           := nil
-      _OOHG_ThisType           := ''
-      _OOHG_ThisEventType      := ''
-      _OOHG_ThisControl        := nil
-      _OOHG_ThisObject         := nil
-      _OOHG_ThisItemRowIndex   := 0
-      _OOHG_ThisItemColIndex   := 0
-      _OOHG_ThisItemCellRow    := 0
-      _OOHG_ThisItemCellCol    := 0
-      _OOHG_ThisItemCellWidth  := 0
-      _OOHG_ThisItemCellHeight := 0
-      _OOHG_ThisItemCellValue  := nil
-   EndIf
-
-   Return
-
-Function _ListEventInfo()
-
-   Local aEvents, nLen
-
-   If EMPTY( _OOHG_ThisObject )
-      aEvents := {}
-   Else
-      _PushEventInfo()
-      nLen := LEN( _OOHG_aEventInfo )
-      aEvents := ARRAY( nLen )
-      AEVAL( _OOHG_aEventInfo, { | a, i | aEvents[ nLen - i + 1 ] := a[ 1 ]:Name + ;
-                                 IF( a[ 4 ] == NIL, "", "." + a[ 4 ]:Name ) + ;
-                                 "." + a[ 2 ] }, 2 )
-      ASIZE( aEvents, nLen - 1 )
-      // TODO: Add line number / procedure name
-      _PopEventInfo()
-   EndIf
-
-   Return aEvents
-
-Function SetAppHotKey( nKey, nFlags, bAction )
-
-   Local bCode
-
-   bCode := _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags )
-   If PCOUNT() > 2
-      _OOHG_SetKey( _OOHG_HotKeys, nKey, nFlags, bAction )
-   EndIf
-
-   Return bCode
-
-Function SetAppHotKeyByName( cKey, bAction )
-
-   Local aKey, bCode
+   LOCAL aKey, bCode
 
    aKey := _DetermineKey( cKey )
-   If aKey[ 1 ] != 0
-      bCode := _OOHG_SetKey( _OOHG_HotKeys, aKey[ 1 ], aKey[ 2 ] )
-      If PCOUNT() > 1
-         _OOHG_SetKey( _OOHG_HotKeys, aKey[ 1 ], aKey[ 2 ], bAction )
-      EndIf
-   Else
+   IF aKey[ 1 ] != 0
+      bCode := SetAppHotKey( aKey[ 1 ], aKey[ 2 ], bAction )
+   ELSE
       bCode := NIL
-   EndIf
+   ENDIF
 
-   Return bCode
+   RETURN bCode
 
 Function _OOHG_MacroCall( cMacro )
 
@@ -2882,19 +2789,6 @@ FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
             _OOHG_DeleteArrayItem( aKeys, nPos )
          EndIf
       Endif
-   EndIf
-
-   Return uRet
-
-FUNCTION _OOHG_SetbKeyDown( bKeyDown )
-
-   Local uRet
-
-   uRet := _OOHG_bKeyDown
-   If HB_IsBlock( bKeyDown )
-      _OOHG_bKeyDown := bKeyDown
-   ElseIf PCOUNT() > 0
-      _OOHG_bKeyDown := nil
    EndIf
 
    Return uRet
