@@ -239,7 +239,7 @@ VIRTUAL KEY CODES AND MODIFIERS
 #define MOD_WIN       8
 
 /*---------------------------------------------------------------------------
-HOT KEY COMMANDS
+HOT KEY COMMANDS - Parent specific - OOHG controlled
 ---------------------------------------------------------------------------*/
 
 #xcommand ON KEY <key> [ OF <parent> ] ACTION <action> ;
@@ -255,7 +255,7 @@ HOT KEY COMMANDS
        <baction> := _DefineAnyKey( <(parent)>, <(key)> )
 
 /*---------------------------------------------------------------------------
-ACCELERATOR COMMANDS
+ACCELERATOR COMMANDS - Windows controlled, see WM_HOTKEY message
 ---------------------------------------------------------------------------*/
 
 #xcommand SET ACCELERATOR <key> [ OF <parent> ] ACTION <action> ;
@@ -271,7 +271,7 @@ ACCELERATOR COMMANDS
       <baction> := _DefineAccelerator( <(parent)>, <(key)> )
 
 /*---------------------------------------------------------------------------
-APPLICATION-WIDE HOT KEYS COMMANDS
+APPLICATION-WIDE HOT KEYS COMMANDS - OOHG controlled
 ---------------------------------------------------------------------------*/
 
 #xcommand SET APPLICATION KEY <key> ACTION <action> ;
@@ -294,7 +294,7 @@ PUSH KEY COMMAND
 ---------------------------------------------------------------------------*/
 
 /*---------------------------------------------------------------------------
-HOT KEY CONTROL
+HOT KEY CONTROL - Parent specific - OOHG controlled
 ---------------------------------------------------------------------------*/
 #command DEFINE HOTKEY <name> ;
       [ OBJ <obj> ] ;
