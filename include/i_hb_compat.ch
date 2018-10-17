@@ -62,6 +62,10 @@
 
 #ifndef __XHARBOUR__                                 // This pp rules are only needed for Harbour compilers
 
+   #xtranslate GetThreadId( [<x,...>] ) ;
+      => ;
+         hb_threadID( <x> )
+
    #xtranslate ValToPrgExp( [<x,...>] ) ;
       => ;
          hb_ValToExp( <x> )
