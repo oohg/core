@@ -222,8 +222,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
                   if( _MDI_Items[ iPos ][ 0 ] == hWnd || _MDI_Items[ iPos ][ 1 ] == hWnd )
                   {
                      bLoop = 0;
-                     bCheck = ! TranslateMDISysAccel( _MDI_Items[ iPos ][ 0 ], Msg );
-                              // && ! TranslateAccelerator( _MDI_Items[ iPos ][ 1 ], NULL, Msg );
+                     bCheck = ! TranslateMDISysAccel( _MDI_Items[ iPos ][ 0 ], Msg ) && ! TranslateAccelerator( _MDI_Items[ iPos ][ 1 ], NULL, Msg );
                      iPos = 0;
                   }
                }
