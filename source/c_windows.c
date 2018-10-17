@@ -378,7 +378,7 @@ HB_FUNC( SETACTIVEWINDOW )
 
 HB_FUNC( POSTQUITMESSAGE )
 {
-   PostQuitMessage( hb_parnl( 1 ) );
+   PostQuitMessage( hb_parni( 1 ) );
 }
 
 HB_FUNC( DESTROYWINDOW )
@@ -751,22 +751,22 @@ HB_FUNC( C_SETPOLYWINDOWRGN )
 
 HB_FUNC( GETHELPDATA )
 {
-   hb_retnl( (LONG) ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
+   HB_RETNL( (LONG_PTR) ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
 }
 
 HB_FUNC( GETMSKTEXTMESSAGE )
 {
-   hb_retnl( (LONG) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->msg ) );
+   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->msg ) );
 }
 
 HB_FUNC( GETMSKTEXTWPARAM )
 {
-   hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->wParam) );
+   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->wParam) );
 }
 
 HB_FUNC( GETMSKTEXTLPARAM )
 {
-   hb_retnl( (LONG) (((MSGFILTER FAR *) hb_parnl(1))->lParam) );
+   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->lParam) );
 }
 
 HB_FUNC( GETWINDOW )
@@ -786,47 +786,42 @@ HB_FUNC( GETGRIDNEWSTATE )
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
 {
-
-   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
-
+   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
    int iItem = pDispInfo->item.iItem;
-
    int iSubItem = pDispInfo->item.iSubItem;
 
    hb_reta( 2 );
    HB_STORNI( iItem + 1 , -1, 1 );
    HB_STORNI( iSubItem + 1 , -1, 2 );
-
 }
 
 HB_FUNC( SETGRIDQUERYDATA )
 {
    PHB_ITEM pValue = hb_itemNew( NULL );
-   LV_DISPINFO* pDispInfo = (LV_DISPINFO*)hb_parnl(1);
+   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
    pDispInfo->item.pszText = (LPTSTR) hb_itemGetCPtr( pValue );
-
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )
 {
-    LV_DISPINFO* pDispInfo = ( LV_DISPINFO * ) hb_parnl( 1 );
+    LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
     pDispInfo->item.iImage = hb_parni( 2 );
 }
 
 HB_FUNC( GETESCAPESTATE )
 {
-     hb_retni( GetKeyState( VK_ESCAPE ) );
+   hb_retni( GetKeyState( VK_ESCAPE ) );
 }
 
 HB_FUNC( GETCONTROLSTATE )
 {
-     hb_retni( GetKeyState( VK_CONTROL ) );
+   hb_retni( GetKeyState( VK_CONTROL ) );
 }
 
 HB_FUNC( GETALTSTATE )
 {
-     hb_retni( GetKeyState( VK_MENU ) );
+   hb_retni( GetKeyState( VK_MENU ) );
 }
 
 HB_FUNC( GETCURSORROW )
@@ -1292,7 +1287,7 @@ HB_FUNC( _UPDATERTL )
 
    hwnd = HWNDparam( 1 );
    myret = GetWindowLongPtr( hwnd, GWL_EXSTYLE );
-   if( hb_parnl( 2 ) )
+   if( hb_parl( 2 ) )
    {
       myret = myret |  WS_EX_LTRREADING |  WS_EX_LEFT |  WS_EX_LEFTSCROLLBAR;
 //    myret = myret                    &~ WS_EX_LTRREADING &~ WS_EX_LEFT;
