@@ -3,7 +3,7 @@
  */
 /*
  * Use this format for the entry headers:
- *    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Name or Username and/or <your_email@address>
+ *    YYYY-MM-DD HH:MM UTC[-|+]hhmm Name/Username <your_email@address>
  * Use this marks for file entries:
  *   '*', '+' or '-' to mean the file was modified, added or deleted.
  * Use this marks for detail entries:
@@ -11,6 +11,119 @@
  *    '+' Added: ...             '%' Optimized: ...
  *    '-' Removed: ...           ';' Comment
  */
+
+2018-10-17 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Some changes for 64 bit support.
+
+2018-10-17 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     + GetUserProfileFolder, GetUserTempFolder, GetApplicationDataFolder,
+       SetAppHotKey, _PopEventInfo, _PushEventInfo, _PushEventList and
+       _OOHG_SetbKeyDown pp translations.
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     + _OOHG_bKeyDown and _OOHG_HotKeys global vars.
+     + DATA aEventStack to TApplication class.
+     + DATA aFonts to TApplication class.
+     + METHOD EventInfoList to TApplication class.
+     + METHOD EventInfoPop to TApplication class.
+     + METHOD EventInfoPush to TApplication class.
+     + METHOD Value_Pos45 to TApplication class.
+     + METHOD Value_Pos46 to TApplication class.
+   * core\source\h_windows.prg
+     - STATIC _OOHG_aEventInfo
+     - STATIC _OOHG_HotKeys
+     - STATIC _OOHG_bKeyDown
+     - _PushEventInfo, _PopEventInfo, _ListEventInfo,
+       SetAppHotKey and _OOHG_SetbKeyDown functions.
+     * SetAppHotKeyByName function now calls SetAppHotKey.
+   ; The events stack is now thread aware.
+
+2018-10-17 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Reenabled comment code at _OOHG_ProcessMessage function.
+
+2018-10-17 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     - Clause MDITABNAV.
+
+2018-10-17 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.ch
+     + Some defines to improve code readability.
+     - DATA TabNavMDI from TForm class.
+     - Support for clause MDITABNAV from TForm class.
+     * Some format and comments.
+     + WS_EX_CONTROLPARENT to TFormMDIClient's Define method.
+     + WS_EX_CONTROLPARENT to TFormMDIChild's Define method.
+     ; This commit resolves the problem that an MDI app freezes when
+       you click a button placed inside an INTERNAL window which is
+       placed inside an MDICHILD.
+     ; This commit also fixes the tabbing navigation problem (see
+       2018-10-11 21:01 UTC-0300 commit) without the MDITABNAV hack.
+       The current behaviour is Windows default: after going through
+       all the controls of a MDICHILD form, the navigation will
+       continue on the next opened MDICHILD window. This behaviour
+       can't be changed.
+
+2018-10-17 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_keybd.ch
+     + Comments.
+
+2018-10-17 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hmg_compat.ch
+     + CopyToClipboard and RetrieveTextFromClipboard functions.
+
+2018-10-17 18:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     + GetThreadId function.
+
+2018-10-17 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     % Removed one pp rule.
+
+2018-10-16 18:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! Compiler warning on duplicated defined symbols.
+
+2018-10-16 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + i_font.ch
+
+2018-10-16 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_msgbox.prg
+     + Function MsgDebug, borrowed from HGM Extended.
+   * core\include\i_hb_compat.ch
+     + Translation for ValToPrgExp function.
+
+2018-10-16 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_controlmisc.ch
+   + core\include\i_font.ch
+     ; SET FONT TO commands moved to new file.
+
+2018-10-16 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + Defines for messages CB_SETITEMHEIGHT and CB_GETITEMHEIGHT.
+   * core\include\i_combo.ch
+     + Clause EDITHEIGHT to set the height of the editbox's part
+       of the combobox at define time.
+     + Clause OPTIONSHEIGHT to set the height of the items in the
+       listbox part of the combobox at define time.
+   * core\source\h_combo.prg
+     + METHOD EditHeight to set/get the height of the editbox's part
+       of the combobox.
+     + METHOD OptionsHeight to set/get the height of the items in the
+       listbox part of the combobox.
+
+2018-10-16 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\common_make.bat
+   * core\source\makelib_mingw.bat
+   * core\source\oohg.hbp
+     - Reference to h_font.prg
+
+2018-10-15 15:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+     ! Some warnings were pacified.
 
 2018-10-15 14:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_controlmisc.prg
@@ -258,7 +371,7 @@
        forms. Note that, after going through all the controls of
        a MDICHILD form, the navigation will continue on the next
        opened MDICHILD window. Defaults to .F.
-   * core\source\h_form.prg
+* core\source\h_form.prg
      + DATA TabNavMDI. Defaults to .F.
      + Support for tabbing navigation on MDICHILD forms.
      * Some format.
