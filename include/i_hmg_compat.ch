@@ -64,7 +64,15 @@
 
 #define __OOHG_HMG_COMPAT__
 
-#xtranslate RANDOM( <arg1> ) ;
+#xtranslate CopyToClipboard( [ <x> ] ) ;
+   => ;
+      SetClipboardText( <x> )
+
+#xtranslate RetrieveTextFromClipboard() ;
+   => ;
+      GetClipboardText()
+
+#xtranslate Random( <arg1> ) ;
    => ;
       HB_Random( <arg1> )
 
