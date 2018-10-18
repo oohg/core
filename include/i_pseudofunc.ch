@@ -132,19 +132,19 @@
 
 #xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
    => ;
-      TApplication():Value_Pos46( <nKey>, <nFlags>, <bAction> )
+      TApplication():Define():Value_Pos46( <nKey>, <nFlags>, <bAction> )
 
 #xtranslate _PushEventInfo() ;
    => ;
-      TApplication():EventInfoPush()
+      TApplication():Define():EventInfoPush()
 
 #xtranslate _PopEventInfo() ;
    => ;
-      TApplication():EventInfoPop()
+      TApplication():Define():EventInfoPop()
 
 #xtranslate _PushEventList() ;
    => ;
-      TApplication():EventInfoList()
+      TApplication():Define():EventInfoList()
 
 #xtranslate _OOHG_SetbKeyDown( [ <bValue> ] ) ;
    => ;
