@@ -12,6 +12,70 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-10-18 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-10-18 21:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_internal.prg
+   * core\source\h_picture.prg
+   * core\source\h_textarray.prg
+     * The code for app exiting in case the class registration
+       fails was moved to PRG level to generate an entry at the
+       errors log and enable a more ordered exit.
+   * core\source\h_picture.prg
+     * Two C-level module-static vars were moved to a C-level
+       function-static var, thus making the class thread safe.
+
+2018-10-18 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * Function TGrid_Notify_CustomDraw_GetSelColor will now
+       return -1 instead of exiting app when the color array
+       is not valid.
+
+2018-10-18 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     - Call to dbCloseAll() because it's done at ExitProcess.
+
+2018-10-18 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_font.ch
+     + DEFINE FONT and RELEASE FONT commands.
+   * core\include\i_hmg_compat.ch
+     + GetFontHandle, GetFontParam and GetFontParamByRef functions.
+   * core\source\c_font.c
+     + ENumFontsEx and _EnumFontFamExProc functions.
+   * core\source\h_application.prg
+     + DATA aEventStack renamed to aEventsStack.
+     + METHOD DefineFont to TApplication class.
+       ; Use this method to define an application-wide logical font.
+       ; Do not explicitly deleted de object returned by this method,
+         use METHOD ReleaseFont instead.
+       ; See DEFINE FONT command.
+     + METHOD GetFontHandle to TApplication class.
+     + METHOD GetFontID to TApplication class.
+     + METHOD GetFontParamsByRef to TApplication class.
+     + METHOD Release to TApplication class.
+       ; This method will be called at app's end. Currently it only
+         deletes all defined application-wide fonts.
+     + METHOD ReleaseFont to TApplication class.
+       ; Do not delete an application-wide font unless you are
+         completely sure that it's not in use.
+       ; See RELEASE FONT command.
+     ! Methods EventInfoList, EventInfoPush and EventInfoPop were
+       missing mutex locking logic.
+     ! Methods EventInfoList, EventInfoPush and EventInfoPop were
+       not using direct access to class datas.
+   * core\source\h_error.prg
+     * _ListEventInfo() changed by call to TApplication class.
+   * core\source\h_windows.prg
+     + Call to TApplication():Release at ExitProcess function.
+     + Function GetFontList, borrowed from HGM Extended.
+
+2018-10-18 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     ! SetAppHotKey, _PushEventInfo, _PopEventInfo and _PushEventList
+       were not working properly and causing a lot of awful errors.
+
 2018-10-17 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_windows.c
      * Some changes for 64 bit support.
