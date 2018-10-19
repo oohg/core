@@ -2745,7 +2745,6 @@ Function _ActivateAllWindows()
 FUNCTION ReleaseAllWindows()
 
    _ReleaseWindowList( _OOHG_aFormObjects )
-   dbCloseAll()
    ExitProcess( _OOHG_ErrorLevel )
    // Processing will never reach this point
 
