@@ -8896,7 +8896,6 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
 {
    PHB_ITEM pColor;
    LONG iColor = -1;
-   char cBuffError[ 1000 ];
 
    _OOHG_Send( pSelf, s_GridSelectedColors );
    hb_vmSend( 0 );
@@ -8912,11 +8911,7 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
          return iColor;
       }
    }
-
-   sprintf( cBuffError, "GridSelectedColors is not a valid array !!!" );
-   MessageBox( 0, cBuffError, "Error", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-   ExitProcess( 1 );
-   return 0;
+   return -1;
 }
 
 int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iRow, int iCol, BOOL bCheckBoxes, BOOL bFocusRect, BOOL bNoGrid, BOOL bPLM )
