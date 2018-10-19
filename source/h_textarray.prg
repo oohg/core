@@ -95,7 +95,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount
       uFontColor, uBackColor, bProcedureName, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
       cToolTip, nHelpId, lInvisible, lRtl, cValue, lNoTabStop, lDisabled, bGotFocus, bLostFocus ) CLASS TTextArray
 
-   LOCAL nControlHandle, nStyle, nStyleEx
+   LOCAL nControlHandle, nStyle, nStyleEx, nError
 
    ASSIGN ::nCol    VALUE nCol    TYPE "N"
    ASSIGN ::nRow    VALUE nRow    TYPE "N"
@@ -113,6 +113,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount
 
    nStyleEx := iif( ValType( lClientEdge ) == "L" .AND. lClientEdge, WS_EX_CLIENTEDGE, 0 )
 
+   IF ( nError := _OOHG_TTextArray_Register() ) # 0
+      MsgOOHGError( "TEXTARRAY: Windows class registration failed with error " + hb_ntos( nError ) + ". Program terminated.")
+   ENDIF
+
    nControlhandle := InitTextArray( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( nControlHandle, cControlName, nHelpId, , cToolTip )
@@ -123,9 +127,12 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount
 
    ::Write( cValue )
 
-*   If ::Transparent
-*      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-*   EndIf
+/*
+ * TODO: Check if this is needed or not
+ *   If ::Transparent
+ *      RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
+ *   EndIf
+ */
 
    DEFINE TIMER 0 OF ( Self ) INTERVAL 500 ACTION TTextArray_CursorTimer( Self )
 
@@ -173,6 +180,7 @@ typedef struct {
    lAux[ 7 ] = Cursor time (show or hide)
    lAux[ 8 ] = Assume fixed font
 */
+
 #define SELF_COLCOUNT( xSelf )   xSelf->lAux[ 0 ]
 #define SELF_ROWCOUNT( xSelf )   xSelf->lAux[ 1 ]
 #define SELF_COL( xSelf )        xSelf->lAux[ 2 ]
@@ -212,14 +220,13 @@ static LRESULT CALLBACK _OOHG_TTextArray_WndProc( HWND hWnd, UINT message, WPARA
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static void _OOHG_TTextArray_Register( void )
+HB_FUNC( _OOHG_TTEXTARRAY_REGISTER )          /* FUNCTION _OOHG_TTextArray_Register() -> nError */
 {
    static BOOL bRegistered = FALSE;
 
    if( ! bRegistered )
    {
       WNDCLASS WndClass;
-
       memset( &WndClass, 0, sizeof( WndClass ) );
       WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
       WndClass.lpfnWndProc   = _OOHG_TTextArray_WndProc;
@@ -229,36 +236,30 @@ static void _OOHG_TTextArray_Register( void )
 
       if( ! RegisterClass( &WndClass ) )
       {
-         char cBuffError[ 1000 ];
-         sprintf( cBuffError, "_OOHG_TTEXTARRAY Registration Failed! Error %i", ( int ) GetLastError() );
-         MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-         ExitProcess( 1 );
+         hb_retni( ( int ) GetLastError() );
       }
 
       bRegistered = TRUE;
    }
+
+   hb_retni( 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
 {
-   HWND hwnd;
-   HWND hbutton;
+   HWND hCtrl;
    int Style, ExStyle;
 
-   _OOHG_TTextArray_Register();
-
-   hwnd = HWNDparam( 1 );
    Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
    ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hbutton = CreateWindowEx( ExStyle, "_OOHG_TEXTARRAY", "", Style,
-             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-             hwnd, NULL, GetModuleHandle( NULL ), NULL );
+   hCtrl = CreateWindowEx( ExStyle, "_OOHG_TEXTARRAY", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
+                           hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTextArray_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TTextArray_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
-   HWNDret( hbutton );
+   HWNDret( hCtrl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
