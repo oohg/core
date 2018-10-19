@@ -2525,7 +2525,8 @@ Static Function _OOHG_MacroCall_Error( oError )
 
 FUNCTION ExitProcess( nExit )
 
-   DBCloseAll()
+   dbCloseAll()
+   TApplication():Release()
 
    RETURN _ExitProcess2( nExit )
 
@@ -2533,11 +2534,45 @@ FUNCTION _OOHG_UsesVisualStyle()
 
    RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetFontList( hDC, cFontFamilyName, nCharSet, nPitch, nFontType, lSortCaseSensitive, aFontName )
 
-EXTERN IsXPThemeActive, IsAppThemed, GetComCtl32Version
-EXTERN _OOHG_Eval, EVAL
-EXTERN _OOHG_ShowContextMenus, _OOHG_GlobalRTL, _OOHG_NestedSameEvent
-EXTERN ValidHandler
+   LOCAL SortCodeBlock, aFontList, i
+
+   IF HB_ISLOGICAL( lSortCaseSensitive ).AND. lSortCaseSensitive
+      SortCodeBlock := { |x, y| x[1] < y[1] }
+   ELSE
+      SortCodeBlock := { |x, y| Upper( x[1] ) < Upper( y[1] ) }
+   ENDIF
+
+   /*
+    * EnumFontsEx returns aFontList: { { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
+    * with the details of the fonts that match the parameters.
+    * It also returns, by reference, aFontName: { cFontName1, cFontName2, ... }
+    *
+    * See i_font.ch for nCharSet and nPitch parameters values.
+    * Set the parameters to NIL to avoid filtering for that parameter.
+    * When hDC is NIL, the screen DC is assumed.
+    */
+   aFontList := EnumFontsEx( hDC, cFontFamilyName, nCharSet, nPitch, NIL, SortCodeBlock, @aFontName )
+
+   IF HB_ISNUMERIC( nFontType )
+      i := Len( aFontList )
+      DO WHILE i > 0
+         IF aFontList[ i, 4 ] # nFontType
+            ADel( aFontList, i )
+            ASize( aFontList, i - 1 )
+            ADel( aFontName, i )
+            ASize( aFontName, i - 1 )
+         ENDIF
+         i --
+      ENDDO
+   ENDIF
+
+   RETURN aFontList
+
+
+EXTERN EVAL
 
 #pragma BEGINDUMP
 

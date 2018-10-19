@@ -68,6 +68,7 @@
 #include <windows.h>
 #include <commctrl.h>
 #include "hbapi.h"
+#include "hbapiitm.h"
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -172,4 +173,76 @@ HB_FUNC( GETSYSTEMFONT )   // No parameters
    hb_reta( 2 );
    HB_STORC( szFName, -1, 1 );
    HB_STORNI( iHeight, -1, 2 );
+}
+
+/*
+ * Borrowed from HGM Extended.
+ * Based on the workds by Petr Chornyj, Claudio Soto, Viktor Szakats and Grigory Filatov.
+ * EnumFontsEx( [hDC], [cFontFamilyName], [nCharSet], [nPitch], [nFontType], [SortCodeBlock], [@aFontName] ) ->{ { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
+ */
+
+static int CALLBACK _EnumFontFamExProc( const LOGFONT * lpelfe, const TEXTMETRIC * lpntme, DWORD dwFontType, LPARAM pArray );
+
+HB_FUNC( ENUMFONTSEX )
+{
+   HDC hdc;
+   LOGFONT lf;
+   PHB_ITEM pArray= hb_itemArrayNew( 0 );
+   BOOL bReleaseDC = FALSE;
+
+   memset( &lf, 0, sizeof( LOGFONT ) );
+
+   if( GetObjectType( (HGDIOBJ) HB_PARNL( 1 ) ) == OBJ_DC )
+      hdc = (HDC) HB_PARNL( 1 );
+   else
+   {
+      hdc = GetDC( NULL );
+      bReleaseDC = TRUE;
+   }
+
+   if( hb_parclen( 2 ) > 0 )
+      hb_strncpy( lf.lfFaceName, hb_parc( 2 ), HB_MIN( LF_FACESIZE - 1, hb_parclen( 2 ) ) );
+   else
+      lf.lfFaceName[ 0 ] = '\0';
+
+   lf.lfCharSet= (BYTE) hb_parni( 3 );
+   lf.lfPitchAndFamily = (BYTE) ( hb_parnidef( 4, DEFAULT_PITCH ) | FF_DONTCARE );
+
+   EnumFontFamiliesEx( hdc, &lf, _EnumFontFamExProc, (LPARAM) pArray, 0 );
+
+   if( bReleaseDC )
+      ReleaseDC( NULL, hdc );
+
+   if( HB_ISBLOCK( 6 ) )
+      hb_arraySort( pArray, NULL, NULL, hb_param( 6, HB_IT_BLOCK ) );
+
+   if( HB_ISBYREF( 7 ) )
+   {
+      PHB_ITEM aFontName = hb_param( 7, HB_IT_ANY );
+      int nLen = hb_arrayLen( pArray ), i;
+
+      hb_arrayNew( aFontName, nLen );
+
+      for( i = 1; i <= nLen; i++ )
+         hb_arraySetC( aFontName, i, hb_arrayGetC( hb_arrayGetItemPtr( pArray, i ), 1 ) );
+   }
+
+   hb_itemReturnRelease( pArray );
+}
+
+static int CALLBACK _EnumFontFamExProc( const LOGFONT * lpelfe, const TEXTMETRIC * lpntme, DWORD dwFontType, LPARAM pArray )
+{
+   if( lpelfe->lfFaceName[ 0 ] != '@' )
+   {
+      PHB_ITEM pSubArray = hb_itemArrayNew( 4 );
+
+      hb_arraySetC( pSubArray, 1, lpelfe->lfFaceName );
+      hb_arraySetNL( pSubArray, 2, lpntme->tmCharSet );
+      hb_arraySetNI( pSubArray, 3, lpelfe->lfPitchAndFamily & FIXED_PITCH );
+      hb_arraySetNI( pSubArray, 4, dwFontType & TRUETYPE_FONTTYPE );
+
+      hb_arrayAddForward( (PHB_ITEM) pArray, pSubArray );
+      hb_itemRelease( pSubArray );
+   }
+   return 1;
 }

@@ -67,6 +67,20 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+#define FONT_ID          01
+#define FONT_HANDLE      02
+#define FONT_NAME        03
+#define FONT_SIZE        04
+#define FONT_BOLD        05
+#define FONT_ITALIC      06
+#define FONT_UNDERLINE   07
+#define FONT_STRIKEOUT   08
+#define FONT_ANGLE       09
+#define FONT_CHARSET     10
+#define FONT_WIDTH       11
+#define FONT_ORIENTATION 12
+#define FONT_ADVANCED    13
+
 #define NDX_OOHG_ACTIVECONTROLINFO     01
 #define NDX_OOHG_ACTIVEFRAME           02
 #define NDX_OOHG_ADJUSTFONT            03
@@ -121,7 +135,7 @@ CLASS TApplication
    CLASSVAR oAppObj               INIT NIL HIDDEN
    CLASSVAR hClsMtx               INIT NIL HIDDEN
 
-   DATA aEventStack               INIT {}  HIDDEN
+   DATA aEventsStack              INIT {}  HIDDEN
    DATA aFonts                    INIT {}  READONLY
    DATA aVars                     INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
@@ -138,9 +152,14 @@ CLASS TApplication
    METHOD Col                     SETGET
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
+   METHOD DefineFont
    METHOD EventInfoList
    METHOD EventInfoPop
    METHOD EventInfoPush
+   METHOD GetFontHandle
+   METHOD GetFontID
+   METHOD GetFontParams
+   METHOD GetFontParamsByRef
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
    METHOD hWnd
@@ -150,6 +169,8 @@ CLASS TApplication
    METHOD MainName
    METHOD MainObject
    METHOD MainStyle               SETGET
+   METHOD Release
+   METHOD ReleaseFont
    METHOD Row                     SETGET
    METHOD Title                   SETGET
    METHOD TopMost                 SETGET
@@ -214,7 +235,7 @@ METHOD Define() CLASS TApplication
 
    IF ::oAppObj == NIL
       IF ! ::CreateGlobalMutex()
-         MsgOOHGError( "TApplication: Global mutex can't be created. Program terminated." )
+         MsgOOHGError( "APPLICATION: Global mutex creation failed. Program terminated." )
       ENDIF
 
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
@@ -343,25 +364,66 @@ METHOD Cursor( uValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD hWnd CLASS TApplication
+METHOD DefineFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
+                   nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL i, aFontList, hFont
 
    hb_mutexLock( ::hClsMtx )
-   oMain := ::aVars[ NDX_OOHG_MAIN ]
-   IF HB_ISOBJECT( oMain )
-      uRet := oMain:hWnd
+
+   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
+      hFont := ::aFonts[ i, FONT_HANDLE ]
+   ELSE
+      ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
+      ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+      ASSIGN lDefault     VALUE lDefault     TYPE "L" DEFAULT .F.
+      ASSIGN lBold        VALUE lBold        TYPE "L" DEFAULT .F.
+      ASSIGN lItalic      VALUE lItalic      TYPE "L" DEFAULT .F.
+      ASSIGN lUnderline   VALUE lUnderline   TYPE "L" DEFAULT .F.
+      ASSIGN lStrikeout   VALUE lStrikeout   TYPE "L" DEFAULT .F.
+      ASSIGN nAngle       VALUE nAngle       TYPE "N" DEFAULT 0
+      ASSIGN nCharset     VALUE nCharset     TYPE "N" DEFAULT DEFAULT_CHARSET
+      ASSIGN nWidth       VALUE nWidth       TYPE "N" DEFAULT 0
+      ASSIGN nOrientation VALUE nOrientation TYPE "N" DEFAULT nAngle
+      IF ! HB_ISLOGICAL( lAdvanced )
+         lAdvanced := ( nAngle # nOrientation )
+      ELSEIF ! lAdvanced
+         nOrientation := nAngle
+      ENDIF
+
+      GetFontList( NIL, NIL, NIL, NIL, NIL, NIL, @aFontList )
+      IF Empty( AScan( aFontList, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
+         cFontName := "Arial"
+      ENDIF
+
+      hFont := InitFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+
+      IF lDefault
+         _OOHG_DefaultFontName := ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
+         _OOHG_DefaultFontSize := ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+
+         AAdd( ::aFonts, NIL )
+         AIns( ::aFonts, 1 )
+         ::aFonts[ 1 ] := { cFontID, hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
+                            lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced }
+      ELSE
+         AAdd( ::aFonts, { cFontID, hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
+                            lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced } )
+      ENDIF
    ENDIF
+
    hb_mutexUnlock( ::hClsMtx )
 
-   RETURN ( uRet )
+   RETURN hFont
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoList() CLASS TApplication
 
    LOCAL aEvents, nLen
 
-   IF Empty( _OOHG_ThisObject )
+   hb_mutexLock( ::hClsMtx )
+
+   IF Empty( ::aVars[ NDX_OOHG_THISOBJECT ] )
       aEvents := {}
    ELSE
       ::EventInfoPush()
@@ -373,66 +435,166 @@ METHOD EventInfoList() CLASS TApplication
       ::EventInfoPop()
    ENDIF
 
+   hb_mutexUnlock( ::hClsMtx )
+
    RETURN aEvents
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoPop() CLASS TApplication
 
-   LOCAL nLen, i, nThreadID := GetThreadId()
+   LOCAL nThreadID, i, nLen
 
+   hb_mutexLock( ::hClsMtx )
+
+   nThreadID := GetThreadId()
    i := nLen := Len( ::aEventsStack )
    DO WHILE i > 0
       IF ::aEventsStack[ i ][ 01 ] == nThreadID
-         _OOHG_ThisForm           := ::aEventsStack[ i ][ 02 ]
-         _OOHG_ThisEventType      := ::aEventsStack[ i ][ 03 ]
-         _OOHG_ThisType           := ::aEventsStack[ i ][ 04 ]
-         _OOHG_ThisControl        := ::aEventsStack[ i ][ 05 ]
-         _OOHG_ThisObject         := ::aEventsStack[ i ][ 06 ]
-         _OOHG_ThisItemRowIndex   := ::aEventsStack[ i ][ 07 ]
-         _OOHG_ThisItemColIndex   := ::aEventsStack[ i ][ 08 ]
-         _OOHG_ThisItemCellRow    := ::aEventsStack[ i ][ 09 ]
-         _OOHG_ThisItemCellCol    := ::aEventsStack[ i ][ 10 ]
-         _OOHG_ThisItemCellWidth  := ::aEventsStack[ i ][ 11 ]
-         _OOHG_ThisItemCellHeight := ::aEventsStack[ i ][ 12 ]
-         _OOHG_ThisItemCellValue  := ::aEventsStack[ i ][ 13 ]
+         ::aVars[ NDX_OOHG_THISCONTROL ]        := ::aEventsStack[ i ][ 02 ]
+         ::aVars[ NDX_OOHG_THISEVENTTYPE ]      := ::aEventsStack[ i ][ 03 ]
+         ::aVars[ NDX_OOHG_THISFORM ]           := ::aEventsStack[ i ][ 04 ]
+         ::aVars[ NDX_OOHG_THISITEMCELLCOL ]    := ::aEventsStack[ i ][ 05 ]
+         ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := ::aEventsStack[ i ][ 06 ]
+         ::aVars[ NDX_OOHG_THISITEMCELLROW ]    := ::aEventsStack[ i ][ 07 ]
+         ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]  := ::aEventsStack[ i ][ 08 ]
+         ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := ::aEventsStack[ i ][ 09 ]
+         ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]   := ::aEventsStack[ i ][ 10 ]
+         ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := ::aEventsStack[ i ][ 11 ]
+         ::aVars[ NDX_OOHG_THISOBJECT ]         := ::aEventsStack[ i ][ 12 ]
+         ::aVars[ NDX_OOHG_THISTYPE ]           := ::aEventsStack[ i ][ 13 ]
          ADel( ::aEventsStack, i )
          ASize( ::aEventsStack, nLen - 1 )
+
+         hb_mutexUnlock( ::hClsMtx )
+
          RETURN NIL
       ENDIF
       i ++
    ENDDO
-   _OOHG_ThisForm           := NIL
-   _OOHG_ThisType           := ''
-   _OOHG_ThisEventType      := ''
-   _OOHG_ThisControl        := NIL
-   _OOHG_ThisObject         := NIL
-   _OOHG_ThisItemRowIndex   := 0
-   _OOHG_ThisItemColIndex   := 0
-   _OOHG_ThisItemCellRow    := 0
-   _OOHG_ThisItemCellCol    := 0
-   _OOHG_ThisItemCellWidth  := 0
-   _OOHG_ThisItemCellHeight := 0
-   _OOHG_ThisItemCellValue  := NIL
+   ::aVars[ NDX_OOHG_THISCONTROL ]        := NIL
+   ::aVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
+   ::aVars[ NDX_OOHG_THISFORM ]           := NIL
+   ::aVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
+   ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
+   ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
+   ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
+   ::aVars[ NDX_OOHG_THISOBJECT ]         := NIL
+   ::aVars[ NDX_OOHG_THISTYPE ]           := ''
+
+   hb_mutexUnlock( ::hClsMtx )
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoPush() CLASS TApplication
 
+   hb_mutexLock( ::hClsMtx )
    AAdd( ::aEventsStack, { GetThreadId(), ;
-                           _OOHG_ThisForm, ;
-                           _OOHG_ThisEventType, ;
-                           _OOHG_ThisType, ;
-                           _OOHG_ThisControl, ;
-                           _OOHG_ThisObject, ;
-                           _OOHG_ThisItemRowIndex, ;
-                           _OOHG_ThisItemColIndex, ;
-                           _OOHG_ThisItemCellRow, ;
-                           _OOHG_ThisItemCellCol, ;
-                           _OOHG_ThisItemCellWidth, ;
-                           _OOHG_ThisItemCellHeight, ;
-                           _OOHG_ThisItemCellValue } )
+                           ::aVars[ NDX_OOHG_THISCONTROL ], ;
+                           ::aVars[ NDX_OOHG_THISEVENTTYPE ], ;
+                           ::aVars[ NDX_OOHG_THISFORM ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCELLCOL ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCELLROW ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCELLVALUE ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ], ;
+                           ::aVars[ NDX_OOHG_THISITEMCOLINDEX ], ;
+                           ::aVars[ NDX_OOHG_THISITEMROWINDEX ], ;
+                           ::aVars[ NDX_OOHG_THISOBJECT ], ;
+                           ::aVars[ NDX_OOHG_THISTYPE ] } )
+   hb_mutexUnlock( ::hClsMtx )
+
    RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetFontHandle( cFontID ) CLASS TApplication
+
+   LOCAL i, hFont := 0
+
+   hb_mutexLock( ::hClsMtx )
+
+   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
+      hFont := ::aFonts[ i, FONT_HANDLE ]
+   ENDIF
+
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN hFont
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetFontID( hFont ) CLASS TApplication
+
+   LOCAL i, nID
+
+   hb_mutexLock( ::hClsMtx )
+
+   IF ( i := AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) ) > 0
+      nID := ::aFonts[ i, FONT_ID ]
+   ELSE
+      nID := ""
+   ENDIF
+
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN nID
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetFontParams( hFont ) CLASS TApplication
+
+   LOCAL i, aFontAttr
+
+   hb_mutexLock( ::hClsMtx )
+
+   IF ( i := AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) ) > 0
+      aFontAttr := { ::aFonts[ i, FONT_NAME ], ;
+                     ::aFonts[ i, FONT_SIZE ], ;
+                     ::aFonts[ i, FONT_BOLD ], ;
+                     ::aFonts[ i, FONT_ITALIC ], ;
+                     ::aFonts[ i, FONT_UNDERLINE ], ;
+                     ::aFonts[ i, FONT_STRIKEOUT ], ;
+                     ::aFonts[ i, FONT_ANGLE ], ;
+                     ::aFonts[ i, FONT_CHARSET ], ;
+                     ::aFonts[ i, FONT_WIDTH ], ;
+                     ::aFonts[ i, FONT_ORIENTATION ], ;
+                     ::aFonts[ i, FONT_ADVANCED ] }
+   ELSE
+      aFontAttr := { ::aVars[ NDX_OOHG_DEFAULTFONTNAME ], ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ], .F., .F., .F., .F., 0, DEFAULT_CHARSET, 0, 0, .F. }
+   ENDIF
+
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN aFontAttr
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetFontParamsByRef( hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
+                           nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
+
+   LOCAL lFound, aFontAttr
+
+   hb_mutexLock( ::hClsMtx )
+
+   aFontAttr := ::GetFontParams( hFont )
+
+   cFontName    := aFontAttr[ 01 ]
+   nFontSize    := aFontAttr[ 02 ]
+   lBold        := aFontAttr[ 03 ]
+   lItalic      := aFontAttr[ 04 ]
+   lUnderline   := aFontAttr[ 05 ]
+   lStrikeout   := aFontAttr[ 06 ]
+   nAngle       := aFontAttr[ 07 ]
+   nCharset     := aFontAttr[ 08 ]
+   nWidth       := aFontAttr[ 09 ]
+   nOrientation := aFontAttr[ 10 ]
+   lAdvanced    := aFontAttr[ 11 ]
+
+   lFound := ( AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) > 0 )
+
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN lFound
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Height( nHeight ) CLASS TApplication
@@ -471,6 +633,20 @@ METHOD HelpButton( lShow ) CLASS TApplication
       IF HB_ISOBJECT( oMain )
          uRet := oMain:HelpButton()
       ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD hWnd CLASS TApplication
+
+   LOCAL oMain, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   oMain := ::aVars[ NDX_OOHG_MAIN ]
+   IF HB_ISOBJECT( oMain )
+      uRet := oMain:hWnd
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
@@ -606,6 +782,35 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( lRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Release() CLASS TApplication
+
+   LOCAL i
+
+   hb_mutexLock( ::hClsMtx )
+   FOR i := 1 TO Len( ::aFonts )
+      DeleteObject( ::aFonts[ i ] )
+   NEXT i
+   ::aFonts := {}
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ReleaseFont( cFontID ) CLASS TApplication
+
+   LOCAL i
+
+   hb_mutexLock( ::hClsMtx )
+   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
+      DeleteObject( ::aFonts[ i, FONT_HANDLE ] )
+      ADel( ::aFonts[ i ] )
+      ASize( ::aFonts, Len( ::aFonts ) - 1 )
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Row( nRow ) CLASS TApplication

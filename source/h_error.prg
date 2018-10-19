@@ -133,7 +133,6 @@ STATIC FUNCTION DefError( oError )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_ErrorMessage( oError )
-// [vszakats]
 
    LOCAL cMessage
 
@@ -591,7 +590,7 @@ METHOD CopyLog( cTo ) CLASS OOHG_TErrorHtml
 METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
 
    #ifdef __ERROR_EVENTS__
-      Local aEvents
+      LOCAL aEvents
    #endif
 
    // Header
@@ -619,9 +618,8 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
       nPosition ++
    ENDDO
 
-   // Event list
    #ifdef __ERROR_EVENTS__
-      aEvents := _ListEventInfo()
+      aEvents := TApplication():Define():EventInfoList()
       ::Write( ::aMessages[11] )
       AEval( aEvents, { | c | ::Write( c ) } )
    #endif
@@ -657,8 +655,7 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
    ENDIF
 
    IF HB_ISLOGICAL( lEvents ) .AND. lEvents
-      // Event list
-      aEvents := _ListEventInfo()
+      aEvents := TApplication():Define():EventInfoList()
       ::Write( ::aMessages[11] )
       AEval( aEvents, { | c | ::Write( c ) } )
    ENDIF

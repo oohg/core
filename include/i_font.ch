@@ -117,7 +117,6 @@ TYPE CONSTANTS
       _OOHG_DefaultFontSize := <fontsize> ;;
       _OOHG_DefaultFontColor := <fontcolor>
 
-/*
 #command DEFINE FONT <name> ;
       FONTNAME <fontname> ;
       [ SIZE <fontsize> ] ;
@@ -131,10 +130,10 @@ TYPE CONSTANTS
       [ <lorient: ORIENT, ORIENTATION> <orient> ] ;
       [ <default : DEFAULT> ] ;
    => ;
-      _DefineFont( <"name">, <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
-            <.underline.>, <.strikeout.>, <angle>, <.default.>, <charset> )
+      TApplication():DefineFont( <"name">, <.default.>, <fontname>, <fontsize>, <.bold.>, ;
+            <.italic.>, <.underline.>, <.strikeout.>, <angle>, <charset>, ;
+            <width>, <orient>, <.langle.> .AND. <.lorient.> )
 
 #command RELEASE FONT <name> ;
    => ;
-      _ReleaseFont ( <"name"> )
-*/
+      TApplication():ReleaseFont( <"name"> )
