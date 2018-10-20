@@ -98,6 +98,18 @@
    => ;
       GetSystemFont() \[2\]
 
+#xtranslate GetFontHandle( <cFontID> ) ;
+   => ;
+      TApplication():Define():GetLogFontHandle( <cFontID> )
+
+#xtranslate GetFontParam( <hFont> ) ;
+   => ;
+      TApplication():Define():GetLogFontParams( <hFont> )
+
+#xtranslate GetFontParamByRef( <x,...> ) ;
+   => ;
+      TApplication():Define():GetLogFontParamsByRef( <x> )
+
 #xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
    => ;
       hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ) , <Sep> , Chr(9) ) )

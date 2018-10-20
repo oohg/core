@@ -64,18 +64,6 @@
 
 #define __OOHG_HMG_COMPAT__
 
-#xtranslate GetFontHandle( <hFont> ) ;
-   => ;
-      TApplication():Define():GetFontHandle( <hFont> )
-
-#xtranslate GetFontParam( <hFont> ) ;
-   => ;
-      TApplication():Define():GetFontParams( <hFont> )
-
-#xtranslate GetFontParamByRef( <x,...> ) ;
-   => ;
-      TApplication():Define():GetFontParamsByRef( <x> )
-
 #xtranslate CopyToClipboard( [ <x> ] ) ;
    => ;
       SetClipboardText( <x> )
