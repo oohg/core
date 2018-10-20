@@ -3934,7 +3934,7 @@ METHOD Release() CLASS TGrid
       ::HeaderImageList := 0
    EndIf
 
-   If ValidHandler( ::HeaderFontHandle)
+   If ValidHandler( ::HeaderFontHandle )
       DeleteObject( ::HeaderFontHandle )
       ::HeaderFontHandle := 0
    EndIf

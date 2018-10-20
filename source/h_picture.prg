@@ -476,14 +476,11 @@ HB_FUNC( _OOHG_TPICTURE_REGISTER )          /* FUNCTION _OOHG_TPicture_Register(
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITPICTURECONTROL )
 {
-   HWND hCtrl;
-   int Style, ExStyle;
+   int Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
+   int ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
-   ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
-
-   hCtrl = CreateWindowEx( ExStyle, "_OOHG_PICTURECONTROL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
-                           hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+   HWND hCtrl = CreateWindowEx( ExStyle, "_OOHG_PICTURECONTROL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
+                                hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    _OOHG_TPicture_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
@@ -491,7 +488,7 @@ HB_FUNC( INITPICTURECONTROL )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT *rect, HDC hdc )
+void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
 {
    BITMAP bm;
    HBITMAP hBmp, hBmpOld = NULL;
