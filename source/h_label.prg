@@ -86,6 +86,7 @@ CLASS TLabel FROM TControl
    METHOD LeftAlign   BLOCK { |Self| ::Align( SS_LEFT ) }
    METHOD RightAlign  BLOCK { |Self| ::Align( SS_RIGHT ) }
    METHOD CenterAlign BLOCK { |Self| ::Align( SS_CENTER ) }
+   METHOD SizePos
 
    ENDCLASS
 
@@ -137,7 +138,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
    EndIf
 
-   ASSIGN ::AutoSize VALUE autosize      TYPE "L" DEFAULT ::AutoSize
+   ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
 
    // OnClick takes precedence over OnDblClick
    ASSIGN ::OnClick    VALUE ProcedureName TYPE "B"
@@ -198,6 +199,14 @@ METHOD AutoSize( lValue ) CLASS TLabel
    EndIf
 
    RETURN ::lAutoSize
+
+METHOD SizePos( Row, Col, Width, Height ) CLASS TLabel
+
+   LOCAL uRet := ::Super:SizePos( Row, Col, Width, Height )
+
+   SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
+
+   RETURN uRet
 
 METHOD Align( nAlign ) CLASS TLabel
 
