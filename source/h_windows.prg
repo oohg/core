@@ -2526,7 +2526,7 @@ Static Function _OOHG_MacroCall_Error( oError )
 FUNCTION ExitProcess( nExit )
 
    dbCloseAll()
-   TApplication():Release()
+   TApplication():Define():Release()
 
    RETURN _ExitProcess2( nExit )
 
