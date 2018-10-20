@@ -12,6 +12,51 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-10-19 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     + METHOD SizePos.
+     ! Painting after resizing a control created with height and
+       width set to zero.
+
+2018-10-19 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_listbox.prg
+     * A C-level module-static vars was moved to a C-level
+       function-static var, thus making the class thread safe.
+     * Some changes for 64 bit support.
+     * Some format.
+
+2018-10-19 23:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! Call to method release of TApplication at ExitProcess.
+
+2018-10-19 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+   * core\source\h_internal.prg
+   * core\source\h_picture.prg
+   * core\source\h_textarray.prg
+     * Some format.
+
+2018-10-19 23:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     * METHOD DefineFont renamed to DefineLogFont.
+     * METHOD GetFontHandle renamed to GetLogFontHandle.
+     * METHOD GetFontID renamed to GetLogFontID.
+     * METHOD GetFontParams renamed to GetLogFontParams.
+     * METHOD GetFontParamsByRef renamed to GetLogFontParamsByRef.
+     * METHOD ReleaseFont renamed to ReleaseLogFont.
+     + Validation of cFontID.
+     * cFontID is now handled in uppercase.
+
+2018-10-19 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hmg_compat.ch
+     - GetFontHandle, GetFontParam and GetFontParamByRef functions.
+   * core\include\i_pseudofunc.ch
+     + GetFontHandle, GetFontParam and GetFontParamByRef functions.
+
+2018-10-19 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_font.ch
+     ! DEFINE FONT and RELEASE FONT commands.
+
 2018-10-18 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
