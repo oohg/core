@@ -152,14 +152,14 @@ CLASS TApplication
    METHOD Col                     SETGET
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
-   METHOD DefineFont
+   METHOD DefineLogFont
    METHOD EventInfoList
    METHOD EventInfoPop
    METHOD EventInfoPush
-   METHOD GetFontHandle
-   METHOD GetFontID
-   METHOD GetFontParams
-   METHOD GetFontParamsByRef
+   METHOD GetLogFontHandle
+   METHOD GetLogFontID
+   METHOD GetLogFontParams
+   METHOD GetLogFontParamsByRef
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
    METHOD hWnd
@@ -170,7 +170,7 @@ CLASS TApplication
    METHOD MainObject
    METHOD MainStyle               SETGET
    METHOD Release
-   METHOD ReleaseFont
+   METHOD ReleaseLogFont
    METHOD Row                     SETGET
    METHOD Title                   SETGET
    METHOD TopMost                 SETGET
@@ -364,54 +364,50 @@ METHOD Cursor( uValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DefineFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
+METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
                    nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
 
-   LOCAL i, aFontList, hFont
+   LOCAL i, aFontList, hFont := 0
 
    hb_mutexLock( ::hClsMtx )
-
-   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
-      hFont := ::aFonts[ i, FONT_HANDLE ]
-   ELSE
-      ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
-      ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
-      ASSIGN lDefault     VALUE lDefault     TYPE "L" DEFAULT .F.
-      ASSIGN lBold        VALUE lBold        TYPE "L" DEFAULT .F.
-      ASSIGN lItalic      VALUE lItalic      TYPE "L" DEFAULT .F.
-      ASSIGN lUnderline   VALUE lUnderline   TYPE "L" DEFAULT .F.
-      ASSIGN lStrikeout   VALUE lStrikeout   TYPE "L" DEFAULT .F.
-      ASSIGN nAngle       VALUE nAngle       TYPE "N" DEFAULT 0
-      ASSIGN nCharset     VALUE nCharset     TYPE "N" DEFAULT DEFAULT_CHARSET
-      ASSIGN nWidth       VALUE nWidth       TYPE "N" DEFAULT 0
-      ASSIGN nOrientation VALUE nOrientation TYPE "N" DEFAULT nAngle
-      IF ! HB_ISLOGICAL( lAdvanced )
-         lAdvanced := ( nAngle # nOrientation )
-      ELSEIF ! lAdvanced
-         nOrientation := nAngle
-      ENDIF
-
-      GetFontList( NIL, NIL, NIL, NIL, NIL, NIL, @aFontList )
-      IF Empty( AScan( aFontList, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
-         cFontName := "Arial"
-      ENDIF
-
-      hFont := InitFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
-
-      IF lDefault
-         _OOHG_DefaultFontName := ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
-         _OOHG_DefaultFontSize := ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
-
-         AAdd( ::aFonts, NIL )
-         AIns( ::aFonts, 1 )
-         ::aFonts[ 1 ] := { cFontID, hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
-                            lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced }
+   IF HB_ISSTRING( cFontID ) .AND. ! Empty( cFontID )
+      IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == Upper( cFontID ) } ) ) > 0
+         hFont := ::aFonts[ i, FONT_HANDLE ]
       ELSE
-         AAdd( ::aFonts, { cFontID, hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
-                            lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced } )
+         ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
+         ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+         ASSIGN lDefault     VALUE lDefault     TYPE "L" DEFAULT .F.
+         ASSIGN lBold        VALUE lBold        TYPE "L" DEFAULT .F.
+         ASSIGN lItalic      VALUE lItalic      TYPE "L" DEFAULT .F.
+         ASSIGN lUnderline   VALUE lUnderline   TYPE "L" DEFAULT .F.
+         ASSIGN lStrikeout   VALUE lStrikeout   TYPE "L" DEFAULT .F.
+         ASSIGN nAngle       VALUE nAngle       TYPE "N" DEFAULT 0
+         ASSIGN nCharset     VALUE nCharset     TYPE "N" DEFAULT DEFAULT_CHARSET
+         ASSIGN nWidth       VALUE nWidth       TYPE "N" DEFAULT 0
+         ASSIGN nOrientation VALUE nOrientation TYPE "N" DEFAULT nAngle
+         IF ! HB_ISLOGICAL( lAdvanced )
+            lAdvanced := ( nAngle # nOrientation )
+         ELSEIF ! lAdvanced
+            nOrientation := nAngle
+         ENDIF
+         GetFontList( NIL, NIL, NIL, NIL, NIL, NIL, @aFontList )
+         IF Empty( AScan( aFontList, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
+            cFontName := "Arial"
+         ENDIF
+         hFont := InitFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+         IF lDefault
+            _OOHG_DefaultFontName := ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
+            _OOHG_DefaultFontSize := ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+            AAdd( ::aFonts, NIL )
+            AIns( ::aFonts, 1 )
+            ::aFonts[ 1 ] := { Upper( cFontID ), hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
+                               lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced }
+         ELSE
+            AAdd( ::aFonts, { Upper( cFontID ), hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
+                               lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced } )
+         ENDIF
       ENDIF
    ENDIF
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN hFont
@@ -422,7 +418,6 @@ METHOD EventInfoList() CLASS TApplication
    LOCAL aEvents, nLen
 
    hb_mutexLock( ::hClsMtx )
-
    IF Empty( ::aVars[ NDX_OOHG_THISOBJECT ] )
       aEvents := {}
    ELSE
@@ -434,7 +429,6 @@ METHOD EventInfoList() CLASS TApplication
       ASize( aEvents, nLen - 1 )
       ::EventInfoPop()
    ENDIF
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN aEvents
@@ -445,7 +439,6 @@ METHOD EventInfoPop() CLASS TApplication
    LOCAL nThreadID, i, nLen
 
    hb_mutexLock( ::hClsMtx )
-
    nThreadID := GetThreadId()
    i := nLen := Len( ::aEventsStack )
    DO WHILE i > 0
@@ -464,9 +457,7 @@ METHOD EventInfoPop() CLASS TApplication
          ::aVars[ NDX_OOHG_THISTYPE ]           := ::aEventsStack[ i ][ 13 ]
          ADel( ::aEventsStack, i )
          ASize( ::aEventsStack, nLen - 1 )
-
          hb_mutexUnlock( ::hClsMtx )
-
          RETURN NIL
       ENDIF
       i ++
@@ -483,7 +474,6 @@ METHOD EventInfoPop() CLASS TApplication
    ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
    ::aVars[ NDX_OOHG_THISOBJECT ]         := NIL
    ::aVars[ NDX_OOHG_THISTYPE ]           := ''
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN NIL
@@ -510,44 +500,41 @@ METHOD EventInfoPush() CLASS TApplication
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetFontHandle( cFontID ) CLASS TApplication
+METHOD GetLogFontHandle( cFontID ) CLASS TApplication
 
    LOCAL i, hFont := 0
 
    hb_mutexLock( ::hClsMtx )
-
-   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
-      hFont := ::aFonts[ i, FONT_HANDLE ]
+   IF HB_ISSTRING( cFontID ) .AND. ! Empty( cFontID )
+      IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == Upper( cFontID ) } ) ) > 0
+         hFont := ::aFonts[ i, FONT_HANDLE ]
+      ENDIF
    ENDIF
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN hFont
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetFontID( hFont ) CLASS TApplication
+METHOD GetLogFontID( hFont ) CLASS TApplication
 
    LOCAL i, nID
 
    hb_mutexLock( ::hClsMtx )
-
    IF ( i := AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) ) > 0
       nID := ::aFonts[ i, FONT_ID ]
    ELSE
       nID := ""
    ENDIF
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN nID
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetFontParams( hFont ) CLASS TApplication
+METHOD GetLogFontParams( hFont ) CLASS TApplication
 
    LOCAL i, aFontAttr
 
    hb_mutexLock( ::hClsMtx )
-
    IF ( i := AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) ) > 0
       aFontAttr := { ::aFonts[ i, FONT_NAME ], ;
                      ::aFonts[ i, FONT_SIZE ], ;
@@ -563,21 +550,18 @@ METHOD GetFontParams( hFont ) CLASS TApplication
    ELSE
       aFontAttr := { ::aVars[ NDX_OOHG_DEFAULTFONTNAME ], ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ], .F., .F., .F., .F., 0, DEFAULT_CHARSET, 0, 0, .F. }
    ENDIF
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN aFontAttr
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetFontParamsByRef( hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
-                           nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
+METHOD GetLogFontParamsByRef( hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
+                              nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
 
    LOCAL lFound, aFontAttr
 
    hb_mutexLock( ::hClsMtx )
-
-   aFontAttr := ::GetFontParams( hFont )
-
+   aFontAttr := ::GetLogFontParams( hFont )
    cFontName    := aFontAttr[ 01 ]
    nFontSize    := aFontAttr[ 02 ]
    lBold        := aFontAttr[ 03 ]
@@ -589,9 +573,7 @@ METHOD GetFontParamsByRef( hFont, cFontName, nFontSize, lBold, lItalic, lUnderli
    nWidth       := aFontAttr[ 09 ]
    nOrientation := aFontAttr[ 10 ]
    lAdvanced    := aFontAttr[ 11 ]
-
    lFound := ( AScan( ::aFonts, { |f| f[ FONT_HANDLE ] == hFont } ) > 0 )
-
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN lFound
@@ -798,15 +780,17 @@ METHOD Release() CLASS TApplication
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseFont( cFontID ) CLASS TApplication
+METHOD ReleaseLogFont( cFontID ) CLASS TApplication
 
    LOCAL i
 
    hb_mutexLock( ::hClsMtx )
-   IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == cFontID } ) ) > 0
-      DeleteObject( ::aFonts[ i, FONT_HANDLE ] )
-      ADel( ::aFonts[ i ] )
-      ASize( ::aFonts, Len( ::aFonts ) - 1 )
+   IF HB_ISSTRING( cFontID ) .AND. ! Empty( cFontID )
+      IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == Upper( cFontID ) } ) ) > 0
+         DeleteObject( ::aFonts[ i, FONT_HANDLE ] )
+         ADel( ::aFonts[ i ] )
+         ASize( ::aFonts, Len( ::aFonts ) - 1 )
+      ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
