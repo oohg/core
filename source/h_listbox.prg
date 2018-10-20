@@ -466,36 +466,45 @@ METHOD Value( uValue ) CLASS TListMulti
 #include <windowsx.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TListBox_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TListBox_lpfnOldWndProc( 0 ) );
 }
 
-HB_FUNC( INITLISTBOX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITLISTBOX )          /* FUNCTION InitListBox( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, lDragItems ) -> hWnd */
 {
-   HWND hwnd;
-   HWND hbutton;
    int Style = WS_CHILD | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
-   int StyleEx;
+   int ExStyle = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hwnd = HWNDparam( 1 );
+   HWND hCtrl = CreateWindowEx( ExStyle, "LISTBOX", "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                                HWNDparam( 1 ), (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
 
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
-
-   hbutton = CreateWindowEx( StyleEx, "LISTBOX", "", Style,
-                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             hwnd, (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
-
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TListBox_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    if( hb_parl( 9 ) )
-      MakeDragList( hbutton );
+   {
+      MakeDragList( hCtrl );
+   }
 
-   HWNDret( hbutton );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 void TList_DelImageBuffer( POCTRL oSelf, int nItem )
 {
    BYTE *cBuffer;
@@ -743,7 +752,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) hb_parnl( 1 );
+   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) HB_PARNL( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
    char cBuffer[ 2048 ];
@@ -846,7 +855,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) hb_parnl( 1 );
+   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) HB_PARNL( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );
@@ -879,7 +888,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPara
 
 HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
 {
-   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
 
    hb_retni( lpdli->uNotification );
@@ -888,7 +897,7 @@ HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
 HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 {
    int nDragItem;
-   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
 
    nDragItem = LBItemFromPt( lpdli->hWnd, lpdli->ptCursor, TRUE );
@@ -899,7 +908,7 @@ HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 HB_FUNC( DRAG_LIST_DRAWINSERT )
 {
    HWND hwnd = HWNDparam( 1 );
-   LPARAM lParam = (LPARAM) hb_parnl( 2 );
+   LPARAM lParam = (LPARAM) HB_PARNL( 2 );
    int nItem = hb_parni( 3 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    int nItemCount;
@@ -914,7 +923,7 @@ HB_FUNC( DRAG_LIST_DRAWINSERT )
 
 HB_FUNC( DRAG_LIST_MOVE_ITEMS )
 {
-   LPARAM lParam = (LPARAM) hb_parnl( 1 );
+   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    char string[ 1024 ];
    int result;
