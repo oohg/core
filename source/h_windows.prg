@@ -188,7 +188,7 @@ CLASS TWindow
    DATA VarName                   INIT ""
    DATA lControlsAsProperties     INIT .F.
    DATA hDynamicValues            INIT Nil
-
+   DATA cStatMsg                  INIT NIL
    DATA lAdjust                   INIT .T.
    DATA lFixFont                  INIT .F.
    DATA lfixwidth                 INIT .F.
@@ -653,11 +653,14 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
    hb_retl( ( GetWindowLongPtr( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
 }
 
-static UINT _OOHG_ListBoxDragNotification = 0;            // TODO: Thread safe ?
+static UINT _OOHG_ListBoxDragNotification = 0;            // It's thread safe because is set only once.
 
 HB_FUNC( _GETDDLMESSAGE )
 {
-   _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
+   if( ! _OOHG_ListBoxDragNotification )
+   {
+      _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
+   }
 }
 
 HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow
@@ -731,8 +734,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                      _OOHG_Send( pControl, s_DoEvent );
                      hb_vmPush( pOnClick );
                      hb_vmPushString( "CLICK", 5 );
-                     // aqui!
-                     //DefWindowProc( hWnd, message, wParam, lParam );
                      EndMenu();
                      hb_vmSend( 2 );
                      hb_itemRelease( pOnClick );
@@ -816,7 +817,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
             // If there's a context menu, show it
             if( pContext )
             {
-
                // HMENU
                _OOHG_Send( pContext, s_Activate );
                hb_vmPushLong( HIWORD( lParam ) );
@@ -835,6 +835,49 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          }
          break;
 
+/* future improvement
+      case WM_MENUSELECT:
+         {
+            if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
+            {
+               if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
+               {
+                  MENUITEMINFO MenuItemInfo;
+                  PHB_ITEM pMenu = hb_itemNew( NULL );
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
+                  _OOHG_Send( pMenu, s_hWnd );
+                  hb_vmSend( 0 );
+                  if( ValidHandler( HWNDparam( -1 ) ) )
+                  {
+                     memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
+                     MenuItemInfo.cbSize = sizeof( MenuItemInfo );
+                     MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
+                     GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
+                     if( MenuItemInfo.hSubMenu )
+                     {
+                        hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                     }
+                     else
+                     {
+                        hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
+                     }
+                     _OOHG_Send( pMenu, s_Events_MenuHilited );
+                     hb_vmSend( 0 );
+                     hb_itemRelease( pMenu );
+                  }
+               }
+               else
+               {
+                  PHB_ITEM pMenu = hb_itemNew( NULL );
+                  hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
+                  _OOHG_Send( pMenu, s_Events_MenuHilited );
+                  hb_vmSend( 0 );
+                  hb_itemRelease( pMenu );
+               }
+            }
+         }
+         break;
+*/
       case WM_MENURBUTTONUP:
          {
             PHB_ITEM pMenu;
@@ -1236,7 +1279,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 
    If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       If ! _IsWindowDefined( uParent )
-         MsgOOHGError( "Window: "+ uParent + " is not defined. Program terminated." )
+         MsgOOHGError( "Window: " + uParent + " is not defined. Program terminated." )
       Else
          uParent := GetFormObject( uParent )
       Endif
@@ -1248,7 +1291,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 
    If ::lInternal
       If ! HB_IsObject( uParent )
-         MsgOOHGError( "No name specified for new window. Program terminated." )
+         MsgOOHGError( "Window: Parent is not defined. Program terminated." )
       EndIf
 
       // NOTE: For INTERNALs, sets ::Parent and ::Container
