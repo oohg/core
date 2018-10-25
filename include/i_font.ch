@@ -130,10 +130,10 @@ TYPE CONSTANTS
       [ <lorient: ORIENT, ORIENTATION> <orient> ] ;
       [ <default : DEFAULT> ] ;
    => ;
-      TApplication():Define():DefineLogFont( <"name">, <.default.>, <fontname>, <fontsize>, ;
+      TApplication():Define():DefineLogFont( <(name)>, <.default.>, <fontname>, <fontsize>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <angle>, <charset>, ;
             <width>, <orient>, <.langle.> .AND. <.lorient.> )
 
 #command RELEASE FONT <name> ;
    => ;
-      TApplication():Define():ReleaseLogFont( <"name"> )
+      TApplication():Define():ReleaseLogFont( <(name)> )
