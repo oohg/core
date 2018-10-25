@@ -130,7 +130,7 @@ MEMVAR HBPRN
 
 #xcommand END PAGE ;
    => ;
-      iif( __DYNSISFUN( "TAPPLICATION" ) .AND. ! Empty( _OOHG_ActiveFrame ), Do( "_EndTabPage" ), hbprn:EndPage() )
+      iif( __DYNSISFUN( "TAPPLICATION" ) .AND. _OOHG_ActiveFrame # NIL, Do( "_EndTabPage" ), hbprn:EndPage() )
 
 #xcommand END DOC ;
    => ;

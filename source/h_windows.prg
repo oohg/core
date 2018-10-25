@@ -1275,8 +1275,6 @@ METHOD DeleteControl( oControl ) CLASS TWindow
 
 METHOD SearchParent( uParent ) CLASS TWindow
 
-   Local nPos
-
    If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       If ! _IsWindowDefined( uParent )
          MsgOOHGError( "Window: " + uParent + " is not defined. Program terminated." )
@@ -1299,11 +1297,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
       If uParent:lForm
          ::Parent := uParent
          // Checks for an open "control container" structure in the specified parent form
-         nPos := 0
-         AEVAL( _OOHG_ActiveFrame, { |o,i| IF( o:Parent:hWnd == ::Parent:hWnd, nPos := i, ) } )
-         If nPos > 0
-            ::Container := _OOHG_ActiveFrame[ nPos ]
-         EndIf
+         ::Container := TApplication():Define():ActiveFrameContainer( ::Parent:hWnd )
       Else
          ::Container := uParent
          ::Parent := ::Container:Parent
@@ -2350,7 +2344,7 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
 
 FUNCTION _OOHG_AddFrame( oFrame )
 
-   AADD( _OOHG_ActiveFrame, oFrame )
+   TApplication():Define():ActiveFramePush( oFrame )
 
    Return oFrame
 
@@ -2358,13 +2352,13 @@ FUNCTION _OOHG_DeleteFrame( cType )
 
    Local oCtrl
 
-   If LEN( _OOHG_ActiveFrame ) == 0
+   IF _OOHG_ActiveFrame == NIL
       // ERROR: No FRAME started
       Return .F.
    EndIf
-   oCtrl := ATAIL( _OOHG_ActiveFrame )
+   oCtrl := _OOHG_ActiveFrame
    If oCtrl:Type == cType
-      ASIZE( _OOHG_ActiveFrame, LEN( _OOHG_ActiveFrame ) - 1 )
+      TApplication():Define():ActiveFramePop()
    Else
       // ERROR: No FRAME started
       Return .F.
@@ -2376,10 +2370,10 @@ FUNCTION _OOHG_LastFrame()
 
    Local cRet
 
-   If LEN( _OOHG_ActiveFrame ) == 0
+   IF _OOHG_ActiveFrame == NIL
       cRet := ""
    Else
-      cRet := ATAIL( _OOHG_ActiveFrame ):Type
+      cRet := _OOHG_ActiveFrame:Type
    EndIf
 
    Return cRet

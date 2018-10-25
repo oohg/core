@@ -422,7 +422,7 @@ FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip 
       _EndTabPage()
    ENDIF
    ///// IF _OOHG_LastFrame() == "TAB" ...
-   oCtrl := ATail( _OOHG_ActiveFrame )
+   oCtrl := _OOHG_ActiveFrame
    oPage := oCtrl:AddPage( nPosition, cCaption, cImage, NIL, NIL, cName, oSubClass, uToolTip )
    _OOHG_AddFrame( oPage )
 
@@ -442,7 +442,7 @@ FUNCTION _EndTab()
       // ERROR: Last page not finished
       _EndTabPage()
    ENDIF
-   ATail( _OOHG_ActiveFrame ):EndTab()
+   _OOHG_ActiveFrame:EndTab()
 
    RETURN NIL
 

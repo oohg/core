@@ -144,7 +144,7 @@
 
 #xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
    => ;
-      TApplication():Define():Value_Pos46( <nKey>, <nFlags>, <bAction> )
+      TApplication():Define():HotKeySet( <nKey>, <nFlags>, <bAction> )
 
 #xtranslate _PushEventInfo() ;
    => ;

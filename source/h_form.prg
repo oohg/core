@@ -2825,8 +2825,8 @@ Function SearchParentWindow( lInternal )
 
       If LEN( _OOHG_ActiveForm ) > 0
          uParent := ATAIL( _OOHG_ActiveForm )
-      ElseIf len( _OOHG_ActiveFrame ) > 0
-         uParent := ATAIL( _OOHG_ActiveFrame )
+      ELSEIF _OOHG_ActiveFrame # NIL
+         uParent := _OOHG_ActiveFrame
       EndIf
 
    Else

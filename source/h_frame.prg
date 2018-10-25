@@ -122,7 +122,7 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
    ::SetFont( , , bold, italic, underline, strikeout )
 
    IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
-      oTab := ATAIL( _OOHG_ActiveFrame )
+      oTab := _OOHG_ActiveFrame
 
       IF oTab:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd

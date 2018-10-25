@@ -67,6 +67,11 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+#define HOTKEY_ID        1
+#define HOTKEY_MOD       2
+#define HOTKEY_KEY       3
+#define HOTKEY_ACTION    4
+
 #define FONT_ID          01
 #define FONT_HANDLE      02
 #define FONT_NAME        03
@@ -82,7 +87,6 @@
 #define FONT_ADVANCED    13
 
 #define NDX_OOHG_ACTIVECONTROLINFO     01
-#define NDX_OOHG_ACTIVEFRAME           02
 #define NDX_OOHG_ADJUSTFONT            03
 #define NDX_OOHG_ADJUSTWIDTH           04
 #define NDX_OOHG_AUTOADJUST            05
@@ -151,6 +155,10 @@ CLASS TApplication
 
    METHOD Define                  CONSTRUCTOR
 
+   METHOD ActiveFrameContainer
+   METHOD ActiveFrameGet
+   METHOD ActiveFramePop
+   METHOD ActiveFramePush
    METHOD ActiveMenuGet
    METHOD ActiveMenuPop
    METHOD ActiveMenuPush
@@ -168,6 +176,8 @@ CLASS TApplication
    METHOD GetLogFontParamsByRef
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
+   METHOD HotKeySet
+   METHOD HotKeysGet
    METHOD hWnd
    METHOD MultipleInstances       SETGET
    METHOD MainClientHeight        SETGET
@@ -181,7 +191,6 @@ CLASS TApplication
    METHOD Title                   SETGET
    METHOD TopMost                 SETGET
    METHOD Value_Pos01             SETGET
-   METHOD Value_Pos02             SETGET
    METHOD Value_Pos03             SETGET
    METHOD Value_Pos04             SETGET
    METHOD Value_Pos05             SETGET
@@ -225,7 +234,6 @@ CLASS TApplication
    METHOD Value_Pos43             SETGET
    METHOD Value_Pos44             SETGET
    METHOD Value_Pos45             SETGET
-   METHOD Value_Pos46
    METHOD Value_Pos47             SETGET
    METHOD Value_Pos48             SETGET
    METHOD Width                   SETGET
@@ -249,7 +257,6 @@ METHOD Define() CLASS TApplication
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
       ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]     := {}
-      ::aVars[ NDX_OOHG_ACTIVEFRAME ]           := {}
       ::aVars[ NDX_OOHG_ADJUSTFONT ]            := .T.
       ::aVars[ NDX_OOHG_ADJUSTWIDTH ]           := .T.
       ::aVars[ NDX_OOHG_AUTOADJUST ]            := .F.
@@ -319,6 +326,77 @@ METHOD Define() CLASS TApplication
    RETURN ( ::oAppObj )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveFrameContainer( hWnd ) CLASS TApplication
+
+   LOCAL nThreadID, i, nPos := 0, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   i := 1
+   DO WHILE i <= Len( ::aFramesStack )
+      IF ::aFramesStack[ i ][ 1 ] == nThreadID
+         IF ::aFramesStack[ i ][ 2 ]:Parent:hWnd == hWnd
+            nPos := i
+         ENDIF
+      ENDIF
+      i ++
+   ENDDO
+   IF nPos > 0
+      uRet := ::aFramesStack[ nPos ][ 2 ]
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveFrameGet() CLASS TApplication
+
+   LOCAL nThreadID, i, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   i := Len( ::aFramesStack )
+   DO WHILE i > 0
+      IF ::aFramesStack[ i ][ 1 ] == nThreadID
+         uRet := ::aFramesStack[ i ][ 2 ]
+         EXIT
+      ENDIF
+      i --
+   ENDDO
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveFramePop() CLASS TApplication
+
+   LOCAL nThreadID, i, nLen
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   i := nLen := Len( ::aFramesStack )
+   DO WHILE i > 0
+      IF ::aFramesStack[ i ][ 1 ] == nThreadID
+         ADel( ::aFramesStack, i )
+         ASize( ::aFramesStack, nLen - 1 )
+         EXIT
+      ENDIF
+      i --
+   ENDDO
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveFramePush( oFrame ) CLASS TApplication
+
+   hb_mutexLock( ::hClsMtx )
+   AAdd( ::aFramesStack, { GetThreadId(), oFrame } )
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveMenuGet() CLASS TApplication
 
    LOCAL nThreadID, i, uRet := NIL
@@ -328,7 +406,7 @@ METHOD ActiveMenuGet() CLASS TApplication
    i := Len( ::aMenusStack )
    DO WHILE i > 0
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
-         uRet := ::aEventsStack[ i ][ 2 ]
+         uRet := ::aMenusStack[ i ][ 2 ]
          EXIT
       ENDIF
       i --
@@ -347,8 +425,8 @@ METHOD ActiveMenuPop() CLASS TApplication
    i := nLen := Len( ::aMenusStack )
    DO WHILE i > 0
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
-         ADel( ::aEventsStack, i )
-         ASize( ::aEventsStack, nLen - 1 )
+         ADel( ::aMenusStack, i )
+         ASize( ::aMenusStack, nLen - 1 )
          EXIT
       ENDIF
       i --
@@ -687,6 +765,44 @@ METHOD HelpButton( lShow ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD HotKeySet( nKey, nFlags, bAction ) CLASS TApplication
+
+   LOCAL nPos, uRet := NIL
+
+   hb_mutexLock( ::hClsMtx )
+   nPos := AScan( ::aVars[ NDX_OOHG_HOTKEYS ], { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   IF nPos > 0
+      uRet := ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ][ HOTKEY_ACTION ]
+   ENDIF
+   IF PCount() > 2
+      IF HB_ISBLOCK( bAction )
+         IF nPos > 0
+            ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ] := { 0, nFlags, nKey, bAction }
+         ELSE
+            AAdd( ::aVars[ NDX_OOHG_HOTKEYS ], { 0, nFlags, nKey, bAction } )
+         ENDIF
+      ELSE
+         IF nPos > 0
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_HOTKEYS ], nPos )
+         ENDIF
+      ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD HotKeysGet() CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   uRet := AClone( ::aVars[ NDX_OOHG_HOTKEYS ] )
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD hWnd CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -935,20 +1051,6 @@ METHOD Value_Pos01( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] := uValue
    ENDIF
    uRet := AClone( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] )
-   hb_mutexUnlock( ::hClsMtx )
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Value_Pos02( uValue ) CLASS TApplication
-
-   LOCAL uRet
-
-   hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
-      ::aVars[ NDX_OOHG_ACTIVEFRAME ] := uValue
-   ENDIF
-   uRet := AClone( ::aVars[ NDX_OOHG_ACTIVEFRAME ] )
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
@@ -1551,39 +1653,6 @@ METHOD Value_Pos45( uValue ) CLASS TApplication
    uRet := ::aVars[ NDX_OOHG_BKEYDOWN ]
    IF PCount() > 0
       ::aVars[ NDX_OOHG_BKEYDOWN ] := iif( HB_ISBLOCK( uValue ), uValue, NIL )
-   ENDIF
-   hb_mutexUnlock( ::hClsMtx )
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-#define HOTKEY_ID        1
-#define HOTKEY_MOD       2
-#define HOTKEY_KEY       3
-#define HOTKEY_ACTION    4
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Value_Pos46( nKey, nFlags, bAction ) CLASS TApplication
-
-   LOCAL nPos, uRet := NIL
-
-   hb_mutexLock( ::hClsMtx )
-   nPos := AScan( ::aVars[ NDX_OOHG_HOTKEYS ], { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
-   IF nPos > 0
-      uRet := ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ][ HOTKEY_ACTION ]
-   ENDIF
-   IF PCount() > 2
-      IF HB_ISBLOCK( bAction )
-         IF nPos > 0
-            ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ] := { 0, nFlags, nKey, bAction }
-         ELSE
-            AAdd( ::aVars[ NDX_OOHG_HOTKEYS ], { 0, nFlags, nKey, bAction } )
-         ENDIF
-      ELSE
-         IF nPos > 0
-            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_HOTKEYS ], nPos )
-         ENDIF
-      ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
