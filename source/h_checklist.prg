@@ -370,7 +370,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
 
    EndIf
 
-   // TGrid's Event_Notify method must be skipped
+   // TGrid's Events_Notify method must be skipped
 
    Return Nil
 
