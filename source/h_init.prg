@@ -74,9 +74,6 @@ INIT PROCEDURE _OOHG_INIT()
    // Init mutexes
    TApplication():Define()
 
-   // TODO: Move to TApplication ?
-   _GETDDLMESSAGE()
-
    // TODO: Move to TApplication or make thread safe ?
    InitMessages()
 
