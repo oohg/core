@@ -635,10 +635,10 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
                    HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 3 ) ) &&
                    HB_IS_NUMERIC( hb_arrayGetItemPtr( pSector, 4 ) ) )
                {
-                  if( ( hb_arrayGetNL( pSector, 1 ) <= x ) &&
-                      ( x < hb_arrayGetNL( pSector, 3 ) ) &&
-                      ( hb_arrayGetNL( pSector, 2 ) <= y ) &&
-                      ( y < hb_arrayGetNL( pSector, 4 ) ) )
+                  if( ( HB_ARRAYGETNL( pSector, 1 ) <= x ) &&
+                      ( x < HB_ARRAYGETNL( pSector, 3 ) ) &&
+                      ( HB_ARRAYGETNL( pSector, 2 ) <= y ) &&
+                      ( y < HB_ARRAYGETNL( pSector, 4 ) ) )
                   {
                      return TRUE;
                   }
