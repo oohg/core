@@ -12,6 +12,33 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-10-25 00:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+   * core\include\i_var.ch
+   * core\include\winprint.ch
+   * core\source\h_application.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_form.prg
+   * core\source\h_frame.prg
+   * core\source\h_tab.prg
+   * core\source\h_windows.prg
+     ! RTE when trying to access _OOHG_ActiveFrame.
+     * _OOHG_ActiveFrame now returns the last active frame of
+       the thread instead of the full array of active frames.
+       INCOMPATIBLE.
+     + METHOD ActiveFrameContainer to TApplication to search
+       the thread's array of active frame for an open container.
+     + METHOD ActiveFramePush to add a new active frame.
+     + METHOD ActiveFramePop to remove the last active frame.
+     + METHOD ActiveFrameGet to obtain the last active frame.
+     + DATA aFramesStack to TApplication.
+     + METHOD HotKeySet to TApplication.
+     + METHOD HotKeysGet to TApplication.
+     - METHOD Value_Pos02 from TApplication.
+     ! METHOD ActiveMenuGet returns wrong data.
+     ! METHOD ActiveMenuPop was not working properly.
+     - METHOD Value_Pos46 from TApplication.
+
 2018-10-24 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_application.prg
      + Added for future improvement:
