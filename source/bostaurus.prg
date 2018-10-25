@@ -1648,10 +1648,10 @@ HB_FUNC( BT_SCR_INVALIDATERECT )    // ( hWnd, [ { x_left, y_top, x_right, y_bot
 
       if( hb_arrayLen( pArrayRect ) == 4 )
       {
-         rect.left   = hb_arrayGetNL( pArrayRect, 1 );
-         rect.top    = hb_arrayGetNL( pArrayRect, 2 );
-         rect.right  = hb_arrayGetNL( pArrayRect, 3 );
-         rect.bottom = hb_arrayGetNL( pArrayRect, 4 );
+         rect.left   = HB_ARRAYGETNL( pArrayRect, 1 );
+         rect.top    = HB_ARRAYGETNL( pArrayRect, 2 );
+         rect.right  = HB_ARRAYGETNL( pArrayRect, 3 );
+         rect.bottom = HB_ARRAYGETNL( pArrayRect, 4 );
          hb_retl( InvalidateRect( HWNDparam( 1 ), &rect, hb_parl( 3 ) ) );    // Invalidate specific rectangle of client area
       }
       else
