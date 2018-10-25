@@ -12,6 +12,52 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-10-24 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     + Added for future improvement:
+       DATA aMenusStack.
+       METHOD ActiveMenuGet.
+       METHOD ActiveMenuPop.
+       METHOD ActiveMenuPush.
+       METHOD Value_Pos47.
+       METHOD Value_Pos48.
+     + Call to _GETDDLMESSAGE() TApplication:Define.
+     ! Method EventInfoPop was not working properly.
+     ! _OOHG_ActiveControlInfo and _OOHG_ActiveFrame now return
+       a cloned array instead the class' array.
+
+2018-10-24 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + DATA cStatMsg for future improvement.
+     * Function _GETDDLMESSAGE() registers the message only once.
+     * Some comments.
+     ! Wrong error message.
+
+2018-10-24 21:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * Call to _GETDDLMESSAGE() moved to TApplication.
+
+2018-10-24 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_image.prg
+     * Some changes for 64 bit support.
+
+2018-10-24 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_checklist.prg
+     ! Typo in comment.
+
+2018-10-24 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+     * Some changes for 64 bit support.
+
+2018-10-24 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     * Some changes for 64 bit support.
+
+2018-10-24 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_font.ch
+     ! DEFINE FONT and RELEASE FONT commands do not accept
+       expressions enclosed in parentheses.
+
 2018-10-19 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_label.prg
      + METHOD SizePos.
