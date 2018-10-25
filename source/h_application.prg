@@ -143,6 +143,7 @@ CLASS TApplication
 
    DATA aEventsStack              INIT {}  HIDDEN
    DATA aFonts                    INIT {}  READONLY
+   DATA aFramesStack              INIT {}  HIDDEN
    DATA aMenusStack               INIT {}  HIDDEN
    DATA AppMutex                  INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
