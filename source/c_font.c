@@ -237,7 +237,7 @@ static int CALLBACK _EnumFontFamExProc( const LOGFONT * lpelfe, const TEXTMETRIC
       PHB_ITEM pSubArray = hb_itemArrayNew( 4 );
 
       hb_arraySetC( pSubArray, 1, lpelfe->lfFaceName );
-      hb_arraySetNL( pSubArray, 2, lpntme->tmCharSet );
+      HB_ARRAYSETNL( pSubArray, 2, lpntme->tmCharSet );
       hb_arraySetNI( pSubArray, 3, lpelfe->lfPitchAndFamily & FIXED_PITCH );
       hb_arraySetNI( pSubArray, 4, dwFontType & TRUETYPE_FONTTYPE );
 
