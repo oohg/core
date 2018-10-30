@@ -92,6 +92,8 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \[  27 \]
 
+#xtranslate _OOHG_ActiveControlEditHeight             => _OOHG_ActiveControlInfo \[  77 \]
+#xtranslate _OOHG_ActiveControlOptionsHeight          => _OOHG_ActiveControlInfo \[  78 \]
 #xtranslate _OOHG_ActiveControlSolid                  => _OOHG_ActiveControlInfo \[  79 \]
 #xtranslate _OOHG_ActiveControlMultiTab               => _OOHG_ActiveControlInfo \[  80 \]
 #xtranslate _OOHG_ActiveControlShowHeaders            => _OOHG_ActiveControlInfo \[  81 \]
@@ -316,7 +318,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlCtrlAtLeft             => _OOHG_ActiveControlInfo \[ 300 \]
 
 #xcommand _OOHG_ClearActiveControlInfo( <name> ) => ;
-      _OOHG_ActiveControlInfo          := ARRAY( 300 ) ;;
+      _OOHG_ActiveControlInfo          := Array( 300 ) ;;
       _OOHG_ActiveControlName          := <name>       ;;
       _OOHG_ActiveControlOf            := NIL          ;;
       _OOHG_ActiveControlRow           := NIL          ;;
@@ -1962,7 +1964,9 @@ COMBOBOX
       _OOHG_ActiveControlSourceOrder       := NIL  ;;
       _OOHG_ActiveControlOnRefresh         := NIL  ;;
       _OOHG_ActiveControlSearchLapse       := NIL  ;;
-      _OOHG_ActiveControlMaxLength         := NIL
+      _OOHG_ActiveControlMaxLength         := NIL  ;;
+      _OOHG_ActiveControlEditHeight        := NIL  ;;
+      _OOHG_ActiveControlOptionsHeight     := NIL
 
 #xcommand DELAYEDLOAD <delayedload> ;
    => ;
@@ -1975,6 +1979,14 @@ COMBOBOX
 #xcommand SEARCHLAPSE <lapse> ;
    => ;
       _OOHG_ActiveControlSearchLapse := <lapse>
+
+#xcommand EDITHEIGHT <editheight> ;
+   => ;
+      _OOHG_ActiveControlEditHeight := <editheight>
+
+#xcommand OPTIONSHEIGHT <optionsheight> ;
+   => ;
+      _OOHG_ActiveControlOptionsHeight := <optionsheight>
 
 #xcommand INTEGRALHEIGHT <integralheight> ;
    => ;
@@ -2108,7 +2120,9 @@ COMBOBOX
             _OOHG_ActiveControlSourceOrder, ;
             _OOHG_ActiveControlOnRefresh, ;
             _OOHG_ActiveControlSearchLapse, ;
-            _OOHG_ActiveControlMaxLength )
+            _OOHG_ActiveControlMaxLength, ;
+            _OOHG_ActiveControlEditHeight, ;
+            _OOHG_ActiveControlOptionsHeight )
 
 /*---------------------------------------------------------------------------
 DATEPICKER
