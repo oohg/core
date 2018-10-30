@@ -12,7 +12,11 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2018-10-25 00:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-10-30 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + New combobox clauses.
+
+2018-10-25 00:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_pseudofunc.ch
    * core\include\i_var.ch
    * core\include\winprint.ch
@@ -25,7 +29,8 @@
      ! RTE when trying to access _OOHG_ActiveFrame.
      * _OOHG_ActiveFrame now returns the last active frame of
        the thread instead of the full array of active frames.
-       INCOMPATIBLE.
+       It no longer admits setting the array. INCOMPATIBLE.
+     - METHOD Value_Pos02 from TApplication. See previous.
      + METHOD ActiveFrameContainer to TApplication to search
        the thread's array of active frame for an open container.
      + METHOD ActiveFramePush to add a new active frame.
@@ -33,11 +38,10 @@
      + METHOD ActiveFrameGet to obtain the last active frame.
      + DATA aFramesStack to TApplication.
      + METHOD HotKeySet to TApplication.
+     - METHOD Value_Pos46 from TApplication. See previous.
      + METHOD HotKeysGet to TApplication.
-     - METHOD Value_Pos02 from TApplication.
      ! METHOD ActiveMenuGet returns wrong data.
      ! METHOD ActiveMenuPop was not working properly.
-     - METHOD Value_Pos46 from TApplication.
 
 2018-10-24 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_application.prg
