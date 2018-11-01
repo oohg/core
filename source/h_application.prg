@@ -168,6 +168,7 @@ CLASS TApplication
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
    METHOD DefineLogFont
+   METHOD EventInfoClear
    METHOD EventInfoList
    METHOD EventInfoPop
    METHOD EventInfoPush
@@ -624,6 +625,37 @@ METHOD EventInfoPop() CLASS TApplication
    RETURN ( NIL )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EventInfoClear( nThreadID ) CLASS TApplication
+
+   LOCAL i
+
+   hb_mutexLock( ::hClsMtx )
+   ASSIGN nThreadID VALUE nThreadID TYPE "N" DEFAULT GetThreadId()
+   i := Len( ::aEventsStack )
+   DO WHILE i > 0
+      IF ::aEventsStack[ i ][ 01 ] == nThreadID
+         ADel( ::aEventsStack, i )
+         ASize( ::aEventsStack, Len( ::aEventsStack ) - 1 )
+      ENDIF
+      i --
+   ENDDO
+   ::aVars[ NDX_OOHG_THISCONTROL ]        := NIL
+   ::aVars[ NDX_OOHG_THISEVENTTYPE ]      := ''
+   ::aVars[ NDX_OOHG_THISFORM ]           := NIL
+   ::aVars[ NDX_OOHG_THISITEMCELLCOL ]    := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ] := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLROW ]    := 0
+   ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]  := NIL
+   ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]  := 0
+   ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]   := 0
+   ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := 0
+   ::aVars[ NDX_OOHG_THISOBJECT ]         := NIL
+   ::aVars[ NDX_OOHG_THISTYPE ]           := ''
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoPush() CLASS TApplication
 
    hb_mutexLock( ::hClsMtx )
@@ -1045,13 +1077,32 @@ METHOD TopMost( lTopmost ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos01( uValue ) CLASS TApplication
 
-   LOCAL uRet
+   LOCAL uRet, nThreadID, i
 
    hb_mutexLock( ::hClsMtx )
-   IF uValue != NIL
-      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] := uValue
+   nThreadID := GetThreadId()
+   IF PCount() > 0
+      IF uValue == NIL
+         IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], { |a| a[ 1 ] == nThreadID } ) ) > 0
+            ADel( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], i )
+            ASize( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], Len( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] ) - 1 )
+         ENDIF
+         uRet := NIL
+      ELSE
+         IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+            AAdd( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], { nThreadID, NIL } )
+            i := Len( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] )
+         ENDIF
+         ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ][ i ][ 2 ] := uValue
+         uRet := ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ][ i ][ 2 ]
+      ENDIF
+   ELSE
+      IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+         uRet := NIL
+      ELSE
+         uRet := ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ][ i ][ 2 ]
+      ENDIF
    ENDIF
-   uRet := AClone( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] )
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
