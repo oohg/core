@@ -12,6 +12,14 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-10-31 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\source\h_application.prg
+     ! Control definition using alternative syntax.
+     ; Alternative syntax is now thread safe.
+     + METHOD EventInfoClear to TApplication class.
+       ; Use it to clear the thread's events stack.
+
 2018-10-30 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
      + New combobox clauses.
