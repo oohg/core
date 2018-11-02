@@ -78,7 +78,7 @@ STANDARD VERSION
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
-      [ INPUTMASK <Picture> ] ;
+      [ INPUTMASK <inputmask> ] ;
       [ ITEMS <rows> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
@@ -181,7 +181,7 @@ STANDARD VERSION
             <.break.>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <.ownerdata.>, <{dispinfo}>, <itemcount>, <.edit.>, ;
             <backcolor>, <fontcolor>, <dynamicbackcolor>, <dynamicforecolor>, ;
-            <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
+            <inputmask>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <{editcell}>, <aWhenFields>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, ;
             <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
@@ -213,7 +213,7 @@ SPLITBOX VERSION
       [ HEIGHT <h> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
-      [ INPUTMASK <Picture> ] ;
+      [ INPUTMASK <inputmask> ] ;
       [ ITEMS <rows> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
@@ -315,7 +315,7 @@ SPLITBOX VERSION
             <{lostfocus}>, <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.ownerdata.>, ;
             <{dispinfo}>, <itemcount>, <.edit.>, <backcolor>, <fontcolor>, ;
-            <dynamicbackcolor>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
+            <dynamicbackcolor>, <dynamicforecolor>, <inputmask>, <.rtl.>, ;
             <.inplace.>, <editcontrols>, <aReadOnly>, <aValidFields>, ;
             <aValidMessages>, <{editcell}>, <aWhenFields>, <.disabled.>, ;
             <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, <{enter}>, ;

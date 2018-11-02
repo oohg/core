@@ -85,7 +85,7 @@ STANDARD VERSION
       [ WIDTHS <widths> ] ;
       [ WORKAREA <workarea> ] ;
       [ FIELDS <Fields> ] ;
-      [ INPUTMASK <Picture> ] ;
+      [ INPUTMASK <inputmask> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
@@ -193,7 +193,7 @@ STANDARD VERSION
             <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
             <.inplace.>, <.novsb.>, <.append.>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
-            <aWhenFields>, <dynamicforecolor>, <Picture>, <.rtl.>, ;
+            <aWhenFields>, <dynamicforecolor>, <inputmask>, <.rtl.>, ;
             <{onappend}>, <{editcell}>, <editcontrols>, <replacefields>, ;
             <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, ;

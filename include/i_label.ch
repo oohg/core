@@ -89,7 +89,7 @@
       [ <rtl: RTL> ] ;
       [ <nowordwrap: NOWORDWRAP> ] ;
       [ <noprefix: NOPREFIX> ] ;
-      [ INPUTMASK <picture> ] ;
+      [ INPUTMASK <inputmask> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <vcntralign: VCENTERALIGN> ] ;
@@ -102,4 +102,4 @@
             [ <fontcolor> ], <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
-            <.noprefix.>, <picture>, <.disabled.>, <.vcntralign.>, <{dblclk}> )
+            <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}> )

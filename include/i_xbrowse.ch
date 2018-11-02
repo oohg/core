@@ -76,7 +76,7 @@
       [ WIDTHS <widths> ] ;
       [ WORKAREA <workarea> ] ;
       [ FIELDS <Fields> ] ;
-      [ INPUTMASK <Picture> ] ;
+      [ INPUTMASK <inputmask> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
@@ -179,7 +179,7 @@
             <{lostfocus}>, <.style.>, <aImage>, <aJust>, <.break.>, <helpid>, ;
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <.edit.>, ;
             <backcolor>, <fontcolor>, <dynamicbackcolor>, <dynamicforecolor>, ;
-            <Picture>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
+            <inputmask>, <.rtl.>, <.inplace.>, <editcontrols>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <{editcell}>, <aWhenFields>, ;
             <.reccount.>, <columninfo>, ! <.noshowheaders.>, <{enter}>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, ;
