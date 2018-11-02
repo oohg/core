@@ -12,6 +12,19 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-01 14:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_label.ch
+   * core\include\i_xbrowse.ch
+     * <picture> marker renamed to <inputmask>.
+
+2018-11-01 14:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     ! TEXTBOX's PICTURE clause is not recognized as synonim of
+       INPUTMASK clause.
+     ; INPUTMASK takes precedence over PICTURE.
+
 2018-10-31 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\source\h_application.prg
