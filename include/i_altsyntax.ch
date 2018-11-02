@@ -1291,7 +1291,7 @@ TEXT BOX
             _OOHG_ActiveControlValid, ;
             _OOHG_ActiveControlDateType, ;
             _OOHG_ActiveControlNumeric, ;
-            _OOHG_ActiveControlInputMask, ;
+            iif( _OOHG_ActiveControlInputMask == NIL, _OOHG_ActiveControlPicture, _OOHG_ActiveControlInputMask ), ;
             _OOHG_ActiveControlFormat, ;
             _OOHG_ActiveControlSubClass, ;
             _OOHG_ActiveControlAction, ;
