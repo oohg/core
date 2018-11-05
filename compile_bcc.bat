@@ -146,7 +146,7 @@ rem
    echo %HG_ROOT%\%LIB_GUI%\oohg.lib + >> b32.bc
 
    rem *** Compiler Libraries ***
-   for %%a in ( rtl   vm   %HG_USE_GT% lang   codepage macro   rdd   dbfntx dbfcdx dbffpt common   debug   pp   ct             ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
+   for %%a in ( rtl   vmmt %HG_USE_GT% lang   codepage macro   rdd   dbfntx dbfcdx dbffpt common   debug   pp   ct             ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
    for %%a in ( hbrtl hbvm             hblang hbcpage  hbmacro hbrdd rddntx rddcdx rddfpt hbcommon hbdebug hbpp hbct hbwin xhb ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
 
    rem *** Harbour-dependant Libraries ***
@@ -181,7 +181,7 @@ rem
    for %%a in ( %2 %3 %4 %5 %6 %7 %8 %9 ) do if /I "%%a" == "/m" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
 
    rem *** BCC-dependant Libraries ***
-   echo cw32.lib + >> b32.bc
+   echo cw32mt.lib + >> b32.bc
    echo msimg32.lib + >> b32.bc
    echo import32.lib, , + >> b32.bc
 
