@@ -61,7 +61,7 @@
 
 
 #define _WIN32_IE      0x0500
-#define HB_OS_WIN_USED
+// #define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 
@@ -75,8 +75,8 @@
 #include "tchar.h"
 #include "oohg.h"
 
-typedef BOOL (WINAPI *VERIFYSCREENSAVEPWD)(HWND hwnd);
-typedef VOID (WINAPI *PWDCHANGEPASSWORD) (LPCSTR lpcRegkeyname,HWND hwnd,UINT uiReserved1,UINT uiReserved2);
+typedef BOOL ( WINAPI * VERIFYSCREENSAVEPWD ) ( HWND hwnd );
+typedef VOID ( WINAPI * PWDCHANGEPASSWORD ) ( LPCSTR lpcRegkeyname, HWND hwnd, UINT uiReserved1, UINT uiReserved2 );
 
 HB_FUNC( VERIFYPASSWORD )
 {
@@ -90,27 +90,27 @@ HB_FUNC( VERIFYPASSWORD )
    VERIFYSCREENSAVEPWD VerifyScreenSavePwd;
    BOOL bres;
 
-   if(GetVersion() < 0x80000000)
+   if( GetVersion() < 0x80000000 )
       hb_retl( TRUE );
 
-   hpwdcpl = LoadLibrary("PASSWORD.CPL");
+   hpwdcpl = LoadLibrary( "PASSWORD.CPL" );
 
-   if(hpwdcpl == NULL)
+   if( hpwdcpl == NULL )
    {
       hb_retl( FALSE );
    }
 
-   VerifyScreenSavePwd = (VERIFYSCREENSAVEPWD)GetProcAddress(hpwdcpl, "VerifyScreenSavePwd");
-   if(VerifyScreenSavePwd==NULL)
+   VerifyScreenSavePwd = ( VERIFYSCREENSAVEPWD ) GetProcAddress( hpwdcpl, "VerifyScreenSavePwd" );
+   if( VerifyScreenSavePwd == NULL )
    {
-      FreeLibrary(hpwdcpl);
+      FreeLibrary( hpwdcpl );
       hb_retl( FALSE );
    }
 
-        hwnd = HWNDparam( 1 );
+   hwnd = HWNDparam( 1 );
+   bres = VerifyScreenSavePwd( hwnd );
 
-        bres = VerifyScreenSavePwd(hwnd);
-   FreeLibrary(hpwdcpl);
+   FreeLibrary( hpwdcpl );
 
    hb_retl( bres );
 }
