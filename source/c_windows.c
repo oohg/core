@@ -61,7 +61,7 @@
 
 
 #ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
+   // #define HB_OS_WIN_USED
 #endif
 
 #ifndef WINVER
@@ -186,7 +186,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
 
    // Saves current result
    pSave = hb_itemNew( NULL );
-   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
+   hb_itemCopy( pSave, hb_param( -1, ( LONG ) HB_IT_ANY ) );
 
    switch( Msg->message )
    {
@@ -316,7 +316,7 @@ HB_FUNC( SHOWWINDOW )
 
 HB_FUNC( _EXITPROCESS )
 {
-   ExitProcess( hb_parni( 1 ) );
+   ExitProcess( ( UINT ) hb_parni( 1 ) );
 }
 
 HB_FUNC( _EXITPROCESS2 )
@@ -329,14 +329,14 @@ HB_FUNC( _EXITPROCESS2 )
    OleInitialize( NULL );
    OleUninitialize();
    OleUninitialize();
-   ExitProcess( hb_parni( 1 ) );
+   ExitProcess( ( UINT ) hb_parni( 1 ) );
 }
 
 HB_FUNC( INITSTATUS )
 {
    HWND hs;
 
-   hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE, "", HWNDparam( 1 ), hb_parni( 3 ) );
+   hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE, "", HWNDparam( 1 ), ( UINT ) hb_parni( 3 ) );
 
    SendMessage( hs, SB_SIMPLE, TRUE, 0 );
    SendMessage( hs, SB_SETTEXT, 255, (LPARAM) (LPSTR) hb_parc( 2 ) );
@@ -448,7 +448,7 @@ HB_FUNC( C_CENTER )
 HB_FUNC( GETWINDOWTEXT )
 {
    int iLen = GetWindowTextLength( HWNDparam( 1 ) ) + 1;
-   char *cText = (char *) hb_xgrab( iLen );
+   char *cText = (char *) hb_xgrab( ( HB_SIZE ) iLen );
 
    GetWindowText( HWNDparam( 1 ), (LPTSTR) cText, iLen );
 
@@ -468,7 +468,7 @@ HB_FUNC( UPDATEWINDOW )
 
 HB_FUNC( GETNOTIFYCODE )
 {
-   hb_retni( ( (NMHDR FAR *) HB_PARNL( 1 ) )->code );
+   hb_retni( ( INT ) ( (NMHDR FAR *) HB_PARNL( 1 ) )->code );
 }
 
 HB_FUNC( GETHWNDFROM )
@@ -685,7 +685,7 @@ HB_FUNC( GETWINDOWSTATE )
 
    GetWindowPlacement( HWNDparam( 1 ) , &wp );
 
-   hb_retni( wp.showCmd );
+   hb_retni( ( INT ) wp.showCmd );
 }
 
 HB_FUNC( REDRAWWINDOW )
@@ -733,7 +733,7 @@ HB_FUNC( C_SETPOLYWINDOWRGN )
    HRGN hrgn;
    POINT lppt[512];
    int i, fnPolyFillMode;
-   int cPoints = hb_parinfa( 2, 0 );
+   int cPoints = ( INT ) hb_parinfa( 2, 0 );
 
    if( hb_parni( 4 ) == 1 )
       fnPolyFillMode = WINDING;
@@ -771,17 +771,17 @@ HB_FUNC( GETMSKTEXTLPARAM )
 
 HB_FUNC( GETWINDOW )
 {
-   HWNDret( GetWindow( HWNDparam( 1 ), hb_parni( 2 ) ) );
+   HWNDret( GetWindow( HWNDparam( 1 ), (UINT) hb_parni( 2 ) ) );
 }
 
 HB_FUNC( GETGRIDOLDSTATE )
 {
-   hb_retni( (UINT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
+   hb_retni( (INT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
 }
 
 HB_FUNC( GETGRIDNEWSTATE )
 {
-   hb_retni( (UINT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
+   hb_retni( (INT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
 }
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
@@ -976,7 +976,7 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    {
       ReleaseDC( hWnd, hDC );
    }
-   HWNDret( (HWND) hBitmap );
+   HWNDret( hBitmap );
 }
 
 HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
@@ -1175,7 +1175,7 @@ HANDLE DDBToDIB( HBITMAP hBitmap, HPALETTE hPal )
 
    // if the driver did not fill in the biSizeImage field, make one up
    if( bi.biSizeImage == 0 )
-      bi.biSizeImage = ( ( ( (DWORD) bm.bmWidth * biBits ) + 31 ) / 32 * 4 ) * bm.bmHeight;
+      bi.biSizeImage = ( DWORD ) ( ( ( ( bm.bmWidth * biBits ) + 31 ) / 32 * 4 ) * bm.bmHeight );
 
    // realloc the buffer big enough to hold all the bits
    dwLen = bi.biSize + PaletteSize( (LPSTR) &bi ) + bi.biSizeImage;
@@ -1251,7 +1251,7 @@ WORD SaveDIB( HDIB hDib, LPSTR lpFileName )
 
    dwDIBSize = ( * (LPDWORD) lpBI ) + PaletteSize( (LPSTR) lpBI );
 
-   dwBmBitsSize = ( ( ( ( lpBI->biWidth ) * ( (DWORD) lpBI->biBitCount ) ) + 31 ) / 32 * 4 ) * lpBI->biHeight;
+   dwBmBitsSize = ( DWORD ) ( ( ( ( lpBI->biWidth * lpBI->biBitCount ) + 31 ) / 32 * 4 ) * lpBI->biHeight );
    dwDIBSize += dwBmBitsSize;
    lpBI->biSizeImage = dwBmBitsSize;
 
