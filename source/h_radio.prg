@@ -630,10 +630,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -707,7 +703,7 @@ typedef enum THEMESIZE {
 #define DTT_VALIDBITS (DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
                        DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED)
 
-typedef int (WINAPI *DTT_CALLBACK_PROC)(HDC hdc,LPWSTR pszText,int cchText,LPRECT prc,UINT dwFlags,LPARAM lParam);
+typedef int ( WINAPI * DTT_CALLBACK_PROC )( HDC hdc, LPWSTR pszText, int cchText, LPRECT prc, UINT dwFlags, LPARAM lParam );
 
 #ifdef __BORLANDC__
 typedef BOOL WINBOOL;
@@ -773,7 +769,7 @@ HB_FUNC( INITRADIOGROUP )
 
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
-                             HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
@@ -791,7 +787,7 @@ HB_FUNC( INITRADIOBUTTON )
 
    hbutton = CreateWindowEx( StyleEx, "button", "", Style,
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
-                             HWNDparam( 1 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
 

@@ -114,7 +114,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if(  HB_IsLogical ( readonly )  .AND.  readonly,  ES_READONLY, 0 )
+             iif( HB_ISLOGICAL( readonly ) .AND. readonly, ES_READONLY, 0 )
 
    nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
@@ -234,10 +234,6 @@ METHOD Increment( nValue ) CLASS TSpinner
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -299,7 +295,7 @@ HB_FUNC( INITSPINNER )
 
    hupdown = CreateWindowEx( StyleEx, UPDOWN_CLASS, "", Style2,
                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             hwnd, ( HMENU ) 0, GetModuleHandle( NULL ), NULL );
+                             hwnd, NULL, GetModuleHandle( NULL ), NULL );
 
    SendMessage ( hupdown, UDM_SETBUDDY, ( WPARAM ) hb_parnl( 11 ), ( LPARAM ) NULL );
    SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );

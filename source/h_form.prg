@@ -84,10 +84,6 @@ STATIC _OOHG_ActiveForm := {}        // Forms under creation
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef WINVER
    #define WINVER 0x0500
 #endif
@@ -3221,7 +3217,7 @@ HB_FUNC( UNREGISTERWINDOW )
 HB_FUNC( INITDUMMY )
 {
    CreateWindowEx( 0, "static", "", WS_CHILD, 0, 0, 0, 0,
-                   HWNDparam( 1 ), ( HMENU ) 0, GetModuleHandle( NULL ), NULL );
+                   HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 }
 
 HB_FUNC( INITWINDOW )
@@ -3232,30 +3228,9 @@ HB_FUNC( INITWINDOW )
 
    ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
 
-/*
-MDICLIENT:
-   + Establecer el menú con los nombres de las ventanas
-    icount = GetMenuItemCount(GetMenu(hwndparent));
-    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
-    ccs.idFirstChild = 0;
-    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
-
-MDICHILD:
-   + "Título" automático de la ventana... rgch[]
-   mcs.szClass = "MdiChildWndClass";      // window class name
-   mcs.szTitle = rgch;                    // window title
-   mcs.hOwner  = GetModuleHandle(NULL);   // owner
-   mcs.x       = hb_parni (3);            // x position
-   mcs.y       = hb_parni (4);            // y position
-   mcs.cx      = hb_parni (5);            // width
-   mcs.cy      = hb_parni (6);            // height
-   mcs.style   = Style;                   // window style
-   mcs.lParam  = 0;                       // lparam
-    hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
-*/
    hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-                          HWNDparam( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
+                          HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), NULL );
 
    if( ! hwnd )
    {
@@ -3280,30 +3255,9 @@ HB_FUNC( INITWINDOWMDICLIENT )
 
    ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
 
-/*
-MDICLIENT:
-   + Establecer el menú con los nombres de las ventanas
-    icount = GetMenuItemCount(GetMenu(hwndparent));
-    ccs.hWindowMenu  = GetSubMenu(GetMenu(hwndparent), icount-2);
-    ccs.idFirstChild = 0;
-    hwndMDIClient = CreateWindow("mdiclient", NULL, style, 0, 0, 0, 0, hwndparent, (HMENU)0xCAC, GetModuleHandle(NULL), (LPSTR) &ccs);
-
-MDICHILD:
-   + "Título" automático de la ventana... rgch[]
-   mcs.szClass = "MdiChildWndClass";      // window class name
-   mcs.szTitle = rgch;                    // window title
-   mcs.hOwner  = GetModuleHandle(NULL);   // owner
-   mcs.x       = hb_parni (3);            // x position
-   mcs.y       = hb_parni (4);            // y position
-   mcs.cx      = hb_parni (5);            // width
-   mcs.cy      = hb_parni (6);            // height
-   mcs.style   = Style;                   // window style
-   mcs.lParam  = 0;                       // lparam
-    hwndChild = ( HWND ) SendMessage( HWNDparam( 1 ), WM_MDICREATE, 0, (LPARAM)(LPMDICREATESTRUCT) &mcs);
-*/
    hwnd = CreateWindowEx( ExStyle, "MDICLIENT", hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-                          HWNDparam( 6 ), ( HMENU ) NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
+                          HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
 
    if( ! hwnd )
    {

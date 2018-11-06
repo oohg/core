@@ -466,7 +466,7 @@ HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
                                 hb_parni( 4 ),
                                 hb_parni( 5 ),
                                 hwnd,
-                                (HMENU) 0,
+                                NULL,
                                 GetModuleHandle( NULL ),
                                 NULL ) ;
 
