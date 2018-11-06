@@ -66,10 +66,6 @@
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef WINVER
    #define WINVER 0x0500
 #endif
@@ -457,9 +453,15 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
+   if( hb_pcount() >= 1 )
    {
-      oSelf->ImageList = ( HIMAGELIST ) HB_PARNL( 1 );
+      HIMAGELIST hImageList = ( HIMAGELIST ) HB_PARNL( 1 );
+
+      if( ValidHandler( oSelf->ImageList ) )
+      {
+         ImageList_Destroy( oSelf->ImageList );
+      }
+      oSelf->ImageList = ValidHandler( hImageList ) ? hImageList : 0;
    }
 
    HWNDret( oSelf->ImageList );
@@ -469,11 +471,11 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HBRUSH hBrush;
 
-   hBrush = ( HBRUSH ) HWNDparam( 1 );
    if( hb_pcount() >= 1 )
    {
+      HBRUSH hBrush = ( HBRUSH ) HB_PARNL( 1 );
+
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
@@ -489,9 +491,15 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
+   if( hb_pcount() >= 1 )
    {
-      oSelf->hFontHandle = ( HFONT ) HWNDparam( 1 );
+      HFONT hFont = ( HFONT ) HB_PARNL( 1 );
+
+      if( oSelf->hFontHandle )
+      {
+         DeleteObject( oSelf->hFontHandle );
+      }
+      oSelf->hFontHandle = ValidHandler( hFont ) ? hFont : 0;
    }
 
    HWNDret( oSelf->hFontHandle );
@@ -817,7 +825,6 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
             // If there's a context menu, show it
             if( pContext )
             {
-               // HMENU
                _OOHG_Send( pContext, s_Activate );
                hb_vmPushLong( HIWORD( lParam ) );
                hb_vmPushLong( LOWORD( lParam ) );
@@ -908,10 +915,9 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                {
                   hb_itemCopy( pMenu, hb_param( -1, HB_IT_OBJECT ) );
                   GetCursorPos( &Point );
-                  // HMENU
                   _OOHG_Send( pMenu, s_hWnd );
                   hb_vmSend( 0 );
-                  TrackPopupMenuEx( ( HMENU ) HWNDparam( -1 ), TPM_RECURSE, Point.x, Point.y, hWnd, 0 );
+                  TrackPopupMenuEx( HMENUparam( -1 ), TPM_RECURSE, Point.x, Point.y, hWnd, 0 );
                   PostMessage( hWnd, WM_NULL, 0, 0 );
                }
             }
