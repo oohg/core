@@ -60,57 +60,36 @@
  */
 
 
-#define HB_OS_WIN_USED
+// #define HB_OS_WIN_USED
+
 #include "hbapi.h"
 #include "windows.h"
 #include "shellapi.h"
 #include <commctrl.h>
 #include "oohg.h"
-HINSTANCE __hInstance = NULL;
 
-HINSTANCE GetInstance( void )
+HB_FUNC( LOADICON )
 {
-   if( ! __hInstance )
-      __hInstance = GetModuleHandle( 0 );
-   return __hInstance;
+   HICON hIco = LoadIcon( ( HINSTANCE ) HB_PARNL( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): ( LPCTSTR ) MAKEINTRESOURCE( hb_parni( 2 ) ) ) ;
+   HWNDret( hIco );
 }
-
-HB_FUNC(LOADICON) // handle of dll/NULL , resource name/id
-{
-    HICON hIco;
-
-    hIco =  LoadIcon( ( HINSTANCE ) hb_parnl(1), HB_ISCHAR( 2 ) ? hb_parc( 2 ):
-           ( LPCTSTR ) MAKEINTRESOURCE( hb_parnl( 2 ) ) ) ;
-
-    hb_retnl((LONG)hIco);
-}
-
 
 HB_FUNC( EXTRACTICON )
 {
-
-   hb_retnl( ( LONG ) ExtractIcon( GetInstance(),
-                       hb_parc( 1 ),          // EXE, DLL or ICO Name
-                        hb_parni( 2 ) ) );     // Icon Index
+   HWNDret( ExtractIcon( GetModuleHandle( NULL ), hb_parc( 1 ), hb_parni( 2 ) ) );
 }
 
-
-HB_FUNC(LOADRESOURCE)
+HB_FUNC( LOADRESOURCE )
 {
-   hb_retnl( ( LONG ) LoadResource( ( HINSTANCE ) hb_parnl( 1 ),
-                                  ( HRSRC ) hb_parni( 2 ) ) );
+   HWNDret( LoadResource( ( HMODULE ) HB_PARNL( 1 ), ( HRSRC ) HB_PARNL( 2 ) ) );
 }
 
-
-HB_FUNC( FINDRESOURCE ) // ( hResources, cResourceName, nResType )
+HB_FUNC( FINDRESOURCE )
 {
-   hb_retnl( ( LONG ) FindResource( ( HINSTANCE ) hb_parnl( 1 ),
-                    hb_parc( 2 ), MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
+   HWNDret( FindResource( ( HMODULE ) HB_PARNL( 1 ), hb_parc( 2 ), ( LPCTSTR ) MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
 }
 
-//---------------------------------------------------------------------------//
-
-   HB_FUNC(RESOURCEFREE)//   hResource
+HB_FUNC( RESOURCEFREE )
 {
-   FreeResource( ( HANDLE ) hb_parnl( 1 ) );
+   FreeResource( ( HGLOBAL ) HB_PARNL( 1 ) );
 }
