@@ -1853,10 +1853,6 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400
 #endif

@@ -210,10 +210,6 @@ EXTERN SetSplitBoxItem
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400
 #endif
@@ -277,7 +273,7 @@ HB_FUNC( INITSPLITBOX )
                             REBARCLASSNAME,
                             NULL,
                             Style,
-                            0,0,0,0,
+                            0, 0, 0, 0,
                             hwndOwner,
                             NULL,
                             GetModuleHandle( NULL ),

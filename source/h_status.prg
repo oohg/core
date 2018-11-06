@@ -544,10 +544,6 @@ FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400
 #endif
