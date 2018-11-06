@@ -889,7 +889,7 @@ METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColo
    ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
    ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
    ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
-   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT {255, 255, 255}
+   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT NIL
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -921,7 +921,7 @@ METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, a
    ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
    ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
    ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
-   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT {255, 255, 255}
+   ASSIGN arColor VALUE arColor TYPE "A" DEFAULT NIL
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -4318,7 +4318,13 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPDFPRINT
 
-   LOCAL cColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
+   LOCAL cColor
+
+   IF HB_ISSTRING( atColor )
+      cColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
+   ELSE
+      cColor := NIL
+   ENDIF
 
    ::oPdf:Box( nLin, nCol, nLinF, nColF, 0, 1, "M", cColor, "t1" )
 
@@ -4358,10 +4364,16 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, uSorR ) CLASS TPDFPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPDFPRINT
 
-   LOCAL ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
+   LOCAL ctColor
 
    // TODO: check if we can print oblique lines
    HB_SYMBOL_UNUSED( lSolid )
+
+   IF HB_ISSTRING( atColor )
+      ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
+   ELSE
+      ctColor := NIL
+   ENDIF
 
    IF ::cUnits == "MM"
       ::oPdf:_OOHG_Line( ( nLin - 0.9 ) + ::nvFij, ( nCol + 1.3 ) + ::nhFij, ( nLinF - 0.9 ) + ::nvFij, ( nColF + 1.3 ) + ::nhFij, ntwPen * 1.2, ctColor )
@@ -4372,12 +4384,22 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPD
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor  ) CLASS TPDFPRINT
+METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPDFPRINT
 
-   LOCAL ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
-   LOCAL crColor := Chr( 253 ) + Chr( arColor[1] ) + Chr( arColor[2] ) + Chr( arColor[3] )
+   LOCAL ctColor, crColor
 
    HB_SYMBOL_UNUSED( lSolid )
+
+   IF HB_ISSTRING( atColor )
+      ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
+   ELSE
+      ctColor := NIL
+   ENDIF
+   IF HB_ISSTRING( arColor )
+      crColor := Chr( 253 ) + Chr( arColor[1] ) + Chr( arColor[2] ) + Chr( arColor[3] )
+   ELSE
+      crColor := NIL
+   ENDIF
 
    IF ::cUnits == "MM"
       ::oPdf:_OOHG_Box( ( nLin - 0.9 ) + ::nvFij, ( nCol + 1.3 ) + ::nhFij, ( nLinF - 0.9 ) + ::nvFij, ( nColF + 1.3 ) + ::nhFij, ntwPen * 1.2, ctColor, crColor )
@@ -4390,7 +4412,7 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPDFPRINT
 
-   // We can't have a rounded rectangle so we make a normal one
+   // We can't have a rounded rectangle so we make a rectangular one
    ::PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor )
 
    RETURN Self
