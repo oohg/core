@@ -2242,10 +2242,6 @@ METHOD Release() CLASS TTree
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -2314,8 +2310,8 @@ HB_FUNC( INITTREE )
 
    if( hb_parl( 8 ) )
    {
-      CurStyle = GetWindowLongPtr(hWndTV, GWL_STYLE);
-      SetWindowLongPtr(hWndTV, GWL_STYLE, CurStyle | TVS_CHECKBOXES);
+      CurStyle = GetWindowLongPtr( hWndTV, GWL_STYLE );
+      SetWindowLongPtr( hWndTV, GWL_STYLE, CurStyle | TVS_CHECKBOXES );
    }
 
    HWNDret( hWndTV );
