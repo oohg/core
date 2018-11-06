@@ -167,7 +167,8 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
 
    _Ax_Init();
    hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle,
-              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), HWNDparam( 1 ), 0, 0, NULL );
+                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    HWNDret( hControl );
 }
