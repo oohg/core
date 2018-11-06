@@ -208,6 +208,7 @@ CLASS TGrid FROM TControl
    METHOD EditAllCells
    METHOD EditCell
    METHOD EditCell2
+   METHOD EditControlLikeExcel
    METHOD EditGrid
    METHOD EditItem
    METHOD EditItem2
@@ -4294,6 +4295,20 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TGrid
 
    Return ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
 
+METHOD EditControlLikeExcel( nColumn ) CLASS TGrid
+
+   Local oEditControl
+
+   If nColumn < 1
+      Return .F.
+   EndIf
+   If ::FixControls()
+      oEditControl := ::aEditControls[ nColumn ]
+   EndIf
+   oEditControl := GetEditControlFromArray( oEditControl, ::EditControls, nColumn, Self )
+
+   Return HB_IsObject( oEditControl ) .AND. oEditControl:lLikeExcel
+
 
 CLASS TGridMulti FROM TGrid
 
@@ -5482,7 +5497,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
       Return 0
 
    ElseIf nMsg == WM_CHAR
-      If ::AllowEdit .AND. ( ::lLikeExcel .OR. EditControlLikeExcel( Self, ::Value[ 2 ] ) )
+      If ::AllowEdit .AND. ( ::lLikeExcel .OR. ::EditControlLikeExcel( ::Value[ 2 ] ) )
          ::EditCell( , , , Chr( wParam ) )
          Return 0
 
@@ -5549,20 +5564,6 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
    EndIf
 
    Return ::Super:Events( hWnd, nMsg, wParam, lParam )
-
-FUNCTION EditControlLikeExcel( oGrid, nColumn )
-
-   Local oEditControl
-
-   If nColumn < 1
-      Return .F.
-   EndIf
-   If oGrid:FixControls()
-      oEditControl := oGrid:aEditControls[ nColumn ]
-   EndIf
-   oEditControl := GetEditControlFromArray( oEditControl, oGrid:EditControls, nColumn, oGrid )
-
-   Return HB_IsObject( oEditControl ) .AND. oEditControl:lLikeExcel
 
 METHOD MoveToFirstCol CLASS TGridByCell
 
@@ -7528,10 +7529,6 @@ METHOD ControlValue( uValue ) CLASS TGridControlLComboBox
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef WINVER
    #define WINVER 0x0500
 #endif
@@ -7856,7 +7853,7 @@ HB_FUNC( INITLISTVIEW )
 
    hwnd = CreateWindowEx( StyleEx, "SysListView32", "", style,
                           iCol, iRow, iWidth, iHeight,
-                          HWNDparam( 1 ), (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+                          HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
    extStyle = hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
    if ( hb_parl( 14 ) )

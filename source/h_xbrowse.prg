@@ -3708,7 +3708,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
    If nMsg == WM_CHAR
       _OOHG_ThisItemCellValue := ::Cell( nRow := ::CurrentRow, ( nCol := ::CurrentCol ) )
 
-      If ( ! ::lLocked .AND. ::AllowEdit .AND. ( ::lLikeExcel .OR. EditControlLikeExcel( Self, nCol ) ) .AND. ;
+      If ( ! ::lLocked .AND. ::AllowEdit .AND. ( ::lLikeExcel .OR. ::EditControlLikeExcel( nCol ) ) .AND. ;
            ! ::IsColumnReadOnly( nCol, nRow ) .AND. ::IsColumnWhen( nCol, nRow ) .AND. aScan( ::aHiddenCols, nCol ) == 0 )
          ::EditCell( , , , Chr( wParam ), , , , , .F. )
 
