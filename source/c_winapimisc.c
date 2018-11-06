@@ -69,7 +69,7 @@
 #endif
 
 #ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
+   // #define HB_OS_WIN_USED
 #endif
 
 #ifndef _WIN32_WINNT
@@ -81,11 +81,6 @@
 #endif
 
 #include <shlobj.h>
-// #include <stdlib.h>
-#ifdef __MINGW32__
-   #define ultoa    _ultoa
-#endif
-
 #include <windows.h>
 #include <lmcons.h>
 #include <commctrl.h>
@@ -655,7 +650,7 @@ HB_FUNC( WINVERSION )
                                                    &dwBufLen );
                         if( lRetVal == ERROR_SUCCESS )
                         {
-                           lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                           lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( (int) dwBufLen + 1 ) );
                            lRetVal = RegQueryValueEx( hKey,
                                                       _TEXT( "ProductName" ),
                                                       NULL,
@@ -728,7 +723,7 @@ HB_FUNC( WINVERSION )
                                              &dwBufLen );
                   if( lRetVal == ERROR_SUCCESS )
                   {
-                     lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                     lpData = (BYTE *) hb_xgrab( ( UINT ) ( (int) dwBufLen + 1 ) );
                      lRetVal = RegQueryValueEx( hKey,
                                                 _TEXT( "ProductType" ),
                                                 NULL,
@@ -755,9 +750,9 @@ HB_FUNC( WINVERSION )
                   if( lstrcmpi( _TEXT( "SERVERNT" ), (CHAR *) lpData  ) == 0 )
                      szVersionEx = _TEXT( "Advanced Server ") ;
 
-                  szVersion = lstrcat( szVersion, ultoa( osvi.dwMajorVersion, buffer, 10 ) );
+                  szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMajorVersion, buffer, 10 ) );
                   szVersion = lstrcat( szVersion, _TEXT( "." ) );
-                  szVersion = lstrcat( szVersion, ultoa( osvi.dwMinorVersion, buffer, 10 ) );
+                  szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMinorVersion, buffer, 10 ) );
                }
             }
 
@@ -780,7 +775,7 @@ HB_FUNC( WINVERSION )
                                              &dwBufLen );
                   if( lRetVal == ERROR_SUCCESS )
                   {
-                     BYTE * lpData = (BYTE *) hb_xgrab( (int) dwBufLen + 1 );
+                     BYTE * lpData = (BYTE *) hb_xgrab( ( UINT ) ( (int) dwBufLen + 1 ) );
                      lRetVal = RegQueryValueEx( hKey,
                                                 _TEXT( "ReleaseId" ),
                                                 NULL,
@@ -801,7 +796,7 @@ HB_FUNC( WINVERSION )
                         if( lRetVal == ERROR_SUCCESS )
                         {
                            szServicePack = lstrcat( szServicePack, _TEXT( "." ) );
-                           szServicePack = lstrcat( szServicePack, ultoa( dwUBR, buffer, 10 ) );
+                           szServicePack = lstrcat( szServicePack, _OOHG_ULTOA( dwUBR, buffer, 10 ) );
                         }
                      }
                      else
@@ -809,7 +804,7 @@ HB_FUNC( WINVERSION )
                   }
                }
                RegCloseKey( hKey );
-               szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
+               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
             }
             else if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, _TEXT( "Service Pack 6" ) ) == 0 )
             {
@@ -822,19 +817,19 @@ HB_FUNC( WINVERSION )
                if( lRetVal == ERROR_SUCCESS )
                {
                   szServicePack = _TEXT( "Service Pack 6a" );
-                  szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
+                  szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
                }
                else
                {
                   szServicePack = osvi.szCSDVersion;
-                  szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
+                  szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
                }
                RegCloseKey( hKey );
             }
             else
             {
                szServicePack = osvi.szCSDVersion;
-               szBuild = ultoa( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
+               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
             }
             break;
 
@@ -859,7 +854,7 @@ HB_FUNC( WINVERSION )
                      szServicePack = _TEXT( "OSR1" );
                   }
                }
-               szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
+               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 10 ) )
             {
@@ -873,12 +868,12 @@ HB_FUNC( WINVERSION )
                   szVersion = _TEXT( "Windows 98" );
                   szServicePack = _TEXT( "First Edition" );
                }
-               szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
+               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 90 ) )
             {
                szVersion = _TEXT( "Windows ME" );
-               szBuild = ultoa( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
+               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
             break;
       }
@@ -893,7 +888,7 @@ HB_FUNC( WINVERSION )
 
 HB_FUNC( SETWINDOWPOS )
 {
-   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
+   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), ( UINT ) hb_parni( 7 ) ) );
 }
 
 HB_FUNC ( GETCOMPUTERNAME )
@@ -953,21 +948,21 @@ HB_FUNC ( GETSHORTPATHNAME )
    {
       hb_storc( "", 2 );
    }
-   hb_retnl( iRet );
+   hb_retni( ( INT ) iRet );
 }
 
-wchar_t * AnsiToWide( const char * szString )
+LPWSTR AnsiToWide( const CHAR * szString )
 {
-   int       iLen;
-   wchar_t * szWide;
+   INT    iLen;
+   LPWSTR szWide;
 
    iLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, NULL, 0 );
-   szWide = ( wchar_t* ) hb_xgrab( iLen * sizeof( wchar_t ) );
+   szWide = ( LPWSTR ) hb_xgrab( ( UINT ) ( iLen ) * sizeof( WCHAR ) );
    MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, szWide, iLen );
    return szWide;
 }
 
 HB_FUNC( CLOSEHANDLE )
 {
-   CloseHandle( (HANDLE) hb_parnl( 1 ) );
+   CloseHandle( ( HANDLE ) HB_PARNL( 1 ) );
 }
