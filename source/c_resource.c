@@ -60,8 +60,6 @@
  */
 
 
-// #define HB_OS_WIN_USED
-
 #include "hbapi.h"
 #include "windows.h"
 #include "shellapi.h"
