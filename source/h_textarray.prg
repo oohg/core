@@ -92,8 +92,8 @@ CLASS TTextArray FROM TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount, nColCount, lBorder, lClientEdge, ;
-      uFontColor, uBackColor, bProcedureName, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
-      cToolTip, nHelpId, lInvisible, lRtl, cValue, lNoTabStop, lDisabled, bGotFocus, bLostFocus ) CLASS TTextArray
+               uFontColor, uBackColor, bProcedureName, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
+               cToolTip, nHelpId, lInvisible, lRtl, cValue, lNoTabStop, lDisabled, bGotFocus, bLostFocus ) CLASS TTextArray
 
    LOCAL nControlHandle, nStyle, nStyleEx, nError
 
@@ -291,7 +291,7 @@ static void RePaint_Out( HDC hdc, PCHARCELL pCell, RECT *rect2, char *cText, int
    {
       cText[ iTextIndex ] = 0;
       SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) pCell->FontColor ) );
-      SetBkColor(   hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) pCell->BackColor ) );
+      SetBkColor( hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) pCell->BackColor ) );
       // Transparent?
       // Any different font??
       ExtTextOut( hdc, rect2->left, rect2->top, ETO_CLIPPED | ETO_OPAQUE, rect2, cText, iTextIndex, NULL );
@@ -326,7 +326,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
    sNull.BackColor = ( ( sNull.BackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) sNull.BackColor );
 
    FontColor = SetTextColor( hdc, sNull.FontColor );
-   BackColor = SetBkColor(   hdc, sNull.BackColor );
+   BackColor = SetBkColor( hdc, sNull.BackColor );
    SetTextAlign( hdc, TA_LEFT );  // TA_CENTER
 
    if( ! oSelf->AuxBuffer )
@@ -579,12 +579,12 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
          if( bStatus )
          {
             FontColor = SetTextColor( hDC, pCell->BackColor );
-            BackColor = SetBkColor(   hDC, pCell->FontColor );
+            BackColor = SetBkColor( hDC, pCell->FontColor );
          }
          else
          {
             FontColor = SetTextColor( hDC, pCell->FontColor );
-            BackColor = SetBkColor(   hDC, pCell->BackColor );
+            BackColor = SetBkColor( hDC, pCell->BackColor );
          }
          SetTextAlign( hDC, TA_LEFT );  // TA_CENTER
          ExtTextOut( hDC, rect2.left, rect2.top, ETO_CLIPPED | ETO_OPAQUE, &rect3, ( char * ) &( pCell->character ), 1, NULL );

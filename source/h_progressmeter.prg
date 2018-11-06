@@ -237,7 +237,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    xFont = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
    xBack = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW     ) : (COLORREF) oSelf->lBackColor );
    FontColor = SetTextColor( hdc2, xFont );
-   BackColor = SetBkColor(   hdc2, xBack );
+   BackColor = SetBkColor( hdc2, xBack );
    SetTextAlign( hdc2, oSelf->lAux[ 1 ] );
    hOldFont = ( HFONT ) SelectObject( hdc2, oSelf->hFontHandle );
    rect2.right = iWidth1;
@@ -245,7 +245,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    rect2.left = iWidth1;
    rect2.right = iWidth2;
    SetTextColor( hdc2, xBack );
-   SetBkColor(   hdc2, xFont );
+   SetBkColor( hdc2, xFont );
    ExtTextOut( hdc2, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, txt, len, NULL );
    SelectObject( hdc2, hOldFont );
    SetTextColor( hdc2, FontColor );
