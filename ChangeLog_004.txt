@@ -2480,7 +2480,7 @@
      - DATA cDocument from TPDFPRINT.
      * Function ParseName returned to public.
      * Method PrintLineX of TPDFPRINT uses method _OOHG_Line of TPDF.
-     * Methods PrintRectangle and PrintRoundRectangle use methos _OOHG_Box
+     * Methods PrintRectangle and PrintRoundRectangle use method _OOHG_Box
        of TPDF.
      * Functions for barcode generation returned to public.
      + Missing parameters in same method's declarations.
