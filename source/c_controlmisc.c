@@ -61,7 +61,6 @@
 
 
 #define _WIN32_IE      0x0500
-#define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 #include <commctrl.h>
@@ -286,9 +285,9 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
                HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 1 ) ) &&
                HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 2 ) ) &&
                HB_IS_NUMERIC( hb_arrayGetItemPtr( pColor, 3 ) ) &&
-               hb_arrayGetNL( pColor, 1 ) != -1 )
+               HB_ARRAYGETNL( pColor, 1 ) != -1 )
       {
-         *lColor = RGB( hb_arrayGetNL( pColor, 1 ), hb_arrayGetNL( pColor, 2 ), hb_arrayGetNL( pColor, 3 ) );
+         *lColor = RGB( HB_ARRAYGETNL( pColor, 1 ), HB_ARRAYGETNL( pColor, 2 ), HB_ARRAYGETNL( pColor, 3 ) );
          bValid = 1;
       }
       else if( HB_IS_STRING( pColor ) && hb_itemGetCLen( pColor ) >= 3 )
@@ -361,7 +360,7 @@ HB_FUNC( SETFOCUS )
    HWNDret( SetFocus( HWNDparam( 1 ) ) );
 }
 
-HB_FUNC ( GETDLGITEMTEXT )
+HB_FUNC( GETDLGITEMTEXT )
 {
    USHORT iLen = 32768;
    char *cText = (char*) hb_xgrab( iLen+1 );
@@ -411,7 +410,7 @@ HB_FUNC( INSERTTAB )
    );
 }
 
-HB_FUNC ( INSERTSHIFTTAB )
+HB_FUNC( INSERTSHIFTTAB )
 {
    keybd_event(
       VK_SHIFT,        // virtual-key code
@@ -495,10 +494,10 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
 
 HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 {
-   HDC   hDC        = ( HDC ) HWNDparam( 1 );
+   HDC   hDC = ( HDC ) HB_PARNL( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) HWNDparam( 3 );
+   HFONT hFont = ( HFONT ) HB_PARNL( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -525,10 +524,10 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
 
 HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
 {
-   HDC   hDC        = ( HDC ) HWNDparam( 1 );
+   HDC   hDC = ( HDC ) HB_PARNL( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) HWNDparam( 3 );
+   HFONT hFont = ( HFONT ) HB_PARNL( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -553,25 +552,24 @@ HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
    hb_retni( LOWORD( sz.cy ) );
 }
 
-HB_FUNC ( KEYBD_EVENT )
+HB_FUNC( KEYBD_EVENT )
 {
-
    keybd_event(
-      (BYTE) hb_parni(1),                     // virtual-key code
-      (BYTE) MapVirtualKey( hb_parni(1), 0 ), // hardware scan code
-      hb_parl(2) ? KEYEVENTF_KEYUP : 0,       // flags specifying various function options
-      0                                       // additional data associated with keystroke
+      ( BYTE ) hb_parni( 1 ),                       // virtual-key code
+      ( BYTE ) MapVirtualKey( hb_parni( 1 ), 0 ),   // hardware scan code
+      hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0,           // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-HB_FUNC ( INSERTRETURN )
+HB_FUNC( INSERTRETURN )
 {
 
    keybd_event(
-      VK_RETURN,       // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
+      VK_RETURN,                                    // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
@@ -582,76 +580,68 @@ HB_FUNC ( INSERTRETURN )
 HB_FUNC( INSERT_ALT_A )
 {
    keybd_event(
-      VK_MENU,         // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
+      VK_MENU,                                      // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 
    keybd_event(
-      VK_A,            // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
+      VK_A,                                         // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 
    keybd_event(
-      VK_MENU,         // virtual-key code
-      0,               // hardware scan code
-      KEYEVENTF_KEYUP, // flags specifying various function options
-      0                // additional data associated with keystroke
+      VK_MENU,                                      // virtual-key code
+      0,                                            // hardware scan code
+      KEYEVENTF_KEYUP,                              // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-// -----------------------------------------------------------------------------
 HB_FUNC( INSERTUP )
-// -----------------------------------------------------------------------------
 {
    keybd_event(
-      VK_UP,          // virtual-key code
-      0,              // hardware scan code
-      0,              // flags specifying various function options
-      0               // additional data associated with keystroke
+      VK_UP,                                        // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-// -----------------------------------------------------------------------------
 HB_FUNC( INSERTDOWN )
-// -----------------------------------------------------------------------------
 {
    keybd_event(
-      VK_DOWN,        // virtual-key code
-      0,              // hardware scan code
-      0,              // flags specifying various function options
-      0               // additional data associated with keystroke
+      VK_DOWN,                                      // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-// -----------------------------------------------------------------------------
 HB_FUNC( INSERTPRIOR )
-// -----------------------------------------------------------------------------
 {
    keybd_event(
-      VK_PRIOR,       // virtual-key code
-      0,              // hardware scan code
-      0,              // flags specifying various function options
-      0               // additional data associated with keystroke
+      VK_PRIOR,                                     // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-// -----------------------------------------------------------------------------
 HB_FUNC( INSERTNEXT )
-// -----------------------------------------------------------------------------
 {
    keybd_event(
-      VK_NEXT,        // virtual-key code
-      0,              // hardware scan code
-      0,              // flags specifying various function options
-      0               // additional data associated with keystroke
+      VK_NEXT,                                      // virtual-key code
+      0,                                            // hardware scan code
+      0,                                            // flags specifying various function options
+      0                                             // additional data associated with keystroke
    );
 }
 
-HB_FUNC ( GETSHOWCMD )
+HB_FUNC( GETSHOWCMD )
 {
 
    WINDOWPLACEMENT WP;
@@ -728,14 +718,14 @@ HB_FUNC( IMAGELIST_INIT )
    }
 
    hb_reta( 3 );
-   HB_STORVNL( (LONG_PTR) himl, -1, 1 );
+   HB_STORVNL( ( LONG_PTR ) himl, -1, 1 );
    HB_STORNI( cx, -1, 2 );
    HB_STORNI( cy, -1, 3 );
 }
 
 HB_FUNC( IMAGELIST_DESTROY )
 {
-   hb_retl( ImageList_Destroy( (HIMAGELIST) HWNDparam( 1 ) ) );
+   hb_retl( ImageList_Destroy( ( HIMAGELIST ) HB_PARNL( 1 ) ) );
 }
 
 HB_FUNC( IMAGELIST_ADD )
@@ -890,7 +880,7 @@ int _OOHG_SearchControlHandleInArray( HWND hWnd )
       #ifdef OOHG_HWND_POINTER
          if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aControlhWnd, ulCount ) )
       #else
-         if( ( LONG ) hWnd == hb_arrayGetNL( _OOHG_aControlhWnd, ulCount ) )
+         if( ( LONG ) hWnd == HB_ARRAYGETNL( _OOHG_aControlhWnd, ulCount ) )
       #endif
       {
          ulPos = ulCount;
@@ -950,15 +940,15 @@ PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
    {
       for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlIds ); ulCount++ )
       {
-         if( lId  == hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 1 ) &&
+         if( lId  == HB_ARRAYGETNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 1 ) &&
              hWnd ==
 #ifdef OOHG_HWND_POINTER
                      hb_arrayGetPtr( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
 #else
-                     ( HWND ) hb_arrayGetNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
+                     ( HWND ) HB_ARRAYGETNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
 #endif
            )
-         // if( lId  == hb_arrayGetNL( _OOHG_aControlIds, ulCount ) )
+         // if( lId  == HB_ARRAYGETNL( _OOHG_aControlIds, ulCount ) )
          {
             pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
             ulCount = hb_arrayLen( _OOHG_aControlIds );
