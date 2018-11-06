@@ -71,7 +71,7 @@
    #define WINVER 0x0500
 #endif
 #define _WIN32_IE      0x0500
-#define HB_OS_WIN_USED
+// #define HB_OS_WIN_USED
 #define _WIN32_WINNT   0x0400
 #include <shlobj.h>
 
