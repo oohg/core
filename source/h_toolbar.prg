@@ -68,10 +68,6 @@ STATIC _OOHG_ActiveToolBar := Nil    // Active toolbar
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -645,7 +641,7 @@ HB_FUNC( INITTOOLBAR )
       Style = Style | CCS_VERT;
    }
 
-   hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL );
+   hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
    lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndTB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 
@@ -790,28 +786,28 @@ HB_FUNC( GETSIZETOOLBAR )
    hb_retnl( MAKELONG( lpSize.cy, lpSize.cx ) );
 }
 
-LONG WidestBtn(LPCTSTR pszStr, HWND hwnd)
+LONG WidestBtn( LPCTSTR pszStr, HWND hwnd )
 {
    SIZE     sz;
    LOGFONT  lf;
    HFONT    hFont;
    HDC      hdc;
 
-   SystemParametersInfo(SPI_GETICONTITLELOGFONT,sizeof(LOGFONT),&lf,0);
+   SystemParametersInfo( SPI_GETICONTITLELOGFONT, sizeof( LOGFONT ), &lf, 0 );
 
-   hdc = GetDC(hwnd);
-   hFont = CreateFontIndirect(&lf);
-   SelectObject(hdc,hFont);
+   hdc = GetDC( hwnd );
+   hFont = CreateFontIndirect( &lf );
+   SelectObject( hdc, hFont );
 
-   GetTextExtentPoint32(hdc, pszStr, strlen(pszStr), &sz);
+   GetTextExtentPoint32( hdc, pszStr, strlen( pszStr ), &sz) ;
 
-   ReleaseDC(hwnd, hdc);
-   DeleteObject(hFont);
+   ReleaseDC( hwnd, hdc );
+   DeleteObject( hFont );
 
-   return (MAKELONG(sz.cx, sz.cy) );
+   return MAKELONG( sz.cx, sz.cy );
 }
 
-HB_FUNC( MAXTEXTBTNTOOLBAR )      //(HWND hwndTB, int cx, int cy)
+HB_FUNC( MAXTEXTBTNTOOLBAR )      /* FUNCTION MaxTextBtnToolBar( HWND hwndTB, INT cx, INT cy ) -> NIL */
 {
    char cString[255] = "" ;
 

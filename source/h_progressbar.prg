@@ -270,10 +270,6 @@ METHOD BackColor( uValue ) CLASS TProgressBar
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -349,7 +345,7 @@ HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, 
                              hb_parni( 4 ),
                              hb_parni( 5 ),
                              hb_parni( 6 ),
-                             hwnd, (HMENU) hb_parni( 2 ),
+                             hwnd, HMENUparam( 2 ),
                              GetModuleHandle( NULL ),
                              NULL );
 
