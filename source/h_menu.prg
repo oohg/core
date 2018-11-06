@@ -594,10 +594,6 @@ EXTERN TrackPopUpMenu, SetMenuDefaultItem, GetMenuBarHeight
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef WINVER
    #define WINVER 0x0500
 #endif
@@ -808,7 +804,7 @@ HB_FUNC_STATIC( TMENU_SETMENUBARCOLOR )           // METHOD SetMenuBarColor( uCo
       {
          Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : (COLORREF) oSelf->lBackColor;
 
-         GetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+         GetMenuInfo( ( HMENU ) oSelf->hWnd, &iMenuInfo );
 
          iMenuInfo.cbSize  = sizeof( MENUINFO );
          iMenuInfo.hbrBack = CreateSolidBrush( Color );
@@ -818,7 +814,7 @@ HB_FUNC_STATIC( TMENU_SETMENUBARCOLOR )           // METHOD SetMenuBarColor( uCo
             iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
          }
 
-         if( SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo ) )
+         if( SetMenuInfo( ( HMENU ) oSelf->hWnd, &iMenuInfo ) )
          {
             DrawMenuBar( HWNDparam( 3 ) );
          }
@@ -841,7 +837,7 @@ HB_FUNC( TMENUITEMSETITEMSCOLOR )
       {
          Color = ( oSelf->lBackColor == -1 ) ? CLR_DEFAULT : (COLORREF) oSelf->lBackColor;
 
-         GetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo );
+         GetMenuInfo( ( HMENU ) oSelf->hWnd, &iMenuInfo );
 
          iMenuInfo.cbSize  = sizeof( MENUINFO );
          iMenuInfo.hbrBack = CreateSolidBrush( Color );
@@ -851,7 +847,7 @@ HB_FUNC( TMENUITEMSETITEMSCOLOR )
             iMenuInfo.fMask |= MIM_APPLYTOSUBMENUS;
          }
 
-         if( SetMenuInfo( (HMENU) oSelf->hWnd, &iMenuInfo ) )
+         if( SetMenuInfo( ( HMENU ) oSelf->hWnd, &iMenuInfo ) )
          {
             DrawMenuBar( oSelf->hWnd );
          }
