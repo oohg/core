@@ -577,7 +577,7 @@ HB_FUNC( INITTEXTBOX )
                            hb_parni( 5 ),
                            hb_parni( 6 ),
                            hwnd,
-                           ( HMENU ) hb_parni( 2 ),
+                           HMENUparam( 2 ),
                            GetModuleHandle( NULL ),
                            NULL );
 

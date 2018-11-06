@@ -492,7 +492,7 @@ HB_FUNC( INITLISTBOX )          /* FUNCTION InitListBox( hWnd, hMenu, nCol, nRow
    int ExStyle = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    HWND hCtrl = CreateWindowEx( ExStyle, "LISTBOX", "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                                HWNDparam( 1 ), (HMENU) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+                                HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    _OOHG_TListBox_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
@@ -913,7 +913,7 @@ HB_FUNC( DRAG_LIST_DRAWINSERT )
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    int nItemCount;
 
-   nItemCount = SendMessage( (HWND) lpdli->hWnd, LB_GETCOUNT, 0, 0 );
+   nItemCount = SendMessage( ( HWND ) lpdli->hWnd, LB_GETCOUNT, 0, 0 );
 
    if( nItem < nItemCount )
       DrawInsert( hwnd, lpdli->hWnd, nItem );

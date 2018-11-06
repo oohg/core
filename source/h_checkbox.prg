@@ -201,10 +201,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -278,7 +274,7 @@ typedef enum THEMESIZE {
 #define DTT_VALIDBITS (DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
                        DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED)
 
-typedef int (WINAPI *DTT_CALLBACK_PROC)(HDC hdc,LPWSTR pszText,int cchText,LPRECT prc,UINT dwFlags,LPARAM lParam);
+typedef int ( WINAPI * DTT_CALLBACK_PROC )( HDC hdc, LPWSTR pszText, int cchText, LPRECT prc, UINT dwFlags, LPARAM lParam );
 
 #ifdef __BORLANDC__
 typedef BOOL WINBOOL;
@@ -346,7 +342,7 @@ HB_FUNC( INITCHECKBOX )
 
    hbutton = CreateWindowEx( StyleEx, "button", hb_parc( 2 ), Style,
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 8 ), hb_parni( 9 ),
-                             hwnd, (HMENU) hb_parni( 3 ), GetModuleHandle( NULL ), NULL ) ;
+                             hwnd, HMENUparam( 3 ), GetModuleHandle( NULL ), NULL ) ;
 
    lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 

@@ -241,9 +241,9 @@ HB_FUNC( INITRICHEDITBOX )
    InitCommonControls();
    if ( LoadLibrary( "RichEd20.dll" ) )
    {
-      hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS , (LPSTR) NULL,
+      hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS, (LPSTR) NULL,
               Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-              hwnd, (HMENU) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
+              hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
       lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndRE, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
 

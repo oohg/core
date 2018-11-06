@@ -162,10 +162,6 @@ METHOD ToolTip( uToolTip ) CLASS TFrame
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
 #endif
@@ -220,7 +216,8 @@ HB_FUNC( INITFRAME )
 
    hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-             hwnd, ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+
    lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    HWNDret( hbutton );

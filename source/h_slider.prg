@@ -198,10 +198,6 @@ METHOD Events_Vscroll ( wParam )   CLASS TSlider
 
 #pragma BEGINDUMP
 
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
-
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0400
 #endif
@@ -239,9 +235,9 @@ HB_FUNC( INITSLIDER )
    Style = hb_parni( 9 ) | WS_CHILD;
 
    hbutton = CreateWindowEx( StyleEx, TRACKBAR_CLASS, 0,
-      Style,
-      hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-      hwnd, ( HMENU ) HWNDparam( 2 ), GetModuleHandle( NULL ), NULL );
+                             Style,
+                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    SendMessage( hbutton, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
 

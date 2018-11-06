@@ -1138,16 +1138,16 @@ HB_FUNC( INITCOMBOBOX )
    ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
 
    hcombo = CreateWindowEx( StyleEx, "COMBOBOX",
-                           "",
-                           Style,
-                           hb_parni(3),
-                           hb_parni(4),
-                           hb_parni(5),
-                           hb_parni(6),
-                           hwnd,
-                           (HMENU)hb_parni(2),
-                           GetModuleHandle(NULL),
-                           NULL ) ;
+                            "",
+                            Style,
+                            hb_parni( 3 ),
+                            hb_parni( 4 ),
+                            hb_parni( 5 ),
+                            hb_parni( 6 ),
+                            hwnd,
+                            HMENUparam( 2 ),
+                            GetModuleHandle( NULL ),
+                            NULL ) ;
 
    lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hcombo, GWL_WNDPROC, ( LONG ) SubClassFunc );
 

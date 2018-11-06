@@ -151,7 +151,7 @@ HB_FUNC( INITHOTKEYBOX )
                            hb_parni( 5 ),
                            hb_parni( 6 ),
                            HWNDparam( 1 ),
-                           ( HMENU ) hb_parni( 2 ),
+                           HMENUparam( 2 ),
                            GetModuleHandle( NULL ),
                            NULL );
 
