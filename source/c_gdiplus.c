@@ -507,7 +507,7 @@ Save hBitmap to a file
 */
 HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
 {
-   HBITMAP hbmp = (HBITMAP) hb_parnl( 1 );
+   HBITMAP hbmp = (HBITMAP) HB_PARNL( 1 );
 
    hb_retl( SaveHBitmapToFile( (void*) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
 }
