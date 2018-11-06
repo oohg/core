@@ -12,6 +12,224 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     * Format and comments.
+     - define HB_OS_WIN_USED.
+     * Some changes for 64 bit support.
+     * Use new _OOHG_ULTOA, _OOHG_LTOA and _OOHG_ITOA macros.
+
+2018-11-06 00:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     - define HB_OS_WIN_USED.
+     * METHOD ImageList of TWindow now destroy the previous
+       imagelist if one is defined.
+     % METHOD BrushHandle of TWindow.
+     * METHOD FontHandle of TWindow now deletes the previous
+       font object if one is defined.
+     * Use HMENUparam macro.
+
+2018-11-06 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     * Some changes for 64 bit support.
+     - Unreachable code at COLOR_IN_TAB.
+     * Deletion of font object moved to C level.
+     * Destruction of imagelist moved to C level.
+
+2018-11-06 00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_registry.prg
+     ! Compilation with xHarbour.
+     ! Compilataion with BORLAND.
+
+2018-11-05 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + METHOD EditControlLikeExcel.
+     - FUNCTION EditControlLikeExcel.
+     - define HB_OS_WIN_USED.
+     * Use HMENUparam macro.
+   * core\source\h_xbrowse.prg
+     * Use new method instead of function.
+
+2018-11-05 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+     - define HB_OS_WIN_USED.
+     * Some format.
+
+2018-11-05 23:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_progressmeter.prg
+   * core\source\h_textarray.prg
+     * Format.
+
+2018-11-05 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+   * core\source\h_radio.prg
+   * core\source\h_scroll.prg
+   * core\source\h_spinner.prg
+     * Changed some parameters at call to CreateWindowX.
+     - Comments.
+     - define HB_OS_WIN_USED.
+
+2018-11-05 23:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_progressbar.prg
+   * core\source\h_toolbar.prg
+     * Use HMENUparam macro.
+     - define HB_OS_WIN_USED.
+
+2018-11-05 23:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_menu.prg
+     - define HB_OS_WIN_USED.
+     * Some format.
+
+2018-11-05 23:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     ! HMENUparam and HMENUret macros.
+     * MAKEWORD and MAKELONG macros.
+     - Some unused defines.
+     * ultoa, ltoa and itoa renamed to _OOHG_ULTOA, _OOHG_LTOA
+       and _OOHG_ITOA.
+     * Formated and uncrustified with Harbour's configuration.
+
+2018-11-05 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_combo.prg
+   * core\source\h_frame.prg
+   * core\source\h_hotkeybox.prg
+   * core\source\h_label.prg
+   * core\source\h_listbox.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_slider.prg
+   * core\source\h_textbox.prg
+     * Use HMENUparam macro.
+
+2018-11-05 23:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_ipaddress.prg
+     + METHOD IsBlank.
+     * Format.
+     * A C-level module-static vars was moved to a C-level
+       function-static var, thus making the class thread safe.
+     * Some changes for 64 bit support.
+
+2018-11-05 23:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     - define HB_OS_WIN_USED.
+     * Some changes for 64 bit support.
+     * Some format.
+
+2018-11-05 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+   * core\source\c_image.c
+   * core\source\c_msgbox.c
+   * core\source\c_resource.c
+   * core\source\c_scrsaver.c
+   * core\source\c_winapimisc.c
+   * core\source\c_windows.c
+     - define HB_OS_WIN_USED.
+
+2018-11-05 23:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_anigif.prg
+   * core\source\h_application.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_ini.prg
+   * core\source\h_internal.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_notify.prg
+   * core\source\h_picture.prg
+   * core\source\h_print.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_status.prg
+   * core\source\h_tab.prg
+   * core\source\h_timer.prg
+   * core\source\h_tooltip.prg
+     - define HB_OS_WIN_USED.
+
+2018-11-05 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Pacified some MINGW compiler warnings.
+
+2018-11-05 23:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     - C define moved to oohg.h
+     * Pacified some MINGW compiler warnings.
+     * Use new _OOHG_ULTOA, _OOHG_LTOA and _OOHG_ITOA macros.
+     * Type of function AnsiToWide.
+     * Some changes for 64 bit support.
+
+2018-11-05 23:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_scrsaver.c
+     - define HB_OS_WIN_USED.
+     * Some format.
+
+2018-11-05 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_resource.c
+     - Static var and unneeded function.
+     * Some format.
+     * Some changes for 64 bit support.
+
+2018-11-05 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_msgbox.c
+     - define HB_OS_WIN_USED.
+
+2018-11-05 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_media.c
+     - define HB_OS_WIN_USED.
+     * Some format.
+
+2018-11-05 22:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.prg
+     - define HB_OS_WIN_USED.
+
+2018-11-05 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_graph.prg
+     * Pacified some MINGW compiler warnings.
+     - Some unneeded casting.
+     * Some changes for 64 bit support.
+
+2018-11-05 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_gdiplus.prg
+     * Some changes for 64 bit support.
+
+2018-11-05 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.prg
+     * Pacified some MINGW compiler warnings.
+     ! BORLAND compiler errors.
+     * Some format.
+     * First parameter of PrepareFont is now defined as
+      'const char *' instead of 'char *'.
+
+2018-11-05 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_dialogs.prg
+     - define HB_OS_WIN_USED.
+     * Pacified some MINGW compiler warnings.
+     * Some format.
+
+2018-11-05 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_cursor.prg
+     - define HB_OS_WIN_USED.
+
+2018-11-05 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_activex.prg
+     * Changed some parameters at call to CreateWindowX.
+
+2018-11-05 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     - define HB_OS_WIN_USED.
+     * Pacified some MINGW compiler warnings.
+     * Use OOHG.h macros whenever posible.
+
+2018-11-05 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\oohg.hbp
+     + Some commented MINGW compiler flags to detect warnings.
+
+2018-11-05 20:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     ! Compile error because Function GetThreadID is not defined.
+
 2018-11-01 14:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_browse.ch
    * core\include\i_grid.ch
