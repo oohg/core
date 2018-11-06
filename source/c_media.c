@@ -60,7 +60,7 @@
  */
 
 
-#define _WIN32_IE      0x0500
+#define _WIN32_IE 0x0500
 
 #include <windows.h>
 #include <mmsystem.h>
@@ -68,63 +68,65 @@
 #include "hbapi.h"
 #include "oohg.h"
 
-#include <commctrl.h>
-
-HB_FUNC ( PLAYBEEP )
+HB_FUNC( PLAYBEEP )
 {
-   MessageBeep(0xFFFFFFFF);
+   MessageBeep( 0xFFFFFFFF );
 }
 
-HB_FUNC ( PLAYASTERISK )
+HB_FUNC( PLAYASTERISK )
 {
-   MessageBeep(MB_ICONASTERISK);
+   MessageBeep( MB_ICONASTERISK );
 }
 
-HB_FUNC ( PLAYEXCLAMATION )
+HB_FUNC( PLAYEXCLAMATION )
 {
-   MessageBeep(MB_ICONEXCLAMATION);
+   MessageBeep( MB_ICONEXCLAMATION );
 }
 
-HB_FUNC ( PLAYHAND )
+HB_FUNC( PLAYHAND )
 {
-   MessageBeep(MB_ICONHAND);
+   MessageBeep( MB_ICONHAND );
 }
 
-HB_FUNC ( PLAYQUESTION )
+HB_FUNC( PLAYQUESTION )
 {
-   MessageBeep(MB_ICONQUESTION);
+   MessageBeep( MB_ICONQUESTION );
 }
 
-HB_FUNC ( PLAYOK )
+HB_FUNC( PLAYOK )
 {
-   MessageBeep(MB_OK);
+   MessageBeep( MB_OK );
 }
 
-HB_FUNC (C_PLAYWAVE)
+HB_FUNC( C_PLAYWAVE )
 {
-   int Style = SND_ASYNC;
-        HMODULE hmod=NULL;
-   if (  hb_parl(2) )
-      {
-      Style = Style | SND_RESOURCE ;
-      hmod = GetModuleHandle(NULL) ;
-      }
-        else
-      Style = Style | SND_FILENAME ;
+   INT Style = SND_ASYNC;
+   HMODULE hmod = NULL;
 
-   if (  hb_parl (3) )
-      Style = Style | SND_SYNC ;
-   if (  hb_parl (4) )
-      Style = Style | SND_NOSTOP ;
-   if (  hb_parl (5) )
+   if( hb_parl( 2 ) )
+   {
+      Style = Style | SND_RESOURCE;
+      hmod = GetModuleHandle( NULL ) ;
+   }
+   else
+      Style = Style | SND_FILENAME;
+
+   if( hb_parl( 3 ) )
+      Style = Style | SND_SYNC;
+
+   if( hb_parl( 4 ) )
+      Style = Style | SND_NOSTOP;
+
+   if( hb_parl( 5 ) )
       Style = Style | SND_LOOP;
-   if (  hb_parl (6) )
+
+   if( hb_parl( 6 ) )
       Style = Style | SND_NODEFAULT;
 
-        hb_retl(PlaySound(hb_parc(1),hmod,Style));
+   hb_retl( PlaySound( hb_parc( 1 ), hmod, Style ) );
 }
 
-HB_FUNC (STOPWAVE)
+HB_FUNC( STOPWAVE )
 {
-        hb_retl(PlaySound( (LPCSTR) NULL , (HMODULE) GetModuleHandle(NULL) , SND_PURGE ) ) ;
+   hb_retl( PlaySound( ( LPCSTR ) NULL, ( HMODULE ) GetModuleHandle( NULL ), SND_PURGE ) ) ;
 }
