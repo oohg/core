@@ -64,82 +64,81 @@
 #include "common.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TIpAddress FROM TLabel
 
-   DATA Type          INIT "IPADDRESS" READONLY
-   DATA nWidth        INIT 120
-   DATA nHeight       INIT 24
+   DATA nHeight                   INIT 24
+   DATA nWidth                    INIT 120
+   DATA Type                      INIT "IPADDRESS" READONLY
 
    METHOD Define
-   METHOD Value       SETGET
-   METHOD String      SETGET
+   METHOD IsBlank
+   METHOD String                  SETGET
+   METHOD Value                   SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, h, aValue, fontname, ;
-               fontsize, tooltip, lostfocus, gotfocus, change, HelpId, ;
-               invisible, notabstop, bold, italic, underline, strikeout, lRtl, ;
-               lDisabled, FontColor, BackColor ) CLASS TIpAddress
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, ;
+               bLostFocus, bGotFocus, bChange, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, lUnderline, ;
+               lStrikeout, lRtl, lDisabled, uFontColor, uBackColor ) CLASS TIpAddress
 
-   Local ControlHandle, nStyle
+   LOCAL nControlHandle, nStyle
 
-   // Assign STANDARD values to optional params.
-   ASSIGN ::nCol    VALUE x TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nCol    VALUE nCol TYPE "N"
+   ASSIGN ::nRow    VALUE nRow TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+   nStyle := ::InitStyle( ,, lInvisible, lNoTabStop, lDisabled )
 
-   ControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
+   nControlHandle := InitIPAddress( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl )
 
-   If aValue <> Nil
-      If HB_IsArray( aValue )
-         SetIPAddress( ControlHandle, aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
-      Elseif HB_IsString( aValue )
-         SetIPAddress( ControlHandle, aValue )
-      EndIf
-   EndIf
+   IF uValue # NIL
+      IF HB_ISARRAY( uValue )
+         SetIPAddress( nControlHandle, uValue[ 1 ], uValue[ 2 ], uValue[ 3 ], uValue[ 4 ] )
+      ELSEIF HB_ISSTRING( uValue )
+         SetIPAddress( nControlHandle, uValue )
+      ENDIF
+   ENDIF
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId,, cToolTip )
+   ::SetFont( , , lBold, lItalic, lUnderline, lStrikeout )
 
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE bChange    TYPE "B"
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TIpAddress
 
-   IF pcount() > 0
-      If Len( uValue ) == 0
+   IF PCount() > 0
+      IF Len( uValue ) == 0
          ClearIpAddress( ::hWnd )
-      Elseif HB_IsArray( uValue )
-         SetIPAddress( ::hWnd, uValue[1], uValue[2], uValue[3], uValue[4] )
-      Elseif HB_IsString( uValue )
+      ELSEIF HB_ISARRAY( uValue )
+         SetIPAddress( ::hWnd, uValue[ 1 ], uValue[ 2 ], uValue[ 3 ], uValue[ 4 ] )
+      ELSEIF HB_ISSTRING( uValue )
          SetIPAddress( ::hWnd, uValue )
-      EndIf
+      ENDIF
    ENDIF
 
    RETURN GetIPAddress( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD String( uValue ) CLASS TIpAddress
 
-   IF pcount() > 0
+   IF PCount() > 0
       ::Value := uValue
    ENDIF
 
    RETURN GetIPAddressString( ::hWnd )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
-
-#ifndef HB_OS_WIN_USED
-   #define HB_OS_WIN_USED
-#endif
 
 #ifndef _WIN32_IE
    #define _WIN32_IE 0x0500
@@ -169,41 +168,49 @@ METHOD String( uValue ) CLASS TIpAddress
 #include "tchar.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TIPAddress_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITIPADDRESS )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
- HWND hWnd;
- HWND hIpAddress;
-   int Style;
-   int StyleEx;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TIPAddress_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
+{
+   INT Style, ExStyle;
+   HWND hCtrl;
 
    INITCOMMONCONTROLSEX i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
- i.dwICC = ICC_INTERNET_CLASSES;
+   i.dwICC = ICC_INTERNET_CLASSES;
    InitCommonControlsEx( &i );
 
-   hWnd = HWNDparam( 1 );
-
    Style = WS_CHILD | hb_parni( 7 );
+   ExStyle = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
+   hCtrl = CreateWindowEx( ExStyle, WC_IPADDRESS, "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   hIpAddress = CreateWindowEx( StyleEx, WC_IPADDRESS, "", Style,
-                hb_parni( 3 ), hb_parni( 4 ) ,hb_parni( 5 ), hb_parni( 6 ),
-                hWnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   _OOHG_TIPAddress_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hIpAddress, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-
-   HWNDret( hIpAddress );
+   HWNDret( hCtrl );
 }
 
-HB_FUNC( SETIPADDRESS )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETIPADDRESS )          /* FUNCTION SetIPAddress( hWnd, cIP or nF1, NIL or nF2, NIL or nF3, NIL or nF4 ) -> NIL */
 {
    BYTE v1, v2, v3, v4, *v;
 
@@ -226,7 +233,17 @@ HB_FUNC( SETIPADDRESS )
    SendMessage( HWNDparam( 1 ), IPM_SETADDRESS, 0, MAKEIPADDRESS( v1, v2, v3, v4 ) );
 }
 
-HB_FUNC( GETIPADDRESS )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TIPADDRESS_ISBLANK )          /* METHOD IsBlank() CLASS TIpAddress -> lBlank */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
+
+   hb_retl( SendMessage( oSelf->hWnd, IPM_ISBLANK, 0, 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETIPADDRESS )          /* FUNCTION GetIPAddress( hWnd ) -> { nF1, nF2, nF3, nF4 } */
 {
    DWORD pdwAddr;
    BYTE v1, v2, v3, v4;
@@ -245,7 +262,8 @@ HB_FUNC( GETIPADDRESS )
    HB_STORNI( ( int ) v4, -1, 4 );
 }
 
-HB_FUNC( GETIPADDRESSSTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETIPADDRESSSTRING )          /* FUNCTION GetIPAddressString( hWnd ) -> cIP */
 {
    DWORD pdwAddr;
    BYTE v[ 4 ];
@@ -260,7 +278,8 @@ HB_FUNC( GETIPADDRESSSTRING )
    hb_retclen( ( char * ) &v[ 0 ], 4 );
 }
 
-HB_FUNC( CLEARIPADDRESS )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( CLEARIPADDRESS )          /* FUNCTION ClearIPAddress() -> NIL */
 {
    SendMessage( HWNDparam( 1 ), IPM_CLEARADDRESS, 0, 0 );
 }
