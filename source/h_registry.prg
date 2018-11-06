@@ -263,7 +263,11 @@ METHOD Set( cRegVar, uVar, nType ) CLASS TReg32
       CASE "O"
          // Not supported
          RETURN NIL
+#ifndef __XHARBOUR__
       OTHERWISE
+#else
+      DEFAULT
+#endif
          IF ! HB_ISNUMERIC( nType )
             nType := REG_NONE
             uData := NIL
@@ -342,6 +346,8 @@ METHOD KeyDelete( cSubKey ) CLASS TReg32
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "oohg.h"
+
+typedef LONG LSTATUS;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGCLOSEKEY )
