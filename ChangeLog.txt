@@ -12,6 +12,21 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-06 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_004.txt
+     ! Typo.
+
+2018-11-06 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! TPRINTPDF does not print image after drawing a rectangle.
+     * Methods PrintRectangle and PrintRoundRectangle of TPRINT.
+       The filler color now defaults to NIL instead of WHITE.
+       To fill with WHITE you must explicitly specified it.
+     ! Methods PrintBarcodeX and PrintLineX of TPRINTPDF.
+       The line color now defaults to NIL.
+     ! Methods PrintRectangleX and PrintRoundRectangleX of
+       TPRINTPDF. The line and filler colors now default to NIL.
+
 2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
@@ -180,21 +195,21 @@
      * Some format.
 
 2018-11-05 22:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_image.prg
+   * core\source\c_image.c
      - define HB_OS_WIN_USED.
 
 2018-11-05 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_graph.prg
+   * core\source\c_graph.c
      * Pacified some MINGW compiler warnings.
      - Some unneeded casting.
      * Some changes for 64 bit support.
 
 2018-11-05 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_gdiplus.prg
+   * core\source\c_gdiplus.c
      * Some changes for 64 bit support.
 
 2018-11-05 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_font.prg
+   * core\source\c_font.c
      * Pacified some MINGW compiler warnings.
      ! BORLAND compiler errors.
      * Some format.
@@ -202,17 +217,17 @@
       'const char *' instead of 'char *'.
 
 2018-11-05 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_dialogs.prg
+   * core\source\c_dialogs.c
      - define HB_OS_WIN_USED.
      * Pacified some MINGW compiler warnings.
      * Some format.
 
 2018-11-05 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_cursor.prg
+   * core\source\c_cursor.c
      - define HB_OS_WIN_USED.
 
 2018-11-05 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_activex.prg
+   * core\source\c_activex.c
      * Changed some parameters at call to CreateWindowX.
 
 2018-11-05 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
