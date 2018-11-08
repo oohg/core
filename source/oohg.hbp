@@ -24,24 +24,24 @@
 # harbour compiler flags
 -n -q0 -w3 -es2
 
-#-cflag=-Werror
-#-cflag=-Wall
-#-cflag=-Wextra
+# c compiler flags             TODO: Check others
+-cflag=-Wno-unused
+# uncomment the following to check for more warnings
+#-cflag=-fdiagnostics-show-option
 #-cflag=-pedantic
+#-cflag=-Wall
 #-cflag=-Wcast-align
 #-cflag=-Wcast-qual
+#-cflag=-Wconversion
 #-cflag=-Wdisabled-optimization
+#-cflag=-Wextra
 #-cflag=-Wformat=2
 #-cflag=-Winit-self
 #-cflag=-Wlogical-op
 #-cflag=-Wmissing-include-dirs
+#-cflag=-Wno-variadic-macros
 #-cflag=-Wshadow
 #-cflag=-Wundef
-#-cflag=-Wno-unused
-#-cflag=-Wno-variadic-macros
-#-cflag=-Wno-parentheses
-#-cflag=-fdiagnostics-show-option
-#-cflag=-Wconversion
 
 #alerts on exit
 -beep
