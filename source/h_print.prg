@@ -4320,7 +4320,7 @@ METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPDFPRINT
 
    LOCAL cColor
 
-   IF HB_ISSTRING( atColor )
+   IF HB_ISARRAY( atColor )
       cColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
    ELSE
       cColor := NIL
@@ -4369,7 +4369,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPD
    // TODO: check if we can print oblique lines
    HB_SYMBOL_UNUSED( lSolid )
 
-   IF HB_ISSTRING( atColor )
+   IF HB_ISARRAY( atColor )
       ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
    ELSE
       ctColor := NIL
@@ -4390,12 +4390,12 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
 
    HB_SYMBOL_UNUSED( lSolid )
 
-   IF HB_ISSTRING( atColor )
+   IF HB_ISARRAY( atColor )
       ctColor := Chr( 253 ) + Chr( atColor[1] ) + Chr( atColor[2] ) + Chr( atColor[3] )
    ELSE
       ctColor := NIL
    ENDIF
-   IF HB_ISSTRING( arColor )
+   IF HB_ISARRAY( arColor )
       crColor := Chr( 253 ) + Chr( arColor[1] ) + Chr( arColor[2] ) + Chr( arColor[3] )
    ELSE
       crColor := NIL
