@@ -165,7 +165,9 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Error', ;
                          'Warning', ;
                          'Edit Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Append", ;
@@ -394,7 +396,9 @@ FUNCTION ooHG_Messages_HR852 // Croatian
                          'Pogreška', ;
                          'Upozorenje', ;
                          'Uredi Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -548,7 +552,9 @@ FUNCTION ooHG_Messages_FR // French
                          'Erreur', ;
                          'Alerte', ;
                          'Editer Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel n'est pas disponible.", ;
+                         "OpenOffice n'est pas disponible." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Ajout", ;
@@ -737,7 +743,9 @@ FUNCTION ooHG_Messages_DEWIN // German
                          'Fehler', ;
                          'Warnung', ;
                          'Bearbeiten Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -909,7 +917,9 @@ FUNCTION ooHG_Messages_IT // Italian
                          'Errore', ;
                          'Avvertimento', ;
                          'Edita Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Aggiungere", ;
@@ -1106,7 +1116,9 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          'B³¹d', ;
                          'Ostrze¿enie', ;
                          'Edycja Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -1291,7 +1303,9 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          'Erro', ;
                          'Advertência', ;
                          'Edita Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Incluir", ;
@@ -1484,7 +1498,9 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          'Îøèáêà', ;
                          'Ïðåäóïðåæäåíèå', ;
                          'Èçìåíèòü Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Äîáàâèòü", ;
@@ -1592,7 +1608,9 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Error', ;
                          'Advertencia', ;
                          'Editar Memo', ;
-                         "OOHG no puede determinar el tipo de celda para la edición INPLACE." }
+                         "OOHG no puede determinar el tipo de celda para la edición INPLACE.", ;
+                         "Excel no está disponible.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
@@ -1821,7 +1839,9 @@ FUNCTION ooHG_Messages_FI // Finnish
                          'Virhe', ;
                          'Varoitus', ;
                          'Korjaa Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Lisää", ;
@@ -2006,7 +2026,9 @@ FUNCTION ooHG_Messages_NL // Dutch
                          'Fout', ;
                          'Waarschuwing', ;
                          'Bewerken Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Toevoegen", ;
@@ -2203,7 +2225,9 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          'Napaka', ;
                          'Opozorilo', ;
                          'Popravi Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit." }
+                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -2388,7 +2412,9 @@ FUNCTION ooHG_Messages_TR
                          'Hata', ;
                          'Dikkat', ;
                          'Not düzelt', ;
-                         "Hücre tipi düzenlemek için uygun deðil." }
+                         "Hücre tipi düzenlemek için uygun deðil.", ;
+                         "Excel is not available.", ;
+                         "OpenOffice is not available." }
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Yeni Giriþ", ;
