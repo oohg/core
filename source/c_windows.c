@@ -972,7 +972,7 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    {
       ReleaseDC( hWnd, hDC );
    }
-   HWNDret( hBitmap );
+   HB_RETNL( ( LONG_PTR ) hBitmap );
 }
 
 HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
