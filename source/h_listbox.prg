@@ -101,6 +101,8 @@ CLASS TList FROM TControl
    METHOD TopIndex                SETGET
    METHOD EnsureVisible
    METHOD aItems                  SETGET
+   METHOD FindString
+   METHOD FindStringExact
 
    ENDCLASS
 
@@ -207,6 +209,46 @@ METHOD Value( uValue ) CLASS TList
    ENDIF
 
    RETURN ListBoxGetCursel( ::hWnd )
+
+METHOD FindString( c, n ) CLASS TList
+
+   LOCAL nPos
+
+   IF ValType( c ) $ "CM" .AND. ! Empty( c )
+      IF ! HB_ISNUMERIC( n )
+         // Search from the top
+         n := -1
+      ENDIF
+      n := Int( n )
+      IF n < -1
+         n := -1
+      ENDIF
+      nPos := ListboxFindString( ::hWnd, n, c )
+   ELSE
+      nPos := 0
+   ENDIF
+
+   RETURN nPos
+
+METHOD FindStringExact( c, n ) CLASS TList
+
+   LOCAL nPos
+
+   IF ValType( c ) $ "CM" .AND. ! Empty( c )
+      IF ! HB_ISNUMERIC( n )
+         // Search from the top
+         n := -1
+      ENDIF
+      n := Int( n )
+      IF n < -1
+         n := -1
+      ENDIF
+      nPos := ListboxFindStringExact( ::hWnd, n, c )
+   ELSE
+      nPos := 0
+   ENDIF
+
+   RETURN nPos
 
 METHOD OnEnter( bEnter ) CLASS TList
 
@@ -982,6 +1024,16 @@ HB_FUNC( LISTBOXGETITEMHEIGHT )
 HB_FUNC( LISTBOXSETCOLUMNWIDTH )
 {
    SendMessage( HWNDparam( 1 ), LB_SETCOLUMNWIDTH, (WPARAM) ( hb_parni( 2 ) ), 0 );
+}
+
+HB_FUNC( LISTBOXFINDSTRING )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+}
+
+HB_FUNC( LISTBOXFINDSTRINGEXACT )
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRINGEXACT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
 #pragma ENDDUMP

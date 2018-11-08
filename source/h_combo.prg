@@ -66,71 +66,73 @@
 
 CLASS TCombo FROM TLabel
 
-   DATA Type                  INIT "COMBO" READONLY
-   DATA WorkArea              INIT ""
-   DATA uField                INIT NIL
-   DATA uValueSource          INIT NIL
-   DATA nTextHeight           INIT 0
-   DATA aValues               INIT {}
-   DATA nWidth                INIT 120
-   DATA nHeight2              INIT 150
-   DATA lAdjustImages         INIT .F.
-   DATA ImageListColor        INIT CLR_DEFAULT
-   DATA ImageListFlags        INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
-   DATA OnListDisplay         INIT NIL
-   DATA OnListClose           INIT NIL
-   DATA ImageSource           INIT NIL
-   DATA ItemNumber            INIT NIL
-   DATA nLastItem             INIT 0
-   DATA lDelayLoad            INIT .F.
-   DATA SearchLapse           INIT 1000
-   DATA cText                 INIT ""
-   DATA uIniTime              INIT 0
-   DATA nLastFound            INIT 0
-   DATA lIncremental          INIT .F.
-   DATA oListBox              INIT NIL
-   DATA oEditBox              INIT NIL
-   DATA lRefresh              INIT NIL
-   DATA SourceOrder           INIT NIL
-   DATA OnRefresh             INIT NIL
-   DATA lFocused              INIT .F.
+   DATA aValues                   INIT {}
+   DATA cText                     INIT ""
+   DATA ImageListColor            INIT CLR_DEFAULT
+   DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA ImageSource               INIT NIL
+   DATA ItemNumber                INIT NIL
+   DATA lAdjustImages             INIT .F.
+   DATA lDelayLoad                INIT .F.
+   DATA lFocused                  INIT .F.
+   DATA lIncremental              INIT .F.
+   DATA lRefresh                  INIT NIL
+   DATA nHeight2                  INIT 150
+   DATA nLastFound                INIT 0
+   DATA nLastItem                 INIT 0
+   DATA nTextHeight               INIT 0
+   DATA nWidth                    INIT 120
+   DATA oEditBox                  INIT NIL
+   DATA oListBox                  INIT NIL
+   DATA OnListClose               INIT NIL
+   DATA OnListDisplay             INIT NIL
+   DATA OnRefresh                 INIT NIL
+   DATA SearchLapse               INIT 1000
+   DATA SourceOrder               INIT NIL
+   DATA Type                      INIT "COMBO" READONLY
+   DATA uField                    INIT NIL
+   DATA uIniTime                  INIT 0
+   DATA uValueSource              INIT NIL
+   DATA WorkArea                  INIT ""
 
+   METHOD AddItem
+   METHOD Autosize                SETGET
+   METHOD AutosizeDropDown
+   METHOD CaretPos                SETGET
    METHOD Define
-   METHOD nHeight             SETGET
-   METHOD Refresh
-   METHOD Value               SETGET
-   METHOD Visible             SETGET
-   METHOD ForceHide           BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ), ::Super:ForceHide() }
-   METHOD RefreshData
-   METHOD DisplayValue        SETGET    /// Caption Alias
-   METHOD Release
+   METHOD DeleteAllItems
+   METHOD DeleteItem
+   METHOD DisplayValue            SETGET    /// Caption Alias
+   METHOD EditHeight              SETGET
    METHOD Events
    METHOD Events_Command
    METHOD Events_DrawItem
    METHOD Events_MeasureItem
-   METHOD AddItem
-   METHOD DeleteItem
-   METHOD DeleteAllItems
-   METHOD Item                BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
-   METHOD ItemBySource
-   METHOD ItemValue           
-   METHOD InsertItem
-   METHOD ItemCount           BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
-   METHOD ShowDropDown
-   METHOD SelectFirstItem     BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
+   METHOD Field                   SETGET
+   METHOD FindString
+   METHOD FindStringExact
+   METHOD ForceHide               BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ), ::Super:ForceHide() }
    METHOD GetDropDownWidth
-   METHOD SetDropDownWidth
-   METHOD AutosizeDropDown
-   METHOD Autosize            SETGET
    METHOD GetEditSel
-   METHOD SetEditSel
-   METHOD CaretPos            SETGET
+   METHOD InsertItem
+   METHOD Item                    BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
+   METHOD ItemBySource
+   METHOD ItemCount               BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
    METHOD ItemHeight
+   METHOD ItemValue
+   METHOD nHeight                 SETGET
+   METHOD OptionsHeight           SETGET
+   METHOD Refresh
+   METHOD RefreshData
+   METHOD Release
+   METHOD SelectFirstItem         BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
+   METHOD SetDropDownWidth
+   METHOD SetEditSel
+   METHOD ShowDropDown
+   METHOD Value                   SETGET
+   METHOD ValueSource             SETGET
+   METHOD Visible                 SETGET
    METHOD VisibleItems
-   METHOD Field               SETGET
-   METHOD ValueSource         SETGET
-   METHOD EditHeight          SETGET
-   METHOD OptionsHeight       SETGET
 
    ENDCLASS
 
@@ -564,6 +566,46 @@ METHOD AutoSize( lValue ) CLASS TCombo
 
    RETURN ::lAutoSize
 
+METHOD FindString( c, n ) CLASS TCombo
+
+   LOCAL nPos
+
+   IF HB_ISOBJECT( ::oListBox ) .AND. ValType( c ) $ "CM" .AND. ! Empty( c )
+      IF ! HB_ISNUMERIC( n )
+         // Search from the top
+         n := -1
+      ENDIF
+      n := Int( n )
+      IF n < -1
+         n := -1
+      ENDIF
+      nPos := ::oListBox:FindString( c, n )
+   ELSE
+      nPos := 0
+   ENDIF
+
+   RETURN nPos
+
+METHOD FindStringExact( c, n ) CLASS TCombo
+
+   LOCAL nPos
+
+   IF HB_ISOBJECT( ::oListBox ) .AND. ValType( c ) $ "CM" .AND. ! Empty( c )
+      IF ! HB_ISNUMERIC( n )
+         // Search from the top
+         n := -1
+      ENDIF
+      n := Int( n )
+      IF n < -1
+         n := -1
+      ENDIF
+      nPos := ::oListBox:FindStringExact( c, n )
+   ELSE
+      nPos := 0
+   ENDIF
+
+   RETURN nPos
+
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
 
    Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
@@ -587,10 +629,14 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
                nStart := ::nLastFound
             EndIf
 
-            ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, nStart - 1, ::cText )
+            ::nLastFound := ::FindString( ::cText, nStart )
             If ::nLastFound > 0 .AND. ::nLastFound >= nStart
                // item was found in the rest of the list, select
-               ::Value := ::nLastFound
+               IF Len( ::aValues ) == 0
+                  ::Value := ::nLastFound
+               ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
+                  ::Value := ::aValues[ ::nLastFound ]
+               ENDIF
             Else
                // if there are more items not already loaded, load them and search again
                If OSisWinXPorLater() .AND. ::lDelayLoad
@@ -624,7 +670,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
                            i ++
                         EndDo
                         // search again
-                        ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
+                        ::nLastFound := ::FindString( ::cText )
                         If ::nLastFound > 0
                           Exit
                         EndIf
@@ -638,7 +684,11 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
                EndIf
 
                If ::nLastFound > 0
-                  ::Value := ::nLastFound
+                  IF Len( ::aValues ) == 0
+                     ::Value := ::nLastFound
+                  ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
+                     ::Value := ::aValues[ ::nLastFound ]
+                  ENDIF
                Else
                   ::cText := ""
                EndIf
@@ -894,7 +944,7 @@ METHOD Events_Command( wParam ) CLASS TCombo
                ::cText := SubStr( ::cText, 1, nMax - 1 )
             EndIf
          EndIf
-         ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
+         ::nLastFound := ::FindString( ::cText )
          If ::nLastFound > 0
             ComboSetCurSel( ::hWnd, ::nLastFound )
             ::SetEditSel( LEN( ::cText ), LEN( ::DisplayValue ) )
@@ -934,7 +984,7 @@ METHOD Events_Command( wParam ) CLASS TCombo
                   EndDo
 
                   // search again
-                  ::nLastFound := ComboBoxFindString( ::oListBox:hWnd, -1, ::cText )
+                  ::nLastFound := ::FindString( ::cText )
                   If ::nLastFound > 0
                     Exit
                   EndIf
@@ -1032,7 +1082,7 @@ METHOD ItemValue( cText ) CLASS TCombo
 
    LOCAL nPos, uRet
 
-   nPos := ComboBoxFindStringExact( ::hWnd, -1, cText )
+   nPos := ::FindStringExact( cText )
 
    IF Len( ::aValues ) == 0
       uRet := nPos
@@ -1466,12 +1516,12 @@ HB_FUNC( TCOMBO_INSERT_ITEM )   // Called from METHOD InsertItem( Self, nItem, u
 
 HB_FUNC( COMBOBOXFINDSTRING )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
 HB_FUNC( COMBOBOXFINDSTRINGEXACT )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
 #ifndef CB_GETCOMBOBOXINFO
@@ -1531,6 +1581,8 @@ CLASS TListCombo FROM TControl STATIC
 
    METHOD Define
    METHOD Events_VScroll
+   METHOD FindString( c, n )      BLOCK { |Self, c, n| ListboxFindString( ::hWnd, n, c ) }
+   METHOD FindStringExact( c, n)  BLOCK { |Self, c, n| ListboxFindStringExact( ::hWnd, n, c ) }
 
    ENDCLASS
 
