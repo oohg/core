@@ -1258,13 +1258,13 @@ METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
-         MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( "Excel not found", "Error" )
+         MsgStop( _OOHG_Messages( 1, 13 ), _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #EndIf
@@ -1332,13 +1332,13 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
    // open service manager
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
-         MsgStop( "Error: OpenOffice not available. [" + win_oleErrorText()+ "]" )
+         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
       oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( "OpenOffice not found", "Error" )
+         MsgStop( _OOHG_Messages( 1, 14 ), _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #EndIf
