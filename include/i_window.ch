@@ -86,7 +86,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
             HBitMap, Handle, oBkGrnd, Transparent, Parent, Container, ;
-            OnRClick\> ;
+            OnRClick, BackColorCode\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
@@ -197,7 +197,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             FontBold, FontItalic, FontUnderline, FontStrikeOut, Caption, ;
             Row, DisplayValue, Col, Width, Height, Visible, Enabled, Checked, ;
             ItemCount, RangeMin, RangeMax, Position, CaretPos, ForeColor, ;
-            ScrollCaret\> ;
+            ScrollCaret, BackColorCode\> ;
             => <w> . \<c\> . \<p\> ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Caption, Header, Item, ;
             Icon\>( \<arg\> ) ;
