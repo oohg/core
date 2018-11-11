@@ -74,7 +74,6 @@ CLASS TFrame FROM TControl
    METHOD Caption      SETGET
    METHOD Define
    METHOD Events
-   METHOD Events_Color
    METHOD ToolTip      SETGET
 
    ENDCLASS
@@ -145,10 +144,6 @@ METHOD Caption( cCaption ) CLASS TFrame
    EndIf
 
    Return cRet
-
-METHOD Events_Color( wParam, nDefColor ) CLASS TFrame
-
-   RETURN ::Super:Events_Color( wParam, nDefColor )
 
 METHOD ToolTip( uToolTip ) CLASS TFrame
 
