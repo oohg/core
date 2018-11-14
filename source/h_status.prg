@@ -145,7 +145,10 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, ProcedureName, ;
 
    // Re-defines first status item
    If ValType( Caption ) $ "CM"
-      ::AddItem( Caption, Width, ProcedureName, ToolTip, icon, cstyl, cAlign )
+      ::AddItem( Caption, Width, ProcedureName, ToolTip, icon, cstyl, cAlign, NIL )
+
+      // Set as default message
+      ::cStatMsg := Caption
    Endif
 
    IF ValType( clock ) == "L" .AND. clock
@@ -169,7 +172,7 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, ProcedureName, ;
 
    Return Self
 
-METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign ) CLASS TMessageBar
+METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, lDefault ) CLASS TMessageBar
 
    Local styl, nItem, i, nRep
 
@@ -222,6 +225,10 @@ METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign ) CLASS TMe
    If i > 0 .AND. i < LEN( Caption )
       DEFINE HOTKEY 0 PARENT ( Self ) KEY "ALT+" + SubStr( Caption, i + 1, 1 ) ACTION ::DoEvent( ::aClicks[ nItem ], "CLICK" )
    EndIf
+
+   IF HB_ISLOGICAL( lDefault ) .AND. lDefault
+      ::cStatMsg := Caption
+   ENDIF
 
    Return nItem
 
@@ -537,9 +544,9 @@ FUNCTION _SetStatusKeybrd( nSize, cToolTip, uAction, icon, cstyl, cAlign )
 
    Return _OOHG_ActiveMessageBar:SetKeybrd( nSize, cToolTip, uAction, icon, cstyl, cAlign )
 
-FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
+FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, lDefault )
 
-   Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign )
+   Return _OOHG_ActiveMessageBar:AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, lDefault )
 
 
 #pragma BEGINDUMP

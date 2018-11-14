@@ -100,9 +100,10 @@
       [ <styl: FLAT, RAISED> ] ;
       [ TOOLTIP <cToolTip> ] ;
       [ <align: LEFT, CENTER, RIGHT> ] ;
+      [ <default: DEFAULT> ] ;
    => ;
       _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, ;
-            <(styl)>, <(align)> )
+            <(styl)>, <(align)>, <default> )
 
 #xcommand DATE ;
       [ <w: WIDTH> <nSize> ] ;
@@ -114,7 +115,7 @@
       _SetStatusItem( Dtoc( Date() ), ;
             IIF( <.w.>, <nSize>, ;
             IIF( "yyyy" $ Lower( Set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
-            <{uAction}>, <cToolTip>, NIL, <(styl)>, <(align)> )
+            <{uAction}>, <cToolTip>, NIL, <(styl)>, <(align)>, NIL )
 
 #xcommand CLOCK ;
       [ WIDTH <nSize> ] ;
