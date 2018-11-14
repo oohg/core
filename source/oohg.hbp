@@ -25,7 +25,7 @@
 -n -q0 -w3 -es2
 
 # c compiler flags             TODO: Check others
--cflag=-Wno-unused
+#-cflag=-Wno-unused
 # uncomment the following to check for more warnings
 #-cflag=-fdiagnostics-show-option
 #-cflag=-pedantic
