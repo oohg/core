@@ -661,12 +661,12 @@ METHOD Release() CLASS TForm
 
 METHOD RefreshData() CLASS TForm
 
-   If HB_IsBlock( ::Block )
-      ::Value := _OOHG_EVAL( ::Block )
-   EndIf
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:RefreshData(), ) } )
+   IF HB_ISBLOCK( ::Block )
+      ::Value := Eval( ::Block )
+   ENDIF
+   AEval( ::aControls, { |o| iif( o:Container == NIL, o:RefreshData(), NIL ) } )
 
-   Return nil
+   RETURN NIL
 
 METHOD SetActivationFocus() CLASS TForm
 
