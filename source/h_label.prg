@@ -106,6 +106,7 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
    ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
    ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
    ASSIGN lDisabled     VALUE lDisabled    TYPE "L" DEFAULT .F.
+   ASSIGN ::lAutosize   VALUE autosize     TYPE "L"
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
 
@@ -137,8 +138,6 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
    If ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
    EndIf
-
-   ASSIGN ::AutoSize VALUE autosize TYPE "L" DEFAULT ::AutoSize
 
    // OnClick takes precedence over OnDblClick
    ASSIGN ::OnClick    VALUE ProcedureName TYPE "B"
