@@ -12,6 +12,84 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-14 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2018-11-14 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     % Use Eval instead of _OOHG_Eval.
+
+2018-11-14 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     % Set ::lAutosize instead of calling ::Autosize.
+
+2018-11-14 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_status.ch
+     + DEFAULT clause to STATUSITEM.
+   * core\source\h_status.prg
+     + Support for DEFAULT clause.
+   ; This clause sets the message as the default for menus
+     without their own message.
+   ; Functionality will be commited in a few days.
+
+2018-11-14 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\oohg.hbp
+     * One flag commented out.
+
+2018-11-08 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_frame.prg
+     - Useless METHOD Events_Color.
+
+2018-11-10 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + BackColorCode to semi-oop syntax.
+
+2018-11-08 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\oohg.hbp
+     - Some MINGW compiler flags.
+
+2018-11-08 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     + New grid messages.
+
+2018-11-08 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + Message localization.
+
+2018-11-08 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Change for 64 bit support.
+
+2018-11-08 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\bostaurus.ch
+     + ifdef to avoid multiple inclusions.
+   * core\include\i_graph.ch
+     + define ArrayRGB_TO_COLORREF and COLORREF_TO_ArrayRGB.
+
+2018-11-07 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! PrintRectangle does not honor color parameter.
+
+2018-11-07 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     ! Search for first item is not working when combo has
+       VALUESOURCE clause.
+     + METHOD FindString of TCOMBO class to find the first item
+       that starts with the specified string.
+     + METHOD FindStringExact of TCOMBO class to find the first
+       item that is exactly equal to the specified string.
+     + METHOD FindString of TLISTCOMBO class.
+     + METHOD FindStringExact of TLISTCOMBO class.
+     * C functions COMBOBOXFINDSTRING and COMBOBOXFINDSTRINGEXACT
+       now expect a one-based starting item number or a 0 that
+       means "start from the top". INCOMPATIBLE.
+   * core\source\h_listbox.prg
+     + METHOD FindString of TLIST class.
+     + METHOD FindStringExact of TLIST class.
+     + C functions LISTBOXFINDSTRING and LISTBOXFINDSTRINGEXACT.
+
 2018-11-06 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog_004.txt
      ! Typo.
@@ -51,7 +129,7 @@
 2018-11-06 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_controlmisc.prg
      * Some changes for 64 bit support.
-     - Unreachable code at COLOR_IN_TAB.
+     - Unreachable code at EVENTS_COLOR_INTAB.
      * Deletion of font object moved to C level.
      * Destruction of imagelist moved to C level.
 
@@ -125,7 +203,7 @@
    * core\source\h_ipaddress.prg
      + METHOD IsBlank.
      * Format.
-     * A C-level module-static vars was moved to a C-level
+     * A C-level module-static var was moved to a C-level
        function-static var, thus making the class thread safe.
      * Some changes for 64 bit support.
 
@@ -351,7 +429,7 @@
 
 2018-10-19 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_listbox.prg
-     * A C-level module-static vars was moved to a C-level
+     * A C-level module-static var was moved to a C-level
        function-static var, thus making the class thread safe.
      * Some changes for 64 bit support.
      * Some format.
@@ -400,8 +478,8 @@
        fails was moved to PRG level to generate an entry at the
        errors log and enable a more ordered exit.
    * core\source\h_picture.prg
-     * Two C-level module-static vars were moved to a C-level
-       function-static var, thus making the class thread safe.
+     * Two C-level module-static vars were moved to C-level
+       function-static vars, thus making the class thread safe.
 
 2018-10-18 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
