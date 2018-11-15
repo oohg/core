@@ -12,6 +12,82 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-14 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ! Background painting of controls that do not honor the brush
+     returned by WM_CTLCOLORBTN, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT
+     and WM_CTLCOLORLISTBOX handlers.
+
+   * core\source\c_windows.c
+     ! WM_PRINTCLIENT changed to WM_PRINT.
+
+   * core\source\h_checkbox.prg
+     * Some format.
+     * DATA IconWidt is now init to 21 px.
+     - DATA TabHandle.
+     * DATA lLibDraw is now init to .F.
+       ; If the WINDRAW or OOHGDRAW clauses are not present,
+         the first one will be assumed, except when NOFOCUSRECT
+         is specified and the app is themed.
+     % Set ::lAutosize instead of calling ::Autosize.
+     * Method Events_Color now calls TCONTROL_EVENTS_COLOR.
+     ! Function TCheckBox_Notify_CustomDraw.
+     * A C-level module-static var was moved to a C-level
+       function-static var, thus making the class thread safe.
+
+   * core\source\h_controlmisc.prg
+     + New parameter to method TCONTROL_EVENTS_COLOR for painting
+       the control's parent background.
+     + Logic for painting the background using a brush from an
+       image or tab (moved from function EVENTS_COLOR_INTAB).
+     - Function EVENTS_COLOR_INTAB.
+
+   * core\include\i_radio.ch
+     + NOFOCUSRECT clause.
+   * core\source\h_radio.prg
+     + DATA lNoFocusRect to TRadioGroup.
+     + DATA lTabStop to TRadioGroup.
+     * DATA nSpacing of TRadioGroup now defaults to 25.
+     - DATA oBkGrnd from TRadioGroup.
+     - DATA TabHandle from TRadioGroup.
+     - DATA TabStop from TRadioGroup.
+     + METHOD BackGround to TRadioGroup.
+     + METHOD DoChange to TRadioGroup.
+     + METHOD TabStop to TRadioGroup.
+     + METHOD ItemToolTip to TRadioGroup to set an item's tooltip.
+     + METHOD ToolTip to TRadioGroup to set all the item's tooltips
+       at once.
+     * Some format.
+     + New parameters to TRadioGroup:Define.
+     * WINDRAW clause is default except when NOFOCUSRECT is used.
+     ! Method SetFont was not saving the font characteristics.
+     ! Control's tabstop. Tab key now sets the focus at the
+       selected item or the first one is none is selected.
+     * Moved item's default settings to TRadioItem.
+     + DATA lLibDraw to TRadioItem.
+     + DATA lNoFocusRect to TRadioItem.
+     - DATA oBkGrnd from TRadioItem.
+     - DATA TabHandle from TRadioItem.
+     + METHOD BackGround to TRadioItem.
+     + New parameters to TRadioItem:Define.
+     * A TRadioItem control now inherits from its container if
+       it is a TRadioGroup.
+     * Two C-level module-static vars were moved to C-level
+       function-static vars, thus making the class thread safe.
+
+   * core\source\h_tab.prg
+     + METHOD BackColor to TMultiPage.
+     + Backcolor to tab pages so contained controls properly inherit
+       from the container.
+     ; Under themed XP it's not possible to achieve transparency
+       using backcolor because tab pages are painted with a color
+       gradiente. You must use TRASPARENT clause.
+
+   * core\source\h_windows.prg
+     + DATA TabHandle.
+     + Third parameter, set to NIL, to Events_Color call.
+     * Some format.
+     % Use Eval instead of _OOHG_Eval.
+
 2018-11-14 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
