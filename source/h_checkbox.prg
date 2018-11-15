@@ -201,7 +201,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
    IF nNotify == NM_CUSTOMDRAW
       IF ::lLibDraw .AND. ::IsVisualStyled
          RETURN TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ;
-                                             ( HB_ISOBJECT( ::TabHandle ) .OR. HB_ISOBJECT( ::oBkGrnd ) ), ;
+                                             ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ), ;
                                              ::LeftAlign, ::lNoFocusRect )
       ENDIF
    ENDIF
@@ -483,7 +483,7 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       state_id = cb_states[ checkState ][ drawState ];
 
       /* draw parent background */
-      if( bDrawBkGrnd || TRUE )
+      if( bDrawBkGrnd )
       {
          if( ( dwProcIsThemeBackgroundPartiallyTransparent ) ( hTheme, BP_CHECKBOX, state_id ) )
          {
