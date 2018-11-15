@@ -91,6 +91,7 @@
       [ BACKGROUND <bkgrnd> ] ;
       [ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
       [ READONLY <aReadOnly> ] ;
+      [ <lnofr: NOFOCUSRECT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TRadioGroup(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <aOptions>, <value>, ;
@@ -100,4 +101,8 @@
             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
             <.disabled.>, <.rtl.>, <height>, IIF( #<drawby> == "OOHGDRAW", .T., ;
             IIF( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.left.>, ;
-            <aReadOnly> )
+            <aReadOnly>, <.lnofr.> )
+
+#xtranslate RADIOGROUP [ <x> ] FOCUSRECT ;
+   => ;
+      RADIOGROUP [ <x> ]

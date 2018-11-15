@@ -222,7 +222,7 @@ CLASS TWindow
    DATA nDefAnchor                INIT 3
 
    DATA lProcMsgsOnVisible        INIT .T.
-
+   DATA TabHandle                 INIT 0
    DATA DefBkColorEdit            INIT Nil
 
    DATA ClientAdjust              INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
@@ -257,7 +257,7 @@ CLASS TWindow
    METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
    METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
    METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick, "CLICK" ) }
-   METHOD Value               BLOCK { || nil }
+   METHOD Value               BLOCK { || NIL }
    METHOD TabStop             SETGET
    METHOD Style               SETGET
    METHOD ExStyle             SETGET
@@ -686,7 +686,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
          hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
-         hb_vmSend( 2 );
+         hb_vmPushNil();
+         hb_vmSend( 3 );
          break;
 
       case WM_CTLCOLOREDIT:
@@ -694,7 +695,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
          hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
-         hb_vmSend( 2 );
+         hb_vmPushNil();
+         hb_vmSend( 3 );
          break;
 
       case WM_NOTIFY:
@@ -1140,18 +1142,18 @@ METHOD Action( bAction ) CLASS TWindow
 METHOD SaveData() CLASS TWindow
 
    _OOHG_EVAL( ::Block, ::Value )
-   AEVAL( ::aControls, { |o| If( o:Container == nil, o:SaveData(), ) } )
+   AEval( ::aControls, { |o| iif( o:Container == NIL, o:SaveData(), ) } )
 
-   Return nil
+   RETURN NIL
 
 METHOD RefreshData() CLASS TWindow
 
-   If HB_IsBlock( ::Block )
-      ::Value := _OOHG_EVAL( ::Block )
-   EndIf
-   AEVAL( ::aControls, { |o| o:RefreshData() } )
+   IF HB_ISBLOCK( ::Block )
+      ::Value := Eval( ::Block )
+   ENDIF
+   AEval( ::aControls, { |o| o:RefreshData() } )
 
-   Return nil
+   RETURN NIL
 
 METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
 

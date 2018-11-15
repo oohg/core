@@ -1293,7 +1293,7 @@ CLASS TControl FROM TWindow
    METHOD AddToCtrlsArrays
    METHOD DelFromCtrlsArrays
    METHOD TabIndex           SETGET
-   METHOD Refresh            BLOCK { |self| ::ReDraw() }
+   METHOD Refresh            BLOCK { |Self| ::ReDraw() }
    METHOD Release
    METHOD SetFont
    METHOD FocusEffect
@@ -2057,67 +2057,26 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
    }
 }
 
+typedef INT ( CALLBACK * CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT * );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor ) CLASS TControl -> hBrush */
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TControl -> hBrush */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hdc = ( HDC ) HB_PARNL( 1 );
-   LONG lBackColor;
-
-   if( oSelf->lFontColor != -1 )
-   {
-      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
-   }
-
-   /* Note: this works for STATIC controls only (e.g. LABEL) */
-   _OOHG_Send( pSelf, s_Transparent );
-   hb_vmSend( 0 );
-   if( hb_parl( -1 ) )
-   {
-      SetBkMode( hdc, TRANSPARENT );
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
-      oSelf->lOldBackColor = -1;
-      HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
-      return;
-   }
-
-   lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
-   if( lBackColor == -1 )
-   {
-      lBackColor = hb_parnl( 2 );
-   }
-   SetBkColor( hdc, ( COLORREF ) lBackColor );
-   if( lBackColor != oSelf->lOldBackColor )
-   {
-      oSelf->lOldBackColor = lBackColor;
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = CreateSolidBrush( lBackColor );
-   }
-   HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
-}
-
-/*
- * METHOD Events_Color( wParam, nDefColor ) CLASS TFRAME
- * METHOD Events_Color( wParam, nDefColor ) CLASS TCHECKBOX
- * METHOD Events_Color( wParam, nDefColor ) CLASS TRADIOITEM
- */
-HB_FUNC( EVENTS_COLOR_INTAB )
-{
-   PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
-   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hdc = ( HDC ) HB_PARNL( 2 );
-   LONG lBackColor;
-   POINT pt;
-   BOOL bTransparent, bDefault, bIsTab = FALSE;
-   HWND hwnd = 0;
-   LONG_PTR style;
    HBRUSH OldBrush;
+   LONG lBackColor;
+   HMODULE hInstDLL = 0;
+   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground = 0;
+   RECT rc;
+   BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
+   HWND hwnd = 0;
    PHB_ITEM pBkGrnd;
    POCTRL oBkGrnd;
+   POINT pt;
+   BOOL bPaint = FALSE;
 
-   /* Set font's color */
    if( oSelf->lFontColor != -1 )
    {
       SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
@@ -2132,104 +2091,88 @@ HB_FUNC( EVENTS_COLOR_INTAB )
       oBkGrnd = _OOHG_GetControlInfo( pBkGrnd );
       hwnd = oBkGrnd->hWnd;
    }
-
-   /* If it has no BACKGROUND then check if it's inside a TAB */
-   if( ! ValidHandler( hwnd ) )
+   if( ValidHandler( hwnd ) )
    {
+      bPaint = TRUE;
+   }
+   else
+   {
+      /* If not, check if it's inside a TAB and has TRANSPARENT clause */
       _OOHG_Send( pSelf, s_TabHandle );
       hb_vmSend( 0 );
       hwnd = HWNDparam( -1 );
-      bIsTab = TRUE;
+      if( ValidHandler( hwnd ) )
+      {
+         _OOHG_Send( pSelf, s_Transparent );
+         hb_vmSend( 0 );
+         bPaint = hb_parl( -1 );
+      }
+   }
+   if( bPaint )
+   {
+      /* Paint using a brush derived from the BACKGROUND object or the TAB */
+      SetBkMode( hdc, TRANSPARENT );
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = GetTabBrush( hwnd );
+      oSelf->lOldBackColor = -1;
+      pt.x = 0; pt.y = 0;
+      MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
+      SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
+      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+      DeleteObject( OldBrush );
+      HB_RETNL( ( INT_PTR ) oSelf->BrushHandle );
+      return;
    }
 
-   if( ValidHandler( hwnd ) )
+   /* Check if the control has TRANSPARENT clause */
+   _OOHG_Send( pSelf, s_Transparent );
+   hb_vmSend( 0 );
+   if( hb_parl( -1 ) )
    {
-      _OOHG_Send( pSelf, s_Transparent );
-      hb_vmSend( 0 );
-      bTransparent = hb_parl( -1 );
+      /* Paint using a NULL brush */
+      SetBkMode( hdc, TRANSPARENT );
+      DeleteObject( oSelf->BrushHandle );
+      oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+      oSelf->lOldBackColor = -1;
+      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+      DeleteObject( OldBrush );
 
-      lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
-      bDefault = ( lBackColor == -1 );
-
-      if( bTransparent || bDefault )
+      /* FRAME, CHECKBOX, BUTTON, RADIOITEM */
+      if( lDrawBkGrnd )
       {
-         style = GetWindowLongPtr( hwnd, GWL_STYLE );
-
-         if( bIsTab && ( style & TCS_BUTTONS ) )
+         hInstDLL = LoadLibrary( "UXTHEME.DLL" );
+         if( hInstDLL )
          {
-            _OOHG_Send( pSelf, s_Transparent );
-            hb_vmSend( 0 );
-            if( hb_parl( -1 ) )
-            {
-               SetBkMode( hdc, TRANSPARENT );
-               DeleteObject( oSelf->BrushHandle );
-               oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
-               oSelf->lOldBackColor = -1;
-               OldBrush = SelectObject( hdc, oSelf->BrushHandle );
-               DeleteObject( OldBrush );
-               HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
-               return;
-            }
-
-            lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
-            if( lBackColor == -1 )
-            {
-               lBackColor = hb_parnl( 3 );           // nDefColor
-            }
+            dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
          }
-         else
+         if( dwProcDrawThemeParentBackground )
          {
-            /* Paint using a brush derived from the BACKGROUND object or the TAB */
-            SetBkMode( hdc, TRANSPARENT );
-            DeleteObject( oSelf->BrushHandle );
-            oSelf->BrushHandle = GetTabBrush( hwnd );
-            oSelf->lOldBackColor = -1;
-            pt.x = 0; pt.y = 0;
-            MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
-            SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
-            OldBrush = SelectObject( hdc, oSelf->BrushHandle );
-            DeleteObject( OldBrush );
-            HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
-            return;
+            GetClientRect( oSelf->hWnd, &rc );
+            ( dwProcDrawThemeParentBackground )( oSelf->hWnd, hdc, &rc );
          }
+         FreeLibrary( hInstDLL );
       }
    }
    else
    {
-      /* Check if the control has TRANSPARENT clause */
-      _OOHG_Send( pSelf, s_Transparent );
-      hb_vmSend( 0 );
-      if( hb_parl( -1 ) )
-      {
-         /* Paint using a NULL brush */
-         SetBkMode( hdc, TRANSPARENT );
-         DeleteObject( oSelf->BrushHandle );
-         oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
-         oSelf->lOldBackColor = -1;
-         OldBrush = SelectObject( hdc, oSelf->BrushHandle );
-         DeleteObject( OldBrush );
-         HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
-         return;
-      }
-
       /* Paint using BACKCOLOR */
-      /* Note: this works for STATIC controls only (e.g. LABEL) */
       lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
       if( lBackColor == -1 )
       {
-         lBackColor = hb_parnl( 3 );           // nDefColor
+         lBackColor = hb_parnl( 2 );
+      }
+      SetBkColor( hdc, ( COLORREF ) lBackColor );
+      if( lBackColor != oSelf->lOldBackColor )
+      {
+         oSelf->lOldBackColor = lBackColor;
+         DeleteObject( oSelf->BrushHandle );
+         oSelf->BrushHandle = CreateSolidBrush( lBackColor );
+         OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+         DeleteObject( OldBrush );
       }
    }
-   SetBkColor( hdc, (COLORREF) lBackColor );
-   if( lBackColor != oSelf->lOldBackColor )
-   {
-      oSelf->lOldBackColor = lBackColor;
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = CreateSolidBrush( lBackColor );
-      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
-      DeleteObject( OldBrush );
-   }
-   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+
+   HB_RETNL( ( INT_PTR ) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP

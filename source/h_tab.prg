@@ -113,7 +113,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, aCaptions
 
    LOCAL i, cCaption, cImage, aControls, bMnemonic, uToolTip
 
-   ::Super:Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, NIL, NIL, ;
+   ::Super:Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, NIL, uBackColor, ;
                    cFontName, nFontSize, cToolTip, NIL, lButtons, lFlatBut, ;
                    lHotTrack, lVertical, lNoTabStop, lBold, lItalic, lUnderline, ;
                    lStrikeout, NIL, lRtl, lInvisible, lDisabled, lMultiLin, ;
@@ -377,6 +377,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    oPage:Picture   := cImage
    oPage:Position  := nPosition
    oPage:ToolTip   := uToolTip
+   oPage:BackColor := ::BackColor
 
    AAdd( ::aPages, NIL )
    AIns( ::aPages, nPosition )
@@ -418,10 +419,8 @@ FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip 
    LOCAL oCtrl, oPage
 
    IF _OOHG_LastFrame() == "TABPAGE"
-      // ERROR: Last page not finished
       _EndTabPage()
    ENDIF
-   ///// IF _OOHG_LastFrame() == "TAB" ...
    oCtrl := _OOHG_ActiveFrame
    oPage := oCtrl:AddPage( nPosition, cCaption, cImage, NIL, NIL, cName, oSubClass, uToolTip )
    _OOHG_AddFrame( oPage )
@@ -439,7 +438,6 @@ FUNCTION _EndTabPage()
 FUNCTION _EndTab()
 
    IF _OOHG_LastFrame() == "TABPAGE"
-      // ERROR: Last page not finished
       _EndTabPage()
    ENDIF
    _OOHG_ActiveFrame:EndTab()
@@ -473,6 +471,7 @@ METHOD AddControl( oCtrl, nPageNumber, nRow, nCol ) CLASS TTabDirect
 
    ::aPages[ nPageNumber ]:AddControl( oCtrl, nRow, nCol )
    oCtrl:Container := ::aPages[ nPageNumber ]
+
    IF oCtrl:Type == "TAB"
       SetWindowPos( oCtrl:oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ENDIF
@@ -776,6 +775,7 @@ CLASS TMultiPage FROM TControlGroup
    METHOD AddControl
    METHOD AddPage
    METHOD AdjustResize
+   METHOD BackColor               SETGET
    METHOD Caption
    METHOD CreatePages
    METHOD Define
@@ -840,6 +840,23 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uFontColo
    // ::oContainerBase:OnChange := { || ::Refresh(), ::DoChange() }
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD BackColor( uColor ) CLASS TMultiPage
+
+   IF ::oContainerBase == NIL
+      IF ! HB_ISNIL( uColor )
+         ::Super:BackColor := uColor
+      ENDIF
+      uColor := ::Super:BackColor
+   ELSE
+      IF ! HB_ISNIL( uColor )
+         ::oContainerBase:BackColor := uColor
+      ENDIF
+      uColor := ::oContainerBase:BackColor
+   ENDIF
+
+   RETURN uColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CreatePages( aCaptions, aImages, aPageMap, aMnemonic, aTabToolTips ) CLASS TMultiPage
@@ -1060,10 +1077,11 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    ENDIF
    oPage:Define( cName, Self )
 
-   oPage:Caption  := cCaption
-   oPage:Picture  := cImage
-   oPage:Position := nPosition
-   oPage:ToolTip  := uToolTip
+   oPage:Caption   := cCaption
+   oPage:Picture   := cImage
+   oPage:Position  := nPosition
+   oPage:ToolTip   := uToolTip
+   oPage:BackColor := ::BackColor
 
    AAdd( ::aPages, NIL )
    AIns( ::aPages, nPosition )
@@ -1128,6 +1146,7 @@ METHOD AddControl( oCtrl, nPageNumber, nRow, nCol ) CLASS TMultiPage
 
    ::aPages[ nPageNumber ]:AddControl( oCtrl, nRow, nCol )
    oCtrl:Container := ::aPages[ nPageNumber ]
+
    IF oCtrl:Type == "TAB"
       SetWindowPos( oCtrl:oContainerBase:hWnd, 0, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ENDIF
@@ -1464,6 +1483,9 @@ TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper 
    // Since we still can't set the TabPage's backcolor lets assume it's the system's default
    IF ( ! ::IsVisualStyled .OR. lButtons .OR. lVertical )
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_BTNFACE )
+   ELSEIF ISXPTHEMEACTIVE()
+      // XP uses a color gradient to paint the tab so this is useless
+      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT RGB( 252, 252, 254 )
    ELSE
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
    ENDIF
