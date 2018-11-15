@@ -2067,7 +2067,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    HDC hdc = ( HDC ) HB_PARNL( 1 );
    HBRUSH OldBrush;
    LONG lBackColor;
-   HMODULE hInstDLL = 0;
+   HMODULE hInstDLL;
    CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground = 0;
    RECT rc;
    BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
