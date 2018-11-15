@@ -125,7 +125,6 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    ASSIGN ::lHorizontal  VALUE lHorizontal      TYPE "L"
    ASSIGN ::Transparent  VALUE lTransparent     TYPE "L"
    ASSIGN ::LeftAlign    VALUE lLeft            TYPE "L"
-   ASSIGN ::lLibDraw     VALUE lDrawby          TYPE "L"
    ASSIGN ::lNoFocusRect VALUE lNoFocusRect     TYPE "L"
    ASSIGN ::oBkGrnd      VALUE oBkGrnd          TYPE "O"
    ASSIGN aOptions       VALUE aOptions         TYPE "A" DEFAULT {}
@@ -658,7 +657,7 @@ CLASS TRadioItem FROM TLabel
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, cCaption, lValue, lFirst, lAutoSize, lTransparent, ;
                uFontColor, uBackColor, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, uToolTip, nHelpId, ;
-               lInvisible, lNoTabStop, lDisabled, lRtl, oBkGrnd, lLeft, lLibDraw, lNoFocusRect ) CLASS TRadioItem
+               lInvisible, lNoTabStop, lDisabled, lRtl, oBkGrnd, lLeft, lDrawBy, lNoFocusRect ) CLASS TRadioItem
 
    LOCAL nControlHandle, nStyle, nStyleEx := 0, oTabPage
 
@@ -726,16 +725,18 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, cCaption,
       ::LeftAlign := ::Container:LeftAlign
    ENDIF
 
-   IF HB_ISLOGICAL( lLibDraw )
-      ::lLibDraw := lLibDraw
-   ELSEIF ::Container # NIL .AND. ::Container:Type == "RADIOGROUP"
-      ::lLibDraw := ::Container:lLibDraw
-   ENDIF
-
    IF HB_ISLOGICAL( lNoFocusRect )
       ::lNoFocusRect := lNoFocusRect
    ELSEIF ::Container # NIL .AND. ::Container:Type == "RADIOGROUP"
       ::lNoFocusRect := ::Container:lNoFocusRect
+   ENDIF
+
+   IF HB_ISLOGICAL( lDrawBy )
+      ::lLibDraw := lDrawBy
+   ELSEIF ::Container # NIL .AND. ::Container:Type == "RADIOGROUP"
+      ::lLibDraw := ::Container:lLibDraw
+   ELSEIF ::lNoFocusRect
+      ::lLibDraw := .T.
    ENDIF
 
    nStyle := ::InitStyle( , , lInvisible, lNoTabStop, lDisabled )
