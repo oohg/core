@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-15 19:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_radio.prg
+     ! Default value of painting clause is not set properly.
+
+2018-11-15 18:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_checkbox.prg
+     ! BACKGROUND clause is not working properly.
+
+2018-11-15 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     ! C compiler warning.
+
 2018-11-14 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    ! Background painting of controls that do not honor the brush
      returned by WM_CTLCOLORBTN, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT
