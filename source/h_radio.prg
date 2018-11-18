@@ -502,17 +502,40 @@ METHOD Caption( nItem, uValue ) CLASS TRadioGroup
    RETURN ( ::aOptions[ nItem ]:Caption := uValue )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TRadioGroup
+METHOD AdjustResize( nDivh, nDivw ) CLASS TRadioGroup
 
-   IF HB_ISNUMERIC( ::nSpacing )
+   LOCAL nFixedHeightUsed
+
+   IF ::lAdjust
       IF ::lHorizontal
          ::Spacing := ::nSpacing * nDivw
       ELSE
          ::Spacing := ::nSpacing * nDivh
       ENDIF
+
+      //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
+      IF ::Container == NIL
+         nFixedHeightUsed := ::Parent:nFixedHeightUsed
+      ELSE
+         nFixedHeightUsed := ::Container:nFixedHeightUsed
+      ENDIF
+
+      ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
+
+      IF _OOHG_AdjustWidth
+         IF ! ::lFixWidth
+            ::Sizepos( , , ::Width * nDivw, ::Height * nDivh )
+
+            IF _OOHG_AdjustFont
+               IF ! ::lFixFont
+                  ::FontSize := ::FontSize * nDivw
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
    ENDIF
 
-   RETURN ::Super:AdjustResize( nDivh, nDivw, lSelfOnly )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Spacing( nSpacing ) CLASS TRadioGroup
