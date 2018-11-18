@@ -868,7 +868,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
    IF nNotify == NM_CUSTOMDRAW
       IF ::lLibDraw .AND. ::IsVisualStyled
          RETURN TRadioItem_Notify_CustomDraw( Self, lParam, ::Caption, ;
-                                              ( HB_ISOBJECT( ::TabHandle ) .OR. HB_ISOBJECT( ::oBkGrnd ) ), ;
+                                              ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ), ;
                                               ::LeftAlign, ::lNoFocusRect )
       ENDIF
    ENDIF
