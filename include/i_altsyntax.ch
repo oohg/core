@@ -92,6 +92,13 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlNoImagelist            => _OOHG_ActiveControlInfo \( \) \[  70 \]
+#xtranslate _OOHG_ActiveControlNoPrintOver            => _OOHG_ActiveControlInfo \( \) \[  71 \]
+#xtranslate _OOHG_ActiveControlTextAlignH             => _OOHG_ActiveControlInfo \( \) \[  72 \]
+#xtranslate _OOHG_ActiveControlTextAlignV             => _OOHG_ActiveControlInfo \( \) \[  73 \]
+#xtranslate _OOHG_ActiveControlTextMargin             => _OOHG_ActiveControlInfo \( \) \[  74 \]
+#xtranslate _OOHG_ActiveControlFitTxt                 => _OOHG_ActiveControlInfo \( \) \[  75 \]
+#xtranslate _OOHG_ActiveControlFitImg                 => _OOHG_ActiveControlInfo \( \) \[  76 \]
 #xtranslate _OOHG_ActiveControlEditHeight             => _OOHG_ActiveControlInfo \( \) \[  77 \]
 #xtranslate _OOHG_ActiveControlOptionsHeight          => _OOHG_ActiveControlInfo \( \) \[  78 \]
 #xtranslate _OOHG_ActiveControlSolid                  => _OOHG_ActiveControlInfo \( \) \[  79 \]
@@ -1037,7 +1044,8 @@ RADIO GROUP
       _OOHG_ActiveControlHorizontal  := .F.    ;;
       _OOHG_ActiveControlBackground  := NIL    ;;
       _OOHG_ActiveControlLeft        := .F.    ;;
-      _OOHG_ActiveControlReadOnly    := NIL
+      _OOHG_ActiveControlReadOnly    := NIL    ;;
+      _OOHG_ActiveControlNoFocusRect := .F.
 
 #xcommand LEFTJUSTIFY <left> ;
    => ;
@@ -1092,7 +1100,8 @@ RADIO GROUP
             _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlBackground, ;
             _OOHG_ActiveControlLeft, ;
-            _OOHG_ActiveControlReadOnly )
+            _OOHG_ActiveControlReadOnly, ;
+            _OOHG_ActiveControlNoFocusRect )
 
 /*---------------------------------------------------------------------------
 SLIDER
@@ -1422,7 +1431,17 @@ BUTTON
       _OOHG_ActiveControlAutoFit           := .F. ;;
       _OOHG_ActiveControlNoDIBSection      := .T. ;;
       _OOHG_ActiveControlNoToday           := .F. ;;
-      _OOHG_ActiveControlSolid             := .F.
+      _OOHG_ActiveControlSolid             := .F. ;;
+      _OOHG_ActiveControlTextAlignH        := NIL ;;
+      _OOHG_ActiveControlTextAlignV        := NIL ;;
+      _OOHG_ActiveControlNoPrintOver       := .F. ;;
+      _OOHG_ActiveControlTextMargin        := .F. ;;
+      _OOHG_ActiveControlFitTxt            := .F. ;;
+      _OOHG_ActiveControlFitImg            := .F. ;;
+      _OOHG_ActiveControlImagesize         := .F. ;;
+      _OOHG_ActiveControlTransparent       := .F. ;;
+      _OOHG_ActiveControlNoFocusRect       := .F. ;;
+      _OOHG_ActiveControlNoImagelist       := .F.
 
 #xcommand CAPTION <caption> ;
    => ;
@@ -1558,6 +1577,10 @@ BUTTON
    => ;
       _OOHG_ActiveControlNo3DColors := <no3dcolors>
 
+#xcommand NOIMAGELIST <noimglst> ;
+   => ;
+      _OOHG_ActiveControlNoImagelist := <noimglst>
+
 #xcommand AUTOFIT <autofit> ;
    => ;
       _OOHG_ActiveControlAutoFit := <autofit>
@@ -1577,6 +1600,30 @@ BUTTON
 #xcommand SOLID <solid> ;
    => ;
       _OOHG_ActiveControlSolid := <solid>
+
+#xcommand TEXTALIGNH <textalignh> ;
+   => ;
+      _OOHG_ActiveControlTextAlignH := <textalignh>
+
+#xcommand TEXTALIGNV <textalignv> ;
+   => ;
+      _OOHG_ActiveControlTextAlignV := <textalignv>
+
+#xcommand NOPRINTOVER <noprintover> ;
+   => ;
+      _OOHG_ActiveControlNoPrintOver := <noprintover>
+
+#xcommand TEXTMARGIN <margin> ;
+   => ;
+      _OOHG_ActiveControlTextMargin := <margin>
+
+#xcommand FITTXT <fittxt> ;
+   => ;
+      _OOHG_ActiveControlFitTxt := <fittxt>
+
+#xcommand FITIMG <fitimg> ;
+   => ;
+      _OOHG_ActiveControlFitImg := <fitimg>
 
 #xcommand END BUTTON ;
    => ;
@@ -1609,7 +1656,7 @@ BUTTON
             _OOHG_ActiveControlHBitmap, ;
             _OOHG_ActiveControlPicture, ;
             _OOHG_ActiveControlNoLoadTransparent, ;
-            _OOHG_ActiveControlAutoFit, ;
+            _OOHG_ActiveControlStretch, ;
             _OOHG_ActiveControlCancel, ;
             _OOHG_ActiveControlAlignment, ;
             _OOHG_ActiveControlMultiLine, ;
@@ -1621,7 +1668,17 @@ BUTTON
             _OOHG_ActiveControlNoDIBSection, ;
             _OOHG_ActiveControlBackColor, ;
             _OOHG_ActiveControlNoToday, ;
-            _OOHG_ActiveControlSolid )
+            _OOHG_ActiveControlSolid, ;
+            _OOHG_ActiveControlFontColor, ;
+            { _OOHG_ActiveControlTextAlignH, _OOHG_ActiveControlTextAlignV }, ;
+            _OOHG_ActiveControlNoPrintOver, ;
+            _OOHG_ActiveControlTextMargin, ;
+            _OOHG_ActiveControlFitTxt, ;
+            _OOHG_ActiveControlFitImg, ;
+            _OOHG_ActiveControlImagesize, ;
+            _OOHG_ActiveControlTransparent, ;
+            _OOHG_ActiveControlNoFocusRect, ;
+            _OOHG_ActiveControlNoImagelist )
 
 /*---------------------------------------------------------------------------
 IMAGE
@@ -1873,23 +1930,34 @@ CHECKBUTTON
 #xcommand DEFINE CHECKBUTTON <name> ;
    => ;
       _OOHG_ClearActiveControlInfo( <(name)> ) ;;
-      _OOHG_ActiveControlCaption      := NIL   ;;
-      _OOHG_ActiveControlPicture      := NIL   ;;
-      _OOHG_ActiveControlField        := NIL   ;;
-      _OOHG_ActiveControlBuffer       := NIL   ;;
-      _OOHG_ActiveControlHBitmap      := NIL   ;;
-      _OOHG_ActiveControlTransparent  := .T.   ;;
-      _OOHG_ActiveControlAutoFit      := .F.   ;;
-      _OOHG_ActiveControlNo3DColors   := .F.   ;;
-      _OOHG_ActiveControlAutoFit      := .F.   ;;
-      _OOHG_ActiveControlNoDIBSection := .T.   ;;
-      _OOHG_ActiveControlDrawBy       := NIL   ;;
-      _OOHG_ActiveControlImageMargin  := NIL   ;;
-      _OOHG_ActiveControlOnMouseMove  := NIL   ;;
-      _OOHG_ActiveControlAlignment    := NIL   ;;
-      _OOHG_ActiveControlMultiLine    := .F.   ;;
-      _OOHG_ActiveControlFlat         := .F.   ;;
-      _OOHG_ActiveControlNoToday      := .F.
+      _OOHG_ActiveControlCaption           := NIL ;;
+      _OOHG_ActiveControlPicture           := NIL ;;
+      _OOHG_ActiveControlField             := NIL ;;
+      _OOHG_ActiveControlBuffer            := NIL ;;
+      _OOHG_ActiveControlHBitmap           := NIL ;;
+      _OOHG_ActiveControlNoLoadTransparent := .F. ;;
+      _OOHG_ActiveControlStretch           := .F. ;;
+      _OOHG_ActiveControlNo3DColors        := .F. ;;
+      _OOHG_ActiveControlAutoFit           := .F. ;;
+      _OOHG_ActiveControlNoDIBSection      := .T. ;;
+      _OOHG_ActiveControlDrawBy            := NIL ;;
+      _OOHG_ActiveControlImageMargin       := NIL ;;
+      _OOHG_ActiveControlOnMouseMove       := NIL ;;
+      _OOHG_ActiveControlAlignment         := NIL ;;
+      _OOHG_ActiveControlMultiLine         := .F. ;;
+      _OOHG_ActiveControlFlat              := .F. ;;
+      _OOHG_ActiveControlNoToday           := .F. ;;
+      _OOHG_ActiveControlSolid             := .F. ;;
+      _OOHG_ActiveControlTextAlignH        := NIL ;;
+      _OOHG_ActiveControlTextAlignV        := NIL ;;
+      _OOHG_ActiveControlNoPrintOver       := .F. ;;
+      _OOHG_ActiveControlTextMargin        := .F. ;;
+      _OOHG_ActiveControlFitTxt            := .F. ;;
+      _OOHG_ActiveControlFitImg            := .F. ;;
+      _OOHG_ActiveControlImagesize         := .F. ;;
+      _OOHG_ActiveControlTransparent       := .F. ;;
+      _OOHG_ActiveControlNoFocusRect       := .F. ;;
+      _OOHG_ActiveControlNoImagelist       := .F.
 
 #xcommand END CHECKBUTTON ;
    => ;
@@ -1920,8 +1988,8 @@ CHECKBUTTON
             _OOHG_ActiveControlPicture, ;
             _OOHG_ActiveControlBuffer, ;
             _OOHG_ActiveControlHBitmap, ;
-            ! _OOHG_ActiveControlTransparent, ;
-            _OOHG_ActiveControlAutoFit, ;
+            _OOHG_ActiveControlNoLoadTransparent, ;
+            _OOHG_ActiveControlStretch, ;
             _OOHG_ActiveControlNo3DColors, ;
             _OOHG_ActiveControlAutoFit, ;
             _OOHG_ActiveControlNoDIBSection, ;
@@ -1933,7 +2001,18 @@ CHECKBUTTON
             _OOHG_ActiveControlAlignment, ;
             _OOHG_ActiveControlMultiLine, ;
             _OOHG_ActiveControlFlat, ;
-            _OOHG_ActiveControlNoToday )
+            _OOHG_ActiveControlNoToday, ;
+            _OOHG_ActiveControlSolid, ;
+            _OOHG_ActiveControlFontColor, ;
+            { _OOHG_ActiveControlTextAlignH, _OOHG_ActiveControlTextAlignV }, ;
+            _OOHG_ActiveControlNoPrintOver, ;
+            _OOHG_ActiveControlTextMargin, ;
+            _OOHG_ActiveControlFitTxt, ;
+            _OOHG_ActiveControlFitImg, ;
+            _OOHG_ActiveControlImagesize, ;
+            _OOHG_ActiveControlTransparent, ;
+            _OOHG_ActiveControlNoFocusRect, ;
+            _OOHG_ActiveControlNoImagelist )
 
 /*---------------------------------------------------------------------------
 COMBOBOX
