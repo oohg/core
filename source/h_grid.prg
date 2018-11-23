@@ -180,8 +180,8 @@ CLASS TGrid FROM TControl
    METHOD aItems                  SETGET
    METHOD BackColor               SETGET
    METHOD Cell
-   METHOD CellCaption             BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 1, uValue ) }
-   METHOD CellImage               BLOCK { | Self, nRow, nCol, uValue | CellRawValue( ::hWnd, nRow, nCol, 2, uValue ) }
+   METHOD CellCaption             BLOCK { | Self, nRow, nCol, cValue | CellRawValue( ::hWnd, nRow, nCol, 1, cValue ) }
+   METHOD CellImage               BLOCK { | Self, nRow, nCol, nValue | CellRawValue( ::hWnd, nRow, nCol, 2, nValue ) }
    METHOD CheckItem               SETGET
    METHOD ColumnAutoFit
    METHOD ColumnAutoFitH
@@ -3631,7 +3631,7 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
             ElseIf cColType == "L"
                uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
             ElseIf cColType == "N"
-               uValue[ nColumn ] := &( uValue[ nColumn ] )
+               uValue[ nColumn ] := uValue[ nColumn ]
             ElseIf cColType == "T"
                uValue[ nColumn ] := CToT( uValue[ nColumn ] )
             EndIf
@@ -3656,7 +3656,7 @@ METHOD Item( nItem, uValue, uForeColor, uBackColor ) CLASS TGrid
                ElseIf cColType == "L"
                   uValue[ nColumn ] := ( Upper( uValue[ nColumn ] ) == ".T." )
                ElseIf cColType == "N"
-                  uValue[ nColumn ] := &( uValue[ nColumn ] )
+                  uValue[ nColumn ] := uValue[ nColumn ]
                ElseIf cColType == "T"
                   uValue[ nColumn ] := CToT( uValue[ nColumn ] )
                EndIf
