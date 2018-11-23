@@ -12,6 +12,57 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-23 19:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! RTE at method Item line 3634: & Argument error.
+
+2018-11-19 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + New BUTTON, CHECBOX and RADIOGROUP clauses.
+
+2018-11-19 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_button.ch
+     ! FORCESCALE is now a synonym of AUTOFIT instead of STRETCH.
+       *** INCOMPATIBLE ***
+     + STRETCH, FONTCOLOR, TEXTALIGN, NOPRINTOVER, FITIMG, FITTXT,
+       TEXTMARGIN, IMAGESIZE, NOFOCUSRECT and TRANSPARENT clauses.
+   * core\source\h_button.prg
+     + Support for new clauses.
+     + DATA aTextMargin.
+     + DATA lFitImg.
+     + DATA lFitTxt.
+     + DATA lNoFocusRect.
+     + DATA lNoPrintOver.
+     + DATA nTextAlign.
+     + METHOD TextMargin.
+     + Some info about parameters.
+     + New parameters to METHOD Define of TButton class.
+     + New parameters to METHOD Define of TButtonCheck class.
+     + New parameters to METHOD DefineImage of TButton class.
+     + New parameters to METHOD DefineImage of TButtonCheck class.
+     * Format.
+     * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+     * 'DEFAULT var TO value' changed to 'ASSIGN var ...'
+     + New parameters to FUNCTION SetImageXP.
+     * A C-level module-static var was moved to a C-level
+       function-static var, thus making the class thread safe.
+     ! OOHGDRAW now mimics Windows behaviour.
+     + OOHGDRAW now supports FONTCOLOR and customizable image
+       and text support.
+     * DATA lLibDraw is now init to .F.
+       ; If the WINDRAW or OOHGDRAW clauses are not present,
+         the first one will be assumed, except when NOFOCUSRECT,
+         NOHOTLIGHT, NOPRINTOVER, TEXTMARGIN, SOLID or FITTXT
+         are specified and the app is themed.
+
+2018-11-19 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_radio.prg
+     * Custom draw now mimics Windows behaviour.
+
+2018-11-18 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_radio.prg
+     ! BACKGROUND clause is not working properly.
+
 2018-11-18 11:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_radio.prg
      ! Control's autoadjust was not working properly.
@@ -228,7 +279,7 @@
 2018-11-06 00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_registry.prg
      ! Compilation with xHarbour.
-     ! Compilataion with BORLAND.
+     ! Compilation with BORLAND.
 
 2018-11-05 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
