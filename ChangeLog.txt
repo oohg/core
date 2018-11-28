@@ -12,6 +12,40 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-11-27 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_picture.prg
+     * Some changes for 64 bit support.
+     * Use TRUE instead of 1 to match function's declaration.
+
+2018-11-27 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textarray.prg
+     * Use TRUE instead of 1 to match function's declaration.
+
+2018-11-27 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     - Functions GETGRIDCOLUMN, GETGRIDOLDSTATE, GETGRIDNEWSTATE,
+       GETGRIDDISPINFOINDEX, SETGRIDQUERYDATA and SETGRIDQUERYIMAGE
+       moved to h_grid.prg
+
+2018-11-27 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * DATA bOnScroll.
+       This codeblock is evaluated when the grid is scrolled.
+       Receives an array with 4 items:
+       1: Pixels horizontally scrolled (> 0 right, < 0 left).
+       2: Pixels vertically scrolled (> 0 bottom, < 0 top).
+       3: Actual horizontal scrollbar position.
+       4: Actual vertical scrollbar position.
+     * HEADERS clause is no longer needed when NOHEADERS
+       clause is present.
+     ! PICTURE clause for numeric columns shows unneeded commas.
+     % Function GET_XY_LPARAM at C level.
+     + Function GET_DXDY_LPARAM at C level
+     * Some changes for 64 bit support.
+     + Functions GETGRIDCOLUMN, GETGRIDOLDSTATE, GETGRIDNEWSTATE,
+       GETGRIDDISPINFOINDEX, SETGRIDQUERYDATA and SETGRIDQUERYIMAGE
+       from c_windows.c
+
 2018-11-23 19:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! RTE at method Item line 3634: & Argument error.
@@ -239,14 +273,14 @@
 
 2018-11-06 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
-     ! TPRINTPDF does not print image after drawing a rectangle.
+     ! TPDFPRINT does not print image after drawing a rectangle.
      * Methods PrintRectangle and PrintRoundRectangle of TPRINT.
        The filler color now defaults to NIL instead of WHITE.
        To fill with WHITE you must explicitly specified it.
-     ! Methods PrintBarcodeX and PrintLineX of TPRINTPDF.
+     ! Methods PrintBarcodeX and PrintLineX of TPDFPRINT.
        The line color now defaults to NIL.
      ! Methods PrintRectangleX and PrintRoundRectangleX of
-       TPRINTPDF. The line and filler colors now default to NIL.
+       TPDFPRINT. The line and filler colors now default to NIL.
 
 2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
