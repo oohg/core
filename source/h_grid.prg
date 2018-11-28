@@ -92,6 +92,7 @@ CLASS TGrid FROM TControl
    DATA bEditCellValue            INIT Nil
    DATA bHeadRClick               INIT Nil
    DATA bOnEnter                  INIT Nil
+   DATA bOnScroll                 INIT NIL
    DATA bPosition                 INIT 0
    DATA cEditKey                  INIT "F2"
    DATA ClickOnCheckbox           INIT .T.
@@ -338,14 +339,21 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
 
-   ASSIGN ::aWidths  VALUE aWidths  TYPE "A"
-   ASSIGN ::aHeaders VALUE aHeaders TYPE "A"
+   ASSIGN ::aWidths   VALUE aWidths     TYPE "A"
+   ASSIGN ::aHeaders  VALUE aHeaders    TYPE "A"
+   ASSIGN lHasHeaders VALUE lHasHeaders TYPE "L" DEFAULT .T.
 
-   If Len( ::aHeaders ) != Len( ::aWidths )
-      MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program terminated." )
-   EndIf
+   IF lHasHeaders
+      IF Len( ::aHeaders ) != Len( ::aWidths )
+         MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program terminated." )
+      ENDIF
+   ELSE
+      IF Len( ::aHeaders ) != Len( ::aWidths )
+         ASize( ::aHeaders, Len( ::aWidths ) )
+      ENDIF
+   ENDIF
    If HB_IsArray( aRows )
-      If AScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( aHeaders ) } ) > 0
+      If AScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( ::aHeaders ) } ) > 0
          MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
       EndIf
    Else
@@ -1581,18 +1589,20 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
       EndIf
       EditControl := GetEditControlFromArray( EditControl, aEditControls, i, Self )
       EditControl := GetEditControlFromArray( EditControl, ::EditControls, i, Self )
-      If ! HB_IsObject( EditControl )
+      IF HB_ISOBJECT( EditControl )
+         // EditControl specified
+      ELSE
          cPicture := GetPictureFromArray( Self, i )
          IF ValType( cPicture ) $ "CM"
+            // Picture-based
             EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, i ), NIL, NIL, NIL, Self )
+         ELSEIF ValType( cPicture ) == "L" .AND. cPicture
+            EditControl := TGridControlImageList():New( Self )
          ELSE
-            IF ValType( cPicture ) == "L" .AND. cPicture
-               EditControl := TGridControlImageList():New( Self )
-            ELSE
-               EditControl := TGridControlTextBox():New( , , , , , , Self )
-            ENDIF
+            // Derive from data type
+            EditControl := GridControlObjectByType( aItemValues[ i ], Self )
          ENDIF
-      EndIf
+      ENDIF
       aEditControls2[ i ] := EditControl
       nWidth := Max( nWidth, EditControl:nDefWidth )
       nRow += EditControl:nDefHeight + 6
@@ -3265,7 +3275,7 @@ METHOD Events_Enter() CLASS TGrid
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
    Local nNotify := GetNotifyCode( lParam )
-   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItemValues
+   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItemValues, aData
 
    If nNotify == NM_CUSTOMDRAW
       IF ::lNeedsAdjust .AND. ::lEndTrack
@@ -3273,6 +3283,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
          SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
       ENDIF
       RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+
+   ElseIf nNotify == LVN_ENDSCROLL
+      aData := Get_DXDY_LPARAM( lParam )
+      AAdd( aData, GetScrollPos( ::hWnd, SB_HORZ ) )
+      AAdd( aData, GetScrollPos( ::hWnd, SB_VERT ) )
+      _OOHG_Eval( ::bOnScroll, aData )
 
    ElseIf nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -3676,15 +3692,21 @@ FUNCTION TGrid_SetArray( Self, uValue )
       FOR nColumn := 1 TO Len( uValue )
          xValue := uValue[ nColumn ]
          oEditControl := ::aEditControls[ nColumn ]
+         IF ! HB_ISOBJECT( oEditControl )
+            cPicture := GetPictureFromArray( Self, nColumn )
+            IF ValType( cPicture ) $ "CM"
+               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self )
+            ELSEIF ValType( cPicture ) == "L" .AND. cPicture
+               oEditControl := TGridControlImageList():New( Self )
+            ELSE
+               oEditControl := GridControlObjectByType( uValue, Self )
+            ENDIF
+            ::aEditControls[ nColumn ] := oEditControl 
+         ENDIF
          IF HB_ISOBJECT( oEditControl )
             aTemp[ nColumn ] := oEditControl:GridValue( xValue )
          ELSE
-            cPicture := GetPictureFromArray( Self, nColumn )
-            IF ValType( cPicture ) $ "CM"
-               aTemp[ nColumn ] := Trim( Transform( xValue, cPicture ) )
-            ELSE
-               aTemp[ nColumn ] := xValue
-            ENDIF
+            aTemp[ nColumn ] := xValue
          ENDIF
       NEXT
    ELSE
@@ -3692,15 +3714,21 @@ FUNCTION TGrid_SetArray( Self, uValue )
       FOR nColumn := 1 TO Len( uValue )
          xValue := uValue[ nColumn ]
          oEditControl := GetEditControlFromArray( NIL, ::EditControls, nColumn, Self )
+         IF ! HB_ISOBJECT( oEditControl )
+            cPicture := GetPictureFromArray( Self, nColumn )
+            IF ValType( cPicture ) $ "CM"
+               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self )
+            ELSEIF ValType( cPicture ) == "L" .AND. cPicture
+               oEditControl := TGridControlImageList():New( Self )
+            ELSE
+               oEditControl := GridControlObjectByType( uValue, Self )
+            ENDIF
+            ::aEditControls[ nColumn ] := oEditControl
+         ENDIF
          IF HB_ISOBJECT( oEditControl )
             aTemp[ nColumn ] := oEditControl:GridValue( xValue )
          ELSE
-            cPicture := GetPictureFromArray( Self, nColumn )
-            IF ValType( cPicture ) $ "CM"
-               aTemp[ nColumn ] := Trim( Transform( xValue, cPicture ) )
-            ELSE
-               aTemp[ nColumn ] := xValue
-            ENDIF
+            aTemp[ nColumn ] := xValue
          ENDIF
       NEXT
    ENDIF
@@ -7581,9 +7609,9 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 // -----------------------------------------------------------------------------
 {
    HWND hWnd = HWNDparam( 1 );
-   UINT message = (UINT) hb_parni( 2 );
-   WPARAM wParam = (WPARAM) hb_parni( 3 );
-   LPARAM lParam = (LPARAM) hb_parnl( 4 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    static PHB_SYMB s_Events2 = 0;  
    static PHB_SYMB s_Notify2 = 0;  
@@ -7811,7 +7839,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TGRID_EXECOLDWNDPROC )          /* FUNCTION TGrid_ExecOldWndProc( hWnd, nMsg, wParam, lParam ) -> uRetVal */
 {
-   HB_RETNL( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parnl( 3 ), (LPARAM) hb_parnl( 4 ) ) );
+   HB_RETNL( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( WPARAM ) HB_PARNL( 3 ), ( LPARAM ) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( INITLISTVIEW )
@@ -8470,7 +8498,7 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
 
 HB_FUNC( LISTVIEW_ITEMACTIVATE )
 {
-   LPNMITEMACTIVATE pData = ( NMITEMACTIVATE * ) hb_parnl( 1 );
+   LPNMITEMACTIVATE pData = ( NMITEMACTIVATE * ) HB_PARNL( 1 );
 
    hb_reta( 2 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -8479,7 +8507,7 @@ HB_FUNC( LISTVIEW_ITEMACTIVATE )
 
 HB_FUNC( LISTVIEW_LISTVIEW )
 {
-   LPNMLISTVIEW pData = ( NMLISTVIEW * ) hb_parnl( 1 );
+   LPNMLISTVIEW pData = ( NMLISTVIEW * ) HB_PARNL( 1 );
 
    hb_reta( 2 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -8514,14 +8542,16 @@ HB_FUNC( LISTVIEW_HITTEST )
 
 HB_FUNC( GET_XY_LPARAM )
 {
-   POINT point;
-
-   point.x = GET_X_LPARAM( hb_parnl( 1 ) );
-   point.y = GET_Y_LPARAM( hb_parnl( 1 ) );
-
    hb_reta( 2 );
-   HB_STORNI( point.y, -1, 1 );
-   HB_STORNI( point.x, -1, 2 );
+   HB_STORNI( GET_Y_LPARAM( HB_PARNL( 1 ) ), -1, 1 );
+   HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
+}
+
+HB_FUNC( GET_DXDY_LPARAM )
+{
+   hb_reta( 2 );
+   HB_STORNI( ( (LPNMLVSCROLL) HB_PARNL( 1 ) )->dx, -1, 1 );
+   HB_STORNI( ( (LPNMLVSCROLL) HB_PARNL( 1 ) )->dy, -1, 2 );
 }
 
 HB_FUNC( HEADER_HITTEST )
@@ -9209,7 +9239,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
+   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) HB_PARNL( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
@@ -9253,5 +9283,45 @@ HB_FUNC( HB_MILLISECONDS )
    hb_retnint( hb_dateMilliSeconds() );
 }
 #endif
+
+HB_FUNC( GETGRIDCOLUMN )
+{
+   hb_retni( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->iSubItem );
+}
+
+HB_FUNC( GETGRIDOLDSTATE )
+{
+   hb_retni( ( INT ) ( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->uOldState ) );
+}
+
+HB_FUNC( GETGRIDNEWSTATE )
+{
+   hb_retni( ( INT ) ( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->uNewState ) );
+}
+
+HB_FUNC( GETGRIDDISPINFOINDEX )
+{
+   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
+   INT iItem = pDispInfo->item.iItem;
+   INT iSubItem = pDispInfo->item.iSubItem;
+
+   hb_reta( 2 );
+   HB_STORNI( iItem + 1 , -1, 1 );
+   HB_STORNI( iSubItem + 1 , -1, 2 );
+}
+
+HB_FUNC( SETGRIDQUERYDATA )
+{
+   PHB_ITEM pValue = hb_itemNew( NULL );
+   LV_DISPINFO * pDispInfo = ( LV_DISPINFO * ) HB_PARNL( 1 );
+   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
+   pDispInfo->item.pszText = ( LPTSTR ) hb_itemGetCPtr( pValue );
+}
+
+HB_FUNC( SETGRIDQUERYIMAGE )
+{
+    LV_DISPINFO * pDispInfo = ( LV_DISPINFO * ) HB_PARNL( 1 );
+    pDispInfo->item.iImage = hb_parni( 2 );
+}
 
 #pragma ENDDUMP
