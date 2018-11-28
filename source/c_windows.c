@@ -482,11 +482,6 @@ HB_FUNC( GETFOCUS )
    HWNDret( GetFocus() );
 }
 
-HB_FUNC( GETGRIDCOLUMN )
-{
-   hb_retni( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->iSubItem );
-}
-
 HB_FUNC( MOVEWINDOW )
 {
    hb_retl( MoveWindow( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), ( HB_ISNIL( 6 ) ? TRUE : hb_parl( 6 ) ) ) );
@@ -640,7 +635,6 @@ HB_FUNC( ISWINDOWVISIBLE )
    hb_retl( IsWindowVisible( HWNDparam( 1 ) ) );
 }
 
-
 HB_FUNC( ISWINDOWMAXIMIZED )
 {
    hb_retl( IsZoomed( HWNDparam( 1 ) ) );
@@ -768,41 +762,6 @@ HB_FUNC( GETMSKTEXTLPARAM )
 HB_FUNC( GETWINDOW )
 {
    HWNDret( GetWindow( HWNDparam( 1 ), (UINT) hb_parni( 2 ) ) );
-}
-
-HB_FUNC( GETGRIDOLDSTATE )
-{
-   hb_retni( (INT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
-}
-
-HB_FUNC( GETGRIDNEWSTATE )
-{
-   hb_retni( (INT) ( ( (NM_LISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
-}
-
-HB_FUNC( GETGRIDDISPINFOINDEX )
-{
-   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
-   int iItem = pDispInfo->item.iItem;
-   int iSubItem = pDispInfo->item.iSubItem;
-
-   hb_reta( 2 );
-   HB_STORNI( iItem + 1 , -1, 1 );
-   HB_STORNI( iSubItem + 1 , -1, 2 );
-}
-
-HB_FUNC( SETGRIDQUERYDATA )
-{
-   PHB_ITEM pValue = hb_itemNew( NULL );
-   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
-   hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ));
-   pDispInfo->item.pszText = (LPTSTR) hb_itemGetCPtr( pValue );
-}
-
-HB_FUNC( SETGRIDQUERYIMAGE )
-{
-    LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
-    pDispInfo->item.iImage = hb_parni( 2 );
 }
 
 HB_FUNC( GETESCAPESTATE )
