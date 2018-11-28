@@ -690,7 +690,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
             }
             if( iOldPos != iNewPos && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
             {
-               SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, 1 );
+               SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, TRUE );
                RePaint( oSelf, NULL, NULL );
                hb_ret();
             }
@@ -756,7 +756,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
             }
             if( iOldPos != iNewPos && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
             {
-               SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, 1 );
+               SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, TRUE );
                RePaint( oSelf, NULL, NULL );
                hb_ret();
             }
@@ -839,7 +839,7 @@ HB_FUNC_STATIC( TTEXTARRAY_SETFONTSIZE )          /* FUNCTION TTextArray_SetFont
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TTEXTARRAY_MAXCHARS )          /* FUNCTION TTextArray_SetFontSize( Self, nOrd ) -> NIL */
+HB_FUNC_STATIC( TTEXTARRAY_MAXCHARS )          /* FUNCTION TTextArray_SetFontSize( Self, nOrd ) -> nCant */
 {
    PHB_ITEM pSelf;
    POCTRL oSelf;
