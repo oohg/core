@@ -648,9 +648,9 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TPicture
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   UINT message   = ( UINT )   hb_parni( 2 );
+   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
+   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
@@ -743,7 +743,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             iNewPos = ( iNewPos < ScrollInfo.nMin ) ? ScrollInfo.nMin : iNewPos;
             if( iOldPos != iNewPos )
             {
-               SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, 1 );
+               SetScrollPos( oSelf->hWnd, SB_HORZ, iNewPos, TRUE );
                GetClientRect( hWnd, &rect );
                hdc = GetDC( hWnd );
                _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
@@ -808,7 +808,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             iNewPos = ( iNewPos < ScrollInfo.nMin ) ? ScrollInfo.nMin : iNewPos;
             if( iOldPos != iNewPos )
             {
-               SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, 1 );
+               SetScrollPos( oSelf->hWnd, SB_VERT, iNewPos, TRUE );
                GetClientRect( hWnd, &rect );
                hdc = GetDC( hWnd );
                _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
