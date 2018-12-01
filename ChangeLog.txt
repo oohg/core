@@ -12,6 +12,21 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-01 11:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     + New parameter lMode to methods PrintBarCode and Int25.
+       When is set to .T. a leading "0" and a trailing check
+       digit is added to the barcode.
+       Set to .F. to avoid including the extra digits.
+       Defaults to .T.
+     * Some format.
+     + METHOD MaxRow and METHOD MaxCol to class TPDFPRINT.
+     + Underline support to method PrintDataX of class TPDFPRINT.
+       Note that trailing spaces are not underlined when the
+       string alignment is set to CENTER o RIGHT.
+     + Support for CENTER and RIGHT string aligment when the
+       printing units are set to "MM".
+
 2018-11-27 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_picture.prg
      * Some changes for 64 bit support.
