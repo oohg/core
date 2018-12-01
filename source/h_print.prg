@@ -247,10 +247,10 @@ CLASS TPRINTBASE
    METHOD SetUnits
    METHOD Sup5
    METHOD Upca
-   METHOD Version                INLINE ::cVersion
+   METHOD Version                 INLINE ::cVersion
 
-   MESSAGE PrintDos              METHOD PrintMode
-   MESSAGE PrintRaw              METHOD PrintMode
+   MESSAGE PrintDos               METHOD PrintMode
+   MESSAGE PrintRaw               METHOD PrintMode
 
    ENDCLASS
 
@@ -648,7 +648,7 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight ) CLASS TPRINTBASE
+METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight, lMode ) CLASS TPRINTBASE
 
    LOCAL nSize := 10
 
@@ -693,7 +693,7 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
    CASE cType == "EAN13"
       ::Ean13( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
    CASE cType == "INTER25"
-      ::Int25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Int25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight, lMode )
    CASE cType == "UPCA"
       ::Upca( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
    CASE cType == "SUP5"
@@ -743,9 +743,11 @@ METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINT
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth, lMode ) CLASS TPRINTBASE
 
-   ::Go_Code( _Int25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
+   ASSIGN lMode VALUE lMode TYPE "L" DEFAULT .T.
+
+   ::Go_Code( _Int25( cCode, lMode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN Self
 
@@ -4162,6 +4164,8 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD BeginPageX
    METHOD EndDocX
    METHOD InitX
+   METHOD MaxCol         
+   METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX
    METHOD PrintImageX
@@ -4172,6 +4176,32 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD SetPreviewSize          BLOCK { || NIL }
 
    ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxCol
+
+   LOCAL nRet
+
+   IF ::cUnits == "MM"
+      nRet := ::oPDF:Width( "M" ) - ::oPDF:Left( "M" ) * 2
+   ELSE
+      nRet := ::oPDF:Width( "R" ) - ::oPDF:Left( "R" ) * 2
+   ENDIF
+
+   RETURN nRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxRow
+
+   LOCAL nRet
+
+   IF ::cUnits == "MM"
+      nRet := ::oPDF:Bottom( "M" )
+   ELSE
+      nRet := ::oPDF:Bottom( "R" )
+   ENDIF
+
+   RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitX() CLASS TPDFPRINT
@@ -4263,13 +4293,12 @@ METHOD BeginPageX() CLASS TPDFPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPDFPRINT
 
-   LOCAL nType, cColor
+   LOCAL nType, cColor, cRealText, nSpaces
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( cAlign )
    HB_SYMBOL_UNUSED( nLen )
    HB_SYMBOL_UNUSED( nAngle )
-   HB_SYMBOL_UNUSED( lUnder )    // TODO: Add underline support
    HB_SYMBOL_UNUSED( lStrike )
    HB_SYMBOL_UNUSED( nWidth )
 
@@ -4303,14 +4332,31 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 
    IF ::cUnits == "MM"
       nLin += 3
+   ELSE
+      IF cAlign $ "CR"
+         cRealText := LTrim( cText )
+         nSpaces := Len( cText ) - Len( cRealText )
+         cText := cRealText
+      ELSE
+         nSpaces := 0
+      ENDIF
    ENDIF
 
    cText := cColor + cText
+   IF lUnder
+      cText := ::oPdf:Underline( cText )
+   ENDIF
 
    IF ::cUnits == "MM"
-      ::oPdf:AtSay( cText, nLin, nCol, "M" )
+      IF cAlign == "C"
+         ::oPdf:Center( cText, nLin, nCol + nLen / 2, "M" )
+      ELSEIF cAlign == "R"
+         ::oPdf:RJust( cText, nLin, nCol + nLen - 1, "M" )
+      ELSE
+         ::oPdf:AtSay( cText, nLin, nCol, "M" )
+      ENDIF
    ELSE
-      ::oPdf:AtSay( cText, nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, "M" )
+      ::oPdf:AtSay( cText, nLin * ::nmVer + ::nvFij, ( nCol + nSpaces ) * ::nmHor + ::nhFij * 2, "M" )
    ENDIF
 
    RETURN Self
