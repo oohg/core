@@ -907,6 +907,8 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
    BOOL bShowText;
    BUTTON_IMAGELIST bi ;
    RECT content_rect, rect, aux_rect;
+   LONG lBackColor;
+   HBRUSH hBrush;
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
    {
@@ -980,7 +982,17 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
          ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
       }
 
-      if( ! bSolid )
+      if( bSolid )
+      {
+         lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
+         if( lBackColor != -1 )
+         {
+            hBrush = CreateSolidBrush( lBackColor );
+            FillRect( pCustomDraw->hdc, &pCustomDraw->rc, hBrush );
+            DeleteObject( hBrush );
+         }
+      }
+      else
       {
          /* draw themed button background appropriate to button state */
          ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
