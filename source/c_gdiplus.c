@@ -108,7 +108,7 @@ typedef struct
 
 typedef struct
 {
-   unsigned int Count;
+   UINT Count;
    ENCODER_PARAMETER Parameter[];
 } ENCODER_PARAMETERS;
 
@@ -153,7 +153,7 @@ typedef LONG(__stdcall* GDIPLUSSTARTUP) ( ULONG*, const GDIPLUS_STARTUP_INPUT*, 
 typedef void(__stdcall* GDIPLUSSHUTDOWN) ( ULONG );
 
 typedef LONG(__stdcall* GDIPCREATEBITMAPFROMHBITMAP) ( void*, void*, void** );
-typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( unsigned int*, unsigned int* );
+typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( UINT*, UINT* );
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERS) ( UINT, UINT, IMAGE_CODEC_INFO* );
 typedef LONG(__stdcall* GDIPSAVEIMAGETOFILE) ( void*, const unsigned short*, const CLSID*, const ENCODER_PARAMETERS* );
 typedef LONG(__stdcall* GDIPLOADIMAGEFROMSTREAM) ( IStream*, void** );
@@ -512,7 +512,7 @@ HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
    hb_retl( SaveHBitmapToFile( (void*) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
 }
 
-BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, unsigned int Width, unsigned int Height, const char *MimeType, ULONG JpgQuality, ULONG ColorDepth )
+BOOL SaveHBitmapToFile( void *HBitmap, const char *FileName, UINT Width, UINT Height, const char *MimeType, ULONG JpgQuality, ULONG ColorDepth )
 {
    void *GBitmap;
    void *GBitmapThumbnail;

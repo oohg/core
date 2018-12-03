@@ -250,10 +250,10 @@ HB_FUNC( GETIPADDRESS )          /* FUNCTION GetIPAddress( hWnd ) -> { nF1, nF2,
 
    SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
 
-   v1 = ( BYTE ) ( unsigned int ) FIRST_IPADDRESS( pdwAddr );
-   v2 = ( BYTE ) ( unsigned int ) SECOND_IPADDRESS( pdwAddr );
-   v3 = ( BYTE ) ( unsigned int ) THIRD_IPADDRESS( pdwAddr );
-   v4 = ( BYTE ) ( unsigned int ) FOURTH_IPADDRESS( pdwAddr );
+   v1 = ( BYTE ) ( UINT ) FIRST_IPADDRESS( pdwAddr );
+   v2 = ( BYTE ) ( UINT ) SECOND_IPADDRESS( pdwAddr );
+   v3 = ( BYTE ) ( UINT ) THIRD_IPADDRESS( pdwAddr );
+   v4 = ( BYTE ) ( UINT ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
    HB_STORNI( ( int ) v1, -1, 1 );
@@ -270,10 +270,10 @@ HB_FUNC( GETIPADDRESSSTRING )          /* FUNCTION GetIPAddressString( hWnd ) ->
 
    SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
 
-   v[ 0 ] = ( BYTE ) ( unsigned int ) FIRST_IPADDRESS( pdwAddr );
-   v[ 1 ] = ( BYTE ) ( unsigned int ) SECOND_IPADDRESS( pdwAddr );
-   v[ 2 ] = ( BYTE ) ( unsigned int ) THIRD_IPADDRESS( pdwAddr );
-   v[ 3 ] = ( BYTE ) ( unsigned int ) FOURTH_IPADDRESS( pdwAddr );
+   v[ 0 ] = ( BYTE ) ( UINT ) FIRST_IPADDRESS( pdwAddr );
+   v[ 1 ] = ( BYTE ) ( UINT ) SECOND_IPADDRESS( pdwAddr );
+   v[ 2 ] = ( BYTE ) ( UINT ) THIRD_IPADDRESS( pdwAddr );
+   v[ 3 ] = ( BYTE ) ( UINT ) FOURTH_IPADDRESS( pdwAddr );
 
    hb_retclen( ( char * ) &v[ 0 ], 4 );
 }

@@ -703,7 +703,7 @@ HB_FUNC( GETITEMWIDTH )
 {
    HWND  hWnd;
    int   *piItems;
-   unsigned int iItems, iSize, iPos;
+   UINT iItems, iSize, iPos;
 
    hWnd = HWNDparam( 1 );
    iPos = hb_parni( 2 );
