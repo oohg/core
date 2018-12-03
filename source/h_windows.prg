@@ -64,6 +64,2021 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+EXTERN EVAL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+CLASS TWindow
+
+   DATA aAcceleratorKeys          INIT {}                                     // Accelerator hotkeys: { Id, Mod, Key, Action }
+   DATA aBEColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}}   // outside color: up, right, bottom, left
+   DATA aBIColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}}   // inside color: up, right, bottom, left
+   DATA aControlInfo              INIT { Chr( 0 ) }
+   DATA aControls                 INIT {}
+   DATA aControlsNames            INIT {}
+   DATA Active                    INIT .F.
+   DATA aCtrlsTabIndxs            INIT {}
+   DATA aHotKeys                  INIT {}                                     // OS controlled hotkeys: { Id, Mod, Key, Action }
+   DATA aKeys                     INIT {}                                     // App-controlled hotkeys: { Id, Mod, Key, Action }
+   DATA aProperties               INIT {}                                     // Pseudo-properties: { cProperty, xValue }
+   DATA bKeyDown                  INIT NIL                                    // WM_KEYDOWN handler
+   DATA Block                     INIT NIL
+   DATA Bold                      INIT .F.
+   DATA Cargo                     INIT NIL
+   DATA cFocusFontName            INIT ""
+   DATA cFontName                 INIT ""
+   DATA ClientAdjust              INIT 0                                      // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=client
+   DATA ClientHeightUsed          INIT 0
+   DATA ColMargin                 INIT 0
+   DATA Container                 INIT NIL
+   DATA ContainerhWndValue        INIT NIL
+   DATA ContextMenu               INIT NIL
+   DATA cStatMsg                  INIT NIL
+   DATA DefBkColorEdit            INIT NIL
+   DATA DropEnabled               INIT .F.                                    // .T. if control accepts drops
+   DATA FntAdvancedGM             INIT .F.
+   DATA FntAngle                  INIT 0
+   DATA FntCharset                INIT DEFAULT_CHARSET
+   DATA FntOrientation            INIT 0
+   DATA FntWidth                  INIT 0
+   DATA FocusBackColor
+   DATA FocusBold                 INIT .F.
+   DATA FocusColor
+   DATA FocusItalic               INIT .F.
+   DATA FocusStrikeout            INIT .F.
+   DATA FocusUnderline            INIT .F.
+   DATA HasDragFocus              INIT .F.                                    // .T. when drag image is over a drop-enabled control
+   DATA hDC                                                                   
+   DATA hDynamicValues            INIT NIL
+   DATA HScrollBar                INIT NIL
+   DATA hWnd                      INIT 0
+   DATA IsAdjust                  INIT .F.
+   DATA Italic                    INIT .F.
+   DATA lAdjust                   INIT .T.
+   DATA lControlsAsProperties     INIT .F.
+   DATA lDestroyed                INIT .F.
+   DATA lEnabled                  INIT .T.
+   DATA lFixFont                  INIT .F.
+   DATA lfixwidth                 INIT .F.
+   DATA lForm                     INIT .F.
+   DATA lInternal                 INIT .T.
+   DATA lProcMsgsOnVisible        INIT .T.
+   DATA lRedraw                   INIT .T.
+   DATA lReleasing                INIT .F.
+   DATA lRtl                      INIT .F.
+   DATA lVisible                  INIT .T.
+   DATA lVisualStyled             INIT NIL PROTECTED
+   DATA Name                      INIT ""
+   DATA nAnchor                   INIT NIL
+   DATA nBorders                  INIT {0,0,0}                                // size of outside border, size of gap, size of inside border.
+   DATA nCol                      INIT 0
+   DATA nDefAnchor                INIT 3
+   DATA NestedClick               INIT .F.
+   DATA nFixedHeightUsed          INIT 0
+   DATA nFocusFontSize            INIT 0
+   DATA nFontSize                 INIT 0
+   DATA nHeight                   INIT 0
+   DATA nOLdh                     INIT NIL
+   DATA nOldw                     INIT NIL
+   DATA nPaintCount                                                           // counter for GetDC and ReleaseDC methods
+   DATA nRow                      INIT 0
+   DATA nWidth                    INIT 0
+   DATA nWindowState              INIT 0                                      // 0=normal 1=minimized 2=maximized
+   DATA OnClick                   INIT NIL
+   DATA OnDblClick                INIT NIL
+   DATA OnDropFiles               INIT NIL
+   DATA OnGotFocus                INIT NIL
+   DATA OnLostFocus               INIT NIL
+   DATA OnMClick                  INIT NIL
+   DATA OnMDblClick               INIT NIL
+   DATA OnMouseDrag               INIT NIL
+   DATA OnMouseMove               INIT NIL
+   DATA OnRClick                  INIT NIL
+   DATA OnRDblClick               INIT NIL
+   DATA OverWndProc               INIT NIL
+   DATA Parent                    INIT NIL
+   DATA RowMargin                 INIT 0
+   DATA Strikeout                 INIT .F.
+   DATA TabHandle                 INIT 0
+   DATA Type                      INIT ""
+   DATA Underline                 INIT .F.
+   DATA VarName                   INIT ""
+   DATA VScrollBar                INIT NIL
+   DATA WndProc                   INIT NIL
+
+   ERROR HANDLER Error
+
+   METHOD AcceleratorKey                                                      // Accelerator hotkeys
+   METHOD AcceptFiles             SETGET
+   METHOD Action                  SETGET
+   METHOD AddControl
+   METHOD Adjust                  SETGET
+   METHOD AdjustAnchor
+   METHOD AdjustResize
+   METHOD Anchor                  SETGET
+   METHOD Arc
+   METHOD ArcTo
+   METHOD BackBitMap              SETGET
+   METHOD BackColor               SETGET
+   METHOD BackColorCode           SETGET
+   METHOD BackColorSelected       SETGET
+   METHOD Box
+   METHOD BringToTop              BLOCK { |Self| BringWindowToTop( ::hWnd ) }
+   METHOD BrushHandle             SETGET
+   METHOD Caption                 SETGET
+   METHOD CheckClientsPos
+   METHOD Click                   BLOCK { |Self| ::DoEvent( ::OnClick, "CLICK" ) }
+   METHOD Chord
+   METHOD ClientHeight            SETGET
+   METHOD ClientsPos
+   METHOD ClientsPos2
+   METHOD ClientWidth             SETGET
+   METHOD ContainerEnabled        BLOCK { |Self| ::lEnabled .AND. iif( ::Container != NIL, ::Container:ContainerEnabled, .T. ) }
+   METHOD ContainerReleasing      BLOCK { |Self| ::lReleasing .OR. iif( ::Container != NIL, ::Container:ContainerReleasing, iif( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
+   METHOD ContainerVisible        BLOCK { |Self| ::lVisible .AND. iif( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
+   METHOD Control
+   METHOD DebugMessageName
+   METHOD DebugMessageNameCommand
+   METHOD DebugMessageNameNotify
+   METHOD DebugMessageQuery
+   METHOD DebugMessageQueryNotify
+   METHOD DefWindowProc( nMsg, wParam, lParam ) BLOCK { |Self, nMsg, wParam, lParam| DefWindowProc( ::hWnd, nMsg, wParam, lParam ) }
+   METHOD DeleteControl
+   METHOD Disable                 BLOCK { |Self| ::Enabled := .F. }
+   METHOD DisableVisualStyle
+   METHOD DynamicValues           BLOCK { |Self| iif( ::hDynamicValues == NIL, ::hDynamicValues := TDynamicValues():New( Self ), ::hDynamicValues ) }
+   METHOD Ellipse
+   METHOD Enable                  BLOCK { |Self| ::Enabled := .T. }
+   METHOD Enabled                 SETGET
+   METHOD Events
+   METHOD Events_Color            BLOCK { || NIL }
+   METHOD Events_Enter            BLOCK { || NIL }
+   METHOD Events_HScroll          BLOCK { || NIL }
+   METHOD Events_Size             BLOCK { || NIL }
+   METHOD Events_VScroll          BLOCK { || NIL }
+   METHOD ExStyle                 SETGET
+   METHOD Fill
+   METHOD FontColor               SETGET
+   METHOD FontColorCode           SETGET
+   METHOD FontColorSelected       SETGET
+   METHOD FontHandle              SETGET
+   METHOD ForceHide               BLOCK { |Self| HideWindow( ::hWnd ), ::CheckClientsPos(), ProcessMessages() }
+   METHOD GetBitMap( l )          BLOCK { |Self, l| _GetBitMap( ::hWnd, l ) }
+   METHOD GetDC                   INLINE iif( ::hDC == NIL, ::hDC := GetDC( ::hWnd ), ), iif( ::nPaintCount == NIL, ::nPaintCount := 1, ::nPaintCount ++ ), ::hDC
+   METHOD GetMaxCharsInWidth
+   METHOD GetTextHeight
+   METHOD GetTextWidth
+   METHOD Hide                    BLOCK { |Self| ::Visible := .F. }
+   METHOD HotKey                                                              // OS-controlled hotkeys
+   METHOD ImageList               SETGET
+   METHOD IsVisualStyled
+   METHOD Line
+   METHOD LookForKey
+   METHOD Object                  BLOCK { |Self| Self }
+   METHOD ParentDefaults
+   METHOD Pie
+   METHOD PolyBezier
+   METHOD PolyBezierTo
+   METHOD Polygon
+   METHOD PreRelease
+   METHOD Print
+   METHOD Property                                                            // Pseudo-properties
+   METHOD ReDraw                  BLOCK { |Self| RedrawWindow( ::hWnd ) }
+   METHOD RefreshData
+   METHOD Release
+   METHOD ReleaseAttached
+   METHOD ReleaseDC               INLINE iif( -- ::nPaintCount == 0, iif( ReleaseDC( ::hWnd, ::hDC ), ::hDC := NIL, NIL ), NIL )
+   METHOD RoundBox
+   METHOD RTL                     SETGET
+   METHOD SaveAs
+   METHOD SaveData
+   METHOD SearchParent
+   METHOD SetFocus
+   METHOD SethWnd
+   METHOD SetKey                                                              // Application-controlled hotkeys
+   METHOD SetRedraw
+   METHOD SetSplitBox             BLOCK { || .F. }                            // Specific hack
+   METHOD SetSplitBoxInfo         BLOCK { |Self, a, b, c, d| iif( ::Container != NIL, ::Container:SetSplitBox( a, b, c, d ), .F. ) }   // Specific hack
+   METHOD Show                    BLOCK { |Self| ::Visible := .T. }
+   METHOD StartInfo
+   METHOD Style                   SETGET
+   METHOD TabStop                 SETGET
+   METHOD Value                   BLOCK { || NIL }
+   METHOD Visible                 SETGET
+
+   ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD IsVisualStyled CLASS TWindow
+
+   IF ::lVisualStyled == NIL
+      ::lVisualStyled := _OOHG_UsesVisualStyle()
+   ENDIF
+
+   RETURN ::lVisualStyled
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DisableVisualStyle CLASS TWindow
+
+   IF ::IsVisualStyled
+      IF DisableVisualStyle( ::hWnd )
+         ::lVisualStyled := .F.
+         ::Redraw()
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PreRelease() CLASS TWindow
+
+   AEval( ::aControls, { |o| o:PreRelease() } )
+
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Enabled( lEnabled ) CLASS TWindow
+
+   IF HB_ISLOGICAL( lEnabled )
+      ::lEnabled := lEnabled
+      IF ::ContainerEnabled
+         EnableWindow( ::hWnd )
+      ELSE
+         DisableWindow( ::hWnd )
+      ENDIF
+   ENDIF
+
+   RETURN ::lEnabled
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD TabStop( lTabStop ) CLASS TWindow
+
+   IF HB_ISLOGICAL( lTabStop )
+      WindowStyleFlag( ::hWnd, WS_TABSTOP, iif( lTabStop, WS_TABSTOP, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_TABSTOP )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Style( nStyle ) CLASS TWindow
+
+   IF HB_ISNUMERIC( nStyle )
+      SetWindowStyle( ::hWnd, nStyle )
+   ENDIF
+
+   RETURN GetWindowStyle( ::hWnd )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ExStyle( nExStyle ) CLASS TWindow
+
+   IF HB_ISNUMERIC( nExStyle )
+      SetWindowExStyle( ::hWnd, nExStyle )
+      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
+   ENDIF
+
+   RETURN GetWindowExStyle( ::hWnd )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD RTL( lRTL ) CLASS TWindow
+
+   IF HB_ISLOGICAL( lRTL )
+      _UpdateRTL( ::hWnd, lRTL )
+      ::lRtl := lRTL
+   ENDIF
+
+   RETURN ::lRtl
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Action( bAction ) CLASS TWindow
+
+   IF PCount() > 0
+      ::OnClick := bAction
+   ENDIF
+
+   RETURN ::OnClick
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SaveData() CLASS TWindow
+
+   _OOHG_EVAL( ::Block, ::Value )
+   AEval( ::aControls, { |o| iif( o:Container == NIL, o:SaveData(), NIL ) } )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD RefreshData() CLASS TWindow
+
+   IF HB_ISBLOCK( ::Block )
+      ::Value := Eval( ::Block )
+   ENDIF
+   AEval( ::aControls, { |o| o:RefreshData() } )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
+
+   LOCAL myobject, cWork, cExt
+
+   IF ValType( cType ) $ "CM"
+     cType := Upper( cType )
+   ELSE
+     cType := "BMP"
+   ENDIF
+   IF cType == "BMP"
+      cExt := ".bmp"
+   ELSEIF cType == "JPEG" .OR. cType == "JPG"
+      cExt := ".jpg"
+   ELSEIF cType == "GIF"
+      cExt := ".gif"
+   ELSEIF cType == "TIFF" .OR. cType == "TIF"
+      cExt := ".tif"
+   ELSEIF cType == "PNG"
+      cExt := ".png"
+   ENDIF
+   cWork := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+   DO WHILE File( cWork )
+      cWork := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+   ENDDO
+
+   ASSIGN y1 VALUE y1 TYPE "N" DEFAULT 44
+   ASSIGN x1 VALUE x1 TYPE "N" DEFAULT 110
+   ASSIGN x  VALUE x  TYPE "N" DEFAULT 1
+   ASSIGN y  VALUE y  TYPE "N" DEFAULT 1
+
+   ::SaveAs( cWork, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
+
+   myobject := TPrint()
+
+   WITH OBJECT myobject
+      :Init()
+      :SelPrinter( .T., .T., .T. )  /// select, preview, landscape
+      IF ! :lPrError
+         :BeginDoc( "ooHG printing" )
+         :BeginPage()
+         :PrintImage( y, x, y1, x1, cwork )
+         :Endpage()
+         :EndDoc()
+      ENDIF
+      :Release()
+   END
+
+   FErase( cWork )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
+
+   LOCAL hBitMap, aSize
+
+   IF ValType( cType ) $ "CM"
+     cType := Upper( cType )
+   ELSE
+     cType := "BMP"
+   ENDIF
+   ::BringToTop()
+   hBitMap := ::GetBitMap( lAll )
+   aSize := _OOHG_SizeOfHBitmap( hBitMap )
+   IF cType == "BMP"
+      _SaveBitmap( hBitMap, cFile )
+   ELSE
+      IF gPlusInit()
+         IF cType == "JPEG" .OR. cType == "JPG"
+            IF ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 100
+              nQuality := 100
+            ENDIF
+            // JPEG images are always saved at 24 bpp color depth.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[ 1 ], aSize[ 2 ], "image/jpeg", nQuality, NIL )
+         ELSEIF cType == "GIF"
+            // GIF images do not support parameters.
+            // GIF images are always saved at 8 bpp color depth.
+            // GIF images are always compressed using LZW algorithm.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[ 1 ], aSize[ 2 ], "image/gif", NIL, NIL )
+         ELSEIF cType == "TIFF" .OR. cType == "TIF"
+            IF ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 1
+              // This the default value: LZW compression.
+              nQuality := 1
+            ENDIF
+            IF ValType( nColorDepth ) != "N" .OR. ( nColorDepth # 1 .AND. nColorDepth # 4 .AND. nColorDepth # 8 .AND. nColorDepth # 24 .AND. nColorDepth # 32 )
+              // This is the default value: 32 bpp.
+              nColorDepth := 32
+            ENDIF
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[ 1 ], aSize[ 2 ], "image/tiff", nQuality, nColorDepth )
+         ELSEIF cType == "PNG"
+            // PNG images do not support parameters.
+            // PNG images are always saved at 24 bpp color depth if they don't have transparecy
+            // or at 32 bpp if they have it.
+            // PNG images are always compressed using ZIP algorithm.
+            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[ 1 ], aSize[ 2 ], "image/png", NIL, NIL )
+         ENDIF
+         gPlusDeInit()
+      ENDIF
+   ENDIF
+   DeleteObject( hBitMap )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AddControl( oControl ) CLASS TWindow
+
+   AAdd( ::aControls,      oControl )
+   AAdd( ::aControlsNames, Upper( AllTrim( oControl:Name ) ) + Chr( 255 ) )
+   AAdd( ::aCtrlsTabIndxs, Len( ::aControls ) )
+
+   RETURN oControl
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DeleteControl( oControl ) CLASS TWindow
+
+   LOCAL nPos, nDelOrder
+
+   nPos := AScan( ::aControlsNames, Upper( AllTrim( oControl:Name ) ) + Chr( 255 ) )
+   IF nPos > 0
+      _OOHG_DeleteArrayItem( ::aControls,       nPos )
+      _OOHG_DeleteArrayItem( ::aControlsNames,  nPos )
+      nDelOrder := ::aCtrlsTabIndxs[ nPos ]
+      _OOHG_DeleteArrayItem( ::aCtrlsTabIndxs, nPos )
+      // renumber to avoid gaps
+      AEval( ::aCtrlsTabIndxs, { | nOrder, i | iif( nOrder > nDelOrder, ::aCtrlsTabIndxs[ i ] --, NIL ) } )
+   ENDIF
+
+   RETURN oControl
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SearchParent( uParent ) CLASS TWindow
+
+   IF ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
+      IF ! _IsWindowDefined( uParent )
+         MsgOOHGError( "Window: " + uParent + " is not defined. Program terminated." )
+      ELSE
+         uParent := GetFormObject( uParent )
+      ENDIF
+   ENDIF
+
+   IF ! HB_ISOBJECT( uParent )
+      uParent := SearchParentWindow( ::lInternal )
+   ENDIF
+
+   IF ::lInternal
+      IF ! HB_ISOBJECT( uParent )
+         MsgOOHGError( "Window: Parent is not defined. Program terminated." )
+      ENDIF
+
+      // NOTE: For INTERNALs, sets ::Parent and ::Container
+      // Checks IF parent is a form or container
+      IF uParent:lForm
+         ::Parent := uParent
+         // Checks for an open "control container" structure in the specified parent form
+         ::Container := TApplication():Define():ActiveFrameContainer( ::Parent:hWnd )
+      ELSE
+         ::Container := uParent
+         ::Parent := ::Container:Parent
+      ENDIF
+   ENDIF
+
+   RETURN uParent
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ParentDefaults( cFontName, nFontSize, uFontColor, lNoProc ) CLASS TWindow
+
+   // Font Name:
+   IF ValType( cFontName ) == "C" .AND. ! Empty( cFontName )
+      // Specified font
+      ::cFontName := cFontName
+   ELSEIF ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
+      // Pre-registered
+   ELSEIF ::Container != NIL .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
+      // Container
+      ::cFontName := ::Container:cFontName
+   ELSEIF ::Parent != NIL .AND. ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
+      // Parent form
+      ::cFontName := ::Parent:cFontName
+   ELSE
+       // Default
+      ::cFontName := _OOHG_DefaultFontName
+   ENDIF
+
+   // Font Size:
+   IF HB_ISNUMERIC( nFontSize ) .AND. nFontSize != 0
+      // Specified size
+      ::nFontSize := nFontSize
+   ELSEIF HB_ISNUMERIC( ::nFontSize ) .AND. ::nFontSize != 0
+      // Pre-registered
+   ELSEIF ::Container != NIL .AND. HB_ISNUMERIC( ::Container:nFontSize ) .AND. ::Container:nFontSize != 0
+      // Container
+      ::nFontSize := ::Container:nFontSize
+   ELSEIF ::Parent != NIL .AND. HB_ISNUMERIC( ::Parent:nFontSize ) .AND. ::Parent:nFontSize != 0
+      // Parent form
+      ::nFontSize := ::Parent:nFontSize
+   ELSE
+       // Default
+      ::nFontSize := _OOHG_DefaultFontSize
+   ENDIF
+
+   // Font Color:
+   IF ValType( uFontColor ) $ "ANCM"
+      // Specified color
+      ::FontColor := uFontColor
+   ELSEIF ValType( ::FontColor ) $ "ANCM"
+      // Pre-registered
+      // To detect about "-1" !!!
+   ELSEIF ::Container != NIL .AND. ValType( ::Container:FontColor ) $ "ANCM"
+      // Container
+      ::FontColor := ::Container:FontColor
+   ELSEIF ::Parent != NIL .AND. ValType( ::Parent:FontColor ) $ "ANCM"
+      // Parent form
+      ::FontColor := ::Parent:FontColor
+   ELSE
+       // Default
+       ::FontColor := _OOHG_DefaultFontColor
+   ENDIF
+
+   IF HB_ISLOGICAL( lNoProc )
+      ::lProcMsgsOnVisible := ! lNoProc
+   ELSEIF ::Container != NIL
+      ::lProcMsgsOnVisible := ::Container:lProcMsgsOnVisible
+   ELSEIF ::Parent != NIL
+      ::lProcMsgsOnVisible := ::Parent:lProcMsgsOnVisible
+   ENDIF
+
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Error( xParam ) CLASS TWindow
+
+   LOCAL nPos, cMessage
+
+   cMessage := __GetMessage()
+
+   nPos := AScan( ::aControlsNames, cMessage + Chr( 255 ) )
+   IF nPos > 0
+      IF ::lControlsAsProperties
+         RETURN ::aControls[ nPos ]:Value
+      ELSE
+         RETURN ::aControls[ nPos ]
+      ENDIF
+   ENDIF
+
+   IF PCount() >= 1 .AND. ::lControlsAsProperties .AND. Left( cMessage, 1 ) == "_"
+      nPos := AScan( ::aControlsNames, SubStr( cMessage, 2 ) + Chr( 255 ) )
+      IF nPos > 0
+         RETURN ( ::aControls[ nPos ]:Value := xParam )
+      ENDIF
+   ENDIF
+
+   IF PCount() >= 1
+      nPos := AScan( ::aProperties, { |a| "_" + a[ 1 ] == cMessage } )
+      IF nPos > 0
+         ::aProperties[ nPos ][ 2 ] := xParam
+         RETURN ::aProperties[ nPos ][ 2 ]
+      ENDIF
+   ELSE
+      nPos := AScan( ::aProperties, { |a| a[ 1 ] == cMessage } )
+      IF nPos > 0
+         RETURN ::aProperties[ nPos ][ 2 ]
+      ENDIF
+   ENDIF
+
+   RETURN ::MsgNotFound( cMessage )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Control( cControl ) CLASS TWindow
+
+   LOCAL nPos
+
+   nPos := AScan( ::aControlsNames, Upper( AllTrim( cControl ) ) + Chr( 255 ) )
+
+   RETURN iif( nPos > 0, ::aControls[ nPos ], NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+#define HOTKEY_ID        1
+#define HOTKEY_MOD       2
+#define HOTKEY_KEY       3
+#define HOTKEY_ACTION    4
+
+METHOD HotKey( nKey, nFlags, bAction ) CLASS TWindow
+
+   LOCAL nPos, nId, uRet := NIL
+
+   nPos := AScan( ::aHotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   IF nPos > 0
+      uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
+   ENDIF
+   IF PCount() > 2
+      IF HB_ISBLOCK( bAction )
+         IF nPos > 0
+            ::aHotKeys[ nPos ][ HOTKEY_ACTION ] := bAction
+         ELSE
+            nId := _GetId()
+            AAdd( ::aHotKeys, { nId, nFlags, nKey, bAction } )
+            InitHotKey( ::hWnd, nFlags, nKey, nId )
+         ENDIF
+      ELSE
+         IF nPos > 0
+            ReleaseHotKey( ::hWnd, ::aHotKeys[ nPos ][ HOTKEY_ID ] )
+            _OOHG_DeleteArrayItem( ::aHotKeys, nPos )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
+
+   LOCAL bCode
+
+   bCode := _OOHG_SetKey( ::aKeys, nKey, nFlags )
+   IF PCount() > 2
+      _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
+   ENDIF
+
+   RETURN bCode
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AcceleratorKey( nKey, nFlags, bAction ) CLASS TWindow
+
+   LOCAL nPos, nId, uRet := NIL
+
+   nPos := AScan( ::aAcceleratorKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   IF nPos > 0
+      uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
+   ENDIF
+   IF PCount() > 2
+      IF HB_ISBLOCK( bAction )
+         IF nPos > 0
+            ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ] := bAction
+         ELSE
+            nId := _GetId()
+            AAdd( ::aAcceleratorKeys, { nId, nFlags, nKey, bAction } )
+            InitHotKey( ::hWnd, nFlags, nKey, nId )
+         ENDIF
+      ELSE
+         IF nPos > 0
+            ReleaseHotKey( ::hWnd, ::aAcceleratorKeys[ nPos ][ HOTKEY_ID ] )
+            _OOHG_DeleteArrayItem( ::aAcceleratorKeys, nPos )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD LookForKey( nKey, nFlags ) CLASS TWindow
+
+   LOCAL lDone
+
+   IF ::Active .AND. LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
+      lDone := .T.
+   ELSEIF ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags, Self )
+      lDone := .T.
+   ELSEIF HB_ISOBJECT( ::Container )
+      lDone := ::Container:LookForKey( nKey, nFlags )
+   ELSEIF HB_ISOBJECT( ::Parent ) .AND. ::lInternal
+      lDone := ::Parent:LookForKey( nKey, nFlags )
+   ELSE
+      IF LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, TForm() )
+         lDone := .T.
+      ELSEIF LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags, TForm() )   // Application-wide WM_KEYDOWN handler
+         lDone := .T.
+      ELSE
+         lDone := .F.
+      ENDIF
+   ENDIF
+
+   RETURN lDone
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
+
+   LOCAL nPos, lDone
+
+   nPos := AScan( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
+   IF nPos > 0
+      ::DoEvent( aKeys[ nPos ][ HOTKEY_ACTION ], "HOTKEY", { nKey, nFlags } )
+      lDone := .T.
+   ELSE
+      lDone := .F.
+   ENDIF
+
+   RETURN lDone
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags, Self )
+
+   LOCAL lDone
+
+   IF HB_ISBLOCK( bKeyDown )
+      lDone := ::DoEvent( bKeyDown, "KEYDOWN", { nKey, nFlags } )
+      IF ! HB_ISLOGICAL( lDone )
+         lDone := .F.
+      ENDIF
+   ELSE
+      lDone := .F.
+   ENDIF
+
+   RETURN lDone
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Property( cProperty, xValue ) CLASS TWindow
+
+   LOCAL nPos
+
+   cProperty := Upper( AllTrim( cProperty ) )
+   nPos := AScan( ::aProperties, { |a| a[ 1 ] == cProperty } )
+   IF PCount() >= 2
+      IF nPos > 0
+         ::aProperties[ nPos ][ 2 ] := xValue
+      ELSE
+         AAdd( ::aProperties, { cProperty, xValue } )
+      ENDIF
+   ELSE
+      IF nPos > 0
+         xValue := ::aProperties[ nPos ][ 2 ]
+      ELSE
+         // RTE?
+         xValue := NIL
+      ENDIF
+   ENDIF
+
+   RETURN xValue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ReleaseAttached() CLASS TWindow
+
+   // Release hot keys
+   AEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aHotKeys := {}
+   AEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   ::aAcceleratorKeys := {}
+
+   // Remove Child Controls
+   DO WHILE Len( ::aControls ) > 0
+      ATail( ::aControls ):Release()
+   ENDDO
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetRedraw( lRedraw ) CLASS TWindow
+
+   IF HB_ISLOGICAL( lRedraw )
+      ::lRedraw := lRedraw
+      IF lRedraw
+         // When the window is hidden, this message shows it by adding WS_VISIBLE style to the window.
+         SendMessage( ::hWnd, WM_SETREDRAW, 1, 0 )
+      ELSE
+         SendMessage( ::hWnd, WM_SETREDRAW, 0, 0 )
+      ENDIF
+   ENDIF
+
+   RETURN ::lRedraw
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Visible( lVisible ) CLASS TWindow
+
+   IF HB_ISLOGICAL( lVisible )
+      ::lVisible := lVisible
+      IF ::ContainerVisible
+         cShowControl( ::hWnd )
+      ELSE
+         HideWindow( ::hWnd )
+      ENDIF
+
+      IF ::lProcMsgsOnVisible
+         ProcessMessages()
+      ENDIF
+
+      ::CheckClientsPos()
+   ENDIF
+
+   RETURN ::lVisible
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetTextWidth( cString ) CLASS TWindow
+
+   RETURN GetTextWidth( NIL, cString, ::FontHandle )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetTextHeight( cString ) CLASS TWindow
+
+   RETURN GetTextHeight( NIL, cString, ::FontHandle )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ClientWidth( nWidth ) CLASS TWindow
+
+   LOCAL aClientRect
+
+   IF HB_ISNUMERIC( nWidth )
+      aClientRect := { 0, 0, 0, 0 }
+      GetClientRect( ::hWnd, aClientRect )
+      ::Width := ::Width - ( aClientRect[ 3 ] - aClientRect[ 1 ] ) + nWidth
+   ENDIF
+
+   // Window may be greater than requested width... verify it again
+   aClientRect := { 0, 0, 0, 0 }
+   GetClientRect( ::hWnd, aClientRect )
+
+   RETURN aClientRect[ 3 ] - aClientRect[ 1 ]
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ClientHeight( nHeight ) CLASS TWindow
+
+   LOCAL aClientRect
+
+   IF HB_ISNUMERIC( nHeight )
+      aClientRect := { 0, 0, 0, 0 }
+      GetClientRect( ::hWnd, aClientRect )
+      ::Height := ::Height - ( aClientRect[ 4 ] - aClientRect[ 2 ] ) + nHeight
+   ENDIF
+
+   // Window may be greater than requested height... verify it again
+   aClientRect := { 0, 0, 0, 0 }
+   GetClientRect( ::hWnd, aClientRect )
+
+   RETURN aClientRect[ 4 ] - aClientRect[ 2 ]
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
+
+   LOCAL nFixedHeightUsed
+
+   IF ::lAdjust
+      //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
+      IF ::container == NIL
+         nFixedHeightUsed := ::parent:nFixedHeightUsed
+      ELSE
+         nFixedHeightUsed := ::container:nFixedHeightUsed
+      ENDIF
+
+      ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
+
+      IF _OOHG_AdjustWidth
+         IF ! ::lFixWidth
+            ::Sizepos( NIL, NIL, ::Width * nDivw, ::Height * nDivh )
+
+            IF _OOHG_AdjustFont
+               IF ! ::lFixFont
+                  ::FontSize := ::FontSize * nDivw
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+
+      IF ! HB_ISLOGICAL( lSelfOnly ) .OR. ! lSelfOnly
+         AEval( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Anchor( xAnchor ) CLASS TWindow
+
+   LOCAL nTop, nLeft, nBottom, nRight
+
+   IF HB_ISNUMERIC( xAnchor )
+      ::nAnchor := Int( xAnchor ) % 16
+   ELSEIF HB_ISSTRING( xAnchor )
+      xAnchor := Upper( AllTrim( xAnchor ) )
+      IF xAnchor == "NONE"
+         ::nAnchor := 0
+      ELSEIF xAnchor == "ALL"
+         ::nAnchor := 16
+      ELSE
+         nTop := nLeft := nBottom := nRight := 0
+         DO WHILE ! Empty( xAnchor )
+            IF     Left( xAnchor, 3 ) == "TOP"
+               nTop := 1
+               xAnchor := SubStr( xAnchor, 4 )
+            ELSEIF Left( xAnchor, 4 ) == "LEFT"
+               nLeft := 2
+               xAnchor := SubStr( xAnchor, 5 )
+            ELSEIF Left( xAnchor, 6 ) == "BOTTOM"
+               nBottom := 4
+               xAnchor := SubStr( xAnchor, 7 )
+            ELSEIF Left( xAnchor, 5 ) == "RIGHT"
+               nRight := 8
+               xAnchor := SubStr( xAnchor, 6 )
+            ELSE
+               nTop := ::nAnchor
+               nLeft := nBottom := nRight := 0
+               EXIT
+            ENDIF
+         ENDDO
+         ::nAnchor := nTop + nLeft + nBottom + nRight
+      ENDIF
+   ENDIF
+
+   RETURN ::nAnchor
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AdjustAnchor( nDeltaH, nDeltaW ) CLASS TWindow
+
+   LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChange
+
+   IF ::nAnchor == NIL
+      RETURN NIL
+   ENDIF
+   nAnchor := Int( ::nAnchor ) % 16
+   IF nAnchor != 3 .AND. ( nDeltaH != 0 .OR. nDeltaW != 0 )
+      lTop    := ( ( nAnchor %  2 ) >= 1 )
+      lLeft   := ( ( nAnchor %  4 ) >= 2 )
+      lBottom := ( ( nAnchor %  8 ) >= 4 )
+      lRight  := ( ( nAnchor % 16 ) >= 8 )
+      nRow    := ::Row
+      nCol    := ::Col
+      nWidth  := ::Width
+      nHeight := ::Height
+      lChange := .F.
+      // Height checking
+      IF nDeltaH == 0
+         //
+      ELSEIF lTop .AND. lBottom
+         nHeight += nDeltaH
+         lChange := .T.
+      ELSEIF lBottom
+         nRow += nDeltaH
+         lChange := .T.
+      ELSEIF ! lTop
+         nRow += ( nDeltaH / 2 )
+         lChange := .T.
+      ENDIF
+      // Width checking
+      IF nDeltaW == 0
+         //
+      ELSEIF lLeft .AND. lRight
+         nWidth += nDeltaW
+         lChange := .T.
+      ELSEIF lRight
+         nCol += nDeltaW
+         lChange := .T.
+      ELSEIF ! lLeft
+         nCol += ( nDeltaW / 2 )
+         lChange := .T.
+      ENDIF
+      // Any change?
+      IF lChange
+         ::SizePos( nRow, nCol, nWidth, nHeight )
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CheckClientsPos() CLASS TWindow
+
+   IF ::ClientAdjust > 0
+      IF ::Container != NIL
+         ::Container:ClientsPos()
+      ELSEIF ::Parent != NIL
+         ::Parent:ClientsPos()
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ClientsPos() CLASS TWindow
+
+   RETURN ::ClientsPos2( ::aControls, ::Width, ::Height )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
+
+   // ajusta los controles dentro de la ventana por ClientAdjust
+   LOCAL n, nAdjust, oControl, nRow, nCol
+   LOCAL nOffset // desplazamientos por borde
+
+   IF ::IsAdjust
+      RETURN self
+   ENDIF
+   nOffSet := ::nBorders[ 1 ] + ::nBorders[ 2 ] + ::nBorders[ 3 ]
+   nOffset := iif( nOffset > 0, nOffset + 1, 0 )
+   nRow    := nOffset
+   nCol    := nOffset
+   nWidth  := nWidth-2*nOffset
+   nHeight := nHeight - 2 * nOffset
+   ::IsAdjust := .T.
+   // remove toolbar .and. statusbar
+   FOR n := 1 TO Len( aControls )
+      IF aControls[n]:Type == "TOOLBAR"
+         IF aControls[ n ]:ltop
+            nRow += aControls[ n ]:ClientHeightUsed()
+            nHeight -= aControls[ n ]:ClientHeightUsed()
+         ELSE
+            nHeight -= aControls[n]:ClientHeightUsed()
+         ENDIF
+      ELSEIF aControls[ n ]:type == "MESSAGEBAR"
+          nHeight += aControls[ n ]:ClientHeightUsed()
+      ENDIF IF
+   NEXT
+
+   FOR n := 1 TO Len( aControls )
+      oControl := aControls[ n ]
+      nAdjust := oControl:ClientAdjust
+      IF nAdjust > 0 .AND. nAdjust < 5 .AND. aControls[ n ]:ContainerVisible
+         oControl:Hide()
+         IF nAdjust == 1 // top
+            oControl:Col := nCol
+            oControl:Row := nRow
+            oControl:Width := nWidth
+            nRow := nRow + oControl:nHeight
+            nHeight := nHeight - oControl:nHeight
+         ELSEIF nAdjust == 2 // bottom
+            oControl:Col := nCol
+            oControl:Row := nHeight - oControl:nHeight + nRow
+            oControl:Width := nWidth
+            nHeight := nHeight - oControl:nHeight
+         ELSEIF nAdjust == 3 //left
+            oControl:Col := nCol
+            oControl:Row := nRow
+            oControl:Height := nHeight
+            nCol := nCol + oControl:nWidth
+            nWidth := nWidth - oControl:nWidth
+         ELSEIF nAdjust == 4 //right
+            oControl:Col := nWidth - oControl:nWidth + nCol
+            oControl:Row := nRow
+            oControl:Height := nHeight
+            nWidth := nWidth - oControl:nWidth
+         ENDIF
+
+         //oControl:SizePos()
+         oControl:Show()
+      ENDIF
+   NEXT
+   FOR n := 1 TO Len( aControls )
+      IF aControls[ n ]:ClientAdjust == 5 .AND. aControls[ n ]:Visible
+         aControls[ n ]:Hide()
+         aControls[ n ]:width := nWidth - 2
+         aControls[ n ]:height := nHeight - 2
+         aControls[ n ]:col := nCol
+         aControls[ n ]:row := nRow
+         aControls[ n ]:Show()
+      ENDIF
+   NEXT
+   ::IsAdjust := .F.
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Adjust( nAdjust ) CLASS TWindow
+
+   LOCAL Adjustpos, newAdjust
+
+   IF PCount() > 0
+      IF HB_ISSTRING( nAdjust )
+         AdjustPos := Upper( AllTrim( nAdjust ) )
+         IF AdjustPos == 'TOP'
+            newAdjust := 1
+         ELSEIF AdjustPos == 'BOTTOM'
+            newAdjust := 2
+         ELSEIF AdjustPos == 'LEFT'
+            newAdjust := 3
+         ELSEIF AdjustPos == 'RIGHT'
+            newAdjust := 4
+         ELSEIF AdjustPos == 'CLIENT'
+            newAdjust := 5
+         ELSE
+            newAdjust := ::ClientAdjust
+         ENDIF
+         IF newAdjust <> ::ClientAdjust
+            ::ClientAdjust := newAdjust
+            ::CheckClientsPos()
+         ENDIF
+      ELSEIF HB_ISNUMERIC( nAdjust )
+         IF nAdjust <> ::ClientAdjust
+            ::ClientAdjust := nAdjust
+            ::CheckClientsPos()
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN ::ClientAdjust
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow
+
+   LOCAL nChars, nMin, nMax, nSize
+
+   IF ! ValType( cString ) $ "CM" .OR. Len( cString ) == 0 .OR. ! HB_ISNUMERIC( nWidth ) .OR. nWidth <= 0
+      nChars := 0
+   ELSE
+      nSize := ::GetTextWidth( cString )
+      nMax := Len( cString )
+      IF nSize <= nWidth
+         nChars := nMax
+      ELSE
+         nMin := 0
+         DO WHILE nMax != nMin + 1
+            nChars := Int( ( nMin + nMax ) / 2 )
+            nSize := ::GetTextWidth( Left( cString, nChars ) )
+            IF nSize <= nWidth
+               nMin := nChars
+            ELSE
+               nMax := nChars
+            ENDIF
+         ENDDO
+         nChars := nMin
+      ENDIF
+   ENDIF
+
+   RETURN nChars
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DebugMessageName( nMsg ) CLASS TWindow
+
+   STATIC aNames := NIL
+   LOCAL cName
+
+   IF aNames == NIL
+      aNames := { "WM_CREATE", "WM_DESTROY", "WM_MOVE", NIL, "WM_SIZE", ;
+                  "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, "WM_ENABLE", ;
+                  "WM_SETREDRAW", "WM_SETTEXT", "WM_GETTEXT", "WM_GETTEXTLENGTH", "WM_PAINT", ;
+                  "WM_CLOSE", "WM_QUERYENDSESSION", "WM_QUIT", "WM_QUERYOPEN", "WM_ERASEBKGND", ;
+                  "WM_SYSCOLORCHANGE", "WM_ENDSESSION", NIL, "WM_SHOWWINDOW", NIL, ;
+                  "WM_WININICHANGE", "WM_DEVMODECHANGE", "WM_ACTIVATEAPP", "WM_FONTCHANGE", "WM_TIMECHANGE", ;
+                  "WM_CANCELMODE", "WM_SETCURSOR", "WM_MOUSEACTIVATE", "WM_CHILDACTIVATE", "WM_QUEUESYNC", ;
+                  "WM_GETMINMAXINFO", NIL, "WM_PAINTICON", "WM_ICONERASEBKGND", "WM_NEXTDLGCTL", ;
+                  NIL, "WM_SPOOLERSTATUS", "WM_DRAWITEM", "WM_MEASUREITEM", "WM_DELETEITEM", ;
+                  "WM_VKEYTOITEM", "WM_CHARTOITEM", "WM_SETFONT", "WM_GETFONT", "WM_SETHOTKEY", ;
+                  "WM_GETHOTKEY", NIL, NIL, NIL, "WM_QUERYDRAGICON", ;
+                  NIL, "WM_COMPAREITEM", NIL, NIL, NIL, ;
+                  "WM_GETOBJECT", NIL, NIL, NIL, "WM_COMPACTING", ;
+                  NIL, NIL, "WM_COMMNOTIFY", NIL, "WM_WINDOWPOSCHANGING", ;
+                  "WM_WINDOWPOSCHANGED", "WM_POWER", NIL, "WM_COPYDATA", "WM_CANCELJOURNAL", ;
+                  NIL, NIL, "WM_NOTIFY", NIL, "WM_INPUTLANGCHANGEREQUEST", ;
+                  "WM_INPUTLANGCHANGE", "WM_TCARD", "WM_HELP", "WM_USERCHANGED", "WM_NOTIFYFORMAT", ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, "WM_CONTEXTMENU", "WM_STYLECHANGING", "WM_STYLECHANGED", ;
+                  "WM_DISPLAYCHANGE", "WM_GETICON", "WM_SETICON", "WM_NCCREATE", "WM_NCDESTROY", ;
+                  "WM_NCCALCSIZE", "WM_NCHITTEST", "WM_NCPAINT", "WM_NCACTIVATE", "WM_GETDLGCODE", ;
+                  "WM_SYNCPAINT", NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, "WM_NCMOUSEMOVE", ;
+                  "WM_NCLBUTTONDOWN", "WM_NCLBUTTONUP", "WM_NCLBUTTONDBLCLK", "WM_NCRBUTTONDOWN", "WM_NCRBUTTONUP", ;
+                  "WM_NCRBUTTONDBLCLK", "WM_NCMBUTTONDOWN", "WM_NCMBUTTONUP", "WM_NCMBUTTONDBLCLK", NIL, ;
+                  "WM_NCXBUTTONDOWN", "WM_NCXBUTTONUP", "WM_NCXBUTTONDBLCLK" }
+      ASize( aNames, 1024 )
+
+      AEval( { "WM_KEYFIRST", ;
+               "WM_KEYUP", "WM_CHAR", "WM_DEADCHAR", "WM_SYSKEYDOWN", "WM_SYSKEYUP", ;
+               "WM_SYSCHAR", "WM_SYSDEADCHAR", "WM_KEYLAST", NIL, NIL, ;
+               NIL, NIL, "WM_IME_STARTCOMPOSITION", "WM_IME_ENDCOMPOSITION", "WM_IME_COMPOSITION", ;
+               "WM_INITDIALOG", "WM_COMMAND", "WM_SYSCOMMAND", "WM_TIMER", "WM_HSCROLL", ;
+               "WM_VSCROLL", "WM_INITMENU", "WM_INITMENUPOPUP", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "WM_MENUSELECT", "WM_MENUCHAR", "WM_ENTERIDLE", "WM_MENURBUTTONUP", "WM_MENUDRAG", ;
+               "WM_MENUGETOBJECT", "WM_UNINITMENUPOPUP", "WM_MENUCOMMAND", "WM_CHANGEUISTATE", "WM_UPDATEUISTATE", ;
+               "WM_QUERYUISTATE", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "WM_CTLCOLORMSGBOX", ;
+               "WM_CTLCOLOREDIT", "WM_CTLCOLORLISTBOX", "WM_CTLCOLORBTN", "WM_CTLCOLORDLG", "WM_CTLCOLORSCROLLBAR", ;
+               "WM_CTLCOLORSTATIC" }, ;
+             { |c,i| aNames[ i + 0x0FF ] := c } )
+
+      AEval( { "WM_MOUSEMOVE", ;
+               "WM_LBUTTONDOWN", "WM_LBUTTONUP", "WM_LBUTTONDBLCLK", "WM_RBUTTONDOWN", "WM_RBUTTONUP", ;
+               "WM_RBUTTONDBLCLK", "WM_MBUTTONDOWN", "WM_MBUTTONUP", "WM_MBUTTONDBLCLK", "WM_MOUSEWHEEL", ;
+               "WM_XBUTTONDOWN", "WM_XBUTTONUP", "WM_XBUTTONDBLCLK", NIL, NIL, ;
+               "WM_PARENTNOTIFY", "WM_ENTERMENULOOP", "WM_EXITMENULOOP", "WM_NEXTMENU", "WM_SIZING", ;
+               "WM_CAPTURECHANGED", "WM_MOVING", NIL, "WM_POWERBROADCAST", "WM_DEVICECHANGE", ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, "WM_MDICREATE", "WM_MDIDESTROY", "WM_MDIACTIVATE", "WM_MDIRESTORE", ;
+               "WM_MDINEXT", "WM_MDIMAXIMIZE", "WM_MDITILE", "WM_MDICASCADE", "WM_MDIICONARRANGE", ;
+               "WM_MDIGETACTIVE", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, "WM_MDISETMENU", "WM_ENTERSIZEMOVE", "WM_EXITSIZEMOVE", ;
+               "WM_DROPFILES", "WM_MDIREFRESHMENU" }, ;
+             { |c,i| aNames[ i + 0x1FF ] := c } )
+
+      AEval( { "WM_IME_SETCONTEXT", "WM_IME_NOTIFY", "WM_IME_CONTROL", "WM_IME_COMPOSITIONFULL", "WM_IME_SELECT", ;
+               "WM_IME_CHAR", NIL, "WM_IME_REQUEST", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "WM_IME_KEYDOWN", "WM_IME_KEYUP", NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, "WM_NCMOUSEHOVER", "WM_MOUSEHOVER", "WM_NCMOUSELEAVE", "WM_MOUSELEAVE" }, ;
+             { |c,i| aNames[ i + 0x280 ] := c } )
+
+      AEval( { "WM_CUT", ;
+               "WM_COPY", "WM_PASTE", "WM_CLEAR", "WM_UNDO", "WM_RENDERFORMAT", ;
+               "WM_RENDERALLFORMATS", "WM_DESTROYCLIPBOARD", "WM_DRAWCLIPBOARD", "WM_PAINTCLIPBOARD", "WM_VSCROLLCLIPBOARD", ;
+               "WM_SIZECLIPBOARD", "WM_ASKCBFORMATNAME", "WM_CHANGECBCHAIN", "WM_HSCROLLCLIPBOARD", "WM_QUERYNEWPALETTE", ;
+               "WM_PALETTEISCHANGING", "WM_PALETTECHANGED", "WM_HOTKEY", NIL, NIL, ;
+               NIL, NIL, "WM_PRINT", "WM_PRINTCLIENT", "WM_APPCOMMAND" }, ;
+             { |c,i| aNames[ i + 0x2FF ] := c } )
+
+      aNames[ 0x358 ] := "WM_HANDHELDFIRST"
+      aNames[ 0x35F ] := "WM_HANDHELDLAST"
+      aNames[ 0x360 ] := "WM_AFXFIRST"
+      aNames[ 0x37F ] := "WM_AFXLAST"
+      aNames[ 0x380 ] := "WM_PENWINFIRST"
+      aNames[ 0x38F ] := "WM_PENWINLAST"
+
+      aNames[ 0x400 ] := "WM_USER"
+
+      // Edit control messages
+      AEval( { "EM_GETSEL", ;
+               "EM_SETSEL", "EM_GETRECT", "EM_SETRECT", "EM_SETRECTNP", "EM_SCROLL", ;
+               "EM_LINESCROLL", "EM_SCROLLCARET", "EM_GETMODIFY", "EM_SETMODIFY", "EM_GETLINECOUNT", ;
+               "EM_LINEINDEX", "EM_SETHANDLE", "EM_GETHANDLE", "EM_GETTHUMB", NIL, ;
+               NIL, "EM_LINELENGTH", "EM_REPLACESEL", NIL, "EM_GETLINE", ;
+               "EM_SETLIMITTEXT", "EM_CANUNDO", "EM_UNDO", "EM_FMTLINES", "EM_LINEFROMCHAR", ;
+               NIL, "EM_SETTABSTOPS", "EM_SETPASSWORDCHAR", "EM_EmptyUNDOBUFFER", "EM_GETFIRSTVISIBLELINE", ;
+               "EM_SETREADONLY", "EM_SETWORDBREAKPROC", "EM_GETWORDBREAKPROC", "EM_GETPASSWORDCHAR", "EM_SETMARGINS", ;
+               "EM_GETMARGINS", "EM_GETLIMITTEXT", "EM_POSFROMCHAR", "EM_CHARFROMPOS", "EM_SETIMESTATUS", ;
+               "EM_GETIMESTATUS" }, ;
+             { |c,i| aNames[ i + 0xAF ] := c } )
+
+      // Scroll bar messages
+      AEval( { "SBM_SETPOS", ;
+               "SBM_GETPOS", "SBM_SETRANGE", "SBM_GETRANGE", "SBM_ENABLE_ARROWS", NIL, ;
+               "SBM_SETRANGEREDRAW", NIL, NIL, "SBM_SETSCROLLINFO", "SBM_GETSCROLLINFO" }, ;
+             { |c,i| aNames[ i + 0xDF ] := c } )
+
+      // Button control messages
+      AEval( { "BM_GETCHECK", ;
+               "BM_SETCHECK", "BM_GETSTATE", "BM_SETSTATE", "BM_SETSTYLE", "BM_CLICK", ;
+               "BM_GETIMAGE", "BM_SETIMAGE" }, ;
+             { |c,i| aNames[ i + 0xEF ] := c } )
+
+      // Static control messages
+      AEval( { "STM_SETICON", ;
+               "STM_GETICON", "STM_SETIMAGE", "STM_GETIMAGE", "STM_MSGMAX" }, ;
+             { |c,i| aNames[ i + 0x16F ] := c } )
+   ENDIF
+   IF nMsg == 0
+      cName := "WM_NULL"
+   ELSEIF Len( aNames ) >= nMsg .AND. aNames[ nMsg ] != NIL
+      cName := aNames[ nMsg ]
+   ELSE
+      cName := "(unknown_" + _OOHG_HEX( nMsg ) + ")"
+   ENDIF
+
+   RETURN cName
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
+
+   LOCAL cValue, oControl
+
+   IF nMsg == WM_COMMAND
+      oControl := GetControlObjectById( LOWORD( wParam ) )
+      IF oControl:Id == 0
+         oControl := GetControlObjectByHandle( lParam )
+      ENDIF
+      cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_NOTIFY
+      cValue := GetControlObjectByHandle( GethWndFrom( lParam ) ):DebugMessageQueryNotify( ::Name, wParam, lParam )
+   ELSEIF nMsg == WM_CTLCOLORBTN
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLORSTATIC
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORSTATIC   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLOREDIT
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLOREDIT   0x" + _OOHG_HEX( wParam, 8 )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+   ELSEIF nMsg == WM_CTLCOLORLISTBOX
+      oControl := GetControlObjectByHandle( lParam )
+      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORLISTBOX   0x" + _OOHG_HEX( wParam, 8 )
+   ELSE
+      cValue := iif( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
+                "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
+                " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
+   ENDIF
+
+   RETURN cValue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
+
+   RETURN _OOHG_HEX( nCommand, 4 )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DebugMessageNameNotify( nNotify ) CLASS TWindow
+
+   LOCAL cName
+   STATIC aNames := NIL
+
+   IF aNames == NIL
+      aNames := { "NM_OUTOFMEMORY", "NM_CLICK", "NM_DBLCLK", "NM_RETURN", "NM_RCLICK", ;
+                  "NM_RDBLCLK", "NM_SETFOCUS", "NM_KILLFOCUS", NIL, NIL, ;
+                  NIL, "NM_CUSTOMDRAW", "NM_HOVER", "NM_NCHITTEST", "NM_KEYDOWN", ;
+                  "NM_RELEASEDCAPTURE", "NM_SETCURSOR", "NM_CHAR", "NM_TOOLTIPSCREATED", "NM_LDOWN", ;
+                  "NM_RDOWN" }
+      ASize( aNames, 200 )
+
+      // Scroll bar messages
+      AEval( { "LVN_ITEMCHANGING", ;
+               "LVN_ITEMCHANGED", "LVN_INSERTITEM", "LVN_DELETEITEM", "LVN_DELETEALLITEMS", "LVN_BEGINLABELEDITA", ;
+               "LVN_ENDLABELEDITA", NIL, "LVN_COLUMNCLICK", "LVN_BEGINDRAG", NIL, ;
+               "LVN_BEGINRDRAG", NIL, "LVN_ODCACHEHINT", "LVN_ITEMACTIVATE", "LVN_ODSTATECHANGED", ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               "LVN_HOTTRACK", NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "LVN_GETDISPINFOA", ;
+               "LVN_SETDISPINFOA", "LVN_ODFINDITEMA", NIL, NIL, "LVN_KEYDOWN", ;
+               "LVN_MARQUEEBEGIN", "LVN_GETINFOTIPA", "LVN_GETINFOTIPW", NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, ;
+               NIL, NIL, NIL, NIL, "LVN_BEGINLABELEDITW", ;
+               "LVN_ENDLABELEDITW", "LVN_GETDISPINFOW", "LVN_SETDISPINFOW", "LVN_ODFINDITEMW" }, ;
+             { |c,i| aNames[ i + 99 ] := c } )
+   ENDIF
+   IF nNotify < 0
+      nNotify := - nNotify
+   ENDIF
+   IF nNotify > 0 .AND. Len( aNames ) >= nNotify .AND. aNames[ nNotify ] != NIL
+      cName := aNames[ nNotify ]
+   ELSE
+      cName := _OOHG_HEX( 65536 - nNotify, 4 )
+   ENDIF
+
+   RETURN cName
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
+
+   LOCAL cValue
+
+   Empty( wParam )
+   cValue := cParentName + "." + ;
+             iif( Empty( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
+             ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
+
+   RETURN cValue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Line( nRow, nCol, nToRow, nToCol, nWidth, aColor, nStyle ) CLASS TWindow
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+   ::GetDc()
+   C_LINE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], ;
+      aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Fill( nRow, nCol, nToRow, nToCol, aColor ) CLASS TWindow
+
+   DEFAULT aColor TO {0, 0, 0}
+   ::GetDc()
+    C_FILL( ::hDC, nRow, nCol, nToRow, nToCol, aColor[ 1 ], aColor[ 2 ], aColor[ 3 ], .T. )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Box( nRow, nCol, nToRow, nToCol, nWidth, aColor, nStyle, nBrStyle, aBrColor ) CLASS TWindow
+
+   LOCAL lBrColor
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   IF Empty(aBrColor)
+      aBrColor := {0, 0, 0}
+      lBrColor := .F.
+   ELSE
+      lBrColor := .T.
+   ENDIF
+
+   ::GetDc()
+   C_RECTANGLE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
+      aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), nBrStyle, ;
+      lBrColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD RoundBox( nRow, nCol, nToRow, nToCol, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor ) CLASS TWindow
+
+   LOCAL lBrushColor
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   IF Empty( aBrColor )
+      aBrColor := {0, 0, 0}
+      lBrushColor := .F.
+   ELSE
+      lBrushColor := .T.
+   ENDIF
+
+   ::GetDc()
+    C_ROUNDRECTANGLE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
+       aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
+       nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Ellipse( nRow, nCol, nToRow, nToCol, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor ) CLASS TWindow
+
+   LOCAL lBrushColor
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   IF Empty( aBrColor )
+      aBrColor := {0, 0, 0}
+      lBrushColor := .F.
+   ELSE
+      lBrushColor := .T.
+   ENDIF
+
+   ::GetDc()
+    C_ELLIPSE(::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
+       aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
+       nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Arc( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle ) CLASS TWindow
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+   ::GetDc()
+   C_ARC( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
+      aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ArcTo( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle ) CLASS TWindow
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+   ::GetDc()
+   C_ARCTO( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
+      aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Chord( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle, nBrStyle, aBrColor ) CLASS TWindow
+
+   LOCAL lBrushColor
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   IF Empty( aBrColor )
+      aBrColor := {0, 0, 0}
+      lBrushColor := .F.
+   ELSE
+      lBrushColor := .T.
+   ENDIF
+
+   ::GetDc()
+   C_CHORD( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
+      aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
+      nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Pie( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor ) CLASS TWindow
+
+   LOCAL lBrushColor
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   IF Empty( aBrColor )
+      aBrColor := {0, 0, 0}
+      lBrushColor := .F.
+   ELSE
+      lBrushColor := .T.
+   ENDIF
+
+   ::GetDc()
+    C_PIE( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[ 1 ], ;
+       aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
+      nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
+   ::ReleaseDc()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PolyBezier( aPoints, nWidth, aColor, lStyle, nStyle ) CLASS TWindow
+
+   LOCAL aPx := {}, aPy := {}
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   AEval( aPoints, { |p| AAdd( aPx, p[ 2 ] ), AAdd( aPy, p[ 1 ] ) } )
+
+   ::GetDC()
+   C_POLYBEZIER( ::hDC, aPy, aPx, nWidth, aColor[ 1 ], aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
+   ::ReleaseDC()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PolyBezierTo( aPoints, nWidth, aColor, lStyle, nStyle ) CLASS TWindow
+
+   LOCAL aPx := {}, aPy := {}
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor TO {0, 0, 0}
+   DEFAULT nWidth TO 1
+
+   AEval( aPoints, { |p| AAdd( aPx, p[ 2 ] ), AAdd( aPy, p[ 1 ] ) } )
+
+   ::GetDC()
+   C_POLYBEZIERTO( ::hDC, aPy, aPx, nWidth, aColor[ 1 ], aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
+   ::ReleaseDC()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Polygon( aPoints, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor, nFillMode ) CLASS TWindow
+
+   LOCAL lBrushColor, aPx := {}, aPy := {}
+
+   HB_SYMBOL_UNUSED( lStyle )
+
+   DEFAULT aColor    TO {0, 0, 0}
+   DEFAULT nWidth    TO 1
+   DEFAULT nFillMode TO 1
+
+   AEval( aPoints, { |p| AAdd( aPx, p[ 2 ] ), AAdd( aPy, p[ 1 ] ) } )
+
+   IF Empty( aBrColor )
+      aBrColor := {0, 0, 0}
+      lBrushColor := .F.
+   ELSE
+      lBrushColor := .T.
+   ENDIF
+
+   ::GetDC()
+   C_POLYGON( ::hDC, aPy, aPx, nWidth, aColor[ 1 ], aColor[ 2 ], aColor[ 3 ], .T., ;
+      .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), nBrStyle, lBrushColor, ;
+      aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ], nFillMode )
+   ::ReleaseDC()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_AddFrame( oFrame )
+
+   TApplication():Define():ActiveFramePush( oFrame )
+
+   RETURN oFrame
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_DeleteFrame( cType )
+
+   LOCAL oCtrl
+
+   IF _OOHG_ActiveFrame == NIL
+      // ERROR: No FRAME started
+      RETURN .F.
+   ENDIF
+   oCtrl := _OOHG_ActiveFrame
+   IF oCtrl:Type == cType
+      TApplication():Define():ActiveFramePop()
+   ELSE
+      // ERROR: No FRAME started
+      RETURN .F.
+   ENDIF
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_LastFrame()
+
+   LOCAL cRet
+
+   IF _OOHG_ActiveFrame == NIL
+      cRet := ""
+   ELSE
+      cRet := _OOHG_ActiveFrame:Type
+   ENDIF
+
+   RETURN cRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
+
+   LOCAL oObj
+
+   oObj := iif( ValType( oSubClass ) == "O", oSubClass, oClass )
+   IF ValType( bAssign ) == "B"
+      EVAL( bAssign, oObj )
+   ENDIF
+
+   RETURN oObj
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
+
+   LOCAL RetVal, mo, oWin
+
+   ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
+   ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
+   ASSIGN cDefaultValue  VALUE cDefaultValue  TYPE "C" DEFAULT ""
+   ASSIGN nTimeout       VALUE nTimeout       TYPE "N" DEFAULT 0
+   ASSIGN cTimeoutValue  VALUE cTimeoutValue  TYPE "C" DEFAULT NIL
+   ASSIGN lMultiLine     VALUE lMultiLine     TYPE "L" DEFAULT .F.
+   ASSIGN nMaxLength     VALUE nMaxLength     TYPE "N" DEFAULT 0
+
+   RetVal := ''
+
+   IF lMultiLine
+      mo := 150
+   ELSE
+      mo := 0
+   ENDIF
+
+   DEFINE WINDOW 0 OBJ oWin ;
+      AT 0, 0 ;
+      WIDTH 350 ;
+      HEIGHT 115 + mo + GetTitleHeight() ;
+      TITLE cDialogCaption ;
+      MODAL ;
+      NOSIZE ;
+      FONT 'Arial' ;
+      SIZE 10 ;
+      BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
+
+      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
+
+      @ 07, 10 LABEL _Label ;
+         VALUE cInputPrompt ;
+         WIDTH 280
+
+      IF lMultiLine
+         IF nMaxLength > 0
+            @ 30, 10 EDITBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               MAXLENGTH nMaxLength
+         ELSE
+            @ 30, 10 EDITBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320
+         ENDIF
+      ELSE
+         IF nMaxLength > 0
+            @ 30, 10 TEXTBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) ) ;
+               MAXLENGTH nMaxLength
+         ELSE
+            @ 30, 10 TEXTBOX _TextBox ;
+               VALUE cDefaultValue ;
+               HEIGHT 26 + mo ;
+               WIDTH 320 ;
+               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) )
+         ENDIF
+      ENDIF
+
+      @ 67 + mo, 120 BUTTON _Ok ;
+         CAPTION _OOHG_Messages( 1, 6 ) ;
+         ACTION ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) )
+
+      @ 67 + mo, 230 BUTTON _Cancel ;
+         CAPTION _OOHG_Messages( 1, 7 ) ;
+         ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
+
+      IF nTimeout > 0
+         IF cTimeoutValue == NIL
+            DEFINE TIMER _InputBox ;
+               INTERVAL nTimeout ;
+               ACTION oWin:Release()
+         ELSE
+            DEFINE TIMER _InputBox ;
+               INTERVAL nTimeout ;
+               ACTION  ( RetVal := cTimeoutValue, iif( oWin:Active, oWin:Release(), NIL ) )
+         ENDIF
+      ENDIF
+   END WINDOW
+
+   oWin:_TextBox:SetFocus()
+   oWin:Center()
+   owin:Activate()
+
+   RETURN RetVal
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetWindowRgn( name, col, row, w, h, lx )
+
+   RETURN C_SETWINDOWRGN( GetFormHandle( name ), col, row, w, h, lx )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetPolyWindowRgn( name, apoints, lx )
+
+   LOCAL apx := {}, apy := {}
+
+   AEval( apoints, {|x| AAdd( apx, x[ 1 ] ), AAdd(apy, x[ 2 ] ) } )
+
+   RETURN C_SETPOLYWINDOWRGN( GetFormHandle( name ), apx, apy, lx )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE _SetNextFocus()
+
+   LOCAL oCtrl, hControl
+
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .F. )
+   oCtrl := GetControlObjectByHandle( hControl )
+   IF oCtrl:hWnd == hControl
+      oCtrl:SetFocus()
+   ELSE
+      InsertTab()
+   ENDIF
+
+   RETURN
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE _SetPrevFocus()
+
+   LOCAL oCtrl, hControl
+
+   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .T. )
+   oCtrl := GetControlObjectByHandle( hControl )
+   IF oCtrl:hWnd == hControl
+      oCtrl:SetFocus()
+   ELSE
+      InsertShiftTab()
+   ENDIF
+
+   RETURN
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION SetAppHotKeyByName( cKey, bAction )
+
+   LOCAL aKey, bCode
+
+   aKey := _DetermineKey( cKey )
+   IF aKey[ 1 ] != 0
+      bCode := SetAppHotKey( aKey[ 1 ], aKey[ 2 ], bAction )
+   ELSE
+      bCode := NIL
+   ENDIF
+
+   RETURN bCode
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_MacroCall( cMacro )
+
+   LOCAL uRet, oError
+
+   oError := ErrorBlock()
+   ErrorBlock( { |e| _OOHG_MacroCall_Error( e ) } )
+   BEGIN SEQUENCE
+      uRet := &cMacro
+   RECOVER
+      uRet := NIL
+   END SEQUENCE
+   ErrorBlock( oError )
+
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+STATIC FUNCTION _OOHG_MacroCall_Error( oError )
+
+   IF ! Empty( oError )
+      BREAK oError
+   ENDIF
+
+   RETURN 1
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ExitProcess( nExit )
+
+   dbCloseAll()
+   TApplication():Define():Release()
+
+   RETURN _ExitProcess2( nExit )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_UsesVisualStyle()
+
+   RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetFontList( hDC, cFontFamilyName, nCharSet, nPitch, nFontType, lSortCaseSensitive, aFontName )
+
+   LOCAL SortCodeBlock, aFontList, i
+
+   IF HB_ISLOGICAL( lSortCaseSensitive ).AND. lSortCaseSensitive
+      SortCodeBlock := { |x, y| x[ 1 ] < y[ 1 ] }
+   ELSE
+      SortCodeBlock := { |x, y| Upper( x[ 1 ] ) < Upper( y[ 1 ] ) }
+   ENDIF
+
+   /*
+    * EnumFontsEx RETURNs aFontList: { { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
+    * with the details of the fonts that match the parameters.
+    * It also RETURNs, by reference, aFontName: { cFontName1, cFontName2, ... }
+    *
+    * See i_font.ch for nCharSet and nPitch parameters values.
+    * Set the parameters to NIL to avoid filtering for that parameter.
+    * When hDC is NIL, the screen DC is assumed.
+    */
+   aFontList := EnumFontsEx( hDC, cFontFamilyName, nCharSet, nPitch, NIL, SortCodeBlock, @aFontName )
+
+   IF HB_ISNUMERIC( nFontType )
+      i := Len( aFontList )
+      DO WHILE i > 0
+         IF aFontList[ i, 4 ] # nFontType
+            ADel( aFontList, i )
+            ASize( aFontList, i - 1 )
+            ADel( aFontName, i )
+            ASize( aFontName, i - 1 )
+         ENDIF
+         i --
+      ENDDO
+   ENDIF
+
+   RETURN aFontList
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
+
+   LOCAL uRet
+
+   IF ! HB_ISARRAY( uaArray )
+      uRet := uaArray
+   ELSEIF Len( uaArray ) >= nItem .AND. nItem >= 1
+      uRet := uaArray[ nItem ]
+   ELSE
+      uRet := NIL
+   ENDIF
+   IF HB_ISBLOCK( uRet )
+      uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
+   ENDIF
+
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_DeleteArrayItem( aArray, nItem )
+
+#ifdef __XHARBOUR__
+   RETURN ADel( aArray, nItem, .T. )
+#else
+   IF HB_ISARRAY( aArray ) .AND. Len( aArray ) >= nItem
+      ADel( aArray, nItem )
+      ASize( aArray, Len( aArray ) - 1 )
+   ENDIF
+
+   RETURN aArray
+#endif
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
+
+   LOCAL nPos, uRet := NIL
+
+   nPos := AScan( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
+   IF nPos > 0
+      uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
+   ENDIF
+   IF PCount() > 3
+      IF HB_ISBLOCK( bAction )
+         IF ! HB_ISNUMERIC( nId )
+            nId := 0
+         ENDIF
+         IF nPos > 0
+            aKeys[ nPos ] := { nId, nFlags, nKey, bAction }
+         ELSE
+            AAdd( aKeys, { nId, nFlags, nKey, bAction } )
+         ENDIF
+      ELSE
+         IF nPos > 0
+            _OOHG_DeleteArrayItem( aKeys, nPos )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE _OOHG_CallDump( uTitle, cOutput )
+
+   LOCAL nLevel, cText, oLog
+
+   cText := ""
+   nLevel := 1
+   DO WHILE ! Empty( ProcName( nLevel ) )
+      IF nLevel > 1
+         cText += Chr( 13 ) + Chr( 10 )
+      ENDIF
+      cText += ProcName( nLevel ) + ;
+               " (" + ;
+               AllTrim( Str( ProcLine( nLevel ) ) ) + ;
+               ")" + ;
+               iif( Empty( ProcFile( nLevel ) ), "", " in " + ProcFile( nLevel ) )
+      nLevel ++
+   ENDDO
+
+   ASSIGN cOutput VALUE cOutput TYPE "C" DEFAULT "S"
+   cOutPut := Left( cOutPut, 1 )
+   IF cOutput $ "FB"        // To File or Both
+      oLog := OOHG_TErrorTxt():New()
+      oLog:FileName := "DumpLog.txt"
+      oLog:Write( AutoType( uTitle ) )
+      oLog:Write( "" )
+      oLog:Write( cText )
+      oLog:Write( "" )
+      oLog:Write( Replicate( "-", 40 ) )
+      oLog:CreateLog()
+   ENDIF
+   IF cOutput $ "BS"        // To File or Screen
+      MSGINFO( cText, AutoType( uTitle ) )
+   ENDIF
+
+   RETURN
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+CLASS TDynamicValues
+
+   DATA oWnd
+
+   METHOD New
+   ERROR HANDLER Error
+
+   ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD New( oWnd ) CLASS TDynamicValues
+
+   ::oWnd := oWnd
+
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Error( xParam ) CLASS TDynamicValues
+
+   LOCAL nPos, cMessage
+
+   cMessage := __GetMessage()
+
+   IF PCount() >= 1 .AND. Left( cMessage, 1 ) == "_"
+      nPos := AScan( ::oWnd:aControlsNames, SubStr( cMessage, 2 ) + Chr( 255 ) )
+      IF nPos > 0
+         RETURN ( ::oWnd:aControls[ nPos ]:Value := xParam )
+      ENDIF
+      nPos := AScan( ::oWnd:aProperties, { |a| "_" + a[ 1 ] == cMessage } )
+      IF nPos > 0
+         ::oWnd:aProperties[ nPos ][ 2 ] := xParam
+         RETURN ::oWnd:aProperties[ nPos ][ 2 ]
+      ENDIF
+   ELSE
+      nPos := AScan( ::oWnd:aControlsNames, cMessage + Chr( 255 ) )
+      IF nPos > 0
+         RETURN ::oWnd:aControls[ nPos ]:Value
+      ENDIF
+      nPos := AScan( ::oWnd:aProperties, { |a| a[ 1 ] == cMessage } )
+      IF nPos > 0
+         RETURN ::oWnd:aProperties[ nPos ][ 2 ]
+      ENDIF
+   ENDIF
+
+   RETURN ::MsgNotFound( cMessage )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #ifndef WINVER
@@ -82,28 +2097,36 @@
    #define _WIN32_WINNT 0x0500
 #endif
 
+#include <windows.h>
+#include <commctrl.h>
+#include <olectl.h>
+#include <shlwapi.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include <olectl.h>
 #include "oohg.h"
 
+typedef LONG ( * CALL_ISTHEMEACTIVE )( VOID );
+typedef LONG ( * CALL_ISAPPTHEMED )( VOID );
+typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
+
 #ifdef HB_ITEM_NIL
-   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+   #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )
 #endif
 
 // C static variables                            // TODO: Thread safe ?
-static int      _OOHG_ShowContextMenus = 1;
-static int      _OOHG_GlobalRTL = 0;             // Force RTL functionality
-static int      _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
-static int      _OOHG_MouseCol = 0;              // Mouse's column
-static int      _OOHG_MouseRow = 0;              // Mouse's row
+static INT      _OOHG_ShowContextMenus = 1;
+static INT      _OOHG_GlobalRTL = 0;             // Force RTL functionality
+static INT      _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
+static INT      _OOHG_MouseCol = 0;              // Mouse's column
+static INT      _OOHG_MouseRow = 0;              // Mouse's row
 static PHB_ITEM _OOHG_LastSelf = NULL;
 
-void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
+typedef INT ( CALLBACK * CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+VOID _OOHG_SetMouseCoords( PHB_ITEM pSelf, INT iCol, INT iRow )
 {
    PHB_ITEM pSelf2;
 
@@ -121,235 +2144,13 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
    hb_itemRelease( pSelf2 );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_SETMOUSECOORDS )
 {
-   _OOHG_SetMouseCoords( (PHB_ITEM) hb_param( 1, HB_IT_ARRAY ), hb_parni( 2 ), hb_parni( 3 ) );
+   _OOHG_SetMouseCoords( ( PHB_ITEM ) hb_param( 1, HB_IT_ARRAY ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
-#pragma ENDDUMP
-
-
-CLASS TWindow
-
-   DATA hWnd                      INIT 0
-   DATA aControlInfo              INIT { CHR( 0 ) }
-   DATA Name                      INIT ""
-   DATA Type                      INIT ""
-   DATA Parent                    INIT Nil
-   DATA nRow                      INIT 0
-   DATA nCol                      INIT 0
-   DATA nWidth                    INIT 0
-   DATA nHeight                   INIT 0
-   DATA Active                    INIT .F.
-   DATA cFontName                 INIT ""
-   DATA nFontSize                 INIT 0
-   DATA Bold                      INIT .F.
-   DATA Italic                    INIT .F.
-   DATA Underline                 INIT .F.
-   DATA Strikeout                 INIT .F.
-   DATA FntAngle                  INIT 0
-   DATA FntCharset                INIT DEFAULT_CHARSET
-   DATA FntWidth                  INIT 0
-   DATA FntOrientation            INIT 0
-   DATA FntAdvancedGM             INIT .F.
-   DATA cFocusFontName            INIT ""
-   DATA nFocusFontSize            INIT 0
-   DATA FocusBold                 INIT .F.
-   DATA FocusItalic               INIT .F.
-   DATA FocusUnderline            INIT .F.
-   DATA FocusStrikeout            INIT .F.
-   DATA FocusColor
-   DATA FocusBackColor
-   DATA lVisualStyled             INIT Nil PROTECTED
-   DATA RowMargin                 INIT 0
-   DATA ColMargin                 INIT 0
-   DATA Container                 INIT Nil
-   DATA ContainerhWndValue        INIT Nil
-   DATA lRtl                      INIT .F.
-   DATA lVisible                  INIT .T.
-   DATA lRedraw                   INIT .T.
-   DATA ContextMenu               INIT Nil
-   DATA Cargo                     INIT Nil
-   DATA lEnabled                  INIT .T.
-   DATA aControls                 INIT {}
-   DATA aControlsNames            INIT {}
-   DATA aCtrlsTabIndxs            INIT {}
-   DATA WndProc                   INIT Nil
-   DATA OverWndProc               INIT Nil
-   DATA lInternal                 INIT .T.
-   DATA lForm                     INIT .F.
-   DATA lReleasing                INIT .F.
-   DATA lDestroyed                INIT .F.
-   DATA Block                     INIT Nil
-   DATA VarName                   INIT ""
-   DATA lControlsAsProperties     INIT .F.
-   DATA hDynamicValues            INIT Nil
-   DATA cStatMsg                  INIT NIL
-   DATA lAdjust                   INIT .T.
-   DATA lFixFont                  INIT .F.
-   DATA lfixwidth                 INIT .F.
-   DATA ClientHeightUsed          INIT 0
-   DATA nFixedHeightUsed          INIT 0
-
-   DATA OnClick                   INIT Nil
-   DATA OnDblClick                INIT Nil
-   DATA OnRClick                  INIT Nil
-   DATA OnRDblClick               INIT Nil
-   DATA OnMClick                  INIT Nil
-   DATA OnMDblClick               INIT Nil
-   DATA OnGotFocus                INIT Nil
-   DATA OnLostFocus               INIT Nil
-   DATA OnMouseDrag               INIT Nil
-   DATA DropEnabled               INIT .F.              // .T. if control accepts drops
-   DATA HasDragFocus              INIT .F.              // .T. when drag image is upon the control and the control is drop enabled
-   DATA OnMouseMove               INIT Nil
-   DATA OnDropFiles               INIT Nil
-   DATA aKeys                     INIT {}  // { Id, Mod, Key, Action }   Application-controlled hotkeys
-   DATA aHotKeys                  INIT {}  // { Id, Mod, Key, Action }   OperatingSystem-controlled hotkeys
-   DATA aAcceleratorKeys          INIT {}  // { Id, Mod, Key, Action }   Accelerator hotkeys
-   DATA aProperties               INIT {}  // { cProperty, xValue }      Pseudo-properties
-   DATA bKeyDown                  INIT Nil // WM_KEYDOWN handler
-   DATA NestedClick               INIT .F.
-   DATA HScrollBar                INIT Nil
-   DATA VScrollBar                INIT Nil
-
-    //////// all redimension Vars
-   DATA nOldw                     INIT Nil
-   DATA nOLdh                     INIT Nil
-   DATA nWindowState              INIT 0   /// 2 Maximizada 1 minimizada  0 Normal
-   // Anchor
-   DATA nAnchor                   INIT Nil
-   DATA nDefAnchor                INIT 3
-
-   DATA lProcMsgsOnVisible        INIT .T.
-   DATA TabHandle                 INIT 0
-   DATA DefBkColorEdit            INIT Nil
-
-   DATA ClientAdjust              INIT 0 // 0=none, 1=top, 2=bottom, 3=left, 4=right, 5=Client
-   DATA IsAdjust                  INIT .F.
-   DATA nBorders                  INIT {0,0,0}                              // ancho externo, estacio, ancho interno.
-   DATA aBEColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color externo: arriba, derecha, abajo, izquierda
-   DATA aBIColors                 INIT {{0,0,0}, {0,0,0}, {0,0,0}, {0,0,0}} // color interno: arriba, derecha, abajo, izquierda
-   DATA nPaintCount                                                   // contador para GetDc y ReleaseDc
-   DATA hDC                                                           // puntero al contexto del canvas.
-
-   METHOD SethWnd
-   METHOD Release
-   METHOD PreRelease
-   METHOD StartInfo
-   METHOD SetFocus
-   METHOD ImageList           SETGET
-   METHOD BrushHandle         SETGET
-   METHOD FontHandle          SETGET
-   METHOD FontColor           SETGET
-   METHOD FontColorCode       SETGET
-   METHOD BackColor           SETGET
-   METHOD BackColorCode       SETGET
-   METHOD FontColorSelected   SETGET
-   METHOD BackColorSelected   SETGET
-   METHOD BackBitMap          SETGET
-   METHOD Caption             SETGET
-   METHOD Events
-   METHOD IsVisualStyled
-   METHOD DisableVisualStyle
-   METHOD Object              BLOCK { |Self| Self }
-   METHOD Enabled             SETGET
-   METHOD Enable              BLOCK { |Self| ::Enabled := .T. }
-   METHOD Disable             BLOCK { |Self| ::Enabled := .F. }
-   METHOD Click               BLOCK { |Self| ::DoEvent( ::OnClick, "CLICK" ) }
-   METHOD Value               BLOCK { || NIL }
-   METHOD TabStop             SETGET
-   METHOD Style               SETGET
-   METHOD ExStyle             SETGET
-   METHOD RTL                 SETGET
-   METHOD AcceptFiles         SETGET
-   METHOD Action              SETGET
-   METHOD SaveData
-   METHOD RefreshData
-   METHOD Print
-   METHOD SaveAs
-   METHOD GetBitMap(l)        BLOCK { |Self,l| _GetBitMap( ::hWnd, l ) }
-   METHOD AddControl
-   METHOD DeleteControl
-   METHOD SearchParent
-   METHOD ParentDefaults
-   METHOD BringToTop          BLOCK { |Self| BringWindowToTop( ::hWnd ) }
-   METHOD Events_Size         BLOCK { || nil }
-   METHOD Events_VScroll      BLOCK { || nil }
-   METHOD Events_HScroll      BLOCK { || nil }
-   METHOD Events_Enter        BLOCK { || nil }
-   METHOD Events_Color        BLOCK { || nil }
-
-   ERROR HANDLER Error
-   METHOD Control
-
-   METHOD HotKey                // OperatingSystem-controlled hotkeys
-   METHOD SetKey                // Application-controlled hotkeys
-   METHOD AcceleratorKey        // Accelerator hotkeys
-   METHOD LookForKey
-   METHOD Property              // Pseudo-properties
-   METHOD ReleaseAttached
-   METHOD Visible             SETGET
-   METHOD Show                BLOCK { |Self| ::Visible := .T. }
-   METHOD Hide                BLOCK { |Self| ::Visible := .F. }
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::hWnd ), ::CheckClientsPos(), ProcessMessages() }
-   METHOD ReDraw              BLOCK { |Self| RedrawWindow( ::hWnd ) }
-   METHOD DefWindowProc( nMsg, wParam, lParam )       BLOCK { |Self, nMsg, wParam, lParam| DefWindowProc( ::hWnd, nMsg, wParam, lParam ) }
-   METHOD GetTextWidth
-   METHOD GetTextHeight
-   METHOD GetMaxCharsInWidth
-   METHOD ClientWidth         SETGET
-   METHOD ClientHeight        SETGET
-   METHOD AdjustResize
-   METHOD SetRedraw
-   METHOD Anchor              SETGET
-   METHOD AdjustAnchor
-   METHOD DynamicValues       BLOCK { |Self| IF( ::hDynamicValues == NIL, ::hDynamicValues := TDynamicValues():New( Self ) , ::hDynamicValues ) }
-
-   METHOD CheckClientsPos
-   METHOD ClientsPos
-   METHOD ClientsPos2
-   METHOD Adjust              SETGET
-   METHOD GetDC()             INLINE If( ::hDC == nil, ::hDC := GetDC( ::hWnd ), ), ;
-                                     If( ::nPaintCount == nil, ::nPaintCount := 1, ::nPaintCount ++ ), ::hDC
-   METHOD ReleaseDC()         INLINE If( -- ::nPaintCount == 0, ;
-                                     If( ReleaseDC( ::hWnd, ::hDC ), ::hDC := nil, ), )
-
-   METHOD DebugMessageName
-   METHOD DebugMessageQuery
-   METHOD DebugMessageNameCommand
-   METHOD DebugMessageNameNotify
-   METHOD DebugMessageQueryNotify
-
-   METHOD ContainerVisible    BLOCK { |Self| ::lVisible .AND. IF( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
-   METHOD ContainerEnabled    BLOCK { |Self| ::lEnabled .AND. IF( ::Container != NIL, ::Container:ContainerEnabled, .T. ) }
-   METHOD ContainerReleasing  BLOCK { |Self| ::lReleasing .OR. IF( ::Container != NIL, ::Container:ContainerReleasing, IF( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
-
-   // Specific HACKS :(
-   METHOD SetSplitBox         BLOCK { || .F. }
-   METHOD SetSplitBoxInfo     BLOCK { |Self,a,b,c,d| if( ::Container != nil, ::Container:SetSplitBox( a,b,c,d ), .F. ) }
-
-   // Graphics Methods
-   METHOD Line
-   METHOD Fill
-   Method Box
-   Method RoundBox
-   METHOD Ellipse
-   METHOD Arc
-   METHOD Pie
-   /*
-   METHOD ArcTo(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen)
-   METHOD Chord(row,col,torow,tocol,rowrad1,colrad1,rowrad2,colrad2,defpen,defbrush)
-   METHOD Polygon(apoints,defpen,defbrush,style)
-   METHOD PolyBezier(apoints,defpen)
-   METHOD PolyBezierTo(apoints,defpen)
-   */
-
-   ENDCLASS
-
-
-#pragma BEGINDUMP
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_SETHWND )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -363,6 +2164,7 @@ HB_FUNC_STATIC( TWINDOW_SETHWND )
    HWNDret( oSelf->hWnd );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_RELEASE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -409,6 +2211,7 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
    hb_vmSend( 1 );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_STARTINFO )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -431,6 +2234,7 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    hb_itemCopy( _OOHG_LastSelf, pSelf );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_SETFOCUS )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -448,6 +2252,7 @@ HB_FUNC_STATIC( TWINDOW_SETFOCUS )
    hb_itemRelease( pReturn );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_IMAGELIST )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -467,6 +2272,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
    HWNDret( oSelf->ImageList );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -486,6 +2292,7 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
    HWNDret( oSelf->BrushHandle );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -505,6 +2312,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
    HWNDret( oSelf->hFontHandle );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -521,6 +2329,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -558,6 +2367,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) -> aC
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -578,6 +2388,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )
    hb_retnl( oSelf->lBackColor );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -594,6 +2405,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -610,6 +2422,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_BACKBITMAP )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -629,11 +2442,12 @@ HB_FUNC_STATIC( TWINDOW_BACKBITMAP )
    HWNDret( oSelf->BrushHandle );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_CAPTION )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   int iLen;
+   INT iLen;
    LPTSTR cText;
 
    if( HB_ISCHAR( 1 ) )
@@ -648,6 +2462,7 @@ HB_FUNC_STATIC( TWINDOW_CAPTION )
    hb_xfree( cText );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -661,6 +2476,7 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
    hb_retl( ( GetWindowLongPtr( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static UINT _OOHG_ListBoxDragNotification = 0;            // It's thread safe because is set only once.
 
 HB_FUNC( _GETDDLMESSAGE )
@@ -671,6 +2487,7 @@ HB_FUNC( _GETDDLMESSAGE )
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow
 {
    HWND hWnd      = HWNDparam( 1 );
@@ -1032,8 +2849,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
    }
 }
 
-typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DISABLEVISUALSTYLE )
 {
    CALL_SETWINDOWTHEME dwSetWindowTheme;
@@ -1056,1262 +2872,14 @@ HB_FUNC( DISABLEVISUALSTYLE )
    hb_retl( bRet );
 }
 
-#pragma ENDDUMP
-
-
-METHOD IsVisualStyled CLASS TWindow
-
-   IF ::lVisualStyled == NIL
-      ::lVisualStyled := _OOHG_UsesVisualStyle()
-   ENDIF
-
-   RETURN ::lVisualStyled
-
-METHOD DisableVisualStyle CLASS TWindow
-
-   IF ::IsVisualStyled
-      IF DisableVisualStyle( ::hWnd )
-         ::lVisualStyled := .F.
-         ::Redraw()
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-
-METHOD PreRelease() CLASS TWindow
-
-   AEVAL( ::aControls, { |o| o:PreRelease() } )
-
-   RETURN Self
-
-METHOD Enabled( lEnabled ) CLASS TWindow
-
-   IF HB_IsLogical( lEnabled )
-      ::lEnabled := lEnabled
-      IF ::ContainerEnabled
-         EnableWindow( ::hWnd )
-      ELSE
-         DisableWindow( ::hWnd )
-      ENDIF
-   ENDIF
-
-   RETURN ::lEnabled
-
-METHOD TabStop( lTabStop ) CLASS TWindow
-
-   IF HB_IsLogical( lTabStop )
-      WindowStyleFlag( ::hWnd, WS_TABSTOP, IF( lTabStop, WS_TABSTOP, 0 ) )
-   ENDIF
-
-   RETURN IsWindowStyle( ::hWnd, WS_TABSTOP )
-
-METHOD Style( nStyle ) CLASS TWindow
-
-   IF HB_IsNumeric( nStyle )
-      SetWindowStyle( ::hWnd, nStyle )
-   ENDIF
-
-   RETURN GetWindowStyle( ::hWnd )
-
-METHOD ExStyle( nExStyle ) CLASS TWindow
-
-   IF HB_ISNUMERIC( nExStyle )
-      SetWindowExStyle( ::hWnd, nExStyle )
-      SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE + SWP_NOZORDER + SWP_NOACTIVATE + SWP_FRAMECHANGED )
-   ENDIF
-
-   RETURN GetWindowExStyle( ::hWnd )
-
-METHOD RTL( lRTL ) CLASS TWindow
-
-   If HB_IsLogical( lRTL )
-      _UpdateRTL( ::hWnd, lRTL )
-      ::lRtl := lRTL
-   EndIf
-
-   Return ::lRtl
-
-METHOD Action( bAction ) CLASS TWindow
-
-   If PCount() > 0
-      ::OnClick := bAction
-   EndIf
-
-   Return ::OnClick
-
-METHOD SaveData() CLASS TWindow
-
-   _OOHG_EVAL( ::Block, ::Value )
-   AEval( ::aControls, { |o| iif( o:Container == NIL, o:SaveData(), ) } )
-
-   RETURN NIL
-
-METHOD RefreshData() CLASS TWindow
-
-   IF HB_ISBLOCK( ::Block )
-      ::Value := Eval( ::Block )
-   ENDIF
-   AEval( ::aControls, { |o| o:RefreshData() } )
-
-   RETURN NIL
-
-METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
-
-   Local myobject, cWork, cExt
-
-   If ValType( cType ) $ "CM"
-     cType := Upper( cType )
-   Else
-     cType := "BMP"
-   EndIf
-   If cType == "BMP"
-      cExt := ".bmp"
-   ElseIf cType == "JPEG" .OR. cType == "JPG"
-      cExt := ".jpg"
-   ElseIf cType == "GIF"
-      cExt := ".gif"
-   ElseIf cType == "TIFF" .OR. cType == "TIF"
-      cExt := ".tif"
-   ElseIf cType == "PNG"
-      cExt := ".png"
-   EndIf
-   cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + cExt
-   Do While file( cWork )
-      cWork := '_oohg_t' + alltrim( str( int( hb_random( 999999 ) ) ) ) + cExt
-   EndDo
-
-   DEFAULT y1   TO 44
-   DEFAULT x1   TO 110
-   DEFAULT x    TO 1
-   DEFAULT y    TO 1
-
-   ::SaveAs( cWork, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
-
-   myobject := Tprint()
-
-   With Object myobject
-      :init()
-      :selprinter( .T., .T., .T. )  /// select,preview,landscape
-      If ! :lprerror
-         :begindoc("ooHG printing" )
-         :beginpage()
-         :printimage(y,x,y1,x1,cwork)
-         :endpage()
-         :enddoc()
-      EndIf
-      :release()
-   End
-
-   FErase( cWork )
-
-   return nil
-
-METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
-
-   Local hBitMap, aSize
-
-   If ValType( cType ) $ "CM"
-     cType := Upper( cType )
-   Else
-     cType := "BMP"
-   EndIf
-   ::BringToTop()
-   hBitMap := ::GetBitMap( lAll )
-   aSize := _OOHG_SizeOfHBitmap( hBitMap )
-   If cType == "BMP"
-      _SaveBitmap( hBitMap, cFile )
-   Else
-      If gPlusInit()
-         If cType == "JPEG" .OR. cType == "JPG"
-            If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 100
-              nQuality := 100
-            EndIf
-            // JPEG images are always saved at 24 bpp color depth.
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/jpeg", nQuality, nil )
-         ElseIf cType == "GIF"
-            // GIF images do not support parameters.
-            // GIF images are always saved at 8 bpp color depth.
-            // GIF images are always compressed using LZW algorithm.
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/gif", nil, nil )
-         ElseIf cType == "TIFF" .OR. cType == "TIF"
-            If ValType( nQuality ) != "N" .OR. nQuality < 0 .OR. nQuality > 1
-              // This the default value: LZW compression.
-              nQuality := 1
-            EndIf
-            If ValType( nColorDepth ) != "N" .OR. ( nColorDepth # 1 .AND. nColorDepth # 4 .AND. nColorDepth # 8 .AND. nColorDepth # 24 .AND. nColorDepth # 32 )
-              // This is the default value: 32 bpp.
-              nColorDepth := 32
-            EndIf
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/tiff", nQuality, nColorDepth )
-         ElseIf cType == "PNG"
-            // PNG images do not support parameters.
-            // PNG images are always saved at 24 bpp color depth if they don't have transparecy
-            // or at 32 bpp if they have it.
-            // PNG images are always compressed using ZIP algorithm.
-            gPlusSaveHBitmapToFile( hBitMap, cFile, aSize[1], aSize[2], "image/png", nil, nil )
-         EndIf
-         gPlusDeInit()
-      EndIf
-   EndIf
-   DeleteObject( hBitMap )
-
-   return nil
-
-METHOD AddControl( oControl ) CLASS TWindow
-
-   AADD( ::aControls,      oControl )
-   AADD( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
-   AADD( ::aCtrlsTabIndxs, Len( ::aControls ) )
-
-   Return oControl
-
-METHOD DeleteControl( oControl ) CLASS TWindow
-
-   Local nPos, nDelOrder
-
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( oControl:Name ) ) + CHR( 255 ) )
-   IF nPos > 0
-      _OOHG_DeleteArrayItem( ::aControls,       nPos )
-      _OOHG_DeleteArrayItem( ::aControlsNames,  nPos )
-      nDelOrder := ::aCtrlsTabIndxs[ nPos ]
-      _OOHG_DeleteArrayItem( ::aCtrlsTabIndxs, nPos )
-      // renumber to avoid gaps
-      AEVAL( ::aCtrlsTabIndxs, { | nOrder, i | IIF( nOrder > nDelOrder, ::aCtrlsTabIndxs[ i ] --, NIL ) } )
-   ENDIF
-
-   Return oControl
-
-METHOD SearchParent( uParent ) CLASS TWindow
-
-   If ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
-      If ! _IsWindowDefined( uParent )
-         MsgOOHGError( "Window: " + uParent + " is not defined. Program terminated." )
-      Else
-         uParent := GetFormObject( uParent )
-      Endif
-   EndIf
-
-   If ! HB_IsObject( uParent )
-      uParent := SearchParentWindow( ::lInternal )
-   EndIf
-
-   If ::lInternal
-      If ! HB_IsObject( uParent )
-         MsgOOHGError( "Window: Parent is not defined. Program terminated." )
-      EndIf
-
-      // NOTE: For INTERNALs, sets ::Parent and ::Container
-      // Checks if parent is a form or container
-      If uParent:lForm
-         ::Parent := uParent
-         // Checks for an open "control container" structure in the specified parent form
-         ::Container := TApplication():Define():ActiveFrameContainer( ::Parent:hWnd )
-      Else
-         ::Container := uParent
-         ::Parent := ::Container:Parent
-      EndIf
-   EndIf
-
-   Return uParent
-
-METHOD ParentDefaults( cFontName, nFontSize, uFontColor, lNoProc ) CLASS TWindow
-
-   // Font Name:
-   If ValType( cFontName ) == "C" .AND. ! EMPTY( cFontName )
-      // Specified font
-      ::cFontName := cFontName
-   ElseIf ValType( ::cFontName ) == "C" .AND. ! Empty( ::cFontName )
-      // Pre-registered
-   ElseIf ::Container != Nil .AND. ValType( ::Container:cFontName ) == "C" .AND. ! Empty( ::Container:cFontName )
-      // Container
-      ::cFontName := ::Container:cFontName
-   ElseIf ::Parent != Nil .AND. ValType( ::Parent:cFontName ) == "C" .AND. ! Empty( ::Parent:cFontName )
-      // Parent form
-      ::cFontName := ::Parent:cFontName
-   Else
-       // Default
-      ::cFontName := _OOHG_DefaultFontName
-   EndIf
-
-   // Font Size:
-   If HB_IsNumeric( nFontSize ) .AND. nFontSize != 0
-      // Specified size
-      ::nFontSize := nFontSize
-   ElseIf HB_IsNumeric( ::nFontSize ) .AND. ::nFontSize != 0
-      // Pre-registered
-   ElseIf ::Container != Nil .AND. HB_IsNumeric( ::Container:nFontSize ) .AND. ::Container:nFontSize != 0
-      // Container
-      ::nFontSize := ::Container:nFontSize
-   ElseIf ::Parent != Nil .AND. HB_IsNumeric( ::Parent:nFontSize ) .AND. ::Parent:nFontSize != 0
-      // Parent form
-      ::nFontSize := ::Parent:nFontSize
-   Else
-       // Default
-      ::nFontSize := _OOHG_DefaultFontSize
-   EndIf
-
-   // Font Color:
-   If ValType( uFontColor ) $ "ANCM"
-      // Specified color
-      ::FontColor := uFontColor
-   ElseIf ValType( ::FontColor ) $ "ANCM"
-      // Pre-registered
-      * To detect about "-1" !!!
-   ElseIf ::Container != Nil .AND. ValType( ::Container:FontColor ) $ "ANCM"
-      // Container
-      ::FontColor := ::Container:FontColor
-   ElseIf ::Parent != Nil .AND. ValType( ::Parent:FontColor ) $ "ANCM"
-      // Parent form
-      ::FontColor := ::Parent:FontColor
-   Else
-       // Default
-       ::FontColor := _OOHG_DefaultFontColor
-   EndIf
-
-   If HB_IsLogical( lNoProc )
-      ::lProcMsgsOnVisible := ! lNoProc
-   ElseIf ::Container != Nil
-      ::lProcMsgsOnVisible := ::Container:lProcMsgsOnVisible
-   ElseIf ::Parent != Nil
-      ::lProcMsgsOnVisible := ::Parent:lProcMsgsOnVisible
-   EndIf
-
-   Return Self
-
-METHOD Error( xParam ) CLASS TWindow
-
-   Local nPos, cMessage
-
-   cMessage := __GetMessage()
-
-   * nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cMessage ) ) + CHR( 255 ) )
-   nPos := aScan( ::aControlsNames, cMessage + CHR( 255 ) )
-   If nPos > 0
-      If ::lControlsAsProperties
-         Return ::aControls[ nPos ]:Value
-      Else
-         Return ::aControls[ nPos ]
-      EndIf
-   EndIf
-
-   If PCOUNT() >= 1 .AND. ::lControlsAsProperties .AND. LEFT( cMessage, 1 ) == "_"
-      nPos := aScan( ::aControlsNames, SUBSTR( cMessage, 2 ) + CHR( 255 ) )
-      If nPos > 0
-         Return ( ::aControls[ nPos ]:Value := xParam )
-      EndIf
-   EndIf
-
-   If PCOUNT() >= 1
-      nPos := ASCAN( ::aProperties, { |a| "_" + a[ 1 ] == cMessage } )
-      If nPos > 0
-         ::aProperties[ nPos ][ 2 ] := xParam
-         Return ::aProperties[ nPos ][ 2 ]
-      EndIf
-   Else
-      nPos := ASCAN( ::aProperties, { |a| a[ 1 ] == cMessage } )
-      If nPos > 0
-         Return ::aProperties[ nPos ][ 2 ]
-      EndIf
-   EndIf
-
-   Return ::MsgNotFound( cMessage )
-
-METHOD Control( cControl ) CLASS TWindow
-
-   Local nPos
-
-   nPos := aScan( ::aControlsNames, UPPER( ALLTRIM( cControl ) ) + CHR( 255 ) )
-
-   Return IF( nPos > 0, ::aControls[ nPos ], nil )
-
-#define HOTKEY_ID        1
-#define HOTKEY_MOD       2
-#define HOTKEY_KEY       3
-#define HOTKEY_ACTION    4
-
-METHOD HotKey( nKey, nFlags, bAction ) CLASS TWindow
-
-   Local nPos, nId, uRet := nil
-
-   nPos := ASCAN( ::aHotKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
-   If nPos > 0
-      uRet := ::aHotKeys[ nPos ][ HOTKEY_ACTION ]
-   EndIf
-   If PCOUNT() > 2
-      If HB_IsBlock( bAction )
-         If nPos > 0
-            ::aHotKeys[ nPos ][ HOTKEY_ACTION ] := bAction
-         Else
-            nId := _GetId()
-            AADD( ::aHotKeys, { nId, nFlags, nKey, bAction } )
-            InitHotKey( ::hWnd, nFlags, nKey, nId )
-         EndIf
-      Else
-         If nPos > 0
-            ReleaseHotKey( ::hWnd, ::aHotKeys[ nPos ][ HOTKEY_ID ] )
-            _OOHG_DeleteArrayItem( ::aHotKeys, nPos )
-         EndIf
-      Endif
-   EndIf
-
-   Return uRet
-
-METHOD SetKey( nKey, nFlags, bAction ) CLASS TWindow
-
-   Local bCode
-
-   bCode := _OOHG_SetKey( ::aKeys, nKey, nFlags )
-   If PCOUNT() > 2
-      _OOHG_SetKey( ::aKeys, nKey, nFlags, bAction )
-   EndIf
-
-   Return bCode
-
-METHOD AcceleratorKey( nKey, nFlags, bAction ) CLASS TWindow
-
-   Local nPos, nId, uRet := nil
-
-   nPos := ASCAN( ::aAcceleratorKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
-   If nPos > 0
-      uRet := ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ]
-   EndIf
-   If PCOUNT() > 2
-      If HB_IsBlock( bAction )
-         If nPos > 0
-            ::aAcceleratorKeys[ nPos ][ HOTKEY_ACTION ] := bAction
-         Else
-            nId := _GetId()
-            AADD( ::aAcceleratorKeys, { nId, nFlags, nKey, bAction } )
-            InitHotKey( ::hWnd, nFlags, nKey, nId )
-         EndIf
-      Else
-         If nPos > 0
-            ReleaseHotKey( ::hWnd, ::aAcceleratorKeys[ nPos ][ HOTKEY_ID ] )
-            _OOHG_DeleteArrayItem( ::aAcceleratorKeys, nPos )
-         EndIf
-      Endif
-   EndIf
-
-   Return uRet
-
-METHOD LookForKey( nKey, nFlags ) CLASS TWindow
-
-   Local lDone
-
-   If ::Active .AND. LookForKey_Check_HotKey( ::aKeys, nKey, nFlags, Self )
-      lDone := .T.
-   ElseIf ::Active .AND. LookForKey_Check_bKeyDown( ::bKeyDown, nKey, nFlags, Self )
-      lDone := .T.
-   ElseIf HB_IsObject( ::Container )
-      lDone := ::Container:LookForKey( nKey, nFlags )
-   ElseIf HB_IsObject( ::Parent ) .AND. ::lInternal
-      lDone := ::Parent:LookForKey( nKey, nFlags )
-   Else
-      If LookForKey_Check_HotKey( _OOHG_HotKeys, nKey, nFlags, TForm() )
-         lDone := .T.
-      ElseIf LookForKey_Check_bKeyDown( _OOHG_bKeyDown, nKey, nFlags, TForm() )   // Application-wide WM_KEYDOWN handler
-         lDone := .T.
-      Else
-         lDone := .F.
-      EndIf
-   EndIf
-
-   Return lDone
-
-STATIC FUNCTION LookForKey_Check_HotKey( aKeys, nKey, nFlags, Self )
-
-   Local nPos, lDone
-
-   nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. nFlags == a[ HOTKEY_MOD ] } )
-   If nPos > 0
-      ::DoEvent( aKeys[ nPos ][ HOTKEY_ACTION ], "HOTKEY", { nKey, nFlags } )
-      lDone := .T.
-   Else
-      lDone := .F.
-   EndIf
-
-   Return lDone
-
-STATIC FUNCTION LookForKey_Check_bKeyDown( bKeyDown, nKey, nFlags, Self )
-
-   Local lDone
-
-   If HB_IsBlock( bKeyDown )
-      lDone := ::DoEvent( bKeyDown, "KEYDOWN", { nKey, nFlags } )
-      If ! HB_IsLogical( lDone )
-         lDone := .F.
-      EndIf
-   Else
-      lDone := .F.
-   EndIf
-
-   Return lDone
-
-METHOD Property( cProperty, xValue ) CLASS TWindow
-
-   LOCAL nPos
-
-   cProperty := UPPER( ALLTRIM( cProperty ) )
-   nPos := ASCAN( ::aProperties, { |a| a[ 1 ] == cProperty } )
-   If PCOUNT() >= 2
-      If nPos > 0
-         ::aProperties[ nPos ][ 2 ] := xValue
-      Else
-         AADD( ::aProperties, { cProperty, xValue } )
-      EndIf
-   Else
-      If nPos > 0
-         xValue := ::aProperties[ nPos ][ 2 ]
-      Else
-         // RTE?
-         xValue := nil
-      EndIf
-   EndIf
-
-   Return xValue
-
-METHOD ReleaseAttached() CLASS TWindow
-
-   // Release hot keys
-   AEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-   ::aHotKeys := {}
-   AEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
-   ::aAcceleratorKeys := {}
-
-   // Remove Child Controls
-   DO WHILE Len( ::aControls ) > 0
-      ATail( ::aControls ):Release()
-   ENDDO
-
-   RETURN NIL
-
-METHOD SetRedraw( lRedraw ) CLASS TWindow
-
-   If HB_IsLogical( lRedraw )
-      ::lRedraw := lRedraw
-      If lRedraw
-         // When the window is hidden, this message shows it by adding WS_VISIBLE style to the window.
-         SendMessage( ::hWnd, WM_SETREDRAW, 1, 0 )
-      Else
-         SendMessage( ::hWnd, WM_SETREDRAW, 0, 0 )
-      EndIf
-   EndIf
-
-   Return ::lRedraw
-
-METHOD Visible( lVisible ) CLASS TWindow
-
-   If HB_IsLogical( lVisible )
-      ::lVisible := lVisible
-      If ::ContainerVisible
-         CShowControl( ::hWnd )
-      Else
-         HideWindow( ::hWnd )
-      EndIf
-
-      If ::lProcMsgsOnVisible
-         ProcessMessages()
-      EndIf
-
-      ::CheckClientsPos()
-   EndIf
-
-   Return ::lVisible
-
-METHOD GetTextWidth( cString ) CLASS TWindow
-
-   Return GetTextWidth( nil, cString, ::FontHandle )
-
-METHOD GetTextHeight( cString ) CLASS TWindow
-
-   Return GetTextHeight( nil, cString, ::FontHandle )
-
-METHOD ClientWidth( nWidth ) CLASS TWindow
-
-   LOCAL aClientRect
-
-   If HB_IsNumeric( nWidth )
-      aClientRect := { 0, 0, 0, 0 }
-      GetClientRect( ::hWnd, aClientRect )
-      ::Width := ::Width - ( aClientRect[ 3 ] - aClientRect[ 1 ] ) + nWidth
-   EndIf
-
-   // Window may be greater than requested width... verify it again
-   aClientRect := { 0, 0, 0, 0 }
-   GetClientRect( ::hWnd, aClientRect )
-
-   Return aClientRect[ 3 ] - aClientRect[ 1 ]
-
-METHOD ClientHeight( nHeight ) CLASS TWindow
-
-   LOCAL aClientRect
-
-   If HB_IsNumeric( nHeight )
-      aClientRect := { 0, 0, 0, 0 }
-      GetClientRect( ::hWnd, aClientRect )
-      ::Height := ::Height - ( aClientRect[ 4 ] - aClientRect[ 2 ] ) + nHeight
-   EndIf
-
-   // Window may be greater than requested height... verify it again
-   aClientRect := { 0, 0, 0, 0 }
-   GetClientRect( ::hWnd, aClientRect )
-
-   Return aClientRect[ 4 ] - aClientRect[ 2 ]
-
-METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TWindow
-
-   LOCAL nFixedHeightUsed
-
-   IF ::lAdjust
-      //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
-      IF ::container == nil
-         nFixedHeightUsed := ::parent:nFixedHeightUsed
-      ELSE
-         nFixedHeightUsed := ::container:nFixedHeightUsed
-      ENDIF
-
-      ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
-
-      IF _OOHG_AdjustWidth
-         IF ! ::lFixWidth
-            ::Sizepos( , , ::Width * nDivw, ::Height * nDivh )
-
-            IF _OOHG_AdjustFont
-               IF ! ::lFixFont
-                  ::FontSize := ::FontSize * nDivw
-               ENDIF
-            ENDIF
-         ENDIF
-      ENDIF
-
-      IF ! HB_IsLogical( lSelfOnly ) .OR. ! lSelfOnly
-         AEVAL( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
-      ENDIF
-   ENDIF
-
-   Return nil
-
-METHOD Anchor( xAnchor ) CLASS TWindow
-
-   LOCAL nTop, nLeft, nBottom, nRight
-
-   If HB_IsNumeric( xAnchor )
-      ::nAnchor := INT( xAnchor ) % 16
-   ElseIf HB_IsString( xAnchor )
-      xAnchor := UPPER( ALLTRIM( xAnchor ) )
-      If xAnchor == "NONE"
-         ::nAnchor := 0
-      ElseIf xAnchor == "ALL"
-         ::nAnchor := 16
-      Else
-         nTop := nLeft := nBottom := nRight := 0
-         DO WHILE ! EMPTY( xAnchor )
-            If     LEFT( xAnchor, 3 ) == "TOP"
-               nTop := 1
-               xAnchor := SUBSTR( xAnchor, 4 )
-            ElseIf LEFT( xAnchor, 4 ) == "LEFT"
-               nLeft := 2
-               xAnchor := SUBSTR( xAnchor, 5 )
-            ElseIf LEFT( xAnchor, 6 ) == "BOTTOM"
-               nBottom := 4
-               xAnchor := SUBSTR( xAnchor, 7 )
-            ElseIf LEFT( xAnchor, 5 ) == "RIGHT"
-               nRight := 8
-               xAnchor := SUBSTR( xAnchor, 6 )
-            Else
-               nTop := ::nAnchor
-               nLeft := nBottom := nRight := 0
-               EXIT
-            EndIf
-         ENDDO
-         ::nAnchor := nTop + nLeft + nBottom + nRight
-      EndIf
-   EndIf
-
-   Return ::nAnchor
-
-METHOD AdjustAnchor( nDeltaH, nDeltaW ) CLASS TWindow
-
-   LOCAL nAnchor, lTop, lLeft, lBottom, lRight, nRow, nCol, nWidth, nHeight, lChange
-
-   If ::nAnchor == NIL
-      Return nil
-   EndIf
-   nAnchor := INT( ::nAnchor ) % 16
-   If nAnchor != 3 .AND. ( nDeltaH != 0 .OR. nDeltaW != 0 )
-      lTop    := ( ( nAnchor %  2 ) >= 1 )
-      lLeft   := ( ( nAnchor %  4 ) >= 2 )
-      lBottom := ( ( nAnchor %  8 ) >= 4 )
-      lRight  := ( ( nAnchor % 16 ) >= 8 )
-      nRow    := ::Row
-      nCol    := ::Col
-      nWidth  := ::Width
-      nHeight := ::Height
-      lChange := .F.
-      // Height checking
-      If nDeltaH == 0
-         //
-      ElseIf lTop .AND. lBottom
-         nHeight += nDeltaH
-         lChange := .T.
-      ElseIf lBottom
-         nRow += nDeltaH
-         lChange := .T.
-      ElseIf ! lTop
-         nRow += ( nDeltaH / 2 )
-         lChange := .T.
-      EndIf
-      // Width checking
-      If nDeltaW == 0
-         //
-      ElseIf lLeft .AND. lRight
-         nWidth += nDeltaW
-         lChange := .T.
-      ElseIf lRight
-         nCol += nDeltaW
-         lChange := .T.
-      ElseIf ! lLeft
-         nCol += ( nDeltaW / 2 )
-         lChange := .T.
-      EndIf
-      // Any change?
-      If lChange
-         ::SizePos( nRow, nCol, nWidth, nHeight )
-      EndIf
-   EndIf
-
-   Return nil
-
-METHOD CheckClientsPos() CLASS TWindow
-
-   If ::ClientAdjust > 0
-      If ::Container != NIL
-         ::Container:ClientsPos()
-      ElseIf ::Parent != NIL
-         ::Parent:ClientsPos()
-      EndIf
-   EndIf
-
-   Return nil
-
-METHOD ClientsPos() CLASS TWindow
-
-   Return ::ClientsPos2( ::aControls, ::Width, ::Height )
-
-METHOD ClientsPos2( aControls, nWidth, nHeight ) CLASS TWindow
-
-   // ajusta los controles dentro de la ventana por ClientAdjust
-   local n, nAdjust, oControl, nRow, nCol
-   local nOffset // desplazamientos por borde
-
-
-   If ::IsAdjust
-      Return self
-   EndIf
-   nOffSet := ::nBorders[1]+::nBorders[2]+::nBorders[3]
-   nOffset  := if ( nOffset>0,nOffset+1,0)
-   nRow:=nOffset
-   nCol:=nOffset
-   nWidth:=nWidth-2*nOffset
-   nHeight:=nHeight-2*nOffset
-   ::IsAdjust := .T.
-   // remove toolbar .and. statusbar
-   for n:=1 to len(aControls)
-      if aControls[n]:type="TOOLBAR"
-         if aControls[n]:ltop
-            nRow+=aControls[n]:ClientHeightUsed()
-            nHeight-=aControls[n]:ClientHeightUsed()
-         else
-            nHeight-=aControls[n]:ClientHeightUsed()
-         end
-      elseif aControls[n]:type="MESSAGEBAR"
-          nHeight+=aControls[n]:ClientHeightUsed()
-      end
-   next
-   // nCol := ::Height - GetStatusbarHeight( ::name ) - GetTitleHeight() - 2 * GetBorderHeight()
-   For n := 1 to len( aControls )
-      oControl := aControls[ n ]
-      nAdjust := oControl:ClientAdjust
-      If nAdjust > 0 .and. nAdjust < 5 .and. aControls[ n ]:ContainerVisible
-      oControl:Hide()
-         If nAdjust == 1 // top
-            oControl:Col := nCol
-            oControl:Row := nRow
-            oControl:Width := nWidth
-            nRow := nRow + oControl:nHeight
-            nHeight := nHeight - oControl:nHeight
-         ElseIf nAdjust == 2 // bottom
-            oControl:Col := nCol
-            oControl:Row := nHeight - oControl:nHeight + nRow
-            oControl:Width:=nWidth
-            nHeight := nHeight - oControl:nHeight
-         ElseIf nAdjust == 3 //left
-            oControl:Col := nCol
-            oControl:Row := nRow
-            oControl:Height := nHeight
-            nCol := nCol + oControl:nWidth
-            nWidth := nWidth - oControl:nWidth
-         ElseIf nAdjust == 4 //right
-            oControl:Col := nWidth - oControl:nWidth + nCol
-            oControl:Row := nRow
-            oControl:Height := nHeight
-            nWidth := nWidth - oControl:nWidth
-         EndIf
-
-         //oControl:SizePos()
-         oControl:Show()
-      EndIf
-   Next
-   For n := 1 to len( aControls )
-      If aControls[ n ]:ClientAdjust == 5 .and. aControls[ n ]:Visible
-         aControls[ n ]:Hide()
-         //aControls[ n ]:SizePos( nRow, nCol, nWidth - 2, nHeight - 2 )
-       aControls[n]:width:=nWidth -2
-       aControls[n]:height:=nHeight -2
-       aControls[n]:col:=nCol
-       aControls[n]:row:=nRow
-         aControls[ n ]:Show()
-      EndIf
-   Next
-   ::IsAdjust := .F.
-
-   Return nil
-
-METHOD Adjust( nAdjust ) CLASS TWindow
-
-   Local Adjustpos, newAdjust
-
-   If PCOUNT() > 0
-      If HB_IsString( nAdjust )
-         AdjustPos := upper( alltrim( nAdjust ) )
-         If AdjustPos == 'TOP'
-            newAdjust := 1
-         Elseif AdjustPos == 'BOTTOM'
-            newAdjust := 2
-         Elseif AdjustPos == 'LEFT'
-            newAdjust := 3
-         Elseif AdjustPos == 'RIGHT'
-            newAdjust := 4
-         Elseif AdjustPos == 'CLIENT'
-            newAdjust := 5
-         Else
-            newAdjust := ::ClientAdjust
-         EndIf
-         If newAdjust <> ::ClientAdjust
-            ::ClientAdjust := newAdjust
-            ::CheckClientsPos()
-         EndIf
-      ElseIf hb_IsNumeric( nAdjust )
-         If nAdjust <> ::ClientAdjust
-            ::ClientAdjust := nAdjust
-            ::CheckClientsPos()
-         EndIf
-      EndIf
-   EndIf
-
-   Return ::ClientAdjust
-
-METHOD GetMaxCharsInWidth( cString, nWidth ) CLASS TWindow
-
-   Local nChars, nMin, nMax, nSize
-
-   If ! VALTYPE( cString ) $ "CM" .OR. LEN( cString ) == 0 .OR. ! HB_ISNUMERIC( nWidth ) .OR. nWidth <= 0
-      nChars := 0
-   Else
-      nSize := ::GetTextWidth( cString )
-      nMax := LEN( cString )
-      If nSize <= nWidth
-         nChars := nMax
-      Else
-         nMin := 0
-         Do While nMax != nMin + 1
-            nChars := INT( ( nMin + nMax ) / 2 )
-            nSize := ::GetTextWidth( LEFT( cString, nChars ) )
-            If nSize <= nWidth
-               nMin := nChars
-            Else
-               nMax := nChars
-            EndIf
-         EndDo
-         nChars := nMin
-      EndIf
-   EndIf
-
-   Return nChars
-
-METHOD DebugMessageName( nMsg ) CLASS TWindow
-
-   STATIC aNames := NIL
-   LOCAL cName
-
-   IF aNames == NIL
-      aNames := { "WM_CREATE", "WM_DESTROY", "WM_MOVE", NIL, "WM_SIZE", ;
-                  "WM_ACTIVATE", "WM_SETFOCUS", "WM_KILLFOCUS", NIL, "WM_ENABLE", ;
-                  "WM_SETREDRAW", "WM_SETTEXT", "WM_GETTEXT", "WM_GETTEXTLENGTH", "WM_PAINT", ;
-                  "WM_CLOSE", "WM_QUERYENDSESSION", "WM_QUIT", "WM_QUERYOPEN", "WM_ERASEBKGND", ;
-                  "WM_SYSCOLORCHANGE", "WM_ENDSESSION", NIL, "WM_SHOWWINDOW", NIL, ;
-                  "WM_WININICHANGE", "WM_DEVMODECHANGE", "WM_ACTIVATEAPP", "WM_FONTCHANGE", "WM_TIMECHANGE", ;
-                  "WM_CANCELMODE", "WM_SETCURSOR", "WM_MOUSEACTIVATE", "WM_CHILDACTIVATE", "WM_QUEUESYNC", ;
-                  "WM_GETMINMAXINFO", NIL, "WM_PAINTICON", "WM_ICONERASEBKGND", "WM_NEXTDLGCTL", ;
-                  NIL, "WM_SPOOLERSTATUS", "WM_DRAWITEM", "WM_MEASUREITEM", "WM_DELETEITEM", ;
-                  "WM_VKEYTOITEM", "WM_CHARTOITEM", "WM_SETFONT", "WM_GETFONT", "WM_SETHOTKEY", ;
-                  "WM_GETHOTKEY", NIL, NIL, NIL, "WM_QUERYDRAGICON", ;
-                  NIL, "WM_COMPAREITEM", NIL, NIL, NIL, ;
-                  "WM_GETOBJECT", NIL, NIL, NIL, "WM_COMPACTING", ;
-                  NIL, NIL, "WM_COMMNOTIFY", NIL, "WM_WINDOWPOSCHANGING", ;
-                  "WM_WINDOWPOSCHANGED", "WM_POWER", NIL, "WM_COPYDATA", "WM_CANCELJOURNAL", ;
-                  NIL, NIL, "WM_NOTIFY", NIL, "WM_INPUTLANGCHANGEREQUEST", ;
-                  "WM_INPUTLANGCHANGE", "WM_TCARD", "WM_HELP", "WM_USERCHANGED", "WM_NOTIFYFORMAT", ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, "WM_CONTEXTMENU", "WM_STYLECHANGING", "WM_STYLECHANGED", ;
-                  "WM_DISPLAYCHANGE", "WM_GETICON", "WM_SETICON", "WM_NCCREATE", "WM_NCDESTROY", ;
-                  "WM_NCCALCSIZE", "WM_NCHITTEST", "WM_NCPAINT", "WM_NCACTIVATE", "WM_GETDLGCODE", ;
-                  "WM_SYNCPAINT", NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, NIL, "WM_NCMOUSEMOVE", ;
-                  "WM_NCLBUTTONDOWN", "WM_NCLBUTTONUP", "WM_NCLBUTTONDBLCLK", "WM_NCRBUTTONDOWN", "WM_NCRBUTTONUP", ;
-                  "WM_NCRBUTTONDBLCLK", "WM_NCMBUTTONDOWN", "WM_NCMBUTTONUP", "WM_NCMBUTTONDBLCLK", NIL, ;
-                  "WM_NCXBUTTONDOWN", "WM_NCXBUTTONUP", "WM_NCXBUTTONDBLCLK" }
-      ASIZE( aNames, 1024 )
-
-      AEVAL( { "WM_KEYFIRST", ;
-               "WM_KEYUP", "WM_CHAR", "WM_DEADCHAR", "WM_SYSKEYDOWN", "WM_SYSKEYUP", ;
-               "WM_SYSCHAR", "WM_SYSDEADCHAR", "WM_KEYLAST", NIL, NIL, ;
-               NIL, NIL, "WM_IME_STARTCOMPOSITION", "WM_IME_ENDCOMPOSITION", "WM_IME_COMPOSITION", ;
-               "WM_INITDIALOG", "WM_COMMAND", "WM_SYSCOMMAND", "WM_TIMER", "WM_HSCROLL", ;
-               "WM_VSCROLL", "WM_INITMENU", "WM_INITMENUPOPUP", NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               "WM_MENUSELECT", "WM_MENUCHAR", "WM_ENTERIDLE", "WM_MENURBUTTONUP", "WM_MENUDRAG", ;
-               "WM_MENUGETOBJECT", "WM_UNINITMENUPOPUP", "WM_MENUCOMMAND", "WM_CHANGEUISTATE", "WM_UPDATEUISTATE", ;
-               "WM_QUERYUISTATE", NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, "WM_CTLCOLORMSGBOX", ;
-               "WM_CTLCOLOREDIT", "WM_CTLCOLORLISTBOX", "WM_CTLCOLORBTN", "WM_CTLCOLORDLG", "WM_CTLCOLORSCROLLBAR", ;
-               "WM_CTLCOLORSTATIC" }, ;
-             { |c,i| aNames[ i + 0x0FF ] := c } )
-
-      AEVAL( { "WM_MOUSEMOVE", ;
-               "WM_LBUTTONDOWN", "WM_LBUTTONUP", "WM_LBUTTONDBLCLK", "WM_RBUTTONDOWN", "WM_RBUTTONUP", ;
-               "WM_RBUTTONDBLCLK", "WM_MBUTTONDOWN", "WM_MBUTTONUP", "WM_MBUTTONDBLCLK", "WM_MOUSEWHEEL", ;
-               "WM_XBUTTONDOWN", "WM_XBUTTONUP", "WM_XBUTTONDBLCLK", NIL, NIL, ;
-               "WM_PARENTNOTIFY", "WM_ENTERMENULOOP", "WM_EXITMENULOOP", "WM_NEXTMENU", "WM_SIZING", ;
-               "WM_CAPTURECHANGED", "WM_MOVING", NIL, "WM_POWERBROADCAST", "WM_DEVICECHANGE", ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, "WM_MDICREATE", "WM_MDIDESTROY", "WM_MDIACTIVATE", "WM_MDIRESTORE", ;
-               "WM_MDINEXT", "WM_MDIMAXIMIZE", "WM_MDITILE", "WM_MDICASCADE", "WM_MDIICONARRANGE", ;
-               "WM_MDIGETACTIVE", NIL, NIL, NIL, NIL, ;
-               NIL, NIL, "WM_MDISETMENU", "WM_ENTERSIZEMOVE", "WM_EXITSIZEMOVE", ;
-               "WM_DROPFILES", "WM_MDIREFRESHMENU" }, ;
-             { |c,i| aNames[ i + 0x1FF ] := c } )
-
-      AEVAL( { "WM_IME_SETCONTEXT", "WM_IME_NOTIFY", "WM_IME_CONTROL", "WM_IME_COMPOSITIONFULL", "WM_IME_SELECT", ;
-               "WM_IME_CHAR", NIL, "WM_IME_REQUEST", NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               "WM_IME_KEYDOWN", "WM_IME_KEYUP", NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, "WM_NCMOUSEHOVER", "WM_MOUSEHOVER", "WM_NCMOUSELEAVE", "WM_MOUSELEAVE" }, ;
-             { |c,i| aNames[ i + 0x280 ] := c } )
-
-      AEVAL( { "WM_CUT", ;
-               "WM_COPY", "WM_PASTE", "WM_CLEAR", "WM_UNDO", "WM_RENDERFORMAT", ;
-               "WM_RENDERALLFORMATS", "WM_DESTROYCLIPBOARD", "WM_DRAWCLIPBOARD", "WM_PAINTCLIPBOARD", "WM_VSCROLLCLIPBOARD", ;
-               "WM_SIZECLIPBOARD", "WM_ASKCBFORMATNAME", "WM_CHANGECBCHAIN", "WM_HSCROLLCLIPBOARD", "WM_QUERYNEWPALETTE", ;
-               "WM_PALETTEISCHANGING", "WM_PALETTECHANGED", "WM_HOTKEY", NIL, NIL, ;
-               NIL, NIL, "WM_PRINT", "WM_PRINTCLIENT", "WM_APPCOMMAND" }, ;
-             { |c,i| aNames[ i + 0x2FF ] := c } )
-
-      aNames[ 0x358 ] := "WM_HANDHELDFIRST"
-      aNames[ 0x35F ] := "WM_HANDHELDLAST"
-      aNames[ 0x360 ] := "WM_AFXFIRST"
-      aNames[ 0x37F ] := "WM_AFXLAST"
-      aNames[ 0x380 ] := "WM_PENWINFIRST"
-      aNames[ 0x38F ] := "WM_PENWINLAST"
-
-      aNames[ 0x400 ] := "WM_USER"
-
-      // Edit control messages
-      AEVAL( { "EM_GETSEL", ;
-               "EM_SETSEL", "EM_GETRECT", "EM_SETRECT", "EM_SETRECTNP", "EM_SCROLL", ;
-               "EM_LINESCROLL", "EM_SCROLLCARET", "EM_GETMODIFY", "EM_SETMODIFY", "EM_GETLINECOUNT", ;
-               "EM_LINEINDEX", "EM_SETHANDLE", "EM_GETHANDLE", "EM_GETTHUMB", NIL, ;
-               NIL, "EM_LINELENGTH", "EM_REPLACESEL", NIL, "EM_GETLINE", ;
-               "EM_SETLIMITTEXT", "EM_CANUNDO", "EM_UNDO", "EM_FMTLINES", "EM_LINEFROMCHAR", ;
-               NIL, "EM_SETTABSTOPS", "EM_SETPASSWORDCHAR", "EM_EMPTYUNDOBUFFER", "EM_GETFIRSTVISIBLELINE", ;
-               "EM_SETREADONLY", "EM_SETWORDBREAKPROC", "EM_GETWORDBREAKPROC", "EM_GETPASSWORDCHAR", "EM_SETMARGINS", ;
-               "EM_GETMARGINS", "EM_GETLIMITTEXT", "EM_POSFROMCHAR", "EM_CHARFROMPOS", "EM_SETIMESTATUS", ;
-               "EM_GETIMESTATUS" }, ;
-             { |c,i| aNames[ i + 0xAF ] := c } )
-
-      // Scroll bar messages
-      AEVAL( { "SBM_SETPOS", ;
-               "SBM_GETPOS", "SBM_SETRANGE", "SBM_GETRANGE", "SBM_ENABLE_ARROWS", NIL, ;
-               "SBM_SETRANGEREDRAW", NIL, NIL, "SBM_SETSCROLLINFO", "SBM_GETSCROLLINFO" }, ;
-             { |c,i| aNames[ i + 0xDF ] := c } )
-
-      // Button control messages
-      AEVAL( { "BM_GETCHECK", ;
-               "BM_SETCHECK", "BM_GETSTATE", "BM_SETSTATE", "BM_SETSTYLE", "BM_CLICK", ;
-               "BM_GETIMAGE", "BM_SETIMAGE" }, ;
-             { |c,i| aNames[ i + 0xEF ] := c } )
-
-      // Static control messages
-      AEVAL( { "STM_SETICON", ;
-               "STM_GETICON", "STM_SETIMAGE", "STM_GETIMAGE", "STM_MSGMAX" }, ;
-             { |c,i| aNames[ i + 0x16F ] := c } )
-   ENDIF
-   IF nMsg == 0
-      cName := "WM_NULL"
-   ELSEIF LEN( aNames ) >= nMsg .AND. aNames[ nMsg ] != NIL
-      cName := aNames[ nMsg ]
-   ELSE
-      cName := "(unknown_" + _OOHG_HEX( nMsg ) + ")"
-   ENDIF
-
-   RETURN cName
-
-METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
-
-   LOCAL cValue, oControl
-
-   IF nMsg == WM_COMMAND
-      oControl := GetControlObjectById( LOWORD( wParam ) )
-      IF oControl:Id == 0
-         oControl := GetControlObjectByHandle( lParam )
-      ENDIF
-      cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
-   ELSEIF nMsg == WM_NOTIFY
-      cValue := GetControlObjectByHandle( GethWndFrom( lParam ) ):DebugMessageQueryNotify( ::Name, wParam, lParam )
-   ELSEIF nMsg == WM_CTLCOLORBTN
-      oControl := GetControlObjectByHandle( lParam )
-      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
-   ELSEIF nMsg == WM_CTLCOLORSTATIC
-      oControl := GetControlObjectByHandle( lParam )
-      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORSTATIC   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
-   ELSEIF nMsg == WM_CTLCOLOREDIT
-      oControl := GetControlObjectByHandle( lParam )
-      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLOREDIT   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
-   ELSEIF nMsg == WM_CTLCOLORLISTBOX
-      oControl := GetControlObjectByHandle( lParam )
-      cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORLISTBOX   0x" + _OOHG_HEX( wParam, 8 )
-   ELSE
-      cValue := IF( ::lForm, "", ::Parent:Name + "." ) + ::Name + ": " + ;
-                "(0x" + _OOHG_HEX( nMsg, 4 ) + ") " + ::DebugMessageName( nMsg ) + ;
-                " 0x" + _OOHG_HEX( wParam, 8 ) + " 0x" + _OOHG_HEX( lParam, 8 )
-   ENDIF
-
-   RETURN cValue
-
-METHOD DebugMessageNameCommand( nCommand ) CLASS TWindow
-
-   RETURN _OOHG_HEX( nCommand, 4 )
-
-METHOD DebugMessageNameNotify( nNotify ) CLASS TWindow
-
-   LOCAL cName
-   STATIC aNames := NIL
-
-   IF aNames == NIL
-      aNames := { "NM_OUTOFMEMORY", "NM_CLICK", "NM_DBLCLK", "NM_RETURN", "NM_RCLICK", ;
-                  "NM_RDBLCLK", "NM_SETFOCUS", "NM_KILLFOCUS", NIL, NIL, ;
-                  NIL, "NM_CUSTOMDRAW", "NM_HOVER", "NM_NCHITTEST", "NM_KEYDOWN", ;
-                  "NM_RELEASEDCAPTURE", "NM_SETCURSOR", "NM_CHAR", "NM_TOOLTIPSCREATED", "NM_LDOWN", ;
-                  "NM_RDOWN" }
-      ASIZE( aNames, 200 )
-
-      // Scroll bar messages
-      AEVAL( { "LVN_ITEMCHANGING", ;
-               "LVN_ITEMCHANGED", "LVN_INSERTITEM", "LVN_DELETEITEM", "LVN_DELETEALLITEMS", "LVN_BEGINLABELEDITA", ;
-               "LVN_ENDLABELEDITA", NIL, "LVN_COLUMNCLICK", "LVN_BEGINDRAG", NIL, ;
-               "LVN_BEGINRDRAG", NIL, "LVN_ODCACHEHINT", "LVN_ITEMACTIVATE", "LVN_ODSTATECHANGED", ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               "LVN_HOTTRACK", NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, "LVN_GETDISPINFOA", ;
-               "LVN_SETDISPINFOA", "LVN_ODFINDITEMA", NIL, NIL, "LVN_KEYDOWN", ;
-               "LVN_MARQUEEBEGIN", "LVN_GETINFOTIPA", "LVN_GETINFOTIPW", NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, NIL, ;
-               NIL, NIL, NIL, NIL, "LVN_BEGINLABELEDITW", ;
-               "LVN_ENDLABELEDITW", "LVN_GETDISPINFOW", "LVN_SETDISPINFOW", "LVN_ODFINDITEMW" }, ;
-             { |c,i| aNames[ i + 99 ] := c } )
-   ENDIF
-   IF nNotify < 0
-      nNotify := - nNotify
-   ENDIF
-   IF nNotify > 0 .AND. LEN( aNames ) >= nNotify .AND. aNames[ nNotify ] != NIL
-      cName := aNames[ nNotify ]
-   ELSE
-      cName := _OOHG_HEX( 65536 - nNotify, 4 )
-   ENDIF
-
-   RETURN cName
-
-METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
-
-   LOCAL cValue
-
-   EMPTY( wParam )
-   cValue := cParentName + "." + ;
-             IF( EMPTY( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
-             ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
-
-   RETURN cValue
-
-METHOD LINE(nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor, nStyle ) CLASS TWindow
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-   ::GetDc()
-   c_Line(::hdc,nRow ,nCol ,nToRow ,nToCol ,nWidth ,aColor[1] ;
-      ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
-   ::ReleaseDc()
-
-   return nil
-
-METHOD FILL(nRow , nCol , nToRow , nToCol , aColor) CLASS TWindow
-
-   default aColor to {0,0,0}
-   ::GetDc()
-    C_FILL(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,aColor[1] ,aColor[2] ,aColor[3] , .t. )
-   ::ReleaseDc()
-
-   Return nil
-
-METHOD Box (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, ;
-   nStyle, nBrStyle, aBrColor) CLASS TWindow
-
-   local lBrColor
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-
-   if empty(aBrColor)
-      aBrColor:={0,0,0}
-      lBrColor:=.f.
-   else
-      lBrColor:=.t.
-   end
-
-   ::GetDc()
-   C_RECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle , !empty(nBrStyle),;
-      nBrStyle, lBrColor , aBrColor[1],aBrColor[2],aBrColor[3]  )
-   ::ReleaseDc()
-
-   Return nil
-
-METHOD ROUNDbox (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS TWindow
-
-   local lBrushColor
-
-   EMPTY( lStyle )
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-
-   if empty(aBrColor)
-      aBrColor:={0,0,0}
-      lBrushColor:=.f.
-   else
-      lBrushColor:=.t.
-   end
-
-   ::GetDc()
-    C_ROUNDRECTANGLE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-   ::ReleaseDc()
-
-   Return nil
-
-METHOD Ellipse (nRow ,nCol ,nToRow ,nToCol ,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS TWindow
-
-   local lBrushColor
-
-   EMPTY( lStyle )
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-
-   if empty(aBrColor)
-      aBrColor:={0,0,0}
-      lBrushColor:=.f.
-   else
-      lBrushColor:=.t.
-   end
-
-   ::GetDc()
-    C_ELLIPSE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,nWidth ,;
-      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-   ::ReleaseDc()
-
-   Return nil
-
-METHOD Arc(nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2 ,nWidth ,aColor, nStyle ) CLASS TWindow
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-   ::GetDc()
-   c_arc(::hdc,nRow ,nCol ,nToRow ,nToCol,X1,Y1,X2,Y2,nWidth ,aColor[1] ;
-      ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle) ,nStyle )
-   ::ReleaseDc()
-
-   return nil
-
-METHOD Pie(nRow ,nCol ,nToRow ,nToCol,x1,y1,x2,y2,nWidth , aColor, lStyle, ;
-   nStyle, nBrStyle, aBrColor ) CLASS TWindow
-
-   local lBrushColor
-
-   EMPTY( lStyle )
-
-   default aColor to {0,0,0}
-   default nWidth to 1
-
-   if empty(aBrColor)
-      aBrColor:={0,0,0}
-      lBrushColor:=.f.
-   else
-      lBrushColor:=.t.
-   end
-
-   ::GetDc()
-    C_PIE(::Hdc ,nRow ,nCol ,nToRow ,nToCol ,x1 ,y1 ,x2 ,y2 ,nWidth ,;
-      aColor[1] ,aColor[2] ,aColor[3] ,.t. ,.t., !empty(nStyle),nStyle ,!empty(nBrStyle),;
-      nBrStyle, lBrushColor, aBrColor[1],aBrColor[2],aBrColor[3] )
-   ::ReleaseDc()
-
-   Return nil
-
-
-#pragma BEGINDUMP
-
 HB_FUNC( _OOHG_HEX )   // nNum, nDigits
 {
-   char cLine[ 50 ], cBuffer[ 50 ];
-   unsigned int iNum;
-   int iCount, iLen, iDigit;
+   CHAR cLine[ 50 ], cBuffer[ 50 ];
+   UINT iNum;
+   INT iCount, iLen, iDigit;
 
    iCount = 0;
-   iNum = ( unsigned int ) hb_parni( 1 );
+   iNum = ( UINT ) hb_parni( 1 );
    iLen = hb_parni( 2 );
    while( iNum )
    {
@@ -2320,7 +2888,7 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
       {
          iDigit += 7;
       }
-      cBuffer[ iCount++ ] = ( char ) ( '0' + iDigit );
+      cBuffer[ iCount++ ] = ( CHAR ) ( '0' + iDigit );
       iNum = iNum >> 4;
    }
    if( ! iCount )
@@ -2347,293 +2915,13 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
    hb_retclen( cLine, iLen );
 }
 
-#pragma ENDDUMP
-
-
-FUNCTION _OOHG_AddFrame( oFrame )
-
-   TApplication():Define():ActiveFramePush( oFrame )
-
-   Return oFrame
-
-FUNCTION _OOHG_DeleteFrame( cType )
-
-   Local oCtrl
-
-   IF _OOHG_ActiveFrame == NIL
-      // ERROR: No FRAME started
-      Return .F.
-   EndIf
-   oCtrl := _OOHG_ActiveFrame
-   If oCtrl:Type == cType
-      TApplication():Define():ActiveFramePop()
-   Else
-      // ERROR: No FRAME started
-      Return .F.
-   EndIf
-
-   Return .T.
-
-FUNCTION _OOHG_LastFrame()
-
-   Local cRet
-
-   IF _OOHG_ActiveFrame == NIL
-      cRet := ""
-   Else
-      cRet := _OOHG_ActiveFrame:Type
-   EndIf
-
-   Return cRet
-
-FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
-
-   LOCAL oObj
-
-   oObj := If( VALTYPE( oSubClass ) == "O", oSubClass, oClass )
-   If VALTYPE( bAssign ) == "B"
-      EVAL( bAssign, oObj )
-   EndIf
-
-   Return oObj
-
-Function InputBox ( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
-
-   Local RetVal, mo
-
-   ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
-   ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
-   ASSIGN cDefaultValue  VALUE cDefaultValue  TYPE "C" DEFAULT ""
-   ASSIGN nTimeout       VALUE nTimeout       TYPE "N" DEFAULT 0
-   ASSIGN cTimeoutValue  VALUE cTimeoutValue  TYPE "C" DEFAULT nil
-   ASSIGN lMultiLine     VALUE lMultiLine     TYPE "L" DEFAULT .F.
-   ASSIGN nMaxLength     VALUE nMaxLength     TYPE "N" DEFAULT 0
-
-   RetVal := ''
-
-   If lMultiLine
-      mo := 150
-   Else
-      mo := 0
-   EndIf
-
-   DEFINE WINDOW _InputBox ;
-      AT 0,0 ;
-      WIDTH 350 ;
-      HEIGHT 115 + mo + GetTitleHeight() ;
-      TITLE cDialogCaption ;
-      MODAL ;
-      NOSIZE ;
-      FONT 'Arial' ;
-      SIZE 10 ;
-      BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
-
-      ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T., If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
-
-      @ 07,10 LABEL _Label ;
-         VALUE cInputPrompt ;
-         WIDTH 280
-
-      If lMultiLine
-         If nMaxLength > 0
-            @ 30,10 EDITBOX _TextBox ;
-               VALUE cDefaultValue ;
-               HEIGHT 26 + mo ;
-               WIDTH 320 ;
-               MAXLENGTH nMaxLength
-         Else
-            @ 30,10 EDITBOX _TextBox ;
-               VALUE cDefaultValue ;
-               HEIGHT 26 + mo ;
-               WIDTH 320
-         EndIf
-      Else
-         If nMaxLength > 0
-            @ 30,10 TEXTBOX _TextBox ;
-               VALUE cDefaultValue ;
-               HEIGHT 26 + mo ;
-               WIDTH 320 ;
-               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) ) ;
-               MAXLENGTH nMaxLength
-         Else
-            @ 30,10 TEXTBOX _TextBox ;
-               VALUE cDefaultValue ;
-               HEIGHT 26 + mo ;
-               WIDTH 320 ;
-               ON ENTER ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
-         EndIf
-      Endif
-
-      @ 67 + mo,120 BUTTON _Ok ;
-         CAPTION _OOHG_Messages( 1, 6 ) ;
-         ACTION ( _OOHG_DialogCancelled := .F., RetVal := _InputBox._TextBox.Value, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
-
-      @ 67 + mo,230 BUTTON _Cancel ;
-         CAPTION _OOHG_Messages( 1, 7 ) ;
-         ACTION ( _OOHG_DialogCancelled := .T., If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
-
-      If nTimeout > 0
-         If cTimeoutValue == nil
-            DEFINE TIMER _InputBox ;
-               INTERVAL nTimeout ;
-               ACTION _InputBox.Release
-         Else
-            DEFINE TIMER _InputBox ;
-               INTERVAL nTimeout ;
-               ACTION  ( RetVal := cTimeoutValue, If( IsWindowActive( _Inputbox ), _InputBox.Release, nil ) )
-         EndIf
-      EndIf
-   END WINDOW
-
-   _InputBox._TextBox.SetFocus
-
-   CENTER WINDOW _InputBox
-   ACTIVATE WINDOW _InputBox
-
-   Return RetVal
-
-Function _SetWindowRgn(name,col,row,w,h,lx)
-
-   Return c_SetWindowRgn( GetFormHandle( name ), col, row, w, h, lx )
-
-Function _SetPolyWindowRgn(name,apoints,lx)
-
-   local apx:={},apy:={}
-
-   aeval(apoints,{|x| aadd(apx,x[1]), aadd(apy,x[2])})
-
-   Return c_SetPolyWindowRgn( GetFormHandle( name ), apx, apy, lx )
-
-Procedure _SetNextFocus()
-
-   Local oCtrl, hControl
-
-   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .F. )
-   oCtrl := GetControlObjectByHandle( hControl )
-   If oCtrl:hWnd == hControl
-      oCtrl:SetFocus()
-   Else
-      InsertTab()
-   EndIf
-
-   Return
-
-Procedure _SetPrevFocus()
-
-   Local oCtrl, hControl
-
-   hControl := GetNextDlgTabITem( GetActiveWindow(), GetFocus(), .T. )
-   oCtrl := GetControlObjectByHandle( hControl )
-   If oCtrl:hWnd == hControl
-      oCtrl:SetFocus()
-   Else
-      InsertShiftTab()
-   EndIf
-
-   Return
-
-FUNCTION SetAppHotKeyByName( cKey, bAction )
-
-   LOCAL aKey, bCode
-
-   aKey := _DetermineKey( cKey )
-   IF aKey[ 1 ] != 0
-      bCode := SetAppHotKey( aKey[ 1 ], aKey[ 2 ], bAction )
-   ELSE
-      bCode := NIL
-   ENDIF
-
-   RETURN bCode
-
-Function _OOHG_MacroCall( cMacro )
-
-   Local uRet, oError
-
-   oError := ERRORBLOCK()
-   ERRORBLOCK( { | e | _OOHG_MacroCall_Error( e ) } )
-   BEGIN SEQUENCE
-      uRet := &cMacro
-   RECOVER
-      uRet := nil
-   END SEQUENCE
-   ERRORBLOCK( oError )
-
-   Return uRet
-
-Static Function _OOHG_MacroCall_Error( oError )
-
-   IF ! EMPTY( oError )
-      BREAK oError
-   ENDIF
-
-   RETURN 1
-
-FUNCTION ExitProcess( nExit )
-
-   dbCloseAll()
-   TApplication():Define():Release()
-
-   RETURN _ExitProcess2( nExit )
-
-FUNCTION _OOHG_UsesVisualStyle()
-
-   RETURN ( GetComCtl32Version() >= 6 .AND. IsAppThemed() )
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetFontList( hDC, cFontFamilyName, nCharSet, nPitch, nFontType, lSortCaseSensitive, aFontName )
-
-   LOCAL SortCodeBlock, aFontList, i
-
-   IF HB_ISLOGICAL( lSortCaseSensitive ).AND. lSortCaseSensitive
-      SortCodeBlock := { |x, y| x[1] < y[1] }
-   ELSE
-      SortCodeBlock := { |x, y| Upper( x[1] ) < Upper( y[1] ) }
-   ENDIF
-
-   /*
-    * EnumFontsEx returns aFontList: { { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
-    * with the details of the fonts that match the parameters.
-    * It also returns, by reference, aFontName: { cFontName1, cFontName2, ... }
-    *
-    * See i_font.ch for nCharSet and nPitch parameters values.
-    * Set the parameters to NIL to avoid filtering for that parameter.
-    * When hDC is NIL, the screen DC is assumed.
-    */
-   aFontList := EnumFontsEx( hDC, cFontFamilyName, nCharSet, nPitch, NIL, SortCodeBlock, @aFontName )
-
-   IF HB_ISNUMERIC( nFontType )
-      i := Len( aFontList )
-      DO WHILE i > 0
-         IF aFontList[ i, 4 ] # nFontType
-            ADel( aFontList, i )
-            ASize( aFontList, i - 1 )
-            ADel( aFontName, i )
-            ASize( aFontName, i - 1 )
-         ENDIF
-         i --
-      ENDDO
-   ENDIF
-
-   RETURN aFontList
-
-
-EXTERN EVAL
-
-#pragma BEGINDUMP
-
-#include <shlwapi.h>
-
-typedef LONG ( * CALL_ISTHEMEACTIVE )( void );
-typedef LONG ( * CALL_ISAPPTHEMED )( void );
-typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
-
 HB_FUNC( ISXPTHEMEACTIVE )
 {
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
    CALL_ISTHEMEACTIVE dwProcAddr;
    LONG lResult;
-
    OSVERSIONINFO os;
 
    os.dwOSVersionInfoSize = sizeof( os );
@@ -2660,13 +2948,13 @@ HB_FUNC( ISXPTHEMEACTIVE )
    hb_retl( bResult );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ISAPPTHEMED )
 {
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
    CALL_ISAPPTHEMED dwProcAddr;
    LONG lResult;
-
    OSVERSIONINFO os;
 
    os.dwOSVersionInfoSize = sizeof( os );
@@ -2693,9 +2981,10 @@ HB_FUNC( ISAPPTHEMED )
    hb_retl( bResult );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETCOMCTL32VERSION )
 {
-   int iResult = 0;
+   INT iResult = 0;
    HMODULE hInstDLL;
    CALL_DLLGETVERSION dwProcAddr;
    DLLVERSIONINFO dll;
@@ -2720,6 +3009,7 @@ HB_FUNC( GETCOMCTL32VERSION )
    hb_retni( iResult );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_EVAL )
 {
    if( HB_ISBLOCK( 1 ) )
@@ -2732,13 +3022,14 @@ HB_FUNC( _OOHG_EVAL )
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_EVAL_ARRAY )
 {
    static PHB_SYMB s_Eval = 0;
 
    if( HB_ISBLOCK( 1 ) )
    {
-      int iCount, iLen;
+      INT iCount, iLen;
       PHB_ITEM pArray, pItem;
 
       if( ! s_Eval )
@@ -2758,7 +3049,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
             pItem = hb_itemArrayGet( pArray, iCount );
             hb_vmPush( pItem );
             hb_itemRelease( pItem );
-            iCount++;
+            iCount ++;
          }
       }
       hb_vmDo( ( short ) iCount );
@@ -2769,6 +3060,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
 {
    if( HB_ISLOG( 1 ) )
@@ -2778,6 +3070,7 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
    hb_retl( _OOHG_ShowContextMenus );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GLOBALRTL )
 {
    if( HB_ISLOG( 1 ) )
@@ -2787,6 +3080,7 @@ HB_FUNC( _OOHG_GLOBALRTL )
    hb_retl( _OOHG_GlobalRTL );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_NESTEDSAMEEVENT )
 {
    if( HB_ISLOG( 1 ) )
@@ -2796,6 +3090,7 @@ HB_FUNC( _OOHG_NESTEDSAMEEVENT )
    hb_retl( _OOHG_NestedSameEvent );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( VALIDHANDLER )
 {
    HWND hWnd;
@@ -2803,169 +3098,21 @@ HB_FUNC( VALIDHANDLER )
    hb_retl( ValidHandler( hWnd ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GETMOUSECOL )
 {
    hb_retni( _OOHG_MouseCol );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GETMOUSEROW )
 {
    hb_retni( _OOHG_MouseRow );
 }
 
-#pragma ENDDUMP
-
-
-Function _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
-
-   Local uRet
-
-   IF !HB_IsArray( uaArray )
-      uRet := uaArray
-   ElseIf LEN( uaArray ) >= nItem .AND. nItem >= 1
-      uRet := uaArray[ nItem ]
-   Else
-      uRet := NIL
-   ENDIF
-   IF HB_IsBlock( uRet )
-      uRet := Eval( uRet, nItem, uExtra1, uExtra2 )
-   ENDIF
-
-   Return uRet
-
-Function _OOHG_DeleteArrayItem( aArray, nItem )
-
-#ifdef __XHARBOUR__
-   Return ADel( aArray, nItem, .T. )
-#else
-   IF HB_IsArray( aArray ) .AND. Len( aArray ) >= nItem
-      ADel( aArray, nItem )
-      ASize( aArray, Len( aArray ) - 1 )
-   ENDIF
-
-   Return aArray
-#endif
-
-FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
-
-   Local nPos, uRet := nil
-
-   nPos := ASCAN( aKeys, { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
-   If nPos > 0
-      uRet := aKeys[ nPos ][ HOTKEY_ACTION ]
-   EndIf
-   If PCOUNT() > 3
-      If HB_IsBlock( bAction )
-         If !HB_IsNumeric( nId )
-            nId := 0
-         EndIf
-         If nPos > 0
-            aKeys[ nPos ] := { nId, nFlags, nKey, bAction }
-         Else
-            AADD( aKeys, { nId, nFlags, nKey, bAction } )
-         EndIf
-      Else
-         If nPos > 0
-            _OOHG_DeleteArrayItem( aKeys, nPos )
-         EndIf
-      Endif
-   EndIf
-
-   Return uRet
-
-PROCEDURE _OOHG_CallDump( uTitle, cOutput )
-
-   LOCAL nLevel, cText, oLog
-
-   cText := ""
-   nLevel := 1
-   DO WHILE ! Empty( ProcName( nLevel ) )
-      IF nLevel > 1
-         cText += Chr( 13 ) + Chr( 10 )
-      ENDIF
-      cText += ProcName( nLevel ) + ;
-               " (" + ;
-               AllTrim( Str( ProcLine( nLevel ) ) ) + ;
-               ")" + ;
-               iif( Empty( ProcFile( nLevel ) ), "", " in " + ProcFile( nLevel ) )
-      nLevel ++
-   ENDDO
-
-   ASSIGN cOutput VALUE cOutput TYPE "C" DEFAULT "S"
-   cOutPut := Left( cOutPut, 1 )
-   IF cOutput $ "FB"        // To File or Both
-      oLog := OOHG_TErrorTxt():New()
-      oLog:FileName := "DumpLog.txt"
-      oLog:Write( AutoType( uTitle ) )
-      oLog:Write( "" )
-      oLog:Write( cText )
-      oLog:Write( "" )
-      oLog:Write( Replicate( "-", 40 ) )
-      oLog:CreateLog()
-   ENDIF
-   IF cOutput $ "BS"        // To File or Screen
-      MSGINFO( cText, AutoType( uTitle ) )
-   ENDIF
-
-   RETURN
-
-
-CLASS TDynamicValues
-
-   DATA oWnd
-
-   METHOD New
-   ERROR HANDLER Error
-
-   ENDCLASS
-
-METHOD New( oWnd ) CLASS TDynamicValues
-
-   ::oWnd := oWnd
-
-   Return Self
-
-METHOD Error( xParam ) CLASS TDynamicValues
-
-   Local nPos, cMessage
-
-   cMessage := __GetMessage()
-
-   If PCOUNT() >= 1 .AND. LEFT( cMessage, 1 ) == "_"
-
-      nPos := aScan( ::oWnd:aControlsNames, SUBSTR( cMessage, 2 ) + CHR( 255 ) )
-      If nPos > 0
-         Return ( ::oWnd:aControls[ nPos ]:Value := xParam )
-      EndIf
-
-      nPos := ASCAN( ::oWnd:aProperties, { |a| "_" + a[ 1 ] == cMessage } )
-      If nPos > 0
-         ::oWnd:aProperties[ nPos ][ 2 ] := xParam
-         Return ::oWnd:aProperties[ nPos ][ 2 ]
-      EndIf
-
-   Else
-
-      nPos := aScan( ::oWnd:aControlsNames, cMessage + CHR( 255 ) )
-      If nPos > 0
-         Return ::oWnd:aControls[ nPos ]:Value
-      EndIf
-
-      nPos := ASCAN( ::oWnd:aProperties, { |a| a[ 1 ] == cMessage } )
-      If nPos > 0
-         Return ::oWnd:aProperties[ nPos ][ 2 ]
-      EndIf
-
-   EndIf
-
-   Return ::MsgNotFound( cMessage )
-
-
-#pragma BEGINDUMP
-
-HB_FUNC ( C_LINE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_LINE )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
@@ -2975,71 +3122,67 @@ HB_FUNC ( C_LINE )
    // 7: R Color
    // 8: G Color
    // 9: B Color
-   // 10: lWindth
+   // 10: lWidth
    // 11: lColor
    // 12: lStyle
    // 13: nStyle
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int width = 0;
-        int nStyle;
-
-   HDC hdc = (HDC) hb_parnl( 1 );
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width = 0;
+   INT nStyle;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
-
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
       // Width
-      if ( hb_parl(10) )
+      if( hb_parl( 10 ) )
       {
-         width = hb_parni(6) ;
+         width = hb_parni( 6 );
       }
-      // Color
-      if ( hb_parl(11) )
-      {
-         r = hb_parni(7) ;
-         g = hb_parni(8) ;
-         b = hb_parni(9) ;
-      }
-      else
-      {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
-      }
-      if ( hb_parl(12) )
-      {
-         nStyle = hb_parni(13) ;
-      }
-      else
-      {
-         nStyle = (int) PS_SOLID ;
-      }
-      hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      MoveToEx( (HDC) hdc , x, y ,NULL   );
-      LineTo ( (HDC) hdc, tox ,toy    );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      DeleteObject( hpen );
-      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
-   }
 
+      // Color
+      if( hb_parl( 11 ) )
+      {
+         r = hb_parni( 7 );
+         g = hb_parni( 8 );
+         b = hb_parni( 9 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 12 ) )
+      {
+         nStyle = hb_parni( 13 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      MoveToEx( hdc, x, y, NULL );
+      LineTo( hdc, tox, toy );
+      SelectObject( hdc, hgdiobj );
+      DeleteObject( hpen );
+   }
 }
 
-HB_FUNC ( C_FILL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_FILL )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
@@ -3050,55 +3193,49 @@ HB_FUNC ( C_FILL )
    // 8: B Color
    // 9: lColor
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parnl(3) ;
-   int y = hb_parnl(2) ;
-
-   int tox = hb_parnl(5) ;
-   int toy = hb_parnl(4) ;
-
-
-   RECT rect ;
-
-   HDC hdc = (HDC) hb_parnl(1) ;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parnl( 3 );
+   INT y = hb_parnl( 2 );
+   INT tox = hb_parnl( 5 );
+   INT toy = hb_parnl( 4 );
+   RECT rect;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HBRUSH hBrush;
 
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
       // Color
-
-      if ( hb_parl(9) )
+      if( hb_parl( 9 ) )
       {
-         r = hb_parni(6) ;
-         g = hb_parni(7) ;
-         b = hb_parni(8) ;
+         r = hb_parni( 6 );
+         g = hb_parni( 7 );
+         b = hb_parni( 8 );
       }
       else
       {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
+         r = 0;
+         g = 0;
+         b = 0;
       }
-      rect.left=x;
-      rect.top=y;
-      rect.right=tox ;
-      rect.bottom=toy;
 
-      hBrush = CreateSolidBrush( RGB(r,g,b) );
-      hgdiobj = SelectObject( (HDC) hdc , hBrush );
-      FillRect( (HDC) hdc , &rect , (HBRUSH) hBrush ) ;
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
+      rect.left = x;
+      rect.top = y;
+      rect.right = tox;
+      rect.bottom = toy;
+      hBrush = CreateSolidBrush( ( COLORREF ) RGB(r, g, b) );
+      hgdiobj = SelectObject( hdc, hBrush );
+      FillRect( hdc, &rect, hBrush );
+      SelectObject( hdc, hgdiobj );
       DeleteObject( hBrush );
    }
 }
 
-HB_FUNC ( C_RECTANGLE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_RECTANGLE )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
@@ -3108,7 +3245,7 @@ HB_FUNC ( C_RECTANGLE )
    // 7: R Color
    // 8: G Color
    // 9: B Color
-   // 10: lWindth
+   // 10: lWidth
    // 11: lColor
    // 12: lStyle
    // 13: nStyle
@@ -3119,116 +3256,110 @@ HB_FUNC ( C_RECTANGLE )
    // 18: nColorG
    // 19: nColorB
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int width ;
-   int nStyle ;
-
-   int br ;
-   int bg ;
-   int bb ;
-   int nBr ;
-   long nBh ;
-
-   HDC hdc = (HDC) hb_parnl(1) ;
-   HGDIOBJ hgdiobj,hgdiobj2;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
-   HBRUSH hbr ;
+   HBRUSH hbr;
 
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
       // Width
-      if ( hb_parl(10) )
+      if( hb_parl( 10 ) )
       {
-         width = hb_parni(6) ;
+         width = hb_parni( 6 );
       }
       else
       {
-         width = 1  ;
+         width = 1 ;
       }
+
       // Color
-      if ( hb_parl(11) )
+      if( hb_parl( 11 ) )
       {
-         r = hb_parni(7) ;
-         g = hb_parni(8) ;
-         b = hb_parni(9) ;
+         r = hb_parni( 7 );
+         g = hb_parni( 8 );
+         b = hb_parni( 9 );
       }
       else
       {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
+         r = 0;
+         g = 0;
+         b = 0;
       }
-      if ( hb_parl(12) )
+
+      if( hb_parl( 12 ) )
       {
-         nStyle = hb_parni(13) ;
-      }
-      else
-      {
-         nStyle = (int) PS_SOLID ;
-      }
-      if ( hb_parl(14) )
-      {
-         nBh = hb_parni(15);
-         nBr = 2 ;
+         nStyle = hb_parni( 13 );
       }
       else
       {
-         if ( hb_parl(16) )
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      if( hb_parl( 14 ) )
+      {
+         nBh = hb_parni( 15 );
+         nBr = 2;
+      }
+      else
+      {
+         if( hb_parl( 16 ) )
          {
-         nBr = 0 ;
+            nBr = 0;
          }
          else
          {
-         nBr = 1 ;
+            nBr = 1;
          }
-         nBh = 0  ;
+         nBh = 0 ;
       }
 
-      if ( hb_parl(16) )
+      if( hb_parl( 16 ) )
       {
-         br = hb_parni(17) ;
-         bg = hb_parni(18) ;
-         bb = hb_parni(19) ;
+         br = hb_parni( 17 );
+         bg = hb_parni( 18 );
+         bb = hb_parni( 19 );
       }
       else
       {
-         br = 0 ;
-         bg = 0 ;
-         bb = 0 ;
+         br = 0;
+         bg = 0;
+         bb = 0;
       }
 
-      pbr.lbStyle=nBr ;
-      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-      pbr.lbHatch=(LONG) nBh;
-
-      hpen = CreatePen( nStyle,  width , (COLORREF) RGB( r , g , b ) );
-      hbr =CreateBrushIndirect(&pbr) ;
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-      Rectangle( (HDC) hdc ,x,y,tox,toy);
-
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
-
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hpen = CreatePen( nStyle,  width, ( COLORREF ) RGB( r, g, b ) );
+      hbr = CreateBrushIndirect( &pbr );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      Rectangle( hdc, x, y, tox, toy );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
       DeleteObject( hpen );
       DeleteObject( hbr );
    }
-
 }
 
-HB_FUNC ( C_ROUNDRECTANGLE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_ROUNDRECTANGLE )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
@@ -3238,7 +3369,7 @@ HB_FUNC ( C_ROUNDRECTANGLE )
    // 7: R Color
    // 8: G Color
    // 9: B Color
-   // 10: lWindth
+   // 10: lWidth
    // 11: lColor
    // 12: lStyle
    // 13: nStyle
@@ -3249,131 +3380,113 @@ HB_FUNC ( C_ROUNDRECTANGLE )
    // 18: nColorG
    // 19: nColorB
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int width ;
-
-   int p ;
-   int nStyle ;
-
-   int br ;
-   int bg ;
-   int bb ;
-   int nBr ;
-   long nBh ;
-
-   HDC hdc = (HDC) hb_parnl(1) ;
-   HGDIOBJ hgdiobj,hgdiobj2;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT p;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
-   HBRUSH hbr ;
+   HBRUSH hbr;
 
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
-
       // Width
-
-      if ( hb_parl(10) )
+      if( hb_parl( 10 ) )
       {
-         width = hb_parni(6) ;
+         width = hb_parni( 6 );
       }
       else
       {
-         width = 1  ;
+         width = 1 ;
       }
 
       // Color
-
-      if ( hb_parl(11) )
+      if( hb_parl( 11 ) )
       {
-         r = hb_parni(7) ;
-         g = hb_parni(8) ;
-         b = hb_parni(9) ;
+         r = hb_parni( 7 );
+         g = hb_parni( 8 );
+         b = hb_parni( 9 );
       }
       else
       {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
+         r = 0;
+         g = 0;
+         b = 0;
       }
 
-      if ( hb_parl(12) )
+      if( hb_parl( 12 ) )
       {
-         nStyle = hb_parni(13) ;
+         nStyle = hb_parni( 13 );
       }
       else
       {
-         nStyle = (int) PS_SOLID ;
+         nStyle = ( INT ) PS_SOLID;
       }
 
-      if ( hb_parl(14) )
+      if( hb_parl( 14 ) )
       {
-         nBh = hb_parni(15);
-         nBr = 2 ;
+         nBh = hb_parni( 15 );
+         nBr = 2;
       }
       else
       {
-         if ( hb_parl(16) )
+         if( hb_parl( 16 ) )
          {
-         nBr = 0 ;
+            nBr = 0;
          }
          else
          {
-         nBr = 1 ;
+            nBr = 1;
          }
-         nBh = 0  ;
+         nBh = 0 ;
       }
 
-      if ( hb_parl(16) )
+      if( hb_parl( 16 ) )
       {
-         br = hb_parni(17) ;
-         bg = hb_parni(18) ;
-         bb = hb_parni(19) ;
+         br = hb_parni( 17 );
+         bg = hb_parni( 18 );
+         bb = hb_parni( 19 );
       }
       else
       {
-         br = 0 ;
-         bg = 0 ;
-         bb = 0 ;
+         br = 0;
+         bg = 0;
+         bb = 0;
       }
 
-      pbr.lbStyle=nBr ;
-      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-      pbr.lbHatch=(LONG) nBh;
-
-      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-      hbr =CreateBrushIndirect(&pbr) ;
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-
-      p = ( tox + toy ) / 2 ;
-      p = p / 10 ;
-
-      RoundRect( (HDC) hdc ,x,y,tox,toy,p,p);
-
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
-
-
-
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hbr = CreateBrushIndirect( &pbr );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      p = ( tox + toy ) / 2;
+      p = p / 10;
+      RoundRect( hdc, x, y, tox, toy, p, p );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
       DeleteObject( hpen );
       DeleteObject( hbr );
-
    }
-
 }
 
-HB_FUNC ( C_ELLIPSE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_ELLIPSE )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
@@ -3383,7 +3496,7 @@ HB_FUNC ( C_ELLIPSE )
    // 7: R Color
    // 8: G Color
    // 9: B Color
-   // 10: lWindth
+   // 10: lWidth
    // 11: lColor
    // 12: lStyle
    // 13: nStyle
@@ -3394,219 +3507,269 @@ HB_FUNC ( C_ELLIPSE )
    // 18: nColorG
    // 19: nColorB
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int width ;
-
-   int nStyle ;
-
-   int br ;
-   int bg ;
-   int bb ;
-   int nBr ;
-   long nBh ;
-
-   HDC hdc = (HDC) hb_parnl(1) ;
-   HGDIOBJ hgdiobj,hgdiobj2;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
-   HBRUSH hbr ;
+   HBRUSH hbr;
 
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
-
       // Width
-
-      if ( hb_parl(10) )
+      if( hb_parl( 10 ) )
       {
-         width = hb_parni(6) ;
+         width = hb_parni( 6 );
       }
       else
       {
-         width = 1 * 10000 / 254 ;
+         width = 1 * 10000 / 254;
       }
 
       // Color
-
-      if ( hb_parl(11) )
+      if( hb_parl( 11 ) )
       {
-         r = hb_parni(7) ;
-         g = hb_parni(8) ;
-         b = hb_parni(9) ;
+         r = hb_parni( 7 );
+         g = hb_parni( 8 );
+         b = hb_parni( 9 );
       }
       else
       {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
+         r = 0;
+         g = 0;
+         b = 0;
       }
 
-      if ( hb_parl(12) )
+      if( hb_parl( 12 ) )
       {
-         nStyle = hb_parni(13) ;
+         nStyle = hb_parni( 13 );
       }
       else
       {
-         nStyle = (int) PS_SOLID ;
+         nStyle = ( INT ) PS_SOLID;
       }
 
-      if ( hb_parl(14) )
+      if( hb_parl( 14 ) )
       {
-         nBh = hb_parni(15);
-         nBr = 2 ;
+         nBh = hb_parni( 15 );
+         nBr = 2;
       }
       else
       {
-         if ( hb_parl(16) )
+         if( hb_parl( 16 ) )
          {
-         nBr = 0 ;
+            nBr = 0;
          }
          else
          {
-         nBr = 1 ;
+            nBr = 1;
          }
-         nBh = 0  ;
+         nBh = 0 ;
       }
 
-      if ( hb_parl(16) )
+      if( hb_parl( 16 ) )
       {
-         br = hb_parni(17) ;
-         bg = hb_parni(18) ;
-         bb = hb_parni(19) ;
+         br = hb_parni( 17 );
+         bg = hb_parni( 18 );
+         bb = hb_parni( 19 );
       }
       else
       {
-         br = 0 ;
-         bg = 0 ;
-         bb = 0 ;
+         br = 0;
+         bg = 0;
+         bb = 0;
       }
 
-      pbr.lbStyle=nBr ;
-      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-      pbr.lbHatch=(LONG) nBh;
-
-      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-      hbr =CreateBrushIndirect(&pbr) ;
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-
-      Ellipse( (HDC) hdc ,x,y,tox,toy);
-
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
-
-
-
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hbr = CreateBrushIndirect( &pbr );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      Ellipse( hdc, x, y, tox, toy );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
       DeleteObject( hpen );
       DeleteObject( hbr );
-
    }
-
 }
 
-HB_FUNC ( C_ARC )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_ARC )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
    // 4: toy
    // 5: tox
-   // 6-9,x1,y1,x2,y2
+   // 6-9, x1, y1, x2, y2
    // 10: width
    // 11: R Color
    // 12: G Color
    // 13: B Color
-   // 14: lWindth
+   // 14: lWidth
    // 15: lColor
    // 16: lStyle
    // 17: nStyle
 
-
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int x1 = hb_parni(7);
-   int y1 = hb_parni(6);
-   int x2 = hb_parni(9);
-   int y2 = hb_parni(8);
-
-   int width = 0;
-        int nStyle;
-
-   HDC hdc = (HDC) hb_parnl( 1 );
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
-
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
       // Width
-      if ( hb_parl(14) )
+      if( hb_parl( 14 ) )
       {
-         width = hb_parni(10) ;
+         width = hb_parni( 10 );
       }
-      // Color
-      if ( hb_parl(15) )
-      {
-         r = hb_parni(11) ;
-         g = hb_parni(12) ;
-         b = hb_parni(13) ;
-      }
-      else
-      {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
-      }
-      if ( hb_parl(16) )
-      {
-         nStyle = hb_parni(17) ;
-      }
-      else
-      {
-         nStyle = (int) PS_SOLID ;
-      }
-      hpen = CreatePen( nStyle ,  width , (COLORREF) RGB( r , g , b ) );
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      Arc ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2    );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      DeleteObject( hpen );
-      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
-   }
 
+      // Color
+      if( hb_parl( 15 ) )
+      {
+         r = hb_parni( 11 );
+         g = hb_parni( 12 );
+         b = hb_parni( 13 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 16 ) )
+      {
+         nStyle = hb_parni( 17 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      Arc( hdc, x, y, tox, toy, x1, y1, x2, y2 );
+      SelectObject( hdc, hgdiobj );
+      DeleteObject( hpen );
+   }
 }
 
-
-HB_FUNC ( C_PIE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_ARCTO )
 {
-
    // 1: hDC
    // 2: y
    // 3: x
    // 4: toy
    // 5: tox
-   // 6-9,x1,y1,x2,y2
+   // 6-9, x1, y1, x2, y2
    // 10: width
    // 11: R Color
    // 12: G Color
    // 13: B Color
-   // 14: lWindth
+   // 14: lWidth
+   // 15: lColor
+   // 16: lStyle
+   // 17: nStyle
+
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj;
+   HPEN hpen;
+
+   if( hdc != 0 )
+   {
+      // Width
+      if( hb_parl( 14 ) )
+      {
+         width = hb_parni( 10 );
+      }
+
+      // Color
+      if( hb_parl( 15 ) )
+      {
+         r = hb_parni( 11 );
+         g = hb_parni( 12 );
+         b = hb_parni( 13 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 16 ) )
+      {
+         nStyle = hb_parni( 17 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      ArcTo( hdc, x, y, tox, toy, x1, y1, x2, y2 );
+      SelectObject( hdc, hgdiobj );
+      DeleteObject( hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_PIE )
+{
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6-9, x1, y1, x2, y2
+   // 10: width
+   // 11: R Color
+   // 12: G Color
+   // 13: B Color
+   // 14: lWidth
    // 15: lColor
    // 16: lStyle
    // 17: nStyle
@@ -3617,114 +3780,514 @@ HB_FUNC ( C_PIE )
    // 22: nColorG
    // 23: nColorB
 
-   int r ;
-   int g ;
-   int b ;
-
-   int x = hb_parni(3) ;
-   int y = hb_parni(2) ;
-
-   int tox = hb_parni(5) ;
-   int toy = hb_parni(4) ;
-
-   int x1 = hb_parni(7);
-   int y1 = hb_parni(6);
-   int x2 = hb_parni(9);
-   int y2 = hb_parni(8);
-
-   int width = 0;
-        int nStyle;
-
-   int br ;
-   int bg ;
-   int bb ;
-   int nBr ;
-   long nBh ;
-
-   HDC hdc = (HDC) hb_parnl(1) ;
-   HGDIOBJ hgdiobj,hgdiobj2;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
-   HBRUSH hbr ;
+   HBRUSH hbr;
 
-   if ( hdc != 0 )
+   if( hdc != 0 )
    {
       // Width
-      if ( hb_parl(14) )
+      if( hb_parl( 14 ) )
       {
-         width = hb_parni(10) ;
-      }
-      // Color
-      if ( hb_parl(15) )
-      {
-         r = hb_parni(11) ;
-         g = hb_parni(12) ;
-         b = hb_parni(13) ;
-      }
-      else
-      {
-         r = 0 ;
-         g = 0 ;
-         b = 0 ;
-      }
-      if ( hb_parl(16) )
-      {
-         nStyle = hb_parni(17) ;
-      }
-      else
-      {
-         nStyle = (int) PS_SOLID ;
+         width = hb_parni( 10 );
       }
 
-      if ( hb_parl(18) )
+      // Color
+      if( hb_parl( 15 ) )
       {
-         nBh = hb_parni(19);
-         nBr = 2 ;
+         r = hb_parni( 11 );
+         g = hb_parni( 12 );
+         b = hb_parni( 13 );
       }
       else
       {
-         if ( hb_parl(20) )
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 16 ) )
+      {
+         nStyle = hb_parni( 17 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      if( hb_parl( 18 ) )
+      {
+         nBh = hb_parni( 19 );
+         nBr = 2;
+      }
+      else
+      {
+         if( hb_parl( 20 ) )
          {
-         nBr = 0 ;
+            nBr = 0;
          }
          else
          {
-         nBr = 1 ;
+            nBr = 1;
          }
-         nBh = 0  ;
+         nBh = 0 ;
       }
 
-      if ( hb_parl(20) )
+      if( hb_parl( 20 ) )
       {
-         br = hb_parni(21) ;
-         bg = hb_parni(22) ;
-         bb = hb_parni(23) ;
+         br = hb_parni( 21 );
+         bg = hb_parni( 22 );
+         bb = hb_parni( 23 );
       }
       else
       {
-         br = 0 ;
-         bg = 0 ;
-         bb = 0 ;
+         br = 0;
+         bg = 0;
+         bb = 0;
       }
 
-      pbr.lbStyle=nBr ;
-      pbr.lbColor=(COLORREF) RGB( br , bg , bb );
-      pbr.lbHatch=(LONG) nBh;
-
-      hpen = CreatePen( nStyle, width , (COLORREF) RGB( r , g , b ) );
-      hbr =CreateBrushIndirect(&pbr) ;
-      hgdiobj = SelectObject( (HDC) hdc , hpen );
-      hgdiobj2 = SelectObject( (HDC) hdc , hbr );
-
-      Pie ( (HDC) hdc, x,y,tox ,toy,x1,y1,x2,y2    );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj );
-      SelectObject( (HDC) hdc , (HGDIOBJ) hgdiobj2 );
-
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hbr = CreateBrushIndirect( &pbr );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      Pie( hdc, x, y, tox, toy, x1, y1, x2, y2 );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
       DeleteObject( hpen );
       DeleteObject( hbr );
-      //InvalidateRect( (HDC) hdc ,NULL, TRUE );
    }
+}
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_POLYBEZIER )
+{
+   // 1: hDC
+   // 2: aPy
+   // 3: aPx
+   // 4: width
+   // 5: R Color
+   // 6: G Color
+   // 7: B Color
+   // 8: lWidth
+   // 9: lColor
+   // 10: lStyle
+   // 11: nStyle
+
+   INT r;
+   INT g;
+   INT b;
+   INT width = 0;
+   INT nStyle;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj;
+   HPEN hpen;
+   DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
+   POINT apoints[ 1024 ];
+
+   if( hdc != 0 )
+   {
+      for( i = 0; i <= number - 1; i++ )
+      {
+         apoints[ i ].y = HB_PARNI( 2, i + 1 );
+         apoints[ i ].x = HB_PARNI( 3, i + 1 );
+      }
+
+      // Width
+      if( hb_parl( 8 ) )
+      {
+         width = hb_parni( 4 );
+      }
+
+      // Color
+      if( hb_parl( 9 ) )
+      {
+         r = hb_parni( 5 );
+         g = hb_parni( 6 );
+         b = hb_parni( 7 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 10 ) )
+      {
+         nStyle = hb_parni( 11 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      PolyBezier( hdc, apoints, number );
+      SelectObject( hdc, hgdiobj );
+      DeleteObject( hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_POLYBEZIERTO )
+{
+   // 1: hDC
+   // 2: aPy
+   // 3: aPx
+   // 4: width
+   // 5: R Color
+   // 6: G Color
+   // 7: B Color
+   // 8: lWidth
+   // 9: lColor
+   // 10: lStyle
+   // 11: nStyle
+
+   INT r;
+   INT g;
+   INT b;
+   INT width = 0;
+   INT nStyle;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj;
+   HPEN hpen;
+   DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
+   POINT apoints[ 1024 ];
+
+   if( hdc != 0 )
+   {
+      for( i = 0; i <= number - 1; i++ )
+      {
+         apoints[ i ].y = HB_PARNI( 2, i + 1 );
+         apoints[ i ].x = HB_PARNI( 3, i + 1 );
+      }
+
+      // Width
+      if( hb_parl( 8 ) )
+      {
+         width = hb_parni( 4 );
+      }
+
+      // Color
+      if( hb_parl( 9 ) )
+      {
+         r = hb_parni( 5 );
+         g = hb_parni( 6 );
+         b = hb_parni( 7 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 10 ) )
+      {
+         nStyle = hb_parni( 11 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      PolyBezierTo( hdc, apoints, number );
+      SelectObject( hdc, hgdiobj );
+      DeleteObject( hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_POLYGON )
+{
+   // 1: hDC
+   // 2: aPy
+   // 3: aPx
+   // 4: width
+   // 5: R Color
+   // 6: G Color
+   // 7: B Color
+   // 8: lWidth
+   // 9: lColor
+   // 10: lStyle
+   // 11: nStyle
+   // 12: lBrusStyle
+   // 13: nBrushStyle
+   // 14: lBrushColor
+   // 15: nColorR
+   // 16: nColorG
+   // 17: nColorB
+   // 18: nFillMode
+
+   INT r;
+   INT g;
+   INT b;
+   INT width;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HGDIOBJ hgdiobj, hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr;
+   DWORD i, number;
+   POINT apoints[ 1024 ];
+   INT oldFillMode;
+   INT newFillMode;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+
+   if( hdc != 0 )
+   {
+      oldFillMode = GetPolyFillMode( hdc );
+      if( hb_parni( 18 ) == 1 )
+      {
+         newFillMode = WINDING;
+      }
+      else
+      {
+         newFillMode = ALTERNATE;
+      }
+
+      number = ( DWORD ) hb_parinfa( 2, 0 );
+      for( i = 0; i <= number - 1; i++ )
+      {
+         apoints[ i ].y = HB_PARNI( 2, i + 1 );
+         apoints[ i ].x = HB_PARNI( 3, i + 1 );
+      }
+
+      // Width
+      if( hb_parl( 8 ) )
+      {
+         width = hb_parni( 4 );
+      }
+      else
+      {
+         width = 0;
+      }
+
+      // Color
+      if( hb_parl( 9 ) )
+      {
+         r = hb_parni( 5 );
+         g = hb_parni( 6 );
+         b = hb_parni( 7 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 10 ) )
+      {
+         nStyle = hb_parni( 11 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      if( hb_parl( 12 ) )
+      {
+         nBh = hb_parni( 13 );
+         nBr = 2;
+      }
+      else
+      {
+         if( hb_parl( 14 ) )
+         {
+            nBr = 0;
+         }
+         else
+         {
+            nBr = 1;
+         }
+         nBh = 0 ;
+      }
+
+      if( hb_parl( 14 ) )
+      {
+         br = hb_parni( 15 );
+         bg = hb_parni( 16 );
+         bb = hb_parni( 17 );
+      }
+      else
+      {
+         br = 0;
+         bg = 0;
+         bb = 0;
+      }
+
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hbr = CreateBrushIndirect( &pbr );
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      SetPolyFillMode( hdc, newFillMode );
+      Polygon( hdc, apoints, number );
+      SetPolyFillMode( hdc, oldFillMode );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
+      DeleteObject( hpen );
+      DeleteObject( hbr );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_CHORD )
+{
+   // 1: hDC
+   // 2: y
+   // 3: x
+   // 4: toy
+   // 5: tox
+   // 6-9, x1, y1, x2, y2
+   // 10: width
+   // 11: R Color
+   // 12: G Color
+   // 13: B Color
+   // 14: lWidth
+   // 15: lColor
+   // 16: lStyle
+   // 17: nStyle
+   // 18: lBrusStyle
+   // 19: nBrushStyle
+   // 20: lBrushColor
+   // 21: nColorR
+   // 22: nColorG
+   // 23: nColorB
+
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
+   LONG nBh;
+   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HGDIOBJ hgdiobj, hgdiobj2;
+   HPEN hpen;
+   LOGBRUSH pbr;
+   HBRUSH hbr;
+
+   if( hdc != 0 )
+   {
+      // Width
+      if( hb_parl( 14 ) )
+      {
+         width = hb_parni( 10 );
+      }
+
+      // Color
+      if( hb_parl( 15 ) )
+      {
+         r = hb_parni( 11 );
+         g = hb_parni( 12 );
+         b = hb_parni( 13 );
+      }
+      else
+      {
+         r = 0;
+         g = 0;
+         b = 0;
+      }
+
+      if( hb_parl( 16 ) )
+      {
+         nStyle = hb_parni( 17 );
+      }
+      else
+      {
+         nStyle = ( INT ) PS_SOLID;
+      }
+
+      if( hb_parl( 18 ) )
+      {
+         nBh = hb_parni( 19 );
+         nBr = 2;
+      }
+      else
+      {
+         if( hb_parl( 20 ) )
+         {
+            nBr = 0;
+         }
+         else
+         {
+            nBr = 1;
+         }
+         nBh = 0 ;
+      }
+
+      if( hb_parl( 20 ) )
+      {
+         br = hb_parni( 21 );
+         bg = hb_parni( 22 );
+         bb = hb_parni( 23 );
+      }
+      else
+      {
+         br = 0;
+         bg = 0;
+         bb = 0;
+      }
+
+      pbr.lbStyle = nBr;
+      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbHatch = nBh;
+      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hbr = CreateBrushIndirect( &pbr );
+      hgdiobj = SelectObject( hdc, hpen );
+      hgdiobj2 = SelectObject( hdc, hbr );
+      Chord( hdc, x, y, tox, toy, x1, y1, x2, y2 );
+      SelectObject( hdc, hgdiobj );
+      SelectObject( hdc, hgdiobj2 );
+      DeleteObject( hpen );
+      DeleteObject( hbr );
+   }
 }
 
 #pragma ENDDUMP
