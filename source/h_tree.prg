@@ -2893,7 +2893,7 @@ HB_FUNC( TREEVIEW_BEGINDRAG )
       SetCapture( hTree );
    }
 
-   hb_retnl( (LONG) himl );
+   hb_retnl( ( LONG ) himl );
 }
 
 BOOL IsTargetChild( HWND hTree, HTREEITEM hOrigin, HTREEITEM hDestination )

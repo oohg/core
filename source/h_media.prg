@@ -229,12 +229,12 @@ EXTERN MCIFUNC
 // This fixes a warning over dwICValue
 HB_FUNC( ICGETDEFAULTQUALITY )
 {
-   hb_retnl( (LONG) ICGetDefaultQuality( (HIC) hb_parnl( 1 ) ) );
+   hb_retnl( ( LONG ) ICGetDefaultQuality( (HIC) hb_parnl( 1 ) ) );
 }
 
 HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
 {
-   hb_retnl( (LONG) ICGetDefaultKeyFrameRate( (HIC) hb_parnl( 1 ) ) );
+   hb_retnl( ( LONG ) ICGetDefaultKeyFrameRate( (HIC) hb_parnl( 1 ) ) );
 }
 
 /*

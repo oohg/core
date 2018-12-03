@@ -473,7 +473,7 @@ HB_FUNC( FILESTREAMIN )        // hWnd, cFile, nType
    HWND hwnd = HWNDparam( 1 );
    HANDLE hFile;
    EDITSTREAM es;
-   long lFlag, lMode;
+   LONG lFlag, lMode;
 
    switch( hb_parni( 3 ) )
    {
@@ -549,7 +549,7 @@ HB_FUNC( FILESTREAMOUT )       // hWnd, cFile, nType
    HWND hwnd = HWNDparam( 1 );
    HANDLE hFile;
    EDITSTREAM es;
-   long lFlag;
+   LONG lFlag;
 
    switch( hb_parni( 3 ) )
    {
@@ -750,12 +750,12 @@ HB_FUNC( GETFONTRTF )
 // GetFontRTF( hWnd, nSel ) -> { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset }
 {
    CHARFORMAT  cF;
-   long        PointSize;
-   int         bold;
-   int         Italic;
-   int         Underline;
-   int         StrikeOut;
-   int         SelText;
+   LONG        PointSize;
+   INT         bold;
+   INT         Italic;
+   INT         Underline;
+   INT         StrikeOut;
+   INT         SelText;
    HWND        hWnd = HWNDparam( 1 );
 
    cF.cbSize = sizeof( CHARFORMAT );
@@ -780,10 +780,10 @@ HB_FUNC( GETFONTRTF )
 
    hb_reta( 8 );
    HB_STORC( cF.szFaceName, -1, 1 );
-   HB_STORNL3( (LONG) PointSize, -1, 2 );
+   HB_STORNL3( ( LONG ) PointSize, -1, 2 );
    HB_STORL( bold, -1, 3 );
    HB_STORL( Italic, -1, 4 );
-   HB_STORNL3( (LONG) cF.crTextColor, -1, 5 );
+   HB_STORNL3( ( LONG ) cF.crTextColor, -1, 5 );
    HB_STORL( Underline, -1, 6 );
    HB_STORL( StrikeOut, -1, 7 );
    HB_STORNI( cF.bCharSet, -1, 8 );

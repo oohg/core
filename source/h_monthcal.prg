@@ -583,7 +583,7 @@ HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -612,7 +612,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -641,7 +641,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -670,7 +670,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -699,7 +699,7 @@ HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -728,7 +728,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
       }
    }
 
-   lColor = (LONG) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
+   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );

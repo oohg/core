@@ -1491,10 +1491,10 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
    // PAINTSTRUCT
    HB_STORNL3( (LONG_PTR) BT.PaintStruct.hdc,            -1,  4 );        // HDC  hdc;
    HB_STORNI( (INT)      BT.PaintStruct.fErase,         -1,  5 );        // BOOL fErase;
-   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.left,   -1,  6 );        // RECT rcPaint.left;
-   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.top,    -1,  7 );        // RECT rcPaint.top;
-   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.right,  -1,  8 );        // RECT rcPaint.right;
-   HB_STORNL3( (LONG)     BT.PaintStruct.rcPaint.bottom, -1,  9 );        // RECT rcPaint.bottom;
+   HB_STORNL3( ( LONG )     BT.PaintStruct.rcPaint.left,   -1,  6 );        // RECT rcPaint.left;
+   HB_STORNL3( ( LONG )     BT.PaintStruct.rcPaint.top,    -1,  7 );        // RECT rcPaint.top;
+   HB_STORNL3( ( LONG )     BT.PaintStruct.rcPaint.right,  -1,  8 );        // RECT rcPaint.right;
+   HB_STORNL3( ( LONG )     BT.PaintStruct.rcPaint.bottom, -1,  9 );        // RECT rcPaint.bottom;
    HB_STORNI( (INT)      BT.PaintStruct.fRestore,       -1, 10 );        // BOOL fRestore;
    HB_STORNI( (INT)      BT.PaintStruct.fIncUpdate,     -1, 11 );        // BOOL fIncUpdate;
    for( i = 0; i < 32; i++ )
@@ -1514,10 +1514,10 @@ HB_FUNC( BT_DC_DELETE )    // ( { Type, hWnd, hBitmap, hDC, PaintStruct } )
    // PAINTSTRUCT
    BT.PaintStruct.hdc            = ( HDC )  HB_PARNL2( 1,  4 );             // HDC  hdc;
    BT.PaintStruct.fErase         = (BOOL) HB_PARNI( 1,  5 );              // BOOL fErase;
-   BT.PaintStruct.rcPaint.left   = (LONG) HB_PARNL2( 1,  6 );             // RECT rcPaint.left;
-   BT.PaintStruct.rcPaint.top    = (LONG) HB_PARNL2( 1,  7 );             // RECT rcPaint.top;
-   BT.PaintStruct.rcPaint.right  = (LONG) HB_PARNL2( 1,  8 );             // RECT rcPaint.right;
-   BT.PaintStruct.rcPaint.bottom = (LONG) HB_PARNL2( 1,  9 );             // RECT rcPaint.bottom;
+   BT.PaintStruct.rcPaint.left   = ( LONG ) HB_PARNL2( 1,  6 );             // RECT rcPaint.left;
+   BT.PaintStruct.rcPaint.top    = ( LONG ) HB_PARNL2( 1,  7 );             // RECT rcPaint.top;
+   BT.PaintStruct.rcPaint.right  = ( LONG ) HB_PARNL2( 1,  8 );             // RECT rcPaint.right;
+   BT.PaintStruct.rcPaint.bottom = ( LONG ) HB_PARNL2( 1,  9 );             // RECT rcPaint.bottom;
    BT.PaintStruct.fRestore       = (BOOL) HB_PARNI( 1, 10 );              // BOOL fRestore;
    BT.PaintStruct.fIncUpdate     = (BOOL) HB_PARNI( 1, 11 );              // BOOL fIncUpdate;
    for( i = 0; i < 32; i++ )
@@ -2133,8 +2133,8 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    SIZE SizeText;
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 2 );
-   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( ( LONG ) SizeText.cx, -1, 1 );
+   HB_STORNL3( ( LONG ) SizeText.cy, -1, 2 );
 */
 
    SelectObject( hDC, hOldFont );
@@ -2269,8 +2269,8 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
 
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 6 );
-   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( ( LONG ) SizeText.cx, -1, 1 );
+   HB_STORNL3( ( LONG ) SizeText.cy, -1, 2 );
 
    iFirstChar = (UINT) Text[ 0 ];
    iLastChar  = (UINT) Text[ 0 ];
@@ -2767,15 +2767,15 @@ HB_FUNC( BT_BMP_GETINFO )    // ( hBitmap, Info, x, y )
    switch ( Info )
    {
       case BT_BITMAP_INFO_WIDTH:
-         hb_retnl( (long) bm.bmWidth );
+         hb_retnl( ( LONG ) bm.bmWidth );
          break;
 
       case BT_BITMAP_INFO_HEIGHT:
-         hb_retnl( (long) bm.bmHeight );
+         hb_retnl( ( LONG ) bm.bmHeight );
          break;
 
       case BT_BITMAP_INFO_BITSPIXEL:
-         hb_retnl( (long) bm.bmBitsPixel );
+         hb_retnl( ( LONG ) bm.bmBitsPixel );
          break;
 
       case BT_BITMAP_INFO_GETCOLORPIXEL:
@@ -2785,7 +2785,7 @@ HB_FUNC( BT_BMP_GETINFO )    // ( hBitmap, Info, x, y )
          SelectObject( memDC, hBitmap );
          color = GetPixel( memDC, x, y );
          DeleteDC( memDC );
-         hb_retnl( (long) color );
+         hb_retnl( ( LONG ) color );
          break;
 
       default:
@@ -3385,7 +3385,7 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
 
    for( y = 0; y < bm.bmHeight; y ++ )
    {
-      RGBcolor = (bt_RGBCOLORBYTE *) ( lp_Bits + (LONG) ( y ) * bm.bmWidthBytes );
+      RGBcolor = (bt_RGBCOLORBYTE *) ( lp_Bits + ( LONG ) ( y ) * bm.bmWidthBytes );
 
       for( x = 0; x < bm.bmWidth; x ++ )
       {
@@ -3564,16 +3564,16 @@ HB_FUNC( BT_BMP_FILTER3X3 )    // ( hBitmap, aFilter )
 
    for( y = 0; y < bm.bmHeight; y ++ )
    {
-   // bt_RGBCOLORBYTE RGBcolor_O = (bt_RGBCOLORBYTE *) ( lp_Bits_O + (LONG) ( y ) * bm.bmWidthBytes );
-      RGBcolor_D = (bt_RGBCOLORBYTE *) ( lp_Bits_D + (LONG) ( y ) * bm.bmWidthBytes );
+   // bt_RGBCOLORBYTE RGBcolor_O = (bt_RGBCOLORBYTE *) ( lp_Bits_O + ( LONG ) ( y ) * bm.bmWidthBytes );
+      RGBcolor_D = (bt_RGBCOLORBYTE *) ( lp_Bits_D + ( LONG ) ( y ) * bm.bmWidthBytes );
 
       for( x = 0; x < bm.bmWidth; x ++ )
       {
          if( ( y >= HALF && y < ( bm.bmHeight - HALF ) ) && ( x >= HALF && x < ( bm.bmWidth - HALF ) ) )
          {
-            RGBcolor_Yprevious_Xcurrent  = (bt_RGBCOLORBYTE *) ( lp_Bits_O + (LONG) ( y - 1 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
-            RGBcolor_Ycurrent_Xcurrent   = (bt_RGBCOLORBYTE *) ( lp_Bits_O + (LONG) ( y + 0 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
-            RGBcolor_Yposterior_Xcurrent = (bt_RGBCOLORBYTE *) ( lp_Bits_O + (LONG) ( y + 1 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
+            RGBcolor_Yprevious_Xcurrent  = (bt_RGBCOLORBYTE *) ( lp_Bits_O + ( LONG ) ( y - 1 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
+            RGBcolor_Ycurrent_Xcurrent   = (bt_RGBCOLORBYTE *) ( lp_Bits_O + ( LONG ) ( y + 0 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
+            RGBcolor_Yposterior_Xcurrent = (bt_RGBCOLORBYTE *) ( lp_Bits_O + ( LONG ) ( y + 1 ) * bm.bmWidthBytes + x * sizeof( bt_RGBCOLORBYTE ) );
 
             RGBcolor_Ret = bt_ConvolutionKernel3x3( RGBcolor_Yprevious_Xcurrent, RGBcolor_Ycurrent_Xcurrent, RGBcolor_Yposterior_Xcurrent, MatKernel3x3Filter );
 
@@ -3718,8 +3718,8 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          xform2.eDx = (FLOAT) - x3;
          xform2.eDy = (FLOAT) 0.0;
 
-         Width  = (LONG) dABS( ( x3 - x1 ) );
-         Height = (LONG) dABS( y2 );
+         Width  = ( LONG ) dABS( ( x3 - x1 ) );
+         Height = ( LONG ) dABS( y2 );
       }
 
       if( ( Angle > 90.0 ) && ( Angle <= 180.0 ) )
@@ -3727,8 +3727,8 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          xform2.eDx = (FLOAT) - x2;
          xform2.eDy = (FLOAT) - y3;
 
-         Width  = (LONG) dABS( x2 );
-         Height = (LONG) dABS( ( y3 - y1 ) );
+         Width  = ( LONG ) dABS( x2 );
+         Height = ( LONG ) dABS( ( y3 - y1 ) );
       }
 
       if( ( Angle > 180.0 ) && ( Angle <= 270.0 ) )
@@ -3736,8 +3736,8 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          xform2.eDx = (FLOAT) - x1;
          xform2.eDy = (FLOAT) - y2;
 
-         Width  = (LONG) dABS( ( x3 - x1 ) );
-         Height = (LONG) dABS( y2 );
+         Width  = ( LONG ) dABS( ( x3 - x1 ) );
+         Height = ( LONG ) dABS( y2 );
       }
 
       if( ( Angle > 270.0 ) && ( Angle <= 360.0 ) )
@@ -3745,8 +3745,8 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          xform2.eDx = (FLOAT) 0.0;
          xform2.eDy = (FLOAT) - y1;
 
-         Width  = (LONG) dABS( x2 );
-         Height = (LONG) dABS( ( y3 - y1 ) );
+         Width  = ( LONG ) dABS( x2 );
+         Height = ( LONG ) dABS( ( y3 - y1 ) );
       }
 
       Width ++;
@@ -4081,8 +4081,8 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
 
    GetTextExtentPoint32( hDC, Text, lstrlen( Text ), &SizeText );
    hb_reta( 2 );
-   HB_STORNL3( (LONG) SizeText.cx, -1, 1 );
-   HB_STORNL3( (LONG) SizeText.cy, -1, 2 );
+   HB_STORNL3( ( LONG ) SizeText.cx, -1, 1 );
+   HB_STORNL3( ( LONG ) SizeText.cy, -1, 2 );
 
    SelectObject( hDC, hOldFont );
    DeleteObject( hFont );
