@@ -1056,7 +1056,7 @@ FUNCTION GetPrinter()
    _HMG_PRINTER_InitUserMessages()
 
    If Len( Printers ) == 0
-      MsgExclamation( _HMG_PRINTER_UserMessages [102] )
+      MsgExclamation( _HMG_PRINTER_UserMessages [102], _HMG_PRINTER_UserMessages [100] )
       RETURN cDefault
    EndIf
 
@@ -1226,7 +1226,7 @@ PROCEDURE _HMG_PRINTER_H_Fill( nHdc, nRow, nCol, nToRow, nToCol, nColor1, nColor
    nToRow := Int( nToRow * 10000 / 254 )
    nToCol := Int( nToCol * 10000 / 254 )
 
-   // (LONG)((GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ));
+   // ( LONG )((GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ));
 
    _HMG_PRINTER_C_FILL( nHdc, nRow, nCol, nToRow, nToCol, nColor1, nColor2, nColor3, lcolor )
 
@@ -1355,6 +1355,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1393,6 +1394,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1431,6 +1433,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1440,38 +1443,39 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
    // FRENCH
    ///////////////////////////////////////////////////////////////////
 
-            _HMG_PRINTER_UserMessages [01] := 'Page'
-            _HMG_PRINTER_UserMessages [02] := "Aperçu avant impression"
-            _HMG_PRINTER_UserMessages [03] := 'Première page [HOME]'
-            _HMG_PRINTER_UserMessages [04] := 'Page précédente [PGUP]'
-            _HMG_PRINTER_UserMessages [05] := 'Page suivante [PGDN]'
-            _HMG_PRINTER_UserMessages [06] := 'Dernière Page [END]'
-            _HMG_PRINTER_UserMessages [07] := 'Allez page'
-            _HMG_PRINTER_UserMessages [08] := 'Zoom'
-            _HMG_PRINTER_UserMessages [09] := 'Imprimer'
-            _HMG_PRINTER_UserMessages [10] := 'Page'
-            _HMG_PRINTER_UserMessages [11] := 'Ok'
-            _HMG_PRINTER_UserMessages [12] := 'Annulation'
-            _HMG_PRINTER_UserMessages [13] := "Sélection de l'imprimante"
-            _HMG_PRINTER_UserMessages [14] := "Assemblez"
-            _HMG_PRINTER_UserMessages [15] := "Intervalle d'impression"
-            _HMG_PRINTER_UserMessages [16] := 'Tous'
-            _HMG_PRINTER_UserMessages [17] := 'Pages'
-            _HMG_PRINTER_UserMessages [18] := 'De'
-            _HMG_PRINTER_UserMessages [19] := 'À'
-            _HMG_PRINTER_UserMessages [20] := 'Copies'
-            _HMG_PRINTER_UserMessages [21] := 'Toutes les pages'
-            _HMG_PRINTER_UserMessages [22] := 'Pages Impaires'
-            _HMG_PRINTER_UserMessages [23] := 'Pages paires'
-            _HMG_PRINTER_UserMessages [24] := 'Oui'
-            _HMG_PRINTER_UserMessages [25] := 'Non'
-            _HMG_PRINTER_UserMessages [26] := 'Fermer'
-            _HMG_PRINTER_UserMessages [27] := 'Sauver'
-            _HMG_PRINTER_UserMessages [28] := 'affichettes'
-            _HMG_PRINTER_UserMessages [29] := 'Svp attente, étant les miniatures sont générées...'
-            _HMG_PRINTER_UserMessages [101] := 'Sélectionner un dossier'
-            _HMG_PRINTER_UserMessages [102] := "Aucune imprimeur n'est installé dans ce système."
-            _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
+         _HMG_PRINTER_UserMessages [01] := 'Page'
+         _HMG_PRINTER_UserMessages [02] := "Aperçu avant impression"
+         _HMG_PRINTER_UserMessages [03] := 'Première page [HOME]'
+         _HMG_PRINTER_UserMessages [04] := 'Page précédente [PGUP]'
+         _HMG_PRINTER_UserMessages [05] := 'Page suivante [PGDN]'
+         _HMG_PRINTER_UserMessages [06] := 'Dernière Page [END]'
+         _HMG_PRINTER_UserMessages [07] := 'Allez page'
+         _HMG_PRINTER_UserMessages [08] := 'Zoom'
+         _HMG_PRINTER_UserMessages [09] := 'Imprimer'
+         _HMG_PRINTER_UserMessages [10] := 'Page'
+         _HMG_PRINTER_UserMessages [11] := 'Ok'
+         _HMG_PRINTER_UserMessages [12] := 'Annulation'
+         _HMG_PRINTER_UserMessages [13] := "Sélection de l'imprimante"
+         _HMG_PRINTER_UserMessages [14] := "Assemblez"
+         _HMG_PRINTER_UserMessages [15] := "Intervalle d'impression"
+         _HMG_PRINTER_UserMessages [16] := 'Tous'
+         _HMG_PRINTER_UserMessages [17] := 'Pages'
+         _HMG_PRINTER_UserMessages [18] := 'De'
+         _HMG_PRINTER_UserMessages [19] := 'À'
+         _HMG_PRINTER_UserMessages [20] := 'Copies'
+         _HMG_PRINTER_UserMessages [21] := 'Toutes les pages'
+         _HMG_PRINTER_UserMessages [22] := 'Pages Impaires'
+         _HMG_PRINTER_UserMessages [23] := 'Pages paires'
+         _HMG_PRINTER_UserMessages [24] := 'Oui'
+         _HMG_PRINTER_UserMessages [25] := 'Non'
+         _HMG_PRINTER_UserMessages [26] := 'Fermer'
+         _HMG_PRINTER_UserMessages [27] := 'Sauver'
+         _HMG_PRINTER_UserMessages [28] := 'affichettes'
+         _HMG_PRINTER_UserMessages [29] := 'Svp attente, étant les miniatures sont générées...'
+         _HMG_PRINTER_UserMessages [100] := 'Attention'
+         _HMG_PRINTER_UserMessages [101] := 'Sélectionner un dossier'
+         _HMG_PRINTER_UserMessages [102] := "Aucune imprimeur n'est installé dans ce système."
+         _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
 
       Case cLang == "DEWIN" .OR. cLang == "DE"
    ///////////////////////////////////////////////////////////////////
@@ -1507,6 +1511,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Speichern'
          _HMG_PRINTER_UserMessages [28] := 'Seitenminiaturen'
          _HMG_PRINTER_UserMessages [29] := 'Bitte warten, während die Seitenminiaturen erstellt werden...'
+         _HMG_PRINTER_UserMessages [100] := 'Warnung'
          _HMG_PRINTER_UserMessages [101] := 'Wählen Sie einen Ordner'
          _HMG_PRINTER_UserMessages [102] := 'Es sind keine Drucker im System installiert.'
          _HMG_PRINTER_UserMessages [103] := 'Bitte warten, während die Druckvorschau Schließens...'
@@ -1545,6 +1550,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Salva'
          _HMG_PRINTER_UserMessages [28] := 'Miniatura'
          _HMG_PRINTER_UserMessages [29] := 'Generando Miniatura...  Prego Attesa...'
+         _HMG_PRINTER_UserMessages [100] := 'Avvertimento'
          _HMG_PRINTER_UserMessages [101] := 'Selezionare una cartella'
          _HMG_PRINTER_UserMessages [102] := 'Nessuna stampatore è installata in questo sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1583,6 +1589,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Zapisz'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generujê Thumbnails... Proszê czekaæ...'
+         _HMG_PRINTER_UserMessages [100] := 'Ostrzezenie'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1621,6 +1628,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Salvar'
          _HMG_PRINTER_UserMessages [28] := 'Miniaturas'
          _HMG_PRINTER_UserMessages [29] := 'Gerando Miniaturas...  Por favor Espera...'
+         _HMG_PRINTER_UserMessages [100] := 'Aviso'
          _HMG_PRINTER_UserMessages [101] := 'Selecione uma pasta'
          _HMG_PRINTER_UserMessages [102] := 'Nenhuma impressora está instalado neste sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1659,6 +1667,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1697,6 +1706,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Guardar'
          _HMG_PRINTER_UserMessages [28] := 'Miniaturas'
          _HMG_PRINTER_UserMessages [29] := 'Generando Miniaturas... Espere Por Favor...'
+         _HMG_PRINTER_UserMessages [100] := 'Advertencia'
          _HMG_PRINTER_UserMessages [101] := 'Seleccione Una Carpeta'
          _HMG_PRINTER_UserMessages [102] := 'No hay impresora instalada en este sistema.'
          _HMG_PRINTER_UserMessages [103] := 'Cerrando vista previa... Espere Por Favor...'
@@ -1735,6 +1745,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1773,6 +1784,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1811,6 +1823,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -1849,6 +1862,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
          _HMG_PRINTER_UserMessages [27] := 'Save'
          _HMG_PRINTER_UserMessages [28] := 'Thumbnails'
          _HMG_PRINTER_UserMessages [29] := 'Generating Thumbnails... Please Wait...'
+         _HMG_PRINTER_UserMessages [100] := 'Warning'
          _HMG_PRINTER_UserMessages [101] := 'Select a Folder'
          _HMG_PRINTER_UserMessages [102] := 'No printer is installed in this system.'
          _HMG_PRINTER_UserMessages [103] := 'Closing preview... Please Wait...'
@@ -2030,21 +2044,21 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )
 
    HGDIOBJ hgdiobj;
    char FontName [32];
-   int FontSize;
+   INT FontSize;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   int fnWeight;
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
+   INT fnWeight;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
    long nAngle;
    long nWidth ;
    HFONT hfont;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
-   int FontHeight;
+   INT FontHeight;
 
    if( hdcPrint != 0 )
    {
@@ -2199,22 +2213,22 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )
 
    HGDIOBJ hgdiobj;
    char FontName [32];
-   int FontSize;
+   INT FontSize;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
    RECT rect;
-   int fnWeight;
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int toy = hb_parni( 17 );
-   int tox = hb_parni( 18 );
+   INT fnWeight;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT toy = hb_parni( 17 );
+   INT tox = hb_parni( 18 );
    HFONT hfont;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
-   int FontHeight;
+   INT FontHeight;
 
    if( hdcPrint != 0 )
    {
@@ -2505,19 +2519,19 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )
    // 18: nColorG
    // 19: nColorB
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int width;
-   int nStyle;
-   int br;
-   int bg;
-   int bb;
-   int nBr;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
    long nBh;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
@@ -2593,7 +2607,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )
 
       pbr.lbStyle = nBr;
       pbr.lbColor = (COLORREF) RGB( br, bg, bb );
-      pbr.lbHatch = (LONG) nBh;
+      pbr.lbHatch = ( LONG ) nBh;
 
       hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
@@ -2635,20 +2649,20 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )
    // 18: nColorG
    // 19: nColorB
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int width;
-   int w, h, p;
-   int nStyle;
-   int br;
-   int bg;
-   int bb;
-   int nBr;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT w, h, p;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
    long nBh;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
@@ -2724,7 +2738,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )
 
       pbr.lbStyle = nBr;
       pbr.lbColor = (COLORREF) RGB( br, bg, bb );
-      pbr.lbHatch = (LONG) nBh;
+      pbr.lbHatch = ( LONG ) nBh;
 
       hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
@@ -2764,13 +2778,13 @@ HB_FUNC( _HMG_PRINTER_C_FILL )
    // 8: B Color
    // 9: lColor
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parnl( 3 );
-   int y = hb_parnl( 2 );
-   int tox = hb_parnl( 5 );
-   int toy = hb_parnl( 4 );
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parnl( 3 );
+   INT y = hb_parnl( 2 );
+   INT tox = hb_parnl( 5 );
+   INT toy = hb_parnl( 4 );
    RECT rect;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj;
@@ -2792,10 +2806,10 @@ HB_FUNC( _HMG_PRINTER_C_FILL )
          b = 0;
       }
 
-      rect.left = (LONG) ( ( x * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.top = (LONG) ( ( y * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
-      rect.right = (LONG) ( ( tox *GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.bottom = (LONG) ( ( toy *GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.left = ( LONG ) ( ( x * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.top = ( LONG ) ( ( y * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.right = ( LONG ) ( ( tox *GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.bottom = ( LONG ) ( ( toy *GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
 
       hBrush = CreateSolidBrush( RGB(r, g, b) );
       hgdiobj = SelectObject( (HDC) hdcPrint, hBrush );
@@ -2821,15 +2835,15 @@ HB_FUNC( _HMG_PRINTER_C_LINE )
    // 12: lStyle
    // 13: nStyle
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int width;
-   int nStyle;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT nStyle;
    HDC hdcPrint = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
@@ -2905,8 +2919,8 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    BOOL bGlobal = hb_parl( 15 );
    LONG lFlag;
    HDC hdcPrint;
-   int fields = 0;
-   int error = 0;
+   INT fields = 0;
+   INT error = 0;
 
    ///////////////////////////////////////////////////////////////////
    // Get the current settings from the printer's driver
@@ -3504,7 +3518,7 @@ HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )
 
    tmpDC = CreateEnhMetaFile( (HDC) hb_parnl( 1 ), hb_parc( 2 ), &emfrect, "" );
 
-   hb_retnl( (LONG) tmpDC );
+   hb_retnl( ( LONG ) tmpDC );
 }
 
 HB_FUNC( _HMG_PRINTER_ENDPAGE_PREVIEW )
@@ -3520,12 +3534,12 @@ HB_FUNC( _HMG_PRINTER_SHOWPAGE )
    HDC hDC;
    RECT rct;
    RECT aux;
-   int zw;
-   int zh;
-   int ClientWidth;
-   int ClientHeight;
-   int xOffset;
-   int yOffset;
+   INT zw;
+   INT zh;
+   INT ClientWidth;
+   INT ClientHeight;
+   INT xOffset;
+   INT yOffset;
 
    hemf = GetEnhMetaFile( hb_parc( 1 ) );
 
@@ -3703,16 +3717,16 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )
    HRSRC hSource;
    HGLOBAL hGlobalres;
    LPVOID lpVoid;
-   int nSize;
+   INT nSize;
    HINSTANCE hinstance = GetModuleHandle( NULL );
    HBITMAP hbmp;
    PICTDESC picd;
-   int r = hb_parni( 3 );
-   int c = hb_parni( 4 );
-   int odr = hb_parni( 5 ); // Height
-   int odc = hb_parni( 6 ); // Width
-   int dr;
-   int dc;
+   INT r = hb_parni( 3 );
+   INT c = hb_parni( 4 );
+   INT odr = hb_parni( 5 ); // Height
+   INT odc = hb_parni( 6 ); // Width
+   INT dr;
+   INT dc;
 
    if( hdcPrint != 0 )
    {
@@ -3871,19 +3885,19 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )
    // 18: nColorG
    // 19: nColorB
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int width;
-   int nStyle;
-   int br;
-   int bg;
-   int bb;
-   int nBr;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT width;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
    long nBh;
    HDC hdc = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
@@ -3959,7 +3973,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )
 
       pbr.lbStyle = nBr;
       pbr.lbColor = (COLORREF) RGB( br, bg, bb );
-      pbr.lbHatch = (LONG) nBh;
+      pbr.lbHatch = ( LONG ) nBh;
 
       hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
@@ -3997,19 +4011,19 @@ HB_FUNC( _HMG_PRINTER_C_ARC )
    // 16: lStyle
    // 17: nStyle
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int x1 = hb_parni( 7 );
-   int y1 = hb_parni( 6 );
-   int x2 = hb_parni( 9 );
-   int y2 = hb_parni( 8 );
-   int width = 0;
-   int nStyle;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
    HDC hdc = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
@@ -4086,23 +4100,23 @@ HB_FUNC( _HMG_PRINTER_C_PIE )
    // 22: nColorG
    // 23: nColorB
 
-   int r;
-   int g;
-   int b;
-   int x = hb_parni( 3 );
-   int y = hb_parni( 2 );
-   int tox = hb_parni( 5 );
-   int toy = hb_parni( 4 );
-   int x1 = hb_parni( 7 );
-   int y1 = hb_parni( 6 );
-   int x2 = hb_parni( 9 );
-   int y2 = hb_parni( 8 );
-   int width = 0;
-   int nStyle;
-   int br;
-   int bg;
-   int bb;
-   int nBr;
+   INT r;
+   INT g;
+   INT b;
+   INT x = hb_parni( 3 );
+   INT y = hb_parni( 2 );
+   INT tox = hb_parni( 5 );
+   INT toy = hb_parni( 4 );
+   INT x1 = hb_parni( 7 );
+   INT y1 = hb_parni( 6 );
+   INT x2 = hb_parni( 9 );
+   INT y2 = hb_parni( 8 );
+   INT width = 0;
+   INT nStyle;
+   INT br;
+   INT bg;
+   INT bb;
+   INT nBr;
    long nBh;
    HDC hdc = (HDC) hb_parnl( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
@@ -4174,7 +4188,7 @@ HB_FUNC( _HMG_PRINTER_C_PIE )
 
       pbr.lbStyle = nBr;
       pbr.lbColor = (COLORREF) RGB( br, bg, bb );
-      pbr.lbHatch = (LONG) nBh;
+      pbr.lbHatch = ( LONG ) nBh;
 
       hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
@@ -4204,14 +4218,14 @@ HB_FUNC( _HMG_PRINTER_GETMAXCOL )       // hdcPrint, FontName, FontSize, nWidth,
 {
    HDC hdcPrint;
    char FontName [32];
-   int FontSize;
-   int nWidth;
-   int nAngle;
-   int fnWeight;
+   INT FontSize;
+   INT nWidth;
+   INT nAngle;
+   INT fnWeight;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   int FontHeight;
+   INT FontHeight;
    HFONT hfont;
    HGDIOBJ hgdiobj;
    TEXTMETRIC tm;
@@ -4317,14 +4331,14 @@ HB_FUNC( _HMG_PRINTER_GETMAXROW )       // hdcPrint, FontName, FontSize, nWidth,
 {
    HDC hdcPrint;
    char FontName [32];
-   int FontSize;
-   int nWidth;
-   int nAngle;
-   int fnWeight;
+   INT FontSize;
+   INT nWidth;
+   INT nAngle;
+   INT fnWeight;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   int FontHeight;
+   INT FontHeight;
    HFONT hfont;
    HGDIOBJ hgdiobj;
    TEXTMETRIC tm;
