@@ -162,6 +162,7 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "AEXCLUDEAREA",
                           "COMPAREITEMS",
                           "EVENTS_DRAG",
+                          "EVENTS_MENUHILITED",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -880,7 +881,7 @@ int _OOHG_SearchControlHandleInArray( HWND hWnd )
       #ifdef OOHG_HWND_POINTER
          if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aControlhWnd, ulCount ) )
       #else
-         if( ( LONG ) hWnd == HB_ARRAYGETNL( _OOHG_aControlhWnd, ulCount ) )
+         if( hWnd == ( HWND ) HB_ARRAYGETNL( _OOHG_aControlhWnd, ulCount ) )
       #endif
       {
          ulPos = ulCount;
