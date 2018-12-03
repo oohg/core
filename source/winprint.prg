@@ -1623,7 +1623,7 @@ METHOD PrevShow() CLASS HBPrinter
    if ::azoom[3]<30
       ::scale:=::scale*1.25
       ::prevshow()
-      msgstop(::aopisy[18],"")
+      MsgStop( ::aopisy[18], "" )
    endif
    HideWindow(::ahs[6,7])
    ::oHBPreview1:i1:SizePos(,, ::azoom[4], ::azoom[3] )
@@ -1638,7 +1638,7 @@ METHOD PrevShow() CLASS HBPrinter
    if ! ValidHandler( hImage )
       ::scale:=::scale/1.25
       ::PrevShow()
-      msgstop(::aopisy[18],::aopisy[1])
+      MsgStop( ::aopisy[ 18 ], ::aopisy[ 1 ] )
    else
       ::oHBPreview1:i1:hbitmap := hImage
    endif
@@ -2661,7 +2661,7 @@ HB_FUNC( RR_DEVICECAPABILITIES )
    CHAR * cBuffer, * pBuffer, * nBuffer, * sBuffer, * bnBuffer, * bwBuffer, *bcBuffer;
    DWORD numpapers, numbins, i;
    LPPOINT lp;
-   CHAR buffer [sizeof(long)*8+1];
+   CHAR buffer [sizeof( LONG )*8+1];
    numbins = DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_BINNAMES, NULL, NULL );
    numpapers = DeviceCapabilities( pi2->pPrinterName, pi2->pPortName, DC_PAPERNAMES, NULL, NULL );
    if( numpapers != ( DWORD ) 0 && numpapers != ( DWORD ) ( ~ 0 ) )
@@ -2752,7 +2752,7 @@ HB_FUNC( RR_SETPOLYFILLMODE )
    if( SetPolyFillMode( hDC, ( COLORREF ) hb_parnl( 1 ) ) != 0 )
       hb_retnl( hb_parnl( 1 ) );
    else
-      hb_retnl( (LONG) GetPolyFillMode( hDC ) );
+      hb_retnl( ( LONG ) GetPolyFillMode( hDC ) );
 }
 
 HB_FUNC( RR_SETTEXTCOLOR )
@@ -3646,7 +3646,7 @@ HB_FUNC( RR_POLYBEZIER )
    if( xpen != 0 )
      SelectObject( hDC, xpen );
 
-   hb_retnl( (LONG) PolyBezier( hDC, apoints, number ) );
+   hb_retnl( ( LONG ) PolyBezier( hDC, apoints, number ) );
 
    if( xpen != 0 )
       SelectObject( hDC, hpen );
@@ -3667,7 +3667,7 @@ HB_FUNC( RR_POLYBEZIERTO )
    if( xpen )
       SelectObject( hDC, xpen );
 
-   hb_retnl( (LONG) PolyBezierTo( hDC, apoints, number ) );
+   hb_retnl( ( LONG ) PolyBezierTo( hDC, apoints, number ) );
 
    if( xpen )
       SelectObject( hDC, hpen );
