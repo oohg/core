@@ -922,13 +922,13 @@ METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
-         MsgStop( "Error: MS Excel not available. [" + win_oleErrorText()+ "]" )
+         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( "Excel not found", "Error" )
+         MsgStop( _OOHG_Messages( 1, 13 ), _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #EndIf
@@ -1007,20 +1007,20 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    // open service manager
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
-         MsgStop( "Error: OpenOffice not available. [" + win_oleErrorText()+ "]" )
+         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
       oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( "OpenOffice not found", "Error" )
+         MsgStop( _OOHG_Messages( 1, 14 ), _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #EndIf
 
    // open desktop service
    If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
-      MsgStop( "Error: OpenOffice Desktop not available." )
+      MsgStop( _OOHG_Messages( 1, 15 ), _OOHG_Messages( 1, 9 ) )
       Return Self
    EndIf
 
@@ -1031,7 +1031,7 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 
    // open new book
    If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
-      MsgStop( "Error: OpenOffice Calc not available." )
+      MsgStop( _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
       oDesk := Nil
       Return Self
    EndIf
@@ -1650,7 +1650,7 @@ METHOD Delete() CLASS TXBrowse
 
    If ::Lock
       If ! ::oWorkArea:Lock()
-         MsgExclamation( _OOHG_Messages(3, 9), _OOHG_Messages(4, 2) )
+         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
          Return .F.
       EndIf
    EndIf
@@ -4121,11 +4121,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                EndIf
 
                If lGo
-                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
+                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
-                  MsgExclamation( ::DelMsg, _OOHG_Messages(4, 2) )
+                  MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 2 ) )
                EndIf
             EndIf
 
