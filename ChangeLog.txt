@@ -12,7 +12,7 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2018-12-03 19:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2018-12-03 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_pdf.prg
      + DATA cExecuteApp
      + DATA cExecuteParams
