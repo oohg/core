@@ -100,13 +100,13 @@ HB_FUNC( _OOHG_STRETCHBLTMODE )
    hb_retni( OldStretchBltMode );
 }
 
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr )
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr )
 {
    HANDLE hImage = 0;
    IStream * iStream;
    IPicture * iPicture;
    IPicture ** iPictureRef = &iPicture;
-   long lWidth, lHeight;
+   LONG lWidth, lHeight;
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
@@ -138,9 +138,9 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, long l
          iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
          hdc1 = CreateCompatibleDC( hdc1 );
          fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + ( float ) 0.9999;
-         lWidth2 = ( long ) fAux;
+         lWidth2 = ( LONG ) fAux;
          fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + ( float ) 0.9999;
-         lHeight2 = ( long ) fAux;
+         lHeight2 = ( LONG ) fAux;
          DeleteDC( hdc1 );
       }
 
@@ -180,7 +180,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, BO
    RECT fromRECT, toRECT;
    HBITMAP hOldTo, hOldFrom, hpic = 0;
    BITMAP bm;
-   long lWidth, lHeight;
+   LONG lWidth, lHeight;
    HDC imgDC, fromDC, toDC;
    HBRUSH hBrush;
 
@@ -562,7 +562,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize, lIg
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap, hBitmap2;
    int iAttributes;
-   long lWidth, lHeight;
+   LONG lWidth, lHeight;
 
    iAttributes = hb_parni( 3 );
    if( hb_parl( 4 ) )
@@ -633,7 +633,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )   // ( oSelf, cBuffer, lAutoSize, lIgnoreBkCol
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap = 0;
    HGLOBAL hGlobal;
-   long lWidth, lHeight;
+   LONG lWidth, lHeight;
 
    if( hb_parclen( 2 ) )
    {
@@ -819,13 +819,13 @@ HB_FUNC( _OOHG_COPYBITMAP )            // ( hBitmap, nWidth, nHeight, iAttribute
    HWNDret( hCopy );
 }
 
-HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor )
+HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, INT x, INT y, LONG lNewColor, LONG lOldColor )
 {
    HDC hdcSrc, hdcDst;
-   int nRow, nCol;
+   INT nRow, nCol;
    HBITMAP hbmOldSrc, hbmOldDst, hbmNew = 0;
    BITMAP bm;
-   COLORREF clrTP;
+   COLORREF clrOld, clrNew = ( COLORREF ) lNewColor;
 
    if( ( hdcSrc = CreateCompatibleDC( NULL ) ) != NULL )
    {
@@ -837,19 +837,24 @@ HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor )
          hbmOldDst = SelectObject( hdcDst, hbmNew );
          BitBlt( hdcDst, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY );
 
-         // Get color of pixel at x,y
-         clrTP = GetPixel( hdcDst, x, y );
-         if( clrTP != CLR_INVALID )
+         if( x == -1 || y == -1 )
          {
-            // Work our way through all the pixels
+            clrOld = ( COLORREF ) lOldColor;
+         }
+         else
+         {
+            clrOld = GetPixel( hdcDst, x, y );
+         }
+
+         if( clrOld != CLR_INVALID )
+         {
             for( nRow = 0; nRow < bm.bmHeight; nRow ++ )
             {
                for( nCol = 0; nCol < bm.bmWidth; nCol ++ )
                {
-                  // Replace with the new color
-                  if( GetPixel( hdcDst, nCol, nRow ) == clrTP )
+                  if( GetPixel( hdcDst, nCol, nRow ) == clrOld )
                   {
-                     SetPixel( hdcDst, nCol, nRow, (COLORREF) lNewColor );
+                     SetPixel( hdcDst, nCol, nRow, clrNew );
                   }
                }
             }
@@ -865,15 +870,17 @@ HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, LONG lNewColor )
    return hbmNew;
 }
 
-HB_FUNC( _OOHG_REPLACECOLOR )          // ( hBitmap, nCol, nRow, uNewColor )
+HB_FUNC( _OOHG_REPLACECOLOR )          /* FUNCTION _OOHG_ReplaceColor( hBitmap, nCol, nRow, uNewColor, uOldColor ) -> hBitmap */
 {
-   LONG lColor = -1;
+   LONG lNewColor = -1;
+   LONG lOldColor = -1;
 
-   _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lColor );
-   if( lColor == -1 )
+   _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lNewColor );
+   if( lNewColor == -1 )
    {
-      lColor = GetSysColor( COLOR_BTNFACE );
+      lNewColor = GetSysColor( COLOR_BTNFACE );
    }
+   _OOHG_DetermineColor( hb_param( 5, HB_IT_ANY ), &lOldColor );
 
-   HWNDret( _OOHG_ReplaceColor( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), lColor ) );
+   HWNDret( _OOHG_ReplaceColor( ( HBITMAP ) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), lNewColor, lOldColor ) );
 }

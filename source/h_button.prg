@@ -437,7 +437,7 @@ METHOD Picture( cPicture ) CLASS TButton
       IF ValidHandler( ::hImage )
          IF lReplace
             IF ! ::IsVisualStyled .OR. Len( ::Caption ) > 0 .OR. ! ::lNoImgLst
-               hNew := _OOHG_ReplaceColor( ::hImage, 0, 0, -1 )
+               hNew := _OOHG_ReplaceColor( ::hImage, 0, 0, -1, -1 )
                DeleteObject( ::hImage )
                ::hImage := hNew
             ENDIF
