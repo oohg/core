@@ -4377,32 +4377,34 @@ METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPDFPRINT
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, uSorR ) CLASS TPDFPRINT
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPDFPRINT
 
    LOCAL nVDispl := 0.980
    LOCAL nHDispl := 1.300
+   LOCAL nWidth, nHeight
 
-   HB_SYMBOL_UNUSED( uSorR )
+   HB_SYMBOL_UNUSED( aResol )
+   HB_SYMBOL_UNUSED( aSize )
 
    IF HB_ISSTRING( cImage )
       cImage := Upper( cImage )
-      // The only supported image formats are jpg and tiff.
-      IF AScan( { ".jpg", ".jpeg", ".tif", ".tiff" }, Lower( SubStr( cImage, RAt( ".", cImage ) ) ) ) == 0
+      // The only supported image formats are bmp, jpg and tiff.
+      IF AScan( { ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" }, Lower( SubStr( cImage, RAt( ".", cImage ) ) ) ) == 0
          RETURN NIL
       ENDIF
    ELSE
      RETURN NIL
    ENDIF
 
-   nLinF := nLinF - nLin
-   nColF := nColF - nCol
+   nHeight := nLinF - nLin   // when nHeight is zero, the image is printed at its real height and resolution
+   nWidth  := nColF - nCol   // when nWidth is zero, the image is printed at its real width and resolution
 
-   // TODO: Add support for images in the resource file (copy them to a temp file)
+   // TODO: Add support for images in the resource file (copy them to a temp file or use a hidden image control)
 
    IF ::cUnits == "MM"
-      ::oPdf:Image( cImage, nLin, nCol, "M", nLinF, nColF )
+      ::oPdf:Image( cImage, nLin, nCol, "M", nHeight, nWidth )
    ELSE
-      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * nHDispl )
+      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", nHeight * ::nmVer * nVDispl + ::nvFij, nWidth * ::nmHor + ::nhFij * nHDispl )
    ENDIF
 
    RETURN Self
