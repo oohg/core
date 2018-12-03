@@ -12,6 +12,127 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-02 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_004.txt
+     ! Typo.
+
+2018-12-02 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     * Updated function declaration.
+     + New symbol Events_MenuHilited.
+
+2018-12-02 23:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     * Some changes for 64 bit support.
+
+2018-12-02 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     * Some format.
+     * Some changes for 64 bit support.
+
+2018-12-02 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Some format.
+
+2018-12-02 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+   * core\source\h_button.prg
+     + New parameter to function _OOHG_ReplaceColor that enables
+       the replace of one color by another color.
+     * Some format.
+
+2018-12-02 23:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Some changes for 64 bit support.
+
+2018-12-02 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_pdf.prg
+     + METHOD Height.
+     + METHOD Width.
+     + METHOD Left.
+     + METHOD Right.
+     + METHOD Top.
+     + METHOD Bottom.
+     ! METHOD Center.
+     * METHOD Length now takes parameter cUnits to properly
+       compute the length of a string. Note that for ROWCOL
+       the number of available columns is estimated using
+       the size of the largest char in the selected font.
+     * METHOD Reverse and METHOD Underline now check the string
+       before appending the mark.
+     ! METHOD RJust.
+     ! METHOD TextCount.
+     + Some comments.
+     * Some static functions were removed.
+     * Remaining static functions were renamed adding TPDF_ prefix.
+
+2018-12-02 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     + Support for printing BMP images using TPDFPRINT.
+
+2018-12-02 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_edit.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_graph.prg
+   * core\source\h_grid.prg
+   * core\source\h_help.prg
+   * core\source\h_ini.prg
+   * core\source\h_init.prg
+   * core\source\h_registry.prg
+   * core\source\h_report.prg
+   * core\source\h_scrsaver.prg
+     + Message localization.
+
+2018-12-02 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_gdiplus.c
+   * core\source\h_status.prg
+   * core\source\h_ipaddress.prg
+     * UINT instead of unsigned int.
+
+2018-12-02 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_toolbar.prg
+     * Some format.
+     * A C-level module-static var was moved to a C-level
+       function-static var, thus making the class thread safe.
+     * Some changes for 64 bit support.
+
+2018-12-02 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Code reorganized.
+     * Some format.
+     + METHOD ArcTo.
+     + METHOD Chord.
+     + METHOD Polygon.
+     + METHOD PolyBezier.
+     + METHOD PolyBezierTo.
+     * Function InputBox no longer creates it's window
+       with a fixed name.
+
+2018-12-02 22:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+   * core\source\c_activex.c
+   * core\source\h_monthcal.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_tree.prg
+     * Some format.
+
+2018-12-02 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     * Some format.
+
+2018-12-02 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     + Message localization.
+
+2018-12-02 22:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     * Some format.
+     ! Missing title of a message box.
+
+2018-12-02 22:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     * Some format.
+
 2018-12-01 11:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      + New parameter lMode to methods PrintBarCode and Int25.
