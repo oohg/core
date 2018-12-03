@@ -1199,7 +1199,7 @@ HB_FUNC( INITCOMBOBOX )
                             GetModuleHandle( NULL ),
                             NULL ) ;
 
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hcombo, GWL_WNDPROC, ( LONG ) SubClassFunc );
+   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hcombo, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc );
 
    HWNDret( hcombo );
 }
@@ -1753,7 +1753,7 @@ static LRESULT APIENTRY SubClassFuncCL( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 
 HB_FUNC( INITLISTCOMBO )
 {
-   lpfnOldWndProcCL = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG ) SubClassFuncCL );
+   lpfnOldWndProcCL = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCL );
 }
 
 #pragma ENDDUMP
