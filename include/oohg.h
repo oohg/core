@@ -261,7 +261,7 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny );
 HBRUSH GetTabBrush( HWND hWnd );
 HFONT PrepareFont( const CHAR * FontName, INT FontSize, INT Weight, INT Italic, INT Underline, INT StrikeOut, INT Escapement, INT Charset, INT Width, INT Orientation, INT Advanced );
 BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, ULONG );
-HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, INT x, INT y, LONG lNewColor );
+HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, INT x, INT y, LONG lNewColor, LONG lOldColor );
 LPWSTR AnsiToWide( const CHAR * szString );
 VOID getwinver( OSVERSIONINFO * pOSvi );
 HANDLE _OOHG_GlobalMutex( VOID );
@@ -354,7 +354,8 @@ BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, U
 #define s_aExcludeArea        79
 #define s_CompareItems        80
 #define s_Events_Drag         81
-#define s_LastSymbol          82
+#define s_Events_MenuHilited   82
+#define s_LastSymbol           83
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */
