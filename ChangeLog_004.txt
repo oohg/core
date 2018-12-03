@@ -2733,7 +2733,7 @@
        Parameter aResol: declares the image resolution. Takes an array
        {nHorRes, nVerRes} or a number (equivalent to {nRes, nRes}).
        Resolution is used to calculate the image's original size, in
-       the same ways as OpenOffice Calc calculates it.
+       the same way OpenOffice Calc calculates it.
        It´s measured in DPI.
        Parameter aSize: declares the image size. Takes an array
        {nHorSize, nVerSize} or a number (equivalent to {nSize, nSize}).
