@@ -12,6 +12,21 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-03 19:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_pdf.prg
+     + DATA cExecuteApp
+     + DATA cExecuteParams
+     + DATA cPrintApp
+     + DATA cPrintParams
+     + DATA cFileName
+     * File's name now defaults to "file.pdf".
+     * METHOD FilePrint now calls the app defined by DATA cPrintApp.
+     * METHOD Execute now calls the app defined by DATA cExecuteApp.
+
+2018-12-03 19:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.prg
+     ! SOLID clause is not working.
+
 2018-12-02 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog_004.txt
      ! Typo.

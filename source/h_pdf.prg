@@ -572,7 +572,12 @@ CREATE CLASS TPDF
            600,  600,  600,  600,  600,  600,  600,  600,  600,  600, ;
            600,  600,  600,  600,  600,  600  }
 
-   DATA lIsPageActive INIT .F.
+   DATA cExecuteApp    INIT ""
+   DATA cExecuteParams INIT ""
+   DATA cPrintApp      INIT ""
+   DATA cPrintParams   INIT ""
+   DATA cFileName      INIT "file.pdf"
+   DATA lIsPageActive  INIT .F.
    DATA aReport
    DATA nFontName                         //  1   font name
    DATA nFontSize                         //  2   font size
@@ -677,6 +682,8 @@ METHOD Init( cFile, nWidth, lOptimize ) CLASS TPDF
 
    DEFAULT nWidth    TO 200
    DEFAULT lOptimize TO .F.
+   DEFAULT cFile     TO ::cFileName
+   ::cFileName := ParseName( cFile, "pdf" )
 
    ::aReport := array( PARAMLEN )
 
@@ -3244,34 +3251,21 @@ METHOD ClosePage() CLASS TPDF
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FilePrint( cFile ) CLASS TPDF
 
-   // TODO: add DATAs and make generic call
+   DEFAULT cFile TO ::cFileName
 
-   LOCAL cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
-   LOCAL cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + ;
-                 Chr( 34 ) + "HP LaserJet 5/5M PostScript" + Chr( 34 ) + " " + ;
-                 Chr( 34 ) + "LPT1" + Chr( 34 )
-   IF ( ! TPDF_RunExternal( cRun, "print" ) )
-      alert( "Error printing TO Acrobat Reader." )
-      break
-   ENDIF
+   RETURN TPDF_RunExternal( ::cPrintApp + " " + cFile + " " + ::cPrintParams )
 
-   RETURN NIL
+// See http://www.columbia.edu/~em36/pdftoprinter.html
+// PdfToPrinter.exe file.pdf "\\printserver\printername"
+// PdfToPrinterSelect.exe file.pdf (to enable printer selection dialog)
+// You can use any program that can be started from the command line.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Execute( /* cFile */ ) CLASS TPDF
+METHOD Execute( cFile ) CLASS TPDF
 
-   /*
-   //  Replace cPathAcro with the path at your system
-   LOCAL cPathAcro := "c:\progra~1\Adobe\Acroba~1.0\Reader"
-   LOCAL cRun := cPathAcro + "\AcroRd32.exe /t " + cFile + " " + Chr(34) + "HP LaserJet 5/5M PostScript" + Chr(34) + " " + Chr(34) + "LPT1" + Chr(34)
+   DEFAULT cFile TO ::cFileName
 
-      IF ( ! TPDF_RunExternal( cRun, "open", cFile ) )
-         alert("Error printing TO Acrobat Reader." )
-         break
-      ENDIF
-   */
-
-   RETURN NIL
+   RETURN TPDF_RunExternal( ::cExecuteApp + " " + cFile + " " + ::cExecuteParams )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION TPDF_TimeAsAMPM( cTime )
