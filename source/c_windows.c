@@ -182,7 +182,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
 
    // Saves current result
    pSave = hb_itemNew( NULL );
-   hb_itemCopy( pSave, hb_param( -1, ( LONG ) HB_IT_ANY ) );
+   hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
 
    switch( Msg->message )
    {
@@ -664,7 +664,7 @@ HB_FUNC( GETCURSORPOS )
 
 HB_FUNC( GETITEMPOS )
 {
-   hb_retnl( (LONG) ( ( (NMMOUSE FAR *) HB_PARNL( 1 ) )->dwItemSpec ) );
+   hb_retnl( ( LONG ) ( ( ( NMMOUSE FAR * ) HB_PARNL( 1 ) )->dwItemSpec ) );
 }
 
 HB_FUNC( GETWINDOWSTATE )
