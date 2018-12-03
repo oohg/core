@@ -2874,7 +2874,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
             EndIf
 
             If lGo
-               If ::lNoDelMsg.OR.  MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
                   ::Delete()
                EndIf
             ElseIf ! Empty( ::DelMsg )
