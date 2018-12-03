@@ -552,8 +552,8 @@ METHOD RePaint() CLASS TToolButton
       HB_INLINE( ::ContainerhWnd, ::hImage, ::Id ){
          HWND         hwndTB;
          HWND         hImageNew;
-         int          iId;
-         int          iPos;
+         INT          iId;
+         INT          iPos;
          TBBUTTONINFO tbbtn;
          TBADDBITMAP  tbadd;
 
@@ -565,9 +565,9 @@ METHOD RePaint() CLASS TToolButton
          {
             memset( &tbadd, 0, sizeof( tbadd ) );
             tbadd.hInst = NULL;
-            tbadd.nID   = (UINT_PTR) hImageNew;
-            SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
-            iPos = SendMessage( hwndTB, TB_ADDBITMAP, 1, (LPARAM) &tbadd );
+            tbadd.nID   = ( UINT_PTR ) hImageNew;
+            SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
+            iPos = SendMessage( hwndTB, TB_ADDBITMAP, 1, ( LPARAM ) &tbadd );
          }
          else
          {
@@ -579,7 +579,7 @@ METHOD RePaint() CLASS TToolButton
          tbbtn.dwMask    = TBIF_IMAGE;
          tbbtn.idCommand = iId;
          tbbtn.iImage    = iPos;
-         SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
+         SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
          SendMessage( hwndTB, TB_CHANGEBITMAP, iId, iPos );
       }
    EndIf
@@ -589,31 +589,40 @@ METHOD RePaint() CLASS TToolButton
 
 #pragma BEGINDUMP
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TToolbar_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TToolbar_lpfnOldWndProc( 0 ) );
 }
 
 #define NUM_TOOLBAR_BUTTONS 20
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTOOLBAR )
 {
-   HWND hwnd;
    HWND hwndTB;
-   int Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | hb_parni( 16 );
+   INT Style, StyleEx, TbStyleEx;
 
-   int ExStyle;
-   int TbExStyle = TBSTYLE_EX_DRAWDDARROWS;
-
-   hwnd = HWNDparam( 1 );
-
-   ExStyle = _OOHG_RTL_Status( hb_parl( 15 ) );
+   Style = WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | hb_parni( 16 );
+   StyleEx = _OOHG_RTL_Status( hb_parl( 15 ) );
+   TbStyleEx = TBSTYLE_EX_DRAWDDARROWS;
 
    if( hb_parl( 14 ) )
    {
-      ExStyle |= WS_EX_CLIENTEDGE;
+      StyleEx = StyleEx | WS_EX_CLIENTEDGE;
    }
 
    if ( hb_parl( 10 ) )
@@ -641,17 +650,19 @@ HB_FUNC( INITTOOLBAR )
       Style = Style | CCS_VERT;
    }
 
-   hwndTB = CreateWindowEx( ExStyle, TOOLBARCLASSNAME, (LPSTR) NULL, Style, 0, 0, 0, 0, hwnd, HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
+   hwndTB = CreateWindowEx( StyleEx, TOOLBARCLASSNAME, NULL, Style,
+                            0, 0, 0, 0,
+                            HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndTB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TToolbar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hwndTB, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    if( hb_parni( 6 ) && hb_parni( 7 ) )
    {
-      SendMessage( hwndTB, TB_SETBUTTONSIZE, hb_parni( 6 ), hb_parni( 7 ));
-      SendMessage( hwndTB, TB_SETBITMAPSIZE, 0, (LPARAM) MAKELONG( hb_parni( 6 ), hb_parni( 7 ) ) );
+      SendMessage( hwndTB, TB_SETBUTTONSIZE, hb_parni( 6 ), hb_parni( 7 ) );
+      SendMessage( hwndTB, TB_SETBITMAPSIZE, 0, ( LPARAM ) MAKELONG( hb_parni( 6 ), hb_parni( 7 ) ) );
    }
 
-   SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, (LPARAM) TbExStyle );
+   SendMessage( hwndTB, TB_SETEXTENDEDSTYLE, 0, ( LPARAM ) TbStyleEx );
 
    if( hb_parni( 16 ) & WS_VISIBLE )
    {
@@ -676,7 +687,7 @@ HB_FUNC( INITTOOLBUTTON )
 
    Style =  TBSTYLE_BUTTON;
 
-   if ( hb_parl(11) )
+   if ( hb_parl( 11 ) )
    {
       Style = Style | TBSTYLE_AUTOSIZE;
    }
@@ -687,7 +698,7 @@ HB_FUNC( INITTOOLBUTTON )
 
    if( strlen( hb_parc( 2 ) ) > 0 )
    {
-      index = SendMessage( hwndTB, TB_ADDSTRING, 0, (LPARAM) hb_parc( 2 ) );
+      index = SendMessage( hwndTB, TB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
       tbb[nBtn].iString = index;
    }
 
@@ -725,7 +736,7 @@ HB_FUNC( INITTOOLBUTTON )
    {
       tbb[ nBtn ].fsState = TBSTATE_ENABLED;
    }
-   tbb[ nBtn ].fsStyle = (BYTE) Style;
+   tbb[ nBtn ].fsStyle = ( BYTE ) Style;
    nBtn++;
 
    if( hb_parl( 10 ) )
@@ -735,9 +746,9 @@ HB_FUNC( INITTOOLBUTTON )
       nBtn++;
    }
 
-   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, (WPARAM) sizeof( TBBUTTON ), 0 );
+   SendMessage( hwndTB, TB_BUTTONSTRUCTSIZE, ( WPARAM ) sizeof( TBBUTTON ), 0 );
 
-   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, (LPARAM) &tbb );
+   SendMessage( hwndTB, TB_ADDBUTTONS, nBtn, ( LPARAM ) &tbb );
 
    if( hb_parl( 16 ) )
    {
@@ -759,13 +770,13 @@ HB_FUNC( GETSIZETOOLBAR )
 {
    SIZE lpSize;
    TBBUTTON lpBtn;
-   int i, nBtn;
+   INT i, nBtn;
    OSVERSIONINFO osvi;
 
-   SendMessage( HWNDparam( 1 ), TB_GETMAXSIZE, 0, (LPARAM)&lpSize );
+   SendMessage( HWNDparam( 1 ), TB_GETMAXSIZE, 0, ( LPARAM ) &lpSize );
 
-   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-   GetVersionEx(&osvi);
+   osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   GetVersionEx( &osvi );
 
    nBtn = SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT, 0, 0 );
 
@@ -809,96 +820,95 @@ LONG WidestBtn( LPCTSTR pszStr, HWND hwnd )
 
 HB_FUNC( MAXTEXTBTNTOOLBAR )      /* FUNCTION MaxTextBtnToolBar( HWND hwndTB, INT cx, INT cy ) -> NIL */
 {
-   char cString[255] = "" ;
-
-   int i,nBtn;
-   int tmax = 0;
-   int ty = 0;
+   CHAR cString[255] = "" ;
+   INT i,nBtn;
+   INT tmax = 0;
+   INT ty = 0;
    DWORD tSize;
    DWORD Style;
    TBBUTTON lpBtn;
    HWND hWnd;
 
    hWnd = HWNDparam( 1 );
-   nBtn  = SendMessage( hWnd, TB_BUTTONCOUNT,0,0);
+   nBtn  = SendMessage( hWnd, TB_BUTTONCOUNT, 0, 0 );
    for( i = 0; i < nBtn; i++ )
    {
-      SendMessage( hWnd, TB_GETBUTTON, i, (LPARAM)  &lpBtn);
-      SendMessage( hWnd, TB_GETBUTTONTEXT, lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+      SendMessage( hWnd, TB_GETBUTTON, i, ( LPARAM ) &lpBtn );
+      SendMessage( hWnd, TB_GETBUTTONTEXT, lpBtn.idCommand, ( LPARAM ) ( LPCTSTR ) cString);
 
-      tSize = WidestBtn(cString, hWnd );
-      ty = HIWORD(tSize);
+      tSize = WidestBtn( cString, hWnd );
+      ty = HIWORD( tSize );
 
-      if( tmax < LOWORD(tSize) )
+      if( tmax < LOWORD( tSize ) )
       {
-         tmax = LOWORD(tSize);
+         tmax = LOWORD( tSize );
       }
    }
 
    if( tmax == 0 )
    {
-      SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3));//  -ty);
-      SendMessage( hWnd, TB_SETBITMAPSIZE,  0,(LPARAM)MAKELONG(hb_parni(2),hb_parni(3)));
+      SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni( 2 ), hb_parni( 3 ) );
+      SendMessage( hWnd, TB_SETBITMAPSIZE, 0, ( LPARAM ) MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
    }
    else
    {
       Style = SendMessage( hWnd, TB_GETSTYLE, 0, 0);
       if( Style & TBSTYLE_LIST )
       {
-         SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3)+2);
-         SendMessage( hWnd, TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(3),hb_parni(3)));
+         SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni( 2 ), hb_parni( 3 ) + 2 );
+         SendMessage( hWnd, TB_SETBITMAPSIZE, 0, ( LPARAM ) MAKELONG( hb_parni( 3 ), hb_parni( 3 ) ) );
       }
       else
       {
-         SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni(2),hb_parni(3)-ty+2);
-         SendMessage( hWnd, TB_SETBITMAPSIZE,0,(LPARAM) MAKELONG(hb_parni(3)-ty,hb_parni(3)-ty));
+         SendMessage( hWnd, TB_SETBUTTONSIZE, hb_parni( 2 ), hb_parni( 3 ) - ty + 2 );
+         SendMessage( hWnd, TB_SETBITMAPSIZE, 0, ( LPARAM ) MAKELONG( hb_parni( 3 ) - ty, hb_parni( 3 ) - ty ) );
       }
-      SendMessage( hWnd,TB_SETBUTTONWIDTH, 0, (LPARAM) MAKELONG(hb_parni(2),hb_parni(2)+2));
+      SendMessage( hWnd, TB_SETBUTTONWIDTH, 0, ( LPARAM ) MAKELONG( hb_parni( 2 ), hb_parni( 2 ) + 2 ) );
    }
-   SendMessage( hWnd,TB_AUTOSIZE,0,0);  //JP62
+   SendMessage( hWnd, TB_AUTOSIZE, 0, 0 );  //JP62
 }
 
 HB_FUNC( ISBUTTONBARCHECKED )          // hb_parni(2) -> Position in ToolBar
 {
    TBBUTTON lpBtn;
 
-   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
+   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni( 2 ), ( LPARAM )  &lpBtn);
    hb_retl( SendMessage( HWNDparam( 1 ),TB_ISBUTTONCHECKED, lpBtn.idCommand, 0 ) );
 }
 
 HB_FUNC( CHECKBUTTONBAR )          // hb_parni(2) -> Position in ToolBar
 {
    TBBUTTON lpBtn;
-   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni(2), (LPARAM)  &lpBtn);
-   SendMessage( HWNDparam( 1 ),TB_CHECKBUTTON, lpBtn.idCommand, hb_parl(3) );
+   SendMessage( HWNDparam( 1 ),TB_GETBUTTON, hb_parni( 2 ), ( LPARAM )  &lpBtn);
+   SendMessage( HWNDparam( 1 ),TB_CHECKBUTTON, lpBtn.idCommand, hb_parl( 3 ) );
 }
 
 HB_FUNC( GETBUTTONBARRECT )
 {
    RECT rc;
-   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT,(WPARAM) hb_parnl(2),(LPARAM) &rc);
-   hb_retnl( MAKELONG(rc.left,rc.bottom) );
+   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT, ( WPARAM ) hb_parnl(2), ( LPARAM ) &rc);
+   hb_retnl( MAKELONG( rc.left, rc.bottom ) );
 }
 
 HB_FUNC( GETBUTTONPOS )
 {
-   hb_retnl( (LONG) (((NMTOOLBAR FAR *) hb_parnl(1))->iItem) );
+   hb_retnl( ( LONG ) ( ( ( NMTOOLBAR FAR * ) HB_PARNL( 1 ) )->iItem ) );
 }
 
 HB_FUNC( GETBUTTONBARCOUNT)
 {
-   hb_retni ( SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT,0,0) );
+   hb_retni( SendMessage( HWNDparam( 1 ), TB_BUTTONCOUNT, 0, 0 ) );
 }
 
 HB_FUNC( SETBUTTONID )
 {
-   hb_retni ( SendMessage( HWNDparam( 1 ), TB_SETCMDID,hb_parni(2),hb_parni(3)) );
+   hb_retni( SendMessage( HWNDparam( 1 ), TB_SETCMDID, hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
 HB_FUNC( SHOWTOOLBUTTONTIP )
 {
    LPTOOLTIPTEXT lpttt;
-   lpttt = ( LPTOOLTIPTEXT ) hb_parnl( 1 );
+   lpttt = ( LPTOOLTIPTEXT ) HB_PARNL( 1 );
    lpttt->hinst = GetModuleHandle( NULL );
    lpttt->lpszText = ( LPSTR ) hb_parc( 2 );
 }
@@ -906,19 +916,19 @@ HB_FUNC( SHOWTOOLBUTTONTIP )
 HB_FUNC ( GETTOOLBUTTONID )
 {
    LPTOOLTIPTEXT lpttt;
-   lpttt = (LPTOOLTIPTEXT) hb_parnl(1) ;
+   lpttt = ( LPTOOLTIPTEXT ) HB_PARNL( 1 ) ;
    hb_retni ( lpttt->hdr.idFrom ) ;
 }
 
 HB_FUNC( _TOOLBARGETINFOTIP )
 {
-   hb_retni( ( ( LPNMTBGETINFOTIP ) hb_parnl( 1 ) ) -> iItem );
+   hb_retni( ( ( LPNMTBGETINFOTIP ) HB_PARNL( 1 ) )->iItem );
 }
 
 HB_FUNC( _TOOLBARSETINFOTIP )
 {
-   LPNMTBGETINFOTIP lpInfo = ( LPNMTBGETINFOTIP ) hb_parnl( 1 );
-   int iLen;
+   LPNMTBGETINFOTIP lpInfo = ( LPNMTBGETINFOTIP ) HB_PARNL( 1 );
+   INT iLen;
 
    iLen = hb_parclen( 2 );
    if( iLen >= lpInfo->cchTextMax )
@@ -937,10 +947,10 @@ HB_FUNC( _TOOLBARSETINFOTIP )
 HB_FUNC( GETTOOLBUTTONCAPTION )
 {
    TBBUTTON lpBtn;
-   char cString[255] = "" ;
+   CHAR cString[255] = "" ;
 
-   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM)  &lpBtn);
-   SendMessage( HWNDparam( 1 ), TB_GETBUTTONTEXT, lpBtn.idCommand, (LPARAM)(LPCTSTR) cString);
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), ( LPARAM )  &lpBtn);
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTONTEXT, lpBtn.idCommand, ( LPARAM )( LPCTSTR ) cString);
 
    hb_retc( cString );
 }
@@ -950,14 +960,14 @@ HB_FUNC( SETTOOLBUTTONCAPTION )
    TBBUTTON lpBtn;
    TBBUTTONINFO tbbtn;
 
-   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), (LPARAM) &lpBtn);
+   SendMessage( HWNDparam( 1 ), TB_GETBUTTON, hb_parni( 2 ), ( LPARAM ) &lpBtn);
 
    memset( &tbbtn, 0, sizeof( tbbtn ) );
    tbbtn.cbSize  = sizeof( TBBUTTONINFO );
    tbbtn.dwMask  = TBIF_TEXT;
-   tbbtn.pszText = (LPTSTR) hb_parc( 3 );
+   tbbtn.pszText = ( LPTSTR ) hb_parc( 3 );
 
-   SendMessage( HWNDparam( 1 ), TB_SETBUTTONINFO, (WPARAM) lpBtn.idCommand, (LPARAM) &tbbtn );
+   SendMessage( HWNDparam( 1 ), TB_SETBUTTONINFO, ( WPARAM ) lpBtn.idCommand, ( LPARAM ) &tbbtn );
 }
 
 #pragma ENDDUMP
