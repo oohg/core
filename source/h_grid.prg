@@ -1266,7 +1266,7 @@ METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
@@ -1340,7 +1340,7 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
    // open service manager
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( 1, 9 ) )
          Return Self
       EndIf
    #else
@@ -1353,7 +1353,7 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    // open desktop service
    If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
-      MsgStop( "Error: OpenOffice Desktop not available." )
+      MsgStop( _OOHG_Messages( 1, 15 ), _OOHG_Messages( 1, 9 ) )
       Return Self
    EndIf
 
@@ -1364,7 +1364,7 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    // open new book
    If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
-      MsgStop( "Error: OpenOffice Calc not available." )
+      MsgStop( _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
       oDesk := Nil
       Return Self
    EndIf
@@ -1798,9 +1798,9 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
             cValidMessage := Eval( cValidMessage, _OOHG_ThisItemCellValue )
          EndIf
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
-            MsgExclamation( cValidMessage )
+            MsgExclamation( cValidMessage )                                        // TODO: Add title
          Else
-            MsgExclamation( _OOHG_Messages( 3, 11 ) )
+            MsgExclamation( _OOHG_Messages( 3, 11 ) )                              // TODO: Add title
          EndIf
          aEditControls[ nItem ]:SetFocus()
       EndIf
@@ -3322,14 +3322,14 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   aItemValues := ::Item( uValue )
                   ::DeleteItem( uValue )
                   ::Value := Min( uValue, ::ItemCount )
                   ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 3 ) )
             EndIf
          Endif
       ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
@@ -4489,7 +4489,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   If ::lDeleteAll
                      aDeletedItemsData := {}
                      aSel := ::Value
@@ -5756,7 +5756,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 3) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   nRow := ::nRowPos
                   nCol := ::nColPos
                   aItemValues := ::Item( nRow )
@@ -6269,9 +6269,9 @@ METHOD Valid() CLASS TGridControl
          cValidMessage := Eval( cValidMessage, uValue )
       EndIf
       If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
-         MsgExclamation( cValidMessage )
+         MsgExclamation( cValidMessage )                                        // TODO: Add title
       Else
-         MsgExclamation( _OOHG_Messages( 3, 11 ) )
+         MsgExclamation( _OOHG_Messages( 3, 11 ) )                              // TODO: Add title
       EndIf
       ::oControl:SetFocus()
    EndIf
@@ -8883,7 +8883,7 @@ HB_FUNC( GETGRIDVKEYASCHAR )
    hb_retni( MapVirtualKey( (UINT) ( ( (LV_KEYDOWN *) (LPARAM) HB_PARNL( 1 ) )->wVKey ), 2 ) );
 }
 
-static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, unsigned int y, int sGridColor, int sObjColor, int iDefaultColor )
+static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, UINT x, UINT y, int sGridColor, int sObjColor, int iDefaultColor )
 {
    PHB_ITEM pColor;
    LONG iColor;
@@ -8919,7 +8919,7 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, unsigned int x, uns
    return iColor;
 }
 
-static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, unsigned int x )
+static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
 {
    PHB_ITEM pColor;
    LONG iColor = -1;

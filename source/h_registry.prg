@@ -96,7 +96,7 @@ METHOD New( nKey, cRegKey, lShowError ) CLASS TReg32
       ELSE
          ::lError := .T.
          IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
-            MsgStop( "Error creating TReg32 object (" + LTrim( Str( nReturn ) ) + ")" )
+            MsgStop( _OOHG_Messages( 1, 19 ) + " [" + LTrim( Str( nReturn ) ) + "]", _OOHG_Messages( 1, 9 ) )
          ENDIF
       ENDIF
    ENDIF
@@ -118,7 +118,7 @@ METHOD Create( nKey, cRegKey, lShowError ) CLASS TReg32
    ELSE
       ::lError := .T.
       IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
-         MsgStop( "Error creating TReg32 object (" + LTrim( Str( nReturn ) ) + ")" )
+         MsgStop( _OOHG_Messages( 1, 19 ) + " [" + LTrim( Str( nReturn ) ) + "]", _OOHG_Messages( 1, 9 ) )
       ENDIF
    ENDIF
 
@@ -385,9 +385,9 @@ HB_FUNC( REGQUERYVALUEEXA )
       lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, (BYTE *) lpData, &lpcbData );
       if ( lError == ERROR_SUCCESS )
       {
-         HB_STORNL2( (LONG) lpType, 4 );
+         HB_STORNL2( ( LONG ) lpType, 4 );
          hb_storc( (char *) lpData, 5 );
-         HB_STORNL2( (LONG) lpcbData, 6 );
+         HB_STORNL2( ( LONG ) lpcbData, 6 );
       }
       hb_xfree( (BYTE *) lpData );
    }
@@ -408,9 +408,9 @@ HB_FUNC( REGENUMKEYEXA )
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      HB_STORNL2( (LONG) dwBuffSize, 4 );
+      HB_STORNL2( ( LONG ) dwBuffSize, 4 );
       hb_storc( Class , 6 );
-      HB_STORNL2( (LONG) dwClass, 7 );
+      HB_STORNL2( ( LONG ) dwClass, 7 );
    }
    HB_RETNL( lError );
 }
@@ -465,9 +465,9 @@ HB_FUNC( REGENUMVALUEA )
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      HB_STORNL2( (LONG) dwBuffSize, 4 );
-      HB_STORNL2( (LONG) lpType, 6 );
-      HB_STORNL2( (LONG) dwClass, 8 );
+      HB_STORNL2( ( LONG ) dwBuffSize, 4 );
+      HB_STORNL2( ( LONG ) lpType, 6 );
+      HB_STORNL2( ( LONG ) dwClass, 8 );
    }
    HB_RETNL( lError );
 }

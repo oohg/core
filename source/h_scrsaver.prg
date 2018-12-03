@@ -74,8 +74,6 @@ Memvar _ScrSaverConfig
 
 #define SPI_SCREENSAVERRUNNING 97
 
-#define MsgInfo( c ) MsgInfo( c, "Information" )
-
 Function _BeginScrSaver( cSSaver, lNoShow, cInit, cRelease, cPaint, nTimer, aBackClr )
 
    Local a := {}, x := GetDesktopWidth(), y := GetDesktopHeight(), Dummy := ""
@@ -153,7 +151,7 @@ Function _ActivateScrSaver( aForm, cParam )
       IF _ScrSaverConfig # NIL
          Eval(_ScrSaverConfig)
       ELSE
-         MsgInfo( "This screen saver has no options that you configure." )
+         MsgInfo( _OOHG_Messages( 1, 20 ), _OOHG_Messages( 12, 33 ) )
       ENDIF
 
    CASE cParam = "/a" .or. cParam = "-a"
@@ -185,13 +183,13 @@ Function _ActivateScrSaver( aForm, cParam )
             END INI
          ENDIF
 
-         MsgInfo( cFileNoPath( cFileDes ) + " installation successfully." )
+         MsgInfo( cFileNoPath( cFileDes ) + _OOHG_Messages( 1, 16 ), _OOHG_Messages( 12, 33 ) )
 
          IF _ScrSaverShow
             SendMessage( GetFormHandle(_ActiveScrSaverName), WM_SYSCOMMAND, SC_SCREENSAVE )
          ENDIF
       ELSE
-         MsgStop( cFileNoPath( cFileDes ) + " installation no successfully.", "Error" )
+         MsgStop( cFileNoPath( cFileDes ) + _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
       ENDIF
 
    ENDCASE

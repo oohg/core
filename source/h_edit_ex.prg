@@ -335,7 +335,7 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
    if ( ! ValType( cArea ) $ "CM" ) .or. Empty( cArea )
       _cArea := Alias()
       if _cArea == ""
-         msgExclamation( _OOHG_Messages( 11, 1 ), "EDIT EXTENDED" )
+         MsgExclamation( _OOHG_Messages( 11, 1 ), "EDIT EXTENDED" )
          return NIL
       endif
    else
@@ -1312,7 +1312,7 @@ static function ABM2EditarGuardar( lNuevo )
          ABM2Redibuja( .t. )
 
       else
-         Msgstop ('Record locked by another user')
+         MsgStop( _OOHG_Messages( 5, 7 ), "" )
       endif
    else
 
@@ -1528,7 +1528,6 @@ static function ABM2Buscar()
 
    ////////// Comprueba si se ha pasado una acción del usuario.--------------------
    if _bBuscar != NIL
-      // msgInfo( "ON FIND" )
       Eval( _bBuscar )
       ABM2Redibuja( .t. )
       wndabm2edit.tbbNuevo.enabled:=.t.
@@ -2132,7 +2131,6 @@ static function ABM2Imprimir()
 
    ////////// Comprueba si se ha pasado la clausula ON PRINT.---------------------
    IF _bImprimir != NIL
-      // msgInfo( "ON PRINT" )
       Eval( _bImprimir )
       ABM2Redibuja( .T. )
       wndabm2edit.tbbNuevo.enabled:=.t.
@@ -2609,7 +2607,7 @@ static function ABM2Listado( aImpresoras )
    // Nombre de la impresora.
    nImpresora := wndABM2Listado.cbxImpresoras.Value
    if nImpresora == 0
-      msgExclamation( _oohg_messages(6,32), '' )
+      msgExclamation( _oohg_messages(6,32), _cTitulo )
    else
       cImpresora := aImpresoras[nImpresora]
       Empty( cImpresora )

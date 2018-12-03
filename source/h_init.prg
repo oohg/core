@@ -154,20 +154,29 @@ FUNCTION ooHG_Messages_EN // English (default)
    LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
-   acMisc           := { 'Are you sure ?', ;
-                         'Close Window', ;
-                         'Close not allowed', ;
-                         'Program is already running', ;
-                         'Edit', ;
-                         'Ok', ;
-                         'Cancel', ;
-                         'Page', ;
-                         'Error', ;
-                         'Warning', ;
-                         'Edit Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
-                         "Excel is not available.", ;
-                         "OpenOffice is not available." }
+   acMisc           := { 'Are you sure ?', ;                                                                                        // 1
+                         'Close Window', ;                                                                                          // 2
+                         'Close not allowed', ;                                                                                     // 3
+                         'Program is already running', ;                                                                            // 4
+                         'Edit', ;                                                                                                  // 5
+                         'Ok', ;                                                                                                    // 6
+                         'Cancel', ;                                                                                                // 7
+                         'Page', ;                                                                                                  // 8
+                         'Error', ;                                                                                                 // 9
+                         'Warning', ;                                                                                               // 10
+                         'Edit Memo', ;                                                                                             // 11
+                         "Can't determine cell type for INPLACE edit.", ;                                                           // 12
+                         "Excel is not available.", ;                                                                               // 13
+                         "OpenOffice is not available.", ;                                                                          // 14
+                         "OpenOffice Desktop is not available.", ;                                                                  // 15
+                         "OpenOffice Calc is not available.", ;                                                                     // 16
+                         " successfully installed.", ;                                                                              // 17
+                         " not installed.", ;                                                                                       // 18
+                         "Error creating TReg32 object ", ;                                                                         // 19
+                         "This screen saver has no configurable options.", ;                                                        // 20
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Append", ;
@@ -176,7 +185,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "&OK" }
    acBrowseError    := { "Window: ", ;
                          " is not defined. Program terminated.", ;
-                         "OOHG Error", ;
+                         "Error", ;
                          "Control: ", ;
                          " Of ", ;
                          " Already defined. Program terminated.", ;
@@ -195,7 +204,8 @@ FUNCTION ooHG_Messages_EN // English (default)
                          CRLF + "Can't find index field" + CRLF + "Can't do search" + CRLF, ;
                          CRLF + "Can't do search by" + CRLF + "fields memo or logic" + CRLF, ;
                          CRLF + "Record not found" + CRLF, ;
-                         CRLF + "Too many cols" + CRLF + "The report don't fit in the sheet" + CRLF }
+                         CRLF + "Too many cols" + CRLF + "The report don't fit in the sheet" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Record", ;
                          "Record count", ;
                          "       (New)", ;
@@ -286,17 +296,17 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Lower Than", ;                                        // 30
                          "Greater or Equal Than", ;                             // 31
                          "Lower or Equal Than" }                                // 32
-   acUser           := { CRLF + "Can't find an active area.   " + CRLF + "Please select any area before call EDIT   " + CRLF, ;      // 1
+   acUser           := { CRLF + "Can't find an active area" + CRLF + "Please select any area before calling EDIT" + CRLF, ;          // 1
                          "Type the field value (any text)", ;                                                                        // 2
                          "Type the field value (any number)", ;                                                                      // 3
                          "Select the date", ;                                                                                        // 4
                          "Check for true value", ;                                                                                   // 5
                          "Enter the field value", ;                                                                                  // 6
                          "Select any record and press OK", ;                                                                         // 7
-                         CRLF + "You are going to delete the active record   " + CRLF + "Are you sure?    " + CRLF, ;                // 8
-                         CRLF + "There isn't any active order   " + CRLF + "Please select one   " + CRLF, ;                          // 9
-                         CRLF + "Can't do searches by fields memo or logic   " + CRLF, ;                                             // 10
-                         CRLF + "Record not found   " + CRLF, ;                                                                      // 11
+                         CRLF + "You are going to delete the active record" + CRLF + "Are you sure?" + CRLF, ;                       // 8
+                         CRLF + "There isn't any active order" + CRLF + "Please select one" + CRLF, ;                                // 9
+                         CRLF + "Can't do searches by fields memo or logic" + CRLF, ;                                                // 10
+                         CRLF + "Record not found" + CRLF, ;                                                                         // 11
                          "Select the field to include to list", ;                                                                    // 12
                          "Select the field to exclude from list", ;                                                                  // 13
                          "Select the printer", ;                                                                                     // 14
@@ -304,29 +314,29 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Push button to exclude field", ;                                                                           // 16
                          "Push button to select the first record to print", ;                                                        // 17
                          "Push button to select the last record to print", ;                                                         // 18
-                         CRLF + "No more fields to include   " + CRLF, ;                                                             // 19
-                         CRLF + "First select the field to include   " + CRLF, ;                                                     // 20
-                         CRLF + "No more fields to exlude   " + CRLF, ;                                                              // 21
-                         CRLF + "First select th field to exclude   " + CRLF, ;                                                      // 22
-                         CRLF + "You don't select any field   " + CRLF + "Please select the fields to include on print   " + CRLF, ; // 23
-                         CRLF + "Too many fields   " + CRLF + "Reduce number of fields   " + CRLF, ;                                 // 24
-                         CRLF + "Printer not ready   " + CRLF, ;                                                                     // 25
+                         CRLF + "No more fields to include" + CRLF, ;                                                                // 19
+                         CRLF + "First select the field to include" + CRLF, ;                                                        // 20
+                         CRLF + "No more fields to exlude" + CRLF, ;                                                                 // 21
+                         CRLF + "First select th field to exclude" + CRLF, ;                                                         // 22
+                         CRLF + "You don't select any field" + CRLF + "Please select the fields to include on print" + CRLF, ;       // 23
+                         CRLF + "Too many fields" + CRLF + "Reduce number of fields" + CRLF, ;                                       // 24
+                         CRLF + "Printer not ready" + CRLF, ;                                                                        // 25
                          "Ordered by", ;                                                                                             // 26
                          "From record", ;                                                                                            // 27
                          "To record", ;                                                                                              // 28
                          "Yes", ;                                                                                                    // 29
                          "No", ;                                                                                                     // 30
                          "Page:", ;                                                                                                  // 31
-                         CRLF + "Please select a printer   " + CRLF, ;                                                               // 32
+                         CRLF + "Please select a printer" + CRLF, ;                                                                  // 32
                          "Filtered by", ;                                                                                            // 33
-                         CRLF + "There is an active filter    " + CRLF, ;                                                            // 34
-                         CRLF + "Can't filter by memo fields    " + CRLF, ;                                                          // 35
-                         CRLF + "Select the field to filter    " + CRLF, ;                                                           // 36
-                         CRLF + "Select any operator to filter    " + CRLF, ;                                                        // 37
-                         CRLF + "Type any value to filter    " + CRLF, ;                                                             // 38
-                         CRLF + "There isn't any active filter    " + CRLF, ;                                                        // 39
-                         CRLF + "Deactivate filter?   " + CRLF, ;                                                                    // 40
-                         CRLF + "Record locked by another user    " + CRLF }                                                         // 41
+                         CRLF + "There is an active filter" + CRLF, ;                                                                // 34
+                         CRLF + "Can't filter by memo fields" + CRLF, ;                                                              // 35
+                         CRLF + "Select the field to filter" + CRLF, ;                                                               // 36
+                         CRLF + "Select any operator to filter" + CRLF, ;                                                            // 37
+                         CRLF + "Type any value to filter" + CRLF, ;                                                                 // 38
+                         CRLF + "There isn't any active filter" + CRLF, ;                                                            // 39
+                         CRLF + "Deactivate filter?" + CRLF, ;                                                                       // 40
+                         CRLF + "Record locked by another user" + CRLF }                                                             // 41
 
    // PRINT MESSAGES
    acPrint          := { "Print preview pending, close first", ;                                                                     // 1
@@ -396,9 +406,18 @@ FUNCTION ooHG_Messages_HR852 // Croatian
                          'Pogreška', ;
                          'Upozorenje', ;
                          'Uredi Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -552,9 +571,18 @@ FUNCTION ooHG_Messages_FR // French
                          'Erreur', ;
                          'Alerte', ;
                          'Editer Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel n'est pas disponible.", ;
-                         "OpenOffice n'est pas disponible." }
+                         "OpenOffice n'est pas disponible.", ;
+                         "OpenOffice Desktop n'est pas disponible.", ;
+                         "OpenOffice Calc n'est pas disponible.", ;
+                         " installé avec succès.", ;
+                         " pas installé.", ;
+                         "Erreur lors de la création de l'objet TReg32 ", ; 
+                         "Cet économiseur d'écran n'a pas d'options configurables.", ;
+                         "Impossible d'ouvrir le fichier ", ;                                                                       // 21
+                         "Pas assez d'espace pour les légendes !!!", ;                                                              // 22
+                         "Le format du rapport n'est pas valide " }                                                                 // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Ajout", ;
@@ -563,7 +591,7 @@ FUNCTION ooHG_Messages_FR // French
                          "OK" }
    acBrowseError    := { "Fenêtre: ", ;
                          " n'est pas définie. Programme Terminé.", ;
-                         "Erreur OOHG", ;
+                         "Erreur", ;
                          "Contrôle: ", ;
                          " De ", ;
                          " Déjà défini. Programme Terminé.", ;
@@ -582,7 +610,8 @@ FUNCTION ooHG_Messages_FR // French
                          CRLF + "Champ Index introuvable" + CRLF + "Recherche impossible" + CRLF, ;
                          CRLF + "Recherche impossible" + CRLF + "sur champs memo ou logique" + CRLF, ;
                          CRLF + "Enregistrement non trouvé" + CRLF, ;
-                         CRLF + "Trop de colonnes" + CRLF + "L'état ne peut être imprimé" + CRLF }
+                         CRLF + "Trop de colonnes" + CRLF + "L'état ne peut être imprimé" + CRLF, ;
+                         CRLF + "L'enregistrement est verrouillé par un autre utilisateur" + CRLF + "Réessayer plus tard" + CRLF }
    acABMLabel       := { "Enregistrement", ;
                          "Nb. total enr.", ;
                          "   (Ajouter)", ;
@@ -743,9 +772,18 @@ FUNCTION ooHG_Messages_DEWIN // German
                          'Fehler', ;
                          'Warnung', ;
                          'Bearbeiten Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -760,7 +798,8 @@ FUNCTION ooHG_Messages_DEWIN // German
                          CRLF + "Man kann nicht Indexdatenfeld finden" + CRLF + "Suche unmoeglich" + CRLF, ;
                          CRLF + "Suche unmoeglich nach" + CRLF + "Feld memo oder logisch" + CRLF, ;
                          CRLF + "Datensatz nicht gefunden" + CRLF, ;
-                         CRLF + " zu viele Spalten" + CRLF + "Zu wenig Platz  fuer die Meldung auf dem Blatt" + CRLF }
+                         CRLF + " zu viele Spalten" + CRLF + "Zu wenig Platz  fuer die Meldung auf dem Blatt" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Datensatz", ;
                          "Menge der Dat.", ;
                          "       (Neu)", ;
@@ -917,9 +956,18 @@ FUNCTION ooHG_Messages_IT // Italian
                          'Errore', ;
                          'Avvertimento', ;
                          'Edita Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
-                         "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "Impossibile determinare il tipo di cella per la modifica INPLACE.", ;
+                         "Excel non è disponibile.", ;
+                         "OpenOffice non è disponibile.", ;
+                         "OpenOffice Desktop non è disponibile.", ;
+                         "OpenOffice Calc non è disponibile.", ;
+                         " installato con successo.", ;
+                         " non installato.", ;
+                         "Errore durante la creazione dell'oggetto TReg32 ", ;
+                         "Questo screen saver non ha opzioni configurabili.", ;
+                         "Impossibile aprire il file INI.", ;
+                         "Non c'è abbastanza spazio per le leggende !!!", ;                                                         // 22
+                         "Il formato del rapporto non è valido " }                                                                  // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Aggiungere", ;
@@ -928,7 +976,7 @@ FUNCTION ooHG_Messages_IT // Italian
                          "OK" }
    acBrowseError    := { "Window: ", ;
                          " non Š definita. Programma Terminato.", ;
-                         "Errore OOHG", ;
+                         "Errore", ;
                          "Controllo: ", ;
                          " Di ", ;
                          " Gi… definito. Programma Terminato.", ;
@@ -947,7 +995,8 @@ FUNCTION ooHG_Messages_IT // Italian
                          CRLF + "Campo indice mancante" + CRLF + "Ricerca impossibile" + CRLF, ;
                          CRLF + "Ricerca impossibile per" + CRLF + "campi memo o logici" + CRLF, ;
                          CRLF + "Record non trovato" + CRLF, ;
-                         CRLF + "Troppe colonne" + CRLF + "Il report non può essere stampato" + CRLF }
+                         CRLF + "Troppe colonne" + CRLF + "Il report non può essere stampato" + CRLF, ;
+                         CRLF + "Il record è bloccato da un altro utente" + CRLF + "Riprova più tardi" + CRLF }
    acABMLabel       := { "Record", ;
                          "Record totali", ;
                          "  (Aggiungi)", ;
@@ -1116,9 +1165,18 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          'B³¹d', ;
                          'Ostrze¿enie', ;
                          'Edycja Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -1127,7 +1185,7 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          "OK" }
    acBrowseError    := { "Okno: ", ;
                          " nie zdefiniowane.Program zakoñczony", ;
-                         "B³¹d OOHG", ;
+                         "B³¹d", ;
                          "Kontrolka: ", ;
                          " z ", ;
                          " ju¿ zdefiniowana. Program zakoñczony", ;
@@ -1146,7 +1204,8 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          CRLF + "Nie mo¾na znale˜† pola indeksu" + CRLF + "Nie mo¾na szuka†" + CRLF, ;
                          CRLF + "Nie mo¾na szukaæ wg" + CRLF + "pola memo lub logicznego" + CRLF, ;
                          CRLF + "Rekordu nie znaleziono" + CRLF, ;
-                         CRLF + "Zbyt wiele kolumn" + CRLF + "Raport nie mo¾e zmie˜ci† si© na arkuszu" + CRLF }
+                         CRLF + "Zbyt wiele kolumn" + CRLF + "Raport nie mo¾e zmie˜ci† si© na arkuszu" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Rekord", ;
                          "Liczba rekord¢w", ;
                          "      (Nowy)", ;
@@ -1303,9 +1362,18 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          'Erro', ;
                          'Advertência', ;
                          'Edita Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
-                         "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "Não é possível determinar o tipo de célula para a edição INPLACE.", ;
+                         "Excel não está disponível.", ;
+                         "OpenOffice não está disponível.", ;
+                         "OpenOffice Desktop não está disponível.", ;
+                         "OpenOffice Calc não está disponível.", ;
+                         " instalado com sucesso.", ;
+                         " não instalado.", ;
+                         "Erro ao criar o objeto TReg32 ", ;
+                         "Esta proteção de tela não possui opções configuráveis.", ;
+                         "Não é possível abrir o arquivo ", ;
+                         "Não há espaço suficiente para lendas !!!", ;                                                              // 22
+                         "Formato do relatório não é válido " }                                                                     // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Incluir", ;
@@ -1314,7 +1382,7 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          "OK" }
    acBrowseError    := { "Window: ", ;
                          " Erro não definido. Programa será fechado", ;
-                         "Erro na OOHG", ;
+                         "Erro", ;
                          "Control: ", ;
                          " Of ", ;
                          " Não pronto. Programa será fechado", ;
@@ -1333,7 +1401,8 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          CRLF + "NÆo encontrado o campo ¡ndice" + CRLF + "NÆo ‚ poss¡vel realizar a busca" + CRLF, ;
                          CRLF + "NÆo ‚ poss¡vel realizar busca" + CRLF + "por campos memo ou l¢gicos" + CRLF, ;
                          CRLF + "Registro nÆo encontrado" + CRLF, ;
-                         CRLF + "Inclu¡das colunas em excesso" + CRLF + "A listagem completa nÆo caber  na tela" + CRLF }
+                         CRLF + "Inclu¡das colunas em excesso" + CRLF + "A listagem completa nÆo caber  na tela" + CRLF, ;
+                         CRLF + "Registro está bloqueado por outro usuário " + CRLF + "Tente novamente mais tarde" + CRLF }
    acABMLabel       := { "Registro Atual", ;
                          "Total Registros", ;
                          "      (Novo)", ;
@@ -1498,9 +1567,18 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          'Îøèáêà', ;
                          'Ïðåäóïðåæäåíèå', ;
                          'Èçìåíèòü Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Äîáàâèòü", ;
@@ -1509,7 +1587,7 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          "OK" }
    acBrowseError    := { "Îêíî: ", ;
                          " íå îïðåäåëåíî. Ïðîãðàììà ïðåðâàíà", ;
-                         "OOHG Îøèáêà", ;
+                         "Îøèáêà", ;
                          "Ýëåìåíò óïðàâëåíè: ", ;
                          " èç ", ;
                          " Óæå îïðåäåëåí. Ïðîãðàììà ïðåðâàíà", ;
@@ -1528,7 +1606,8 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          CRLF + "Îòñóòñòâóåò èíäåêñíîå ïîëå" + CRLF + "Ïîèñê íåâîçìîæåí" + CRLF, ;
                          CRLF + "Ïîèñê íåâîçìîæåí ïî" + CRLF + "ìåìî èëè ëîãè÷åñêèì ïîëÿì" + CRLF, ;
                          CRLF + "Çàïèñü íå íàéäåíà" + CRLF, ;
-                         CRLF + "Ñëèøêîì ìíîãî êîëîíîê" + CRLF + "Îò÷åò íå ïîìåñòèòñÿ íà ëèñòå" + CRLF }
+                         CRLF + "Ñëèøêîì ìíîãî êîëîíîê" + CRLF + "Îò÷åò íå ïîìåñòèòñÿ íà ëèñòå" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Çàïèñü", ;
                          "Âñåãî çàïèñåé", ;
                          "     (Íîâàÿ)", ;
@@ -1608,18 +1687,26 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Error', ;
                          'Advertencia', ;
                          'Editar Memo', ;
-                         "OOHG no puede determinar el tipo de celda para la edición INPLACE.", ;
+                         "No se pudo determinar el tipo de celda para la edición INPLACE.", ;
                          "Excel no está disponible.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice no está disponible.", ;
+                         "OpenOffice Desktop no está disponible.", ;
+                         "OpenOffice Calc no está disponible.", ;
+                         " instalado exitosamente.", ;
+                         " no instalado.", ;
+                         "Error creando el objecto TReg32 ", ;
+                         "Este protector de pantalla no tiene opciones configurables.", ;
+                         "No se pudo abrir el archivo ", ;
+                         "Insuficiente espacio para las leyendas !!!", ;                                                            // 22
+                         "El formato del reporte no es válido " }                                                                   // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
-                         "Editar", ;
                          "Cancelar", ;
                          "Aceptar" }
    acBrowseError    := { "Window: ", ;
                          " no está definida. Programa Terminado.", ;
-                         "OOHG Error", ;
+                         "Error", ;
                          "Control: ", ;
                          " De ", ;
                          " ya definido. Programa Terminado.", ;
@@ -1628,7 +1715,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "El registro está siendo editado por otro usuario", ;
                          "Peligro", ;
                          "Entrada no válida" }
-   acBrowseMessages := { '¿ Está Seguro ?', ;
+   acBrowseMessages := { '¿ Está seguro ?', ;
                          'Eliminar Registro', ;
                          'Eliminar Item' }
 
@@ -1638,7 +1725,8 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          CRLF + "No se encuentra el campo índice" + CRLF + "No se puede realizar la búsqueda" + CRLF, ;
                          CRLF + "No se pueden realizar búsquedas" + CRLF + "por campos memo o lógico" + CRLF, ;
                          CRLF + "Registro no encontrado" + CRLF, ;
-                         CRLF + "Ha inclído demasiadas columnas" + CRLF + "El listado no cabe en la hoja" + CRLF }
+                         CRLF + "Ha incluido demasiadas columnas" + CRLF + "El listado no cabe en la hoja" + CRLF, ;
+                         CRLF + "El registro está bloqueado por otro usuario" + CRLF + "Reintente más tarde" + CRLF }
    acABMLabel       := { "Registro Actual", ;
                          "Registros Totales", ;
                          "     (Nuevo)", ;
@@ -1839,9 +1927,18 @@ FUNCTION ooHG_Messages_FI // Finnish
                          'Virhe', ;
                          'Varoitus', ;
                          'Korjaa Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Lisää", ;
@@ -1850,7 +1947,7 @@ FUNCTION ooHG_Messages_FI // Finnish
                          " OK" }
    acBrowseError    := { "Ikkuna: ", ;
                          " määrittelemätön. Ohjelma lopetettu", ;
-                         "OOHG Virhe", ;
+                         "Virhe", ;
                          "Kontrolli: ", ;
                          " / ", ;
                          " On jo määritelty. Ohjelma lopetettu", ;
@@ -1869,7 +1966,8 @@ FUNCTION ooHG_Messages_FI // Finnish
                          CRLF + "Indeksikenttä ei löydy" + CRLF + "En voihakea" + CRLF, ;
                          CRLF + "En voi hakea memo" + CRLF + "tai loogisen kentän mukaan" + CRLF, ;
                          CRLF + "Tietue ei löydy" + CRLF, ;
-                         CRLF + "Liian monta saraketta" + CRLF + "raportti ei mahdu sivulle" + CRLF }
+                         CRLF + "Liian monta saraketta" + CRLF + "raportti ei mahdu sivulle" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Tietue", ;
                          "Tietue lukumäärä", ;
                          "       (Uusi)", ;
@@ -2026,9 +2124,18 @@ FUNCTION ooHG_Messages_NL // Dutch
                          'Fout', ;
                          'Waarschuwing', ;
                          'Bewerken Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Toevoegen", ;
@@ -2037,7 +2144,7 @@ FUNCTION ooHG_Messages_NL // Dutch
                          "&OK" }
    acBrowseError    := { "Scherm: ", ;
                          " is niet gedefinieerd. Programma beëindigd", ;
-                         "OOHG fout", ;
+                         "Fout", ;
                          "Control: ", ;
                          " Van ", ;
                          " Is al gedefinieerd. Programma beëindigd", ;
@@ -2056,7 +2163,8 @@ FUNCTION ooHG_Messages_NL // Dutch
                          CRLF + "Kan index veld niet vinden" + CRLF + "Kan niet zoeken" + CRLF, ;
                          CRLF + "Kan niet zoeken op" + CRLF + "Memo of logische velden" + CRLF, ;
                          CRLF + "Regel niet gevonden" + CRLF, ;
-                         CRLF + "Te veel rijen" + CRLF + "Het rapport past niet op het papier" + CRLF }
+                         CRLF + "Te veel rijen" + CRLF + "Het rapport past niet op het papier" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Regel", ;
                          "Regel aantal", ;
                          "       (Nieuw)", ;
@@ -2225,9 +2333,18 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          'Napaka', ;
                          'Opozorilo', ;
                          'Popravi Memo', ;
-                         "ooHG can't determine cell type for INPLACE edit.", ;
+                         "Can't determine cell type for INPLACE edit.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -2236,7 +2353,7 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          "V redu" }
    acBrowseError    := { "Window: ", ;
                          " not defined. Program terminated.", ;
-                         "OOHG Error", ;
+                         "Error", ;
                          "Control: ", ;
                          " Of ", ;
                          " Already defined. Program terminated.", ;
@@ -2255,7 +2372,8 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          CRLF + "Ne najdem indeksnega polja" + CRLF + "Ne morem iskati" + CRLF, ;
                          CRLF + "Ne morem iskati po" + CRLF + "memo ali logiènih poljih" + CRLF, ;
                          CRLF + "Ne najdem vrstice" + CRLF, ;
-                         CRLF + "Preveè kolon" + CRLF + "Poroèilo ne gre na list" + CRLF }
+                         CRLF + "Preveè kolon" + CRLF + "Poroèilo ne gre na list" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Vrstica", ;
                          "Število vrstic", ;
                          "       (Nova)", ;
@@ -2414,7 +2532,16 @@ FUNCTION ooHG_Messages_TR
                          'Not düzelt', ;
                          "Hücre tipi düzenlemek için uygun deðil.", ;
                          "Excel is not available.", ;
-                         "OpenOffice is not available." }
+                         "OpenOffice is not available.", ;
+                         "OpenOffice Desktop is not available.", ;
+                         "OpenOffice Calc is not available.", ;
+                         " successfully installed.", ;
+                         " not installed.", ;
+                         "Error creating TReg32 object ", ;
+                         "This screen saver has no configurable options.", ;
+                         "Can't open file ", ;                                                                                      // 21
+                         "Not enough space for legends !!!", ;                                                                      // 22
+                         "Report format is not valid " }                                                                            // 23
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Yeni Giriþ", ;
@@ -2442,7 +2569,8 @@ FUNCTION ooHG_Messages_TR
                          CRLF + "Index dosyasý bulunamadý" + CRLF + "Arama iþlemi yapýlamýyor" + CRLF, ;
                          CRLF + "Arama yapýlamaz" + CRLF + "Not ve mantýksal alanlarda" + CRLF, ;
                          CRLF + "Kayýt bulunamadý" + CRLF, ;
-                         CRLF + "kolon sayýsý fazla" + CRLF + " Rapor sayfasýna sýðmýyor" + CRLF }
+                         CRLF + "kolon sayýsý fazla" + CRLF + " Rapor sayfasýna sýðmýyor" + CRLF, ;
+                         CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
    acABMLabel       := { "Kayýt", ;
                          "Kayýt sayýsý", ;
                          "       Yeni", ;

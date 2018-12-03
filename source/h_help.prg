@@ -63,72 +63,79 @@
 #include "oohg.ch"
 #include "fileio.ch"
 
+#define DOUBLE_QUOTATION_MARK  '"'
+#define DQM( x )               ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
+
 STATIC _OOHG_ActiveHelpFile := ""
 
-Function SetHelpFile( cFile )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION SetHelpFile( cFile )
 
    LOCAL hFile
 
    _OOHG_ActiveHelpFile := ""
 
-   if ! File( cFile )
-      MsgInfo( "Help File " + cFile + " Not Found " )
-      Return .F.
-   endif
+   IF ! File( cFile )
+      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      RETURN .F.
+   ENDIF
 
    hFile := FOpen( cFile, FO_READ + FO_SHARED )
 
-   If FError() != 0
-      MsgInfo( "Error opening Help file. DOS ERROR: " + Str( FError(), 2, 0 ) )
-      Return .F.
-   EndIf
+   IF FError() != 0
+      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      RETURN .F.
+   ENDIF
 
    _OOHG_ActiveHelpFile := cFile
 
    FClose( hFile )
 
-   Return .T.
+   RETURN .T.
 
-Function HelpTopic( nTopic , nMet )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION HelpTopic( nTopic , nMet )
 
-   Local ret:=0
+   LOCAL ret:=0
 
-   If ! empty( _OOHG_ActiveHelpFile )
+   IF ! Empty( _OOHG_ActiveHelpFile )
 
-      if !HB_IsNumeric( nTopic )
+      IF ! HB_ISNUMERIC( nTopic )
          nTopic := 0
-      endif
-      if !HB_IsNumeric( nMet )
+      ENDIF
+      IF ! HB_ISNUMERIC( nMet )
          nMet := 0
-      endif
+      ENDIF
 
-      if UPPER( Right( ALLTRIM( _OOHG_ActiveHelpFile ), 4 ) ) == '.CHM'
+      IF Upper( Right( AllTrim( _OOHG_ActiveHelpFile ), 4 ) ) == '.CHM'
          ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 0, nMet, nTopic )
-      else
+      ELSE
          ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 1, nMet, nTopic )
-      endif
-   endif
+      ENDIF
+   ENDIF
 
-   Return ret
+   RETURN ret
 
-Function GetActiveHelpFile()
+FUNCTION GetActiveHelpFile()
 
-   Return _OOHG_ActiveHelpFile
+   RETURN _OOHG_ActiveHelpFile
 
 
-EXTERN WINHELP, WINHLP
+// EXTERN WINHELP, WINHLP
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include <windows.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
+#include <commctrl.h>
 #if ! defined( __MINGW32__ )
    #include <Htmlhelp.h>
 #endif
-#include <commctrl.h>
+#include "hbapi.h"
+#include "hbapiitm.h"
 #include "oohg.h"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( WINHELP )
 {
    DWORD context;
@@ -153,9 +160,11 @@ HB_FUNC( WINHELP )
    {
       rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
    }
+
    hb_retni( rezult );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( WINHLP )
 {
    HB_FUNCNAME( WINHELP )();

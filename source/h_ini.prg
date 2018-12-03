@@ -64,32 +64,35 @@
 #include 'common.ch'
 #include 'fileio.ch'
 
-FUNCTION BeginIni(name, cIniFile )
+#define DOUBLE_QUOTATION_MARK  '"'
+#define DQM( x )               ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
+
+FUNCTION BeginIni( name, cIniFile )
 
    LOCAL hFile
 
    HB_SYMBOL_UNUSED( name )
 
-   if AT("\",cIniFile)==0
-      cIniFile := ".\"+cIniFile
-   endif
+   IF AT( "\", cIniFile ) == 0
+      cIniFile := ".\" + cIniFile
+   ENDIF
 
-   If ! File( cIniFile )
+   IF ! File( cIniFile )
       hFile := FCreate( cIniFile )
-   Else
+   ELSE
       hFile := FOpen( cIniFile, FO_READ + FO_SHARED )
-   EndIf
+   ENDIF
 
-   If FError() != 0
-      MsgInfo( "Error opening a file INI. DOS ERROR: " + Str( FError(), 2, 0 ) )
-      Return ""
-   else
+   IF FError() != 0
+      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cIniFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      RETURN ""
+   ELSE
       _OOHG_ActiveIniFile := cIniFile
-   EndIf
+   ENDIF
 
    FClose( hFile )
 
-   Return Nil
+   RETURN NIL
 
 
 // Code GetIni and SetIni based on source of Grigory Filatov

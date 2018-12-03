@@ -938,7 +938,7 @@ static function ABMEventos( nEvento )
 
          else
 
-            MsgStop ('Record locked by another user')
+            MsgStop( _OOHG_Messages( 5, 7 ), "" )
 
          endif
 

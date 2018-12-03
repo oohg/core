@@ -1058,7 +1058,7 @@ Function DrawPieGraph( window, fromrow, fromcol, torow, tocol, series, aname, co
 
    If lsleg
       If Len( aname ) * 20 > ( torow - fromrow )
-         MsgInfo( "No space for showing legends !!!" )
+         MsgInfo( _OOHG_Messages( 1, 22 ), _OOHG_Messages( 12, 33 ) )
       Else
          torow := torow - ( Len( aname ) * 20 )
       EndIf

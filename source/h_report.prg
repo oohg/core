@@ -351,7 +351,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
       IF File( cGraphic )
          ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
       ELSE
-         MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
+         MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
       ENDIF
    ENDIF
    nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
@@ -481,7 +481,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
                IF File( cGraphic )
                   ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
                ELSE
-                  MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
+                  MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
                ENDIF
             ENDIF
          ENDIF
@@ -508,7 +508,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
                   IF File( cGraphic )
                      ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
                   ELSE
-                     MsgExclamation( "File " + DQM( AllTrim( cGraphic ) ) + " not found.", "Report" )
+                     MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
                   ENDIF
                ENDIF
             ENDIF
@@ -672,7 +672,7 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    LOCAL nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cLine
 
    IF ! File( cFileRep + '.rpt' )
-      MsgExclamation( "File " + DQM( AllTrim( cFileRep ) + ".rpt" ) + " not found.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFileRep + ".rpt" ) + ".", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -694,7 +694,7 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
       ENDIF
    NEXT i
    IF i > nCount
-      MsgExclamation( "No " + DQM( "DO REPORT" ) + " nor " + DQM( "DEFINE REPORT" ) + "clauses found.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "DO REPORT" ) + " nor " + DQM( "DEFINE REPORT" ) + "found]", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
    // load lines until EOF or END REPORT line
@@ -725,23 +725,23 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    // load fields
    aFields := ::LeaDato( 'REPORT', 'FIELDS', '{}' )
    IF Len( aFields ) == 0
-      MsgExclamation( "Fields not defined.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "FIELDS" ) + "found]", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
    aFields := &aFields
    IF ! HB_ISARRAY( aFields ) .OR. Len( aFields ) == 0
-      MsgExclamation( "Fields not defined.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "FIELDS" ) + "found]", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
    // load widths
    aWidths := ::LeaDato( 'REPORT', 'WIDTHS', '{}' )
    IF Len( aWidths )=0
-      MsgExclamation( "Widths not defined.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "WIDTHS" ) + "found]", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
    aWidths := &aWidths
    IF ! HB_ISARRAY( aWidths ) .OR. Len( aWidths ) == 0
-      MsgExclamation( "Widths not defined.", "Report" )
+      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "WIDTHS" ) + "found]", _OOHG_Messages( 1, 9 ) )
       RETURN NIL
    ENDIF
    // load totals
