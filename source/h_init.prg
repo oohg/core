@@ -176,7 +176,12 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "This screen saver has no configurable options.", ;                                                        // 20
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Append", ;
@@ -417,7 +422,12 @@ FUNCTION ooHG_Messages_HR852 // Croatian
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -582,7 +592,12 @@ FUNCTION ooHG_Messages_FR // French
                          "Cet économiseur d'écran n'a pas d'options configurables.", ;
                          "Impossible d'ouvrir le fichier ", ;                                                                       // 21
                          "Pas assez d'espace pour les légendes !!!", ;                                                              // 22
-                         "Le format du rapport n'est pas valide " }                                                                 // 23
+                         "Le format du rapport n'est pas valide ", ;                                                                // 23
+                         "Erreur d' E/S de fichier, impossible de continuer !!!", ;                                                 // 24
+                         "Le fichier est déjà crypté !!!", ;                                                                        // 25
+                         "Le fichier n'est pas crypté !!!", ;                                                                       // 26
+                         "Le mot de passe est invalide !!!", ;                                                                      // 27
+                         "Les noms du nouveau fichier et de l'ancien fichier doivent être différents !!!" }                         // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Ajout", ;
@@ -783,7 +798,12 @@ FUNCTION ooHG_Messages_DEWIN // German
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -967,7 +987,12 @@ FUNCTION ooHG_Messages_IT // Italian
                          "Questo screen saver non ha opzioni configurabili.", ;
                          "Impossibile aprire il file INI.", ;
                          "Non c'è abbastanza spazio per le leggende !!!", ;                                                         // 22
-                         "Il formato del rapporto non è valido " }                                                                  // 23
+                         "Il formato del rapporto non è valido ", ;                                                                 // 23
+                         "Errore I / O file, impossibile procedere !!!", ;                                                          // 24
+                         "Il file è già crittografato !!!", ;                                                                       // 25
+                         "Il file non è crittografato !!!", ;                                                                       // 26
+                         "La password non è valida !!!", ;                                                                          // 27
+                         "I nomi del nuovo file e del vecchio file devono essere diversi !!!" }                                     // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Aggiungere", ;
@@ -1176,7 +1201,12 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -1373,7 +1403,12 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          "Esta proteção de tela não possui opções configuráveis.", ;
                          "Não é possível abrir o arquivo ", ;
                          "Não há espaço suficiente para lendas !!!", ;                                                              // 22
-                         "Formato do relatório não é válido " }                                                                     // 23
+                         "Formato do relatório não é válido ", ;                                                                    // 23
+                         "Erro de E / S de arquivo, não pode continuar !!!", ;                                                      // 24
+                         "O arquivo já está criptografado !!!", ;                                                                   // 25
+                         "O arquivo não está criptografado !!!", ;                                                                  // 26
+                         "Senha é inválida !!!", ;                                                                                  // 27
+                         "Os nomes do novo arquivo e do arquivo antigo devem ser diferentes !!!" }                                  // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Incluir", ;
@@ -1578,7 +1613,12 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Äîáàâèòü", ;
@@ -1698,7 +1738,12 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "Este protector de pantalla no tiene opciones configurables.", ;
                          "No se pudo abrir el archivo ", ;
                          "Insuficiente espacio para las leyendas !!!", ;                                                            // 22
-                         "El formato del reporte no es válido " }                                                                   // 23
+                         "El formato del reporte no es válido ", ;                                                                  // 23
+                         "Error de E/S en el archivo, no se puede continuar !!!", ;                                                 // 24
+                         "El archivo ya está encriptado !!!", ;                                                                     // 25
+                         "El archivo no está encriptado !!!", ;                                                                     // 26
+                         "La contraseña es inválida !!!", ;                                                                         // 27
+                         "Los nombres del nuevo archivo y el antiguo deben ser diferentes !!!" }                                    // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
@@ -1938,7 +1983,12 @@ FUNCTION ooHG_Messages_FI // Finnish
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Lisää", ;
@@ -2135,7 +2185,12 @@ FUNCTION ooHG_Messages_NL // Dutch
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Toevoegen", ;
@@ -2344,7 +2399,12 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -2541,7 +2601,12 @@ FUNCTION ooHG_Messages_TR
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid " }                                                                            // 23
+                         "Report format is not valid ", ;                                                                           // 23
+                         "File I/O error, can not proceed !!!", ;                                                                   // 24
+                         "File is already encrypted !!!", ;                                                                         // 25
+                         "File is not encrypted !!!", ;                                                                             // 26
+                         "Password is invalid !!!", ;                                                                               // 27
+                         "The names of the new file and the old file must be different !!!" }                                       // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Yeni Giriþ", ;
