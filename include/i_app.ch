@@ -60,50 +60,52 @@
  */
 
 
-#xtranslate <p:Application,App>.ArgC                       => TApplication():Define():ArgC
-#xtranslate <p:Application,App>.Args                       => TApplication():Define():Args
-#xtranslate <p:Application,App>.BackColor := <arg>         => TApplication():Define():BackColor( <arg> )
-#xtranslate <p:Application,App>.BackColor                  => TApplication():Define():BackColor()
-#xtranslate <p:Application,App>.Cargo := <arg>             => TApplication():Define():Cargo( <arg> )
-#xtranslate <p:Application,App>.Cargo                      => TApplication():Define():Cargo()
-#xtranslate <p:Application,App>.ClientHeight := <arg>      => TApplication():Define():ClientHeight( <arg> )
-#xtranslate <p:Application,App>.ClientHeight               => TApplication():Define():ClientHeight()
-#xtranslate <p:Application,App>.ClientWidth := <arg>       => TApplication():Define():ClientWidth( <arg> )
-#xtranslate <p:Application,App>.ClientWidth                => TApplication():Define():ClientWidth()
-#xtranslate <p:Application,App>.Col := <arg>               => TApplication():Define():Col( <arg> )
-#xtranslate <p:Application,App>.Col                        => TApplication():Define():Col()
-#xtranslate <p:Application,App>.Cursor := <arg>            => TApplication():Define():Cursor( <arg> )
-#xtranslate <p:Application,App>.Cursor                     => TApplication():Define():Cursor()
-#xtranslate <p:Application,App>.DoEvents                   => ProcessMessages()
-#xtranslate <p:Application,App>.Drive                      => TApplication():Define():Drive
-#xtranslate <p:Application,App>.ErrorLevel                 => TApplication():Define():ErrorLevel
-#xtranslate <p:Application,App>.ExeName                    => TApplication():Define():ExeName
-#xtranslate <p:Application,App>.FileName                   => TApplication():Define():FileName
-#xtranslate <p:Application,App>.FormName                   => TApplication():Define():MainName()
-#xtranslate <p:Application,App>.FormObject                 => TApplication():Define():MainObject()
-#xtranslate <p:Application,App>.Handle                     => TApplication():Define():Handle()
-#xtranslate <p:Application,App>.Height := <arg>            => TApplication():Define():Height( <arg> )
-#xtranslate <p:Application,App>.Height                     => TApplication():Define():Height()
-#xtranslate <p:Application,App>.HelpButton := <arg>        => TApplication():Define():HelpButton( <arg> )
-#xtranslate <p:Application,App>.HelpButton                 => TApplication():Define():HelpButton()
-#xtranslate <p:Application,App>.hWnd                       => TApplication():Define():Handle()
-#xtranslate <p:Application,App>.Icon := <arg>              => TApplication():Define():Icon( <arg> )
-#xtranslate <p:Application,App>.Icon                       => TApplication():Define():Icon()
-#xtranslate <p:Application,App>.MainName                   => TApplication():Define():MainName()
-#xtranslate <p:Application,App>.MainObject                 => TApplication():Define():MainObject()
-#xtranslate <p:Application,App>.MultipleInstances := <arg> => TApplication():Define():MultipleInstances( <arg> )
-#xtranslate <p:Application,App>.Name                       => TApplication():Define():Name
-#xtranslate <p:Application,App>.Path                       => TApplication():Define():Path
-#xtranslate <p:Application,App>.Row := <arg>               => TApplication():Define():Row( <arg> )
-#xtranslate <p:Application,App>.Row                        => TApplication():Define():Row()
-#xtranslate <p:Application,App>.Title := <arg>             => TApplication():Define():Title( <arg> )
-#xtranslate <p:Application,App>.Title                      => TApplication():Define():Title()
-#xtranslate <p:Application,App>.Topmost := <arg>           => TApplication():Define():Topmost( <arg> )
-#xtranslate <p:Application,App>.Topmost                    => TApplication():Define():Topmost()
-#xtranslate <p:Application,App>.Width := <arg>             => TApplication():Define():Width( <arg> )
-#xtranslate <p:Application,App>.Width                      => TApplication():Define():Width()
-#xtranslate <p:Application,App>.WindowStyle := <arg>       => TApplication():Define():WindowStyle( <arg> )
-#xtranslate <p:Application,App>.WindowStyle                => TApplication():Define():WindowStyle()
+#xtranslate App.ArgC                       => TApplication():Define():ArgC
+#xtranslate App.Args                       => TApplication():Define():Args
+#xtranslate App.BackColor := <arg>         => TApplication():Define():BackColor( <arg> )
+#xtranslate App.BackColor                  => TApplication():Define():BackColor()
+#xtranslate App.Cargo := <arg>             => TApplication():Define():Cargo( <arg> )
+#xtranslate App.Cargo                      => TApplication():Define():Cargo()
+#xtranslate App.ClientHeight := <arg>      => TApplication():Define():ClientHeight( <arg> )
+#xtranslate App.ClientHeight               => TApplication():Define():ClientHeight()
+#xtranslate App.ClientWidth := <arg>       => TApplication():Define():ClientWidth( <arg> )
+#xtranslate App.ClientWidth                => TApplication():Define():ClientWidth()
+#xtranslate App.Col := <arg>               => TApplication():Define():Col( <arg> )
+#xtranslate App.Col                        => TApplication():Define():Col()
+#xtranslate App.Cursor := <arg>            => TApplication():Define():Cursor( <arg> )
+#xtranslate App.Cursor                     => TApplication():Define():Cursor()
+#xtranslate App.DoEvents                   => ProcessMessages()
+#xtranslate App.Drive                      => TApplication():Define():Drive
+#xtranslate App.ErrorLevel                 => TApplication():Define():ErrorLevel
+#xtranslate App.ExeName                    => TApplication():Define():ExeName
+#xtranslate App.FileName                   => TApplication():Define():FileName
+#xtranslate App.FormName                   => TApplication():Define():MainName()
+#xtranslate App.FormObject                 => TApplication():Define():MainObject()
+#xtranslate App.Handle                     => TApplication():Define():Handle()
+#xtranslate App.Height := <arg>            => TApplication():Define():Height( <arg> )
+#xtranslate App.Height                     => TApplication():Define():Height()
+#xtranslate App.HelpButton := <arg>        => TApplication():Define():HelpButton( <arg> )
+#xtranslate App.HelpButton                 => TApplication():Define():HelpButton()
+#xtranslate App.hWnd                       => TApplication():Define():Handle()
+#xtranslate App.Icon := <arg>              => TApplication():Define():Icon( <arg> )
+#xtranslate App.Icon                       => TApplication():Define():Icon()
+#xtranslate App.MainName                   => TApplication():Define():MainName()
+#xtranslate App.MainObject                 => TApplication():Define():MainObject()
+#xtranslate App.MultipleInstances := <arg> => TApplication():Define():MultipleInstances( <arg> )
+#xtranslate App.Name                       => TApplication():Define():Name
+#xtranslate App.Path                       => TApplication():Define():Path
+#xtranslate App.Row := <arg>               => TApplication():Define():Row( <arg> )
+#xtranslate App.Row                        => TApplication():Define():Row()
+#xtranslate App.Title := <arg>             => TApplication():Define():Title( <arg> )
+#xtranslate App.Title                      => TApplication():Define():Title()
+#xtranslate App.Topmost := <arg>           => TApplication():Define():Topmost( <arg> )
+#xtranslate App.Topmost                    => TApplication():Define():Topmost()
+#xtranslate App.Width := <arg>             => TApplication():Define():Width( <arg> )
+#xtranslate App.Width                      => TApplication():Define():Width()
+#xtranslate App.WindowStyle := <arg>       => TApplication():Define():WindowStyle( <arg> )
+#xtranslate App.WindowStyle                => TApplication():Define():WindowStyle()
+
+#xtranslate Application.<*x*> => App.<x>
 
 #xtranslate SET DEFAULT ICON TO <cIcon> ;
    => ;
