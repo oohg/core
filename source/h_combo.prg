@@ -148,13 +148,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
 
    Local ControlHandle, WorkArea, uField, nStyle
 
-   ASSIGN ::nCol          VALUE x TYPE "N"
-   ASSIGN ::nRow          VALUE y TYPE "N"
-   ASSIGN ::nWidth        VALUE w TYPE "N"
-   ASSIGN ::nHeight       VALUE h TYPE "N"
-   DEFAULT rows           TO {}
-   DEFAULT sort           TO FALSE
-   DEFAULT GripperText    TO ""
+   ASSIGN ::nCol          VALUE x             TYPE "N"
+   ASSIGN ::nRow          VALUE y             TYPE "N"
+   ASSIGN ::nWidth        VALUE w             TYPE "N"
+   ASSIGN ::nHeight       VALUE h             TYPE "N"
+   ASSIGN rows            VALUE rows          TYPE "A" DEFAULT {}
+   ASSIGN sort            VALUE sort          TYPE "L" DEFAULT .F.
    ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
    ASSIGN displaychange   VALUE displaychange TYPE "L" DEFAULT .F.
    ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
@@ -177,11 +176,11 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
       MsgOOHGError( "SORT and DELAYLOAD clauses can't be used simultaneously. Program terminated." )
    EndIf
 
-   If ValType( itemsource ) != 'U' .And. Sort == .T.
+   If ValType( itemsource ) != 'U' .And. Sort
       MsgOOHGError( "SORT and ITEMSOURCE clauses can't be used simultaneously. Program terminated." )
    EndIf
 
-   If ValType( valuesource ) != 'U' .And. Sort == .T.
+   If ValType( valuesource ) != 'U' .And. Sort
       MsgOOHGError( "SORT and VALUESOURCE clauses can't be used simultaneously. Program terminated." )
    EndIf
 
@@ -201,7 +200,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    EndIf
 
    nStyle := ::InitStyle(, , Invisible, notabstop, lDisabled ) + ;
-             if( HB_IsLogical( SORT ) .AND. SORT, CBS_SORT, 0 ) + ;
+             if( HB_IsLogical( sort ) .AND. sort, CBS_SORT, 0 ) + ;
              if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              if ( HB_IsArray( aImage ) .OR. HB_IsBlock( ItemNumber ), CBS_OWNERDRAWFIXED, 0) + ;
              if( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 )
