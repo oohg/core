@@ -619,6 +619,30 @@ TODO: implement this clauses:
    => ;
       DATE [ <X> ]
 
+#xtranslate ITEM [ <x> ] IMAGE <image> CHECKMARK <mark> ;
+   => ITEM [ <x> ] IMAGE { <image>, <mark> }
+
+#xtranslate ITEM [ <x> ] ICON <image> CHECKMARK <mark> ;
+   => ITEM [ <x> ] IMAGE { <image>, <mark> }
+
+#xtranslate MENUITEM [ <x> ] IMAGE <image> CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { <image>, <mark> }
+
+#xtranslate MENUITEM [ <x> ] ICON <image> CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { <image>, <mark> }
+
+#xtranslate ITEM [ <x> ] CHECKMARK <mark> ;
+   => ITEM [ <x> ] IMAGE { "", <mark> }
+
+#xtranslate ITEM [ <x> ] CHECKMARK <mark> ;
+   => ITEM [ <x> ] IMAGE { "", <mark> }
+
+#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { "", <mark> }
+
+#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { "", <mark> }
+
 #xtranslate _GetSysFont() ;
    => ;
       GetDefaultFontName()
