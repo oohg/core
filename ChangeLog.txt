@@ -12,6 +12,48 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-04 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     + App.MutexLock
+     + App.MutexUnlock
+
+2018-12-04 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     + Translation for Function DateTime.
+
+2018-12-04 20:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     * NDX_OOHG_DEFAULTMENUCOLORS changed by NDX_OOHG_DEFAULTMENUPARAMS.
+     + METHOD MutexLock.
+     + METHOD MutexUnlock.
+
+2018-12-04 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Some DEFAULT changed by ASSIGN.
+
+2018-12-04 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_crypt.prg
+     + Message localization.
+     * Function DB_CODE should be thread safe now.
+     * Format.
+
+2018-12-04 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + Define for tagNMLVSCROLL structure because it's not
+       present in BCC.
+
+2018-12-04 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     + Some messages for h_crypt.prg
+
+2018-12-04 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     ! Compiler error on App.FileName.
+
+2018-12-03 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Compilation with BORLAND.
+
 2018-12-03 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_pdf.prg
      + DATA cExecuteApp
