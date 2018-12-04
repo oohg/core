@@ -8547,6 +8547,14 @@ HB_FUNC( GET_XY_LPARAM )
    HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
 }
 
+#ifdef __BORLANDC__
+typedef struct tagNMLVSCROLL {
+   NMHDR hdr;
+   INT dx;
+   INT dy;
+} NMLVSCROLL, * LPNMLVSCROLL;
+#endif
+
 HB_FUNC( GET_DXDY_LPARAM )
 {
    hb_reta( 2 );
