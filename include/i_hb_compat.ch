@@ -94,6 +94,10 @@
       => ;
          hb_SToT( <x> )
 
+   #xtranslate DateTime() ;
+      => ;
+         hb_DateTime()
+
    #xtranslate PrintFileRaw( [<x,...>] ) ;
       => ;
          win_PrintFileRaw( <x> )
