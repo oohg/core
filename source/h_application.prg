@@ -132,7 +132,7 @@
 #define NDX_OOHG_BKEYDOWN              45
 #define NDX_OOHG_HOTKEYS               46
 #define NDX_OOHG_DEFAULTSTATUSBARMSG   47
-#define NDX_OOHG_DEFAULTMENUCOLORS     48
+#define NDX_OOHG_DEFAULTMENUPARAMS     48
 #define NUMBER_OF_APP_WIDE_VARS        48
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -187,6 +187,8 @@ CLASS TApplication
    METHOD MainName
    METHOD MainObject
    METHOD MainStyle               SETGET
+   METHOD MutexLock               INLINE hb_mutexLock( ::hClsMtx )
+   METHOD MutexUnlock             INLINE hb_mutexUnlock( ::hClsMtx )
    METHOD Release
    METHOD ReleaseLogFont
    METHOD Row                     SETGET
@@ -303,13 +305,14 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
       ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
       ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]   := NIL
-      ::aVars[ NDX_OOHG_DEFAULTMENUCOLORS ]     := { RGB( 236, 233, 216 ), RGB( 236, 233, 216 ), RGB( 0, 0, 0 ),       RGB( 0, 0, 0 ), ;
+      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := { RGB( 236, 233, 216 ), RGB( 236, 233, 216 ), RGB( 0, 0, 0 ),       RGB( 0, 0, 0 ), ;
                                                      RGB( 192, 192, 192 ), RGB( 255, 252, 248 ), RGB( 136, 133, 116 ), RGB( 0, 0, 0 ), ;
                                                      RGB( 0, 0, 0 ),       RGB( 192, 192, 192 ), RGB( 255, 255, 255 ), RGB( 255, 255, 255 ), ;
                                                      RGB( 182, 189, 210 ), RGB( 182, 189, 210 ), RGB( 255, 255, 255 ), RGB( 255, 255, 255 ), ;
                                                      RGB( 246, 245, 244 ), RGB( 207, 210, 200 ), RGB( 168, 169, 163 ), RGB( 255, 255, 255 ), ;
                                                      RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ), ;
-                                                     RGB( 0, 0, 0 ),       RGB( 216, 220, 224 ), RGB( 64, 116, 200 ),  RGB( 128, 128, 128 ) }
+                                                     RGB( 0, 0, 0 ),       RGB( 216, 220, 224 ), RGB( 64, 116, 200 ),  RGB( 128, 128, 128 ), ;
+                                                     MNUCUR_FULL, MNUSEP_DOUBLE, MNUSEP_LEFT, .T., .T. }
       ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
 
       ::ArgC     := hb_argc()
@@ -1736,12 +1739,12 @@ METHOD Value_Pos48( uValue ) CLASS TApplication
       ENDIF
       FOR i := 1 TO 28
          IF uValue[ i ] == NIL
-            uValue[ i ] := ::aVars[ NDX_OOHG_DEFAULTMENUCOLORS ][ i ]
+            uValue[ i ] := ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ][ i ]
          ENDIF
       NEXT i
-      ::aVars[ NDX_OOHG_DEFAULTMENUCOLORS ] := AClone( uValue )
+      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ] := AClone( uValue )
    ENDIF
-   uRet := AClone( ::aVars[ NDX_OOHG_DEFAULTMENUCOLORS ] )
+   uRet := AClone( ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ] )
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )
