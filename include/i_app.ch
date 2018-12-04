@@ -92,6 +92,8 @@
 #xtranslate App.MainName                   => TApplication():Define():MainName()
 #xtranslate App.MainObject                 => TApplication():Define():MainObject()
 #xtranslate App.MultipleInstances := <arg> => TApplication():Define():MultipleInstances( <arg> )
+#xtranslate App.MutexLock                  => TApplication():Define():MutexLock()
+#xtranslate App.MutexUnlock                => TApplication():Define():MutexUnlock()
 #xtranslate App.Name                       => TApplication():Define():Name
 #xtranslate App.Path                       => TApplication():Define():Path
 #xtranslate App.Row := <arg>               => TApplication():Define():Row( <arg> )
