@@ -74,6 +74,7 @@
 #xtranslate App.Col                        => TApplication():Define():Col()
 #xtranslate App.Cursor := <arg>            => TApplication():Define():Cursor( <arg> )
 #xtranslate App.Cursor                     => TApplication():Define():Cursor()
+#xtranslate App.DefineFont( <arg> )        => TApplication():Define():DefineLogFont( <arg> )
 #xtranslate App.DoEvents                   => ProcessMessages()
 #xtranslate App.Drive                      => TApplication():Define():Drive
 #xtranslate App.ErrorLevel                 => TApplication():Define():ErrorLevel
@@ -96,6 +97,7 @@
 #xtranslate App.MutexUnlock                => TApplication():Define():MutexUnlock()
 #xtranslate App.Name                       => TApplication():Define():Name
 #xtranslate App.Path                       => TApplication():Define():Path
+#xtranslate App.ReleaseFont( <arg> )       => TApplication():Define():ReleaseLogFont( <arg> )
 #xtranslate App.Row := <arg>               => TApplication():Define():Row( <arg> )
 #xtranslate App.Row                        => TApplication():Define():Row()
 #xtranslate App.Title := <arg>             => TApplication():Define():Title( <arg> )
