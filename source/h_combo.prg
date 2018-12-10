@@ -64,6 +64,7 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TCombo FROM TLabel
 
    DATA aValues                   INIT {}
@@ -102,7 +103,7 @@ CLASS TCombo FROM TLabel
    METHOD Define
    METHOD DeleteAllItems
    METHOD DeleteItem
-   METHOD DisplayValue            SETGET    /// Caption Alias
+   METHOD DisplayValue            SETGET    /// Caption alias
    METHOD EditHeight              SETGET
    METHOD Events
    METHOD Events_Command
@@ -136,6 +137,7 @@ CLASS TCombo FROM TLabel
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
@@ -146,7 +148,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight ) CLASS TCombo
 
-   Local ControlHandle, WorkArea, uField, nStyle
+   LOCAL ControlHandle, WorkArea, uField, nStyle
 
    ASSIGN ::nCol          VALUE x             TYPE "N"
    ASSIGN ::nRow          VALUE y             TYPE "N"
@@ -165,81 +167,81 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L" DEFAULT NIL
    ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
-   IF HB_IsNumeric( nLapse ) .and. nLapse >= 0
+   IF HB_ISNUMERIC( nLapse ) .AND. nLapse >= 0
       ::SearchLapse := nLapse
    ENDIF
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .t., lRtl )
-   ::SetFont(, , bold, italic, underline, strikeout )
+   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
+   ::SetFont( NIL, NIL, bold, italic, underline, strikeout )
 
-   If ::lDelayLoad .And. Sort
+   IF ::lDelayLoad .AND. Sort
       MsgOOHGError( "SORT and DELAYLOAD clauses can't be used simultaneously. Program terminated." )
-   EndIf
+   ENDIF
 
-   If ValType( itemsource ) != 'U' .And. Sort
+   IF ValType( itemsource ) != 'U' .AND. Sort
       MsgOOHGError( "SORT and ITEMSOURCE clauses can't be used simultaneously. Program terminated." )
-   EndIf
+   ENDIF
 
-   If ValType( valuesource ) != 'U' .And. Sort
+   IF ValType( valuesource ) != 'U' .AND. Sort
       MsgOOHGError( "SORT and VALUESOURCE clauses can't be used simultaneously. Program terminated." )
-   EndIf
+   ENDIF
 
-   If ValType( itemsource ) == 'A'
+   IF ValType( itemsource ) == 'A'
       WorkArea := itemsource[ 1 ]
       uField := itemsource[ 2 ]
-      If Len( itemsource ) > 2
+      IF Len( itemsource ) > 2
          ASSIGN ::SourceOrder VALUE itemsource[ 3 ] TYPE "CMNB"
-      EndIf
-   ElseIf ValType( itemsource ) != 'U'
-      If ! '->' $ itemsource
+      ENDIF
+   ELSEIF ValType( itemsource ) != 'U'
+      IF ! '->' $ itemsource
          MsgOOHGError( "ITEMSOURCE clause must be a fully qualified field name. Program terminated." )
-      Else
+      ELSE
          WorkArea := Left( itemsource, At( '->', itemsource ) - 1 )
          uField := Right( itemsource, Len( itemsource ) - At( '->', itemsource ) - 1 )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   nStyle := ::InitStyle(, , Invisible, notabstop, lDisabled ) + ;
-             if( HB_IsLogical( sort ) .AND. sort, CBS_SORT, 0 ) + ;
-             if( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
-             if ( HB_IsArray( aImage ) .OR. HB_IsBlock( ItemNumber ), CBS_OWNERDRAWFIXED, 0) + ;
-             if( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 )
+   nStyle := ::InitStyle( NIL, NIL, Invisible, notabstop, lDisabled ) + ;
+             iif( HB_ISLOGICAL( sort ) .AND. sort, CBS_SORT, 0 ) + ;
+             iif( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
+             iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemNumber ), CBS_OWNERDRAWFIXED, 0) + ;
+             iif( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
-   ControlHandle := InitComboBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
+   ControlHandle := InitCombobox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
+   ::Register( ControlHandle, ControlName, HelpId, NIL, ToolTip )
    ::SetFont()
 
    ::Field := uField
    ::WorkArea := WorkArea
    ::ValueSource := valuesource
 
-   If HB_IsArray( aImage )
+   IF HB_ISARRAY( aImage )
       ::AddBitMap( aImage )
-   EndIf
+   ENDIF
 
-   If HB_IsNumeric( ListWidth )
+   IF HB_ISNUMERIC( ListWidth )
       ::SetDropDownWidth( ListWidth )
-   EndIf
+   ENDIF
 
-   If VALTYPE( WorkArea ) $ "CM"
+   IF ValType( WorkArea ) $ "CM"
       ::Refresh()
-   Else
+   ELSE
       AEval( rows, { |x| ::AddItem( x ) } )
-   EndIf
+   ENDIF
 
-   If HB_IsLogical( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
+   IF HB_ISLOGICAL( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
       ::SelectFirstItem()
-   EndIf
+   ENDIF
 
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
-   If displaychange
+   IF displaychange
       ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
       IF HB_ISNUMERIC( nMaxLen ) .AND. nMaxLen > 0
          ::oEditBox:MaxLength := nMaxLen
       ENDIF
-   EndIf
+   ENDIF
 
    ::Value := Value
 
@@ -256,206 +258,218 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
 
    RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Field( uField ) CLASS TCombo
 
-   If HB_IsBlock( uField )
+   IF HB_ISBLOCK( uField )
       ::uField := uField
-   ElseIf VALTYPE( uField ) $ "CM"
+   ELSEIF ValType( uField ) $ "CM"
       ::uField := &( "{ || " + uField + " }" )
-   EndIf
+   ENDIF
 
    RETURN ::uField
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ValueSource( uValue ) CLASS TCombo
 
-   If PCOUNT() > 0 .AND. uValue == NIL
+   IF PCount() > 0 .AND. uValue == NIL
       ::aValues := {}
       ::uValueSource := NIL
-   ElseIf HB_IsArray( uValue )
-      ::aValues := ACLONE( uValue )
+   ELSEIF HB_ISARRAY( uValue )
+      ::aValues := AClone( uValue )
       ::uValueSource := NIL
-   ElseIf HB_IsBlock( uValue )
+   ELSEIF HB_ISBLOCK( uValue )
       ::aValues := {}
       ::uValueSource := uValue
-   ElseIf VALTYPE( uValue ) $ "CM"
+   ELSEIF ValType( uValue ) $ "CM"
       ::aValues := {}
-      If EMPTY( uValue )
+      IF Empty( uValue )
          ::uValueSource := NIL
-      Else
+      ELSE
          ::uValueSource := &( "{ || " + uValue + " }" )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ::uValueSource
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD nHeight( nHeight ) CLASS TCombo
 
-   If HB_IsNumeric( nHeight ) .AND. ! ValidHandler( ::hWnd )
+   IF HB_ISNUMERIC( nHeight ) .AND. ! ValidHandler( ::hWnd )
       ::nHeight2 := nHeight
-   EndIf
+   ENDIF
 
    RETURN ::nHeight2
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EditHeight( nHeight )
 
-   IF HB_ISNUMERIC( nHeight ) .and. nHeight > 0
+   IF HB_ISNUMERIC( nHeight ) .AND. nHeight > 0
       SendMessage( ::hWnd, CB_SETITEMHEIGHT, -1, nHeight )
    ENDIF
 
    RETURN SendMessage( ::hWnd, CB_GETITEMHEIGHT, -1, nHeight )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD OptionsHeight( nHeight )
 
-   IF HB_ISNUMERIC( nHeight ) .and. nHeight > 0
+   IF HB_ISNUMERIC( nHeight ) .AND. nHeight > 0
       SendMessage( ::hWnd, CB_SETITEMHEIGHT, 0, nHeight )
    ENDIF
 
    RETURN SendMessage( ::hWnd, CB_GETITEMHEIGHT, 0, nHeight )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD VisibleItems() CLASS TCombo
 
-   Local nRet
+   LOCAL nRet
 
-   If IsWindowStyle( ::hWnd, CBS_NOINTEGRALHEIGHT )
+   IF IsWindowStyle( ::hWnd, CBS_NOINTEGRALHEIGHT )
       nRet := ::nHeight / ::ItemHeight()
-      If nRet - int( nRet ) > 0
-         nRet := int( nRet ) + 1
-      EndIf
-   Else
+      IF nRet - Int( nRet ) > 0
+         nRet := Int( nRet ) + 1
+      ENDIF
+   ELSE
       nRet := SendMessage( ::hWnd, CB_GETMINVISIBLE, 0, 0 ) * 2
-   EndIf
+   ENDIF
 
    RETURN nRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Refresh() CLASS TCombo
 
-   Local BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd := NIL
-   Local lRefreshImages, aImages, nMax, nCount, nArea
+   LOCAL BackRec, bField, aValues, uValue, bValueSource, lNoEval, BackOrd := NIL
+   LOCAL lRefreshImages, aImages, nMax, nCount, nArea
 
-   If ( nArea := Select( ::WorkArea ) ) != 0
-      If HB_IsBlock( ::ImageSource )
+   IF ( nArea := Select( ::WorkArea ) ) != 0
+      IF HB_ISBLOCK( ::ImageSource )
          lRefreshImages := .T.
          aImages := {}
-      Else
+      ELSE
          lRefreshImages := .F.
-      EndIf
+      ENDIF
 
       uValue := ::Value
       bField := ::Field
       BackRec := ( nArea )->( RecNo() )
-      If HB_IsBlock( ::SourceOrder )
-         BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-      ElseIf ValType( ::SourceOrder ) $ "CMN"
-         BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-      EndIf
+      IF HB_ISBLOCK( ::SourceOrder )
+         BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+      ELSEIF ValType( ::SourceOrder ) $ "CMN"
+         BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+      ENDIF
 
-      If OSisWinXPorLater() .AND. ::lDelayLoad
+      IF OSisWinXPorLater() .AND. ::lDelayLoad
          nMax := ::VisibleItems * 2
-      Else
+      ELSE
          nMax := ( nArea )->( LastRec() )
-      EndIf
+      ENDIF
 
-      ( nArea )->( DBGoTop() )
-      If ( nArea )->( Eof() )
+      ( nArea )->( dbGoTop() )
+      IF ( nArea )->( Eof() )
          ::nLastItem := 0
-      EndIf
+      ENDIF
 
       nCount := 0
 
       ComboboxReset( ::hWnd )
       aValues := {}
       bValueSource := ::ValueSource
-      lNoEval := EMPTY( bValueSource )
+      lNoEval := Empty( bValueSource )
 
-      Do While ! ( nArea )->( Eof() ) .and. nCount < nMax
-         ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-         AADD( aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-         If lRefreshImages
-            AADD( aImages, EVAL( ::ImageSource ) )
-         EndIf
+      DO WHILE ! ( nArea )->( Eof() ) .AND. nCount < nMax
+         ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+         AAdd( aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+         IF lRefreshImages
+            AAdd( aImages, Eval( ::ImageSource ) )
+         ENDIF
 
-         ::nLastItem := ( nArea )->( Recno() )
-         ( nArea )->( DBSkip() )
+         ::nLastItem := ( nArea )->( RecNo() )
+         ( nArea )->( dbSkip() )
          nCount ++
-      EndDo
+      ENDDO
 
-      If BackOrd != NIL
-         ( nArea )->( OrdSetFocus( BackOrd ) )
-      EndIf
-      ( nArea )->( DBGoTo( BackRec ) )
+      IF BackOrd != NIL
+         ( nArea )->( ordSetFocus( BackOrd ) )
+      ENDIF
+      ( nArea )->( dbGoto( BackRec ) )
 
-      If lRefreshImages
+      IF lRefreshImages
          ::ClearBitMaps()
 
          ::AddBitMap( aImages )
-      EndIf
+      ENDIF
 
       ::aValues := aValues
       ::Value := uValue
 
       ::DoEvent( ::OnRefresh, "REFRESH" )
-   EndIf
+   ENDIF
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DisplayValue( cValue ) CLASS TCombo
 
-   Return ( ::Caption := cValue )
+   RETURN ( ::Caption := cValue )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TCombo
 
-   Local uRet
+   LOCAL uRet
 
-   If LEN( ::aValues ) == 0
-      If HB_IsNumeric( uValue )
+   IF Len( ::aValues ) == 0
+      IF HB_ISNUMERIC( uValue )
          ComboSetCursel( ::hWnd, uValue )
          ::DoChange()
-      EndIf
+      ENDIF
       uRet := ComboGetCursel( ::hWnd )
-   Else
-      If VALTYPE( ::aValues[ 1 ] ) == VALTYPE( uValue ) .OR. ;
-         ( VALTYPE( uValue ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
-         ComboSetCursel( ::hWnd, ASCAN( ::aValues, uValue ) )
+   ELSE
+      IF ValType( ::aValues[ 1 ] ) == ValType( uValue ) .OR. ;
+         ( ValType( uValue ) $ "CM" .AND. ValType( ::aValues[ 1 ] ) $ "CM" )
+         ComboSetCursel( ::hWnd, AScan( ::aValues, uValue ) )
           ::DoChange()
-      EndIf
+      ENDIF
       uRet := ComboGetCursel( ::hWnd )
-      If uRet >= 1 .AND. uRet <= LEN( ::aValues )
+      IF uRet >= 1 .AND. uRet <= Len( ::aValues )
          uRet := ::aValues[ uRet ]
-      ElseIf VALTYPE( ::aValues[ 1 ] ) $ "CM"
+      ELSEIF ValType( ::aValues[ 1 ] ) $ "CM"
          uRet := ""
-      Else
+      ELSE
          uRet := 0
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Visible( lVisible ) CLASS TCombo
 
-   If HB_IsLogical( lVisible )
+   IF HB_ISLOGICAL( lVisible )
       ::Super:Visible := lVisible
-      If ! lVisible
+      IF ! lVisible
          SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ::lVisible
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RefreshData() CLASS TCombo
 
-   Local lRefresh
+   LOCAL lRefresh
 
-   If HB_IsLogical( ::lRefresh )
+   IF HB_ISLOGICAL( ::lRefresh )
       lRefresh := ::lRefresh
-   Else
+   ELSE
       lRefresh := _OOHG_ComboRefresh
-   Endif
-   If lRefresh
+   ENDIF
+   IF lRefresh
       ::Refresh()
-   EndIf
+   ENDIF
 
    RETURN ::Super:RefreshData()
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TCombo
 
    IF HB_ISOBJECT( ::oEditBox )
@@ -464,20 +478,22 @@ METHOD Release() CLASS TCombo
 
    RETURN ::Super:Release()
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ShowDropDown( lShow ) CLASS TCombo
 
    ASSIGN lShow VALUE lShow TYPE "L" DEFAULT .T.
-   If lShow
+   IF lShow
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 1, 0 )
-   Else
+   ELSE
       SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 )
-   EndIf
+   ENDIF
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
 
-   Local nCounter, nNewWidth, nScrollWidth := GetVScrollBarWidth()
+   LOCAL nCounter, nNewWidth, nScrollWidth := GetVScrollBarWidth()
 
    /*
    lResizeBox = Resize dropdown list and combobox (.t.) or dropdown list only (.f.)
@@ -491,44 +507,44 @@ METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
    */
    nNewWidth := GetTextWidth( NIL, "0", ::FontHandle ) + ::IconWidth + nScrollWidth
 
-   For nCounter := 1 to ::ItemCount
-      nNewWidth := max( GetTextWidth( NIL, ::Item(nCounter) + "0", ::FontHandle ) + ::IconWidth + nScrollWidth, nNewWidth )
-   Next
+   FOR nCounter := 1 TO ::ItemCount
+      nNewWidth := Max( GetTextWidth( NIL, ::Item(nCounter) + "0", ::FontHandle ) + ::IconWidth + nScrollWidth, nNewWidth )
+   NEXT
 
    /*
    nMinWidth = minimum width of dropdown list.
    If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
    */
-   If ! HB_IsNumeric( nMinWidth ) .or. nMinWidth < 0
-      nMinWidth := if( lResizeBox, 0, ::Width )
-   EndIf
+   IF ! HB_ISNUMERIC( nMinWidth ) .OR. nMinWidth < 0
+      nMinWidth := iif( lResizeBox, 0, ::Width )
+   ENDIF
 
    /*
    If the computed value is less than the minimum, use the minimum.
    */
-   nNewWidth := max( nNewWidth, nMinWidth )
+   nNewWidth := Max( nNewWidth, nMinWidth )
 
    /*
    nMaxWidth = maximum width of dropdown list, if ommited defaults to longest item's width
    If no maximum specified or is less than minimun, use computed value as maximum.
    */
-   If ! HB_IsNumeric( nMaxWidth ) .or. nMaxWidth < nMinWidth
+   IF ! HB_ISNUMERIC( nMaxWidth ) .OR. nMaxWidth < nMinWidth
       nMaxWidth := nNewWidth
-   EndIf
+   ENDIF
 
    /*
    If the computed value is greater than the maximum, use the maximum.
    */
-   nNewWidth := min( nNewWidth, nMaxWidth )
+   nNewWidth := Min( nNewWidth, nMaxWidth )
 
    /*
    Resize combobox.
    Must be done before resizing dropdown list, because dropdown list's width is,
    always, at least equal to combobox width.
    */
-   If lResizeBox
+   IF lResizeBox
      ::width := nNewWidth
-   EndIf
+   ENDIF
 
    /*
    Resize dropdown list
@@ -537,34 +553,38 @@ METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetDropDownWidth() CLASS TCombo
 
-   Return ComboGetDroppedWidth( ::hWnd )
+   RETURN ComboGetDroppedWidth( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetDropDownWidth( nWidth ) CLASS TCombo
 
-   Local nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
+   LOCAL nNew := ComboSetDroppedWidth( ::hWnd, nWidth )
 
-   If nNew == -1
+   IF nNew == -1
      nNew := ComboGetDroppedWidth( ::hWnd )
-   EndIf
+   ENDIF
 
    RETURN nNew
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AutoSize( lValue ) CLASS TCombo
 
-   Local cCaption
+   LOCAL cCaption
 
-   If HB_IsLogical( lValue )
+   IF HB_ISLOGICAL( lValue )
       ::lAutoSize := lValue
-      If lValue
+      IF lValue
          cCaption := GetWindowText( ::hWnd )
          ::SizePos(, , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ::lAutoSize
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FindString( c, n ) CLASS TCombo
 
    LOCAL nPos
@@ -585,6 +605,7 @@ METHOD FindString( c, n ) CLASS TCombo
 
    RETURN nPos
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FindStringExact( c, n ) CLASS TCombo
 
    LOCAL nPos
@@ -605,416 +626,419 @@ METHOD FindStringExact( c, n ) CLASS TCombo
 
    RETURN nPos
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
 
-   Local nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
+   LOCAL nArea, BackRec, nMax, i, nStart, bField, bValueSource, lNoEval, BackOrd := NIL
 
-   If nMsg == WM_CHAR
-      If ::lIncremental
-         If wParam < 32
+   IF nMsg == WM_CHAR
+      IF ::lIncremental
+         IF wParam < 32
             ::cText := ""
-         Else
-            If Empty( ::cText )
-               ::uIniTime := HB_MilliSeconds()
+         ELSE
+            IF Empty( ::cText )
+               ::uIniTime := hb_MilliSeconds()
                ::cText := Upper( Chr( wParam ) )
                nStart := ComboGetCursel( ::hWnd )
-            ElseIf ::SearchLapse > 0 .AND. HB_MilliSeconds() > ::uIniTime + ::SearchLapse
-               ::uIniTime := HB_MilliSeconds()
+            ELSEIF ::SearchLapse > 0 .AND. hb_MilliSeconds() > ::uIniTime + ::SearchLapse
+               ::uIniTime := hb_MilliSeconds()
                ::cText := Upper( Chr( wParam ) )
                nStart := ComboGetCursel( ::hWnd )
-            Else
-               ::uIniTime := HB_MilliSeconds()
+            ELSE
+               ::uIniTime := hb_MilliSeconds()
                ::cText += Upper( Chr( wParam ) )
                nStart := ::nLastFound
-            EndIf
+            ENDIF
 
             ::nLastFound := ::FindString( ::cText, nStart )
-            If ::nLastFound > 0 .AND. ::nLastFound >= nStart
+            IF ::nLastFound > 0 .AND. ::nLastFound >= nStart
                // item was found in the rest of the list, select
                IF Len( ::aValues ) == 0
                   ::Value := ::nLastFound
                ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
                   ::Value := ::aValues[ ::nLastFound ]
                ENDIF
-            Else
+            ELSE
                // if there are more items not already loaded, load them and search again
-               If OSisWinXPorLater() .AND. ::lDelayLoad
-                  If ( nArea := Select( ::WorkArea ) ) != 0
+               IF OSisWinXPorLater() .AND. ::lDelayLoad
+                  IF ( nArea := Select( ::WorkArea ) ) != 0
                      nMax := ::VisibleItems
                      bField := ::Field
                      bValueSource := ::ValueSource
-                     lNoEval := EMPTY( bValueSource )
+                     lNoEval := Empty( bValueSource )
 
-                     BackRec := ( nArea )->( Recno() )
-                     If HB_IsBlock( ::SourceOrder )
-                        BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-                     ElseIf ValType( ::SourceOrder ) $ "CMN"
-                        BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-                     EndIf
+                     BackRec := ( nArea )->( RecNo() )
+                     IF HB_ISBLOCK( ::SourceOrder )
+                        BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+                     ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                        BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+                     ENDIF
 
-                     ( nArea )->( DBGoto( ::nLastItem ) )
-                     ( nArea )->( DBSkip() )
-                     Do While ! ( nArea )->( Eof() )
+                     ( nArea )->( dbGoto( ::nLastItem ) )
+                     ( nArea )->( dbSkip() )
+                     DO WHILE ! ( nArea )->( Eof() )
                         // load more items
                         i := 0
-                        Do While ! ( nArea )->( Eof() ) .AND. i < nMax
-                           ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                           AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                           If ValidHandler( ::ImageList )
+                        DO WHILE ! ( nArea )->( Eof() ) .AND. i < nMax
+                           ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                           AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                           IF ValidHandler( ::ImageList )
                               ::AddBitMap( Eval( ::ImageSource ) )
-                           EndIf
+                           ENDIF
 
-                           ::nLastItem := ( nArea )->( Recno() )
-                           ( nArea )->( DBSkip() )
+                           ::nLastItem := ( nArea )->( RecNo() )
+                           ( nArea )->( dbSkip() )
                            i ++
-                        EndDo
+                        ENDDO
                         // search again
                         ::nLastFound := ::FindString( ::cText )
-                        If ::nLastFound > 0
-                          Exit
-                        EndIf
-                     EndDo
+                        IF ::nLastFound > 0
+                          EXIT
+                        ENDIF
+                     ENDDO
 
-                     If BackOrd != NIL
-                        ( nArea )->( OrdSetFocus( BackOrd ) )
-                     EndIf
-                     ( nArea )->( DBGoTo( BackRec ) )
-                  EndIf
-               EndIf
+                     IF BackOrd != NIL
+                        ( nArea )->( ordSetFocus( BackOrd ) )
+                     ENDIF
+                     ( nArea )->( dbGoto( BackRec ) )
+                  ENDIF
+               ENDIF
 
-               If ::nLastFound > 0
+               IF ::nLastFound > 0
                   IF Len( ::aValues ) == 0
                      ::Value := ::nLastFound
                   ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
                      ::Value := ::aValues[ ::nLastFound ]
                   ENDIF
-               Else
+               ELSE
                   ::cText := ""
-               EndIf
-            EndIf
+               ENDIF
+            ENDIF
 
-            Return 0
-         EndIf
-      Else
+            RETURN 0
+         ENDIF
+      ELSE
          ::cText := ""
-         If OSisWinXPorLater() .AND. ::lDelayLoad
-            If ( nArea := Select( ::WorkArea ) ) != 0
+         IF OSisWinXPorLater() .AND. ::lDelayLoad
+            IF ( nArea := Select( ::WorkArea ) ) != 0
                // load all remaining items so OS can search
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
-               Do While ! ( nArea )->( Eof() )
-                  ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                  AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                  If ValidHandler( ::ImageList )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
+               DO WHILE ! ( nArea )->( Eof() )
+                  ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                  AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                  IF ValidHandler( ::ImageList )
                      ::AddBitMap( Eval( ::ImageSource ) )
-                  EndIf
+                  ENDIF
 
-                  ::nLastItem := ( nArea )->( Recno() )
-                  ( nArea )->( DBSkip() )
-               EndDo
+                  ::nLastItem := ( nArea )->( RecNo() )
+                  ( nArea )->( dbSkip() )
+               ENDDO
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
-            EndIf
-         EndIf
-      EndIf
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
+            ENDIF
+         ENDIF
+      ENDIF
 
-   ElseIf nMsg == WM_MOUSEWHEEL
+   ELSEIF nMsg == WM_MOUSEWHEEL
       ::cText := ""
-      If OSisWinXPorLater() .AND. ::lDelayLoad
-         If ( nArea := Select( ::WorkArea ) ) != 0
-            If GET_WHEEL_DELTA_WPARAM( wParam ) < 0                // DOWN
+      IF OSisWinXPorLater() .AND. ::lDelayLoad
+         IF ( nArea := Select( ::WorkArea ) ) != 0
+            IF GET_WHEEL_DELTA_WPARAM( wParam ) < 0                // DOWN
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
                i := 0
-               Do While ! ( nArea )->( Eof() ) .and. i < 3
-                  ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                  AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                  If ValidHandler( ::ImageList )
+               DO WHILE ! ( nArea )->( Eof() ) .and. i < 3
+                  ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                  AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                  IF ValidHandler( ::ImageList )
                      ::AddBitMap( Eval( ::ImageSource ) )
-                  EndIf
+                  ENDIF
 
-                  ::nLastItem := ( nArea )->( Recno() )
-                  ( nArea )->( DBSkip() )
+                  ::nLastItem := ( nArea )->( RecNo() )
+                  ( nArea )->( dbSkip() )
                   i ++
-               EndDo
+               ENDDO
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
-            EndIf
-         EndIf
-      EndIf
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
+            ENDIF
+         ENDIF
+      ENDIF
 
-   ElseIf nMsg == WM_KEYDOWN
-      If OSisWinXPorLater() .AND. ::lDelayLoad
-         If ( nArea := Select( ::WorkArea ) ) != 0
-            Do Case
-            Case wParam == VK_END
+   ELSEIF nMsg == WM_KEYDOWN
+      IF OSisWinXPorLater() .AND. ::lDelayLoad
+         IF ( nArea := Select( ::WorkArea ) ) != 0
+            DO CASE
+            CASE wParam == VK_END
                ::cText := ""
 
                // load all remaining items
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
-               Do While ! ( nArea )->( Eof() )
-                  ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                  AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                  If ValidHandler( ::ImageList )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
+               DO WHILE ! ( nArea )->( Eof() )
+                  ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                  AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                  IF ValidHandler( ::ImageList )
                      ::AddBitMap( Eval( ::ImageSource ) )
-                  EndIf
+                  ENDIF
 
-                  ::nLastItem := ( nArea )->( Recno() )
-                  ( nArea )->( DBSkip() )
-               EndDo
+                  ::nLastItem := ( nArea )->( RecNo() )
+                  ( nArea )->( dbSkip() )
+               ENDDO
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
 
-            Case wParam == VK_NEXT
+            CASE wParam == VK_NEXT
                ::cText := ""
 
                // load one more page of items
                nMax := ::VisibleItems
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
                i := 0
-               Do While ! ( nArea )->( Eof() ) .and. i < nMax
-                  ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                  AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                  If ValidHandler( ::ImageList )
+               DO WHILE ! ( nArea )->( Eof() ) .and. i < nMax
+                  ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                  AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                  IF ValidHandler( ::ImageList )
                      ::AddBitMap( Eval( ::ImageSource ) )
-                  EndIf
+                  ENDIF
 
-                  ::nLastItem := ( nArea )->( Recno() )
-                  ( nArea )->( DBSkip() )
+                  ::nLastItem := ( nArea )->( RecNo() )
+                  ( nArea )->( dbSkip() )
                   i ++
-               EndDo
+               ENDDO
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
 
-            Case wParam == VK_DOWN
+            CASE wParam == VK_DOWN
                ::cText := ""
 
                // load one more item
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
-               If ! ( nArea )->( Eof() )
-                  ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                  AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                  If ValidHandler( ::ImageList )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
+               IF ! ( nArea )->( Eof() )
+                  ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                  AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                  IF ValidHandler( ::ImageList )
                      ::AddBitMap( Eval( ::ImageSource ) )
-                  EndIf
+                  ENDIF
 
-                  ::nLastItem := ( nArea )->( Recno() )
-               EndIf
+                  ::nLastItem := ( nArea )->( RecNo() )
+               ENDIF
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
 
-            Case wParam == VK_UP .OR. wParam == VK_HOME .OR. wParam == VK_PRIOR
+            CASE wParam == VK_UP .OR. wParam == VK_HOME .OR. wParam == VK_PRIOR
                ::cText := ""
 
-            EndCase
-         EndIf
-      Endif
+            ENDCASE
+         ENDIF
+      ENDIF
 
-   ElseIf nMsg == WM_LBUTTONDOWN
-      If ! ::lFocused
+   ELSEIF nMsg == WM_LBUTTONDOWN
+      IF ! ::lFocused
          ::SetFocus()
-      EndIf
+      ENDIF
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TCombo
 
-   Local Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd := NIL
+   LOCAL Hi_wParam := HIWORD( wParam ), nArea, BackRec, i, nMax, bField, bValueSource, lNoEval, BackOrd := NIL
 
-   if Hi_wParam == CBN_SELCHANGE
-      If ::lAutosize
+   IF Hi_wParam == CBN_SELCHANGE
+      IF ::lAutosize
          ::Autosize(.T.)
-      EndIf
+      ENDIF
 
       ::DoChange()
-      Return NIL
+      RETURN NIL
 
-   ElseIf Hi_wParam == CBN_DROPDOWN
+   ELSEIF Hi_wParam == CBN_DROPDOWN
       ::cText := ""
       ::DoEvent( ::OnListDisplay, "LISTDISPLAY" )
-      Return NIL
+      RETURN NIL
 
-   ElseIf Hi_wParam == CBN_CLOSEUP
+   ELSEIF Hi_wParam == CBN_CLOSEUP
       ::cText := ""
       ::DoEvent( ::OnListClose, "LISTCLOSE" )
-      Return NIL
+      RETURN NIL
 
-   ElseIf Hi_wParam == CBN_KILLFOCUS
+   ELSEIF Hi_wParam == CBN_KILLFOCUS
       ::cText := ""
       ::lFocused := .F.
-      Return ::DoLostFocus()
+      RETURN ::DoLostFocus()
 
-   ElseIf Hi_wParam == CBN_SETFOCUS .OR. ;
+   ELSEIF Hi_wParam == CBN_SETFOCUS .OR. ;
           Hi_wParam == BN_SETFOCUS
-      If ! ::lFocused
+      IF ! ::lFocused
          ::cText := ""
          ::lFocused := .T.
          GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
          ::FocusEffect()
          ::DoEvent( ::OnGotFocus, "GOTFOCUS" )
-      EndIf
-      Return NIL
+      ENDIF
+      RETURN NIL
 
-   ElseIf Hi_wParam == EN_CHANGE
-      // Avoids incorrect processing
-      Return NIL
+   ELSEIF Hi_wParam == EN_CHANGE
+      // avoids incorrect processing
+      RETURN NIL
 
-   ElseIf Hi_wParam == CBN_EDITCHANGE
-      If ::lIncremental
+   ELSEIF Hi_wParam == CBN_EDITCHANGE
+      IF ::lIncremental
          ::cText := Upper( ::DisplayValue )
-         If ::oEditBox:LastKey == VK_BACK
+         IF ::oEditBox:LastKey == VK_BACK
             nMax := Len( ::cText )
-            If nMax > 0
+            IF nMax > 0
                ::cText := SubStr( ::cText, 1, nMax - 1 )
-            EndIf
-         EndIf
+            ENDIF
+         ENDIF
          ::nLastFound := ::FindString( ::cText )
-         If ::nLastFound > 0
+         IF ::nLastFound > 0
             ComboSetCurSel( ::hWnd, ::nLastFound )
-            ::SetEditSel( LEN( ::cText ), LEN( ::DisplayValue ) )
+            ::SetEditSel( Len( ::cText ), Len( ::DisplayValue ) )
             ::DoChange()
-            Return NIL
-         EndIf
+            RETURN NIL
+         ENDIF
          // if there are more items not already loaded, load them and search again
-         If OSisWinXPorLater() .AND. ::lDelayLoad
-            If ( nArea := Select( ::WorkArea ) ) != 0
+         IF OSisWinXPorLater() .AND. ::lDelayLoad
+            IF ( nArea := Select( ::WorkArea ) ) != 0
                nMax := ::VisibleItems
                bField := ::Field
                bValueSource := ::ValueSource
-               lNoEval := EMPTY( bValueSource )
+               lNoEval := Empty( bValueSource )
 
-               BackRec := ( nArea )->( Recno() )
-               If HB_IsBlock( ::SourceOrder )
-                  BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
-               ElseIf ValType( ::SourceOrder ) $ "CMN"
-                  BackOrd := ( nArea )->( OrdSetFocus( ::SourceOrder ) )
-               EndIf
+               BackRec := ( nArea )->( RecNo() )
+               IF HB_ISBLOCK( ::SourceOrder )
+                  BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::SourceOrder ) ) ) )
+               ELSEIF ValType( ::SourceOrder ) $ "CMN"
+                  BackOrd := ( nArea )->( ordSetFocus( ::SourceOrder ) )
+               ENDIF
 
-               ( nArea )->( DBGoto( ::nLastItem ) )
-               ( nArea )->( DBSkip() )
-               Do While ! ( nArea )->( Eof() )
+               ( nArea )->( dbGoto( ::nLastItem ) )
+               ( nArea )->( dbSkip() )
+               DO WHILE ! ( nArea )->( Eof() )
                   // load more items
                   i := 0
-                  Do While ! ( nArea )->( Eof() ) .AND. i < nMax
-                     ::AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
-                     AADD( ::aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-                     If ValidHandler( ::ImageList )
+                  DO WHILE ! ( nArea )->( Eof() ) .AND. i < nMax
+                     ::AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::ItemNumber ) } )
+                     AAdd( ::aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+                     IF ValidHandler( ::ImageList )
                         ::AddBitMap( Eval( ::ImageSource ) )
-                     EndIf
+                     ENDIF
 
-                     ::nLastItem := ( nArea )->( Recno() )
-                     ( nArea )->( DBSkip() )
+                     ::nLastItem := ( nArea )->( RecNo() )
+                     ( nArea )->( dbSkip() )
                      i ++
-                  EndDo
+                  ENDDO
 
                   // search again
                   ::nLastFound := ::FindString( ::cText )
-                  If ::nLastFound > 0
-                    Exit
-                  EndIf
-               EndDo
+                  IF ::nLastFound > 0
+                    EXIT
+                  ENDIF
+               ENDDO
 
-               If BackOrd != NIL
-                  ( nArea )->( OrdSetFocus( BackOrd ) )
-               EndIf
-               ( nArea )->( DBGoTo( BackRec ) )
+               IF BackOrd != NIL
+                  ( nArea )->( ordSetFocus( BackOrd ) )
+               ENDIF
+               ( nArea )->( dbGoto( BackRec ) )
 
-               If ::nLastFound > 0
+               IF ::nLastFound > 0
                   ComboSetCurSel( ::hWnd, ::nLastFound )
-                  ::SetEditSel( LEN( ::cText ), LEN( ::DisplayValue ) )
+                  ::SetEditSel( Len( ::cText ), Len( ::DisplayValue ) )
                   ::DoChange()
-                  Return NIL
-               EndIf
-            EndIf
-         EndIf
-      EndIf
+                  RETURN NIL
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
       ::DoEvent( ::OnClick, "DISPLAYCHANGE" )
-      Return NIL
+      RETURN NIL
 
-   ElseIf Hi_wParam == EN_KILLFOCUS .OR. ;
+   ELSEIF Hi_wParam == EN_KILLFOCUS .OR. ;
           Hi_wParam == BN_KILLFOCUS
-      // Avoids incorrect processing
-      Return NIL
+      // avoids incorrect processing
+      RETURN NIL
 
-   EndIf
+   ENDIF
 
    RETURN ::Super:Events_Command( wParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
 
    /*
@@ -1033,16 +1057,17 @@ METHOD SetEditSel( nStart, nEnd ) CLASS TCombo
    When the combo gets the focus, all the text is selected.
    */
 
-   Local lRet
+   LOCAL lRet
 
-   If HB_IsNumeric( nStart ) .and. nStart >= -1 .and. HB_IsNumeric( nEnd ) .and. nEnd >= -1
+   IF HB_ISNUMERIC( nStart ) .AND. nStart >= -1 .AND. HB_ISNUMERIC( nEnd ) .AND. nEnd >= -1
       lRet := SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nStart, nEnd ) )
-   Else
+   ELSE
       lRet := .F.
-   EndIf
+   ENDIF
 
    RETURN lRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetEditSel() CLASS TCombo
 
    /*
@@ -1056,10 +1081,11 @@ METHOD GetEditSel() CLASS TCombo
    When the combo gets the focus, all the text is selected.
    */
 
-   Local rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
+   LOCAL rRange := SendMessage( ::hWnd, CB_GETEDITSEL, 0, 0 )
 
    RETURN { LoWord( rRange ), HiWord( rRange ) }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CaretPos( nPos ) CLASS TCombo
 
    /*
@@ -1071,12 +1097,13 @@ METHOD CaretPos( nPos ) CLASS TCombo
    When the combo gets the focus, all the text is selected.
    */
 
-   If HB_IsNumeric( nPos )
+   IF HB_ISNUMERIC( nPos )
       SendMessage( ::hWnd, CB_SETEDITSEL, 0, MakeLParam( nPos, nPos ) )
-   EndIf
+   ENDIF
 
    RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ItemValue( cText ) CLASS TCombo
 
    LOCAL nPos, uRet
@@ -1095,26 +1122,28 @@ METHOD ItemValue( cText ) CLASS TCombo
 
    RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ItemBySource( nItem, uValue ) CLASS TCombo
 
-   Local cRet, nPos
+   LOCAL cRet, nPos
 
-   If LEN( ::aValues ) == 0
+   IF Len( ::aValues ) == 0
       cRet := ComboItem( Self, nItem, uValue )
-   Else
-      If VALTYPE( ::aValues[ 1 ] ) == VALTYPE( nItem ) .OR. ;
-         ( VALTYPE( nItem ) $ "CM" .AND. VALTYPE( ::aValues[ 1 ] ) $ "CM" )
-         nPos := ASCAN( ::aValues, nItem )
-         If nPos > 0
+   ELSE
+      IF ValType( ::aValues[ 1 ] ) == ValType( nItem ) .OR. ;
+         ( ValType( nItem ) $ "CM" .AND. ValType( ::aValues[ 1 ] ) $ "CM" )
+         nPos := AScan( ::aValues, nItem )
+         IF nPos > 0
             cRet := ComboItem( Self, nPos, uValue )
-         Else
+         ELSE
             cRet := ""
-         EndIf
-      EndIf
-   EndIf
+         ENDIF
+      ENDIF
+   ENDIF
 
    RETURN cRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AddItem( uValue, uSource ) CLASS TCombo
 
    IF PCount() > 1 .AND. ( Len( ::aValues ) > 0 .OR. ( Len( ::aValues ) == 0 .AND. ::ItemCount == 0 ) )
@@ -1123,16 +1152,18 @@ METHOD AddItem( uValue, uSource ) CLASS TCombo
 
    RETURN TCombo_Add_Item( Self, uValue )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
 
-   If PCOUNT() > 2 .AND. LEN( ::aValues ) > 0
-      AADD( ::aValues, NIL )
-      AINS( ::aValues, nItem )
+   IF PCount() > 2 .AND. Len( ::aValues ) > 0
+      AAdd( ::aValues, NIL )
+      AIns( ::aValues, nItem )
       ::aValues[ nItem ] := uSource
-   EndIf
+   ENDIF
 
    RETURN TCombo_Insert_Item( Self, nItem, uValue )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteItem( nPos ) CLASS TCombo
 
   LOCAL nSize := Len( ::aValues )
@@ -1144,6 +1175,7 @@ METHOD DeleteItem( nPos ) CLASS TCombo
 
    RETURN ComboboxDeleteString( ::hWnd, nPos )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteAllItems() CLASS TCombo
 
    ::aValues := {}
@@ -1154,6 +1186,7 @@ METHOD DeleteAllItems() CLASS TCombo
    RETURN NIL
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include <hbapi.h>
@@ -1163,79 +1196,90 @@ METHOD DeleteAllItems() CLASS TCombo
 #include <commctrl.h>
 #include <windowsx.h>
 #include "oohg.h"
+
+#ifndef CB_GETCOMBOBOXINFO
+   #define CB_GETCOMBOBOXINFO 0x0164
+#endif
+
 #define s_Super s_TLabel
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TCombo_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITCOMBOBOX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hwnd;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TCombo_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, 0, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
+{
    HWND hcombo;
-   int Style, StyleEx;
+   INT Style, StyleEx;
 
-   hwnd = HWNDparam( 1 );
-
+   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS;
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS  ;
+   hcombo = CreateWindowEx( StyleEx, "COMBOBOX", "", Style,
+                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   ///// | CBS_OWNERDRAWFIXED; // CBS_OWNERDRAWVARIABLE;  si se coloca ownerdrawfixed el alto del combo no cambia cuando se cambia el font
-
-   hcombo = CreateWindowEx( StyleEx, "COMBOBOX",
-                            "",
-                            Style,
-                            hb_parni( 3 ),
-                            hb_parni( 4 ),
-                            hb_parni( 5 ),
-                            hb_parni( 6 ),
-                            hwnd,
-                            HMENUparam( 2 ),
-                            GetModuleHandle( NULL ),
-                            NULL ) ;
-
-   lpfnOldWndProc = ( WNDPROC ) SetWindowLong( ( HWND ) hcombo, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc );
+   _OOHG_TCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hcombo, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hcombo );
 }
 
-HB_FUNC( COMBOADDSTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOADDSTRING )          /* FUNCTION ComboAddString( hWnd, cString ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), CB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
 }
 
-HB_FUNC( COMBOINSERTSTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOINSERTSTRING )          /* FUNCTION ComboInsertString( hWnd, cString, nPos ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
 }
 
-HB_FUNC( COMBOSETCURSEL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOSETCURSEL )          /* FUNCTION ComboSetCurSel( hwnd, nPos ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
 }
 
-HB_FUNC( COMBOGETCURSEL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOGETCURSEL )          /* FUNCTION ComboGetCurSel( hWnd ) -> nPos */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_GETCURSEL, 0, 0 ) + 1 );
 }
 
-HB_FUNC( COMBOGETDROPPEDWIDTH )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOGETDROPPEDWIDTH )          /* FUNCTION ComboGetDroppedWidth( hWnd ) -> nWidth */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_GETDROPPEDWIDTH, 0, 0 ) );
 }
 
-HB_FUNC( COMBOSETDROPPEDWIDTH )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOSETDROPPEDWIDTH )          /* FUNCTION ComboSetDroppedWidth( hWnd, nWidth ) -> nWidth */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH, ( WPARAM ) hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC( COMBOBOXDELETESTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXDELETESTRING )          /* FUNCTION ComboboxDeleteString( hWnd, nPos ) -> lSuccess */
 {
-   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) hb_parni( 2 ) - 1, 0 ) >= 0 )
+   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, ( WPARAM ) hb_parni( 2 ) - 1, 0 ) >= 0 )
    {
       hb_retl( TRUE );
    }
@@ -1245,51 +1289,55 @@ HB_FUNC( COMBOBOXDELETESTRING )
    }
 }
 
-HB_FUNC( COMBOBOXRESET )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXRESET )          /* FUNCTION ComboboxReset( hWnd ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), CB_RESETCONTENT, 0, 0 );
 }
 
-HB_FUNC( COMBOGETSTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOGETSTRING )          /* FUNCTION ComboGetString( hWnd, nPos ) -> cString */
 {
-   char cString [1024] = "" ;
+   char cString [1024] = "";
    SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
    hb_retc( cString );
 }
 
-HB_FUNC( COMBOBOXGETITEMCOUNT )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXGETITEMCOUNT )          /* FUNCTION ComboboxGetItemCount( hWnd ) -> nCount */
 {
    hb_retnl( SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 ) );
 }
 
-void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nItem )
 {
-   BYTE *cBuffer;
+   BYTE * cBuffer;
    ULONG ulSize, ulSize2;
-   int *pImage;
+   INT * pImage;
 
    if( oSelf->AuxBuffer || pStruct.iImage1 != -1 || pStruct.iImage2 != -1 )
    {
-      if( nItem >= ( int ) oSelf->AuxBufferLen )
+      if( nItem >= ( INT ) oSelf->AuxBufferLen )
       {
-         ulSize = sizeof( int ) * 2 * ( nItem + 100 );
-         cBuffer = (BYTE *) hb_xgrab( ulSize );
+         ulSize = sizeof( INT ) * 2 * ( nItem + 100 );
+         cBuffer = ( BYTE * ) hb_xgrab( ulSize );
          memset( cBuffer, -1, ulSize );
          if( oSelf->AuxBuffer )
          {
-            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof( int ) * 2 * oSelf->AuxBufferLen ) );
+            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof( INT ) * 2 * oSelf->AuxBufferLen ) );
             hb_xfree( oSelf->AuxBuffer );
          }
          oSelf->AuxBuffer = cBuffer;
          oSelf->AuxBufferLen = nItem + 100;
       }
 
-      pImage = &( ( int * ) oSelf->AuxBuffer )[ nItem * 2 ];
+      pImage = &( ( INT * ) oSelf->AuxBuffer )[ nItem * 2 ];
       if( nItem < ComboBox_GetCount( oSelf->hWnd ) )
       {
-         ulSize  = sizeof( int ) * 2 * ComboBox_GetCount( oSelf->hWnd );
-         ulSize2 = sizeof( int ) * 2 * nItem;
-         cBuffer = (BYTE *) hb_xgrab( ulSize );
+         ulSize  = sizeof( INT ) * 2 * ComboBox_GetCount( oSelf->hWnd );
+         ulSize2 = sizeof( INT ) * 2 * nItem;
+         cBuffer = ( BYTE * ) hb_xgrab( ulSize );
          memcpy( cBuffer, pImage, ulSize - ulSize2 );
          memcpy( &pImage[ 2 ], cBuffer, ulSize - ulSize2 );
          hb_xfree( cBuffer );
@@ -1299,22 +1347,23 @@ void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nI
    }
 }
 
-HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lParam ) CLASS TCombo -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) hb_parnl( 1 );
+   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) HB_PARNL( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
-   char cBuffer[ 2048 ];
-   int x, y, cx, cy, iImage, dy;
+   CHAR cBuffer[ 2048 ];
+   INT x, y, cx, cy, iImage, dy;
 
-   if( lpdis->itemID != (UINT) -1 )
+   if( lpdis->itemID != ( UINT ) -1 )
    {
-      // Checks if image defined for current item
+      // checks if and image is defined for the current item
       if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
       {
-         iImage = ( ( int * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+         iImage = ( ( INT * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
          if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
          {
             ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
@@ -1333,36 +1382,36 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          iImage = -1;
       }
 
-      // Text color
+      // text color
       if( lpdis->itemState & ODS_SELECTED )
       {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
-         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT )     : (COLORREF) oSelf->lBackColorSelected ) );
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : ( COLORREF ) oSelf->lFontColorSelected ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : ( COLORREF ) oSelf->lBackColorSelected ) );
       }
       else if( lpdis->itemState & ODS_DISABLED )
       {
          FontColor = SetTextColor( lpdis->hDC, GetSysColor( COLOR_GRAYTEXT ) );
-         BackColor = SetBkColor(   lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
+         BackColor = SetBkColor( lpdis->hDC, GetSysColor( COLOR_BTNFACE ) );
       }
       else
       {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor ) );
-         BackColor = SetBkColor(   lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW )     : (COLORREF) oSelf->lBackColor ) );
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lBackColor ) );
       }
 
-      // Window position
+      // window position
       GetTextMetrics( lpdis->hDC, &lptm );
       y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
       x = LOWORD( GetDialogBaseUnits() ) / 2;
 
-      // Text
+      // text
       SendMessage( lpdis->hwndItem, CB_GETLBTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
       ExtTextOut( lpdis->hDC, cx + x * 2, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
 
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
 
-      // Draws image vertically centered
+      // draws image vertically centered
       if( iImage != -1 )
       {
          if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
@@ -1390,7 +1439,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
          ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, x, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
       }
 
-      // Focused rectangle
+      // focused rectangle
       if( lpdis->itemState & ODS_FOCUS )
       {
          DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
@@ -1398,19 +1447,20 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    }
 }
 
-HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureItem( lParam ) CLASS TCombo -> 1 */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) hb_parnl( 1 );
+   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) HB_PARNL( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );
    HFONT hFont, hOldFont;
    SIZE sz;
-   int iSize;
+   INT iSize;
 
-   // Checks for a pre-defined text size
+   // checks for a pre-defined text size
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
@@ -1433,12 +1483,13 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lPar
    hb_retnl( 1 );
 }
 
-HB_FUNC( TCOMBO_ADD_ITEM )   // Called from METHOD AddItem with ( Self, uValue )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TCOMBO_ADD_ITEM )          /* FUNCTION TCombo_Add_Item( Self, uValue ) -> nItem */
 {
-   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    struct IMAGE_PARAMETER pStruct;
-   int nItem = ComboBox_GetCount( oSelf->hWnd );
+   INT nItem = ComboBox_GetCount( oSelf->hWnd );
 
    ImageFillParameter( &pStruct, hb_param( 2, HB_IT_ANY ) );
    TCombo_SetImageBuffer( oSelf, pStruct, nItem );
@@ -1447,15 +1498,16 @@ HB_FUNC( TCOMBO_ADD_ITEM )   // Called from METHOD AddItem with ( Self, uValue )
    hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
 
-HB_FUNC( COMBOITEM )   // Called from METHOD Item with ( Self, nItem, uValue )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uValue ) -> cItem */
 {
-   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 3, HB_IT_ANY );
-   int nItem = hb_parni( 2 ) - 1;
-   char *cBuffer;
+   INT nItem = hb_parni( 2 ) - 1;
+   CHAR * cBuffer;
    struct IMAGE_PARAMETER pStruct;
-   int nItemSel, nItemNew;
+   INT nItemSel, nItemNew;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
    {
@@ -1482,18 +1534,19 @@ HB_FUNC( COMBOITEM )   // Called from METHOD Item with ( Self, nItem, uValue )
       }
    }
 
-   cBuffer = (char *) hb_xgrab( 2000 );
+   cBuffer = ( CHAR * ) hb_xgrab( 2000 );
    SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
    hb_retc( cBuffer );
    hb_xfree( cBuffer );
 }
 
-HB_FUNC( TCOMBO_INSERT_ITEM )   // Called from METHOD InsertItem( Self, nItem, uValue )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nItem, uValue ) -> nItem */
 {
-   PHB_ITEM pSelf = (PHB_ITEM) hb_param( 1, HB_IT_ANY );
+   PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 3, HB_IT_ANY );
-   int nItem = hb_parni( 2 ) - 1;
+   INT nItem = hb_parni( 2 ) - 1;
    struct IMAGE_PARAMETER pStruct;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
@@ -1513,21 +1566,20 @@ HB_FUNC( TCOMBO_INSERT_ITEM )   // Called from METHOD InsertItem( Self, nItem, u
    hb_ret();
 }
 
-HB_FUNC( COMBOBOXFINDSTRING )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXFINDSTRING )          /* FUNCTION ComboboxFindString( hWnd, nStart, cString ) -> nPos */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
-HB_FUNC( COMBOBOXFINDSTRINGEXACT )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXFINDSTRINGEXACT )          /* FUNCTION ComboboxFindStringExact( hWnd, nStart, cString ) -> nPos */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
 }
 
-#ifndef CB_GETCOMBOBOXINFO
-   #define CB_GETCOMBOBOXINFO 0x0164
-#endif
-
-HB_FUNC( COMBOBOXGETLISTHWND )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXGETLISTHWND )          /* FUNCTION ComboboxGetListHWND( hWnd ) -> hWnd */
 {
    COMBOBOXINFO info;
 
@@ -1539,7 +1591,8 @@ HB_FUNC( COMBOBOXGETLISTHWND )
    HWNDret( info.hwndList );
 }
 
-HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )          /* METHOD ItemHeight() CLASS TCombo -> nHeight */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1547,7 +1600,7 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
    COMBOBOXINFO info;
    HFONT hFont, hOldFont;
    SIZE sz;
-   int iSize;
+   INT iSize;
 
    info.cbSize = sizeof( COMBOBOXINFO );
    info.hwndList = 0;
@@ -1576,6 +1629,7 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )   // METHOD ItemHeight()
 #pragma ENDDUMP
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TListCombo FROM TControl STATIC
 
    METHOD Define
@@ -1585,6 +1639,7 @@ CLASS TListCombo FROM TControl STATIC
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ParentForm, hWnd ) CLASS TListCombo
 
    ::SetForm( , ParentForm )
@@ -1593,171 +1648,186 @@ METHOD Define( ParentForm, hWnd ) CLASS TListCombo
 
    RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_VScroll( wParam ) CLASS TListCombo
 
-   Local Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd := NIL
+   LOCAL Lo_wParam := LoWord( wParam ), nArea, bField, bValueSource, lNoEval, BackRec, nLoad, i, BackOrd := NIL
 
-   If Lo_wParam == SB_LINEDOWN
-      If ( nArea := Select( ::Container:WorkArea ) ) != 0
+   IF Lo_wParam == SB_LINEDOWN
+      IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          // load one more item
          bField := ::Container:Field
          bValueSource := ::Container:ValueSource
-         lNoEval := EMPTY( bValueSource )
+         lNoEval := Empty( bValueSource )
 
          BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) == "B"
-            BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         EndIf
+         IF ValType( ::Container:SourceOrder ) == "B"
+            BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
+         ELSEIF ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( ordSetFocus( ::Container:SourceOrder ) )
+         ENDIF
 
-         ( nArea )->( DBGoto( ::Container:nLastItem ) )
-         ( nArea )->( DBSkip() )
+         ( nArea )->( dbGoto( ::Container:nLastItem ) )
+         ( nArea )->( dbSkip() )
          If ! ( nArea )->( Eof() )
-            ::Container:AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
-            AADD( ::Container:aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-            If ValidHandler( ::Container:ImageList )
+            ::Container:AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
+            AAdd( ::Container:aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+            IF ValidHandler( ::Container:ImageList )
                ::Container:AddBitMap( Eval( ::Container:ImageSource ) )
-            EndIf
+            ENDIF
 
-            ::Container:nLastItem := ( nArea )->( Recno() )
-         EndIf
+            ::Container:nLastItem := ( nArea )->( RecNo() )
+         ENDIF
 
-         If BackOrd != NIL
-            ( nArea )->( OrdSetFocus( BackOrd ) )
-         EndIf
-         ( nArea )->( DBGoTo( BackRec ) )
-      EndIf
+         IF BackOrd != NIL
+            ( nArea )->( ordSetFocus( BackOrd ) )
+         ENDIF
+         ( nArea )->( dbGoto( BackRec ) )
+      ENDIF
 
-   ElseIf Lo_wParam == SB_PAGEDOWN .OR. Lo_wParam == SB_THUMBPOSITION
+   ELSEIF Lo_wParam == SB_PAGEDOWN .OR. Lo_wParam == SB_THUMBPOSITION
       If ( nArea := Select( ::Container:WorkArea ) ) != 0
          // load one more page of items
          nLoad := ::Container:VisibleItems
          bField := ::Container:Field
          bValueSource := ::Container:ValueSource
-         lNoEval := EMPTY( bValueSource )
+         lNoEval := Empty( bValueSource )
 
-         BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) == "B"
-            BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         EndIf
+         BackRec := ( nArea )->( RecNo() )
+         IF ValType( ::Container:SourceOrder ) == "B"
+            BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
+         ELSEIF ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( ordSetFocus( ::Container:SourceOrder ) )
+         ENDIF
 
-         ( nArea )->( DBGoto( ::Container:nLastItem ) )
-         ( nArea )->( DBSkip() )
+         ( nArea )->( dbGoto( ::Container:nLastItem ) )
+         ( nArea )->( dbSkip() )
          i := 0
-         Do While ! ( nArea )->( Eof() ) .and. i < nLoad
-            ::Container:AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
-            AADD( ::Container:aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-            If ValidHandler( ::Container:ImageList )
+         DO WHILE ! ( nArea )->( Eof() ) .AND. i < nLoad
+            ::Container:AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
+            AAdd( ::Container:aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+            IF ValidHandler( ::Container:ImageList )
                ::Container:AddBitMap( Eval( ::Container:ImageSource ) )
-            EndIf
+            ENDIF
 
-            ::Container:nLastItem := ( nArea )->( Recno() )
-            ( nArea )->( DBSkip() )
+            ::Container:nLastItem := ( nArea )->( RecNo() )
+            ( nArea )->( dbSkip() )
             i ++
-         EndDo
+         ENDDO
 
-         If BackOrd != NIL
-            ( nArea )->( OrdSetFocus( BackOrd ) )
-         EndIf
-         ( nArea )->( DBGoTo( BackRec ) )
-      EndIf
+         IF BackOrd != NIL
+            ( nArea )->( ordSetFocus( BackOrd ) )
+         ENDIF
+         ( nArea )->( dbGoto( BackRec ) )
+      ENDIF
 
-   ElseIf Lo_wParam == SB_BOTTOM
-      If ( nArea := Select( ::Container:WorkArea ) ) != 0
+   ELSEIF Lo_wParam == SB_BOTTOM
+      IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          // load all remaining items
          bField := ::Container:Field
          bValueSource := ::Container:ValueSource
-         lNoEval := EMPTY( bValueSource )
+         lNoEval := Empty( bValueSource )
 
-         BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) == "B"
-            BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         EndIf
+         BackRec := ( nArea )->( RecNo() )
+         IF ValType( ::Container:SourceOrder ) == "B"
+            BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
+         ELSEIF ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( ordSetFocus( ::Container:SourceOrder ) )
+         ENDIF
 
-         ( nArea )->( DBGoto( ::Container:nLastItem ) )
-         ( nArea )->( DBSkip() )
-         Do While ! ( nArea )->( Eof() )
-            ::Container:AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
-            AADD( ::Container:aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-            If ValidHandler( ::Container:ImageList )
+         ( nArea )->( dbGoto( ::Container:nLastItem ) )
+         ( nArea )->( dbSkip() )
+         DO WHILE ! ( nArea )->( Eof() )
+            ::Container:AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
+            AAdd( ::Container:aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+            IF ValidHandler( ::Container:ImageList )
                ::Container:AddBitMap( Eval( ::Container:ImageSource ) )
-            EndIf
+            ENDIF
 
-            ::Container:nLastItem := ( nArea )->( Recno() )
-            ( nArea )->( DBSkip() )
-         EndDo
+            ::Container:nLastItem := ( nArea )->( RecNo() )
+            ( nArea )->( dbSkip() )
+         ENDDO
 
-         If BackOrd != NIL
-            ( nArea )->( OrdSetFocus( BackOrd ) )
-         EndIf
-         ( nArea )->( DBGoTo( BackRec ) )
-      EndIf
+         IF BackOrd != NIL
+            ( nArea )->( ordSetFocus( BackOrd ) )
+         ENDIF
+         ( nArea )->( dbGoto( BackRec ) )
+      ENDIF
 
-   ElseIf Lo_wParam == SB_THUMBTRACK
-      If ( nArea := Select( ::Container:WorkArea ) ) != 0
+   ELSEIF Lo_wParam == SB_THUMBTRACK
+      IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          bField := ::Container:Field
          bValueSource := ::Container:ValueSource
-         lNoEval := EMPTY( bValueSource )
+         lNoEval := Empty( bValueSource )
 
-         BackRec := ( nArea )->( Recno() )
-         If ValType( ::Container:SourceOrder ) == "B"
-            BackOrd := ( nArea )->( OrdSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
-         ElseIf ValType( ::Container:SourceOrder ) $ "CMN"
-            BackOrd := ( nArea )->( OrdSetFocus( ::Container:SourceOrder ) )
-         EndIf
+         BackRec := ( nArea )->( RecNo() )
+         IF ValType( ::Container:SourceOrder ) == "B"
+            BackOrd := ( nArea )->( ordSetFocus( ( nArea )->( Eval( ::Container:SourceOrder ) ) ) )
+         ELSEIF ValType( ::Container:SourceOrder ) $ "CMN"
+            BackOrd := ( nArea )->( ordSetFocus( ::Container:SourceOrder ) )
+         ENDIF
 
-         ( nArea )->( DBGoto( ::Container:nLastItem ) )
-         ( nArea )->( DBSkip() )
+         ( nArea )->( dbGoto( ::Container:nLastItem ) )
+         ( nArea )->( dbSkip() )
          i := 0
-         Do While ! ( nArea )->( Eof() ) .and. i < 3
-            ::Container:AddItem( { ( nArea )->( EVAL( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
-            AADD( ::Container:aValues, If( lNoEval, ( nArea )->( RecNo() ), EVAL( bValueSource ) ) )
-            If ValidHandler( ::Container:ImageList )
+         DO WHILE ! ( nArea )->( Eof() ) .AND. i < 3
+            ::Container:AddItem( { ( nArea )->( Eval( bField ) ), _OOHG_Eval( ::Container:ItemNumber ) } )
+            AAdd( ::Container:aValues, iif( lNoEval, ( nArea )->( RecNo() ), Eval( bValueSource ) ) )
+            IF ValidHandler( ::Container:ImageList )
                ::Container:AddBitMap( Eval( ::Container:ImageSource ) )
-            EndIf
+            ENDIF
 
-            ::Container:nLastItem := ( nArea )->( Recno() )
-            ( nArea )->( DBSkip() )
+            ::Container:nLastItem := ( nArea )->( RecNo() )
+            ( nArea )->( dbSkip() )
             i ++
-         EndDo
+         ENDDO
 
-         If BackOrd != NIL
-            ( nArea )->( OrdSetFocus( BackOrd ) )
-         EndIf
-         ( nArea )->( DBGoTo( BackRec ) )
+         IF BackOrd != NIL
+            ( nArea )->( ordSetFocus( BackOrd ) )
+         ENDIF
+         ( nArea )->( dbGoto( BackRec ) )
          SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_FRAMECHANGED + SWP_NOSIZE + SWP_NOMOVE )
-      EndIf
+      ENDIF
 
-   Else
-      Return ::Super:Events_VScroll( wParam )
+   ELSE
+      RETURN ::Super:Events_VScroll( wParam )
 
-   EndIf
+   ENDIF
 
-   Return NIL
+   RETURN NIL
 
 
 #pragma BEGINDUMP
 
-static WNDPROC lpfnOldWndProcCL = 0;
-
-static LRESULT APIENTRY SubClassFuncCL( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TListCombo_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcCL );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITLISTCOMBO )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFuncCL( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   lpfnOldWndProcCL = ( WNDPROC ) SetWindowLong( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCL );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TListCombo_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITLISTCOMBO )          /* FUNCTION InitListCombo( hWnd ) -> NIL */
+{
+   _OOHG_TListCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCL ) );
 }
 
 #pragma ENDDUMP
 
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TEditCombo FROM TControl STATIC
 
    DATA LastKey                   INIT 0
@@ -1771,6 +1841,7 @@ CLASS TEditCombo FROM TControl STATIC
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( Parent, hWnd ) CLASS TEditCombo
 
    ::Name   := _OOHG_GetNullName()
@@ -1783,6 +1854,7 @@ METHOD Define( Parent, hWnd ) CLASS TEditCombo
 
    RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
 
    HB_SYMBOL_UNUSED( hWnd )
@@ -1794,6 +1866,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MaxLength( nLen ) CLASS TEditCombo
 
    IF HB_ISNUMERIC( nLen )
@@ -1803,6 +1876,7 @@ METHOD MaxLength( nLen ) CLASS TEditCombo
 
    RETURN SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TEditCombo
 
    ::DelFromCtrlsArrays()
@@ -1811,16 +1885,29 @@ METHOD Release() CLASS TEditCombo
 
 #pragma BEGINDUMP
 
-static WNDPROC lpfnOldWndProcCE = 0;
-
-static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TEditCombo_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcCE );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITEDITCOMBO )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   lpfnOldWndProcCE = ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCE );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TEditCombo_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITEDITCOMBO )          /* FUNCTION InitEditCombo( hWnd ) -> NIL */
+{
+   _OOHG_TEditCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCE ) );
 }
 
 #pragma ENDDUMP
