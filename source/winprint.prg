@@ -3395,7 +3395,15 @@ LPVOID rr_loadpicturefromresource( CHAR * resname, LONG * lwidth, LONG * lheight
                      hSource = FindResource( hinstance, resname, "BITMAP" );
                      if( ! hSource )
                      {
-                        return NULL;
+                        hSource = FindResource( hinstance, resname, "PNG" );
+                        if( ! hSource )
+                        {
+                           hSource = FindResource( hinstance, resname, "TIFF" );
+                           if( ! hSource )
+                           {
+                              return NULL;
+                           }
+                        }
                      }
                   }
                }
