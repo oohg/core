@@ -1064,7 +1064,7 @@ METHOD Closable( lCloseable ) CLASS TForm
 
    Local lRet
 
-   If IsWindowStyle( ::hWnd, WS_CAPTION ) .AND. IsWindowStyle( ::hWnd, WS_SYSMENU)
+   If IsWindowStyle( ::hWnd, WS_CAPTION ) .AND. IsWindowStyle( ::hWnd, WS_SYSMENU )
       lRet := MenuEnabled( GetSystemMenu( ::hWnd ), SC_CLOSE, lCloseable )
    Else
       lRet := .F.
@@ -3296,7 +3296,7 @@ FUNCTION Inspector( oWind )
    aControls := oWind:aControls
    aControlsNames := oWind:aControlsNames
 
-   DEFINE WINDOW TEMPLATE OBJ oWnd ;
+   DEFINE WINDOW 0 OBJ oWnd ;
       AT 0,0 ;
       WIDTH 400 ;
       HEIGHT 300 ;
