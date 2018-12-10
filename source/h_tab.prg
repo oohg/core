@@ -1931,7 +1931,7 @@ HB_FUNC( INITTABCONTROL )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC (TABCTRL_SETCURSEL)
+HB_FUNC( TABCTRL_SETCURSEL )
 {
    TabCtrl_SetCurSel( HWNDparam( 1 ),  hb_parni( 2 ) - 1 );
 }

@@ -818,7 +818,7 @@ LONG WidestBtn( LPCTSTR pszStr, HWND hwnd )
    return MAKELONG( sz.cx, sz.cy );
 }
 
-HB_FUNC( MAXTEXTBTNTOOLBAR )      /* FUNCTION MaxTextBtnToolBar( HWND hwndTB, INT cx, INT cy ) -> NIL */
+HB_FUNC( MAXTEXTBTNTOOLBAR )          /* FUNCTION MaxTextBtnToolBar( HWND hwndTB, INT cx, INT cy ) -> NIL */
 {
    CHAR cString[255] = "" ;
    INT i,nBtn;
@@ -913,7 +913,7 @@ HB_FUNC( SHOWTOOLBUTTONTIP )
    lpttt->lpszText = ( LPSTR ) hb_parc( 2 );
 }
 
-HB_FUNC ( GETTOOLBUTTONID )
+HB_FUNC( GETTOOLBUTTONID )
 {
    LPTOOLTIPTEXT lpttt;
    lpttt = ( LPTOOLTIPTEXT ) HB_PARNL( 1 ) ;
