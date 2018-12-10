@@ -296,8 +296,8 @@ Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelC
       c := col
       nHeight := ( l * 30 ) + 90 + ( e * 60 )
 
-      If r + nHeight > GetDeskTopHeight()
-         diff :=  r + nHeight - GetDeskTopHeight()
+      If r + nHeight > GetDesktopRealHeight()
+         diff :=  r + nHeight - GetDesktopRealHeight()
          r := r - diff
       EndIf
    EndIf

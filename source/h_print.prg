@@ -2471,8 +2471,8 @@ METHOD EndDocX() CLASS TDOSPRINT
 
    LOCAL nHandle, wr, nx, ny
 
-   nx := GetDesktopWidth()
-   ny := GetDesktopHeight()
+   nx := GetDesktopRealWidth()
+   ny := GetDesktopRealHeight()
 
    SET DEVICE TO SCREEN
    SET PRINTER TO
@@ -2690,8 +2690,8 @@ METHOD EndDocX() CLASS TTXTPRINT
 
    LOCAL nHandle, wr, nx, ny
 
-   nx := GetDesktopWidth()
-   ny := GetDesktopHeight()
+   nx := GetDesktopRealWidth()
+   ny := GetDesktopRealHeight()
 
    SET DEVICE TO SCREEN
    SET PRINTER TO

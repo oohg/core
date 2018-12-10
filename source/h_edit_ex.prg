@@ -573,8 +573,8 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
    endif
 
    // Tamaño de la pantalla.
-   _nAltoPantalla  := getDesktopHeight()
-   _nAnchoPantalla := getDesktopWidth()
+   _nAltoPantalla  := GetDesktopRealHeight()
+   _nAnchoPantalla := GetDesktopRealWidth()
 
    // Datos de las etiquetas y los controles de la ventana de edición.
    _aEtiqueta     := Array( Len( _aEstructura ), ABM_LBL_LEN )

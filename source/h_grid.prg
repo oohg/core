@@ -1576,7 +1576,7 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
 
    _SetThisCellInfo( ::hWnd, nItem, 1 )
 
-   nControlsMaxHeight := GetDesktopHeight() - 130
+   nControlsMaxHeight := GetDesktopRealHeight() - 130
 
    nWidth := 140
    nRow := 0
