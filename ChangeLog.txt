@@ -12,6 +12,53 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-09 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Format.
+     * Three C-level module-static vars were moved to C-level
+       function-static vars, thus making the class thread safe.
+
+2018-12-09 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     + Support for PNG and TIFF images from resources.
+
+2018-12-09 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_grid.prg
+   * core\source\h_print.prg
+     * GetDesktopHeight changed by GetDeskTopRealHeight.
+     * GetDesktopWidth changed by GetDeskTopRealWidth.
+
+2018-12-09 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tab.prg
+   * core\source\h_toolbar.prg
+     * Format.
+
+2018-12-09 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     * Format.
+     * DEFINE WINDOW TEMPLATE to DEFINE WINDOW 0.
+
+2018-12-09 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     * GetDesktopHeight changed by GetDeskTopRealHeight.
+     * GetDesktopWidth changed by GetDeskTopRealWidth.
+     * Some changes for 64 bit support.
+
+2018-12-09 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     * METHOD Value now accepts a codeblock.
+
+2018-12-09 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_ini.prg
+     * Format.
+
+2018-12-09 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     + App.DefineFont
+     + App.ReleaseFont
+
 2018-12-04 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_app.ch
      + App.MutexLock
