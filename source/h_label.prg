@@ -147,6 +147,10 @@ METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
 
 METHOD Value( cValue ) CLASS TLabel
 
+   IF HB_ISBLOCK( cValue )
+      cValue := Eval( cValue )
+   ENDIF
+
    IF ValType( cValue ) $ "CFLN"
       IF ValType( ::Picture ) $ "CM"
          ::Caption := Transform( cValue, ::Picture )
