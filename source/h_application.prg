@@ -305,14 +305,7 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
       ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
       ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]   := NIL
-      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := { RGB( 236, 233, 216 ), RGB( 236, 233, 216 ), RGB( 0, 0, 0 ),       RGB( 0, 0, 0 ), ;
-                                                     RGB( 192, 192, 192 ), RGB( 255, 252, 248 ), RGB( 136, 133, 116 ), RGB( 0, 0, 0 ), ;
-                                                     RGB( 0, 0, 0 ),       RGB( 192, 192, 192 ), RGB( 255, 255, 255 ), RGB( 255, 255, 255 ), ;
-                                                     RGB( 182, 189, 210 ), RGB( 182, 189, 210 ), RGB( 255, 255, 255 ), RGB( 255, 255, 255 ), ;
-                                                     RGB( 246, 245, 244 ), RGB( 207, 210, 200 ), RGB( 168, 169, 163 ), RGB( 255, 255, 255 ), ;
-                                                     RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ),   RGB( 10, 36, 106 ), ;
-                                                     RGB( 0, 0, 0 ),       RGB( 216, 220, 224 ), RGB( 64, 116, 200 ),  RGB( 128, 128, 128 ), ;
-                                                     MNUCUR_FULL, MNUSEP_DOUBLE, MNUSEP_LEFT, .T., .T. }
+      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := Array( 28 )
       ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
 
       ::ArgC     := hb_argc()
