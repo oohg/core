@@ -1535,7 +1535,11 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
    LOCAL nVDispl := 1
 
    IF ::cUnits == "MM"
-      @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) BRUSHCOLOR arColor
+      IF Empty( arColor )
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH )
+      ELSE
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) BRUSHCOLOR arColor
+      ENDIF
    ELSE
       @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) BRUSHCOLOR arColor
    ENDIF
@@ -1548,7 +1552,11 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    LOCAL nVDispl := 1  // nVDispl := 1.009
 
    IF ::cUnits == "MM"
-      @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor BRUSHCOLOR arColor ROUNDED
+      IF Empty( arColor )
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor ROUNDED
+      ELSE
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor BRUSHCOLOR arColor ROUNDED
+      ENDIF
    ELSE
       @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor BRUSHCOLOR arColor ROUNDED
    ENDIF
