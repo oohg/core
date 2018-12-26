@@ -12,6 +12,167 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-25 22:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_003.txt
+     ! Typo.
+   * core\ChangeLog_004.txt
+     ! Typo.
+   * core\include\i_hmg_compat.ch
+     + Support for MENUITEM's CHECKMARK clause.
+   * core\include\i_menu.ch
+     + New commands to handle menu controls.
+     + OWNERDRAW, DEFAULT, MESSAGE, FONT, TIMEOUT clauses.
+     + ONCLICK as synonym of ACTION clause.
+     + ICON as a synonym of IMAGE clause.
+     + MRU and MRUITEM commands, to build "most recently used" lists.
+     ; This changes are fully compatible with HMG Extended.
+   * core\include\i_var.ch
+     + Global vars _OOHG_DefaultStatusBarMsg, _OOHG_DefaultMenuParams
+       and _OOHG_OwnerDrawMenus.
+   * core\include\i_windefs.ch
+     + Defines for WM_MENUSELECT, MF_HILITE and MF_OWNERDRAW.
+   + core\include\menu.h
+     + Defines menu related constants used at PRG and C levels.
+   * core\include\oohg.h
+     + Menu related structure.
+     * Declaration of _OOHG_ScaleImage function.
+     + Defines for static s_Events_InitMenuPopUp and s_oMenu.
+     + Conditional inclusion of menu.h file.
+   * core\source\c_controlmisc.c
+     * Some changes for 64 bits support.
+     + Static symbols Events_InitMenuPopUp and oMenu.
+   * core\source\c_image.c
+     * Two parameters of _OOHG_ScaleImage function are now long.
+     ! _OOHG_ScaleImage function does not work when hWnd parameter
+       if null.
+   * core\source\h_application.prg
+     + METHOD ActiveMenuRemove.
+     + METHOD Value_Pos48.
+     ! METHOD DefineLogFont.
+   * core\source\h_combo.prg
+     ! Typo.
+   * core\source\h_controlmisc.prg
+     * METHOD SetFont of TControl now returns the font handle.
+   * core\source\h_form.prg
+     * Some changes for 64 bits support.
+     + WM_NCMOUSEMOVE message handler.
+   * core\source\h_grid.prg
+     ! Typo.
+   * core\source\h_internal.prg
+     * Some changes for 64 bits support.
+   * core\source\h_label.prg
+     ! Autosize is not working properly when the control's value
+       if a multiline text.
+     * METHOD SetFont of TLabel now returns the font handle.
+   * core\source\h_menu.prg
+     - STATIC _OOHG_xMenuActive.
+     + CLASS TMenuParams.
+     + DATA bOnInitPopUp to TMenu.
+     + DATA cFontID to TMenu.
+     + DATA cStatMsg to TMenu.
+     + DATA nTimeout to TMenu.
+     + DATA oMenuParams to TMenu.
+     + METHOD Border3D to TMenu.
+     + METHOD Colors to TMenu.
+     + METHOD CursorType to TMenu.
+     + METHOD Events_InitMenuPopUp to TMenu.
+     + METHOD Gradient to TMenu.
+     + METHOD ItemCount to TMenu.
+     + METHOD ItemPosition to TMenu.
+     + METHOD OwnerDraw to TMenu.
+     + METHOD Params to TMenu.
+     + METHOD PopUpPosition to TMenu.
+     + METHOD SeparatorType to TMenu.
+     ! METHOD DisableVisualStyle() of TMenu
+     + New parameters to several methods to support new
+       commands and clauses (see i_menu.ch).
+     - DATA xId ftom TMenuItem.
+     + DATA bOnInitPopUp to TMenuItem.
+     + DATA cCaption to TMenuItem.
+     + DATA cFontID to TMenuItem.
+     + DATA cStatMsg to TMenuItem.
+     + DATA hExternFont to TMenuItem.
+     + DATA lIsAtBar to TMenuItem.
+     + DATA lIsMenuBreak to TMenuItem.
+     + DATA lIsSeparator to TMenuItem.
+     + DATA lOwnerDraw to TMenuItem.
+     + DATA nTimeout to TMenuItem.
+     + DATA oMenuParams to TMenuItem.
+     + DATA xData to TMenuItem.
+     + METHOD Border3D to TMenuItem.
+     + METHOD Colors to TMenuItem.
+     + METHOD CursorType to TMenuItem.
+     + METHOD DefaultItemById to TMenuItem.
+     + METHOD Events_DrawItem to TMenuItem.
+     + METHOD Events_InitMenuPopUp to TMenuItem.
+     + METHOD Events_MeasureItem to TMenuItem.
+     + METHOD Events_MenuHilited to TMenuItem.
+     + METHOD Gradient to TMenuItem.
+     + METHOD OwnerDraw to TMenuItem.
+     + METHOD Position to TMenuItem.
+     + METHOD SeparatorType to TMenuItem.
+     ! METHOD Checked of TMenuItem for popups at the menu bar.
+     * Methods DefinePopUp and InsertPopUp of TmenuItem now use
+       an ID instead of using the hWnd.
+     + Class TMenuItemMRU to create a "Most Recently Used" menu.
+     ! Return value of InsertMenu.
+     + Support for MF_OWNERDRAW flag at InsertMenu and
+       AppendMenu functions.
+     * Functions MenuChecked, MenuEnabled and MenuHilited
+       now use MF_BYPOSITION flag.
+     + Support for MF_OWNERDRAW flag at MenuItem_SetBitmaps
+       function.
+     + Functions CreateMenuItemData, DeleteMenuItemData,
+       SetMenuDefaultItemByID, TMenuItemMeasure,
+       FindItemPosition, FindPopUpPosition, DefaultMenuParams,
+       GetMenuItemCount, TMenuItemDraw, _OOHG_MenuCursorType,
+       _OOHG_MenuSeparator, _OOHG_MenuBorderStyle,
+       _OOHG_MenuGradientStyle and _OOHG_MenuBitmapMetrics.
+     + C-level functions BitmapFromIcon, FillGradient,
+       DrawMenuTextBkgrnd, DrawMenuSelectedItemBorder,
+       DrawMenuImage, DrawMenuCheckMark, DrawMenuSeparator,
+       FindItemPos and FindPopUpPos.
+     * Some casting.
+     * Some changes for 64 bits support.
+     * Some format.
+   ; Parts of this code are based on the original works of
+     P.Chornyj <myorg63@mail.ru> and
+     Grigory Filatov <gfilatov@inbox.ru> for HMG Extended project.
+   * core\source\h_monthcal.prg
+     * METHOD SetFont of TMonthCal now returns the font handle.
+   * core\source\h_picture.prg
+     * Some changes for 64 bits support.
+   * core\source\h_radio.prg
+     * METHOD SetFont of TRadioGroup now returns the font handle
+       of the first option.
+   * core\source\h_status.prg
+     + DATA oTimer.
+     + METHOD InitTimeout.
+     + METHOD Release.
+   * core\source\h_textarray.prg
+     - Some commented text.
+   * core\source\h_windows.prg
+     * A C-level module-static var was moved to a C-level
+       function-static var.
+     - Removed a no longer needed C-level module-static var.
+     - Removed hack for WM_MEASUREITEM messages.
+     * Some comments.
+     + Support for menu controls at WM_DRAWITEM message handler.
+     + Support for menu controls at WM_MEASUREITEM message handler.
+     + WM_INITMENUPOPUP message handler.
+     + WM_MENUSELECT message handler.
+     * Funtction _OOHG_GLOBALRTL at C-level now uses a static
+       local var and it's setting is protected by _OOHG_GlobalMutex.
+
+2018-12-13 20:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! PrintRoundRectangle and PrintRectangle were painting the
+       inside with a black brush.
+
+2018-12-13 09:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     ! Compilation fails because some missing constants.
+
 2018-12-09 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_combo.prg
      * Format.
@@ -448,7 +609,7 @@
      + Support for DEFAULT clause.
    ; This clause sets the message as the default for menus
      without their own message.
-   ; Functionality will be commited in a few days.
+   ; Functionality will be committed in a few days.
 
 2018-11-14 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\oohg.hbp
@@ -1570,7 +1731,7 @@
      + METHOD DynamicForeColor to TGrid class.
      + METHOD RefreshColors to TGrid class.
      ! Potencial crashes caused by using full oop syntax with
-       ommited parameters. See samples\oohg\maindemooop.prg
+       omited parameters. See samples\oohg\maindemooop.prg
      + FUNCTION GetPictureFromArray.
      + FUNCTION GetColTypeFromArray.
      % METHOD AddColumn of TGrid class.
