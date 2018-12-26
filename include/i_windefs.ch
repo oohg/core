@@ -108,6 +108,7 @@ WINDOWS MESSAGES
 #define WM_TIMER                      275
 #define WM_HSCROLL                    276
 #define WM_VSCROLL                    277   // 0x0115
+#define WM_MENUSELECT                 287   // 0x011F
 #define WM_CTLCOLORMSGBOX             306
 #define WM_CTLCOLOREDIT               307
 #define WM_CTLCOLORLISTBOX            308
@@ -770,6 +771,8 @@ MENU FLAGS
 #define MF_POPUP                      0x0010
 #define MF_MENUBARBREAK               0x0020
 #define MF_MENUBREAK                  0x0040
+#define MF_HILITE                     0x0080
+#define MF_OWNERDRAW                  0x0100
 #define MF_SEPARATOR                  0x0800
 #define MF_SYSMENU                    0x2000
 #define MF_RIGHTJUSTIFY               0x4000

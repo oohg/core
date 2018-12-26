@@ -78,6 +78,7 @@ CLASS TMessageBar FROM TControl
    DATA cLedOn      INIT "zzz_led_on"
    DATA cLedOff     INIT "zzz_led_off"
    DATA aAligns     INIT {}
+   DATA oTimer      INIT NIL
 
    METHOD Define
    METHOD EndStatus                      BLOCK { || _EndMessageBar() }
@@ -100,7 +101,8 @@ CLASS TMessageBar FROM TControl
    METHOD SetClock
    METHOD SetKeybrd
    METHOD SetDate
-
+   METHOD InitTimeout
+   METHOD Release
    METHOD Events_Notify
    METHOD Events_Size
    METHOD RefreshData
@@ -355,6 +357,42 @@ METHOD ItemRDblClick( nItem, bAction ) CLASS TMessageBar
    ENDIF
 
    Return bAction
+
+METHOD InitTimeout( nLapse, nItem ) CLASS TMessageBar
+
+   IF ! HB_ISNUMERIC( nLapse )
+      nLapse := GetDoubleClickTime() * 10
+   ELSEIF nLapse == 0
+      RETURN NIL
+   ELSEIF nLapse < 1000
+      nLapse := GetDoubleClickTime() * 10
+   ENDIF
+/*
+   IF ! HB_ISNUMERIC( nLapse ) .OR. nLapse < 1000
+      nLapse := GetDoubleClickTime() * 10
+   ENDIF
+*/
+   IF ! HB_ISNUMERIC( nItem ) .OR. nItem < 1 .OR. nItem > ::ItemCount
+      nItem := 1
+   ENDIF
+   IF HB_ISOBJECT( ::oTimer )
+      ::oTimer:Enabled := .F.
+      ::oTimer:Value   := nLapse
+      ::oTimer:OnClick := {|| ::oTimer:Enabled := .F., ::Item( nItem, "" ) }
+      ::oTimer:Enabled := .T.
+   ELSE
+      DEFINE TIMER 0 OBJ ::oTimer PARENT ( Self ) INTERVAL nLapse ACTION {|| ::oTimer:Enabled := .F., ::Item( nItem, "" ) }
+   ENDIF
+
+   RETURN NIL
+
+METHOD Release() CLASS TMessageBar
+
+   IF HB_ISOBJECT( ::oTimer )
+      ::oTimer:Release()
+   ENDIF
+
+   RETURN ::Super:Release()
 
 METHOD SetClock( Width, ToolTip, action, lAmPm, icon, cstyl, cAlign ) CLASS TMessageBar
 

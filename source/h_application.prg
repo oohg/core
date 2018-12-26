@@ -133,7 +133,8 @@
 #define NDX_OOHG_HOTKEYS               46
 #define NDX_OOHG_DEFAULTSTATUSBARMSG   47
 #define NDX_OOHG_DEFAULTMENUPARAMS     48
-#define NUMBER_OF_APP_WIDE_VARS        48
+#define NDX_OOHG_OWNERDRAWMENUS        49
+#define NUMBER_OF_APP_WIDE_VARS        49
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -163,6 +164,7 @@ CLASS TApplication
    METHOD ActiveMenuGet
    METHOD ActiveMenuPop
    METHOD ActiveMenuPush
+   METHOD ActiveMenuRemove
    METHOD BackColor               SETGET
    METHOD Col                     SETGET
    METHOD CreateGlobalMutex       HIDDEN
@@ -240,6 +242,7 @@ CLASS TApplication
    METHOD Value_Pos45             SETGET
    METHOD Value_Pos47             SETGET
    METHOD Value_Pos48             SETGET
+   METHOD Value_Pos49             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -305,7 +308,8 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
       ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
       ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]   := NIL
-      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := Array( 28 )
+      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := DefaultMenuParams( 0 )
+      ::aVars[ NDX_OOHG_OWNERDRAWMENUS ]        := .F.
       ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
 
       ::ArgC     := hb_argc()
@@ -443,6 +447,28 @@ METHOD ActiveMenuPush( oMenu ) CLASS TApplication
    RETURN ( NIL )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveMenuRemove( oMenu ) CLASS TApplication
+
+   LOCAL nThreadID, i := 1, nLen
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   nLen := Len( ::aMenusStack )
+   DO WHILE i <= nLen
+      IF ::aMenusStack[ i ][ 1 ] == nThreadID
+         IF ::aMenusStack[ i ][ 2 ]:hWnd == oMenu:hWnd
+            ADel( ::aMenusStack, i )
+            ASize( ::aMenusStack, nLen - 1 )
+            EXIT
+         ENDIF
+      ENDIF
+      i ++
+   ENDDO
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uColor ) CLASS TApplication
 
    LOCAL oMain, uRet := NIL
@@ -517,7 +543,7 @@ METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, l
          hFont := ::aFonts[ i, FONT_HANDLE ]
       ELSE
          ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
-         ASSIGN cFontName    VALUE cFontName    TYPE "C" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+         ASSIGN nFontSize    VALUE nFontSize    TYPE "N" DEFAULT ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
          ASSIGN lDefault     VALUE lDefault     TYPE "L" DEFAULT .F.
          ASSIGN lBold        VALUE lBold        TYPE "L" DEFAULT .F.
          ASSIGN lItalic      VALUE lItalic      TYPE "L" DEFAULT .F.
@@ -536,10 +562,11 @@ METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, l
          IF Empty( AScan( aFontList, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
             cFontName := "Arial"
          ENDIF
+
          hFont := InitFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
          IF lDefault
-            _OOHG_DefaultFontName := ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]
-            _OOHG_DefaultFontSize := ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]
+            ::aVars[ NDX_OOHG_DEFAULTFONTNAME ] := cFontName
+            ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ] := nFontSize
             AAdd( ::aFonts, NIL )
             AIns( ::aFonts, 1 )
             ::aFonts[ 1 ] := { Upper( cFontID ), hFont, cFontName, nFontSize, lBold, lItalic, lUnderline, ;
@@ -1723,14 +1750,15 @@ METHOD Value_Pos47( uValue ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos48( uValue ) CLASS TApplication
 
-   LOCAL i, uRet
+   LOCAL i, uRet, nLen
 
    hb_mutexLock( ::hClsMtx )
    IF HB_ISARRAY( uValue )
-      IF Len( uValue ) < 28
-         ASize( uValue, 28 )
+      nLen := Len( ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ] )
+      IF Len( uValue ) < nLen
+         ASize( uValue, nLen )
       ENDIF
-      FOR i := 1 TO 28
+      FOR i := 1 TO nLen
          IF uValue[ i ] == NIL
             uValue[ i ] := ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ][ i ]
          ENDIF
@@ -1738,6 +1766,20 @@ METHOD Value_Pos48( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ] := AClone( uValue )
    ENDIF
    uRet := AClone( ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ] )
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos49( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_OWNERDRAWMENUS ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_OWNERDRAWMENUS ]
    hb_mutexUnlock( ::hClsMtx )
 
    RETURN ( uRet )

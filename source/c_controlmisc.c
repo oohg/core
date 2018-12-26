@@ -65,6 +65,7 @@
 #include <shlobj.h>
 #include <commctrl.h>
 #include <windows.h>
+#include <windowsx.h>
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -163,6 +164,8 @@ char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                           "COMPAREITEMS",
                           "EVENTS_DRAG",
                           "EVENTS_MENUHILITED",
+                          "EVENTS_INITMENUPOPUP",
+                          "OMENU",
                           "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -263,8 +266,8 @@ void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char *cType, LPARAM 
    PHB_ITEM pArray;
 
    pArray = hb_itemArrayNew( 2 );
-   hb_arraySetNI( pArray, 1, HIWORD( lParam ) );
-   hb_arraySetNI( pArray, 2, LOWORD( lParam ) );
+   hb_arraySetNI( pArray, 1, GET_Y_LPARAM( lParam ) );
+   hb_arraySetNI( pArray, 2, GET_X_LPARAM( lParam ) );
 
    _OOHG_DoEvent( pSelf, iSymbol, cType, pArray );
 

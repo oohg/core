@@ -110,6 +110,9 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_ActiveMessageBar       => TApplication():Define():Value_Pos44
 #xtranslate _OOHG_bKeyDown               => TApplication():Define():Value_Pos45
 #xtranslate _OOHG_HotKeys                => TApplication():Define():HotKeysGet()
+#xtranslate _OOHG_DefaultStatusBarMsg    => TApplication():Define():Value_Pos47
+#xtranslate _OOHG_DefaultMenuParams      => TApplication():Define():Value_Pos48
+#xtranslate _OOHG_OwnerDrawMenus         => TApplication():Define():Value_Pos49
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

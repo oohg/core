@@ -163,9 +163,12 @@ METHOD Value( cValue ) CLASS TLabel
 
 METHOD Caption( cValue ) CLASS TLabel
 
+   LOCAL nLines
+
    IF ValType( cValue ) $ "CM"
       IF ::lAutoSize
-         ::SizePos( , , GetTextWidth( NIL, cValue , ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue , ::FontHandle ) )
+         nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ) )
+         ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
       ENDIF
       SetWindowText( ::hWnd , cValue )
       IF ::Transparent
@@ -187,7 +190,7 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
       ::Visible := .T.
    ENDIF
 
-   RETURN NIL
+   RETURN ::FontHandle
 
 METHOD AutoSize( lValue ) CLASS TLabel
 

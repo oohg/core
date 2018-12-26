@@ -293,7 +293,7 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
 
    AEval( ::aOptions, { |o| o:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout ) } )
 
-   RETURN NIL
+   RETURN ::aOptions[ 1 ]:FontHandle
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TRadioGroup

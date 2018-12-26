@@ -175,7 +175,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG l
    return hImage;
 }
 
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkColor, int iHrzMrgn, int iVrtMrgn )
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkColor, INT iHrzMrgn, INT iVrtMrgn )
 {
    RECT fromRECT, toRECT;
    HBITMAP hOldTo, hOldFrom, hpic = 0;
@@ -184,7 +184,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, BO
    HDC imgDC, fromDC, toDC;
    HBRUSH hBrush;
 
-   if( hWnd && hImage )
+   if( hImage )
    {
       imgDC = GetDC( hWnd );
       fromDC = CreateCompatibleDC( imgDC );
@@ -211,9 +211,9 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, int iWidth, int iHeight, BO
       hOldFrom = SelectObject( fromDC, hImage );
 
       // TO parameters
-      GetClientRect( hWnd, &toRECT );
-      if( iWidth == 0 && iHeight == 0 )
+      if( hWnd && ( iWidth == 0 || iHeight == 0 ) )
       {
+         GetClientRect( hWnd, &toRECT );
          iWidth  = toRECT.right - toRECT.left - iHrzMrgn;
          iHeight = toRECT.bottom - toRECT.top - iVrtMrgn;
          if( scalestrech )

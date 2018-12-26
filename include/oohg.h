@@ -212,6 +212,14 @@ struct IMAGE_PARAMETER
 };
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+/* Structure used for handling OWNERDRAW menus */
+
+typedef struct _MYITEM
+{
+   LONG id;
+} MYITEM, * LPMYITEM;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Auxiliary structure used for handling some TWindow's datas at C level */
 
 typedef struct OOHG_Window
@@ -251,7 +259,7 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG * lColor );
 BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG * lColor, BOOL fUpdate );
 HANDLE _OOHG_LoadImage( CHAR * cImage, INT iAttributes, INT nWidth, INT nHeight, HWND hWnd, LONG BackColor, BOOL bIgnoreBkClr );
 HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG BackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr );
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, INT iWidth, INT iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkClr, INT iHrzMrgn, INT iVrtMrgn );
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkClr, INT iHrzMrgn, INT iVrtMrgn );
 BOOL _OOHG_UseGDIP( VOID );
 HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr );
 DWORD _OOHG_RTL_Status( BOOL bRtl );
@@ -272,90 +280,92 @@ BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, U
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Table of symbols used at C level to access some datas and methods of different classes */
 
-#define s_Events_Notify       0
-#define s_GridForeColor       1
-#define s_GridBackColor       2
-#define s_FontColor           3
-#define s_BackColor           4
-#define s_Container           5
-#define s_Parent              6
-#define s_hCursor             7
-#define s_Events              8
-#define s_Events_Color        9
-#define s_Name                10
-#define s_Type                11
-#define s_TControl            12
-#define s_TLabel              13
-#define s_TGrid               14
-#define s_ContextMenu         15
-#define s_RowMargin           16
-#define s_ColMargin           17
-#define s_hWnd                18
-#define s_TText               19
-#define s_AdjustRightScroll   20
-#define s_OnMouseMove         21
-#define s_OnMouseDrag         22
-#define s_DoEvent             23
-#define s_LookForKey          24
-#define s_aControlInfo        25
-#define s__aControlInfo       26
-#define s_Events_DrawItem     27
-#define s__hWnd               28
-#define s_Events_Command      29
-#define s_OnChange            30
-#define s_OnGotFocus          31
-#define s_OnLostFocus         32
-#define s_OnClick             33
-#define s_Transparent         34
-#define s_Events_MeasureItem  35
-#define s_FontHandle          36
-#define s_TWindow             37
-#define s_WndProc             38
-#define s_OverWndProc         39
-#define s_hWndClient          40
-#define s_Refresh             41
-#define s_AuxHandle           42
-#define s_ContainerCol        43
-#define s_ContainerRow        44
-#define s_lRtl                45
-#define s_Width               46
-#define s_Height              47
-#define s_VScroll             48
-#define s_ScrollButton        49
-#define s_Visible             50
-#define s_Events_HScroll      51
-#define s_Events_VScroll      52
-#define s_nTextHeight         53
-#define s_Events_Enter        54
-#define s_Id                  55
-#define s_NestedClick         56
-#define s__NestedClick        57
-#define s_TInternal           58
-#define s__ContextMenu        59
-#define s_Release             60
-#define s_Activate            61
-#define s_oOle                62
-#define s_RangeHeight         63
-#define s_OnRClick            64
-#define s_OnMClick            65
-#define s_OnDblClick          66
-#define s_OnRDblClick         67
-#define s_OnMDblClick         68
-#define s_OnDropFiles         69
-#define s_lAdjustImages       70
-#define s_aSelColor           71
-#define s_TabHandle           72
-#define s_ItemEnabled         73
-#define s_HandleToItem        74
-#define s_GridSelectedColors  75
-#define s_TEdit               76
-#define s_oBkGrnd             77
-#define s_Events_NCDestroy    78
-#define s_aExcludeArea        79
-#define s_CompareItems        80
-#define s_Events_Drag         81
-#define s_Events_MenuHilited   82
-#define s_LastSymbol           83
+#define s_Events_Notify         0
+#define s_GridForeColor         1
+#define s_GridBackColor         2
+#define s_FontColor             3
+#define s_BackColor             4
+#define s_Container             5
+#define s_Parent                6
+#define s_hCursor               7
+#define s_Events                8
+#define s_Events_Color          9
+#define s_Name                  10
+#define s_Type                  11
+#define s_TControl              12
+#define s_TLabel                13
+#define s_TGrid                 14
+#define s_ContextMenu           15
+#define s_RowMargin             16
+#define s_ColMargin             17
+#define s_hWnd                  18
+#define s_TText                 19
+#define s_AdjustRightScroll     20
+#define s_OnMouseMove           21
+#define s_OnMouseDrag           22
+#define s_DoEvent               23
+#define s_LookForKey            24
+#define s_aControlInfo          25
+#define s__aControlInfo         26
+#define s_Events_DrawItem       27
+#define s__hWnd                 28
+#define s_Events_Command        29
+#define s_OnChange              30
+#define s_OnGotFocus            31
+#define s_OnLostFocus           32
+#define s_OnClick               33
+#define s_Transparent           34
+#define s_Events_MeasureItem    35
+#define s_FontHandle            36
+#define s_TWindow               37
+#define s_WndProc               38
+#define s_OverWndProc           39
+#define s_hWndClient            40
+#define s_Refresh               41
+#define s_AuxHandle             42
+#define s_ContainerCol          43
+#define s_ContainerRow          44
+#define s_lRtl                  45
+#define s_Width                 46
+#define s_Height                47
+#define s_VScroll               48
+#define s_ScrollButton          49
+#define s_Visible               50
+#define s_Events_HScroll        51
+#define s_Events_VScroll        52
+#define s_nTextHeight           53
+#define s_Events_Enter          54
+#define s_Id                    55
+#define s_NestedClick           56
+#define s__NestedClick          57
+#define s_TInternal             58
+#define s__ContextMenu          59
+#define s_Release               60
+#define s_Activate              61
+#define s_oOle                  62
+#define s_RangeHeight           63
+#define s_OnRClick              64
+#define s_OnMClick              65
+#define s_OnDblClick            66
+#define s_OnRDblClick           67
+#define s_OnMDblClick           68
+#define s_OnDropFiles           69
+#define s_lAdjustImages         70
+#define s_aSelColor             71
+#define s_TabHandle             72
+#define s_ItemEnabled           73
+#define s_HandleToItem          74
+#define s_GridSelectedColors    75
+#define s_TEdit                 76
+#define s_oBkGrnd               77
+#define s_Events_NCDestroy      78
+#define s_aExcludeArea          79
+#define s_CompareItems          80
+#define s_Events_Drag           81
+#define s_Events_MenuHilited    82
+#define s_Events_InitMenuPopUp  83
+#define s_oMenu                 84
+#define s_LastSymbol            85
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */
@@ -435,3 +445,10 @@ BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, U
    #undef MAKELONG
 #endif
 #define MAKELONG( a, b )  ( ( LONG ) ( ( ( WORD ) ( ( ( DWORD_PTR ) ( a ) ) & 0xffff ) ) | ( ( ( DWORD ) ( ( WORD ) ( ( ( DWORD_PTR ) ( b ) ) & 0xffff ) ) ) << 16 ) ) )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/*  Menu related constants */
+
+#ifdef _INCLUDE_OOHG_MENU_CONSTANTS_
+   #include "menu.h"
+#endif

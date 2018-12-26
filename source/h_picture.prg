@@ -821,7 +821,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
       case WM_MOUSEWHEEL:
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
+            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
             hb_vmSend( 1 );
             hb_ret();
          }

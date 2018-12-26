@@ -1693,7 +1693,7 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
    ENDIF
    ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation, ::FntAdvancedGM )
 
-   RETURN NIL
+   RETURN ::FontHandle
 
 METHOD FontName( cFontName ) CLASS TControl
 

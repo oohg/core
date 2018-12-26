@@ -763,15 +763,6 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
          }
          break;
 
-/*
-      case WM_MOUSEWHEEL:
-               _OOHG_Send( pSelf, s_Events_VScroll );
-               hb_vmPushLong( ( HIWORD( wParam ) == WHEEL_DELTA ) ? SB_LINEUP : SB_LINEDOWN );
-               hb_vmSend( 1 );
-         hb_ret();
-         break;
-*/
-
       case WM_SETFOCUS:
          _OOHG_Send( pSelf, s_Parent );
          hb_vmSend( 0 );

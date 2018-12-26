@@ -513,7 +513,7 @@ METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
 
    /*
    nMinWidth = minimum width of dropdown list.
-   If ommited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
+   If omited or is less than 0, defaults to 0 if lResizeBox == .T. or to combobox width otherwise.
    */
    IF ! HB_ISNUMERIC( nMinWidth ) .OR. nMinWidth < 0
       nMinWidth := iif( lResizeBox, 0, ::Width )
@@ -525,7 +525,7 @@ METHOD AutoSizeDropDown( lResizeBox, nMinWidth, nMaxWidth ) CLASS TCombo
    nNewWidth := Max( nNewWidth, nMinWidth )
 
    /*
-   nMaxWidth = maximum width of dropdown list, if ommited defaults to longest item's width
+   nMaxWidth = maximum width of dropdown list, if omited defaults to longest item's width
    If no maximum specified or is less than minimun, use computed value as maximum.
    */
    IF ! HB_ISNUMERIC( nMaxWidth ) .OR. nMaxWidth < nMinWidth

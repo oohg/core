@@ -169,7 +169,7 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
    AdjustMonthCalSize( ::hWnd, ::ContainerCol, ::ContainerRow )
    ::SizePos( , , GetWindowWidth( ::hWnd ), GetWindowHeight( ::hWnd ) )
 
-   RETURN NIL
+   RETURN ::FontHandle
 
 METHOD Events_Notify( wParam, lParam ) CLASS TMonthCal
 

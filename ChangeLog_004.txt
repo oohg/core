@@ -1315,7 +1315,7 @@
    * source\c_winapimisc.c
      + Support for Windows 8.1 and Server 2012 R2.
    * source\h_grid.prg
-     - Inadvertently commited code.
+     - Inadvertently committed code.
 
 2014-08-08 16:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_grid.prg

@@ -334,7 +334,7 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
    switch( message )
    {
       case WM_MOUSEWHEEL:
-         if( ( short ) HIWORD( wParam ) > 0 )
+         if( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 )
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
             hb_vmPushLong( SB_LINEUP );

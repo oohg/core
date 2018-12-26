@@ -3343,7 +3343,7 @@
 
 2012-02-22 03:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_grid.prg
-     ! Fixed cancelation when SELECTEDCOLORS clause is ommited
+     ! Fixed cancelation when SELECTEDCOLORS clause is omited
        in DEFINE GRID.
 
 2012-02-22 02:17 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
@@ -3647,7 +3647,7 @@
        _DefineTreeNode and _DefineTreeItem functions.
      + Added AUTOID clause to NODE and TREEITEM definitions.
        This clause will automatically assign a valid ID to the
-       item if ID was ommited or it's duplicated.
+       item if ID was omited or it's duplicated.
      + Added lAssignID parameter to AddItem(), _DefineTreeNode
        and _DefineTreeItem functions. When .T. they will assign
        an ID to new items with missing or duplicate IDs instead
@@ -4031,7 +4031,7 @@
      + Added ENABLEDRAG and ENABLEDROP clauses to enabled drag and drop
        operations for the tree control.
      + Added TARGET clause to specify and array of objects wich can be
-       drop targets. If ommited {Self} is assumed.
+       drop targets. If omited {Self} is assumed.
      + Added DISABLED clause to node and item defines.
        Nodes and items can be enabled or disabled at control creation.
        Any user action on a disabled node/item is ignored.

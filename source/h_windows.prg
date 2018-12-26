@@ -2117,11 +2117,9 @@ typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
 
 // C static variables                            // TODO: Thread safe ?
 static INT      _OOHG_ShowContextMenus = 1;
-static INT      _OOHG_GlobalRTL = 0;             // Force RTL functionality
 static INT      _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
 static INT      _OOHG_MouseCol = 0;              // Mouse's column
 static INT      _OOHG_MouseRow = 0;              // Mouse's row
-static PHB_ITEM _OOHG_LastSelf = NULL;
 
 typedef INT ( CALLBACK * CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
 
@@ -2225,13 +2223,6 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
    oSelf->lBackColorSelected = -1;
    oSelf->lOldBackColor = -1;
    oSelf->lUseBackColor = -1;
-
-   // HACK! Latest created control... Needed for WM_MEASUREITEM :(
-   if( ! _OOHG_LastSelf )
-   {
-      _OOHG_LastSelf = hb_itemNew( NULL );
-   }
-   hb_itemCopy( _OOHG_LastSelf, pSelf );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2351,7 +2342,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) -> aColor */
+HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS TWindow -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2598,7 +2589,17 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          break;
 
       case WM_DRAWITEM:
-         _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
+
+         if( wParam )
+         {
+            // ComboBox and ListBox
+            _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
+         }
+         else
+         {
+            // Menu
+            _OOHG_Send( GetControlObjectById( ( ( MYITEM * ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->itemData ) )->id, hWnd ), s_Events_DrawItem );
+         }
          hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
          break;
@@ -2606,14 +2607,17 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_MEASUREITEM:
          if( wParam )
          {
+            // ComboBox and ListBox
             _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), hWnd ), s_Events_MeasureItem );
          }
          else
          {
-            _OOHG_Send( _OOHG_LastSelf, s_Events_MeasureItem );
+            // Menu
+            _OOHG_Send( GetControlObjectById( ( ( MYITEM * ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->itemData ) )->id, hWnd ), s_Events_MeasureItem );
          }
          hb_vmPushNumInt( lParam );
-         hb_vmSend( 1 );
+         HWNDpush( hWnd );
+         hb_vmSend( 2 );
          break;
 
       case WM_CONTEXTMENU:
@@ -2661,49 +2665,60 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          }
          break;
 
-/* future improvement
+      case WM_INITMENUPOPUP:
+         if( ! HIWORD( lParam ) )
+         {
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) ( HMENU ) wParam ), s_Events_InitMenuPopUp );
+            hb_vmPushLong( ( LONG ) LOWORD( lParam ) );
+            hb_vmSend( 1 );
+         }
+         break;
+
       case WM_MENUSELECT:
          {
-            if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
+            if( ( HIWORD( wParam ) & MF_SYSMENU ) != MF_SYSMENU )
             {
-               if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
+               if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
                {
-                  MENUITEMINFO MenuItemInfo;
-                  PHB_ITEM pMenu = hb_itemNew( NULL );
-                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
-                  _OOHG_Send( pMenu, s_hWnd );
-                  hb_vmSend( 0 );
-                  if( ValidHandler( HWNDparam( -1 ) ) )
+                  if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
                   {
-                     memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
-                     MenuItemInfo.cbSize = sizeof( MenuItemInfo );
-                     MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                     GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
-                     if( MenuItemInfo.hSubMenu )
+                     MENUITEMINFO MenuItemInfo;
+                     PHB_ITEM pMenu = hb_itemNew( NULL );
+                     hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
+                     _OOHG_Send( pMenu, s_hWnd );
+                     hb_vmSend( 0 );
+                     if( ValidHandler( HWNDparam( -1 ) ) )
                      {
-                        hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                        memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
+                        MenuItemInfo.cbSize = sizeof( MenuItemInfo );
+                        MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
+                        GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
+                        if( MenuItemInfo.hSubMenu )
+                        {
+                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                        }
+                        else
+                        {
+                           hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
+                        }
+                        _OOHG_Send( pMenu, s_Events_MenuHilited );
+                        hb_vmSend( 0 );
+                        hb_itemRelease( pMenu );
                      }
-                     else
-                     {
-                        hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
-                     }
+                  }
+                  else
+                  {
+                     PHB_ITEM pMenu = hb_itemNew( NULL );
+                     hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
                      _OOHG_Send( pMenu, s_Events_MenuHilited );
                      hb_vmSend( 0 );
                      hb_itemRelease( pMenu );
                   }
                }
-               else
-               {
-                  PHB_ITEM pMenu = hb_itemNew( NULL );
-                  hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
-                  _OOHG_Send( pMenu, s_Events_MenuHilited );
-                  hb_vmSend( 0 );
-                  hb_itemRelease( pMenu );
-               }
             }
          }
          break;
-*/
+
       case WM_MENURBUTTONUP:
          {
             PHB_ITEM pMenu;
@@ -3073,11 +3088,17 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GLOBALRTL )
 {
+   static INT _OOHG_GlobalRTL = FALSE;             // TRUE forces RTL functionality on all forms and controls
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
    if( HB_ISLOG( 1 ) )
    {
       _OOHG_GlobalRTL = hb_parl( 1 );
    }
    hb_retl( _OOHG_GlobalRTL );
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

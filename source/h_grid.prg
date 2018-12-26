@@ -3819,7 +3819,7 @@ METHOD Justify( uPar1, uPar2, uPar3 ) CLASS TGrid
  *      uPar3 -> .T. to force the control's redraw, defaults to .F.
  *   For single column retrieve:
  *      uPar1 -> numeric >= 1 and <= Len( ::aHeaders ).
- *      uPar2 -> ommited.
+ *      uPar2 -> omited.
  *      uPar3 -> not needed, it's ignored.
  *   For multiple columns retrieve:
  *      None.

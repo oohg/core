@@ -105,6 +105,7 @@ STATIC _OOHG_ActiveForm := {}        // Forms under creation
 #include <hbstack.h>
 #include <hbapiitm.h>
 #include <windows.h>
+#include <windowsx.h>
 #include <commctrl.h>
 #include "oohg.h"
 
@@ -1339,58 +1340,58 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       case WM_LBUTTONUP:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          hb_ret();
          break;
 
       case WM_LBUTTONDOWN:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
          hb_ret();
          break;
 
       case WM_LBUTTONDBLCLK:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnDblClick, "DBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_RBUTTONUP:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnRClick, "RCLICK", lParam );
          hb_ret();
          break;
 
       case WM_RBUTTONDOWN:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          hb_ret();
          break;
 
       case WM_RBUTTONDBLCLK:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnRDblClick, "RDBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MBUTTONUP:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnMClick, "MCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MBUTTONDOWN:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          hb_ret();
          break;
 
       case WM_MBUTTONDBLCLK:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_DoEventMouseCoords( pSelf, s_OnMDblClick, "MDBLCLICK", lParam );
          hb_ret();
          break;
 
       case WM_MOUSEMOVE:
-         _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          if( wParam == MK_LBUTTON )
          {
             _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
@@ -1398,6 +1399,57 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          else
          {
             _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
+         }
+         hb_ret();
+         break;
+
+      case WM_NCMOUSEMOVE:
+         if( wParam == HTMENU )
+         {
+            _OOHG_Send( pSelf, s_hWnd );
+            hb_vmSend( 0 );
+            if( ValidHandler( HWNDparam( -1 ) ) )
+            {
+               PHB_ITEM pMenu;
+               _OOHG_Send( pSelf, s_oMenu );
+               hb_vmSend( 0 );
+               pMenu = hb_param( -1, HB_IT_OBJECT );
+               if( pMenu )
+               {
+                  POCTRL oMenu;
+                  HMENU hMenu;
+                  oMenu = _OOHG_GetControlInfo( pMenu );
+                  hMenu = ( HMENU ) oMenu->hWnd;
+                  if( IsMenu( hMenu ) )
+                  {
+                     POINT ptScreen;
+                     INT iPos;
+                     MENUITEMINFO MenuItemInfo;
+                     ptScreen.x = GET_X_LPARAM( lParam );
+                     ptScreen.y = GET_Y_LPARAM( lParam );
+                     iPos = MenuItemFromPoint( hWnd, hMenu, ptScreen );
+                     if( iPos > -1 )
+                     {
+                        PHB_ITEM pMenu = hb_itemNew( NULL );
+                        memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
+                        MenuItemInfo.cbSize = sizeof( MenuItemInfo );
+                        MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
+                        GetMenuItemInfo( hMenu, iPos, MF_BYPOSITION, &MenuItemInfo );
+                        if( MenuItemInfo.hSubMenu )
+                        {
+                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                        }
+                        else
+                        {
+                           hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
+                        }
+                        _OOHG_Send( pMenu, s_Events_MenuHilited );
+                        hb_vmSend( 0 );
+                        hb_itemRelease( pMenu );
+                     }
+                  }
+               }
+            }
          }
          hb_ret();
          break;
@@ -1411,7 +1463,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             hb_vmSend( 0 );
             if( hb_parnl( -1 ) > 0 )
             {
-               if( ( short ) HIWORD( wParam ) > 0 )
+               if( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 )
                {
                   _OOHG_Send( pSelf, s_Events_VScroll );
                   hb_vmPushLong( SB_LINEUP );
@@ -1747,7 +1799,7 @@ int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, in
 
 HB_FUNC_STATIC( _TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight
 {
-   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) hb_parnl( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
+   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
 }
 
 int _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
@@ -1793,7 +1845,7 @@ HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
       iForceCol = -1;
    }
 
-   hb_retl( _OOHG_AdjustPosition( ( RECT * ) hb_parnl( 1 ), iForceRow, iForceCol ) );
+   hb_retl( _OOHG_AdjustPosition( ( RECT * ) HB_PARNL( 1 ), iForceRow, iForceCol ) );
 }
 
 #pragma ENDDUMP
