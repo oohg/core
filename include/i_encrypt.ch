@@ -60,9 +60,13 @@
  */
 
 
-#xcommand ENCODE FILE <file> [PASSWORD <password>] ;
+#xcommand ENCODE FILE <file> [ PASSWORD <password> ] [ RESULT <uRet> ] ;
    => ;
-      db_Encrypt( <(file)>, <(password)> )
+      [ <uRet> := ] db_Encrypt( <(file)>, <(password)> )
+
+#xcommand DECODE FILE <file> [ PASSWORD <password> ] [ RESULT <uRet> ] ;
+   => ;
+      [ <uRet> := ] db_UnEncrypt( <(file)>, <(password)> )
 
 #command ENCODE [ FROM <(file)> ] ON <key> FIELDS <fields, ...> ;
       [ PASSWORD <password> ] ;
@@ -70,20 +74,7 @@
       [ WHILE <while> ] ;
       [ ALL ] ;
    => ;
-      db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, ;
-            <(while)> )
-
-#command ENCODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] ;
-      => ;
-         fi_Code( <(file1)>, <(password)>, <(file2)>, <.del.> )
-
-#command DECODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] ;
-      => ;
-         fi_Decode( <(file1)>, <(password)>, <(file2)>, <.del.> )
-
-#xcommand DECODE FILE <file> [ PASSWORD <password> ] ;
-      => ;
-         db_UnEncrypt( <(file)>, <(password)> )
+      db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, <(while)> )
 
 #command DECODE [ FROM <(file)> ] ON <key> FIELDS <fields, ...> ;
       [ PASSWORD <password> ] ;
@@ -91,5 +82,12 @@
       [ WHILE <while> ] ;
       [ ALL ] ;
    => ;
-      db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, ;
-            <(while)> )
+      db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, <(while)> )
+
+#command ENCODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] [ RESULT <uRet> ] ;
+   => ;
+      [ <uRet> := ] fi_Code( <(file1)>, <(password)>, <(file2)>, <.del.> )
+
+#command DECODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] [ RESULT <uRet> ] ;
+   => ;
+      [ <uRet> := ] fi_Decode( <(file1)>, <(password)>, <(file2)>, <.del.> )
