@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2018-12-27 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_encrypt.ch
+     + RESULT clause to ENCODE FILE, DECODE FILE, ENCODE TO and
+       DECODE TO commands.
+   * core\include\h_crypt.prg
+     * Functions FI_CODE, FI_DECODE, DB_ENCRYPT and DB_UNENCRYPT
+       now return NIL if the file is already encrypted, .F. if
+       something went wrong and .T. if successful.
+     ! Functions DB_ENCRYPT and DB_UNENCRYPT don't accept
+       filenames with extension.
+     - Static function cFileName.
+
 2018-12-25 22:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog_003.txt
      ! Typo.
