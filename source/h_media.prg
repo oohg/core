@@ -237,21 +237,6 @@ HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
    hb_retnl( ( LONG ) ICGetDefaultKeyFrameRate( (HIC) hb_parnl( 1 ) ) );
 }
 
-/*
-static WNDPROC lpfnOldWndProcA = 0;
-static WNDPROC lpfnOldWndProcB = 0;
-
-static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
-}
-
-static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
-}
-*/
-
 HB_FUNC( INITANIMATE )
 {
    HWND hwnd;
@@ -264,8 +249,6 @@ HB_FUNC( INITANIMATE )
       MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
       return;
    }
-
-//   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
 
    MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
    HWNDret( hwnd );
@@ -313,8 +296,6 @@ HB_FUNC( INITPLAYER )
       MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
       return;
    }
-
-//   lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
 
    MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
    HWNDret( hwnd );
