@@ -131,7 +131,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
                 lRtl, lDisabled, onenter, aImage, TextHeight, lAdjustImages, ;
                 novscroll, multicol, colwidth, multitab, aWidth, dragitems ) CLASS TList
 
-   LOCAL ControlHandle, i
+   LOCAL ControlHandle, i, nId
 
    ASSIGN ::nWidth        VALUE w             TYPE "N"
    ASSIGN ::nHeight       VALUE h             TYPE "N"
@@ -152,8 +152,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
              IIF( ::lMultiTab, LBS_USETABSTOPS, 0 )
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, dragitems )
-   ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
+
+   nId := _GetId()
+   ::PreAddToCtrlsArrays( nId )   // Needed because WM_MEASUREITEM message is fired before ::Register
+   ControlHandle := InitListBox( ::ContainerhWnd, nId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, dragitems )
+   ::Register( ControlHandle, ControlName, HelpId, NIL, ToolTip, nId )
+
    ::SetFont( , , bold, italic, underline, strikeout )
 
    IF HB_IsArray( aImage )
@@ -531,9 +535,9 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITLISTBOX )          /* FUNCTION InitListBox( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, lDragItems ) -> hWnd */
 {
    int Style = WS_CHILD | LBS_NOTIFY | LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | hb_parni( 7 );
-   int ExStyle = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
+   int StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   HWND hCtrl = CreateWindowEx( ExStyle, "LISTBOX", "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+   HWND hCtrl = CreateWindowEx( StyleEx, "LISTBOX", "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                 HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    _OOHG_TListBox_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
@@ -893,7 +897,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    }
 }
 
-HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )   // METHOD Events_MeasureItem( lParam )
+HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureItem( lParam ) CLASS TLIST -> 1 */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );

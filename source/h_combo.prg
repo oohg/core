@@ -127,6 +127,7 @@ CLASS TCombo FROM TLabel
    METHOD RefreshData
    METHOD Release
    METHOD SelectFirstItem         BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
+   METHOD SelectLastItem          BLOCK { |Self| ComboSetCursel( ::hWnd, ::ItemCount ) }
    METHOD SetDropDownWidth
    METHOD SetEditSel
    METHOD ShowDropDown
@@ -148,7 +149,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight ) CLASS TCombo
 
-   LOCAL ControlHandle, WorkArea, uField, nStyle
+   LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
    ASSIGN ::nCol          VALUE x             TYPE "N"
    ASSIGN ::nRow          VALUE y             TYPE "N"
@@ -204,15 +205,17 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    nStyle := ::InitStyle( NIL, NIL, Invisible, notabstop, lDisabled ) + ;
              iif( HB_ISLOGICAL( sort ) .AND. sort, CBS_SORT, 0 ) + ;
              iif( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
-             iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemNumber ), CBS_OWNERDRAWFIXED, 0) + ;
+             iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemNumber ) .OR. displaychange, CBS_OWNERDRAWFIXED, 0) + ;
              iif( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
-   ControlHandle := InitCombobox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId, NIL, ToolTip )
+   nId := _GetId()
+   ::PreAddToCtrlsArrays( nId )   // Needed because WM_MEASUREITEM message is fired before ::Register
+   ControlHandle := InitCombobox( ::ContainerhWnd, nId, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, ::lRtl )
+   ::Register( ControlHandle, ControlName, HelpId, NIL, ToolTip, nId )
+
    ::SetFont()
-
    ::Field := uField
    ::WorkArea := WorkArea
    ::ValueSource := valuesource
@@ -590,14 +593,11 @@ METHOD FindString( c, n ) CLASS TCombo
    LOCAL nPos
 
    IF HB_ISOBJECT( ::oListBox ) .AND. ValType( c ) $ "CM" .AND. ! Empty( c )
-      IF ! HB_ISNUMERIC( n )
+      IF ! HB_ISNUMERIC( n ) .OR. n < 0
          // Search from the top
-         n := -1
+         n := 0
       ENDIF
       n := Int( n )
-      IF n < -1
-         n := -1
-      ENDIF
       nPos := ::oListBox:FindString( c, n )
    ELSE
       nPos := 0
@@ -611,14 +611,11 @@ METHOD FindStringExact( c, n ) CLASS TCombo
    LOCAL nPos
 
    IF HB_ISOBJECT( ::oListBox ) .AND. ValType( c ) $ "CM" .AND. ! Empty( c )
-      IF ! HB_ISNUMERIC( n )
+      IF ! HB_ISNUMERIC( n ) .OR. n < 0
          // Search from the top
-         n := -1
+         n := 0
       ENDIF
       n := Int( n )
-      IF n < -1
-         n := -1
-      ENDIF
       nPos := ::oListBox:FindStringExact( c, n )
    ELSE
       nPos := 0
@@ -1166,14 +1163,25 @@ METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteItem( nPos ) CLASS TCombo
 
-  LOCAL nSize := Len( ::aValues )
+  LOCAL nSel, nSize
 
+   nSel := ComboGetCursel( ::hWnd )
+
+   nSize := Len( ::aValues )
    IF nSize >= nPos
       ADel( ::aValues, nPos )
       ASize( ::aValues, nSize - 1 )
    ENDIF
 
-   RETURN ComboboxDeleteString( ::hWnd, nPos )
+   IF ComboboxDeleteString( ::hWnd, nPos )
+      IF nSel # ComboGetCursel( ::hWnd )
+         ::Redraw()
+         ::DoChange()
+      ENDIF
+      RETURN .T.
+   ENDIF
+
+   RETURN .F.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteAllItems() CLASS TCombo
@@ -1208,10 +1216,12 @@ static WNDPROC _OOHG_TCombo_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
    {
       lpfnOldWndProc = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProc;
 }
@@ -1223,7 +1233,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, 0, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
+HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, nId, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
    HWND hcombo;
    INT Style, StyleEx;
@@ -1452,11 +1462,11 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureIte
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) HB_PARNL( 1 );
+   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) ( LPARAM ) HB_PARNL( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );
-   HFONT hFont, hOldFont;
+   HFONT hOldFont;
    SIZE sz;
    INT iSize;
 
@@ -1465,11 +1475,8 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureIte
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
 
-   hFont = oSelf->hFontHandle;
-
-   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   hOldFont = ( HFONT ) SelectObject( hDC, oSelf->hFontHandle );
    GetTextExtentPoint32( hDC, "_", 1, &sz );
-
    SelectObject( hDC, hOldFont );
    ReleaseDC( hWnd, hDC );
 
@@ -1598,7 +1605,7 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )          /* METHOD ItemHeight() CLASS TCombo
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hDC;
    COMBOBOXINFO info;
-   HFONT hFont, hOldFont;
+   HFONT hOldFont;
    SIZE sz;
    INT iSize;
 
@@ -1611,10 +1618,8 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )          /* METHOD ItemHeight() CLASS TCombo
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
 
-   hFont = oSelf->hFontHandle;
-   hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+   hOldFont = ( HFONT ) SelectObject( hDC, oSelf->hFontHandle );
    GetTextExtentPoint32( hDC, "_", 1, &sz );
-
    SelectObject( hDC, hOldFont );
    ReleaseDC( info.hwndList, hDC );
 
@@ -1804,10 +1809,12 @@ static WNDPROC _OOHG_TListCombo_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
    {
       lpfnOldWndProc = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProc;
 }
@@ -1890,10 +1897,12 @@ static WNDPROC _OOHG_TEditCombo_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
    {
       lpfnOldWndProc = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProc;
 }
