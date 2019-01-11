@@ -167,7 +167,7 @@ METHOD Caption( cValue ) CLASS TLabel
 
    IF ValType( cValue ) $ "CM"
       IF ::lAutoSize
-         nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ) )
+         nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ), CRLF )
          ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
       ENDIF
       SetWindowText( ::hWnd , cValue )
@@ -252,12 +252,12 @@ HB_FUNC( INITLABEL )
 {
    HWND hbutton;
 
-   int Style, ExStyle;
+   int Style, StyleEx;
 
    Style = hb_parni( 8 ) | WS_CHILD | SS_NOTIFY | WS_GROUP;
-   ExStyle = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
+   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   hbutton = CreateWindowEx( ExStyle, "static", hb_parc( 2 ), Style,
+   hbutton = CreateWindowEx( StyleEx, "static", hb_parc( 2 ), Style,
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
