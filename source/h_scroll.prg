@@ -151,7 +151,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
 
    IF HB_ISLOGICAL( lSubControl ) .AND. lSubControl
       ::ScrollType := ::nOrient
-      ::Register( 0, ControlName, HelpId,, ToolTip, 0 )
+      ::Register( 0, ControlName, HelpId,, ToolTip )
       ::FromhWnd := IF( ::Container != NIL, ::Container:hWnd, ::ContainerhWnd )
    ELSE
       ::ScrollType := SB_CTL
