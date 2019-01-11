@@ -7623,10 +7623,12 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_CHAR:
       case WM_LBUTTONDBLCLK:
       case WM_NCCALCSIZE:
+         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
          if( ! s_Events2 )
          {
             s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_EVENTS2" ) );
          }
+         ReleaseMutex( _OOHG_GlobalMutex() );
          hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
@@ -7641,10 +7643,12 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_NOTIFY:
          if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
          {
+            WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
             if( ! s_Notify2 )
             {
                s_Notify2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TGRID_NOTIFY2" ) );
             }
+            ReleaseMutex( _OOHG_GlobalMutex() );
             hb_vmPushSymbol( s_Notify2 );
             hb_vmPushNil();
             hb_vmPush( pSelf );
@@ -7829,61 +7833,74 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
    hb_retl( bRet );
 }
 
-static WNDPROC lpfnOldWndProc = 0;                      //  TODO: Thread safe ?
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TGrid_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TGrid_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TGRID_EXECOLDWNDPROC )          /* FUNCTION TGrid_ExecOldWndProc( hWnd, nMsg, wParam, lParam ) -> uRetVal */
 {
-   HB_RETNL( (LRESULT) CallWindowProc( lpfnOldWndProc, HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( WPARAM ) HB_PARNL( 3 ), ( LPARAM ) HB_PARNL( 4 ) ) );
+   HB_RETNL( (LRESULT) CallWindowProc( _OOHG_TGrid_lpfnOldWndProc( 0 ), HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( WPARAM ) HB_PARNL( 3 ), ( LPARAM ) HB_PARNL( 4 ) ) );
 }
 
-HB_FUNC( INITLISTVIEW )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nRow, nWidth, nHeight, '', 0, nNoGrid, lOwnerdata, nItemcount, nStyle, lRtl, lCheckboxes, lDblBffr, lLabelTip ) -> hWnd */
 {
-   HWND hwnd;
-   int style, StyleEx, extStyle;
-   INITCOMMONCONTROLSEX i;
+   HWND hlistview;
+   int Style, StyleEx, extStyle;
    int iCol, iRow, iWidth, iHeight, iNewRow;
    BOOL bVisible;
+   INITCOMMONCONTROLSEX i;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
-
-   style = WS_CHILD | LVS_REPORT | hb_parni( 12 );
+   Style = WS_CHILD | LVS_REPORT | hb_parni( 12 );
    if ( hb_parl( 10 ) )
    {
-      style = style | LVS_OWNERDATA;
+      Style = Style | LVS_OWNERDATA;
    }
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
    // control must have WS_VISIBLE style or it may not be painted properly
+   bVisible = ( Style & WS_VISIBLE );
 
-   bVisible = ( style & WS_VISIBLE );
-
-   iCol = hb_parni(3);
-   iRow = hb_parni(4);
-   iWidth = hb_parni(5);
-   iHeight = hb_parni(6);
+   iCol = hb_parni( 3 );
+   iRow = hb_parni( 4 );
+   iWidth = hb_parni( 5 );
+   iHeight = hb_parni( 6 );
 
    iNewRow = iRow;
 
    if( ! bVisible )
    {
-      style = style | WS_VISIBLE;
+      Style = Style | WS_VISIBLE;
       iRow = - 1000 - iRow;
    }
 
-   hwnd = CreateWindowEx( StyleEx, "SysListView32", "", style,
-                          iCol, iRow, iWidth, iHeight,
-                          HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+   hlistview = CreateWindowEx( StyleEx, "SysListView32", NULL, Style,
+                               iCol, iRow, iWidth, iHeight,
+                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   extStyle = hb_parni(9) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
+   extStyle = hb_parni( 9 ) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
    if ( hb_parl( 14 ) )
    {
       extStyle = extStyle | LVS_EX_CHECKBOXES;
@@ -7896,22 +7913,22 @@ HB_FUNC( INITLISTVIEW )
    {
       extStyle = extStyle | LVS_EX_LABELTIP;
    }
-   SendMessage( hwnd, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
+   SendMessage( hlistview, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, extStyle );
 
    if( ! bVisible )
    {
-      SetWindowLongPtr( hwnd, GWL_STYLE, style & ( ~ WS_VISIBLE ) );
-      MoveWindow( hwnd, iCol, iNewRow, iWidth, iHeight, TRUE );
+      SetWindowLongPtr( hlistview, GWL_STYLE, Style & ( ~ WS_VISIBLE ) );
+      MoveWindow( hlistview, iCol, iNewRow, iWidth, iHeight, TRUE );
    }
 
    if ( hb_parl( 10 ) )
    {
-      ListView_SetItemCount( hwnd, hb_parni( 11 ) ) ;
+      ListView_SetItemCount( hlistview, hb_parni( 11 ) ) ;
    }
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TGrid_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hlistview, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hwnd );
+   HWNDret( hlistview );
 }
 
 HB_FUNC( INITLISTVIEWCOLUMNS )
