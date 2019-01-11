@@ -312,9 +312,9 @@ HB_FUNC( _OOHG_TINTERNAL_REGISTER )          /* FUNCTION _OOHG_TInternal_Registe
 HB_FUNC( INITINTERNAL )
 {
    int Style = hb_parni( 6 ) | WS_CHILD;
-   int ExStyle = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
+   int StyleEx = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   HWND hCtrl = CreateWindowEx( ExStyle, "_OOHG_TINTERNAL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
+   HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TINTERNAL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    _OOHG_TInternal_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );

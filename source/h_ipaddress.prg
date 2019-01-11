@@ -190,7 +190,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
-   INT Style, ExStyle;
+   INT Style, StyleEx;
    HWND hCtrl;
 
    INITCOMMONCONTROLSEX i;
@@ -199,9 +199,9 @@ HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, 
    InitCommonControlsEx( &i );
 
    Style = WS_CHILD | hb_parni( 7 );
-   ExStyle = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hCtrl = CreateWindowEx( ExStyle, WC_IPADDRESS, "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+   hCtrl = CreateWindowEx( StyleEx, WC_IPADDRESS, "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    _OOHG_TIPAddress_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );

@@ -244,11 +244,11 @@ HB_FUNC( INITSPLITBOX )
    REBARINFO     rbi;
    HWND   hwndRB;
    INITCOMMONCONTROLSEX icex;
-   int ExStyle;
+   int StyleEx;
    int Style;
    OSVERSIONINFO osvi;
 
-   ExStyle = _OOHG_RTL_Status( hb_parl( 3 ) ) | WS_EX_CONTROLPARENT;
+   StyleEx = _OOHG_RTL_Status( hb_parl( 3 ) ) | WS_EX_CONTROLPARENT;
 
    Style = hb_parni( 2 ) |
            WS_CHILD |
@@ -269,7 +269,7 @@ HB_FUNC( INITSPLITBOX )
    icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
    InitCommonControlsEx( &icex );
 
-   hwndRB = CreateWindowEx( ExStyle | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
+   hwndRB = CreateWindowEx( StyleEx | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
                             REBARCLASSNAME,
                             NULL,
                             Style,
