@@ -87,6 +87,7 @@
 #define FONT_ADVANCED    13
 
 #define NDX_OOHG_ACTIVECONTROLINFO     01
+#define NDX_OOHG_ACTIVETOOLBAR         02
 #define NDX_OOHG_ADJUSTFONT            03
 #define NDX_OOHG_ADJUSTWIDTH           04
 #define NDX_OOHG_AUTOADJUST            05
@@ -134,7 +135,11 @@
 #define NDX_OOHG_DEFAULTSTATUSBARMSG   47
 #define NDX_OOHG_DEFAULTMENUPARAMS     48
 #define NDX_OOHG_OWNERDRAWMENUS        49
-#define NUMBER_OF_APP_WIDE_VARS        49
+#define NDX_OOHG_GETNULLNAME           50
+#define NDX_OOHG_SETTINGFOCUS          51
+#define NDX_OOHG_VALIDATING            52
+#define NDX_OOHG_ACTIVEHELPFILE        53
+#define NUMBER_OF_APP_WIDE_VARS        53
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -181,7 +186,6 @@ CLASS TApplication
    METHOD Height                  SETGET
    METHOD HelpButton              SETGET
    METHOD HotKeySet
-   METHOD HotKeysGet
    METHOD hWnd
    METHOD MultipleInstances       SETGET
    METHOD MainClientHeight        SETGET
@@ -197,6 +201,7 @@ CLASS TApplication
    METHOD Title                   SETGET
    METHOD TopMost                 SETGET
    METHOD Value_Pos01             SETGET
+   METHOD Value_Pos02             SETGET
    METHOD Value_Pos03             SETGET
    METHOD Value_Pos04             SETGET
    METHOD Value_Pos05             SETGET
@@ -240,15 +245,21 @@ CLASS TApplication
    METHOD Value_Pos43             SETGET
    METHOD Value_Pos44             SETGET
    METHOD Value_Pos45             SETGET
+   METHOD Value_Pos46
    METHOD Value_Pos47             SETGET
    METHOD Value_Pos48             SETGET
    METHOD Value_Pos49             SETGET
+   METHOD Value_Pos50
+   METHOD Value_Pos51             SETGET
+   METHOD Value_Pos52             SETGET
+   METHOD Value_Pos53             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
    MESSAGE ErrorLevel             METHOD Value_Pos38
    MESSAGE FormObject             METHOD MainObject
    MESSAGE Handle                 METHOD hWnd
+   MESSAGE HotKeysGet             METHOD Value_Pos46
    MESSAGE Icon                   METHOD Value_Pos29
 
    ENDCLASS
@@ -264,6 +275,7 @@ METHOD Define() CLASS TApplication
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
       ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]     := {}
+      ::aVars[ NDX_OOHG_ACTIVETOOLBAR ]         := {}
       ::aVars[ NDX_OOHG_ADJUSTFONT ]            := .T.
       ::aVars[ NDX_OOHG_ADJUSTWIDTH ]           := .T.
       ::aVars[ NDX_OOHG_AUTOADJUST ]            := .F.
@@ -305,12 +317,16 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_COMBOREFRESH ]          := .T.
       ::aVars[ NDX_OOHG_SAVEASDWORD ]           := .F.
       ::aVars[ NDX_OOHG_ACTIVEINIFILE ]         := ""
+      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
       ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
       ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
       ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]   := NIL
       ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := DefaultMenuParams( 0 )
       ::aVars[ NDX_OOHG_OWNERDRAWMENUS ]        := .F.
-      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
+      ::aVars[ NDX_OOHG_GETNULLNAME ]           := 0
+      ::aVars[ NDX_OOHG_SETTINGFOCUS ]          := {}
+      ::aVars[ NDX_OOHG_VALIDATING ]            := {}
+      ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]        := ""
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -330,11 +346,12 @@ METHOD Define() CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFrameContainer( hWnd ) CLASS TApplication
 
-   LOCAL nThreadID, i, nPos := 0, uRet := NIL
+   LOCAL uRet, nThreadID, i, nPos := 0
 
    hb_mutexLock( ::hClsMtx )
    nThreadID := GetThreadId()
    i := 1
+   uRet := NIL
    DO WHILE i <= Len( ::aFramesStack )
       IF ::aFramesStack[ i ][ 1 ] == nThreadID
          IF ::aFramesStack[ i ][ 2 ]:Parent:hWnd == hWnd
@@ -353,11 +370,12 @@ METHOD ActiveFrameContainer( hWnd ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFrameGet() CLASS TApplication
 
-   LOCAL nThreadID, i, uRet := NIL
+   LOCAL uRet, nThreadID, i
 
    hb_mutexLock( ::hClsMtx )
    nThreadID := GetThreadId()
    i := Len( ::aFramesStack )
+   uRet := NIL
    DO WHILE i > 0
       IF ::aFramesStack[ i ][ 1 ] == nThreadID
          uRet := ::aFramesStack[ i ][ 2 ]
@@ -401,11 +419,12 @@ METHOD ActiveFramePush( oFrame ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveMenuGet() CLASS TApplication
 
-   LOCAL nThreadID, i, uRet := NIL
+   LOCAL uRet, nThreadID, i
 
    hb_mutexLock( ::hClsMtx )
    nThreadID := GetThreadId()
    i := Len( ::aMenusStack )
+   uRet := NIL
    DO WHILE i > 0
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
          uRet := ::aMenusStack[ i ][ 2 ]
@@ -449,11 +468,12 @@ METHOD ActiveMenuPush( oMenu ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveMenuRemove( oMenu ) CLASS TApplication
 
-   LOCAL nThreadID, i := 1, nLen
+   LOCAL nThreadID, i, nLen
 
    hb_mutexLock( ::hClsMtx )
    nThreadID := GetThreadId()
    nLen := Len( ::aMenusStack )
+   i := 1
    DO WHILE i <= nLen
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
          IF ::aMenusStack[ i ][ 2 ]:hWnd == oMenu:hWnd
@@ -471,18 +491,22 @@ METHOD ActiveMenuRemove( oMenu ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uColor ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:BackColor( uColor )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:BackColor()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -492,18 +516,22 @@ METHOD BackColor( uColor ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Col( nCol ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
-   If PCount() > 0
+   IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      If HB_ISOBJECT( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Col( nCol )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
-      If HB_ISOBJECT( oMain )
+      IF HB_ISOBJECT( oMain )
          uRet := oMain:Col()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -513,18 +541,22 @@ METHOD Col( nCol ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Cursor( uValue ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Cursor( uValue )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Cursor()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -781,18 +813,22 @@ METHOD GetLogFontParamsByRef( hFont, cFontName, nFontSize, lBold, lItalic, lUnde
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Height( nHeight ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Height( nHeight )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Height()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -802,18 +838,22 @@ METHOD Height( nHeight ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD HelpButton( lShow ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:HelpButton( lShow )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:HelpButton()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -823,12 +863,14 @@ METHOD HelpButton( lShow ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD HotKeySet( nKey, nFlags, bAction ) CLASS TApplication
 
-   LOCAL nPos, uRet := NIL
+   LOCAL uRet, nPos
 
    hb_mutexLock( ::hClsMtx )
    nPos := AScan( ::aVars[ NDX_OOHG_HOTKEYS ], { |a| a[ HOTKEY_KEY ] == nKey .AND. a[ HOTKEY_MOD ] == nFlags } )
    IF nPos > 0
       uRet := ::aVars[ NDX_OOHG_HOTKEYS ][ nPos ][ HOTKEY_ACTION ]
+   ELSE
+      uRet := NIL
    ENDIF
    IF PCount() > 2
       IF HB_ISBLOCK( bAction )
@@ -848,25 +890,16 @@ METHOD HotKeySet( nKey, nFlags, bAction ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD HotKeysGet() CLASS TApplication
-
-   LOCAL uRet
-
-   hb_mutexLock( ::hClsMtx )
-   uRet := AClone( ::aVars[ NDX_OOHG_HOTKEYS ] )
-   hb_mutexUnlock( ::hClsMtx )
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD hWnd CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    oMain := ::aVars[ NDX_OOHG_MAIN ]
    IF HB_ISOBJECT( oMain )
       uRet := oMain:hWnd
+   ELSE
+      uRet := NIL
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
@@ -875,18 +908,22 @@ METHOD hWnd CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainClientHeight( nHeight ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientHeight( nHeight )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientHeight()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -896,18 +933,22 @@ METHOD MainClientHeight( nHeight ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainClientWidth( nHeight ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientWidth( nHeight )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:ClientWidth()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -917,12 +958,14 @@ METHOD MainClientWidth( nHeight ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainName CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    oMain := ::aVars[ NDX_OOHG_MAIN ]
    IF HB_ISOBJECT( oMain )
       uRet := oMain:Name
+   ELSE
+      uRet := NIL
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
 
@@ -931,29 +974,33 @@ METHOD MainName CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainObject CLASS TApplication
 
-   LOCAL uRet
+   LOCAL oRet
 
    hb_mutexLock( ::hClsMtx )
-   uRet := ::aVars[ NDX_OOHG_MAIN ]
+   oRet := ::aVars[ NDX_OOHG_MAIN ]
    hb_mutexUnlock( ::hClsMtx )
 
-   RETURN ( uRet )
+   RETURN ( oRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MainStyle( nStyle ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Style( nStyle )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Style()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1037,18 +1084,22 @@ RETURN ( NIL )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Row( nRow ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Row( nRow )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Row()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1058,18 +1109,22 @@ METHOD Row( nRow ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Title( cTitle ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Title( cTitle )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Title()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1079,18 +1134,22 @@ METHOD Title( cTitle ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD TopMost( lTopmost ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:TopMost( lTopmost )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:TopMost()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1124,6 +1183,39 @@ METHOD Value_Pos01( uValue ) CLASS TApplication
          uRet := NIL
       ELSE
          uRet := ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ][ i ][ 2 ]
+      ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos02( uValue ) CLASS TApplication
+
+   LOCAL uRet, nThreadID, i
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   IF PCount() > 0
+      IF uValue == NIL
+         IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], { |a| a[ 1 ] == nThreadID } ) ) > 0
+            ADel( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], i )
+            ASize( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], Len( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ] ) - 1 )
+         ENDIF
+         uRet := NIL
+      ELSE
+         IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+            AAdd( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], { nThreadID, NIL } )
+            i := Len( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ] )
+         ENDIF
+         ::aVars[ NDX_OOHG_ACTIVETOOLBAR ][ i ][ 2 ] := uValue
+         uRet := ::aVars[ NDX_OOHG_ACTIVETOOLBAR ][ i ][ 2 ]
+      ENDIF
+   ELSE
+      IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+         uRet := NIL
+      ELSE
+         uRet := ::aVars[ NDX_OOHG_ACTIVETOOLBAR ][ i ][ 2 ]
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )
@@ -1734,6 +1826,17 @@ METHOD Value_Pos45( uValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos46() CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   uRet := AClone( ::aVars[ NDX_OOHG_HOTKEYS ] )
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos47( uValue ) CLASS TApplication
 
    LOCAL uRet
@@ -1750,7 +1853,7 @@ METHOD Value_Pos47( uValue ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos48( uValue ) CLASS TApplication
 
-   LOCAL i, uRet, nLen
+   LOCAL uRet, nLen, i
 
    hb_mutexLock( ::hClsMtx )
    IF HB_ISARRAY( uValue )
@@ -1785,20 +1888,111 @@ METHOD Value_Pos49( lValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos50( cValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   uRet := iif( ValType( cValue ) $ "CM", Upper( AllTrim( cValue ) ), "0" )
+   IF Empty( uRet ) .OR. uRet == "0" .OR. uRet == "NONAME" .OR. uRet == "NIL" .OR. uRet == "NULL" .OR. uRet == "NONE"
+      // Caller must verify this name doesn't exists
+      uRet := "NULL" + StrZero( ::aVars[ NDX_OOHG_GETNULLNAME ], 10 )
+      ::aVars[ NDX_OOHG_GETNULLNAME ] ++
+      IF ::aVars[ NDX_OOHG_GETNULLNAME ] > 9999999999
+         ::aVars[ NDX_OOHG_GETNULLNAME ] := 0
+      ENDIF
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos51( lValue ) CLASS TApplication
+
+   LOCAL uRet, nThreadID, i
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   IF HB_ISLOGICAL( lValue )
+      IF lValue
+         IF AScan( ::aVars[ NDX_OOHG_SETTINGFOCUS ], nThreadID ) == 0
+            AAdd( ::aVars[ NDX_OOHG_SETTINGFOCUS ], nThreadID )
+         ENDIF
+         uRet := .T.
+      ELSE
+         IF ( i := AScan( ::aVars[ NDX_OOHG_SETTINGFOCUS ], nThreadID ) ) # 0
+            ADel( ::aVars[ NDX_OOHG_SETTINGFOCUS ], i )
+            ASize( ::aVars[ NDX_OOHG_SETTINGFOCUS ], Len( ::aVars[ NDX_OOHG_SETTINGFOCUS ] ) - 1 )
+         ENDIF
+         uRet := .F.
+      ENDIF
+   ELSE
+      uRet := ( AScan( ::aVars[ NDX_OOHG_SETTINGFOCUS ], nThreadID ) # 0 )
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos52( lValue ) CLASS TApplication
+
+   LOCAL uRet, nThreadID, i
+
+   hb_mutexLock( ::hClsMtx )
+   nThreadID := GetThreadId()
+   IF HB_ISLOGICAL( lValue )
+      IF lValue
+         IF AScan( ::aVars[ NDX_OOHG_VALIDATING ], nThreadID ) == 0
+            AAdd( ::aVars[ NDX_OOHG_VALIDATING ], nThreadID )
+         ENDIF
+         uRet := .T.
+      ELSE
+         IF ( i := AScan( ::aVars[ NDX_OOHG_VALIDATING ], nThreadID ) ) # 0
+            ADel( ::aVars[ NDX_OOHG_VALIDATING ], i )
+            ASize( ::aVars[ NDX_OOHG_VALIDATING ], Len( ::aVars[ NDX_OOHG_VALIDATING ] ) - 1 )
+         ENDIF
+         uRet := .F.
+      ENDIF
+   ELSE
+      uRet := ( AScan( ::aVars[ NDX_OOHG_VALIDATING ], nThreadID ) # 0 )
+   ENDIF
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos53( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   hb_mutexLock( ::hClsMtx )
+   IF uValue != NIL
+      ::aVars[ NDX_OOHG_ACTIVEHELPFILE ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]
+   hb_mutexUnlock( ::hClsMtx )
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TApplication
 
-   LOCAL oMain, uRet := NIL
+   LOCAL uRet, oMain
 
    hb_mutexLock( ::hClsMtx )
    IF PCount() > 0
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Width( nWidth )
+      ELSE
+         uRet := NIL
       ENDIF
    ELSE
       oMain := ::aVars[ NDX_OOHG_MAIN ]
       IF HB_ISOBJECT( oMain )
          uRet := oMain:Width()
+      ELSE
+         uRet := NIL
       ENDIF
    ENDIF
    hb_mutexUnlock( ::hClsMtx )

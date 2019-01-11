@@ -256,22 +256,29 @@ HB_FUNC( MESSAGEBOXINDIRECT )
 
 typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
 
-// TODO: thread safe ?
 static PMessageBoxTimeout pMessageBoxTimeout = NULL;
 
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
 {
+   int iRet;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( pMessageBoxTimeout == NULL )
    {
       HMODULE hLib = LoadLibrary( "User32.dll" );
-
       pMessageBoxTimeout = ( PMessageBoxTimeout ) GetProcAddress( hLib, "MessageBoxTimeoutA" );
    }
-
    if( pMessageBoxTimeout == NULL )
-      return FALSE;
+   {
+      iRet = 0;
+   }
+   else
+   {
+      iRet = pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+   return iRet;
 }
 
 // MessageBoxTimeout( Text, Caption, nTypeButton, nMilliseconds ) ---> Return iRetButton

@@ -246,8 +246,8 @@ typedef struct OOHG_Window
 
 VOID SetDragCursorARROW( BOOL isCtrlKeyDown );
 VOID ImageFillParameter( struct IMAGE_PARAMETER * pResult, PHB_ITEM pString );
-PHB_ITEM GetFormObjectByHandle( HWND hWnd );
-PHB_ITEM GetControlObjectByHandle( HWND hWnd );
+PHB_ITEM GetFormObjectByHandle( HWND hWnd, BOOL bMutex );
+PHB_ITEM GetControlObjectByHandle( HWND hWnd, BOOL bMutex );
 PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd );
 VOID _OOHG_Send( PHB_ITEM pSelf, INT iSymbol );
 VOID _OOHG_DoEvent( PHB_ITEM pSelf, INT iSymbol, CHAR * cType, PHB_ITEM pArray );

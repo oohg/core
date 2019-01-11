@@ -66,8 +66,6 @@
 #define DOUBLE_QUOTATION_MARK  '"'
 #define DQM( x )               ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
-STATIC _OOHG_ActiveHelpFile := ""
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SetHelpFile( cFile )
 
@@ -87,18 +85,18 @@ FUNCTION SetHelpFile( cFile )
       RETURN .F.
    ENDIF
 
-   _OOHG_ActiveHelpFile := cFile
-
    FClose( hFile )
+
+   _OOHG_ActiveHelpFile := cFile
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION HelpTopic( nTopic , nMet )
 
-   LOCAL ret:=0
+   LOCAL nRet := 0, cFile
 
-   IF ! Empty( _OOHG_ActiveHelpFile )
+   IF ! Empty( cFile := _OOHG_ActiveHelpFile )
 
       IF ! HB_ISNUMERIC( nTopic )
          nTopic := 0
@@ -107,21 +105,15 @@ FUNCTION HelpTopic( nTopic , nMet )
          nMet := 0
       ENDIF
 
-      IF Upper( Right( AllTrim( _OOHG_ActiveHelpFile ), 4 ) ) == '.CHM'
-         ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 0, nMet, nTopic )
+      IF Upper( Right( AllTrim( cFile ), 4 ) ) == '.CHM'
+         nRet := WinHelp( _OOHG_Main:hWnd, cFile, 0, nMet, nTopic )
       ELSE
-         ret := WinHelp( _OOHG_Main:hWnd, _OOHG_ActiveHelpFile, 1, nMet, nTopic )
+         nRet := WinHelp( _OOHG_Main:hWnd, cFile, 1, nMet, nTopic )
       ENDIF
    ENDIF
 
-   RETURN ret
+   RETURN nRet
 
-FUNCTION GetActiveHelpFile()
-
-   RETURN _OOHG_ActiveHelpFile
-
-
-// EXTERN WINHELP, WINHLP
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP

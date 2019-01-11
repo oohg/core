@@ -2508,7 +2508,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          break;
 
       case WM_NOTIFY:
-         _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom ), s_Events_Notify );
+         _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom, TRUE ), s_Events_Notify );
          hb_vmPushNumInt( wParam );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 2 );
@@ -2589,11 +2589,10 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          break;
 
       case WM_DRAWITEM:
-
          if( wParam )
          {
             // ComboBox and ListBox
-            _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem ), s_Events_DrawItem );
+            _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
          }
          else
          {
@@ -2629,7 +2628,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
             _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
 
             SetFocus( ( HWND ) wParam );
-            pControl = GetControlObjectByHandle( ( HWND ) wParam );
+            pControl = GetControlObjectByHandle( ( HWND ) wParam, TRUE );
 
             // Check if control have context menu
             _OOHG_Send( pControl, s_ContextMenu );
@@ -2668,52 +2667,50 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_INITMENUPOPUP:
          if( ! HIWORD( lParam ) )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) ( HMENU ) wParam ), s_Events_InitMenuPopUp );
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) ( HMENU ) wParam, TRUE ), s_Events_InitMenuPopUp );
             hb_vmPushLong( ( LONG ) LOWORD( lParam ) );
             hb_vmSend( 1 );
          }
          break;
 
       case WM_MENUSELECT:
+         if( ( HIWORD( wParam ) & MF_SYSMENU ) != MF_SYSMENU )
          {
-            if( ( HIWORD( wParam ) & MF_SYSMENU ) != MF_SYSMENU )
+            if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
             {
-               if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
+               if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
                {
-                  if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
+                  MENUITEMINFO MenuItemInfo;
+                  PHB_ITEM pMenu = hb_itemNew( NULL );
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam, TRUE ) );
+                  _OOHG_Send( pMenu, s_hWnd );
+                  hb_vmSend( 0 );
+                  if( ValidHandler( HWNDparam( -1 ) ) )
                   {
-                     MENUITEMINFO MenuItemInfo;
-                     PHB_ITEM pMenu = hb_itemNew( NULL );
-                     hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
-                     _OOHG_Send( pMenu, s_hWnd );
-                     hb_vmSend( 0 );
-                     if( ValidHandler( HWNDparam( -1 ) ) )
+                     memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
+                     MenuItemInfo.cbSize = sizeof( MenuItemInfo );
+                     MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
+                     GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
+                     if( MenuItemInfo.hSubMenu )
                      {
-                        memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
-                        MenuItemInfo.cbSize = sizeof( MenuItemInfo );
-                        MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                        GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
-                        if( MenuItemInfo.hSubMenu )
-                        {
-                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
-                        }
-                        else
-                        {
-                           hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
-                        }
-                        _OOHG_Send( pMenu, s_Events_MenuHilited );
-                        hb_vmSend( 0 );
-                        hb_itemRelease( pMenu );
+                        hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
                      }
-                  }
-                  else
-                  {
-                     PHB_ITEM pMenu = hb_itemNew( NULL );
-                     hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
+                     else
+                     {
+                        hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
+                     }
                      _OOHG_Send( pMenu, s_Events_MenuHilited );
                      hb_vmSend( 0 );
                      hb_itemRelease( pMenu );
                   }
+               }
+               else
+               {
+                  PHB_ITEM pMenu = hb_itemNew( NULL );
+                  hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
+                  _OOHG_Send( pMenu, s_Events_MenuHilited );
+                  hb_vmSend( 0 );
+                  hb_itemRelease( pMenu );
                }
             }
          }
@@ -2726,7 +2723,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
             POINT Point;
 
             pMenu = hb_itemNew( NULL );
-            hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam ) );
+            hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam, TRUE ) );
             _OOHG_Send( pMenu, s_hWnd );
             hb_vmSend( 0 );
             if( ValidHandler( HWNDparam( -1 ) ) )
@@ -2737,7 +2734,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                GetMenuItemInfo( ( HMENU ) lParam, wParam, MF_BYPOSITION, &MenuItemInfo );
                if( MenuItemInfo.hSubMenu )
                {
-                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
                }
                else
                {
@@ -2763,7 +2760,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_HSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_HScroll );
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam, TRUE ), s_Events_HScroll );
             hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
@@ -2778,7 +2775,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       case WM_VSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam ), s_Events_VScroll );
+            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam, TRUE ), s_Events_VScroll );
             hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
@@ -2832,7 +2829,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
       default:
          if( message == _OOHG_ListBoxDragNotification )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAGLISTINFO) lParam )->hWnd ), s_Events_Drag );
+            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAGLISTINFO) lParam )->hWnd, TRUE ), s_Events_Drag );
             hb_vmPushNumInt( lParam );
             hb_vmSend( 1 );
          }

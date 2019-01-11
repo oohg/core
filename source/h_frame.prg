@@ -186,36 +186,45 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 
 #define s_Super s_TControl
 
-static WNDPROC lpfnOldWndProcA = 0;
-
-static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TFrame_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITFRAME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hwnd;
-   HWND hbutton;
-   int Style, StyleEx;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TFrame_lpfnOldWndProc( 0 ) );
+}
 
-   hwnd = HWNDparam( 1 );
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITFRAME )          /* FUNCTION InitFrame( hWnd, hMenu, nCol, nRow, nWidth, nHeight, cCaption, lOpaque, lLeftAlign, nStyle ) -> hWnd */
+{
+   HWND hframe;
+   int Style, StyleEx;
 
    Style = hb_parni( 10 ) | WS_CHILD | BS_GROUPBOX | BS_NOTIFY;
    StyleEx = _OOHG_RTL_Status( hb_parl( 9 ) );
-
-   if ( ! hb_parl( 8 ) )   /* opaque */
-   {
+   if( ! hb_parl( 8 ) )
       StyleEx = StyleEx | WS_EX_TRANSPARENT;
-   }
 
-   hbutton = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
-             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   hframe = CreateWindowEx( StyleEx, "BUTTON", hb_parc( 7 ), Style,
+                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
+   _OOHG_TFrame_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hframe, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
-   HWNDret( hbutton );
+   HWNDret( hframe );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

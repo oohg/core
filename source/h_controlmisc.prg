@@ -68,9 +68,6 @@
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
 
-STATIC _OOHG_lSettingFocus := .F.     // If there's a ::SetFocus() call inside ON ENTER event.
-STATIC _OOHG_lValidating := .F.       // If there's a ::SetFocus() call inside ON ENTER event.
-
 #pragma BEGINDUMP
 #include "hbapi.h"
 #include "hbapiitm.h"
@@ -1291,6 +1288,7 @@ CLASS TControl FROM TWindow
    METHOD InitStyle
    METHOD Register
    METHOD AddToCtrlsArrays
+   METHOD PreAddToCtrlsArrays
    METHOD DelFromCtrlsArrays
    METHOD TabIndex           SETGET
    METHOD Refresh            BLOCK { |Self| ::ReDraw() }
@@ -1314,7 +1312,7 @@ CLASS TControl FROM TWindow
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
-   METHOD SetFocus           BLOCK { |Self| _OOHG_lSettingFocus := .T., GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd, ::Super:SetFocus() }
+   METHOD SetFocus
    METHOD SetVarBlock
    METHOD AddBitMap
    METHOD ClearBitMaps
@@ -1328,8 +1326,8 @@ CLASS TControl FROM TWindow
    METHOD Events_Enter
    METHOD Events_Command
    METHOD Events_Notify
-   METHOD Events_DrawItem    BLOCK { || nil }
-   METHOD Events_MeasureItem BLOCK { || nil }
+   METHOD Events_DrawItem    BLOCK { || NIL }
+   METHOD Events_MeasureItem BLOCK { || NIL }
    METHOD Cursor             SETGET
 
 
@@ -1415,22 +1413,6 @@ METHOD ToolTip( cToolTip ) CLASS TControl
    EndIf
 
    Return ::cToolTip
-
-FUNCTION _OOHG_GetNullName( cName )
-
-   STATIC nCtrl := 0
-
-   cName := IF( VALTYPE( cName ) $ "CM", UPPER( ALLTRIM( cName ) ), "0" )
-   IF EMPTY( cName ) .OR. cName == "0" .OR. cName == "NONAME" .OR. cName == "NIL" .OR. cName == "NULL" .OR. cName == "NONE"
-      // Caller must verify this name doesn't exists
-      cName := "NULL" + STRZERO( nCtrl, 10 )
-      nCtrl++
-      IF nCtrl > 9999999999
-          nCtrl := 0
-      ENDIF
-   ENDIF
-
-   RETURN cName
 
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
                 BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
@@ -1539,12 +1521,23 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
 
    Return nStyle
 
+METHOD PreAddToCtrlsArrays( Id ) CLASS TControl
+
+   IF HB_ISNUMERIC( Id ) .AND. Id # 0
+      // The four arrays must allways have the same length
+      AAdd( _OOHG_aControlhWnd, NIL )
+      AAdd( _OOHG_aControlObjects, Self )
+      AAdd( _OOHG_aControlIds, { Id, ::Parent:hWnd } )
+      AAdd( _OOHG_aControlNames, Upper( ::Parent:Name + Chr( 255 ) + ::Name ) )
+   ENDIF
+
+   RETURN Self
+
 METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 
-   Local mVar
+   LOCAL mVar
 
-   // cName NO debe recibirse!!! Ya debe estar desde :SetForm()!!!!
-   // ::Name   := _OOHG_GetNullName( ControlName )
+   // cName must be set at :SetForm()
    HB_SYMBOL_UNUSED( cName )
 
    ::hWnd := hWnd
@@ -1567,25 +1560,36 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
 
    ::ToolTip := ToolTip
 
-   If HB_IsNumeric( Id )
+   IF HB_ISNUMERIC( Id ) .AND. Id # 0
       ::Id := Id
-   Else
+   ELSE
       ::Id := GetDlgCtrlId( ::hWnd )
-   EndIf
+   ENDIF
 
    ::AddToCtrlsArrays()
 
    mVar := "_" + ::Parent:Name + "_" + ::Name
-   Public &mVar. := Self
+   PUBLIC &mVar. := Self
 
    RETURN Self
 
 METHOD AddToCtrlsArrays() CLASS TControl
 
-   AAdd( _OOHG_aControlhWnd, ::hWnd )
-   AAdd( _OOHG_aControlObjects, Self )
-   AAdd( _OOHG_aControlIds, { ::Id, ::Parent:hWnd } )
-   AAdd( _OOHG_aControlNames, Upper( ::Parent:Name + Chr( 255 ) + ::Name ) )
+   LOCAL nPos
+
+   nPos := AScan( _OOHG_aControlNames, { |c| c == Upper( ::Parent:Name + Chr( 255 ) + ::Name ) } )
+
+   IF nPos > 0
+      // See ::PreAddToCtrlsArrays()
+      _OOHG_aControlhWnd[ nPos ] := ::hWnd
+      _OOHG_aControlIds[ nPos ] := { ::Id, ::Parent:hWnd }
+   ELSE
+      // The four arrays must allways have the same length
+      AAdd( _OOHG_aControlhWnd, ::hWnd )
+      AAdd( _OOHG_aControlObjects, Self )
+      AAdd( _OOHG_aControlIds, { ::Id, ::Parent:hWnd } )
+      AAdd( _OOHG_aControlNames, Upper( ::Parent:Name + Chr( 255 ) + ::Name ) )
+   ENDIF
 
    RETURN NIL
 
@@ -1596,6 +1600,7 @@ METHOD DelFromCtrlsArrays() CLASS TControl
    nPos := aScan( _OOHG_aControlNames, { |c| c == Upper( ::Parent:Name + Chr( 255 ) + ::Name ) } )
 
    IF nPos > 0
+      // The four arrays must allways have the same length
       _OOHG_DeleteArrayItem( _OOHG_aControlhWnd, nPos )
       _OOHG_DeleteArrayItem( _OOHG_aControlObjects, nPos )
       _OOHG_DeleteArrayItem( _OOHG_aControlIds, nPos )
@@ -1928,17 +1933,17 @@ METHOD DoLostFocus() CLASS TControl
       If nFocus > 0
          oFocus := GetControlObjectByHandle( nFocus )
          If ! oFocus:lCancel
-            If _OOHG_lValidating
+            If _OOHG_Validating
                Return Nil
             EndIf
-            _OOHG_lValidating := .T.
+            _OOHG_Validating := .T.
             uRet := _OOHG_Eval( ::postBlock, Self )
             If HB_IsLogical( uRet ) .AND. ! uRet
                ::SetFocus()
-               _OOHG_lValidating := .F.
+               _OOHG_Validating := .F.
                Return 1
             EndIf
-            _OOHG_lValidating := .F.
+            _OOHG_Validating := .F.
             uRet := Nil
          EndIf
       EndIf
@@ -2332,19 +2337,28 @@ METHOD FocusEffect CLASS TControl
 
    Return Nil
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetFocus() CLASS TControl
+
+   _OOHG_SettingFocus := .T.
+   GetFormObjectByHandle( ::ContainerhWnd ):LastFocusedControl := ::hWnd
+
+   RETURN ::Super:SetFocus()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Enter() CLASS TControl
 
-   _OOHG_lSettingFocus := .F.
+   _OOHG_SettingFocus := .F.
    ::DoEvent( ::OnEnter, "ENTER" )
-   If ! _OOHG_lSettingFocus
-      If _OOHG_ExtendedNavigation
+   IF ! _OOHG_SettingFocus
+      IF _OOHG_ExtendedNavigation
          _SetNextFocus()
-      EndIf
-   Else
-      _OOHG_lSettingFocus := .F.
-   EndIf
+      ENDIF
+   ELSE
+      _OOHG_SettingFocus := .F.
+   ENDIF
 
-   Return nil
+   RETURN NIL
 
 METHOD Events_Notify( wParam, lParam ) CLASS TControl
 
@@ -2470,14 +2484,34 @@ Function GetStartUpFolder()
 
    Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 
-   // Initializes C variables
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE _OOHG_Init_C_Vars_Controls()
 
-Procedure _OOHG_Init_C_Vars_Controls()
+/*
+ * This procedure initializes C static variables that point to the arrays.
+ * These pointers will facilitate the access from C-level functions to
+ * objects defined at PRG-level.
+ *
+ * DO NOT CALL this procedure directly !!!!
+ *
+ * It's called, automatically, only once from functions
+ * _OOHG_SearchControlHandleInArray() or GetControlObjectById()
+ * the very first time one of them is executed.
+ *
+ * Function _OOHG_SearchControlHandleInArray() is called from
+ * GetControlObjectByHandle() and _OOHG_GetExistingObject().
+ * Function GetControlObjectById() is called from PRG-level or
+ * from C-level by many other functions.
+ *
+ * Note that GetControlObjectById(), GetControlObjectByHandle() and
+ * _OOHG_GetExistingObject() are mutex-protected but
+ * _OOHG_SearchControlHandleInArray() is not.
+ */
 
    TControl()
    _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
 
-   Return
+   RETURN
 
 
 EXTERN _OOHG_UnTransform

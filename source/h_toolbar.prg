@@ -64,8 +64,6 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_ActiveToolBar := Nil    // Active toolbar
-
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
@@ -220,7 +218,7 @@ FUNCTION _EndToolBar( lBreak )
       ::SetSplitBoxInfo( lBreak )  // .T. forces break for next control...
    EndIf
 
-   _OOHG_ActiveToolBar := Nil
+   _OOHG_ActiveToolBar := NIL
 
    Return Nil
 
@@ -418,7 +416,7 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 
    Empty( flat )
 
-   ASSIGN toolbar   VALUE toolbar TYPE "O" DEFAULT _OOHG_ActiveToolBar
+   ASSIGN toolbar VALUE toolbar TYPE "O" DEFAULT _OOHG_ActiveToolBar
    ::SetForm( ControlName, toolbar )
 
    ASSIGN Caption       VALUE Caption       TYPE "CM" DEFAULT ""

@@ -73,28 +73,29 @@ EXTERN PtrStr
 #include <commctrl.h>
 #include "oohg.h"
 
-#define MAX_PARAMS   9
+#define MAX_PARAMS  9
 
 HINSTANCE HB_DllStore[ 256 ];
+HINSTANCE HB_LoadDll( CHAR * );
+void      HB_UnloadDll( void );
+typedef   INT ( CALLBACK * DYNACALL0 ) ( void );
+typedef   INT ( CALLBACK * DYNACALL1 ) ( INT d1 );
+typedef   INT ( CALLBACK * DYNACALL2 ) ( INT d1, INT d2 );
+typedef   INT ( CALLBACK * DYNACALL3 ) ( INT d1, INT d2, INT d3 );
+typedef   INT ( CALLBACK * DYNACALL4 ) ( INT d1, INT d2, INT d3, INT d4 );
+typedef   INT ( CALLBACK * DYNACALL5 ) ( INT d1, INT d2, INT d3, INT d4, INT d5 );
+typedef   INT ( CALLBACK * DYNACALL6 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6 );
+typedef   INT ( CALLBACK * DYNACALL7 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7 );
+typedef   INT ( CALLBACK * DYNACALL8 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8 );
+typedef   INT ( CALLBACK * DYNACALL9 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8, INT d9 );
 
-HINSTANCE HB_LoadDll(char *);
-void      HB_UnloadDll(void);
-typedef   int (CALLBACK *DYNACALL0)(void);
-typedef   int (CALLBACK *DYNACALL1)(int d1);
-typedef   int (CALLBACK *DYNACALL2)(int d1,int d2);
-typedef   int (CALLBACK *DYNACALL3)(int d1,int d2,int d3);
-typedef   int (CALLBACK *DYNACALL4)(int d1,int d2,int d3,int d4);
-typedef   int (CALLBACK *DYNACALL5)(int d1,int d2,int d3,int d4,int d5);
-typedef   int (CALLBACK *DYNACALL6)(int d1,int d2,int d3,int d4,int d5,int d6);
-typedef   int (CALLBACK *DYNACALL7)(int d1,int d2,int d3,int d4,int d5,int d6,int d7);
-typedef   int (CALLBACK *DYNACALL8)(int d1,int d2,int d3,int d4,int d5,int d6,int d7,int d8);
-typedef   int (CALLBACK *DYNACALL9)(int d1,int d2,int d3,int d4,int d5,int d6,int d7,int d8,int d9);
-
-HINSTANCE HB_LoadDll( char *DllName )
+HINSTANCE HB_LoadDll( CHAR * DllName )
 {
-   // Thread safe.
-   static int DllCnt = 0;
-   static int RegUnload = 0;
+   static INT DllCnt = 0;
+   static INT RegUnload = 0;
+   HINSTANCE ret;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! RegUnload )
    {
       RegUnload = ! atexit( HB_UnloadDll );
@@ -105,7 +106,9 @@ HINSTANCE HB_LoadDll( char *DllName )
    {
       FreeLibrary( HB_DllStore[ DllCnt ] );
    }
-   return HB_DllStore[ DllCnt ] = LoadLibrary( DllName );
+   ret = HB_DllStore[ DllCnt ] = LoadLibrary( DllName );
+   ReleaseMutex( _OOHG_GlobalMutex() );
+   return ret;
 }
 
 HB_FUNC( UNLOADALLDLL )
@@ -115,7 +118,7 @@ HB_FUNC( UNLOADALLDLL )
 
 void HB_UnloadDll( void )
 {
-   register int i;
+   register INT i;
    for( i = 255; i >= 0; i-- )
    {
       if( HB_DllStore[ i ] )
@@ -127,15 +130,15 @@ void HB_UnloadDll( void )
 
 HB_FUNC( CALLDLL32 )
 {
-   register int i;
-   HINSTANCE  hInst;
+   register INT i;
+   HINSTANCE hInst;
    DYNACALL1 lpAddr;
-   int result = -2000;
-   char buff[ 256 ];
-   char *FuncName = ( char * ) hb_parc( 1 );
-   char *DllName = ( char * ) hb_parc( 2 );
-   int nArgs;
-   int dd[ MAX_PARAMS ];
+   INT result = -2000;
+   CHAR buff[ 256 ];
+   CHAR * FuncName = ( CHAR * ) hb_parc( 1 );
+   CHAR * DllName = ( CHAR * ) hb_parc( 2 );
+   INT nArgs;
+   INT dd[ MAX_PARAMS ];
 
    nArgs = hb_pcount();
    if( nArgs < 2 || nArgs > MAX_PARAMS + 2 )
@@ -163,8 +166,8 @@ HB_FUNC( CALLDLL32 )
    }
    if( lpAddr == NULL )
    {
-      sprintf(buff,"%s%s","_",FuncName);
-      lpAddr=(DYNACALL1)GetProcAddress(hInst,buff);
+      sprintf( buff, "%s%s", "_", FuncName );
+      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff );
    }
    if( lpAddr )
    {
@@ -172,58 +175,58 @@ HB_FUNC( CALLDLL32 )
       {
          if( HB_ISCHAR( i + 3 ) )
          {
-            dd[ i ] = ( int ) ( char * ) hb_parc( i + 3 );
+            dd[ i ] = ( INT ) ( char * ) hb_parc( i + 3 );
          }
          else if( ISPTR( i + 3 ) )
          {
-            dd[ i ] = ( int ) hb_parptr( i + 3 );
+            dd[ i ] = ( INT ) hb_parptr( i + 3 );
          }
          else
          {
-            dd[ i ] = ( int ) hb_parni( i + 3 );
+            dd[ i ] = ( INT ) hb_parni( i + 3 );
          }
       }
 
       switch( nArgs )
       {
          case 0:
-            result = ( int )( ( DYNACALL0 ) lpAddr )();
+            result = ( INT )( ( DYNACALL0 ) lpAddr )();
             break;
 
          case 1:
-            result = ( int )( ( DYNACALL1 ) lpAddr )( dd[ 0 ] );
+            result = ( INT )( ( DYNACALL1 ) lpAddr )( dd[ 0 ] );
             break;
 
          case 2:
-            result = ( int )( ( DYNACALL2 ) lpAddr )( dd[ 0 ], dd[ 1 ] );
+            result = ( INT )( ( DYNACALL2 ) lpAddr )( dd[ 0 ], dd[ 1 ] );
             break;
 
          case 3:
-            result = ( int )( ( DYNACALL3 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
+            result = ( INT )( ( DYNACALL3 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
             break;
 
          case 4:
-            result = ( int )( ( DYNACALL4 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
+            result = ( INT )( ( DYNACALL4 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
             break;
 
          case 5:
-            result = ( int )( ( DYNACALL5 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
+            result = ( INT )( ( DYNACALL5 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
             break;
 
          case 6:
-            result = ( int )( ( DYNACALL6 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
+            result = ( INT )( ( DYNACALL6 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
             break;
 
          case 7:
-            result = ( int )( ( DYNACALL7 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
+            result = ( INT )( ( DYNACALL7 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
             break;
 
          case 8:
-            result = ( int )( ( DYNACALL8 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
+            result = ( INT )( ( DYNACALL8 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
             break;
 
          default:
-            result = ( int )( ( DYNACALL9 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
+            result = ( INT )( ( DYNACALL9 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
             break;
 
       }
@@ -234,7 +237,7 @@ HB_FUNC( CALLDLL32 )
 
 HB_FUNC( STRPTR )
 {
-   char *cString = ( char * ) hb_parc( 1 );
+   CHAR * cString = ( CHAR * ) hb_parc( 1 );
    HB_RETNL( ( LONG_PTR ) cString );
 }
 

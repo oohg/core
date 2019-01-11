@@ -300,40 +300,48 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 #include "tchar.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProcA = 0;
-static WNDPROC lpfnOldWndProcB = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TDatePick_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProcA = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProcA )
+   {
+      lpfnOldWndProcA = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProcA;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcA );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TDatePick_lpfnOldWndProc( 0 ) );
 }
 
-static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProcB );
-}
-
-HB_FUNC( INITDATEPICK )
-{
-   HWND hwnd;
-   HWND hbutton;
-   int Style   = hb_parni( 7 ) | WS_CHILD;
-   int StyleEx = hb_parni( 8 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
-
+   HWND hdatepick;
+   int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
+
+   Style   = hb_parni( 7 ) | WS_CHILD;
+   StyleEx = hb_parni( 8 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
+
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   hwnd = HWNDparam( 1 );
+   hdatepick = CreateWindowEx( StyleEx, "SysDateTimePick32", NULL, Style,
+                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   hbutton = CreateWindowEx( StyleEx, "SysDateTimePick32", 0, Style,
-             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hdatepick, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
-   lpfnOldWndProcA = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncA );
-
-   HWNDret( hbutton );
+   HWNDret( hdatepick );
 }
 
 HB_FUNC( SETDATEPICK )
@@ -407,29 +415,48 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
    }
 }
 
-HB_FUNC( INITTIMEPICK )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TTimePick_lpfnOldWndProc( WNDPROC lp )
 {
-   HWND hwnd;
-   HWND hbutton;
-   int Style   = hb_parni( 7 ) | WS_CHILD;
-   int StyleEx = hb_parni( 8 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
+   static WNDPROC lpfnOldWndProcB = 0;
 
-   INITCOMMONCONTROLSEX  i;
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProcB )
+   {
+      lpfnOldWndProcB = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProcB;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TTimePick_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTIMEPICK )          /* FUNCTION InitTimePick( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
+{
+   HWND htimepick;
+   int Style, StyleEx;
+   INITCOMMONCONTROLSEX i;
+
+   Style   = hb_parni( 7 ) | WS_CHILD | DTS_TIMEFORMAT | DTS_UPDOWN;
+   StyleEx = hb_parni( 8 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
+
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   hwnd = HWNDparam( 1 );
+   htimepick = CreateWindowEx( StyleEx, DATETIMEPICK_CLASS, NULL, Style,
+                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   Style = Style | DTS_TIMEFORMAT | DTS_UPDOWN;
+   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htimepick, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
-   hbutton = CreateWindowEx( StyleEx, DATETIMEPICK_CLASS, "DateTime", Style,
-             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
-
-   lpfnOldWndProcB = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFuncB );
-
-   HWNDret( hbutton );
+   HWNDret( htimepick );
 }
 
 HB_FUNC( SETTIMEPICK )

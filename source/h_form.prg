@@ -75,11 +75,11 @@
 #define TYPE_MDICHILD   3
 #define TYPE_MDIFRAME   4
 
-STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}               // TODO: Thread safe ?
-STATIC _OOHG_UserWindow := nil       // User's window
-STATIC _OOHG_InteractiveClose := 1   // Interactive close
-STATIC _OOHG_ActiveModal := {}       // Modal windows' stack
-STATIC _OOHG_ActiveForm := {}        // Forms under creation
+STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}               // TODO: thread safe: C-level is safe but scan, add and del at PRG-level are not.
+STATIC _OOHG_UserWindow := nil       // User's window                // TODO: thread safe
+STATIC _OOHG_InteractiveClose := 1   // Interactive close            // TODO: thread safe
+STATIC _OOHG_ActiveModal := {}       // Modal windows' stack         // TODO: thread safe
+STATIC _OOHG_ActiveForm := {}        // Forms under creation         // TODO: thread safe
 
 
 #pragma BEGINDUMP
@@ -1162,8 +1162,8 @@ METHOD Events_Destroy() CLASS TForm
    // Removes WINDOW from the array
    i := Ascan( _OOHG_aFormhWnd, ::hWnd )
    IF i > 0
-      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, I )
-      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, I )
+      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, i )
+      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, i )
    ENDIF
    */
 
@@ -1437,7 +1437,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
                         GetMenuItemInfo( hMenu, iPos, MF_BYPOSITION, &MenuItemInfo );
                         if( MenuItemInfo.hSubMenu )
                         {
-                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu ) );
+                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
                         }
                         else
                         {
@@ -1481,10 +1481,12 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       default:
+         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
          if( ! s_Events2 )
          {
             s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TFORM_EVENTS2" ) );
          }
+         ReleaseMutex( _OOHG_GlobalMutex() );
          hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
@@ -2659,25 +2661,42 @@ Function _OOHG_FormObjects()
 
    Return aClone( _OOHG_aFormObjects )
 
-   // Initializes C variables
-Procedure _OOHG_Init_C_Vars()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE _OOHG_Init_C_Vars()
+
+/*
+ * This procedure initializes C static variables that point to the arrays.
+ * These pointers will facilitate the access from C-level functions to
+ * objects defined at PRG-level.
+ *
+ * DO NOT CALL this procedure directly !!!!
+ *
+ * It's called, automatically, the first time function
+ * _OOHG_SearchFormHandleInArray() is executed.
+ *
+ * Function _OOHG_SearchFormHandleInArray() is called from
+ * GetFormObjectByHandle() and _OOHG_GetExistingObject().
+ *
+ * Note that GetControlObjectByHandle() and _OOHG_GetExistingObject()
+ * are mutex-protected but _OOHG_SearchFormHandleInArray() is not.
+ */
 
    TForm()
    _OOHG_Init_C_Vars_C_Side( _OOHG_aFormhWnd, _OOHG_aFormObjects )
 
-   Return
+   RETURN
 
-Procedure _KillAllKeys()
+PROCEDURE _KillAllKeys()
 
-   Local I, hWnd
+   LOCAL i, hWnd
 
-   FOR I := 1 TO LEN( _OOHG_aFormhWnd )
-      hWnd := _OOHG_aFormObjects[ I ]:hWnd
-      AEVAL( _OOHG_aFormObjects[ I ]:aHotKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
-      AEVAL( _OOHG_aFormObjects[ I ]:aAcceleratorKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
+   FOR i := 1 TO Len( _OOHG_aFormhWnd )
+      hWnd := _OOHG_aFormObjects[ i ]:hWnd
+      AEval( _OOHG_aFormObjects[ i ]:aHotKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
+      AEval( _OOHG_aFormObjects[ i ]:aAcceleratorKeys, { |a| ReleaseHotKey( hWnd, a[ HOTKEY_ID ] ) } )
    NEXT
 
-   Return
+   RETURN
 
 Function GetFormObject( FormName )
 
@@ -2870,7 +2889,7 @@ Function SearchParentWindow( lInternal )
    uParent := nil
 
    If lInternal
-
+//_OOHG_CallDump(0)
       If LEN( _OOHG_ActiveForm ) > 0
          uParent := ATAIL( _OOHG_ActiveForm )
       ELSEIF _OOHG_ActiveFrame # NIL
@@ -2881,33 +2900,41 @@ Function SearchParentWindow( lInternal )
 
       // Checks _OOHG_UserWindow
       If _OOHG_UserWindow != NIL .AND. ValidHandler( _OOHG_UserWindow:hWnd ) .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+//_OOHG_CallDump(1)
          uParent := _OOHG_UserWindow
       Else
          // Checks _OOHG_ActiveModal
          nPos := RASCAN( _OOHG_ActiveModal, { |o| ValidHandler( o:hWnd ) .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
          If nPos > 0
+//_OOHG_CallDump(2)
             uParent := _OOHG_ActiveModal[ nPos ]
          Else
             // Checks any active window
             nPos := RASCAN( _OOHG_aFormObjects, { |o| o:Active .AND. ValidHandler( o:hWnd ) .AND. ! o:lInternal } )
             If nPos > 0
+//_OOHG_CallDump(3)
                uParent := _OOHG_aFormObjects[ nPos ]
             Else
                // Checks _OOHG_ActiveForm
                nPos := RASCAN( _OOHG_ActiveForm, { |o| ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
                If nPos > 0
+//_OOHG_CallDump(4)
                   uParent := _OOHG_ActiveForm[ nPos ]
                Else
+//_OOHG_CallDump(5)
                   uParent := GetFormObjectByHandle( GetActiveWindow() )
                   If ! ValidHandler( uParent:hWnd ) .OR. ! uParent:Active
                      If _OOHG_Main != nil
+//_OOHG_CallDump(6)
                         uParent := _OOHG_Main
                      Else
+//_OOHG_CallDump(7)
                         // Not mandatory MAIN
                         // NO PARENT DETECTED!
                         uParent := nil
                      EndIf
                   EndIf
+//_OOHG_CallDump(8)
                EndIf
             Endif
          Endif
@@ -2979,19 +3006,19 @@ Function _SetWindowSizePos( FormName, row, col, width, height )
    Return GetFormObject( FormName ):SizePos( row, col, width, height )
 
 
-EXTERN GetFormObjectByHandle
-
 #pragma BEGINDUMP
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
+// Thread safe, see _OOHG_INIT_C_VARS_C_SIDE, GetFormObjectByHandle() and _OOHG_GetExistingObject()
 static PHB_SYMB _ooHG_Symbol_TForm = 0;
-static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;           // TODO: Thread safe ?
+static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;        
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
+   // See _OOHG_Init_C_Vars() at h_form.prg
    _ooHG_Symbol_TForm = hb_dynsymSymbol( hb_dynsymFind( "TFORM" ) );
    _OOHG_aFormhWnd    = hb_itemNew( NULL );
    _OOHG_aFormObjects = hb_itemNew( NULL );
@@ -3001,6 +3028,12 @@ HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 
 int _OOHG_SearchFormHandleInArray( HWND hWnd )
 {
+/*
+ * This function must be called enclosed between
+ * WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+ * and ReleaseMutex( _OOHG_GlobalMutex() ); calls.
+ * See GetFormObjectByHandle() and _OOHG_GetExistingObject().
+ */
    ULONG ulCount, ulPos = 0;
 
    if( ! _ooHG_Symbol_TForm )
@@ -3026,10 +3059,13 @@ int _OOHG_SearchFormHandleInArray( HWND hWnd )
    return ulPos;
 }
 
-PHB_ITEM GetFormObjectByHandle( HWND hWnd )
+PHB_ITEM GetFormObjectByHandle( HWND hWnd, BOOL bMutex )
 {
    PHB_ITEM pForm;
    ULONG ulPos;
+
+   if( bMutex )
+      WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
    ulPos = _OOHG_SearchFormHandleInArray( hWnd );
    if( ulPos )
@@ -3044,6 +3080,9 @@ PHB_ITEM GetFormObjectByHandle( HWND hWnd )
       pForm = hb_param( -1, HB_IT_ANY );
    }
 
+   if( bMutex )
+      ReleaseMutex( _OOHG_GlobalMutex() );
+
    return pForm;
 }
 
@@ -3052,7 +3091,7 @@ HB_FUNC( GETFORMOBJECTBYHANDLE )
    PHB_ITEM pReturn;
 
    pReturn = hb_itemNew( NULL );
-   hb_itemCopy( pReturn, GetFormObjectByHandle( HWNDparam( 1 ) ) );
+   hb_itemCopy( pReturn, GetFormObjectByHandle( HWNDparam( 1 ), TRUE ) );
 
    hb_itemReturn( pReturn );
    hb_itemRelease( pReturn );
@@ -3064,9 +3103,14 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
    LRESULT iReturn;
    static int iCall = 0;
    static int iNest = 0;
+   int iCallLevel, iNestLevel;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    iNest++;
+   iNestLevel = iNest;
    iCall++;
+   iCallLevel = iCall;
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    _OOHG_Send( pSelf, s_OverWndProc );
    hb_vmSend( 0 );
@@ -3085,8 +3129,8 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       hb_vmPushNumInt( wParam );
       hb_vmPushNumInt( lParam );
       hb_vmPush( pSelf );
-      hb_vmPushLong( iNest );
-      hb_vmPushLong( iCall );
+      hb_vmPushLong( iNestLevel );
+      hb_vmPushLong( iCallLevel );
       hb_vmDo( 7 );
       pResult = hb_param( -1, HB_IT_NUMERIC );
    }
@@ -3114,7 +3158,9 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    iNest--;
+   ReleaseMutex( _OOHG_GlobalMutex() );
    return iReturn;
 }
 
@@ -3126,7 +3172,7 @@ LRESULT APIENTRY _OOHG_WndProcCtrl( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetControlObjectByHandle( hWnd ) );
+   hb_itemCopy( pSelf, GetControlObjectByHandle( hWnd, TRUE ) );
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
@@ -3145,7 +3191,7 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd ) );     // See ::Events_Destroy()
+   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd, TRUE ) );     // See ::Events_Destroy()
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
@@ -3174,7 +3220,7 @@ LRESULT CALLBACK WndProcMdiChild( HWND hWnd, UINT message, WPARAM wParam, LPARAM
 
 LRESULT CALLBACK _OOHG_DefFrameProc( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam )
 {
-   _OOHG_Send( GetFormObjectByHandle( hWnd ), s_hWndClient );
+   _OOHG_Send( GetFormObjectByHandle( hWnd, TRUE ), s_hWndClient );
    hb_vmSend( 0 );
    return DefFrameProc( hWnd, HWNDparam( -1 ), uiMsg, wParam, lParam );
 }
@@ -3275,12 +3321,12 @@ HB_FUNC( INITDUMMY )
 HB_FUNC( INITWINDOW )
 {
    HWND hwnd;
-   int Style   = hb_parni( 8 );
-   int ExStyle = hb_parni( 9 );
+   int Style, StyleEx;
 
-   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
+   Style   = hb_parni( 8 );
+   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   hwnd = CreateWindowEx( ExStyle, hb_parc( 7 ), hb_parc( 1 ), Style,
+   hwnd = CreateWindowEx( StyleEx, hb_parc( 7 ), hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), NULL );
 
@@ -3298,16 +3344,16 @@ HB_FUNC( INITWINDOW )
 HB_FUNC( INITWINDOWMDICLIENT )
 {
    HWND hwnd;
-   int Style   = hb_parni( 8 );
-   int ExStyle = hb_parni( 9 );
+   int Style, StyleEx;
    CLIENTCREATESTRUCT ccs;
+
+   Style   = hb_parni( 8 );
+   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
    ccs.hWindowMenu = NULL;
    ccs.idFirstChild = 0;
 
-   ExStyle |= _OOHG_RTL_Status( hb_parl( 10 ) );
-
-   hwnd = CreateWindowEx( ExStyle, "MDICLIENT", hb_parc( 1 ), Style,
+   hwnd = CreateWindowEx( StyleEx, "MDICLIENT", hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
 

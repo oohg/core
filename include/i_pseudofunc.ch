@@ -110,6 +110,10 @@
    => ;
       TApplication():Define():GetLogFontParamsByRef( <x> )
 
+#xtranslate GetActiveHelpFile() ;
+   => ;
+      _OOHG_ActiveHelpFile
+
 #xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
    => ;
       hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ) , <Sep> , Chr(9) ) )

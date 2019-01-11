@@ -2955,7 +2955,7 @@ HB_FUNC( TREEVIEW_ONMOUSEDRAG )
             /* check if target item is enabled
              * ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
              */
-            pSelf = GetControlObjectByHandle( hTreeTarget );
+            pSelf = GetControlObjectByHandle( hTreeTarget, TRUE );
 
             _OOHG_Send( pSelf, s_HandleToItem );
             HWNDpush( htiTarget );
@@ -3071,7 +3071,7 @@ HB_FUNC( TREEVIEW_AUTOSCROLL )
       /* check if target item is enabled
        * ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
        */
-      pSelf = GetControlObjectByHandle( hTreeTarget );
+      pSelf = GetControlObjectByHandle( hTreeTarget, TRUE );
 
       _OOHG_Send( pSelf, s_HandleToItem );
       HWNDpush( htiTarget );
@@ -3168,7 +3168,7 @@ HB_FUNC( TREEVIEW_AUTOEXPAND )
       /* don't expand if target item is disabled
        * ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
        */
-      pSelf = GetControlObjectByHandle( hTreeTarget );
+      pSelf = GetControlObjectByHandle( hTreeTarget, TRUE );
 
       _OOHG_Send( pSelf, s_HandleToItem );
       HWNDpush( htiTarget );
@@ -3241,7 +3241,7 @@ HB_FUNC( TREEVIEW_ONMOUSEDROP)
          /* an item can't be dropped onto a disabled item
           * ::ItemEnabled( ::HandleToItem( TreeItemHandle ) )
           */
-         pSelf = GetControlObjectByHandle( hTreeTarget );
+         pSelf = GetControlObjectByHandle( hTreeTarget, TRUE );
 
          _OOHG_Send( pSelf, s_HandleToItem );
          HWNDpush( htiTarget );

@@ -853,12 +853,13 @@ HB_FUNC( GETKEYFLAGSTATE )
    hb_retni( GetKeyFlagState() );
 }
 
-// TODO: thread safe ?
+// Thread safe, see _OOHG_INIT_C_VARS_CONTROLS_C_SIDE, GetControlObjectByHandle(), _OOHG_GetExistingObject() and GetControlObjectById()
 static PHB_SYMB _ooHG_Symbol_TControl = 0;
 static PHB_ITEM _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 
 HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 {
+   // See _OOHG_Init_C_Vars_Controls() at h_controlmisc.prg
    _ooHG_Symbol_TControl = hb_dynsymSymbol( hb_dynsymFind( "TCONTROL" ) );
    _OOHG_aControlhWnd    = hb_itemNew( NULL );
    _OOHG_aControlObjects = hb_itemNew( NULL );
@@ -870,6 +871,12 @@ HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 
 int _OOHG_SearchControlHandleInArray( HWND hWnd )
 {
+/*
+ * This function must be called enclosed between
+ * WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+ * and ReleaseMutex( _OOHG_GlobalMutex() ); calls.
+ * See GetControlObjectByHandle() and _OOHG_GetExistingObject().
+ */
    ULONG ulCount, ulPos = 0;
 
    if( ! _ooHG_Symbol_TControl )
@@ -895,10 +902,13 @@ int _OOHG_SearchControlHandleInArray( HWND hWnd )
    return ulPos;
 }
 
-PHB_ITEM GetControlObjectByHandle( HWND hWnd )
+PHB_ITEM GetControlObjectByHandle( HWND hWnd, BOOL bMutex )
 {
    PHB_ITEM pControl;
    ULONG ulPos;
+
+   if( bMutex )
+      WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
    ulPos = _OOHG_SearchControlHandleInArray( hWnd );
    if( ulPos )
@@ -913,6 +923,9 @@ PHB_ITEM GetControlObjectByHandle( HWND hWnd )
       pControl = hb_param( -1, HB_IT_ANY );
    }
 
+   if( bMutex )
+      ReleaseMutex( _OOHG_GlobalMutex() );
+
    return pControl;
 }
 
@@ -921,7 +934,7 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
    PHB_ITEM pReturn;
 
    pReturn = hb_itemNew( NULL );
-   hb_itemCopy( pReturn, GetControlObjectByHandle( HWNDparam( 1 ) ) );
+   hb_itemCopy( pReturn, GetControlObjectByHandle( HWNDparam( 1 ), TRUE ) );
 
    hb_itemReturn( pReturn );
    hb_itemRelease( pReturn );
@@ -932,6 +945,7 @@ PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
    PHB_ITEM pControl;
    ULONG ulCount;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! _ooHG_Symbol_TControl )
    {
       hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFind( "_OOHG_INIT_C_VARS_CONTROLS" ) ) );
@@ -952,7 +966,6 @@ PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
                      ( HWND ) HB_ARRAYGETNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
 #endif
            )
-         // if( lId  == HB_ARRAYGETNL( _OOHG_aControlIds, ulCount ) )
          {
             pControl = hb_arrayGetItemPtr( _OOHG_aControlObjects, ulCount );
             ulCount = hb_arrayLen( _OOHG_aControlIds );
@@ -966,6 +979,7 @@ PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
       hb_vmDo( 0 );
       pControl = hb_param( -1, HB_IT_ANY );
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return pControl;
 }

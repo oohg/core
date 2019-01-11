@@ -4227,7 +4227,9 @@ BOOL WINAPI win_Shell_GetImageLists( HIMAGELIST *phimlLarge, HIMAGELIST *phimlSm
    typedef BOOL ( WINAPI *SHELL_GETIMAGELISTS ) ( HIMAGELIST *, HIMAGELIST * );
    static SHELL_GETIMAGELISTS Shell_GetImageLists = NULL;
    HMODULE hLib;
+   BOOL bResult;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( Shell_GetImageLists == NULL )
    {
       hLib = LoadLibrary( "Shell32.dll" );
@@ -4235,12 +4237,14 @@ BOOL WINAPI win_Shell_GetImageLists( HIMAGELIST *phimlLarge, HIMAGELIST *phimlSm
    }
    if( Shell_GetImageLists == NULL )
    {
-      return( (BOOL) FALSE );
+      bResult = FALSE;
    }
    else
    {
-      return Shell_GetImageLists( phimlLarge, phimlSmall );
+      bResult = Shell_GetImageLists( phimlLarge, phimlSmall );
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+   return( bResult );
 }
 
 
@@ -4272,7 +4276,9 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    typedef HRESULT ( WINAPI *STRRETTOBUFA ) ( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
    static STRRETTOBUFA StrRetToBufA = NULL;
    HMODULE hLib;
+   HRESULT ret;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( StrRetToBufA == NULL )
    {
       hLib = LoadLibrary( "Shlwapi.dll" );
@@ -4280,14 +4286,15 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    }
    if( StrRetToBufA == NULL )
    {
-      return( (HRESULT) -1 );
+      ret = (HRESULT) -1;
    }
    else
    {
-      return StrRetToBufA( pstr, pidl, pszBuf, cchBuf );
+      ret = StrRetToBufA( pstr, pidl, pszBuf, cchBuf );
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+   return( ret );
 }
-
 
 TCHAR * bt_LocalDateTimeToDateTimeANSI( TCHAR *cLocalDateTime )
 {

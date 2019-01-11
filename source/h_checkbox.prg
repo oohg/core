@@ -346,10 +346,12 @@ static WNDPROC _OOHG_TCheckBox_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
    {
       lpfnOldWndProc = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProc;
 }

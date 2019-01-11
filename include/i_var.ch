@@ -65,7 +65,7 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 ---------------------------------------------------------------------------*/
 
 #xtranslate _OOHG_ActiveControlInfo      => TApplication():Define():Value_Pos01
-#xtranslate _OOHG_ActiveFrame            => TApplication():Define():ActiveFrameGet()
+#xtranslate _OOHG_ActiveToolBar          => TApplication():Define():Value_Pos02
 #xtranslate _OOHG_AdjustFont             => TApplication():Define():Value_Pos03
 #xtranslate _OOHG_AdjustWidth            => TApplication():Define():Value_Pos04
 #xtranslate _OOHG_AutoAdjust             => TApplication():Define():Value_Pos05
@@ -109,10 +109,15 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_ActiveIniFile          => TApplication():Define():Value_Pos43
 #xtranslate _OOHG_ActiveMessageBar       => TApplication():Define():Value_Pos44
 #xtranslate _OOHG_bKeyDown               => TApplication():Define():Value_Pos45
-#xtranslate _OOHG_HotKeys                => TApplication():Define():HotKeysGet()
+#xtranslate _OOHG_HotKeys                => TApplication():Define():Value_Pos46
 #xtranslate _OOHG_DefaultStatusBarMsg    => TApplication():Define():Value_Pos47
 #xtranslate _OOHG_DefaultMenuParams      => TApplication():Define():Value_Pos48
 #xtranslate _OOHG_OwnerDrawMenus         => TApplication():Define():Value_Pos49
+#xtranslate _OOHG_GetNullName            => TApplication():Define():Value_Pos50
+#xtranslate _OOHG_SettingFocus           => TApplication():Define():Value_Pos51
+#xtranslate _OOHG_Validating             => TApplication():Define():Value_Pos52
+#xtranslate _OOHG_ActiveHelpFile         => TApplication():Define():Value_Pos53
+#xtranslate _OOHG_ActiveFrame            => TApplication():Define():ActiveFrameGet()
 
 /*---------------------------------------------------------------------------
 PSEUDO VARIABLES USED BY OOHG MODULES

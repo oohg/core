@@ -113,15 +113,17 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 {
    PHB_ITEM pItem = NULL;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
    while( hWnd && ! pItem )
    {
       if( _OOHG_SearchControlHandleInArray( hWnd ) )
       {
-         pItem = GetControlObjectByHandle( hWnd );
+         pItem = GetControlObjectByHandle( hWnd, FALSE );
       }
       else if( bForm && _OOHG_SearchFormHandleInArray( hWnd ) )
       {
-         pItem = GetFormObjectByHandle( hWnd );
+         pItem = GetFormObjectByHandle( hWnd, FALSE );
       }
       else
       {
@@ -131,8 +133,10 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 
    if( ! pItem && bForceAny )
    {
-      pItem = GetControlObjectByHandle( hWnd );
+      pItem = GetControlObjectByHandle( hWnd, FALSE );
    }
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return pItem;
 }
@@ -1462,4 +1466,14 @@ HB_FUNC( FLASHWINDOWEX )   // hWnd, dwFlags, uCount, dwTimeout
    FlashWinInfo.dwTimeout = (DWORD) hb_parnl( 4 );
 
    hb_retl( FlashWindowEx( &FlashWinInfo ) );
+}
+
+VOID ShowLastError( CHAR * caption )
+{
+   LPVOID lpMsgBuf;
+   DWORD dwError = GetLastError();
+   FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                  MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPTSTR ) &lpMsgBuf, 0, NULL );
+   MessageBox( NULL, ( LPCSTR ) lpMsgBuf, caption, MB_OK | MB_ICONEXCLAMATION );
+   LocalFree( lpMsgBuf );
 }
