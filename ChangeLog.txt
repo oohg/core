@@ -12,7 +12,135 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2018-12-27 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-01-11 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * A C-level module-static var was moved to a C-level
+       function-static mutex-protected var.
+     * Static vars are now mutex-protected.
+
+2019-01-11 18:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     + METHOD SelectLastItem.
+     ! RTE when initializing a combobox with IMAGE clause.
+     ! RTE when method ItemValue is called with a string
+       that is not an item.
+     ! RTE when methods FindString or FindStringExact are called
+       without the second parameter or when it's not valid.
+     ! Combobox's display is not cleared after deleting the
+       selected item using method DeleteItem.
+     * Control's ID is "pre-registered" before it's creation
+       to allow its use at WM_MEASUREITEM event handler.
+     * Minor code simplifications at TCOMBO_EVENTS_MEASUREITEM
+       and TCOMBO_EVENTS_MEASUREITEM functions.
+     ! Mutex protection of static vars.
+   * core\source\h_listbox.prg
+     * Control's ID is "pre-registered" before it's creation
+       to allow its use at WM_MEASUREITEM event handler.
+     * Var renamed.
+   * core\source\h_windows.prg
+     ! WM_COMMAND handler causes app to crash after clicking a menu.
+     ! WM_MEASUREITEM handler is not working for combobox.
+
+2019-01-11 18:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   ; More changes to achieve thread safety.
+   * core\include\i_pseudofunc.ch
+     + Function GetActiveHelpFile.
+   * core\include\i_var.ch
+     + Global vars _OOHG_ActiveToolBar, _OOHG_ActiveHelpFile,
+       _OOHG_GetNullName, _OOHG_SettingFocus and _OOHG_Validating.
+   * core\include\oohg.h
+     + New parameter to GetFormObjectByHandle and
+       GetControlObjectByHandle function prototypes.
+   * core\source\bostaurus.prg
+     * Static vars are now mutex-protected.
+   * core\source\c_controlmisc.c
+     + New parameter to function GetControlObjectByHandle to
+       allow for optional mutex protection when calling function
+       _OOHG_SearchControlHandleInArray.
+     + Function GetControlObjectById is now mutex-protected.
+     * Some comments.
+   * core\source\c_msgbox.c
+     * Static var is now mutex-protected.
+   * core\source\c_windows.c
+     * Function _OOHG_GetExistingObject is now mutex-protected.
+     + Function ShowLastError.
+   * core\source\h_application.prg
+     - METHOD HotKeysGet.
+     + MESSAGE HotKeysGet.
+     + METHOD Value_Pos02.
+     + METHOD Value_Pos46.
+     + METHOD Value_Pos50.
+     + METHOD Value_Pos51.
+     + METHOD Value_Pos52.
+     + METHOD Value_Pos53.
+     * Some changes to improve readability.
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+     ! Mutex protection of static var.
+   * core\source\h_controlmisc.prg
+     * Two static vars at PRG-level were substituted by global vars.
+     * Function _OOHG_GetNullName was moved to h_application to make
+       it thread-safe.
+     * Some format and comments.
+     + METHOD PreAddToCtrlsArrays( Id ) to "pre-register" the control's
+       ID so it can be used at events fired after the control's creation
+       and before the control's registration.
+     * METHOD Register no longer accepts 0 as a valid ID.
+     * METHOD AddToCtrlsArrays now checks if the control was
+       "pre-registered" and updates the arrays.
+   * core\source\h_datepicker.c
+     * Two C-level module-static vars were moved to C-level
+       function-static mutex-protected vars.
+   * core\source\h_dll.prg
+     * Static vars are now mutex-protected.
+     * Some format.
+   * core\source\h_form.prg
+     * Function _OOHG_GetFormObjectByHandle is now thread-safe.
+     + New parameter to some function calls.
+     * Some format and comments.
+     * Three static vars are now mutex-protected.
+     * Var renamed.
+   * core\source\h_frame.prg
+     * A C-level module-static var was moved to a C-level
+       function-static mutex-protected var.
+   * core\source\h_help.prg
+     * One static var at PRG-level was substituted by a global var.
+     - Function GetActiveHelpFile.
+   * core\source\h_toolbar.prg
+     * One static var at PRG-level was substituted by a global var.
+   * core\source\h_tree.prg
+     + New parameter to some function calls.
+   * core\source\h_windows.prg
+     + New parameter to some function calls.
+     * Some format.
+
+2019-01-11 16:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_internal.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_picture.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_textarray.prg
+     * C-level var renamed.
+
+2019-01-11 16:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scroll.prg
+     * ID assignment to NIL because 0 its an illegal value.
+
+2019-01-11 16:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_media.prg
+     - Commented out code.
+
+2019-01-11 18:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     * Var renamed.
+     ! When autosize is enabled, the control's height is wrongly
+       calculated whenever the caption is changed.
+
+2019-01-11 16:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_004.txt
+     + Credits to previous entry.
+
+2018-12-27 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_encrypt.ch
      + RESULT clause to ENCODE FILE, DECODE FILE, ENCODE TO and
        DECODE TO commands.
