@@ -246,64 +246,64 @@ Function _GetMultiCaption( ControlName, ParentForm, Item )
 
    Return GetControlObject( ControlName, ParentForm ):Caption( Item )
 
-Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth, nButtonWidth )
+FUNCTION InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelCaptions, nLabelWidth, nControlWidth, nButtonWidth )
 
-   Local i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
-   Local oInputWindow, aResult, nWidth, ControlCol, nSep
+   LOCAL i, l, ControlRow, e := 0, LN, CN, r, c, nHeight, diff
+   LOCAL oInputWindow, aResult, nWidth, ControlCol, nSep
 
-   If ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
+   IF ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
       aButOKCancelCaptions := { _OOHG_Messages( 1, 6 ), _OOHG_Messages( 1, 7 ) }
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nLabelWidth ) .OR. nLabelWidth <= 10
+   IF ! HB_ISNUMERIC( nLabelWidth ) .OR. nLabelWidth <= 10
       nLabelWidth := 110
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nControlWidth ) .OR. nControlWidth <= 10
+   IF ! HB_ISNUMERIC( nControlWidth ) .OR. nControlWidth <= 10
       nControlWidth := 140
-   EndIf
+   ENDIF
 
-   If ! HB_IsNumeric( nButtonWidth ) .OR. nButtonWidth <= 30
+   IF ! HB_ISNUMERIC( nButtonWidth ) .OR. nButtonWidth <= 30
       nButtonWidth := 100
-   EndIf
+   ENDIF
 
    l := Len( aLabels )
 
    aResult := Array( l )
 
-   For i := 1 to l
-      If ValType( aValues[i] ) == 'C'
-         If HB_IsNumeric( aFormats[i] )
-            If aFormats[i] > 32
+   FOR i := 1 TO l
+      IF ValType( aValues[ i ] ) == 'C'
+         IF HB_ISNUMERIC( aFormats[ i ] )
+            IF aFormats[i] > 32
                e++
-            Endif
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-      if HB_IsMemo( aValues[i] )
+      IF HB_ISMEMO( aValues[i] )
          e++
-      EndIf
-   Next i
+      ENDIF
+   NEXT i
 
-   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
+   IF ! HB_ISNUMERIC( row ) .OR. ! HB_ISNUMERIC( col )
       r := 0
       c := 0
-   Else
+   ELSE
       r := row
       c := col
       nHeight := ( l * 30 ) + 90 + ( e * 60 )
 
-      If r + nHeight > GetDesktopRealHeight()
+      IF r + nHeight > GetDesktopRealHeight()
          diff :=  r + nHeight - GetDesktopRealHeight()
          r := r - diff
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    nWidth := Max( nLabelWidth + nControlWidth + 30, nButtonWidth * 2 + 30 )
 
    ControlCol := nLabelWidth + 10
 
-   DEFINE WINDOW _InputWindow OBJ oInputWindow ;
+   DEFINE WINDOW 0 OBJ oInputWindow ;
       AT r,c ;
       CLIENTAREA ;
       WIDTH nWidth ;
@@ -315,69 +315,67 @@ Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelC
 
       ControlRow :=  10
 
-      For i := 1 to l
+      FOR i := 1 TO l
          LN := 'Label_' + Alltrim( Str( i, 2, 0 ) )
          CN := 'Control_' + Alltrim( Str( i, 2, 0 ) )
 
-         @ ControlRow, 10 LABEL &LN OF _InputWindow VALUE aLabels[i] WIDTH nLabelWidth NOWORDWRAP
+         @ ControlRow, 10 LABEL &LN VALUE aLabels[ i ] WIDTH nLabelWidth NOWORDWRAP
 
-         Do Case
-         Case HB_IsLogical( aValues[i] )
-            @ ControlRow, ControlCol CHECKBOX &CN OF _InputWindow CAPTION '' VALUE aValues[i] WIDTH nControlWidth
+         DO CASE
+         CASE HB_ISLOGICAL( aValues[ i ] )
+            @ ControlRow, ControlCol CHECKBOX &CN CAPTION '' VALUE aValues[ i ] WIDTH nControlWidth
             ControlRow := ControlRow + 30
 
-         Case HB_IsDate( aValues[i] )
-            If ValType( aFormats[i] ) $ 'CM' .AND. upper( aFormats[i] ) == "SHOWNONE"
-               @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth SHOWNONE
+         CASE HB_ISDATE( aValues[ i ] )
+            IF ValType( aFormats[ i ] ) $ 'CM' .AND. Upper( aFormats[ i ] ) == "SHOWNONE"
+               @ ControlRow, ControlCol DATEPICKER &CN VALUE aValues[ i ] WIDTH nControlWidth SHOWNONE
                ControlRow := ControlRow + 30
-            Else
-               @ ControlRow, ControlCol DATEPICKER &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth
+            ELSE
+               @ ControlRow, ControlCol DATEPICKER &CN VALUE aValues[ i ] WIDTH nControlWidth
                ControlRow := ControlRow + 30
-            EndIf
+            ENDIF
 
-         Case HB_IsNumeric( aValues[i] )
-            If HB_IsArray( aFormats[i] )
-               @ ControlRow, ControlCol COMBOBOX &CN  OF _InputWindow ITEMS aFormats[i] VALUE aValues[i] WIDTH nControlWidth  FONT 'Arial' SIZE 10
+         CASE HB_ISNUMERIC( aValues[ i ] )
+            IF HB_ISARRAY( aFormats[ i ] )
+               @ ControlRow, ControlCol COMBOBOX &CN ITEMS aFormats[ i ] VALUE aValues[ i ] WIDTH nControlWidth
                ControlRow := ControlRow + 30
-            ElseIf  ValType( aFormats[i] ) $ 'CM'
-               If At( '.', aFormats[i] ) > 0
-                  @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 NUMERIC INPUTMASK aFormats[i]
-               Else
-                  @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH Len( aFormats[i] ) NUMERIC
-               EndIf
+            ELSEIF  ValType( aFormats[ i ] ) $ 'CM'
+               IF At( '.', aFormats[ i ] ) > 0
+                  @ ControlRow, ControlCol TEXTBOX &CN VALUE aValues[ i ] WIDTH nControlWidth NUMERIC INPUTMASK aFormats[ i ]
+               ELSE
+                  @ ControlRow, ControlCol TEXTBOX &CN VALUE aValues[ i ] WIDTH nControlWidth MAXLENGTH Len( aFormats[ i ] ) NUMERIC
+               ENDIF
                ControlRow := ControlRow + 30
-            Endif
+            ENDIF
 
-         Case ValType( aValues[i] ) == 'C'
-            If HB_IsNumeric( aFormats[i] )
-               If  aFormats[i] <= 32
-                  @ ControlRow, ControlCol TEXTBOX &CN  OF _InputWindow VALUE aValues[i] WIDTH nControlWidth FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
+         CASE ValType( aValues[ i ] ) == 'C'
+            IF HB_ISNUMERIC( aFormats[i] )
+               IF aFormats[ i ] <= 32
+                  @ ControlRow, ControlCol TEXTBOX &CN VALUE aValues[ i ] WIDTH nControlWidth MAXLENGTH aFormats[ i ]
                   ControlRow := ControlRow + 30
-               Else
-                  @ ControlRow, ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10 MAXLENGTH aFormats[i]
+               ELSE
+                  @ ControlRow, ControlCol EDITBOX &CN WIDTH nControlWidth HEIGHT 90 VALUE aValues[ i ] MAXLENGTH aFormats[ i ]
                   ControlRow := ControlRow + 94
-               EndIf
-            EndIf
+               ENDIF
+            ENDIF
 
-         Case HB_IsMemo( aValues[i] )
-            @ ControlRow, ControlCol EDITBOX &CN  OF _InputWindow WIDTH nControlWidth HEIGHT 90 VALUE aValues[i] FONT 'Arial' SIZE 10
+         CASE HB_ISMEMO( aValues[ i ] )
+            @ ControlRow, ControlCol EDITBOX &CN WIDTH nControlWidth HEIGHT 90 VALUE aValues[ i ]
             ControlRow := ControlRow + 94
 
-         EndCase
-      Next i
+         ENDCASE
+      NEXT i
 
-      nSep := int( ( nWidth - 2 * nButtonWidth ) / 3 )
+      nSep := Int( ( nWidth - 2 * nButtonWidth ) / 3 )
 
       @ ControlRow + 10, nSep BUTTON BUTTON_1 ;
-         OF _InputWindow ;
          WIDTH nButtonWidth ;
-         CAPTION aButOKCancelCaptions[1] ;
+         CAPTION aButOKCancelCaptions[ 1 ] ;
          ACTION _InputWindowOk( oInputWindow, aResult )
 
-      @ ControlRow + 10, ( nWidth - nSep - nButtonWidth) BUTTON BUTTON_2 ;
-         OF _InputWindow ;
+      @ ControlRow + 10, ( nWidth - nSep - nButtonWidth ) BUTTON BUTTON_2 ;
          WIDTH nButtonWidth ;
-         CAPTION aButOKCancelCaptions[2] ;
+         CAPTION aButOKCancelCaptions[ 2 ] ;
          ACTION _InputWindowCancel( oInputWindow, aResult )
 
       oInputWindow:ClientHeight := ControlRow + 10 + oInputWindow:BUTTON_1:Height + 10
@@ -385,32 +383,32 @@ Function InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelC
       oInputWindow:Control_1:SetFocus()
    END WINDOW
 
-   If ! HB_IsNumeric( row ) .or. ! HB_IsNumeric( col )
+   IF ! HB_ISNUMERIC( row ) .OR. ! HB_ISNUMERIC( col )
       oInputWindow:Center()
-   EndIf
+   ENDIF
 
    oInputWindow:Activate()
 
-   Return aResult
+   RETURN aResult
 
-Function _InputWindowOk( oInputWindow, aResult )
+STATIC FUNCTION _InputWindowOk( oInputWindow, aResult )
 
-   Local i , l
+   LOCAL i , l
 
-   l := len( aResult )
-   For i := 1 to l
-      aResult[ i ] := oInputWindow:Control( 'Control_' + Alltrim( Str( i ) ) ):Value
-   Next i
+   l := Len( aResult )
+   FOR i := 1 TO l
+      aResult[ i ] := oInputWindow:Control( 'Control_' + AllTrim( Str( i ) ) ):Value
+   NEXT i
    oInputWindow:Release()
 
-   Return Nil
+   RETURN NIL
 
-Function _InputWindowCancel( oInputWindow, aResult )
+STATIC FUNCTION _InputWindowCancel( oInputWindow, aResult )
 
-   afill( aResult, NIL )
+   AFill( aResult, NIL )
    oInputWindow:Release()
 
-   Return Nil
+   RETURN NIL
 
 Function _ReleaseControl( ControlName, ParentForm )
 
