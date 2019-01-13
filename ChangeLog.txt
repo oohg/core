@@ -12,6 +12,96 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-13 00:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     - CLASSVAR hClsMtx.
+     * Class now uses only the C-level mutex.
+     * Methods MutexLock and MutexUnlock are now defined at C-level.
+     ; This will allow to make thread-safe the following variables
+       shared by PRG and C levels: _OOHG_aControlhWnd, _OOHG_aControlIds,
+       _OOHG_aControlObjects and _OOHG_aControlNames.
+
+2019-01-13 00:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     * Function InputWindow now uses the default font.
+     * Function InputWindow now longer uses a form with fixed name.
+     ; Now we can have more than one input window simultaneously.
+     * Function _InputWindowOk is now static.
+     * Function _InputWindowCancel is now static.
+
+2019-01-13 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\hbprinter_dyns.hbx
+     * Updated.
+     ; Note that all the functions are prefixed with RR_ and all of
+       them are written in uppercase. These functions are meant for
+       internal use only.
+   * core\include\oohg_dyns.hbx
+     * Updated.
+   * core\include\winprint.ch
+     + Clauses WAIT, NOWAIT, SIZE, NOSIZE, OF and PARENT to
+       END DOC command.
+   * core\source\h_init.prg
+     * Some TPRINT messages.
+   * core\source\h_print.prg
+     - DATA Exit from class TPRINTBASE.
+     + DATA lDocIsOpen to class TPRINTBASE.
+     + DATA nPreviewSize to class TPRINTBASE.
+     + DATA nStage to class TPRINTBASE.
+     + DATA oWinReport to class TPRINTBASE.
+     + DATA uParent to class TPRINTBASE.
+     + METHOD IsDocOpen to class TPRINTBASE.
+     + METHOD IsDocOpenX to class TPRINTBASE.
+     + METHOD IsDocOpenX to class THBPRINTER.
+     + METHOD EndDoc of class TPRINTBASE and METHOD EndDocX of
+       class THBPRINTER have two new parameters: lWait and
+       lSize. When lWait is .F. the report won't pause the
+       execution until de preview is closed. When lSize is .T.
+       the user can redimension the preview window.
+     * Various methods now return the current value of the
+       related property. When there's no property associated
+       then they return .T. for success or .F. for failure.
+     * Varios methods now longer set the value of the related
+       property when an invalid value is received.
+     * Forms no longer have fixed names.
+     - STATIC FUNCTION Zoom.
+     + METHOD Zoom to class TDOSPRINT.
+     - METHOD SetPreviewSize from classes TTXTPRINT, TEXCELPRINT,
+       TSPREADSHEETPRINT, TRTFPRINT, TCSVPRINT, TPDFPRINT,
+       TCALCPRINT
+     - METHOD SetCPL from class TRTFPRINT.
+     * Codebar functions now return "" instead of NIL on error.
+     + FUNCTION ArrayIsValidColor( aColor ).
+     ; Now we can use two TPrint objects simultaneously!!!
+     ; Note that some printing libraries don't handle more
+       than one report at the same time (f.e. MINIPRINT).
+   * core\source\winprint.prg
+     * Some format and comments.
+     + DATA hData.
+     + New messages.
+     * Document's timestamp to avoid collisions.
+     * METHOD EndDoc now receives three parameters: cParent,
+       lWait and lSize (default to NIL, ::PreviewMode and ! lWait).
+       When lWait is .F. the preview window will be activated
+       with NOWAIT clause. When lSize is .T. the preview window
+       allows resizing.
+     * METHOD Preview now receives three parameters: cParent,
+       lWait and lSize (default to NIL, .T. and ! lWait).
+       When lWait is .F. the preview window will be activated
+       with NOWAIT clause. When lSize is .T. the preview window
+       allows resizing.
+     * STATIC FUNCTION str2file renamed as FUNCTION RR_STR2FILE.
+     * STATIC FUNCTION sayconvert renamed as FUNCTION RR_SAYCONVERT.
+     * FUNCTION str2arr renamed as FUNCTION RR_STR2ARR.
+     * Forms no longer have fixed names.
+     + Function RR_CREATEHBPRINTERDATA.
+     * All C-level module-static vars were moved to a C-level
+       structure.
+     * C-level functions now use the data structure instead of
+       the static vars.
+     ; Now we can use two HBPrinter objects simultaneously!!!
+
+-----------------------------------------------------------------------------------------------------------
+
 2019-01-11 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      * A C-level module-static var was moved to a C-level
