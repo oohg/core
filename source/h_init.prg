@@ -344,8 +344,8 @@ FUNCTION ooHG_Messages_EN // English (default)
                          CRLF + "Record locked by another user" + CRLF }                                                             // 41
 
    // PRINT MESSAGES
-   acPrint          := { "Print preview pending, close first", ;                                                                     // 1
-                         "ooHG printing", ;                                                                                          // 2
+   acPrint          := { "TPrint object already initialized!", ;                                                                     // 1
+                         "Printing ......", ;                                                                                        // 2
                          "Auxiliar printing command", ;                                                                              // 3
                          " PRINTED OK !!!", ;                                                                                        // 4
                          "Invalid parameters passed to function !!!", ;                                                              // 5
@@ -388,7 +388,12 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Barcodes require a character value !!!', ;                                                                 // 42
                          'Code 128 modes are A, B or C (character values) !!!', ;                                                    // 43
                          "Calc not found !!!", ;                                                                                     // 44
-                         "Error saving file: " }                                                                                     // 45
+                         "Error saving file: ", ;                                                                                    // 45
+                         "TPrint preview is already active!", ;                                                                      // 46
+                         "TPrint document is already open!", ;                                                                       // 47
+                         "TPrint object is not initialized!", ;                                                                      // 48
+                         "TPrint object is in error state!", ;                                                                       // 49
+                         "TPrint document is not open!" }                                                                            // 50
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
@@ -1905,8 +1910,8 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          CRLF + "Registro bloqueado por otro usuario    " + CRLF }                                                               // 41
 
    // PRINT MESSAGES
-   acPrint          := { "Vista previa de impresión pendiente, ciérrela primero", ;
-                         "Impresión ooHG", ;
+   acPrint          := { "El objecto TPrint ya está inicializado!", ;
+                         "Imprimiendo ......", ;
                          "Comando auxiliar de impresión", ;
                          " IMPRESO OK !!!", ;
                          "Los parámetros pasados a la función no son válidos !!!", ;
@@ -1949,7 +1954,13 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Los códigos de barra requieren una cadena !!!', ;
                          'Los modos válidos de códigos de barra c128 son A, B or C !!!', ;
                          "No se detectó OpenCalc !!!", ;
-                         "No se pudo guardar el archivo: " }
+                         "No se pudo guardar el archivo: ", ;
+                         "La vista previa TPrint está activa!", ;
+                         "El documento TPrint está abierto!", ;
+                         "El objeto TPrint no está inicializado!", ;
+                         "El objeto TPrint está en estado de error!", ;
+                         "El documento TPrint no está abierto!" }
+
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
@@ -2769,8 +2780,8 @@ FUNCTION ooHG_Messages_TR
                          CRLF + "Diðer kullanýcýlar kaydý kullanýyor " + CRLF }                                                  // 41
 
    // PRINT MESSAGES
-   acPrint          := { "Yazýcý önizlemesi oluþturuluyor , bekleyin", ;
-                         "Yazdýrýlýyor ", ;
+   acPrint          := { "TPrint nesnesi zaten baslatildi!", ;
+                         "Yazdýrýlýyor ......", ;
                          "Yazýcýya aktarýlýyor", ;
                          " Yazdýrýldý !!!", ;
                          "Tanýmsýz parametre veya iþlem var !!!", ;
@@ -2813,6 +2824,11 @@ FUNCTION ooHG_Messages_TR
                          'Barcode gerekli bir karakter deðiþkeni !!!', ;
                          'Code 128 modunda A, B veya C karakter deðiþkeni !!!', ;
                          "Hesap bulunamadý !!!", ;
-                         "Dosya kaydýnda hata: " }
+                         "Dosya kaydýnda hata: ", ;
+                         "Baska bir belgenin önizlemesi etkin!" , ;
+                         "Baska bir belge açik!" , ;
+                         "TPrint nesnesi baslatilmadi!", ;
+                         "TPrint nesnesi hata durumunda!", ;
+                         "TPrint belgesi açik degil!!" }
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
