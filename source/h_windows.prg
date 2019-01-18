@@ -2515,75 +2515,71 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
          break;
 
       case WM_COMMAND:
-         if( lParam )
+         // See https://support.microsoft.com/en-us/help/102589/how-to-use-the-enter-key-from-edit-controls-in-a-dialog-box
+         if( wParam == IDOK )
          {
-            // Control
-            _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Command );
-            hb_vmPushNumInt( wParam );
-            hb_vmSend( 1 );
+            // Enter key
+            _OOHG_Send( _OOHG_GetExistingObject( GetFocus(), TRUE, TRUE ), s_Events_Enter );
+            hb_vmSend( 0 );
          }
          else
          {
-            if( HIWORD( wParam ) )
-            {
-               // Enter key
-               _OOHG_Send( _OOHG_GetExistingObject( GetFocus(), TRUE, TRUE ), s_Events_Enter );
-               hb_vmSend( 0 );
-            }
-            else
-            {
-               // Menu
-               PHB_ITEM pControl, pOnClick;
+            PHB_ITEM pControl, pOnClick;
 
-               pControl = hb_itemNew( NULL );
-               hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
-               _OOHG_Send( pControl, s_Id );
+            pControl = hb_itemNew( NULL );
+            hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
+            _OOHG_Send( pControl, s_Id );
+            hb_vmSend( 0 );
+            if( hb_parni( -1 ) != 0 )
+            {
+               // By Id
+               // From MENU
+               BOOL bClicked = 0;
+
+               _OOHG_Send( pControl, s_NestedClick );
                hb_vmSend( 0 );
-               if( hb_parni( -1 ) != 0 )
+               if( ! hb_parl( -1 ) )
                {
-                  BOOL bClicked = 0;
+                  _OOHG_Send( pControl, s__NestedClick );
+                  hb_vmPushLogical( ! _OOHG_NestedSameEvent );
+                  hb_vmSend( 1 );
 
-                  _OOHG_Send( pControl, s_NestedClick );
+                  _OOHG_Send( pControl, s_OnClick );
                   hb_vmSend( 0 );
-                  if( ! hb_parl( -1 ) )
+                  if( hb_param( -1, HB_IT_BLOCK ) )
                   {
-                     _OOHG_Send( pControl, s__NestedClick );
-                     hb_vmPushLogical( ! _OOHG_NestedSameEvent );
-                     hb_vmSend( 1 );
+                     pOnClick = hb_itemNew( NULL );
+                     hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
+                     _OOHG_Send( pControl, s_DoEvent );
+                     hb_vmPush( pOnClick );
+                     hb_vmPushString( "CLICK", 5 );
+                     EndMenu();
+                     hb_vmSend( 2 );
+                     hb_itemRelease( pOnClick );
+                     bClicked = 1;
+                  }
 
-                     _OOHG_Send( pControl, s_OnClick );
-                     hb_vmSend( 0 );
-                     if( hb_param( -1, HB_IT_BLOCK ) )
-                     {
-                        pOnClick = hb_itemNew( NULL );
-                        hb_itemCopy( pOnClick, hb_param( -1, HB_IT_ANY ) );
-                        _OOHG_Send( pControl, s_DoEvent );
-                        hb_vmPush( pOnClick );
-                        hb_vmPushString( "CLICK", 5 );
-                        EndMenu();
-                        hb_vmSend( 2 );
-                        hb_itemRelease( pOnClick );
-                        bClicked = 1;
-                     }
-
-                     _OOHG_Send( pControl, s__NestedClick );
-                     hb_vmPushLogical( 0 );
-                     hb_vmSend( 1 );
-                  }
-                  hb_itemRelease( pControl );
-                  if( bClicked )
-                  {
-                     hb_retni( 1 );
-                  }
-                  else
-                  {
-                     hb_ret();
-                  }
+                  _OOHG_Send( pControl, s__NestedClick );
+                  hb_vmPushLogical( 0 );
+                  hb_vmSend( 1 );
+               }
+               hb_itemRelease( pControl );
+               if( bClicked )
+               {
+                  hb_retni( 1 );
                }
                else
                {
-                  hb_itemRelease( pControl );
+                  hb_ret();
                }
+            }
+            else
+            {
+               hb_itemRelease( pControl );
+               // By handle
+               _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Command );
+               hb_vmPushNumInt( wParam );
+               hb_vmSend( 1 );
             }
          }
          break;
