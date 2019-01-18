@@ -125,41 +125,49 @@ METHOD Value( uValue ) CLASS THotKeyBox
 #include <hbapiitm.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_THotKeyBox_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITHOTKEYBOX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hedit;        // Handle of the child window/control.
-   int StyleEx;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_THotKeyBox_lpfnOldWndProc( 0 ) );
+}
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITHOTKEYBOX )          /* FUNCTION InitHotKeyBox( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx ) -> hWnd */
+{
+   HWND hCtrl;
+   INT Style, StyleEx;
+
+   Style = hb_parni( 7 ) | WS_CHILD;
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    InitCommonControls();
 
    // Creates the child control.
-   hedit = CreateWindowEx( StyleEx,
-                           HOTKEY_CLASS,
-                           "",
-                           ( WS_CHILD | hb_parni( 7 ) ),
-                           hb_parni( 3 ),
-                           hb_parni( 4 ),
-                           hb_parni( 5 ),
-                           hb_parni( 6 ),
-                           HWNDparam( 1 ),
-                           HMENUparam( 2 ),
-                           GetModuleHandle( NULL ),
-                           NULL );
+   hCtrl = CreateWindowEx( StyleEx, HOTKEY_CLASS, "", Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hedit, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_THotKeyBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hedit );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( HOTKEYBOXVALUE )
 {
    HWND hWnd;

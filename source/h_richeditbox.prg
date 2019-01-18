@@ -217,45 +217,55 @@ METHOD SetSelFont( lSelection, cFontName, nFontSize, lBold, lItalic, aTextColor,
    #define CFM_BACKCOLOR 0x04000000
 #endif
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TEditRich_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITRICHEDITBOX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hwnd;
-   HWND hwndRE = 0;
-   int Style, StyleEx, Mask;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TEditRich_lpfnOldWndProc( 0 ) );
+}
 
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
-
-   hwnd = HWNDparam( 1 );
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLength, lRtl ) -> hWnd */
+{
+   HWND hCtrl;
+   INT Style, StyleEx, Mask;
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
-
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
    Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL;
 
    InitCommonControls();
    if ( LoadLibrary( "RichEd20.dll" ) )
    {
-      hwndRE = CreateWindowEx( StyleEx, RICHEDIT_CLASS, (LPSTR) NULL,
-              Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-              hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+      hCtrl = CreateWindowEx( StyleEx, RICHEDIT_CLASS, (LPSTR) NULL, Style,
+                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                              HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-      lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndRE, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+      _OOHG_TEditRich_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
       if( hb_parni( 8 ) != 0 )
       {
-         SendMessage( hwndRE, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
+         SendMessage( hCtrl, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
       }
 
-      SendMessage( hwndRE, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
-   }
+      SendMessage( hCtrl, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
 
-   HWNDret( hwndRE );
+      HWNDret( hCtrl );
+   }
 }
 
 HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )

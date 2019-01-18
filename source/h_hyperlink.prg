@@ -64,61 +64,62 @@
 #include "common.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS THyperLink FROM TLabel
 
-   DATA Type        INIT "HYPERLINK" READONLY
-   DATA URL         INIT ""
+   DATA Type                      INIT "HYPERLINK" READONLY
+   DATA URL                       INIT ""
 
    METHOD Define
-   METHOD Address   SETGET
+   METHOD Address                 SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, Caption, url, w, h, fontname, ;
-               fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
-               TRANSPARENT, aRGB_bk, aRGB_font, tooltip, HelpId, invisible, ;
-               italic, autosize, handcursor, lRtl ) CLASS THyperLink
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, cURL, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
+               lClientEdge, lHScroll, lVScroll, lTransparent, aRGB_bk, aRGB_font, cToolTip, nHelpId, lInvisible, lItalic, ;
+               lAutoSize, lHandCursor, lRtl ) CLASS THyperLink
 
-   DEFAULT Url           TO "https://oohg.github.io/"
-   DEFAULT Caption       TO "oohg at github"
-   DEFAULT aRGB_font     TO {0,0,255}
-   DEFAULT handcursor    TO .F.
+   ASSIGN cURL        VALUE cURL        TYPE "CM" DEFAULT "https://oohg.github.io/"
+   ASSIGN cCaption    VALUE cCaption    TYPE "CM" DEFAULT "oohg at github"
+   ASSIGN aRGB_font   VALUE aRGB_font   TYPE "A"  DEFAULT BLUE
+   ASSIGN lHandCursor VALUE lHandCursor TYPE "L"  DEFAULT .F.
 
-   ::Super:Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
-                   fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
-                   TRANSPARENT, aRGB_bk, aRGB_font, nil, tooltip, ;
-                   HelpId, invisible, italic, .T., .F., autosize, ;
-                   .F., .F., lRtl )
+   ::Super:Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, ;
+                   nFontSize, lBold, lBorder, lClientEdge, lHScroll, lVScroll, lTransparent, ;
+                   aRGB_bk, aRGB_font, NIL, cToolTip, nHelpId, lInvisible, lItalic, .T., .F., ;
+                   lAutoSize, .F., .F., lRtl, .F., .F., NIL, .F., .F., NIL )
 
-   ::Address := url
+   ::Address := cURL
 
-   If handcursor
+   IF lHandCursor
       ::Cursor := IDC_HAND
-   EndIf
+   ENDIF
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Address( cUrl ) CLASS THyperLink
 
-   If HB_IsString( cUrl )
-      If Left( cUrl, 5 ) == "http:"
+   IF ValType( cUrl ) $ "CM"
+      IF Left( cUrl, 5 ) == "http:"
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
          ::URL := cUrl
-      ElseIf Left( cUrl, 6 ) == "https:"
+      ELSEIF Left( cUrl, 6 ) == "https:"
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
          ::URL := cUrl
-      ElseIf Left( cUrl, 5 ) == "file:"
+      ELSEIF Left( cUrl, 5 ) == "file:"
          ::OnClick := {|| ShellExecute( 0, "open", "explorer.exe", cUrl, , 1 ) }
          ::URL := cUrl
-      ElseIf Left( cUrl, 7 ) == "mailto:"
+      ELSEIF Left( cUrl, 7 ) == "mailto:"
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + cUrl, , 1 ) }
          ::URL := cUrl
-      ElseIf At( "@", cUrl ) > 0
+      ELSEIF At( "@", cUrl ) > 0
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler mailto:" + cUrl, , 1 ) }
          ::URL := cUrl
-      Else
+      ELSE
          MsgOOHGError( "Control: " + ::Name + " must have valid email or url defined. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::URL
+   RETURN ::URL

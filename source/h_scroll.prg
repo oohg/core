@@ -427,60 +427,53 @@ EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TScrollBar_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TScrollBar_lpfnOldWndProc( 0 ) );
 }
 
-HB_FUNC( INITSCROLLBAR )  // ( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitMonthCal( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType, nStyle )) -> hWnd */
 {
-   HWND hwnd;
-   HWND hscrollbar;
-   int nType = hb_parni( 7 );
-   int iStyle, iStyleEx;
+   HWND hCtrl;
+   INT Style, StyleEx;
 
-   hwnd = HWNDparam( 1 );
-
-   iStyleEx = _OOHG_RTL_Status( hb_parl( 6 ) );
-
-   iStyle = hb_parni( 8 ) | WS_CHILD;
-   switch( nType )
+   Style = hb_parni( 8 ) | WS_CHILD;
+   switch( hb_parni( 7 ) )
    {
-      case SB_HORZ:
-         iStyle |= SBS_HORZ;
-         break;
-
-      case SB_VERT:
-         iStyle |= SBS_VERT;
-         break;
+      case SB_HORZ: Style |= SBS_HORZ; break;
+      case SB_VERT: Style |= SBS_VERT; break;
    }
+   StyleEx = _OOHG_RTL_Status( hb_parl( 6 ) );
 
-   hscrollbar = CreateWindowEx( iStyleEx,
-                                "SCROLLBAR",
-                                "",
-                                iStyle,
-                                hb_parni( 2 ),
-                                hb_parni( 3 ),
-                                hb_parni( 4 ),
-                                hb_parni( 5 ),
-                                hwnd,
-                                NULL,
-                                GetModuleHandle( NULL ),
-                                NULL ) ;
+   hCtrl = CreateWindowEx( StyleEx, "SCROLLBAR", "", Style,
+                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   SetScrollRange( hscrollbar, // handle of window with scroll bar
-                   SB_CTL,     // scroll bar flag
-                   1,          // minimum scrolling position
-                   100,        // maximum scrolling position
-                   1 );        // redraw flag
+   SetScrollRange( hCtrl, SB_CTL, 1, 100, TRUE );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hscrollbar, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TScrollBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hscrollbar );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETVSCROLLBARWIDTH )
 {
    hb_retni( GetSystemMetrics( SM_CXVSCROLL ) );

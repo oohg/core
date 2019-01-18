@@ -2274,39 +2274,51 @@ METHOD Release() CLASS TTree
 #define HTREEparam( x )     ( HTREEITEM ) HWNDparam( ( x ) )
 #define HTREEret( x )       HWNDret( ( HWND ) ( x ) )
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TTree_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProcB = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProcB )
+   {
+      lpfnOldWndProcB = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProcB;
 }
 
-HB_FUNC( INITTREE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   INITCOMMONCONTROLSEX icex;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TTree_lpfnOldWndProc( 0 ) );
+}
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTREE )          /* FUNCTION InitTree( hWnd, nCol, nRow, nWidth, nHeight, nStyle, lRtl, lChkBox, lBorder ) -> hWnd */
+{
    HWND hWndTV;
-   UINT iStyle;
-   int StyleEx;
+   INT Style, StyleEx;
    LONG_PTR CurStyle;
+   INITCOMMONCONTROLSEX i;
 
-   iStyle = hb_parni( 6 ) | WS_CHILD | TVS_NOTOOLTIPS ;
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC  = ICC_TREEVIEW_CLASSES ;
+   InitCommonControlsEx(&i);
 
+   Style = hb_parni( 6 ) | WS_CHILD | TVS_NOTOOLTIPS ;
    StyleEx = _OOHG_RTL_Status( hb_parl( 7 ) );
    if( hb_parl( 9 ) )
    {
-      StyleEx = WS_EX_CLIENTEDGE | StyleEx;
+      StyleEx |= WS_EX_CLIENTEDGE;
    }
 
-   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   icex.dwICC  = ICC_TREEVIEW_CLASSES ;
-   InitCommonControlsEx(&icex);
-
-   hWndTV = CreateWindowEx( StyleEx, WC_TREEVIEW, "", iStyle,
+   hWndTV = CreateWindowEx( StyleEx, WC_TREEVIEW, "", Style,
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hWndTV, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hWndTV, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
    if( hb_parl( 8 ) )
    {
@@ -2317,6 +2329,7 @@ HB_FUNC( INITTREE )
    HWNDret( hWndTV );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ADDTREEITEM )
 {
    HWND hWndTV = HWNDparam( 1 );

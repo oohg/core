@@ -462,39 +462,51 @@ FUNCTION RetDayState( Self, lParam )
 #include "tchar.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TMonthCal_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TMonthCal_lpfnOldWndProc( 0 ) );
 }
 
-HB_FUNC( INITMONTHCAL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITMONTHCAL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
-   HWND hwnd;
-   HWND hmonthcal;
-   INITCOMMONCONTROLSEX icex;
-   int Style, StyleEx;
+   HWND hCtrl;
+   INT Style, StyleEx;
+   INITCOMMONCONTROLSEX i;
 
-   icex.dwSize = sizeof( icex );
-   icex.dwICC  = ICC_DATE_CLASSES;
-   InitCommonControlsEx( &icex );
-
-   hwnd = HWNDparam( 1 );
-
-   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC = ICC_DATE_CLASSES;
+   InitCommonControlsEx( &i );
 
    Style = hb_parni( 7 ) | WS_BORDER | WS_CHILD;
+   StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   hmonthcal = CreateWindowEx( StyleEx, MONTHCAL_CLASS, "", Style,
-                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                               hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+   hCtrl = CreateWindowEx( StyleEx, MONTHCAL_CLASS, "", Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hmonthcal, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TMonthCal_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hmonthcal );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ADJUSTMONTHCALSIZE )
 {
    HWND hWnd = HWNDparam( 1 );

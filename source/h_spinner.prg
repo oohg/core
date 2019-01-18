@@ -261,61 +261,75 @@ METHOD Increment( nValue ) CLASS TSpinner
 #include "tchar.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TSpinner_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TSpinner_lpfnOldWndProc( 0 ) );
 }
 
-HB_FUNC( INITSPINNER )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITSPINNER )          /* FUNCTION InitSpinner( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nMin, nMax, lInvisible, lWrap, hWndTextBox, lRtl ) -> hWnd */
 {
-   HWND hwnd;
-   HWND hupdown;
-   int Style2 = WS_CHILD | WS_BORDER | UDS_ARROWKEYS | UDS_ALIGNRIGHT | UDS_SETBUDDYINT | UDS_NOTHOUSANDS;
-   INITCOMMONCONTROLSEX  i;
-   int StyleEx;
+   HWND hUpDown;
+   INT Style, StyleEx;
+   INITCOMMONCONTROLSEX i;
 
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 12 ) );
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC  = ICC_BAR_CLASSES;
+   InitCommonControlsEx( &i );
 
-   i.dwSize = sizeof(INITCOMMONCONTROLSEX);
-   InitCommonControlsEx(&i);
-
-   hwnd = HWNDparam( 1 );
-
+   Style = WS_CHILD | WS_BORDER | UDS_ARROWKEYS | UDS_ALIGNRIGHT | UDS_SETBUDDYINT | UDS_NOTHOUSANDS;
    if( ! hb_parl( 9 ) )
    {
-      Style2 = Style2 | WS_VISIBLE;
+      Style = Style | WS_VISIBLE;
    }
-
    if( hb_parl( 10 ) )
    {
-      Style2 = Style2 | UDS_WRAP;
+      Style = Style | UDS_WRAP;
    }
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 12 ) );
 
-   hupdown = CreateWindowEx( StyleEx, UPDOWN_CLASS, "", Style2,
+   hUpDown = CreateWindowEx( StyleEx, UPDOWN_CLASS, "", Style,
                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             hwnd, NULL, GetModuleHandle( NULL ), NULL );
+                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   SendMessage ( hupdown, UDM_SETBUDDY, ( WPARAM ) hb_parnl( 11 ), ( LPARAM ) NULL );
-   SendMessage ( hupdown, UDM_SETRANGE32, (WPARAM) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
+   SendMessage( hUpDown, UDM_SETBUDDY, ( WPARAM ) HWNDparam( 11 ), ( LPARAM ) NULL );
+   SendMessage( hUpDown, UDM_SETRANGE32, ( WPARAM ) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hupdown, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TSpinner_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hUpDown, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hupdown );
+   HWNDret( hUpDown );
 }
 
-HB_FUNC( SETSPINNERRANGE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETSPINNERRANGE )          /* FUNCTION SetSpinnerRange( hWndUpDown, nMin, nMax ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), UDM_SETRANGE32, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parni( 3 ) ) ;
 }
 
-HB_FUNC( SETSPINNERINCREMENT )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETSPINNERINCREMENT )          /* FUNCTION SetSpinnerIncrement( hWndUpDown, nValue ) -> NIL */
 {
    UDACCEL inc ;
+
    inc.nSec = 0;
-   inc.nInc = hb_parnl(2);
-   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
+   inc.nInc = hb_parnl( 2 );
+   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, ( WPARAM ) 1 , ( LPARAM ) &inc ) ;
 }
 
 #pragma ENDDUMP

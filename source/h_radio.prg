@@ -1010,10 +1010,12 @@ static WNDPROC _OOHG_TRadioGroup_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProcA = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcA )
    {
       lpfnOldWndProcA = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProcA;
 }
@@ -1050,10 +1052,12 @@ static WNDPROC _OOHG_TRadioButton_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProcB = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcB )
    {
       lpfnOldWndProcB = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    return lpfnOldWndProcB;
 }

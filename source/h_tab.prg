@@ -845,12 +845,12 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uFontColo
 METHOD BackColor( uColor ) CLASS TMultiPage
 
    IF ::oContainerBase == NIL
-      IF ! HB_ISNIL( uColor )
+      IF uColor # NIL
          ::Super:BackColor := uColor
       ENDIF
       uColor := ::Super:BackColor
    ELSE
-      IF ! HB_ISNIL( uColor )
+      IF uColor # NIL
          ::oContainerBase:BackColor := uColor
       ENDIF
       uColor := ::oContainerBase:BackColor
@@ -1888,46 +1888,59 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 #include "hbapi.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TTabRaw_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TTabRaw_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITTABCONTROL )
+HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, aItems, nValue, nStyle, lRtl ) -> hWnd */
 {
-   PHB_ITEM hArray;
-   HWND hbutton;
+   HWND hCtrl;
    TC_ITEM tie;
-   int i;
+   INT i, Style, StyleEx;
+   PHB_ITEM hArray;
 
-   int Style = WS_CHILD | hb_parni( 9 );
-   int iStyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
+   Style = WS_CHILD | hb_parni( 9 );
+   StyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
 
    hArray = hb_param( 7, HB_IT_ARRAY );
    Style |= WS_GROUP;
 
-   hbutton = CreateWindowEx( iStyleEx, WC_TABCONTROL, NULL, Style,
-                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   hCtrl = CreateWindowEx( StyleEx, WC_TABCONTROL, NULL, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    tie.mask = TCIF_TEXT ;
    tie.iImage = -1;
 
    for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
    {
-      tie.pszText = (LPTSTR) hb_arrayGetCPtr( hArray, i );
-      TabCtrl_InsertItem( hbutton, 0, &tie );
+      tie.pszText = ( LPTSTR ) hb_arrayGetCPtr( hArray, i );
+      TabCtrl_InsertItem( hCtrl, 0, &tie );
    }
 
-   TabCtrl_SetCurSel( hbutton, hb_parni( 8 ) - 1 );
+   TabCtrl_SetCurSel( hCtrl, hb_parni( 8 ) - 1 );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TTabRaw_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hbutton );
+   HWNDret( hCtrl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

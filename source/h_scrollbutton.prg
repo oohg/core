@@ -101,37 +101,42 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, lSunken )
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TScrollButton_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TScrollButton_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITVSCROLLBARBUTTON )          /* FUNCTION InitVScrollButton( hWnd, nCol, nRow, nWidth, nHeight, nStyle ) -> hWnd */
+HB_FUNC( INITVSCROLLBARBUTTON )          /* FUNCTION InitVScrollBarButton( hWnd, nCol, nRow, nWidth, nHeight, nStyle ) -> hWnd */
 {
-   HWND hwnd;
-   int Style;
+   HWND hCtrl;
+   INT Style;
 
    Style = WS_CHILD | WS_VISIBLE | hb_parni( 6 );
 
-   hwnd = CreateWindow( "static",
-                        "",
-                        Style,
-                        hb_parni( 2 ),
-                        hb_parni( 3 ),
-                        hb_parni( 4 ),
-                        hb_parni( 5 ),
-                        HWNDparam( 1 ),
-                        NULL,
-                        GetModuleHandle( NULL ),
-                        NULL );
+   hCtrl = CreateWindow( "static", "", Style,
+                         hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
+                         HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwnd, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TScrollButton_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hwnd );
+   HWNDret( hCtrl );
 }
 
 #pragma ENDDUMP

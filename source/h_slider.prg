@@ -211,42 +211,54 @@ METHOD Events_Vscroll ( wParam )   CLASS TSlider
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TSlider_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TSlider_lpfnOldWndProc( 0 ) );
 }
 
-HB_FUNC( INITSLIDER )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITSLIDER )          /* FUNCTION InitSlider( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nMin, nMax, nStyle, lRtl ) -> hWnd */
 {
-   HWND hwnd, hbutton;
-   int Style, StyleEx;
+   HWND hCtrl;
+   INT Style, StyleEx;
+   INITCOMMONCONTROLSEX i;
 
-   INITCOMMONCONTROLSEX  i;
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC  = ICC_BAR_CLASSES;
    InitCommonControlsEx( &i );
 
-   hwnd = HWNDparam( 1 );
-
+   Style = hb_parni( 9 ) | WS_CHILD;
    StyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   Style = hb_parni( 9 ) | WS_CHILD;
+   hCtrl = CreateWindowEx( StyleEx, TRACKBAR_CLASS, 0, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   hbutton = CreateWindowEx( StyleEx, TRACKBAR_CLASS, 0,
-                             Style,
-                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                             hwnd, HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   SendMessage( hCtrl, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
 
-   SendMessage( hbutton, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
+   _OOHG_TSlider_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-
-   HWNDret( hbutton );
+   HWNDret( hCtrl );
 }
 
-HB_FUNC( SETSLIDERRANGE )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETSLIDERRANGE )          /* FUNCTION SetSliderRange( nMin, nMax ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
 }

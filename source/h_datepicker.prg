@@ -324,7 +324,7 @@ static LRESULT APIENTRY SubClassFuncA( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
 {
-   HWND hdatepick;
+   HWND hCtrl;
    int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
 
@@ -335,15 +335,16 @@ HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nR
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   hdatepick = CreateWindowEx( StyleEx, "SysDateTimePick32", NULL, Style,
-                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   hCtrl = CreateWindowEx( StyleEx, "SysDateTimePick32", NULL, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hdatepick, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
-   HWNDret( hdatepick );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETDATEPICK )
 {
    SYSTEMTIME sysTime;
@@ -439,7 +440,7 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTIMEPICK )          /* FUNCTION InitTimePick( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
 {
-   HWND htimepick;
+   HWND hCtrl;
    int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
 
@@ -450,15 +451,16 @@ HB_FUNC( INITTIMEPICK )          /* FUNCTION InitTimePick( hWnd, hMenu, nCol, nR
    i.dwICC = ICC_DATE_CLASSES;
    InitCommonControlsEx( &i );
 
-   htimepick = CreateWindowEx( StyleEx, DATETIMEPICK_CLASS, NULL, Style,
-                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+   hCtrl = CreateWindowEx( StyleEx, DATETIMEPICK_CLASS, NULL, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htimepick, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
-   HWNDret( htimepick );
+   HWNDret( hCtrl );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETTIMEPICK )
 {
    SYSTEMTIME sysTime;

@@ -297,64 +297,63 @@ METHOD BackColor( uValue ) CLASS TProgressBar
 #include "tchar.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TProgressBar_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TProgressBar_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, nStyle, nCol, nRow, nWidth, nHeight, nMin, nMax, lVertical, lSmooth, lInvisible, nValue, lRtl ) -> hWnd */
 {
-   HWND hwnd;
-   HWND hbutton;
-   int StyleEx;
-   int Style = WS_CHILD | hb_parni( 2 );
-
+   HWND hCtrl;
+   INT Style, StyleEx;
    INITCOMMONCONTROLSEX i;
+
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC  = ICC_PROGRESS_CLASS;
    InitCommonControlsEx( &i );
 
-   hwnd = HWNDparam( 1 );
-
-   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
-
+   Style = WS_CHILD | hb_parni( 2 );
    if ( hb_parl( 9 ) )
    {
       Style = Style | PBS_VERTICAL;
    }
-
    if ( hb_parl( 10 ) )
    {
       Style = Style | PBS_SMOOTH;
    }
-
    if ( ! hb_parl( 11 ) )
    {
       Style = Style | WS_VISIBLE;
    }
+   StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-   hbutton = CreateWindowEx( StyleEx,
-                             "msctls_progress32",
-                             0,
-                             Style,
-                             hb_parni( 3 ),
-                             hb_parni( 4 ),
-                             hb_parni( 5 ),
-                             hb_parni( 6 ),
-                             hwnd, HMENUparam( 2 ),
-                             GetModuleHandle( NULL ),
-                             NULL );
+   hCtrl = CreateWindowEx( StyleEx, "msctls_progress32", 0, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   SendMessage( hbutton, PBM_SETRANGE, 0, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
-   SendMessage( hbutton, PBM_SETPOS, (WPARAM) hb_parni( 12 ), 0 );
+   SendMessage( hCtrl, PBM_SETRANGE, 0, ( WPARAM ) MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
+   SendMessage( hCtrl, PBM_SETPOS, ( WPARAM ) hb_parni( 12 ), 0 );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TProgressBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hbutton );
+   HWNDret( hCtrl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

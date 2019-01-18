@@ -65,86 +65,87 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TLabel FROM TControl
 
-   DATA Type      INIT "LABEL" READONLY
-   DATA lAutoSize INIT .F.
-   DATA IconWidth INIT 0
-   DATA nWidth    INIT 120
-   DATA nHeight   INIT 24
-   DATA Picture   INIT nil
+   DATA Type                      INIT "LABEL" READONLY
+   DATA lAutoSize                 INIT .F.
+   DATA IconWidth                 INIT 0
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 24
+   DATA Picture                   INIT nil
 
-   METHOD SetText( cText )     BLOCK { | Self, cText | ::Caption := cText }
-   METHOD GetText()            BLOCK { | Self | ::Caption }
+   METHOD SetText( cText )        BLOCK {| Self, cText | ::Caption := cText }
+   METHOD GetText()               BLOCK {| Self | ::Caption }
 
    METHOD Define
-   METHOD Value      SETGET
-   METHOD Caption    SETGET
-   METHOD AutoSize   SETGET
-   METHOD Align      SETGET
+   METHOD Value                   SETGET
+   METHOD Caption                 SETGET
+   METHOD AutoSize                SETGET
+   METHOD Align                   SETGET
    METHOD SetFont
-   METHOD LeftAlign   BLOCK { |Self| ::Align( SS_LEFT ) }
-   METHOD RightAlign  BLOCK { |Self| ::Align( SS_RIGHT ) }
-   METHOD CenterAlign BLOCK { |Self| ::Align( SS_CENTER ) }
+   METHOD LeftAlign               BLOCK {| Self | ::Align( SS_LEFT ) }
+   METHOD RightAlign              BLOCK {| Self | ::Align( SS_RIGHT ) }
+   METHOD CenterAlign             BLOCK {| Self | ::Align( SS_CENTER ) }
    METHOD SizePos
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, Caption, w, h, fontname, ;
-               fontsize, bold, BORDER, CLIENTEDGE, HSCROLL, VSCROLL, ;
-               lTRANSPARENT, aRGB_bk, aRGB_font, ProcedureName, tooltip, ;
-               HelpId, invisible, italic, underline, strikeout, autosize, ;
-               rightalign, centeralign, lRtl, lNoWordWrap, lNoPrefix, ;
-               cPicture, lDisabled, lCenterAlign, bDblClk ) CLASS TLabel
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
+               lClientEdge, lHScroll, lVScroll, lTransparent, uBackColor, uFontColor, bOnClick, cToolTip, nHelpId, lInvisible, ;
+               lItalic, lUnderline, lStrikeout, lAutoSize, lRightAlign, lHorzCenter, lRtl, lNoWordWrap, lNoPrefix, cPicture, ;
+               lDisabled, lVertCenter, bOnDblClk ) CLASS TLabel
 
-   Local ControlHandle, nStyle, nStyleEx
+   LOCAL nControlHandle, nStyle, nStyleEx
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN ::Transparent VALUE ltransparent TYPE "L" DEFAULT .F.
+   ASSIGN ::nCol        VALUE nCol         TYPE "N"
+   ASSIGN ::nRow        VALUE nRow         TYPE "N"
+   ASSIGN ::nWidth      VALUE nWidth       TYPE "N"
+   ASSIGN ::nHeight     VALUE nHeight      TYPE "N"
+   ASSIGN ::Transparent VALUE lTransparent TYPE "L" DEFAULT .F.
    ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
    ASSIGN lDisabled     VALUE lDisabled    TYPE "L" DEFAULT .F.
-   ASSIGN ::lAutosize   VALUE autosize     TYPE "L"
+   ASSIGN ::lAutosize   VALUE lAutoSize    TYPE "L"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, aRGB_font, aRGB_bk, , lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, NIL, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled ) + ;
-             if( HB_IsLogical( BORDER )       .AND. BORDER,        WS_BORDER,      0 ) + ;
-             if( HB_IsLogical( HSCROLL )      .AND. HSCROLL,       WS_HSCROLL,     0 ) + ;
-             if( HB_IsLogical( VSCROLL )      .AND. VSCROLL,       WS_VSCROLL,     0 ) + ;
-             if( HB_IsLogical( lNoPrefix )    .AND. lNoPrefix,     SS_NOPREFIX,    0 ) + ;
-             if( HB_IsLogical( lCenterAlign ) .AND. lCenterAlign,  SS_CENTERIMAGE, 0 )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, .T., lDisabled ) + ;
+             iif( HB_ISLOGICAL( lBorder ) .AND. lBorder, WS_BORDER, 0 ) + ;
+             iif( HB_ISLOGICAL( lHScroll ) .AND. lHScroll, WS_HSCROLL, 0 ) + ;
+             iif( HB_ISLOGICAL( lVScroll ) .AND. lVScroll, WS_VSCROLL, 0 ) + ;
+             iif( HB_ISLOGICAL( lNoPrefix ) .AND. lNoPrefix, SS_NOPREFIX, 0 ) + ;
+             iif( HB_ISLOGICAL( lVertCenter ) .AND. lVertCenter, SS_CENTERIMAGE, 0 )
 
-   If HB_IsLogical( lNoWordWrap )  .AND. lNoWordWrap
+   IF HB_ISLOGICAL( lNoWordWrap ) .AND. lNoWordWrap
       nStyle += SS_LEFTNOWORDWRAP
-   ElseIf HB_IsLogical( centeralign ) .AND. centeralign
+   ELSEIF HB_ISLOGICAL( lHorzCenter ) .AND. lHorzCenter
       nStyle += SS_CENTER
-   ElseIf HB_IsLogical( rightalign ) .AND. rightalign
+   ELSEIF HB_ISLOGICAL( lRightAlign ) .AND. lRightAlign
       nStyle += SS_RIGHT
-   EndIf
+   ENDIF
 
-   nStyleEx := if( HB_IsLogical( CLIENTEDGE )  .AND. CLIENTEDGE,   WS_EX_CLIENTEDGE,  0 ) + ;
-               if( ::Transparent, WS_EX_TRANSPARENT, 0 )
+   nStyleEx := iif( HB_ISLOGICAL( lClientEdge ) .AND. lClientEdge, WS_EX_CLIENTEDGE, 0 ) + ;
+               iif( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
-   Controlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
+   nControlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
-   ::Value := Caption
+   ::Value := cCaption
 
-   If ::Transparent
+   IF ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-   EndIf
+   ENDIF
 
    // OnClick takes precedence over OnDblClick
-   ASSIGN ::OnClick    VALUE ProcedureName TYPE "B"
-   ASSIGN ::OnDblClick VALUE bDblClk       TYPE "B"
+   ASSIGN ::OnClick    VALUE bOnClick  TYPE "B"
+   ASSIGN ::OnDblClick VALUE bOnDblClk TYPE "B"
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( cValue ) CLASS TLabel
 
    IF HB_ISBLOCK( cValue )
@@ -161,6 +162,7 @@ METHOD Value( cValue ) CLASS TLabel
 
    RETURN ::Caption
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Caption( cValue ) CLASS TLabel
 
    LOCAL nLines
@@ -170,7 +172,7 @@ METHOD Caption( cValue ) CLASS TLabel
          nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ), CRLF )
          ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
       ENDIF
-      SetWindowText( ::hWnd , cValue )
+      SetWindowText( ::hWnd, cValue )
       IF ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
       ENDIF
@@ -180,6 +182,7 @@ METHOD Caption( cValue ) CLASS TLabel
 
    RETURN cValue
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS Tlabel
 
    ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
@@ -192,28 +195,31 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
 
    RETURN ::FontHandle
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AutoSize( lValue ) CLASS TLabel
 
-   Local cCaption
+   LOCAL cCaption
 
-   If HB_IsLogical( lValue )
+   IF HB_ISLOGICAL( lValue )
       ::lAutoSize := lValue
-      If lValue
+      IF lValue
          cCaption := GetWindowText( ::hWnd )
-         ::SizePos( , , GetTextWidth( Nil, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( Nil, cCaption, ::FontHandle ) )
-      EndIf
-   EndIf
+         ::SizePos( NIL, NIL, GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
+      ENDIF
+   ENDIF
 
    RETURN ::lAutoSize
 
-METHOD SizePos( Row, Col, Width, Height ) CLASS TLabel
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TLabel
 
-   LOCAL uRet := ::Super:SizePos( Row, Col, Width, Height )
+   LOCAL uRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
 
    SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
 
    RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Align( nAlign ) CLASS TLabel
 
    LOCAL cAlign
@@ -231,9 +237,7 @@ METHOD Align( nAlign ) CLASS TLabel
 
    RETURN WindowStyleFlag( ::hWnd, 0x3F, nAlign )
 
-
-EXTERN InitLabel
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include <hbapi.h>
@@ -241,29 +245,44 @@ EXTERN InitLabel
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TLabel_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITLABEL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hbutton;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TLabel_lpfnOldWndProc( 0 ) );
+}
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITLABEL )          /* FUNCTION InitLabel( hWnd, cCaption, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx, lRtl ) -> hWnd */
+{
+   HWND hlabel;
    int Style, StyleEx;
 
    Style = hb_parni( 8 ) | WS_CHILD | SS_NOTIFY | WS_GROUP;
+
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   hbutton = CreateWindowEx( StyleEx, "static", hb_parc( 2 ), Style,
+   hlabel = CreateWindowEx( StyleEx, "STATIC", hb_parc( 2 ), Style,
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TLabel_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hlabel, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
-   HWNDret( hbutton );
+   HWNDret( hlabel );
 }
 
 #pragma ENDDUMP

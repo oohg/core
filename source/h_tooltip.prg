@@ -359,19 +359,34 @@ METHOD Title( cTitle ) CLASS TToolTip
 LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
 LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
-}
-
 typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
 
 #ifndef TTS_CLOSE
    #define TTS_CLOSE 0x80
 #endif
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TToolTip_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTOOLTIP )
 {
    CALL_SETWINDOWTHEME dwSetWindowTheme;
@@ -392,8 +407,8 @@ HB_FUNC( INITTOOLTIP )
    InitCommonControls();
 
    htooltip = CreateWindowEx( 0, "tooltips_class32", "", Style,
-                              0, 0, 0, 0, HWNDparam( 1 ),
-                              NULL, GetModuleHandle( NULL ), NULL );
+                              0, 0, 0, 0,
+                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    if( ( _OOHG_TooltipBackcolor != -1 ) || ( _OOHG_TooltipForecolor != -1 ) )
    {
@@ -407,12 +422,12 @@ HB_FUNC( INITTOOLTIP )
             {
                if( _OOHG_TooltipBackcolor != -1 )
                {
-                  SendMessage( htooltip, TTM_SETTIPBKCOLOR, _OOHG_TooltipBackcolor, 0 );
+                  SendMessage( htooltip, TTM_SETTIPBKCOLOR, ( WPARAM ) _OOHG_TooltipBackcolor, 0 );
                }
 
                if( _OOHG_TooltipForecolor != -1 )
                {
-                  SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, _OOHG_TooltipForecolor, 0 );
+                  SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, ( WPARAM ) _OOHG_TooltipForecolor, 0 );
                }
             }
          }
@@ -420,13 +435,12 @@ HB_FUNC( INITTOOLTIP )
       }
    }
 
-   if( htooltip )
-   {
-      lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( htooltip, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-   }
+   _OOHG_TToolTip_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htooltip, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( htooltip );
 }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 
 HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
 {

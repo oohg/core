@@ -231,63 +231,62 @@ EXTERN SetSplitBoxItem
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TSplitBox_lpfnOldWndProc( WNDPROC lp )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
 }
 
-HB_FUNC( INITSPLITBOX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   HWND hwndOwner = HWNDparam( 1 );
-   REBARINFO     rbi;
-   HWND   hwndRB;
-   INITCOMMONCONTROLSEX icex;
-   int StyleEx;
-   int Style;
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TSplitBox_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITSPLITBOX )          /* FUNCTION IniTSplitBox( hWnd, nStyle, lRtl ) -> hWnd */
+{
+   HWND hCtrl;
+   int Style, StyleEx;
+   INITCOMMONCONTROLSEX i;
    OSVERSIONINFO osvi;
+   REBARINFO rbi;
 
-   StyleEx = _OOHG_RTL_Status( hb_parl( 3 ) ) | WS_EX_CONTROLPARENT;
-
-   Style = hb_parni( 2 ) |
-           WS_CHILD |
-           WS_CLIPSIBLINGS |
-           RBS_BANDBORDERS |
-           RBS_VARHEIGHT |
-           RBS_FIXEDORDER;
-
+   Style = hb_parni( 2 ) | WS_CHILD | WS_CLIPSIBLINGS | RBS_BANDBORDERS | RBS_VARHEIGHT | RBS_FIXEDORDER;
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
    GetVersionEx( &osvi );
-
    if( osvi.dwMajorVersion >= 6 )
    {
       Style = Style | WS_CLIPCHILDREN;
    }
+   StyleEx = _OOHG_RTL_Status( hb_parl( 3 ) ) | WS_EX_CONTROLPARENT | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME;
 
-   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   icex.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
-   InitCommonControlsEx( &icex );
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC  = ICC_COOL_CLASSES | ICC_BAR_CLASSES;
+   InitCommonControlsEx( &i );
 
-   hwndRB = CreateWindowEx( StyleEx | WS_EX_TOOLWINDOW | WS_EX_DLGMODALFRAME,
-                            REBARCLASSNAME,
-                            NULL,
-                            Style,
-                            0, 0, 0, 0,
-                            hwndOwner,
-                            NULL,
-                            GetModuleHandle( NULL ),
-                            NULL );
+   hCtrl = CreateWindowEx( StyleEx, REBARCLASSNAME, NULL, Style,
+                           0, 0, 0, 0,
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
    // Initialize and send the REBARINFO structure.
    rbi.cbSize = sizeof( REBARINFO );  // Required when using this struct.
    rbi.fMask  = 0;
    rbi.himl   = ( HIMAGELIST ) NULL;
-   SendMessage( hwndRB, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
+   SendMessage( hCtrl, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hwndRB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TSplitBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( hwndRB );
+   HWNDret( hCtrl );
 }
 
 HB_FUNC( ADDSPLITBOXITEM )

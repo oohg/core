@@ -587,31 +587,43 @@ METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
 
 #define s_Super s_TControl
 
-static WNDPROC lpfnOldWndProc = 0;
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TImage_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TImage_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITIMAGE )          /* FUNCTION InitImage( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx ) -> hWnd */
 {
-   HWND h;
-   int Style, StyleEx;
-
-   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
+   HWND hCtrl;
+   INT Style, StyleEx;
 
    Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
+   StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   h = CreateWindowEx( StyleEx, "static", NULL, Style,
-                       hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                       HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
+   hCtrl = CreateWindowEx( StyleEx, "static", NULL, Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( h, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
+   _OOHG_TImage_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
-   HWNDret( h );
+   HWNDret( hCtrl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

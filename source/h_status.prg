@@ -603,33 +603,51 @@ FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, l
 #include "hbstack.h"
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
-}
-
 #define NUM_OF_PARTS 40
 
-HB_FUNC( INITMESSAGEBAR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TMessageBar_lpfnOldWndProc( WNDPROC lp )
 {
-   HWND hWndSB;
-   int  iStyle;
+   static WNDPROC lpfnOldWndProc = 0;
 
-   iStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
-   if( hb_parl( 4 ) )
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
    {
-      iStyle |= CCS_TOP;
+      lpfnOldWndProc = lp;
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
-   hWndSB = CreateStatusWindow( iStyle, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
-
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hWndSB, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-
-   HWNDret( hWndSB );
+   return lpfnOldWndProc;
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TMessageBar_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITMESSAGEBAR )          /* FUNCTION InitMonthCal( hWnd, cCaption, nId, lTop ) -> hWnd */
+{
+   HWND hCtrl;
+   INT Style;
+
+   Style = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
+   if( hb_parl( 4 ) )
+   {
+      Style |= CCS_TOP;
+   }
+
+   InitCommonControls();
+
+   hCtrl = CreateStatusWindow( Style, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
+
+   _OOHG_TMessageBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+
+   HWNDret( hCtrl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETITEMCOUNT )
 {
    hb_retni( SendMessage( HWNDparam( 1 ), SB_GETPARTS, 0, 0 ) );
