@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-18 15:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! SET NAVIGATION EXTENDED is not working.
+
 2019-01-18 09:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      - Debugging code.
