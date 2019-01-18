@@ -12,11 +12,15 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2019-01-13 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-01-18 09:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! RTE at METHOD DoEventMouseCoords.
+
+2019-01-17 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      ! RTE when mouse goes over a textbox's context menu.
 
-2019-01-13 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-01-17 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_datepicker.prg
    * core\source\h_hotkeybox.prg
    * core\source\h_hyperlink.prg
@@ -44,11 +48,11 @@
      * More changes to achieve thread safety.
      * Some format.
 
-2019-01-13 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-01-17 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_button.prg
      ! Typo.
 
-2019-01-13 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-01-17 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      + METHOD DoEventMouseCoords.
      + ON CLICK event now receives item and col clicked.
