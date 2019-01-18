@@ -203,6 +203,7 @@ CLASS TGrid FROM TControl
    METHOD DeleteAllItems          BLOCK { | Self | ListViewReset( ::hWnd ), ::GridForeColor := Nil, ::GridBackColor := Nil, ::DoChange() }
    METHOD DeleteColumn
    METHOD DeleteItem
+   METHOD DoEventMouseCoords
    METHOD Down
    METHOD DynamicBackColor         SETGET
    METHOD DynamicForeColor         SETGET
@@ -3275,7 +3276,7 @@ METHOD Events_Enter() CLASS TGrid
 METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
    Local nNotify := GetNotifyCode( lParam )
-   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItemValues, aData
+   Local lvc, _ThisQueryTemp, nvkey, uValue, lGo, aItemValues, aData, aCellData
 
    If nNotify == NM_CUSTOMDRAW
       IF ::lNeedsAdjust .AND. ::lEndTrack
@@ -3407,7 +3408,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue > 0
+                     aCellData := { uValue, 0 }
+                  Else
+                     aCellData := ListView_ItemActivate( lParam )
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -3468,6 +3474,20 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
    EndIf
 
    Return ::Super:Events_Notify( wParam, lParam )
+
+METHOD DoEventMouseCoords( bBlock, cEventType, aParams ) CLASS TGrid
+
+   LOCAL aPos := GetCursorPos(), i
+
+   // TODO: Use GetClientRect instead
+   aPos[ 1 ] -= GetWindowRow( ::hWnd )
+   aPos[ 2 ] -= GetWindowCol( ::hWnd )
+
+   FOR i := 1 TO Len( aParams )
+      AAdd( aPos, aParams[ i ] )
+   NEXT i
+
+   RETURN ::DoEvent( bBlock, cEventType, aPos )
 
 METHOD aItems( aRows ) CLASS TGrid
 
@@ -5806,7 +5826,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue > 0
+                     aCellData := { uValue, 0 }
+                  Else
+                     aCellData := ListView_ItemActivate( lParam )
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -7870,7 +7895,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
    INITCOMMONCONTROLSEX i;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
-   i.dwICC = ICC_DATE_CLASSES;
+   i.dwICC = ICC_LISTVIEW_CLASSES;
    InitCommonControlsEx( &i );
 
    Style = WS_CHILD | LVS_REPORT | hb_parni( 12 );

@@ -132,7 +132,7 @@
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+      [ <bffr: SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -185,8 +185,7 @@
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, ;
             <{bWhenDel}>, <DelMsg>, <{onDelete}>, <aHeaderImages>, ;
             <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-            IIF( upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            ! <.bffr.>, ;
             IIF( upper( #<focus> ) == "NOFOCUSRECT", .F., ;
             IIF( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
@@ -217,3 +216,7 @@
 #command SET XBROWSEFIXEDCONTROLS OFF ;
    => ;
       _OOHG_XBrowseFixedControls := .F.
+
+#xtranslate XBROWSE [ <x> ] DOUBLEBUFFER ;
+   => ;
+      XBROWSE [ <x> ]

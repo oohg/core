@@ -1977,7 +1977,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
 
 METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
 
-   Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam )
+   Local nvKey, r, DeltaSelect, lGo, uValue, nNotify := GetNotifyCode( lParam ), aCellData
 
    If nNotify == NM_CLICK
       If ::lCheckBoxes
@@ -1995,7 +1995,17 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue <= 0
+                     aCellData := ListView_ItemActivate( lParam )
+                     If aCellData[ 1 ] > 0 .AND. aCellData[ 1 ] <= Len( ::aRecMap )
+                        aCellData[ 1 ] := ::aRecMap[ aCellData[ 1 ] ]
+                     Else
+                        aCellData[ 1 ] := 0
+                     EndIf
+                  Else
+                     aCellData := { uValue, 0 }
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -2746,7 +2756,17 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue <= 0
+                     aCellData := ListView_ItemActivate( lParam )
+                     If aCellData[ 1 ] > 0 .AND. aCellData[ 1 ] <= Len( ::aRecMap )
+                        aCellData[ 1 ] := ::aRecMap[ aCellData[ 1 ] ]
+                     Else
+                        aCellData[ 1 ] := 0
+                     EndIf
+                  Else
+                     aCellData := { uValue, 0 }
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf
