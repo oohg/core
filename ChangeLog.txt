@@ -12,6 +12,74 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-13 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! RTE when mouse goes over a textbox's context menu.
+
+2019-01-13 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_datepicker.prg
+   * core\source\h_hotkeybox.prg
+   * core\source\h_hyperlink.prg
+   * core\source\h_image.prg
+   * core\source\h_internal.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_label.prg
+   * core\source\h_listbox.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_picture.prg
+   * core\source\h_progressbar.prg
+   * core\source\h_radio.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_scroll.prg
+   * core\source\h_scrollbutton.prg
+   * core\source\h_slider.prg
+   * core\source\h_spinner.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_status.prg
+   * core\source\h_tab.prg
+   * core\source\h_textarray.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tooltip.prg
+   * core\source\h_tree.prg
+     * More changes to achieve thread safety.
+     * Some format.
+
+2019-01-13 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.prg
+     ! Typo.
+
+2019-01-13 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + METHOD DoEventMouseCoords.
+     + ON CLICK event now receives item and col clicked.
+   * core\source\h_browse.prg
+     + ON CLICK event now receives item and col clicked.
+   * core\source\h_xbrowse.prg
+     + ON CLICK event now receives item and col clicked.
+
+2019-01-17 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-01-17 21:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_textbox.ch
+     + NOCONTEXTMENU clause.
+   * core\source\h_textbox.prg
+     * More changes to achieve thread safety.
+     * Some format.
+     + Support for new clause.
+
+2019-01-17 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_tab.ch
+     + ACTION as synonym of ON CLICK clause.
+
+2019-01-17 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_browse.ch
+   * core\include\i_checklist.ch
+   * core\include\i_grid.ch
+   * core\include\i_xbrowse.ch
+     % Use PP rule instead of iif.
+
 2019-01-13 00:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_application.prg
      - CLASSVAR hClsMtx.
@@ -99,8 +167,6 @@
      * C-level functions now use the data structure instead of
        the static vars.
      ; Now we can use two HBPrinter objects simultaneously!!!
-
------------------------------------------------------------------------------------------------------------
 
 2019-01-11 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
