@@ -2705,16 +2705,22 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
                      }
                      _OOHG_Send( pMenu, s_Events_MenuHilited );
                      hb_vmSend( 0 );
-                     hb_itemRelease( pMenu );
                   }
+                  hb_itemRelease( pMenu );
                }
                else
                {
-                  PHB_ITEM pMenu = hb_itemNew( NULL );
-                  hb_itemCopy( pMenu, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
-                  _OOHG_Send( pMenu, s_Events_MenuHilited );
+                  PHB_ITEM pControl = hb_itemNew( NULL );
+                  hb_itemCopy( pControl, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
+                  _OOHG_Send( pControl, s_ContextMenu );
                   hb_vmSend( 0 );
-                  hb_itemRelease( pMenu );
+                  if( hb_param( -1, HB_IT_OBJECT ) )
+                  {
+                     hb_itemCopy( pControl, hb_param( -1, HB_IT_OBJECT ) );
+                     _OOHG_Send( pControl, s_Events_MenuHilited );
+                     hb_vmSend( 0 );
+                  }
+                  hb_itemRelease( pControl );
                }
             }
          }
