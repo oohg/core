@@ -476,7 +476,6 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
 
       ::oWinReport:Center()
       ::oWinReport:Activate( .T. )
-AutoMsgBox( ::oWinReport:Name )
    ENDIF
 
    IF ( lOk := ::BeginDocX() )
