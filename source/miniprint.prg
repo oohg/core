@@ -101,7 +101,7 @@ MEMVAR _OOHG_PRINTER_DocName
 MEMVAR _OOHG_Auxil_Page
 MEMVAR _OOHG_Auxil_Zoom
 
-PROCEDURE _HMG_PRINTER_ShowPreview()
+PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
    LOCAL tHeight
    LOCAL tFactor
@@ -137,22 +137,59 @@ PROCEDURE _HMG_PRINTER_ShowPreview()
 
    _HMG_PRINTER_SizeFactor := GetDesktopRealHeight() / _HMG_PRINTER_GETPAGEHEIGHT( _HMG_PRINTER_hDC_Bak ) * 0.63
 
-    DEFINE WINDOW _OOHG_AUXIL TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
-      CHILD ;
-      AT 0, 0 ;
-      WIDTH GetDesktopRealWidth() - 123 ;
-      HEIGHT GetDesktopRealHeight() - 123 ;
-      ON MOUSECLICK ( If( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ) ) ;
-      ON RELEASE _HMG_PRINTER_PreviewClose() ;
-      ON PAINT _HMG_PRINTER_SHOWPREVIEW:SetFocus()
-      /*
-      ON SCROLLUP    _HMG_PRINTER_ScrolluP() ;
-      ON SCROLLDOWN  _HMG_PRINTER_ScrollDown() ;
-      ON SCROLLLEFT  _HMG_PRINTER_ScrollLeft() ;
-      ON SCROLLRIGHT _HMG_PRINTER_ScrollRight() ;
-      ON HSCROLLBOX  _HMG_PRINTER_hScrollBoxProcess() ;
-      ON VSCROLLBOX  _HMG_PRINTER_vScrollBoxProcess() ;
-      */
+   ASSIGN lWait   VALUE lWait   TYPE "L" DEFAULT .T.
+   ASSIGN lSize   VALUE lSize   TYPE "L" DEFAULT .T.
+
+   IF lSize
+      IF lWait
+         DEFINE WINDOW _OOHG_AUXIL ;
+            TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
+            CHILD ;
+            AT 0, 0 ;
+            WIDTH GetDesktopRealWidth() - 123 ;
+            HEIGHT GetDesktopRealHeight() - 123 ;
+            ON MOUSECLICK ( If( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ) ) ;
+            ON RELEASE _HMG_PRINTER_PreviewClose() ;
+            ON PAINT _HMG_PRINTER_SHOWPREVIEW:SetFocus()
+      ELSE
+         DEFINE WINDOW _OOHG_AUXIL ;
+            TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
+            PARENT ( cParent ) ;
+            CHILD ;
+            AT 0, 0 ;
+            WIDTH GetDesktopRealWidth() - 123 ;
+            HEIGHT GetDesktopRealHeight() - 123 ;
+            ON MOUSECLICK ( If( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ) ) ;
+            ON RELEASE _HMG_PRINTER_PreviewClose() ;
+            ON PAINT _HMG_PRINTER_SHOWPREVIEW:SetFocus()
+      ENDIF
+   ELSE
+      IF lWait
+         DEFINE WINDOW _OOHG_AUXIL ;
+            TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
+            CHILD ;
+            AT 0, 0 ;
+            WIDTH GetDesktopRealWidth() - 123 ;
+            HEIGHT GetDesktopRealHeight() - 123 ;
+            ON MOUSECLICK ( If( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ) ) ;
+            ON RELEASE _HMG_PRINTER_PreviewClose() ;
+            ON PAINT _HMG_PRINTER_SHOWPREVIEW:SetFocus() ;
+            NOSIZE
+      ELSE
+         DEFINE WINDOW _OOHG_AUXIL ;
+            TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
+            PARENT ( cParent ) ;
+            CHILD ;
+            AT 0, 0 ;
+            WIDTH GetDesktopRealWidth() - 123 ;
+            HEIGHT GetDesktopRealHeight() - 123 ;
+            ON MOUSECLICK ( If( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ) ) ;
+            ON RELEASE _HMG_PRINTER_PreviewClose() ;
+            ON PAINT _HMG_PRINTER_SHOWPREVIEW:SetFocus() ;
+            NOSIZE
+      ENDIF
+   ENDIF
+
 
       DEFINE WINDOW _HMG_PRINTER_PPNAV OBJ _HMG_PRINTER_PPNAV HEIGHT 35 WIDTH 100 INTERNAL
 
@@ -506,7 +543,11 @@ PROCEDURE _HMG_PRINTER_ShowPreview()
 
    CENTER WINDOW _OOHG_AUXIL
 
-   ACTIVATE WINDOW _OOHG_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT
+   IF lWait
+      ACTIVATE WINDOW _OOHG_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT
+   ELSE
+      ACTIVATE WINDOW _OOHG_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT NOWAIT
+   ENDIF
 
    _HMG_PRINTER_hDC := _HMG_PRINTER_hDC_Bak
 

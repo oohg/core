@@ -132,9 +132,9 @@ MEMVAR HBPRN
    => ;
       iif( __DYNSISFUN( "TAPPLICATION" ) .AND. _OOHG_ActiveFrame # NIL, Do( "_EndTabPage" ), hbprn:EndPage() )
 
-#xcommand END DOC [ <do: WAIT, NOWAIT> ] [ <sz: SIZE, NOSIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
+#xcommand END DOC [ <nowait: NOWAIT> ] [ <size: SIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
    => ;
-      hbprn:EndDoc( <(parent)>, iif( #<do> == "WAIT", .T., iif( #<do> == "NOWAIT", .F., NIL ) ), iif( #<sz> == "SIZE", .T., iif( #<sz> == "NOSIZE", .F., NIL ) ) )
+      hbprn:EndDoc( <(parent)>, ! <.nowait.>, <.size.> )
 
 #xcommand RELEASE PRINTSYS ;
    => ;

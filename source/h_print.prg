@@ -534,8 +534,8 @@ METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPRINTBASE
    ENDIF
 
    ASSIGN ::lSaveTemp VALUE lSaveTemp TYPE "L" DEFAULT .F.
-   ASSIGN lWait       VALUE lWait     TYPE "L" DEFAULT .F.
-   ASSIGN lSize       VALUE lSize     TYPE "L" DEFAULT ! lWait
+   ASSIGN lWait       VALUE lWait     TYPE "L" DEFAULT .T.
+   ASSIGN lSize       VALUE lSize     TYPE "L" DEFAULT NIL
 
    IF ::ImPreview .AND. HB_ISOBJECT( ::oWinReport )
       ::oWinReport:Hide()
@@ -1085,6 +1085,7 @@ CLASS TMINIPRINT FROM TPRINTBASE
    METHOD EndPageX
    METHOD GetDefPrinterX
    METHOD InitX
+   METHOD IsDocOpenX
    METHOD MaxCol
    METHOD MaxRow
    METHOD PrintBarcodeX
@@ -1152,16 +1153,36 @@ METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS TMINIPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitX() CLASS TMINIPRINT
 
-   PUBLIC _HMG_PRINTER_aPrinterProperties
-   PUBLIC _HMG_PRINTER_Collate
-   PUBLIC _HMG_PRINTER_Copies
-   PUBLIC _HMG_PRINTER_Error
-   PUBLIC _HMG_PRINTER_hDC
-   PUBLIC _HMG_PRINTER_hDC_Bak
-   PUBLIC _HMG_PRINTER_Name
-   PUBLIC _HMG_PRINTER_PageCount
-   PUBLIC _HMG_PRINTER_Preview
-   PUBLIC _HMG_PRINTER_TimeStamp
+   IF ! __mvExist( "_HMG_PRINTER_aPrinterProperties" )
+      PUBLIC _HMG_PRINTER_aPrinterProperties
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_Collate" )
+      PUBLIC _HMG_PRINTER_Collate
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_Copies" )
+      PUBLIC _HMG_PRINTER_Copies
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_Error" )
+      PUBLIC _HMG_PRINTER_Error
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_hDC" )
+      PUBLIC _HMG_PRINTER_hDC
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_hDC_Bak" )
+      PUBLIC _HMG_PRINTER_hDC_Bak
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_Name" )
+      PUBLIC _HMG_PRINTER_Name
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_PageCount" )
+      PUBLIC _HMG_PRINTER_PageCount
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_Preview" )
+      PUBLIC _HMG_PRINTER_Preview
+   ENDIF
+   IF ! __mvExist( "_HMG_PRINTER_TimeStamp" )
+      PUBLIC _HMG_PRINTER_TimeStamp
+   ENDIF
 
    ::aPrinters := aPrinters()
    ::cPrintLibrary := "MINIPRINT"
@@ -1177,11 +1198,39 @@ METHOD BeginDocX() CLASS TMINIPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TMINIPRINT
+METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
 
-   END PRINTDOC
+   ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
+   IF lSize
+      IF lWait
+         END PRINTDOC
+         ::lDocIsOpen := .F.
+      ELSE
+         END PRINTDOC NOWAIT PARENT ( ::oWinReport:Name )
+         ::lDocIsOpen := .T.
+      ENDIF
+   ELSE
+      IF lWait
+         END PRINTDOC NOSIZE
+         ::lDocIsOpen := .F.
+      ELSE
+         END PRINTDOC NOWAIT NOSIZE PARENT ( ::oWinReport:Name )
+         ::lDocIsOpen := .T.
+      ENDIF
+   ENDIF
 
    RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD IsDocOpenX() CLASS TMINIPRINT
+
+   IF ::lDocIsOpen
+      IF ! IsWindowDefined( "_OOHG_AUXIL" )
+         ::lDocIsOpen := .F.
+      ENDIF
+   ENDIF
+
+   RETURN ::lDocIsOpen
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BeginPageX() CLASS TMINIPRINT
@@ -1200,16 +1249,18 @@ METHOD EndPageX() CLASS TMINIPRINT
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReleaseX() CLASS TMINIPRINT
 
-   RELEASE _HMG_PRINTER_aPrinterProperties
-   RELEASE _HMG_PRINTER_Collate
-   RELEASE _HMG_PRINTER_Copies
-   RELEASE _HMG_PRINTER_Error
-   RELEASE _HMG_PRINTER_hDC
-   RELEASE _HMG_PRINTER_hDC_Bak
-   RELEASE _HMG_PRINTER_Name
-   RELEASE _HMG_PRINTER_PageCount
-   RELEASE _HMG_PRINTER_Preview
-   RELEASE _HMG_PRINTER_TimeStamp
+   IF ! ::IsDocOpen()
+      RELEASE _HMG_PRINTER_aPrinterProperties
+      RELEASE _HMG_PRINTER_Collate
+      RELEASE _HMG_PRINTER_Copies
+      RELEASE _HMG_PRINTER_Error
+      RELEASE _HMG_PRINTER_hDC
+      RELEASE _HMG_PRINTER_hDC_Bak
+      RELEASE _HMG_PRINTER_Name
+      RELEASE _HMG_PRINTER_PageCount
+      RELEASE _HMG_PRINTER_Preview
+      RELEASE _HMG_PRINTER_TimeStamp
+   ENDIF
 
    RETURN .T.
 
@@ -2100,16 +2151,18 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
    IF lSize
       IF lWait
-         END DOC WAIT SIZE
+         END DOC SIZE
+         ::lDocIsOpen := .F.
       ELSE
          END DOC NOWAIT SIZE PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
       ENDIF
    ELSE
       IF lWait
-         END DOC WAIT NOSIZE
+         END DOC
+         ::lDocIsOpen := .F.
       ELSE
-         END DOC NOWAIT NOSIZE PARENT ( ::oWinReport:Name )
+         END DOC NOWAIT PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
       ENDIF
    ENDIF

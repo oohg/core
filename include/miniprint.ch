@@ -282,10 +282,10 @@
            _HMG_PRINTER_EndPage_Preview( _HMG_PRINTER_hDC ), ;
            _HMG_PRINTER_EndPage( _HMG_PRINTER_hDC ) )
 
-#xcommand END PRINTDOC ;
+#xcommand END PRINTDOC [ <nowait: NOWAIT> ] [ <nosize: NOSIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
    => ;
       IIF( _HMG_PRINTER_Preview, ;
-           _HMG_PRINTER_ShowPreview(), ;
+           _HMG_PRINTER_ShowPreview( <(parent)>, ! <.nowait.>, ! <.nosize.> ), ;
            _HMG_PRINTER_EndDoc( _HMG_PRINTER_hDC ) )
 
 #xcommand ABORT PRINTDOC ;
