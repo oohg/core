@@ -78,7 +78,7 @@
       [ <flat: FLAT> ] ;
       [ <hottrack: HOTTRACK> ] ;
       [ <vertical: VERTICAL, LEFT> ] ;
-      [ <dummy02: ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy02: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <dummy03: ONRCLICK, ON RCLICK> <rclick> ] ;
       [ <dummy04: ONCHANGE, ON CHANGE> <change> ] ;
       [ <notabstop: NOTABSTOP> ] ;
