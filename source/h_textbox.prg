@@ -135,7 +135,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-               lAtLeft ) CLASS TText
+               lAtLeft, lNoCntxtMnu ) CLASS TText
 
    Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -149,7 +149,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft )
+              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
 
    Return Self
 
@@ -160,7 +160,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
                 backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
                 lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
                 bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
-                lCenter, OnTextFilled, nInsType, lAtLeft ) CLASS TText
+                lCenter, OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu ) CLASS TText
 
    Local nControlHandle
    Local break := Nil
@@ -257,6 +257,10 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
             @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
          ENDIF
       ENDIF
+   ENDIF
+
+   IF HB_ISLOGICAL( lNoCntxtMnu ) .AND. lNoCntxtMnu
+      ::ContextMenu := TMenuContext():Define( Self )
    ENDIF
 
    RETURN Self
@@ -549,56 +553,55 @@ METHOD GetLineFromChar( nChar ) CLASS TText
 #include <commctrl.h>
 #include "oohg.h"
 
-static WNDPROC lpfnOldWndProc = 0;
-
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, lpfnOldWndProc );
-}
-
-HB_FUNC( INITTEXTBOX )
-{
-   HWND hwnd;         // Handle of the parent window/form.
-   HWND hedit;        // Handle of the child window/control.
-   int StyleEx;
-
-   StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
-
-   // Get the handle of the parent window/form.
-   hwnd = HWNDparam( 1 );
-
-   // Creates the child control.
-   hedit = CreateWindowEx( StyleEx,
-                           "EDIT",
-                           "",
-                           ( WS_CHILD | hb_parni( 7 ) ),
-                           hb_parni( 3 ),
-                           hb_parni( 4 ),
-                           hb_parni( 5 ),
-                           hb_parni( 6 ),
-                           hwnd,
-                           HMENUparam( 2 ),
-                           GetModuleHandle( NULL ),
-                           NULL );
-
-   if( hb_parni( 8 ) != 0 )
-   {
-      SendMessage( hedit, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
-   }
-
-   lpfnOldWndProc = (WNDPROC) SetWindowLongPtr( hedit, GWL_WNDPROC, (LONG_PTR) SubClassFunc );
-
-   HWNDret( hedit );
-}
-
 #define s_Super s_TLabel
 
-// oSelf->lAux[ 0 ] -> Client's area (width used by attached controls)
-// oSelf->lAux[ 1 ] -> 1=attached controls are on the right, 0=on the left
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static WNDPROC _OOHG_TText_lpfnOldWndProc( WNDPROC lp )
+{
+   static WNDPROC lpfnOldWndProc = 0;
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TText
-// -----------------------------------------------------------------------------
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! lpfnOldWndProc )
+   {
+      lpfnOldWndProc = lp;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return lpfnOldWndProc;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TText_lpfnOldWndProc( 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTEXTBOX )          /* FUNCTION InitTextBox( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLenght, lRtl, nStyleEx ) -> hWnd */
+{
+   HWND hCtrl;        
+   INT Style, StyleEx;
+
+   Style = WS_CHILD | hb_parni( 7 );
+   StyleEx = hb_parni( 10 ) | _OOHG_RTL_Status( hb_parl( 9 ) );
+
+   // Creates the child control.
+   hCtrl = CreateWindowEx( StyleEx, "EDIT", "", Style,
+                           hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                           HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
+
+   if( hb_parni( 8 ) )
+   {
+      SendMessage( hCtrl, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+   }
+
+   _OOHG_TText_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+
+   HWNDret( hCtrl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TText -> nRet */
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -616,11 +619,11 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
          iRet = DefWindowProc( hWnd, message, wParam, lParam );
 
-         if( oSelf->lAux[ 0 ] )
+         if( oSelf->lAux[ 0 ] )                         // oSelf->lAux[ 0 ] -> Client's area width used by attached controls
          {
             rect2 = ( RECT * ) lParam;
 
-            if( oSelf->lAux[ 1 ] )
+            if( oSelf->lAux[ 1 ] )                      // oSelf->lAux[ 1 ] -> 1=attached controls are on the right, 0=on the left
             {
                rect2->right = rect2->right - oSelf->lAux[ 0 ];
             }
@@ -653,11 +656,13 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       case WM_KEYDOWN:
       case WM_LBUTTONDOWN:
       case WM_UNDO:
+      {
          if( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ES_READONLY ) == 0 )
          {
             HB_FUNCNAME( TTEXT_EVENTS2 )();
             break;
          }
+      }
 
       default:
          _OOHG_Send( pSelf, s_Super );
@@ -672,9 +677,8 @@ HB_FUNC_STATIC( TTEXT_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
    }
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TText
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_CONTROLAREA )          /* METHOD ControlArea( nWidth ) CLASS TText -> nWidth */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -690,9 +694,8 @@ HB_FUNC_STATIC( TTEXT_CONTROLAREA )   // METHOD ControlArea( nWidth ) CLASS TTex
    hb_retni( oSelf->lAux[ 0 ] );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_CONTROLPOSITION )   // METHOD ControlPosition( nPosition ) CLASS TText
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_CONTROLPOSITION )          /* METHOD ControlPosition( nPosition ) CLASS TText -> nPos */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -708,9 +711,8 @@ HB_FUNC_STATIC( TTEXT_CONTROLPOSITION )   // METHOD ControlPosition( nPosition )
    hb_retni( oSelf->lAux[ 1 ] );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC( TTEXT_GETSELECTIONDATA )
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTEXT_GETSELECTIONDATA )          /* FUNCTION TText_GetSelectionData( hWnd ) -> aPos */
 {
    DWORD wParam;
    DWORD lParam;
@@ -722,9 +724,8 @@ HB_FUNC( TTEXT_GETSELECTIONDATA )
    HB_STORNI( (int) lParam, -1, 2 );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_GETCHARFROMPOS )           // METHOD GetCharFromPos( nRow, nCol ) CLASS TText
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_GETCHARFROMPOS )          /* METHOD GetCharFromPos( nRow, nCol ) CLASS TText -> { nIndex, nLine } */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -737,9 +738,8 @@ HB_FUNC_STATIC( TTEXT_GETCHARFROMPOS )           // METHOD GetCharFromPos( nRow,
    HB_STORNI( (int) HIWORD( lRet ), -1, 2 );        // zero-based line containing the char
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_GETRECT )           // METHOD GetRect() CLASS TText
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_GETRECT )          /* METHOD GetRect() CLASS TText -> { nTop, nLeft, nBottom, nRight } */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -754,9 +754,8 @@ HB_FUNC_STATIC( TTEXT_GETRECT )           // METHOD GetRect() CLASS TText
    HB_STORNI( (int) rect.right, -1, 4 );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_GETLASTVISIBLELINE )           // METHOD GetLastVisibleLine() CLASS TText
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_GETLASTVISIBLELINE )          /* METHOD GetLastVisibleLine() CLASS TText -> nLine */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -767,10 +766,8 @@ HB_FUNC_STATIC( TTEXT_GETLASTVISIBLELINE )           // METHOD GetLastVisibleLin
    hb_retni( HIWORD( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, MAKELPARAM( rect.left + 1, rect.bottom - 2 ) ) ) );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXT_GETLINE )           // METHOD GetLine( nLine ) CLASS TText
-// -----------------------------------------------------------------------------
-// Return the text of a specified line. Line number starts at 0.
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXT_GETLINE )          /* METHOD GetLine( nLine ) CLASS TText -> cText */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -890,7 +887,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-               nInsType, lAtLeft ) CLASS TTextPicture
+               nInsType, lAtLeft, lNoCntxtMnu ) CLASS TTextPicture
 
    Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -921,7 +918,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft )
+              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
 
    Return Self
 
@@ -1228,9 +1225,8 @@ STATIC FUNCTION xUnTransform( Self, cCaption )
 #undef s_Super
 #define s_Super s_TText
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextPicture
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextPicture -> nRet */
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -1614,7 +1610,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
                backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-               lAtLeft ) CLASS TTextNum
+               lAtLeft, lNoCntxtMnu ) CLASS TTextNum
 
    Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1628,7 +1624,7 @@ METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
               backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
               lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
               bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft )
+              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
 
    Return Self
 
@@ -1684,7 +1680,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                         lNoBorder, OnFocusPos, lDisabled, bValid, ;
                         date, numeric, inputmask, format, subclass, bAction, ;
                         aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, ;
-                        OnTextFilled, nInsType, lAtLeft )
+                        OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
 
    Local Self, lInsert
 
@@ -1733,7 +1729,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                 invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
                 lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
                 nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-                nInsType, lAtLeft )
+                nInsType, lAtLeft, lNoCntxtMnu )
    Else
       Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
       ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
@@ -1743,7 +1739,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
                 backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
                 lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
                 nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-                lAtLeft )
+                lAtLeft, lNoCntxtMnu )
    EndIf
 
    ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
