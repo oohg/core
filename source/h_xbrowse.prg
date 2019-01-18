@@ -1266,7 +1266,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 
 METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
 
-   Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam )
+   Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam ), aCellData
 
    If nNotify == NM_CLICK
       If ::lCheckBoxes
@@ -1288,7 +1288,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue > 0
+                     aCellData := { uValue, 0 }
+                  Else
+                     aCellData := ListView_ItemActivate( lParam )
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -4008,7 +4013,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  ::DoEventMouseCoords( ::OnClick, "CLICK" )
+                  If uValue > 0
+                     aCellData := { uValue, 0 }
+                  Else
+                     aCellData := ListView_ItemActivate( lParam )
+                  EndIf
+                  ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
                   ::NestedClick := .F.
                EndIf
             EndIf

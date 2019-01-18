@@ -97,7 +97,7 @@
       [ <invisible: INVISIBLE> ] ;
       [ <sort: SORT> ] ;
       [ <descending: DESCENDING> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+      [ <bffr: SINGLEBUFFER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckList(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
@@ -106,6 +106,8 @@
             <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <backcolor>, <fontcolor>, <.rtl.>, ;
             <.disabled.>, <.notabstop.>, <.invisible.>, <.sort.>, ;
-            <.descending.>, <aSelectedColors>, ;
-            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), <{click}> )
+            <.descending.>, <aSelectedColors>, ! <.bffr.>, <{click}> )
+
+#xtranslate CHECKLIST [ <x> ] DOUBLEBUFFER ;
+   => ;
+      CHECKLIST [ <x> ]

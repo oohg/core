@@ -130,7 +130,7 @@ STANDARD VERSION
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+      [ <bffr: SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -186,8 +186,7 @@ STANDARD VERSION
             <.disabled.>, <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, ;
             <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
-            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            ! <.bffr.>, ;
             IIF( #<focus> == "NOFOCUSRECT", .F., ;
             IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
@@ -265,7 +264,7 @@ SPLITBOX VERSION
       [ EDITKEYS <aEditKeys> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+      [ <bffr: SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <fixedcols: FIXEDCOLS> ] ;
@@ -321,8 +320,7 @@ SPLITBOX VERSION
             <.notabstop.>, <.invisible.>, ! <.noshowheaders.>, <{enter}>, ;
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, ;
             <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
-            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            ! <.bffr.>, ;
             IIF( #<focus> == "NOFOCUSRECT", .F., ;
             IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
@@ -344,3 +342,7 @@ SPLITBOX VERSION
 #command SET GRIDFIXEDCONTROLS OFF ;
    => ;
       _OOHG_GridFixedControls := .F.
+
+#xtranslate GRID [ <x> ] DOUBLEBUFFER ;
+   => ;
+      GRID [ <x> ]

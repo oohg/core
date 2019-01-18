@@ -143,7 +143,7 @@ STANDARD VERSION
       [ EDITKEYS <aEditKeys> ] ;
       [ <forcerefresh: FORCEREFRESH> ] ;
       [ <norefresh: NOREFRESH> ] ;
-      [ <bffr: DOUBLEBUFFER, SINGLEBUFFER> ] ;
+      [ <bffr: SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
       [ <sync: SYNCHRONIZED, UNSYNCHRONIZED> ] ;
@@ -200,8 +200,7 @@ STANDARD VERSION
             <{bWhenDel}>, <DelMsg>, <{onDelete}>, <aHeaderImages>, ;
             <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
             IIF( <.forcerefresh.>, 0, IIF( <.norefresh.>, 1, NIL ) ), ;
-            IIF( Upper( #<bffr> ) == "DOUBLEBUFFER", .T., ;
-            IIF( Upper( #<bffr> ) == "SINGLEBUFFER", .F., .T. ) ), ;
+            ! <.bffr.>, ;
             IIF( Upper( #<focus> ) == "NOFOCUSRECT", .F., ;
             IIF( Upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, IIF( Upper( #<sync> ) == "UNSYNCHRONIZED", .F., ;
@@ -243,3 +242,7 @@ STANDARD VERSION
 #command SET BROWSEFIXEDCONTROLS OFF ;
    => ;
       _OOHG_BrowseFixedControls := .F.
+
+#xtranslate BROWSE [ <x> ] DOUBLEBUFFER ;
+   => ;
+      BROWSE [ <x> ]
