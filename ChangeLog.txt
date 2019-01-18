@@ -12,6 +12,33 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-18 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\miniprint.ch
+     + Clauses NOWAIT, NOSIZE, OF and PARENT to
+       END PRINTDOC command.
+   * core\include\winprint.ch
+     - Clauses WAIT and NOSIZE from END DOC command because
+       they are the default ones.
+   * core\source\h_print.prg
+     + METHOD IsDocOpenX to CLASS TMiniPrint.
+     * METHOD InitX of CLASS TMiniPrint no longer creates the
+       public vars if they already exist.
+     + Parameters lWait and lSize to METHOD EndDocX of
+       CLASS TMiniPrint. When lWait is .F. the report won't pause
+       the execution until the preview is closed. Defaults to .T.
+       When lSize is .T. the user can redimension the preview
+       window. Defaults to .T.
+     * METHOD ReleaseX of CLASS TMiniPrint no longer releases
+       the public vars if the preview is still open.
+   * core\source\miniprint.prg
+     * FUNCTION _HMG_PRINTER_ShowPreview now receives three
+       parameters: cParent, lWait and lSize (default to NIL, .T.
+       and .T.). When lWait is .F. the preview window will
+       be activated with NOWAIT clause. When lSize is .T. the
+       preview window allows resizing.
+   ; This changes allow the simultaenous use of a MINIPRINT-based
+     TPrint object and an HBPRINTER-based TPrint object.
+
 2019-01-18 15:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      ! SET NAVIGATION EXTENDED is not working.
@@ -135,7 +162,7 @@
      + METHOD EndDoc of class TPRINTBASE and METHOD EndDocX of
        class THBPRINTER have two new parameters: lWait and
        lSize. When lWait is .F. the report won't pause the
-       execution until de preview is closed. When lSize is .T.
+       execution until the preview is closed. When lSize is .T.
        the user can redimension the preview window.
      * Various methods now return the current value of the
        related property. When there's no property associated
