@@ -3483,9 +3483,11 @@ METHOD DoEventMouseCoords( bBlock, cEventType, aParams ) CLASS TGrid
    aPos[ 1 ] -= GetWindowRow( ::hWnd )
    aPos[ 2 ] -= GetWindowCol( ::hWnd )
 
-   FOR i := 1 TO Len( aParams )
-      AAdd( aPos, aParams[ i ] )
-   NEXT i
+   IF HB_ISARRAY( aParams )
+      FOR i := 1 TO Len( aParams )
+         AAdd( aPos, aParams[ i ] )
+      NEXT i
+   ENDIF
 
    RETURN ::DoEvent( bBlock, cEventType, aPos )
 
