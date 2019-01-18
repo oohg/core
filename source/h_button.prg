@@ -776,7 +776,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITBUTTON )          /* FUNCTION InitButon( hWnd, cCaption, hMenu, nCol, nRow, nWidth, nHeight, lRtl, nStyle, nStyleEx ) -> hWnd */
+HB_FUNC( INITBUTTON )          /* FUNCTION InitButton( hWnd, cCaption, hMenu, nCol, nRow, nWidth, nHeight, lRtl, nStyle, nStyleEx ) -> hWnd */
 {
    HWND hbutton;
    int Style, StyleEx;
