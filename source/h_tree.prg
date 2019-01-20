@@ -2775,10 +2775,7 @@ HB_FUNC( TREEVIEW_SETCHECKSTATE )
  */
 HB_FUNC( TREEVIEW_GETIMAGELIST )
 {
-   HIMAGELIST himl = TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) );
-
-   hb_reta( 1 );
-   HB_STORNL3( (LONG_PTR) himl, -1, 1 );
+   HB_RETNL( (LONG_PTR) TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
 
 HB_FUNC( TREEVIEW_EDITLABEL )
