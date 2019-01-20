@@ -226,7 +226,6 @@ CLASS TForm FROM TWindow
 
    METHOD Events
    METHOD Events_Destroy
-   METHOD Events_NCDestroy
    METHOD Events_VScroll
    METHOD Events_HScroll
    METHOD HelpButton          SETGET
@@ -291,7 +290,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
 
    Return Self
 
-METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
+METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                 nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, FontName, FontSize, aRGB, cursor, ;
                 icon, noshow, gotfocus, lostfocus, scrollleft, scrollright, scrollup, scrolldown, maximizeprocedure, ;
                 minimizeprocedure, initprocedure, ReleaseProcedure, SizeProcedure, ClickProcedure, PaintProcedure, ;
@@ -300,11 +299,11 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
                 MoveProcedure, fontcolor ) CLASS TForm
 
-   Local Formhandle, aRet
+   Local FormHandle, aRet
 
    If _OOHG_GlobalRTL()
       lRtl := .T.
-   ElseIf !HB_IsLogical( lRtl )
+   ElseIf ! HB_IsLogical( lRtl )
       lRtl := .F.
    Endif
 
@@ -318,7 +317,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
    FormName := _OOHG_GetNullName( FormName )
 
    If _IsWindowDefined( FormName )
-      MsgOOHGError( "Window: " + FormName + " already defined. Program terminated." )
+      MsgOOHGError( "DEFINE WINDOW: " + FormName + " is already defined. Program terminated." )
    Endif
 
    If ! valtype( Caption ) $ "CM"
@@ -372,20 +371,26 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
       y := ::nRow
    EndIf
 
-   If nWindowType == TYPE_MDICLIENT
-      Formhandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, Parent, "MDICLIENT", nStyle, nStyleEx, lRtl )
-   Else
+   IF nWindowType == TYPE_MDICLIENT
+      FormHandle := InitWindowMDIClient( Caption, x, y, ::nWidth, ::nHeight, hParent, "MDICLIENT", nStyle, nStyleEx, lRtl )
+      IF ! ValidHandler( FormHandle )
+         MsgOOHGError( "DEFINE WINDOW: MDICLIENT initialization failed. Program terminated." )
+      ENDIF
+   ELSE
       UnRegisterWindow( FormName )
-      aRet := RegisterWindow( icon, FormName, aRGB, nWindowType )
-      If aRet[ 2 ]
-         MsgOOHGError( "Window " + FormName + " registration failed. Program terminated." )
-      EndIf
+      aRet := RegisterWindow( icon, FormName, aRGB, nWindowType )   // Len( FormName ) must be < 256
+      IF aRet[ 2 ]
+         MsgOOHGError( "DEFINE WINDOW: " + FormName + " registration failed with error " + LTrim( Str( _OOHG_GetLastError() ) ) + ". Program terminated." )
+      ENDIF
       ::BrushHandle := aRet[ 1 ]
-      Formhandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, Parent, FormName, nStyle, nStyleEx, lRtl )
-   EndIf
+      FormHandle := InitWindow( Caption, x, y, ::nWidth, ::nHeight, hParent, FormName, nStyle, nStyleEx, lRtl )
+      IF ! ValidHandler( FormHandle )
+         MsgOOHGError( "DEFINE WINDOW: " + FormName + " initialization failed with error " + LTrim( Str( _OOHG_GetLastError() ) ) + ". Program terminated." )
+      ENDIF
+   ENDIF
 
    If Valtype( cursor ) $ "CM"
-      SetWindowCursor( Formhandle , cursor )
+      SetWindowCursor( FormHandle , cursor )
    EndIf
 
    ::Register( FormHandle, FormName )
@@ -457,8 +462,8 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
    ::BackColor := aRGB
    ::AutoRelease := ! ( HB_IsLogical( NoAutoRelease ) .AND. NoAutoRelease )
 
-   If ! ::lInternal .AND. ValidHandler( Parent )
-      AADD( GetFormObjectByHandle( Parent ):aChildPopUp , Self )
+   If ! ::lInternal .AND. ValidHandler( hParent )
+      AADD( GetFormObjectByHandle( hParent ):aChildPopUp , Self )
    EndIf
 
    _PushEventInfo()
@@ -559,13 +564,13 @@ METHOD Hide( nFlags, nTime ) CLASS TForm
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
    If ::Active
-      MsgOOHGError( "Window: " + ::Name + " already active. Program terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: window " + ::Name + " is already active. Program terminated." )
    Endif
 
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
 
    If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
-      MsgOOHGError( "ACTIVATE WINDOW: activate windows within an 'on release' window procedure is not allowed. Program terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON RELEASE is not allowed. Program terminated." )
    Endif
 
    TForm_WindowStructureClosed( Self )
@@ -574,11 +579,11 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    // Endif
 
    If _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
-      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's GOTFOCUS event procedure. Program terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON GOTFOCUS is not allowed. Program terminated." )
    Endif
 
    If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
-      MsgOOHGError( "ACTIVATE WINDOW / Activate(): Not allowed in window's LOSTFOCUS event procedure. Program terminated." )
+      MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON LOSTFOCUS is not allowed. Program terminated." )
    Endif
 
    // Checks for non-stop window
@@ -640,14 +645,14 @@ METHOD MessageLoop() CLASS TForm
 
 METHOD Release() CLASS TForm
 
-   If ! ::lReleasing
-      If ! ::Active
-         MsgOOHGError( "Window: " + ::Name + " is not active. Program terminated." )
-      Endif
+   IF ! ::lReleasing
+      IF ! ::Active
+         MsgOOHGError( "WINDOW RELEASE: " + ::Name + " is not active. Program terminated." )
+      ENDIF
 
       _ReleaseWindowList( { Self } )
 
-      If ValidHandler( ::hWnd )
+      IF ValidHandler( ::hWnd )
          EnableWindow( ::hWnd )
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
       ELSE
@@ -655,7 +660,6 @@ METHOD Release() CLASS TForm
       ENDIF
 
       ::Events_Destroy()
-      ::Events_NCDestroy()
    ENDIF
 
    RETURN NIL
@@ -1095,7 +1099,7 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
    Local lRetVal := .F.
 
-   If ::lDestroyed
+   If ::lDisableDoEvent
       lRetVal := .F.
    ElseIf HB_IsBlock( bBlock )
       _PushEventInfo()
@@ -1112,74 +1116,68 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
 METHOD Events_Destroy() CLASS TForm
 
-   Local mVar
+   LOCAL mVar, i
+
+   IF ::lDestroyed
+      RETURN NIL
+   ENDIF
+   ::lDestroyed := .T.
 
    ::ReleaseAttached()
 
    // Any data must be destroyed... regardless FORM is active or not.
 
-   If ::oMenu != NIL
+   IF ::oMenu != NIL
       ::oMenu:Release()
-      ::oMenu := nil
-   EndIf
+      ::oMenu := NIL
+   ENDIF
 
    DeleteObject( ::hBackImage )
 
    // Update Form Index Variable
-   If ! Empty( ::Name )
+   IF ! Empty( ::Name )
       mVar := '_' + ::Name
-      if type( mVar ) != 'U'
-         __MVPUT( mVar , 0 )
-      EndIf
-   EndIf
+      IF Type( mVar ) != 'U'
+         __mvPut( mVar , 0 )
+         __mvXRelease( mVar )
+      ENDIF
+   ENDIF
 
    // Removes from container
-   If ::Container != NIL
+   IF ::Container != NIL
       ::Container:DeleteControl( Self )
-   EndIf
+   ENDIF
 
    // Removes from parent
-   If ::Parent != NIL
+   IF ::Parent != NIL
       ::Parent:DeleteControl( Self )
-   EndIf
+   ENDIF
 
    // Verify if window was multi-activated
-   If ::Active
+   IF ::Active
       ::ActivateCount[ 1 ]--
-      If ::ActivateCount[ 1 ] < 1
+      IF ::ActivateCount[ 1 ] < 1
          _MessageLoopEnd( ::ActivateCount[ 2 ] )
          ::ActivateCount[ 2 ] := NIL
          ::ActivateCount[ 3 ] := .T.
-      Endif
-   Endif
+      ENDIF
+   ENDIF
 
-   /*
-   We can´t remove hWnd from the arrays at this point
-   because we need to use GetFormObjectByHandle() to
-   process WM_NCDESTROY message. See ::Events_NCDestroy
-   and _OOHG_WndProcForm() function.
-
-   // Removes WINDOW from the array
-   i := Ascan( _OOHG_aFormhWnd, ::hWnd )
+   // Remove from the arrays
+   i := AScan( _OOHG_aFormhWnd, ::hWnd )
    IF i > 0
       _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, i )
       _OOHG_DeleteArrayItem( _OOHG_aFormObjects, i )
    ENDIF
-   */
 
    // Eliminates active modal
-   IF Len( _OOHG_ActiveModal ) != 0 .AND. ATAIL( _OOHG_ActiveModal ):hWnd == ::hWnd
+   IF Len( _OOHG_ActiveModal ) != 0 .AND. ATail( _OOHG_ActiveModal ):hWnd == ::hWnd
       _OOHG_DeleteArrayItem( _OOHG_ActiveModal, Len( _OOHG_ActiveModal ) )
    ENDIF
 
    ::Active := .F.
    ::Super:Release()
 
-   Return nil
-
-METHOD Events_NCDestroy CLASS TForm
-
-   Local i
    /*
     * UnRegisterWindow( ::Name )
     *
@@ -1191,13 +1189,7 @@ METHOD Events_NCDestroy CLASS TForm
     * remaining classes at the end of the application.
     */
 
-   i := aScan( _OOHG_aFormhWnd, ::hWnd )
-   If i > 0
-      _OOHG_DeleteArrayItem( _OOHG_aFormhWnd, i )
-      _OOHG_DeleteArrayItem( _OOHG_aFormObjects, i )
-   EndIf
-
-   Return Nil
+   RETURN NIL
 
 METHOD Events_VScroll( wParam ) CLASS TForm
 
@@ -1481,12 +1473,12 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       default:
-         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+//         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
          if( ! s_Events2 )
          {
             s_Events2 = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_TFORM_EVENTS2" ) );
          }
-         ReleaseMutex( _OOHG_GlobalMutex() );
+//         ReleaseMutex( _OOHG_GlobalMutex() );
          hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
@@ -1717,13 +1709,18 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          ::OnHideFocusManagement()
       ENDIF
 
+      DestroyWindow( ::hWnd )
+
+      RETURN 0
+
       /*
        * This function must return NIL after processing WM_CLOSE so the
        * OS can do it's default processing. This processing ends with
-       * (a) the posting of a WM_DESTROY message to the queue (will be
+       * (a) posting a WM_DESTROY message to the queue (will be
        * processed by this same function), immediately followed by
-       * (b) the sending of a WM_NCDESTROY message to the form's
-       * WindowProc (redirected to _OOHG_WndProcForm()).
+       * (b) sending a WM_NCDESTROY message to the form's WindowProc,
+       * (there's no need to process it because all child control are
+       * already released).
        */
 
    case nMsg == WM_DESTROY
@@ -1733,6 +1730,8 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
        * but only if ReleaseAllWindows() is not executed
        */
       ::Events_Destroy()
+
+      RETURN 0
 
    otherwise
 
@@ -2832,7 +2831,7 @@ FUNCTION _ReleaseWindowList( aWindows )
             ENDIF
 
             // Disable form's doevent
-            oWnd:lDestroyed := .T.
+            oWnd:lDisableDoEvent := .T.
 
             // Prepare all child forms and controls to be destroyed
             oWnd:PreRelease()
@@ -2865,7 +2864,7 @@ FUNCTION _ReleaseWindowList( aWindows )
             ENDIF
 
                // Disable form's doevent
-            oWnd:lDestroyed := .T.
+            oWnd:lDisableDoEvent := .T.
 
                // Prepare all child forms and controls to be destroyed
             oWnd:PreRelease()
@@ -2889,7 +2888,6 @@ Function SearchParentWindow( lInternal )
    uParent := nil
 
    If lInternal
-//_OOHG_CallDump(0)
       If LEN( _OOHG_ActiveForm ) > 0
          uParent := ATAIL( _OOHG_ActiveForm )
       ELSEIF _OOHG_ActiveFrame # NIL
@@ -2900,41 +2898,33 @@ Function SearchParentWindow( lInternal )
 
       // Checks _OOHG_UserWindow
       If _OOHG_UserWindow != NIL .AND. ValidHandler( _OOHG_UserWindow:hWnd ) .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
-//_OOHG_CallDump(1)
          uParent := _OOHG_UserWindow
       Else
          // Checks _OOHG_ActiveModal
          nPos := RASCAN( _OOHG_ActiveModal, { |o| ValidHandler( o:hWnd ) .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
          If nPos > 0
-//_OOHG_CallDump(2)
             uParent := _OOHG_ActiveModal[ nPos ]
          Else
             // Checks any active window
             nPos := RASCAN( _OOHG_aFormObjects, { |o| o:Active .AND. ValidHandler( o:hWnd ) .AND. ! o:lInternal } )
             If nPos > 0
-//_OOHG_CallDump(3)
                uParent := _OOHG_aFormObjects[ nPos ]
             Else
                // Checks _OOHG_ActiveForm
                nPos := RASCAN( _OOHG_ActiveForm, { |o| ValidHandler( o:hWnd ) .AND. ! o:lInternal .AND. ascan( _OOHG_aFormhWnd, o:hWnd ) > 0 } )
                If nPos > 0
-//_OOHG_CallDump(4)
                   uParent := _OOHG_ActiveForm[ nPos ]
                Else
-//_OOHG_CallDump(5)
                   uParent := GetFormObjectByHandle( GetActiveWindow() )
                   If ! ValidHandler( uParent:hWnd ) .OR. ! uParent:Active
                      If _OOHG_Main != nil
-//_OOHG_CallDump(6)
                         uParent := _OOHG_Main
                      Else
-//_OOHG_CallDump(7)
                         // Not mandatory MAIN
                         // NO PARENT DETECTED!
                         uParent := nil
                      EndIf
                   EndIf
-//_OOHG_CallDump(8)
                EndIf
             Endif
          Endif
@@ -3195,12 +3185,6 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
-   if( uiMsg == WM_NCDESTROY )
-   {
-      _OOHG_Send( pSelf, s_Events_NCDestroy );
-      hb_vmSend( 0 );
-   }
-
    hb_itemReturn( pSave );
    hb_itemRelease( pSave );
    hb_itemRelease( pSelf );
@@ -3321,7 +3305,7 @@ HB_FUNC( INITDUMMY )
 HB_FUNC( INITWINDOW )
 {
    HWND hwnd;
-   int Style, StyleEx;
+   INT Style, StyleEx;
 
    Style   = hb_parni( 8 );
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
@@ -3329,22 +3313,13 @@ HB_FUNC( INITWINDOW )
    hwnd = CreateWindowEx( StyleEx, hb_parc( 7 ), hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), NULL );
-
-   if( ! hwnd )
-   {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), (int) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      return;
-   }
-
    HWNDret( hwnd );
 }
 
 HB_FUNC( INITWINDOWMDICLIENT )
 {
    HWND hwnd;
-   int Style, StyleEx;
+   INT Style, StyleEx;
    CLIENTCREATESTRUCT ccs;
 
    Style   = hb_parni( 8 );
@@ -3356,14 +3331,6 @@ HB_FUNC( INITWINDOWMDICLIENT )
    hwnd = CreateWindowEx( StyleEx, "MDICLIENT", hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
-
-   if( ! hwnd )
-   {
-      char cBuffError[ 1000 ];
-      sprintf( cBuffError, "Window %s Creation Failed! Error %i", hb_parc( 7 ), (int) GetLastError() );
-      MessageBox( 0, cBuffError, "Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL );
-      return;
-   }
 
    HWNDret( hwnd );
 }

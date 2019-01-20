@@ -358,14 +358,13 @@ BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, U
 #define s_GridSelectedColors    75
 #define s_TEdit                 76
 #define s_oBkGrnd               77
-#define s_Events_NCDestroy      78
-#define s_aExcludeArea          79
-#define s_CompareItems          80
-#define s_Events_Drag           81
-#define s_Events_MenuHilited    82
-#define s_Events_InitMenuPopUp  83
-#define s_oMenu                 84
-#define s_LastSymbol            85
+#define s_aExcludeArea          78
+#define s_CompareItems          79
+#define s_Events_Drag           80
+#define s_Events_MenuHilited    81
+#define s_Events_InitMenuPopUp  82
+#define s_oMenu                 83
+#define s_LastSymbol            84
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */
