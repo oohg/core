@@ -345,6 +345,9 @@ METHOD Release() CLASS TPRINTBASE
       ::ReleaseX()
       ::nStage := 0
    ENDIF
+   IF HB_ISOBJECT( ::oWinReport )
+      ::oWinReport:Release()
+   ENDIF
 
    RETURN .T.
 
@@ -450,7 +453,7 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
             HEIGHT ::oWinReport:ClientHeight - 10
 
          @ 45, 30 IMAGE 0 ;
-            PICTURE 'zzz_printicon' ;
+            PICTURE 'ZZZ_PRINTICON' ;
             WIDTH 25 ;
             HEIGHT 30 ;
             STRETCH
@@ -4366,6 +4369,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD PrintLineX
    METHOD PrintRectangleX
    METHOD PrintRoundRectangleX
+   METHOD ReleaseX
    METHOD SelPrinterX
 
    ENDCLASS
@@ -4624,6 +4628,13 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
 
    // We can't have a rounded rectangle so we make a rectangular one
    ::PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor )
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ReleaseX() CLASS TPDFPRINT
+
+   ::oPdf := NIL
 
    RETURN .T.
 
