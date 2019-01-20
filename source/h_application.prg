@@ -2030,7 +2030,9 @@ STATIC FUNCTION GetCommandLineArgs
 #endif
 
 #include <windows.h>
+#include <commctrl.h>
 #include <hbapi.h>
+#include "oohg.h"
 
 static HANDLE hGlobalMutex = NULL;
 
