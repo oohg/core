@@ -1328,7 +1328,6 @@ CLASS TControl FROM TWindow
    METHOD Events_MeasureItem BLOCK { || NIL }
    METHOD Cursor             SETGET
 
-
    ENDCLASS
 
 METHOD Cursor( hCursor ) CLASS TControl
@@ -1609,21 +1608,22 @@ METHOD DelFromCtrlsArrays() CLASS TControl
 
 METHOD Release() CLASS TControl
 
-   Local mVar, oCont
+   LOCAL mVar, oCont
 
-   // Erases events (for avoid wrong re-usage)
-   ::OnClick        := nil
-   ::OnGotFocus     := nil
-   ::OnLostFocus    := nil
-   ::OnMouseDrag    := nil
-   ::OnMouseMove    := nil
-   ::OnChange       := nil
-   ::OnDblClick     := nil
-   ::OnRClick       := nil
-   ::OnMClick       := nil
-   ::OnRDblClick    := nil
-   ::OnMDblClick    := nil
-   ::OnEnter        := nil
+   // Erases events to avoid wrong re-usage
+   ::OnChange       := NIL
+   ::OnClick        := NIL
+   ::OnDblClick     := NIL
+   ::OnDropFiles    := NIL
+   ::OnEnter        := NIL
+   ::OnGotFocus     := NIL
+   ::OnLostFocus    := NIL
+   ::OnMClick       := NIL
+   ::OnMDblClick    := NIL
+   ::OnMouseDrag    := NIL
+   ::OnMouseMove    := NIL
+   ::OnRClick       := NIL
+   ::OnRDblClick    := NIL
 
    ::ReleaseAttached()
 
@@ -1633,7 +1633,7 @@ METHOD Release() CLASS TControl
    ENDIF
 
    // Remove from container
-   IF ::Container != nil
+   IF ::Container != NIL
       ::Container:DeleteControl( Self )
    ENDIF
 
@@ -1649,9 +1649,10 @@ METHOD Release() CLASS TControl
    DeleteObject( ::AuxHandle )
 
    mVar := '_' + ::Parent:Name + '_' + ::Name
-   If type ( mVar ) != 'U'
-      __MVPUT( mVar , 0 )
-   EndIf
+   IF Type ( mVar ) != 'U'
+      __mvPut( mVar , 0 )
+      __mvXRelease( mVar )
+   ENDIF
 
    Return ::Super:Release()
 
@@ -2507,7 +2508,7 @@ PROCEDURE _OOHG_Init_C_Vars_Controls()
  */
 
    TControl()
-   _OOHG_Init_C_Vars_Controls_C_Side( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
+   _OOHG_INIT_C_VARS_CONTROLS_C_SIDE( _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds )
 
    RETURN
 
