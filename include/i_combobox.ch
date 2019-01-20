@@ -85,8 +85,8 @@ STANDARD VERSION
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy03: ONCHANGE, ON CHANGE> <changeprocedure> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
-      [ ON DISPLAYCHANGE <displaychng> ] ;
+      [ <dummy05: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy06: ONDISPLAYCHANGE, ON DISPLAYCHANGE> <displaychng> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -104,14 +104,14 @@ STANDARD VERSION
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ LISTWIDTH <listwidth> ] ;
-      [ ON LISTDISPLAY <listdisplay> ] ;
-      [ ON LISTCLOSE <listclose> ] ;
+      [ <dummy07: ONLISTDISPLAY, ON LISTDISPLAY> <listdisplay> ] ;
+      [ <dummy08: ONLISTCLOSE, ON LISTCLOSE> <listclose> ] ;
       [ <delay: DELAYEDLOAD> ] ;
       [ <incremental: INCREMENTAL> ] ;
       [ <winsize: INTEGRALHEIGHT> ] ;
       [ <rfrsh: REFRESH, NOREFRESH> ] ;
       [ SOURCEORDER <sourceorder> ] ;
-      [ ON REFRESH <refresh> ] ;
+      [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
@@ -152,10 +152,10 @@ SPLITBOX VERSION
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ ON CHANGE <changeprocedure> ] ;
+      [ <dummy03: ONCHANGE, ON CHANGE> <changeprocedure> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
-      [ ON DISPLAYCHANGE <displaychng> ] ;
+      [ <dummy05: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy06: ONDISPLAYCHANGE, ON DISPLAYCHANGE> <displaychng> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ GRIPPERTEXT <grippertext> ] ;
@@ -167,20 +167,22 @@ SPLITBOX VERSION
       [ <sort: SORT> ] ;
       [ <rtl: RTL> ] ;
       [ TEXTHEIGHT <textheight> ] ;
+      [ EDITHEIGHT <editheight> ] ;
+      [ OPTIONSHEIGHT <optheight> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <firstitem: FIRSTITEM> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
       [ LISTWIDTH <listwidth> ] ;
-      [ ON LISTDISPLAY <listdisplay> ] ;
-      [ ON LISTCLOSE <listclose> ] ;
+      [ <dummy07: ONLISTDISPLAY, ON LISTDISPLAY> <listdisplay> ] ;
+      [ <dummy08: ONLISTCLOSE, ON LISTCLOSE> <listclose> ] ;
       [ <delay: DELAYEDLOAD> ] ;
       [ <incremental: INCREMENTAL> ] ;
       [ <winsize: INTEGRALHEIGHT> ] ;
       [ <rfrsh: REFRESH, NOREFRESH> ] ;
       [ SOURCEORDER <sourceorder> ] ;
-      [ ON REFRESH <refresh> ] ;
+      [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
@@ -195,7 +197,8 @@ SPLITBOX VERSION
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
-            <(sourceorder)>, <{refresh}>, <nLapse>, <max> )
+            <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
+            <optheight> )
 
 #command SET COMBOREFRESH ON ;
    => ;
