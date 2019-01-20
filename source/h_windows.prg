@@ -116,6 +116,7 @@ CLASS TWindow
    DATA lAdjust                   INIT .T.
    DATA lControlsAsProperties     INIT .F.
    DATA lDestroyed                INIT .F.
+   DATA lDisableDoEvent           INIT .F.
    DATA lEnabled                  INIT .T.
    DATA lFixFont                  INIT .F.
    DATA lfixwidth                 INIT .F.
@@ -1428,10 +1429,10 @@ METHOD Line( nRow, nCol, nToRow, nToCol, nWidth, aColor, nStyle ) CLASS TWindow
 
    DEFAULT aColor TO {0, 0, 0}
    DEFAULT nWidth TO 1
-   ::GetDc()
+   ::GetDC()
    C_LINE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], ;
       aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1439,9 +1440,9 @@ METHOD Line( nRow, nCol, nToRow, nToCol, nWidth, aColor, nStyle ) CLASS TWindow
 METHOD Fill( nRow, nCol, nToRow, nToCol, aColor ) CLASS TWindow
 
    DEFAULT aColor TO {0, 0, 0}
-   ::GetDc()
+   ::GetDC()
     C_FILL( ::hDC, nRow, nCol, nToRow, nToCol, aColor[ 1 ], aColor[ 2 ], aColor[ 3 ], .T. )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1460,11 +1461,11 @@ METHOD Box( nRow, nCol, nToRow, nToCol, nWidth, aColor, nStyle, nBrStyle, aBrCol
       lBrColor := .T.
    ENDIF
 
-   ::GetDc()
+   ::GetDC()
    C_RECTANGLE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
       aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), nBrStyle, ;
       lBrColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1485,11 +1486,11 @@ METHOD RoundBox( nRow, nCol, nToRow, nToCol, nWidth, aColor, lStyle, nStyle, nBr
       lBrushColor := .T.
    ENDIF
 
-   ::GetDc()
+   ::GetDC()
     C_ROUNDRECTANGLE( ::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
        aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
        nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1510,11 +1511,11 @@ METHOD Ellipse( nRow, nCol, nToRow, nToCol, nWidth, aColor, lStyle, nStyle, nBrS
       lBrushColor := .T.
    ENDIF
 
-   ::GetDc()
+   ::GetDC()
     C_ELLIPSE(::hDC, nRow, nCol, nToRow, nToCol, nWidth, aColor[ 1 ], aColor[ 2 ], ;
        aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
        nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1523,10 +1524,10 @@ METHOD Arc( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle )
 
    DEFAULT aColor TO {0, 0, 0}
    DEFAULT nWidth TO 1
-   ::GetDc()
+   ::GetDC()
    C_ARC( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
       aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1535,10 +1536,10 @@ METHOD ArcTo( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle
 
    DEFAULT aColor TO {0, 0, 0}
    DEFAULT nWidth TO 1
-   ::GetDc()
+   ::GetDC()
    C_ARCTO( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
       aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1557,11 +1558,11 @@ METHOD Chord( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, nStyle
       lBrushColor := .T.
    ENDIF
 
-   ::GetDc()
+   ::GetDC()
    C_CHORD( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[1], ;
       aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
       nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -1582,11 +1583,11 @@ METHOD Pie( nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor, lStyle, 
       lBrushColor := .T.
    ENDIF
 
-   ::GetDc()
+   ::GetDC()
     C_PIE( ::hDC, nRow, nCol, nToRow, nToCol, x1, y1, x2, y2, nWidth, aColor[ 1 ], ;
        aColor[ 2 ], aColor[ 3 ], .T., .T., ! Empty( nStyle ), nStyle, ! Empty( nBrStyle ), ;
       nBrStyle, lBrushColor, aBrColor[ 1 ], aBrColor[ 2 ], aBrColor[ 3 ] )
-   ::ReleaseDc()
+   ::ReleaseDC()
 
    RETURN NIL
 
@@ -2143,13 +2144,13 @@ VOID _OOHG_SetMouseCoords( PHB_ITEM pSelf, INT iCol, INT iRow )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_SETMOUSECOORDS )
+HB_FUNC( _OOHG_SETMOUSECOORDS )          /* FUNCTION _OOHG_SetmouseCoords( nCol, nRow ) -> NIL */
 {
    _OOHG_SetMouseCoords( ( PHB_ITEM ) hb_param( 1, HB_IT_ARRAY ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_SETHWND )
+HB_FUNC_STATIC( TWINDOW_SETHWND )          /* METHOD SethWnd( hWnd ) CLASS TWindow -> hWnd */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2163,17 +2164,14 @@ HB_FUNC_STATIC( TWINDOW_SETHWND )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_RELEASE )
+HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    // ImageList
-   if( ValidHandler( oSelf->ImageList ) )
-   {
-      ImageList_Destroy( oSelf->ImageList );
-      oSelf->ImageList = 0;
-   }
+   ImageList_Destroy( oSelf->ImageList );
+   oSelf->ImageList = NULL;
 
    // Auxiliar Buffer
    if( oSelf->AuxBuffer )
@@ -2184,11 +2182,12 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
    }
 
    // Brush handle
-   if( ValidHandler( oSelf->BrushHandle ) )
-   {
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = NULL;
-   }
+   DeleteObject( oSelf->BrushHandle );
+   oSelf->BrushHandle = NULL;
+
+   // Font handle
+   DeleteObject( oSelf->hFontHandle );
+   oSelf->BrushHandle = NULL;
 
    // Context menu
    _OOHG_Send( pSelf, s_ContextMenu );
@@ -2210,7 +2209,7 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_STARTINFO )
+HB_FUNC_STATIC( TWINDOW_STARTINFO )          /* METHOD StartInfo( hWnd ) CLASS TWindow -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2226,7 +2225,7 @@ HB_FUNC_STATIC( TWINDOW_STARTINFO )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_SETFOCUS )
+HB_FUNC_STATIC( TWINDOW_SETFOCUS )          /* METHOD SetFocus( hWnd ) CLASS TWindow -> Self */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2244,7 +2243,7 @@ HB_FUNC_STATIC( TWINDOW_SETFOCUS )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_IMAGELIST )
+HB_FUNC_STATIC( TWINDOW_IMAGELIST )          /* METHOD Imagelist( handle ) CLASS TWindow -> handle */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2253,18 +2252,18 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )
    {
       HIMAGELIST hImageList = ( HIMAGELIST ) HB_PARNL( 1 );
 
-      if( ValidHandler( oSelf->ImageList ) )
+      if( oSelf->ImageList )
       {
          ImageList_Destroy( oSelf->ImageList );
       }
-      oSelf->ImageList = ValidHandler( hImageList ) ? hImageList : 0;
+      oSelf->ImageList = hImageList;
    }
 
-   HWNDret( oSelf->ImageList );
+   HB_RETNL( ( LONG_PTR ) oSelf->ImageList );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
+HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )          /* METHOD BrushHandle( hBrush ) CLASS TWindow -> hBrush */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2277,14 +2276,14 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )
       {
          DeleteObject( oSelf->BrushHandle );
       }
-      oSelf->BrushHandle = ValidHandler( hBrush ) ? hBrush : 0;
+      oSelf->BrushHandle = hBrush;
    }
 
-   HWNDret( oSelf->BrushHandle );
+   HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
+HB_FUNC_STATIC( TWINDOW_FONTHANDLE )          /* METHOD FontHandle( hFont ) CLASS TWindow -> hFont */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2297,14 +2296,14 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )
       {
          DeleteObject( oSelf->hFontHandle );
       }
-      oSelf->hFontHandle = ValidHandler( hFont ) ? hFont : 0;
+      oSelf->hFontHandle = hFont;
    }
 
-   HWNDret( oSelf->hFontHandle );
+   HB_RETNL( ( LONG_PTR ) oSelf->hFontHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
+HB_FUNC_STATIC( TWINDOW_FONTCOLOR )          /* METHOD FontColor( uColor ) CLASS TWindow -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2321,7 +2320,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )
+HB_FUNC_STATIC( TWINDOW_FONTCOLORCODE )          /* METHOD FontColor( uColor ) CLASS TWindow -> nColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2359,7 +2358,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )
+HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )          /* METHOD BackColorCode( uColor ) CLASS TWindow -> nColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2380,7 +2379,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORCODE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
+HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )          /* METHOD FontColorSelected( uColor ) CLASS TWindow -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2397,7 +2396,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
+HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )          /* METHOD BackColorSelected( uColor ) CLASS TWindow -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2414,7 +2413,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_BACKBITMAP )
+HB_FUNC_STATIC( TWINDOW_BACKBITMAP )          /* METHOD BackBitmap( hBitmap ) CLASS TWindow -> hBrush */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2430,11 +2429,11 @@ HB_FUNC_STATIC( TWINDOW_BACKBITMAP )
       oSelf->BrushHandle = CreatePatternBrush( hBitMap );
    }
 
-   HWNDret( oSelf->BrushHandle );
+   HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_CAPTION )
+HB_FUNC_STATIC( TWINDOW_CAPTION )          /* METHOD Caption( cCaption ) CLASS TWindow -> cCaption */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2454,7 +2453,7 @@ HB_FUNC_STATIC( TWINDOW_CAPTION )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
+HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )          /* METHOD AcceptFiles( lOnOff ) CLASS TWindow -> lOnOff */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -2470,16 +2469,16 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static UINT _OOHG_ListBoxDragNotification = 0;            // It's thread safe because is set only once.
 
-HB_FUNC( _GETDDLMESSAGE )
+HB_FUNC( _GETDDLMESSAGE )          /* FUNCTION _GetDDLMessage() -> NIL */
 {
    if( ! _OOHG_ListBoxDragNotification )
    {
-      _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
+      _OOHG_ListBoxDragNotification = ( UINT ) RegisterWindowMessage( DRAGLISTMSGSTRING );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow
+HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow -> nRet */
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -2868,7 +2867,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( DISABLEVISUALSTYLE )
+HB_FUNC( DISABLEVISUALSTYLE )          /* FUNCTION DisableVisualStyle() -> lSuccess */
 {
    CALL_SETWINDOWTHEME dwSetWindowTheme;
    HMODULE hInstDLL;
@@ -2890,7 +2889,8 @@ HB_FUNC( DISABLEVISUALSTYLE )
    hb_retl( bRet );
 }
 
-HB_FUNC( _OOHG_HEX )   // nNum, nDigits
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_HEX )          /* FUNCTION _OOHG_Hex( nNum, nDigits ) -> cHexNum */
 {
    CHAR cLine[ 50 ], cBuffer[ 50 ];
    UINT iNum;
@@ -2934,7 +2934,7 @@ HB_FUNC( _OOHG_HEX )   // nNum, nDigits
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( ISXPTHEMEACTIVE )
+HB_FUNC( ISXPTHEMEACTIVE )          /* FUNCTION IsXPThemeActive() -> lRet */
 {
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
@@ -2967,7 +2967,7 @@ HB_FUNC( ISXPTHEMEACTIVE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( ISAPPTHEMED )
+HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
 {
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
@@ -3000,7 +3000,7 @@ HB_FUNC( ISAPPTHEMED )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETCOMCTL32VERSION )
+HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
 {
    INT iResult = 0;
    HMODULE hInstDLL;
@@ -3028,7 +3028,7 @@ HB_FUNC( GETCOMCTL32VERSION )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_EVAL )
+HB_FUNC( _OOHG_EVAL )          /* FUNCTION _OOHG_Eval( bCodeblock ) -> uRet */
 {
    if( HB_ISBLOCK( 1 ) )
    {
@@ -3041,7 +3041,7 @@ HB_FUNC( _OOHG_EVAL )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_EVAL_ARRAY )
+HB_FUNC( _OOHG_EVAL_ARRAY )          /* FUNCTION _OOHG_Eval_Array( bCodeblock, aParams ) -> uRet */
 {
    static PHB_SYMB s_Eval = 0;
 
@@ -3079,7 +3079,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
+HB_FUNC( _OOHG_SHOWCONTEXTMENUS )          /* FUNCTION _OOHG_ShowContextMenus( lOnOff ) -> lOnOff */
 {
    if( HB_ISLOG( 1 ) )
    {
@@ -3089,7 +3089,7 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_GLOBALRTL )
+HB_FUNC( _OOHG_GLOBALRTL )          /* FUNCTION _OOHG_GlobalRTL( lOnOff ) -> lOnOff */
 {
    static INT _OOHG_GlobalRTL = FALSE;             // TRUE forces RTL functionality on all forms and controls
 
@@ -3105,7 +3105,7 @@ HB_FUNC( _OOHG_GLOBALRTL )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_NESTEDSAMEEVENT )
+HB_FUNC( _OOHG_NESTEDSAMEEVENT )          /* FUNCTION _OOHG_NestedSameEvent( lOnOff ) -> lOnOff */
 {
    if( HB_ISLOG( 1 ) )
    {
@@ -3115,7 +3115,7 @@ HB_FUNC( _OOHG_NESTEDSAMEEVENT )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( VALIDHANDLER )
+HB_FUNC( VALIDHANDLER )          /* FUNCTION ValidHandler( hWnd ) -> lValid */
 {
    HWND hWnd;
    hWnd = HWNDparam( 1 );
@@ -3123,19 +3123,19 @@ HB_FUNC( VALIDHANDLER )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_GETMOUSECOL )
+HB_FUNC( _OOHG_GETMOUSECOL )          /* FUNCTION _OOHG_GetMouseRow() -> nCol */
 {
    hb_retni( _OOHG_MouseCol );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_GETMOUSEROW )
+HB_FUNC( _OOHG_GETMOUSEROW )          /* FUNCTION _OOHG_GetMouseRow() -> nRow */
 {
    hb_retni( _OOHG_MouseRow );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_LINE )
+HB_FUNC( C_LINE )          /* FUNCTION C_Line( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3205,7 +3205,7 @@ HB_FUNC( C_LINE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_FILL )
+HB_FUNC( C_FILL )          /* FUNCTION C_Fill( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3258,7 +3258,7 @@ HB_FUNC( C_FILL )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_RECTANGLE )
+HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3382,7 +3382,7 @@ HB_FUNC( C_RECTANGLE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_ROUNDRECTANGLE )
+HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3509,7 +3509,7 @@ HB_FUNC( C_ROUNDRECTANGLE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_ELLIPSE )
+HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3633,7 +3633,7 @@ HB_FUNC( C_ELLIPSE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_ARC )
+HB_FUNC( C_ARC )          /* FUNCTION C_Arc( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3707,7 +3707,7 @@ HB_FUNC( C_ARC )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_ARCTO )
+HB_FUNC( C_ARCTO )          /* FUNCTION C_ArcTo( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3781,7 +3781,7 @@ HB_FUNC( C_ARCTO )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_PIE )
+HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
@@ -3906,7 +3906,7 @@ HB_FUNC( C_PIE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_POLYBEZIER )
+HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
 {
    // 1: hDC
    // 2: aPy
@@ -3977,7 +3977,7 @@ HB_FUNC( C_POLYBEZIER )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_POLYBEZIERTO )
+HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
 {
    // 1: hDC
    // 2: aPy
@@ -4048,7 +4048,7 @@ HB_FUNC( C_POLYBEZIERTO )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_POLYGON )
+HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
 {
    // 1: hDC
    // 2: aPy
@@ -4190,7 +4190,7 @@ HB_FUNC( C_POLYGON )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_CHORD )
+HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
 {
    // 1: hDC
    // 2: y
