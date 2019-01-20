@@ -12,6 +12,56 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-20 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * The case of some functions.
+
+2019-01-20 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+     ! Return value of function TreeView_GetImageList.
+
+2019-01-20 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * DATA lDestroyed was renamed to DATA lDisableDoEvent.
+     + DATA lDestroyed.
+     * Some format.
+
+2019-01-20 20:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! Missing release of "printing..." window.
+     + METHOD ReleaseX to TPDFPRINT (not needed but for clarity).
+
+2019-01-20 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     ! Missing event at DelFromCtrlsArrays.
+     * Some format.
+     + Public control's memvars are now released at control's
+       release after setting them to zero.
+
+2019-01-20 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     + Missing include files at C-level.
+
+2019-01-20 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+   * core\source\c_controlmisc.prg
+     - Events_NCDestroy because it's unnecessary.
+   * core\source\h_form.prg
+     - Events_NCDestroy because it's unnecessary.
+     * The code for app exiting in case the window initialization
+       fails was moved to PRG level to generate an entry at the
+       errors log and enable a more ordered exit.
+     + Public control's memvars are now released at form's
+       release after setting them to zero.
+     - Debugging code.
+     * Some format.
+
+2019-01-20 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_combobox.ch
+      + Missing clauses ONCHANGE, ONDISPLAYCHANGE, ONLISTDISPLAY,
+        ONLISTCLOSE and ONREFRESH.
+      + Missing parameters to splitbox version.
+
 2019-01-18 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\miniprint.ch
      + Clauses NOWAIT, NOSIZE, OF and PARENT to
