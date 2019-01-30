@@ -84,7 +84,7 @@
       [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON TEXTFILLED <textfilled> ] ;
+      [ <dummy05: ONTEXTFILLED, ON TEXTFILLED> <textfilled> ] ;
       [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ <RightAlign: RIGHTALIGN> ] ;
       [ <centeralign: CENTERALIGN> ] ;
