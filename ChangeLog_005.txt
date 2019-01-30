@@ -779,13 +779,13 @@
        which case defaults to WINDRAW.
        Those who do not want to change their sources must include
        this pre-processor directives:
-       #xtranslate BUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate BUTTON [ <x> ] THEMED => BUTTON [ <x> ] OOHGDRAW
        #xtranslate BUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
-       #xtranslate CHECKBUTTON [ <x> ] THEMED => BUTTON [ <x> ]
+       #xtranslate CHECKBUTTON [ <x> ] THEMED => BUTTON [ <x> ] OOHGDRAW
        #xtranslate CHECKBUTTON [ <x> ] NOTHEME => BUTTON [ <x> ] WINDRAW
-       #xtranslate CHECKBOX [ <x> ] THEMED => CHECKBOX [ <x> ]
+       #xtranslate CHECKBOX [ <x> ] THEMED => CHECKBOX [ <x> ] OOHGDRAW
        #xtranslate CHECKBOX [ <x> ] NOTHEME => CHECKBOX [ <x> ] WINDRAW
-       #xtranslate RADIOGROUP [ <x> ] THEMED => RADIOGROUP [ <x> ]
+       #xtranslate RADIOGROUP [ <x> ] THEMED => RADIOGROUP [ <x> ] OOHGDRAW
        #xtranslate RADIOGROUP [ <x> ] NOTHEME => RADIOGROUP [ <x> ] WINDRAW
        #translate THEMED <themed> => OOHGDRAW <themed>
        #translate NOTHEME <notheme> => WINDRAW <notheme>
