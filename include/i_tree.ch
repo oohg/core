@@ -104,7 +104,7 @@
       [ <drop: ENABLEDROP> ] ;
       [ TARGET <aTarget> ] ;
       [ <single: SINGLEEXPAND> ] ;
-      [ <noborder: BORDERLESS> ] ;
+      [ <noborder: BORDERLESS, NOBORDER> ] ;
       [ ON LABELEDIT <labeledit> ] ;
       [ VALID <valid> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
@@ -167,7 +167,7 @@
       [ <drop: ENABLEDROP> ] ;
       [ TARGET <aTarget> ] ;
       [ <single: SINGLEEXPAND> ] ;
-      [ <noborder: BORDERLESS> ] ;
+      [ <noborder: BORDERLESS, NOBORDER> ] ;
       [ ON LABELEDIT <labeledit> ] ;
       [ VALID <valid> ] ;
       [ ON CHECKCHANGE <checkchange> ] ;
