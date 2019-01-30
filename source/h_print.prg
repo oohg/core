@@ -1204,6 +1204,7 @@ METHOD BeginDocX() CLASS TMINIPRINT
 METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
 
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
+   ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .T.
    IF lSize
       IF lWait
          END PRINTDOC
@@ -2152,6 +2153,7 @@ METHOD IsDocOpenX() CLASS THBPRINTER
 METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
 
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
+   ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .F.
    IF lSize
       IF lWait
          END DOC SIZE
