@@ -63,7 +63,7 @@
 #xcommand @ <row>, <col> BUTTON <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
+      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
       [ FONT <font> ] ;
@@ -76,7 +76,7 @@
       [ <flat: FLAT> ] ;
       [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy4: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ ON MOUSEMOVE <onmousemove> ] ;
+      [ <dummy5: ONMOUSEMOVE, ON MOUSEMOVE> <onmousemove> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -85,13 +85,13 @@
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ CAPTION <caption> ] ;
-      [ <dummy5: PICTURE, ICON> <bitmap> ] ;
+      [ <dummy6: PICTURE, ICON> <bitmap> ] ;
       [ BUFFER <buffer> ] ;
       [ HBITMAP <hbitmap> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <stretch: STRETCH> ] ;
       [ <cancel: CANCEL> ] ;
-      [ [ <dummy6: IMAGEALIGN> ] <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
+      [ [ <dummy7: IMAGEALIGN> ] <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aimagemargin> ] ;
@@ -163,8 +163,8 @@
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aimagemargin> ] ;
       [ <fitimg: FITIMG> ] ;
-      [ ON MOUSEMOVE <onmousemove> ] ;
-      [ [ <dummy6: IMAGEALIGN> ] <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
+      [ <dummy6: ONMOUSEMOVE, ON MOUSEMOVE> <onmousemove> ] ;
+      [ [ <dummy7: IMAGEALIGN> ] <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <flat: FLAT> ] ;
       [ <nohotlight: NOHOTLIGHT> ] ;
