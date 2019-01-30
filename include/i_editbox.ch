@@ -97,8 +97,10 @@ STANDARD VERSION
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ <disabled: DISABLED> ] ;
       [ INSERTTYPE <nInsType> ] ;
+      [ SUBCLASS <subclass> ] ;
    => ;
-      [ <obj> := ] TEdit():Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( TEdit(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
             <h>, <value>, <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, ;
             <{change}>, <{lostfocus}>, <.readonly.>, .f., <helpid>, ;
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
@@ -144,8 +146,10 @@ SPLITBOX VERSION
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ <disabled: DISABLED> ] ;
       [ INSERTTYPE <nInsType> ] ;
+      [ SUBCLASS <subclass> ] ;
    => ;
-      [ <obj> := ] TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( TEdit(), [ <subclass>() ] ): ;
+            TEdit():Define( <(name)>, <(parent)>,,, <w>, <h>, <value>, ;
             <f>, <s>, <tooltip>, <maxlength>, <{gotfocus}>, <{change}>, ;
             <{lostfocus}>, <.readonly.>, <.break.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
