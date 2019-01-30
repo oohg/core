@@ -117,6 +117,7 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_SettingFocus           => TApplication():Define():Value_Pos51
 #xtranslate _OOHG_Validating             => TApplication():Define():Value_Pos52
 #xtranslate _OOHG_ActiveHelpFile         => TApplication():Define():Value_Pos53
+#xtranslate _OOHG_UseLibraryDraw         => TApplication():Define():Value_Pos54
 #xtranslate _OOHG_ActiveFrame            => TApplication():Define():ActiveFrameGet()
 
 /*---------------------------------------------------------------------------

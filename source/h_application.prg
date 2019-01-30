@@ -139,7 +139,8 @@
 #define NDX_OOHG_SETTINGFOCUS          51
 #define NDX_OOHG_VALIDATING            52
 #define NDX_OOHG_ACTIVEHELPFILE        53
-#define NUMBER_OF_APP_WIDE_VARS        53
+#define NDX_OOHG_USELIBRARYDRAW        54
+#define NUMBER_OF_APP_WIDE_VARS        54
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -252,6 +253,7 @@ CLASS TApplication
    METHOD Value_Pos51             SETGET
    METHOD Value_Pos52             SETGET
    METHOD Value_Pos53             SETGET
+   METHOD Value_Pos54             SETGET
    METHOD Width                   SETGET
 
    MESSAGE Cargo                  METHOD Value_Pos31
@@ -326,6 +328,7 @@ METHOD Define() CLASS TApplication
       ::aVars[ NDX_OOHG_SETTINGFOCUS ]          := {}
       ::aVars[ NDX_OOHG_VALIDATING ]            := {}
       ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]        := ""
+      ::aVars[ NDX_OOHG_USELIBRARYDRAW ]        := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1972,6 +1975,19 @@ METHOD Value_Pos53( uValue ) CLASS TApplication
 
    RETURN ( uRet )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos54( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_USELIBRARYDRAW ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_USELIBRARYDRAW ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TApplication
 
