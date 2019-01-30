@@ -92,6 +92,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlRefresh                => _OOHG_ActiveControlInfo \( \) \[  69 \]
 #xtranslate _OOHG_ActiveControlNoImagelist            => _OOHG_ActiveControlInfo \( \) \[  70 \]
 #xtranslate _OOHG_ActiveControlNoPrintOver            => _OOHG_ActiveControlInfo \( \) \[  71 \]
 #xtranslate _OOHG_ActiveControlTextAlignH             => _OOHG_ActiveControlInfo \( \) \[  72 \]
@@ -2039,6 +2040,7 @@ COMBOBOX
       _OOHG_ActiveControlDelayedLoad       := .F.  ;;
       _OOHG_ActiveControlIncrementalSearch := .F.  ;;
       _OOHG_ActiveControlIntegralHeight    := .F.  ;;
+      _OOHG_ActiveControlRefresh           := NIL  ;;
       _OOHG_ActiveControlNoRefresh         := NIL  ;;
       _OOHG_ActiveControlSourceOrder       := NIL  ;;
       _OOHG_ActiveControlOnRefresh         := NIL  ;;
@@ -2195,7 +2197,7 @@ COMBOBOX
             _OOHG_ActiveControlDelayedLoad, ;
             _OOHG_ActiveControlIncrementalSearch, ;
             _OOHG_ActiveControlIntegralHeight, ;
-            _OOHG_ActiveControlNoRefresh, ;
+            iif( _OOHG_ActiveControlRefresh == NIL, iif( _OOHG_ActiveControlNoRefresh == NIL, NIL, ! _OOHG_ActiveControlNoRefresh ), _OOHG_ActiveControlRefresh ), ;
             _OOHG_ActiveControlSourceOrder, ;
             _OOHG_ActiveControlOnRefresh, ;
             _OOHG_ActiveControlSearchLapse, ;
@@ -3123,6 +3125,10 @@ BROWSE
 #xcommand NOREFRESH <norefresh> ;
    => ;
       _OOHG_ActiveControlNoRefresh := <norefresh>
+
+#xcommand REFRESH <refresh> ;
+   => ;
+      _OOHG_ActiveControlRefresh := <refresh>
 
 #xcommand SYNCHRONIZED <sync> ;
    => ;
