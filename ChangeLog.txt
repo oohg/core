@@ -12,6 +12,74 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-01-30 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.ch
+     * DATA lLibDraw now defaults to _OOHG_UseLibraryDraw
+       instead of .F.
+
+2019-01-30 18:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_var.ch
+   * core\source\h_application.ch
+     + Globlar var _OOHG_UseLibraryDraw. Defaults to .F.
+
+2019-01-30 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_tree.ch
+     + NOBORDER as a synonym of ON BORDERLESS clause.
+
+2019-01-30 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_textbox.ch
+     + ONTEXTFILLED as a synonym of ON TEXTFILLED clause.
+
+2019-01-30 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_scroll.ch
+     + ONLINEUP as a synonym of ON LINEUP clause.
+     + ONLINELEFT as a synonym of ON LINELEFT clause.
+     + ONLINEDOWN as a synonym of ON LINEDOWN clause.
+     + ONLINERIGHT as a synonym of ON LINERIGHT clause.
+     + ONPAGEUP as a synonym of ON PAGEUP clause.
+     + ONPAGELEFT as a synonym of ON PAGELEFT clause.
+     + ONPAGEDOWN as a synonym of ON PAGEDOWN clause.
+     + ONPAGERIGHT as a synonym of ON PAGERIGHT clause.
+     + ONTOP as a synonym of ON TOP clause.
+     + ONLEFT as a synonym of ON LEFT clause.
+     + ONRIGHT as a synonym of ON RIGHT clause.
+     + ONBOTTOM as a synonym of ON BOTTOM clause.
+     + ONTHUMB as a synonym of ON THUMB clause.
+     + ONTRACK as a synonym of ON TRACK clause.
+     + ONENDTRACK as a synonym of ON ENDTRACK clause.
+
+2019-01-30 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_editbox.ch
+     + SUBCLASS clause.
+
+2019-01-30 18:1 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_button.ch
+     + ONMOUSEMOVE as synonym of ON MOUSEMOVE clause.
+     * Some format.
+
+2019-01-30 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_xbrowse.ch
+     + HEADERIMAGESALIGN as synonym of IMAGESALIGN clause.
+     % Use PP rule instead of iif.
+
+2019-01-30 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     ! Combo's REFRESH clause.
+
+2019-01-30 18:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_005.txt
+   ! Some entries.
+
+2019-01-30 09:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! RTE at ENDDOC when lSize parameter is absent.
+
+2019-01-23 11:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! COMBOBOX's ON CHANGE event is not working.
+
 2019-01-20 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * The case of some functions.
