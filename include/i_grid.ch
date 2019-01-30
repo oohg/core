@@ -123,7 +123,7 @@ STANDARD VERSION
       [ <invisible: INVISIBLE> ] ;
       [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESALIGN <aImgAlign> ] ;
+      [ <dummy21: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
@@ -157,9 +157,9 @@ STANDARD VERSION
       [ <norclick: NORCLICKONCHECKBOX> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
       [ <silent: SILENT> ] ;
-      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <alta: ENABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
-      [ <none: NONEUNSELS, IGNORENONE> ] ;
+      [ <none: NONEUNSELS> ] ;
       [ <cbe: CHANGEBEFOREEDIT> ] ;
       [ <dummy17: ONRCLICK, ON RCLICK> <rclick> ] ;
       [ <dummy18: ONINSERT, ON INSERT> <oninsert> ] ;
@@ -196,8 +196,7 @@ STANDARD VERSION
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
-            <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
+            <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
 
@@ -257,7 +256,7 @@ SPLITBOX VERSION
       [ <invisible: INVISIBLE> ] ;
       [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESALIGN <aImgAlign> ] ;
+      [ <dummy21: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
@@ -291,9 +290,9 @@ SPLITBOX VERSION
       [ <norclick: NORCLICKONCHECKBOX> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
       [ <silent: SILENT> ] ;
-      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <alta: ENABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
-      [ <none: NONEUNSELS, IGNORENONE> ] ;
+      [ <none: NONEUNSELS> ] ;
       [ <cbe: CHANGEBEFOREEDIT> ] ;
       [ <dummy17: ONRCLICK, ON RCLICK> <rclick> ] ;
       [ <dummy18: ONINSERT, ON INSERT> <oninsert> ] ;
@@ -330,8 +329,7 @@ SPLITBOX VERSION
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
-            <.silent.>, Upper( #<alta> ) == "ENABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
+            <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
 
@@ -344,5 +342,13 @@ SPLITBOX VERSION
       _OOHG_GridFixedControls := .F.
 
 #xtranslate GRID [ <x> ] DOUBLEBUFFER ;
+   => ;
+      GRID [ <x> ]
+
+#xtranslate GRID [ <x> ] IGNORENONE ;
+   => ;
+      GRID [ <x> ]
+
+#xtranslate GRID [ <x> ] DISABLEALTA ;
    => ;
       GRID [ <x> ]

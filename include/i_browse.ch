@@ -137,7 +137,7 @@ STANDARD VERSION
       [ DELETEMSG <DelMsg> ] ;
       [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESALIGN <aImgAlign> ] ;
+      [ <dummy20: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
@@ -167,9 +167,9 @@ STANDARD VERSION
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
       [ <silent: SILENT> ] ;
-      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <disalta: DISABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
-      [ <none: NONEUNSELS, IGNORENONE> ] ;
+      [ <none: NONEUNSELS> ] ;
       [ <cbe: CHANGEBEFOREEDIT> ] ;
       [ <dummy15: ONRCLICK, ON RCLICK> <rclick> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
@@ -213,8 +213,8 @@ STANDARD VERSION
             IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, <.extdbl.>, <.nomodal.>, <.silent.>, ;
-            ! Upper( #<alta> ) == "DISABLEALTA", <.noshow.>, ;
-            Upper( #<none> ) == "NONEUNSELS", <.cbe.>, <{rclick}>, ;
+            ! <.disalta.>, <.noshow.>, ;
+            <.none.>, <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
             <.ctt.>, <.nohsb.> )
@@ -244,5 +244,13 @@ STANDARD VERSION
       _OOHG_BrowseFixedControls := .F.
 
 #xtranslate BROWSE [ <x> ] DOUBLEBUFFER ;
+   => ;
+      BROWSE [ <x> ]
+
+#xtranslate BROWSE [ <x> ] IGNORENONE ;
+   => ;
+      BROWSE [ <x> ]
+
+#xtranslate BROWSE [ <x> ] ENABLEALTA ;
    => ;
       BROWSE [ <x> ]

@@ -128,7 +128,7 @@
       [ DELETEMSG <DelMsg> ] ;
       [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ IMAGESALIGN <aImgAlign> ] ;
+      [ <dummy21: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
