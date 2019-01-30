@@ -242,6 +242,8 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
       ::lLibDraw := lDrawBy
    ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. HB_ISARRAY( ::aTextMargin )
       ::lLibDraw := .T.
+   ELSE
+      ::lLibDraw := _OOHG_UseLibraryDraw
    ENDIF
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
