@@ -170,7 +170,7 @@
       [ <noborder: BORDERLESS, NOBORDER> ] ;
       [ ON LABELEDIT <labeledit> ] ;
       [ VALID <valid> ] ;
-      [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ INDENT <pixels> ] ;
       [ ON DROP <ondrop> ] ;
    => ;
