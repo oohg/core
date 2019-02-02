@@ -2350,7 +2350,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
    RECT rect;
    SIZE size;
    BOOL bSelected, bGrayed, bChecked;
-   HFONT hOldFont;
+   HFONT hOldFont = 0;
    HBRUSH brush;
    // colors
    COLORREF clrMenuBar1             = ( COLORREF ) HB_PARNL2( 4, MNUCLR_MENUBARBACKGROUND1 );

@@ -77,8 +77,8 @@ EXTERN PtrStr
 
 HINSTANCE HB_DllStore[ 256 ];
 HINSTANCE HB_LoadDll( CHAR * );
-void      HB_UnloadDll( void );
-typedef   INT ( CALLBACK * DYNACALL0 ) ( void );
+VOID      HB_UnloadDll( VOID );
+typedef   INT ( CALLBACK * DYNACALL0 ) ( VOID );
 typedef   INT ( CALLBACK * DYNACALL1 ) ( INT d1 );
 typedef   INT ( CALLBACK * DYNACALL2 ) ( INT d1, INT d2 );
 typedef   INT ( CALLBACK * DYNACALL3 ) ( INT d1, INT d2, INT d3 );
@@ -190,43 +190,43 @@ HB_FUNC( CALLDLL32 )
       switch( nArgs )
       {
          case 0:
-            result = ( INT )( ( DYNACALL0 ) lpAddr )();
+            result = ( INT )( ( DYNACALL0 ) ( FARPROC ) lpAddr )();
             break;
 
          case 1:
-            result = ( INT )( ( DYNACALL1 ) lpAddr )( dd[ 0 ] );
+            result = ( INT )( ( DYNACALL1 ) ( FARPROC ) lpAddr )( dd[ 0 ] );
             break;
 
          case 2:
-            result = ( INT )( ( DYNACALL2 ) lpAddr )( dd[ 0 ], dd[ 1 ] );
+            result = ( INT )( ( DYNACALL2 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ] );
             break;
 
          case 3:
-            result = ( INT )( ( DYNACALL3 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
+            result = ( INT )( ( DYNACALL3 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
             break;
 
          case 4:
-            result = ( INT )( ( DYNACALL4 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
+            result = ( INT )( ( DYNACALL4 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
             break;
 
          case 5:
-            result = ( INT )( ( DYNACALL5 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
+            result = ( INT )( ( DYNACALL5 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
             break;
 
          case 6:
-            result = ( INT )( ( DYNACALL6 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
+            result = ( INT )( ( DYNACALL6 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
             break;
 
          case 7:
-            result = ( INT )( ( DYNACALL7 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
+            result = ( INT )( ( DYNACALL7 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
             break;
 
          case 8:
-            result = ( INT )( ( DYNACALL8 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
+            result = ( INT )( ( DYNACALL8 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
             break;
 
          default:
-            result = ( INT )( ( DYNACALL9 ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
+            result = ( INT )( ( DYNACALL9 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
             break;
 
       }

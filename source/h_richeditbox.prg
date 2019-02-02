@@ -323,7 +323,7 @@ struct StreamInfo {
    struct StreamInfo *pNext;
 };
 
-EDITSTREAMCALLBACK CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    struct StreamInfo *si;
    LONG lMax;
@@ -365,7 +365,7 @@ HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
    SendMessage( HWNDparam( 1 ), EM_STREAMIN, ( WPARAM ) iType, ( LPARAM ) &es );
 }
 
-EDITSTREAMCALLBACK CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    struct StreamInfo *si;
 
@@ -450,31 +450,31 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    }
 }
 
-EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
    if( ReadFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
    {
-      return (EDITSTREAMCALLBACK) 0;
+      return 0;
    }
    else
    {
-      return (EDITSTREAMCALLBACK) -1;
+      return -1;
    }
 }
 
-EDITSTREAMCALLBACK CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
    if( WriteFile( hFile, (LPVOID) pbBuff, cb, (LPDWORD) pcb, NULL ) )
    {
-      return (EDITSTREAMCALLBACK) 0;
+      return 0;
    }
    else
    {
-      return (EDITSTREAMCALLBACK) -1;
+      return -1;
    }
 }
 
@@ -646,6 +646,7 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
             HB_FUNCNAME( TEDITRICH_EVENTS2 )();
             break;
          }
+         /* FALLTHRU */
 
       default:
          _OOHG_Send( pSelf, s_Super );
