@@ -2907,7 +2907,7 @@
        Each item defines a rectangular area inside the Image
        control that should be considered tranparent to mouse
        clicks.
-     ; This changes allow that an Image control placed under
+     ; These changes allow that an Image control placed under
        another Image control can have an ON CLICK event and/or a
        tooltip associated to non-excluded areas.
      ; To be painted correctly, all Image controls placed upon
