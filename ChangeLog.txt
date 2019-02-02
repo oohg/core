@@ -12,15 +12,22 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-02-02 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_dll.prg
+   * core\source\h_menu.prg
+   * core\source\h_grid.prg
+   * core\source\h_richeditbox.prg
+     * Pacified some warnings under MINGW 8.1.0
+
+2019-02-02 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_tree.ch
      + ONCHECKCHANGE as a synonym of ON CHECKCHANGE clause.
 
-2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-02-02 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\ChangeLog_004.txt
      ! Typo.
 
-2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-02-02 13:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_monthcal.prg
      ! Compiler error for new versions of MINGW.
 
