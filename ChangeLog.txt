@@ -12,14 +12,26 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_tree.ch
+     + ONCHECKCHANGE as a synonym of ON CHECKCHANGE clause.
+
+2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_004.txt
+     ! Typo.
+
+2019-02-02 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_monthcal.prg
+     ! Compiler error for new versions of MINGW.
+
 2019-01-30 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\h_button.ch
+   * core\source\h_button.prg
      * DATA lLibDraw now defaults to _OOHG_UseLibraryDraw
        instead of .F.
 
 2019-01-30 18:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_var.ch
-   * core\source\h_application.ch
+   * core\source\h_application.prg
      + Globlar var _OOHG_UseLibraryDraw. Defaults to .F.
 
 2019-01-30 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
