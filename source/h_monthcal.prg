@@ -830,13 +830,21 @@ HB_FUNC( GETMONTHCALRANGE )
    HB_STORDL( hb_dateEncode( sysTime[ 1 ].wYear, sysTime[ 1 ].wMonth, sysTime[ 1 ].wDay ), -1, 2 );
 }
 
-enum MonthCalendarView {
-   MCMV_MONTH = 0,
-   MCMV_YEAR = 1,
-   MCMV_DECADE = 2,
-   MCMV_CENTURY = 3,
-   MCMV_MAX = MCMV_CENTURY
-};
+#ifndef MCMV_MONTH
+   #define MCMV_MONTH 0
+#endif
+#ifndef MCMV_YEAR
+   #define MCMV_YEAR 1
+#endif
+#ifndef MCMV_DECADE
+   #define MCMV_DECADE 2
+#endif
+#ifndef MCMV_CENTURY
+   #define MCMV_CENTURY 3
+#endif
+#ifndef MCMV_MAX
+   #define MCMV_MAX MCMV_CENTURY
+#endif
 
 #ifndef MCN_VIEWCHANGE
    #define MCN_VIEWCHANGE (MCN_FIRST-4)
