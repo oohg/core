@@ -150,7 +150,7 @@ typedef void* gPlusImage;
 typedef gPlusImage * gPlusImagePtr;
 
 typedef LONG(__stdcall* GDIPLUSSTARTUP) ( ULONG*, const GDIPLUS_STARTUP_INPUT*, void* );
-typedef void(__stdcall* GDIPLUSSHUTDOWN) ( ULONG );
+typedef LONG(__stdcall* GDIPLUSSHUTDOWN) ( ULONG );
 
 typedef LONG(__stdcall* GDIPCREATEBITMAPFROMHBITMAP) ( void*, void*, void** );
 typedef LONG(__stdcall* GDIPGETIMAGEENCODERSSIZE) ( UINT*, UINT* );

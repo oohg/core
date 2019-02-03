@@ -205,6 +205,7 @@ void _OOHG_ProcessMessage( PMSG Msg )
                break;
             }
          }
+         /* FALLTHRU */
 
       default:
          if( _MDI_Count )

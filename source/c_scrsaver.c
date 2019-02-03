@@ -75,7 +75,7 @@
 #include "oohg.h"
 
 typedef BOOL ( WINAPI * VERIFYSCREENSAVEPWD ) ( HWND hwnd );
-typedef VOID ( WINAPI * PWDCHANGEPASSWORD ) ( LPCSTR lpcRegkeyname, HWND hwnd, UINT uiReserved1, UINT uiReserved2 );
+typedef LONG ( WINAPI * PWDCHANGEPASSWORD ) ( LPCSTR lpcRegkeyname, HWND hwnd, UINT uiReserved1, UINT uiReserved2 );
 
 HB_FUNC( VERIFYPASSWORD )
 {

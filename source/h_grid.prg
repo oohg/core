@@ -8370,7 +8370,7 @@ HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
    si.hWnd = HWNDparam( 1 );
    si.iColumn = hb_parni( 2 ) - 1;
    si.bDescending = hb_parl( 3 );
-   hb_retl( (BOOL) SendMessage( si.hWnd, LVM_SORTITEMSEX, (WPARAM) (_OOHG_SortItemsInfo *) &si, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItems ) );
+   hb_retl( (BOOL) SendMessage( si.hWnd, LVM_SORTITEMSEX, (WPARAM) (_OOHG_SortItemsInfo *) &si, (LPARAM) _OOHG_SortItems ) );
 }
 
 PFNLVCOMPARE CALLBACK _OOHG_SortItemsUser( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
@@ -8387,7 +8387,7 @@ HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
    PHB_ITEM pSelf = hb_param( 1, HB_IT_OBJECT );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   hb_retl( (BOOL) SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) (PFNLVCOMPARE) _OOHG_SortItemsUser ) );
+   hb_retl( (BOOL) SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) _OOHG_SortItemsUser ) );
 }
 
 HB_FUNC( NMHEADER_IITEM )
@@ -8591,8 +8591,7 @@ HB_FUNC( GET_XY_LPARAM )
    HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
 }
 
-//#ifdef __BORLANDC__
-#ifndef NMLVSCROLL
+#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
 typedef struct tagNMLVSCROLL {
    NMHDR hdr;
    INT dx;
