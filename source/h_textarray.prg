@@ -253,7 +253,7 @@ HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, n
    int Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
    int StyleEx = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
-   HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TEXTARRAY", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
+   HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TTEXTARRAY", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    _OOHG_TTextArray_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
