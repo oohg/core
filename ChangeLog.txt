@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-02-08 10:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textarray.prg
+     ! Controls shows no text.
+
+2019-02-03 00:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_gdiplus.c
+   * core\source\c_scrsaver.c
+   * core\source\c_windows.c
+   * core\source\h_grid.prg
+   * core\source\h_textbox.prg
+     * Pacified some warnings under MINGW 8.1.0
+
 2019-02-02 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_dll.prg
    * core\source\h_menu.prg
