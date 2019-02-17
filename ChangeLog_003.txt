@@ -3435,7 +3435,7 @@
    * source\h_windows.prg
      ! Fixed compiler error.
 
-2012-02-13 16:03 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
+2012-02-13 16:03 UTC+0100 Cayetano Gomez <cayetano@gomezgil.es>
    * source\h_windows.prg
      ! Fix clientpos2 method to work with TControlGroup
        descendant
@@ -3458,7 +3458,7 @@
    * source\h_menu.prg
      + Added methods InsertPopup, InsertItem and InsertSeparator.
 
-2012-02-09 22:12 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
+2012-02-09 22:12 UTC+0100 Cayetano Gomez <cayetano@gomezgil.es>
    * source\h_windows.prg
       ! Fine tunning clientpos2 method
 
@@ -3479,7 +3479,7 @@
    * doc\classes.txt
      * Updated.
 
-2012-02-08 16:28 UTC+0100 Cayetano Gómez <cayetano@gomezgil.es>
+2012-02-08 16:28 UTC+0100 Cayetano Gomez <cayetano@gomezgil.es>
    * source\h_toolbar.prg
       + added ltop DATA
    * source\h_windows.prg
