@@ -356,6 +356,9 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
       nWindowType := TYPE_MDIFRAME
       nStyle += WS_CLIPSIBLINGS + WS_CLIPCHILDREN
       nStyleEx += WS_EX_CONTROLPARENT
+   ELSEIF ::nVirtualWidth > 0 .OR. ::nVirtualHeight > 0
+      nStyle += WS_CLIPSIBLINGS + WS_CLIPCHILDREN
+      nStyleEx += WS_EX_COMPOSITED
    ENDIF
 
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -1422,22 +1425,22 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
                      iPos = MenuItemFromPoint( hWnd, hMenu, ptScreen );
                      if( iPos > -1 )
                      {
-                        PHB_ITEM pMenu = hb_itemNew( NULL );
+                        PHB_ITEM pMenuItem = hb_itemNew( NULL );
                         memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                         MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                         MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
                         GetMenuItemInfo( hMenu, iPos, MF_BYPOSITION, &MenuItemInfo );
                         if( MenuItemInfo.hSubMenu )
                         {
-                           hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
+                           hb_itemCopy( pMenuItem, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
                         }
                         else
                         {
-                           hb_itemCopy( pMenu, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
+                           hb_itemCopy( pMenuItem, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
                         }
-                        _OOHG_Send( pMenu, s_Events_MenuHilited );
+                        _OOHG_Send( pMenuItem, s_Events_MenuHilited );
                         hb_vmSend( 0 );
-                        hb_itemRelease( pMenu );
+                        hb_itemRelease( pMenuItem );
                      }
                   }
                }
@@ -1580,8 +1583,6 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
    case nMsg == WM_PAINT
 
-      ::DefWindowProc( nMsg, wParam, lParam )
-
       AEVAL( ::SplitChildList, { |o| AEVAL( o:GraphTasks, { |b| _OOHG_EVAL( b ) } ), _OOHG_EVAL( o:GraphCommand, o:hWnd, o:GraphData ) } )
 
       ::DoEvent( ::OnPaint, "WINDOW_PAINT" )
@@ -1606,7 +1607,7 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          ::ReleaseDc()
       EndIf
 
-      Return 1
+      Return NIL
 
    case nMsg == WM_ENTERSIZEMOVE
 
@@ -2178,7 +2179,9 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
    ::Focused := ( HB_ISLOGICAL( Focused ) .AND. Focused )
 
    nStyle += WS_GROUP + WS_CHILD
-   nStyleEx += WS_EX_CONTROLPARENT
+   IF ! HB_ISLOGICAL( mdi ) .OR. ! mdi
+      nStyleEx += WS_EX_CONTROLPARENT
+   ENDIF
 
    ::Define2( FormName, Caption, x, y, w, h, ::Parent:hWnd, .F., .T., .T., .T., .T., ;
               .T., virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2291,7 +2294,10 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
    ENDIF
 
    nStyle += WS_GROUP + WS_CHILD
-   nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW + WS_EX_CONTROLPARENT
+   nStyleEx += WS_EX_STATICEDGE + WS_EX_TOOLWINDOW
+   IF ! HB_ISLOGICAL( mdi ) .OR. ! mdi
+      nStyleEx += WS_EX_CONTROLPARENT
+   ENDIF
 
    ::Define2( FormName, Title, 0, 0, w, h, ::Parent:hWnd, .F., .F., .F., .F., .F., ;
               nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
