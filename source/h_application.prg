@@ -160,7 +160,7 @@ CLASS TApplication
    DATA FileName                  INIT NIL READONLY
    DATA Path                      INIT NIL READONLY
 
-   METHOD Define                  CONSTRUCTOR
+   METHOD Define                  
 
    METHOD ActiveFrameContainer
    METHOD ActiveFrameGet
@@ -195,6 +195,7 @@ CLASS TApplication
    METHOD MainStyle               SETGET
    METHOD MutexLock
    METHOD MutexUnlock
+   METHOD New
    METHOD Release
    METHOD ReleaseLogFont
    METHOD Row                     SETGET
@@ -266,7 +267,7 @@ CLASS TApplication
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define() CLASS TApplication
+METHOD New() CLASS TApplication
 
    IF ::oAppObj == NIL
       IF ! ::CreateGlobalMutex()
@@ -341,6 +342,11 @@ METHOD Define() CLASS TApplication
 
       ::oAppObj := Self
    ENDIF
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define CLASS TApplication
 
    RETURN ( ::oAppObj )
 
