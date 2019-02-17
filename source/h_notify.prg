@@ -275,6 +275,7 @@ HB_FUNC( LOADTRAYICON )
 
 HB_FUNC( CHANGENOTIFYICON )     // ( hWnd, hIcon, cTooltip )
 {
+   CHAR *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -283,13 +284,15 @@ HB_FUNC( CHANGENOTIFYICON )     // ( hWnd, hIcon, cTooltip )
    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    nid.uCallbackMessage = WM_TASKBAR;
    nid.hIcon = ( HICON ) HWNDparam( 2 );
-   lstrcpy( nid.szTip, TEXT( ( LPSTR ) hb_parc( 3 ) ) );
-
+   pText = hb_strndup( hb_parc( 3 ), sizeof( nid.szTip ) );
+   lstrcpy( nid.szTip, pText );
+   hb_xfree( pText );
    Shell_NotifyIcon( NIM_MODIFY, &nid );
 }
 
 HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
 {
+   CHAR *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -298,8 +301,9 @@ HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    nid.uCallbackMessage = WM_TASKBAR;
    nid.hIcon = ( HICON ) HWNDparam( 3 );
-   lstrcpy( nid.szTip, TEXT( ( LPSTR ) hb_parc( 4 ) ) );
-
+   pText = hb_strndup( hb_parc( 4 ), sizeof( nid.szTip ) );
+   lstrcpy( nid.szTip, pText );
+   hb_xfree( pText );
    if( hb_parl( 2 ) )
       Shell_NotifyIcon( NIM_ADD, &nid );
    else
@@ -308,6 +312,7 @@ HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
 
 HB_FUNC( SETNOTIFYICONDATA )     // ( hWnd, nId, lAlreadyCreated, hIcon, cTooltip )
 {
+   CHAR *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -322,9 +327,10 @@ HB_FUNC( SETNOTIFYICONDATA )     // ( hWnd, nId, lAlreadyCreated, hIcon, cToolti
    if( HB_ISCHAR( 5 ) )
    {
       nid.uFlags |= NIF_TIP;
-      lstrcpy( nid.szTip, TEXT( ( LPSTR ) hb_parc( 5 ) ) );
+      pText = hb_strndup( hb_parc( 5 ), sizeof( nid.szTip ) );
+      lstrcpy( nid.szTip, pText );
+      hb_xfree( pText );
    }
-
    if( hb_parl( 3 ) )
    {
       if( nid.uFlags )
