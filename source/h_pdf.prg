@@ -1752,10 +1752,7 @@ METHOD Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, cColor, lPri
       nLeft := nLeft - nLength
    ENDIF
 
-   nL := nLeft
-   nL += nNew * nSpace // first always paragraph
    nLineLen := nSpace * nNew - nSpace
-
    lParagraph := .T.
    nI := 1
 
@@ -2988,7 +2985,9 @@ METHOD TextNextPara( cString, cDelim, nI ) CLASS TPDF
 #endif
 
 #include <windows.h>
+#include <commctrl.h>
 #include "hbapi.h"
+#include "oohg.h"
 
 #pragma ENDDUMP
 
@@ -3150,7 +3149,7 @@ METHOD ClosePage() CLASS TPDF
                lHeight  = hb_parnl( 3 );
                lBits    = hb_parnl( 4 );
                lLenFrom = ( ( ( lWidth * lBits ) + 31 ) / 32 ) * 4;
-               cFrom    = ( CHAR * ) hb_parc( 1 ) + ( lLenFrom * ( lHeight - 1 ) );
+               cFrom    = ( CHAR * ) HB_UNCONST( hb_parc( 1 ) ) + ( lLenFrom * ( lHeight - 1 ) );
 
                if( lBits == 24 )
                {
