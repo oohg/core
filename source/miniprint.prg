@@ -2967,7 +2967,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Get the current settings from the printer's driver
    ///////////////////////////////////////////////////////////////////
 
-   bFlag = OpenPrinter( (char *) hb_parc( 1 ), &hPrinter, NULL );
+   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
 
    if( !bFlag || ( hPrinter == NULL ) )
    {
@@ -3043,7 +3043,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
 
    if(pi2->pDevMode == NULL)
    {
-      dwNeeded = DocumentProperties( NULL, hPrinter, (char *) hb_parc( 1 ), NULL, NULL, 0 );
+      dwNeeded = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), NULL, NULL, 0 );
       if( dwNeeded <= 0 )
       {
          GlobalFree( pi2 );
@@ -3079,7 +3079,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
          return;
       }
 
-      lFlag = DocumentProperties( NULL, hPrinter, ( char * ) hb_parc( 1 ), pDevMode, NULL, DM_OUT_BUFFER );
+      lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pDevMode, NULL, DM_OUT_BUFFER );
       if( lFlag != IDOK || pDevMode == NULL )
       {
          GlobalFree( pDevMode );
@@ -3488,7 +3488,7 @@ HB_FUNC( _HMG_PRINTER_SETPRINTERPROPERTIES )
    // Do not attempt to set security descriptor
    pi2->pSecurityDescriptor = NULL;
 
-   lFlag = DocumentProperties( NULL, hPrinter, (char *) hb_parc( 1 ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
+   lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
 
    if( lFlag != IDOK )
    {

@@ -356,7 +356,7 @@ HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
 
    si.lSize = hb_parclen( 2 );
    si.lRead = 0;
-   si.cBuffer = ( char * ) hb_parc( 2 );
+   si.cBuffer = ( char * ) HB_UNCONST( hb_parc( 2 ) );
 
    es.dwCookie = ( DWORD_PTR ) &si;
    es.dwError = 0;
@@ -507,19 +507,19 @@ HB_FUNC( FILESTREAMIN )        // hWnd, cFile, nType
       }
       case 4:
       {
-         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          lMode = TM_PLAINTEXT;
          break;
       }
       case 5:
       {
-         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF; ;
+         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF; ;
          lMode = TM_RICHTEXT;
          break;
       }
       case 6:
       {
-         lFlag = ( CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT; ;
+         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT; ;
          lMode = TM_PLAINTEXT;
          break;
       }
@@ -580,17 +580,17 @@ HB_FUNC( FILESTREAMOUT )       // hWnd, cFile, nType
       }
       case 4:
       {
-         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          break;
       }
       case 5:
       {
-         lFlag = ( CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
+         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
          break;
       }
       case 6:
       {
-         lFlag = ( CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          break;
       }
       default:

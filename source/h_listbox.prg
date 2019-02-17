@@ -622,7 +622,7 @@ void TList_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct, int nIt
 
 HB_FUNC( LISTBOXADDSTRING )
 {
-   char *cString = (char *) hb_parc( 2 );
+   const char *cString = hb_parc( 2 );
    int nIndex = SendMessage( HWNDparam( 1 ), LB_ADDSTRING, 0, (LPARAM) cString );
    if( ( nIndex == LB_ERR ) || ( nIndex == LB_ERRSPACE ) )
       hb_retni( 0 );
@@ -665,7 +665,7 @@ HB_FUNC( LISTBOXGETSTRING )
 
 HB_FUNC( LISTBOXINSERTSTRING )
 {
-   char *cString = (char *) hb_parc( 2 );
+   const char *cString = hb_parc( 2 );
    SendMessage( HWNDparam( 1 ), LB_INSERTSTRING, (WPARAM) ( hb_parni(3) - 1 ), (LPARAM) cString );
 }
 

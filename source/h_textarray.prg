@@ -1205,7 +1205,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )          /* METHOD Write( cText, nCol, nRow, 
 
    if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      pBuffer = ( BYTE * ) hb_parc( 1 );
+      pBuffer = ( BYTE * ) HB_UNCONST( hb_parc( 1 ) );
       lBuffer = hb_parclen( 1 );
       while( lBuffer )
       {
@@ -1277,7 +1277,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )          /* METHOD WriteRaw( cText, nCol, 
 
    if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      pBuffer = ( BYTE * ) hb_parc( 1 );
+      pBuffer = ( BYTE * ) HB_UNCONST( hb_parc( 1 ) );
       lBuffer = hb_parclen( 1 );
       while( lBuffer )
       {

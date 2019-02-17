@@ -2338,7 +2338,7 @@ HB_FUNC( ADDTREEITEM )
    TV_INSERTSTRUCT is;
 
    tvi.mask           = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
-   tvi.pszText        = ( LPSTR ) hb_parc( 3 );
+   tvi.pszText        = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
    tvi.cchTextMax     = 1024;
    tvi.iImage         = hb_parni( 4 );
    tvi.iSelectedImage = hb_parni( 5 );
@@ -2913,7 +2913,7 @@ BOOL IsTargetChild( HWND hTree, HTREEITEM hOrigin, HTREEITEM hDestination )
    while( hitemChild )
    {
       hitemChild = TreeView_GetParent( hTree, hitemChild );
-      if( ( hitemChild == hOrigin ) )
+      if( hitemChild == hOrigin )
       {
          return TRUE;
       }

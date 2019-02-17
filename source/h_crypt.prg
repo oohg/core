@@ -579,27 +579,28 @@ FUNCTION DB_CODE( cData, cKey, aFields, cPass, cFor, cWhile )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CHARXOR )
 {
-   CHAR * cData, * cMask, * cRet, * cPos;
+   const CHAR *cData, *cMask;
+   CHAR *cRet, *cPos;
    ULONG ulData, ulMask, ulRemain, ulMaskPos;
 
    ulData = hb_parclen( 1 );
    ulMask = hb_parclen( 2 );
-   cData = ( CHAR * ) hb_parc( 1 );
-   cMask = ( CHAR * ) hb_parc( 2 );
+   cData = ( const CHAR * ) hb_parc( 1 );
+   cMask = ( const CHAR * ) hb_parc( 2 );
    if( ulData == 0 || ulMask == 0 )
    {
       hb_retclen( cData, ulData );
    }
    else
    {
-      cRet = ( CHAR *) hb_xgrab( ulData );
+      cRet = ( CHAR * ) hb_xgrab( ulData );
 
       cPos = cRet;
       ulRemain = ulData;
       ulMaskPos = 0;
       while( ulRemain )
       {
-         * cPos ++ = * cData ++ ^ cMask[ ulMaskPos ++ ];
+         *cPos ++ = *cData ++ ^ cMask[ ulMaskPos ++ ];
          if( ulMaskPos == ulMask )
          {
             ulMaskPos = 0;

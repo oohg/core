@@ -2449,7 +2449,7 @@ HB_FUNC( RR_PRINTDIALOG )
       // pDevNames instead pDevMode.
       // strcpy( lpData->PrinterName, pDevMode->dmDeviceName );
       pDevice = ( LPCTSTR ) lpData->pDevNames + lpData->pDevNames->wDeviceOffset;
-      strcpy( lpData->PrinterName, ( CHAR * ) pDevice );
+      strcpy( lpData->PrinterName, pDevice );
 
       if( lpData->hDC == NULL )
       {
@@ -3130,7 +3130,7 @@ HB_FUNC( RR_SELECTBRUSH )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( RR_CREATEFONT )
 {
-   CHAR * FontName = ( CHAR * ) hb_parc( 1 );
+   const CHAR * FontName = ( const CHAR * ) hb_parc( 1 );
    INT FontSize = hb_parni( 2 );
    LONG FontWidth = hb_parnl( 3 );
    LONG Orient = hb_parnl( 4 );
@@ -3334,7 +3334,7 @@ HB_FUNC( RR_DRAWTEXT )
    RECT rect;
    UINT uFormat;
    SIZE  sSize;
-   CONST CHAR * pszData = hb_parc( 3 );
+   const CHAR * pszData = hb_parc( 3 );
    INT iLen = strlen( pszData );
    INT iStyle = hb_parni( 4 );
    INT iAlign = 0, iNoWordBreak;

@@ -7984,7 +7984,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    {
       COL.fmt = hb_arrayGetNI( jArray, s + 1 );
       COL.cx = hb_arrayGetNI( wArray, s + 1 );
-      COL.pszText = ( char * ) hb_arrayGetCPtr( hArray, s + 1 );
+      COL.pszText = ( LPSTR ) HB_UNCONST( hb_arrayGetCPtr( hArray, s + 1 ) );
       COL.iSubItem = iColumn;
       ListView_InsertColumn( hc, iColumn, &COL );
       if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
@@ -8060,7 +8060,7 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
    LV_COLUMN COL;
 
    COL.mask = LVCF_TEXT;
-   COL.pszText = ( char * ) hb_parc( 3 ) ;
+   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
    COL.fmt = hb_parni( 4 ) ;
 
    ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
@@ -8296,7 +8296,7 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
    if( iType == 1 && HB_ISCHAR( 5 ) )
    {
       LI.cchTextMax = 1022;
-      LI.pszText = ( char * ) hb_parc( 5 );
+      LI.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 5 ) );
       ListView_SetItem( hWnd, &LI );
    }
    else if( iType == 2 && HB_ISNUM( 5 ) )
@@ -8855,7 +8855,7 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
 
    COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
    COL.cx = hb_parni( 3 );
-   COL.pszText = ( char * ) hb_parc( 4 );
+   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 4 ) );
    COL.iSubItem = iColumn;
    COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
 
@@ -8893,7 +8893,7 @@ HB_FUNC( LISTVIEW_SETCOLUMN )
 
    COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
    COL.cx = hb_parni( 3 );
-   COL.pszText = ( char * ) hb_parc( 4 );
+   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 4 ) );
    COL.iSubItem = iColumn;
    COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
 
@@ -9367,7 +9367,7 @@ HB_FUNC( SETGRIDQUERYDATA )
    PHB_ITEM pValue = hb_itemNew( NULL );
    LV_DISPINFO * pDispInfo = ( LV_DISPINFO * ) HB_PARNL( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   pDispInfo->item.pszText = ( LPTSTR ) hb_itemGetCPtr( pValue );
+   pDispInfo->item.pszText = ( LPTSTR ) HB_UNCONST( hb_itemGetCPtr( pValue ) );
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )

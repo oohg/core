@@ -246,10 +246,10 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
 {
    TCHAR bBuffer[ 1024 ] = { 0 };
    DWORD dwLen ;
-   char * lpSection = ( char * ) hb_parc( 1 );
-   char * lpEntry = HB_ISCHAR(2) ? ( char * ) hb_parc( 2 ) : NULL ;
-   char * lpDefault = ( char * ) hb_parc( 3 );
-   char * lpFileName = ( char * ) hb_parc( 4 );
+   const char * lpSection = hb_parc( 1 );
+   const char * lpEntry = HB_ISCHAR(2) ? hb_parc( 2 ) : NULL ;
+   const char * lpDefault = hb_parc( 3 );
+   const char * lpFileName = hb_parc( 4 );
    dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
    if( dwLen )
       hb_retclen( ( char * ) bBuffer, dwLen );
@@ -259,10 +259,10 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
 
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
-   char * lpSection = ( char * ) hb_parc( 1 );
-   char * lpEntry = HB_ISCHAR( 2 ) ? ( char * ) hb_parc( 2 ) : NULL ;
-   char * lpData = HB_ISCHAR( 3 ) ? ( char * ) hb_parc( 3 ) : NULL ;
-   char * lpFileName= ( char * ) hb_parc( 4 );
+   const char * lpSection = hb_parc( 1 );
+   const char * lpEntry = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : NULL ;
+   const char * lpData = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
+   const char * lpFileName= hb_parc( 4 );
 
    if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
       hb_retl( TRUE ) ;

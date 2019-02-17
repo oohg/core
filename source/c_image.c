@@ -87,7 +87,7 @@
 #include "olectl.h"
 #include "oohg.h"
 
-int _OOHG_StretchBltMode = COLORONCOLOR;
+static int _OOHG_StretchBltMode = COLORONCOLOR;
 
 HB_FUNC( _OOHG_STRETCHBLTMODE )
 {
@@ -576,7 +576,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize, lIg
    {
       lWidth = lHeight = 0;
    }
-   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 2 ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor, hb_parl( 5 ) );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor, hb_parl( 5 ) );
    if( hb_parl( 4 ) )
    {
       hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap, 0, 0, FALSE, oSelf->lBackColor, hb_parl( 5 ), 0, 0 );
@@ -594,7 +594,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
    HBITMAP hBitmap;
    BITMAP bm;
 
-   hBitmap = (HBITMAP) _OOHG_LoadImage( ( char * ) hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, 0, TRUE );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 1 ) ), LR_CREATEDIBSECTION, 0, 0, NULL, 0, TRUE );
 
    memset( &bm, 0, sizeof( bm ) );
 

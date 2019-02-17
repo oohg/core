@@ -1686,7 +1686,7 @@ HB_FUNC( MENUCAPTION )          /* FUNCTION MenuCaption( hWnd, nId, cCaption/NIL
       memset( &MenuItem, 0, sizeof( MenuItem ) );
       MenuItem.cbSize = sizeof( MenuItem );
       MenuItem.fMask = MIIM_STRING;
-      MenuItem.dwTypeData = ( CHAR * ) hb_parc( 3 );
+      MenuItem.dwTypeData = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
       MenuItem.cch = hb_parclen( 3 );
       SetMenuItemInfo( hMenu, iItem, MF_BYCOMMAND, &MenuItem );
    }
@@ -1738,8 +1738,8 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
       }
    }
 
-   himage1 = ( HBITMAP ) _OOHG_LoadImage( ( CHAR * ) hb_parc( 3 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), bIgnoreBkClr );
-   himage2 = ( HBITMAP ) _OOHG_LoadImage( ( CHAR * ) hb_parc( 4 ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), bIgnoreBkClr );
+   himage1 = ( HBITMAP ) _OOHG_LoadImage( HB_UNCONST( hb_parc( 3 ) ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), bIgnoreBkClr );
+   himage2 = ( HBITMAP ) _OOHG_LoadImage( HB_UNCONST( hb_parc( 4 ) ), iAttributes, nWidth, nHeight, NULL, GetSysColor( COLOR_MENU ), bIgnoreBkClr );
 
    if( hb_parl( 7 ) )
       SetMenuItemBitmaps( hMenu, iItem, MF_BYPOSITION, himage1, himage2 );

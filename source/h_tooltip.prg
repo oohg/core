@@ -356,8 +356,8 @@ METHOD Title( cTitle ) CLASS TToolTip
 #include "hbapi.h"
 #include "oohg.h"
 
-LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
-LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
+static LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
+static LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
 
 typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
 
@@ -475,7 +475,7 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    }
    else
    {
-      ti.lpszText = (LPSTR) hb_parc( 2 );
+      ti.lpszText = ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) );
    }
 
    SendMessage( hWnd_ToolTip, (UINT) TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti );

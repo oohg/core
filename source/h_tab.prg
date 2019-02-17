@@ -1932,7 +1932,7 @@ HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, 
 
    for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
    {
-      tie.pszText = ( LPTSTR ) hb_arrayGetCPtr( hArray, i );
+      tie.pszText = ( LPTSTR ) HB_UNCONST( hb_arrayGetCPtr( hArray, i ) );
       TabCtrl_InsertItem( hCtrl, 0, &tie );
    }
 
@@ -1971,7 +1971,7 @@ HB_FUNC( TABCTRL_INSERTITEM )
 
    tie.mask = TCIF_TEXT;
    tie.iImage = -1;
-   tie.pszText = ( char * ) hb_parc( 3 );
+   tie.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
 
    TabCtrl_InsertItem( HWNDparam( 1 ), i, &tie );
 }
@@ -1988,7 +1988,7 @@ HB_FUNC( SETTABCAPTION )
    TC_ITEM tie;
 
    tie.mask = TCIF_TEXT ;
-   tie.pszText = ( char * ) hb_parc(3) ;
+   tie.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
 
    TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ) - 1, &tie );
 }

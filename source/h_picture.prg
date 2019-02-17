@@ -607,7 +607,6 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
 
    if( oSelf->lAux[ 1 ] == 90 || oSelf->lAux[ 1 ] == 270 )
    {
-      int iAux;
       iAux = iWidth;
       iWidth = iHeight;
       iHeight = iAux;
@@ -685,7 +684,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
                   _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
                }
                EndPaint( hWnd, &ps );
-               hb_retni( 0 );
+               hb_retni( 0 );                 // TODO: Check if retval is OK or must be 1
             }
          }
          break;

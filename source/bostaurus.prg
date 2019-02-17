@@ -993,7 +993,7 @@ HGLOBAL bt_LoadFileFromDisk( TCHAR *FileName )
 }
 
 
-BOOL _bt_OleInitialize_Flag_ = FALSE;
+static BOOL _bt_OleInitialize_Flag_ = FALSE;
 
 HBITMAP bt_LoadOLEPicture( TCHAR *FileName, TCHAR *TypePictureResource, BOOL bColorOnColor )    // Loads GIF and JPG images
 {
@@ -1064,7 +1064,7 @@ HBITMAP bt_LoadOLEPicture( TCHAR *FileName, TCHAR *TypePictureResource, BOOL bCo
 
 
 /*
-GDI Plus: Functions and Definitions
+GDI Plus: Functions and Definitions TODO: Check against c_gdiplus.c
 */
 /*
 typedef enum GpStatus {
@@ -2066,11 +2066,11 @@ HB_FUNC( BT_DRAW_HDC_TEXTOUT )    // ( hDC, x, y, Text, FontName, FontSize, Text
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
 
-   hDC         = ( HDC )      HB_PARNL( 1 );
+   hDC         = (HDC)      HB_PARNL( 1 );
    x           = (INT)      hb_parni( 2 );
    y           = (INT)      hb_parni( 3 );
-   Text        = (TCHAR *)  hb_parc( 4 );
-   FontName    = (TCHAR *)  hb_parc( 5 );
+   Text        = (TCHAR *)  HB_UNCONST( hb_parc( 4 ) );
+   FontName    = (TCHAR *)  HB_UNCONST( hb_parc( 5 ) );
    FontSize    = (INT)      hb_parni( 6 );
    Text_Color  = (COLORREF) hb_parnl( 7 );
    Back_Color  = (COLORREF) hb_parnl( 8 );
@@ -2156,13 +2156,13 @@ HB_FUNC( BT_DRAW_HDC_DRAWTEXT )    // ( hDC, x, y, w, h, Text, FontName, FontSiz
    INT      Bold = FW_NORMAL;
    INT      Italic = 0, Underline = 0, StrikeOut = 0;
 
-   hDC         = ( HDC )      HB_PARNL( 1 );
+   hDC         = (HDC)      HB_PARNL( 1 );
    x           = (INT)      hb_parni( 2 );
    y           = (INT)      hb_parni( 3 );
    w           = (INT)      hb_parni( 4 );
    h           = (INT)      hb_parni( 5 );
-   Text        = (TCHAR *)  hb_parc( 6 );
-   FontName    = (TCHAR *)  hb_parc( 7 );
+   Text        = (TCHAR *)  HB_UNCONST( hb_parc( 6 ) );
+   FontName    = (TCHAR *)  HB_UNCONST( hb_parc( 7 ) );
    FontSize    = (INT)      hb_parni( 8 );
    Text_Color  = (COLORREF) hb_parnl( 9 );
    Back_Color  = (COLORREF) hb_parnl( 10 );
@@ -2240,9 +2240,9 @@ HB_FUNC( BT_DRAW_HDC_TEXTSIZE )    // ( hDC, Text, FontName, FontSize, Type )
    UINT     iFirstChar, iLastChar;
    ABCFLOAT ABCfloat;
 
-   hDC      = ( HDC )     HB_PARNL( 1 );
-   Text     = (TCHAR *) hb_parc( 2 );
-   FontName = (TCHAR *) hb_parc( 3 );
+   hDC      = (HDC)     HB_PARNL( 1 );
+   Text     = (TCHAR *) HB_UNCONST( hb_parc( 2 ) );
+   FontName = (TCHAR *) HB_UNCONST( hb_parc( 3 ) );
    FontSize = (INT)     hb_parni( 4 );
    Type     = (INT)     hb_parni( 5 );
 
@@ -2477,7 +2477,7 @@ HB_FUNC( BT_BMP_LOADFILE )    // ( cFileBMP, ClrOnClr )
    TCHAR   *FileName;
    BOOL    ClrOnClr;
 
-   FileName = (TCHAR *) hb_parc( 1 );
+   FileName = (TCHAR *) HB_UNCONST( hb_parc( 1 ) );
    ClrOnClr = (BOOL)    hb_parl( 2 );
 
    // First find BMP image in resourses (.EXE file)
@@ -2524,7 +2524,7 @@ HB_FUNC( BT_BMP_LOADFILE )    // ( cFileBMP, ClrOnClr )
 
 HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWidth ], [ nNewHeight ], [ ModeStretch ] )
 {
-   TCHAR         *FileName       = (TCHAR *) hb_parc( 1 );
+   TCHAR         *FileName       = (TCHAR *) HB_UNCONST( hb_parc( 1 ) );
    COLORREF      BackgroundColor = (COLORREF) RGB( HB_PARNL2( 2, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 3 ) );
    INT           ModeStretch     = HB_ISNUM( 5 ) ? (INT) hb_parnl( 5 ) : BT_SCALE;
    HDC           memDC;
@@ -2724,7 +2724,7 @@ BOOL bt_bmp_SaveFile( HBITMAP hBitmap, TCHAR* FileName, INT nTypePicture )
 HB_FUNC( BT_BMP_SAVEFILE )    // ( hBitmap, cFileName, nType )
 {
    HBITMAP hBitmap      = (HBITMAP) HB_PARNL( 1 );
-   TCHAR  *FileName     = (TCHAR *) hb_parc( 2 );
+   TCHAR  *FileName     = (TCHAR *) HB_UNCONST( hb_parc( 2 ) );
    INT     nTypePicture = (INT)     hb_parnl( 3 );
 
    hb_retl( (BOOL) bt_bmp_SaveFile( hBitmap, FileName, nTypePicture ) );
@@ -3258,7 +3258,7 @@ typedef struct {
 
 HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
 {
-   #define bt_RGB_TO_GRAY( R, G, B ) (INT) ( (FLOAT) R * 0.299 + (FLOAT) G * 0.587 + (FLOAT) B * 0.114 )
+   #define bt_RGB_TO_GRAY( R, G, B ) (INT) ( (FLOAT) ( R * 0.299 ) + (FLOAT) ( G * 0.587 ) + (FLOAT) ( B * 0.114 ) )
    #define bt_GAMMA( index, gamma ) ( min( 255, (INT) ( ( 255.0 * pow( ( (DOUBLE) index / 255.0 ), ( 1.0 / (DOUBLE) gamma ) ) ) + 0.5 ) ) )
 
    HGLOBAL         hBits;
@@ -3289,8 +3289,8 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
          break;
 
       case BT_BMP_PROCESS_GRAYNESS:
-         GrayLevel = (FLOAT) hb_parnd( 3 ) / 100.0;
-         if( GrayLevel <= 0.0 || GrayLevel > 1.0 )
+         GrayLevel = ( FLOAT ) ( hb_parnd( 3 ) / 100.0 );
+         if( GrayLevel <= 0 || GrayLevel > 1 )
          {
             hb_retl( FALSE );
             return;
@@ -3625,7 +3625,7 @@ Color_Fill_Bk (mode rotate) = color to fill the empty spaces the background
 */
 
 
-const double pi = 3.14159265358979323846;
+static const double pi = 3.14159265358979323846;
 
 HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnClr ) ---> Return New_hBitmap
 {
@@ -3683,7 +3683,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
 
    if( ( Mode & BT_BITMAP_ROTATE ) == BT_BITMAP_ROTATE )
    {
-      if( ( Angle <= 0.0 ) || ( Angle > 360.0 ) )
+      if( ( Angle <= 0 ) || ( Angle > 360 ) )
          Angle = 360.0;
 
       // Angle = ángulo en grados
@@ -3713,7 +3713,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
       xform2.eDx  = (FLOAT) 0.0;
       xform2.eDy  = (FLOAT) 0.0;
 
-      if( Angle <= 90.0 )
+      if( Angle <= 90 )
       {
          xform2.eDx = (FLOAT) - x3;
          xform2.eDy = (FLOAT) 0.0;
@@ -3722,7 +3722,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          Height = ( LONG ) dABS( y2 );
       }
 
-      if( ( Angle > 90.0 ) && ( Angle <= 180.0 ) )
+      if( ( Angle > 90 ) && ( Angle <= 180 ) )
       {
          xform2.eDx = (FLOAT) - x2;
          xform2.eDy = (FLOAT) - y3;
@@ -3731,7 +3731,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          Height = ( LONG ) dABS( ( y3 - y1 ) );
       }
 
-      if( ( Angle > 180.0 ) && ( Angle <= 270.0 ) )
+      if( ( Angle > 180 ) && ( Angle <= 270 ) )
       {
          xform2.eDx = (FLOAT) - x1;
          xform2.eDy = (FLOAT) - y2;
@@ -3740,7 +3740,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
          Height = ( LONG ) dABS( y2 );
       }
 
-      if( ( Angle > 270.0 ) && ( Angle <= 360.0 ) )
+      if( ( Angle > 270 ) && ( Angle <= 360 ) )
       {
          xform2.eDx = (FLOAT) 0.0;
          xform2.eDy = (FLOAT) - y1;
@@ -3752,12 +3752,12 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
       Width ++;
       Height ++;
 
-      if( ( Angle == 0.0 ) || ( Angle == 180.0 ) || ( Angle == 360.0 ) )
+      if( ( Angle == 0 ) || ( Angle == 180 ) || ( Angle == 360 ) )
       {
          Width  = bm.bmWidth;
          Height = bm.bmHeight;
       }
-      if( ( Angle == 90.0 ) || ( Angle == 270.0 ) )
+      if( ( Angle == 90 ) || ( Angle == 270 ) )
       {
          Width  = bm.bmHeight;
          Height = bm.bmWidth;
@@ -4046,8 +4046,8 @@ HB_FUNC( BT_TEXTOUT_SIZE )    // ( hWnd, Text, FontName, FontSize, Type ) --> { 
    INT   Escapement = 0;
 
    hWnd        = HWNDparam( 1 );
-   Text        = (TCHAR *)  hb_parc( 2 );
-   FontName    = (TCHAR *)  hb_parc( 3 );
+   Text        = (TCHAR *)  HB_UNCONST( hb_parc( 2 ) );
+   FontName    = (TCHAR *)  HB_UNCONST( hb_parc( 3 ) );
    FontSize    = (INT)      hb_parni( 4 );
    Type        = (INT)      hb_parni( 5 );
 
@@ -4421,7 +4421,7 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
 
    if( HB_ISCHAR( 1 ) )
    {
-      TCHAR *cPath = (TCHAR*) hb_parc( 1 );
+      const TCHAR *cPath = hb_parc( 1 );
       if( IShellFolder2_ParseDisplayName( psfDeskTop, NULL, NULL, hb_mbtowc( cPath ), &chEaten, &pidlFolders, NULL ) != S_OK )
          return;
    }
@@ -4481,7 +4481,7 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
       Found_Ok = FALSE;
 
       uAttr = SFGAO_FOLDER | SFGAO_STREAM | SFGAO_ISSLOW;
-      if( IShellFolder2_GetAttributesOf( psfFolders, 1, (LPCITEMIDLIST *) &pidlItems, &uAttr ) != S_OK )
+      if( IShellFolder2_GetAttributesOf( psfFolders, 1, ( LPCITEMIDLIST * ) &pidlItems, &uAttr ) != S_OK )
          break;
 
       if( ( nFlags & SHCONTF_FOLDERS ) && ( uAttr & SFGAO_FOLDER ) && ! ( uAttr & SFGAO_STREAM ) && ! ( uAttr & SFGAO_ISSLOW ) )

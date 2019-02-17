@@ -348,11 +348,11 @@ HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nR
 HB_FUNC( SETDATEPICK )
 {
    SYSTEMTIME sysTime;
-   char *cDate;
+   const CHAR *cDate;
 
    memset( &sysTime, 0, sizeof( sysTime ) );
 
-   cDate = ( char * ) hb_pards( 2 );
+   cDate = hb_pards( 2 );
    if( ! ( cDate[ 0 ] == ' ' ) )
    {
       sysTime.wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +
@@ -383,14 +383,14 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    SYSTEMTIME sysTime[ 2 ];
-   char *cDate;
+   const CHAR *cDate;
    WPARAM wLimit = 0;
 
    if( HB_ISDATE( 1 ) && HB_ISDATE( 2 ) )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 
-      cDate = ( char * ) hb_pards( 1 );
+      cDate = hb_pards( 1 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 0 ].wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +
@@ -401,7 +401,7 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
          wLimit |= GDTR_MIN;
       }
 
-      cDate = ( char * ) hb_pards( 2 );
+      cDate = hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 1 ].wYear  = (WORD) ( ( ( cDate[ 0 ] - '0' ) * 1000 ) +

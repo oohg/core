@@ -218,7 +218,7 @@ HB_FUNC( SETIPADDRESS )          /* FUNCTION SetIPAddress( hWnd, cIP or nF1, NIL
 
    if( HB_ISCHAR( 2 ) )
    {
-      v = ( BYTE * ) hb_parc( 2 );
+      v = ( BYTE * ) HB_UNCONST( hb_parc( 2 ) );
       v1 = v[ 0 ];
       v2 = v[ 1 ];
       v3 = v[ 2 ];

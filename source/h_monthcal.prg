@@ -535,11 +535,11 @@ HB_FUNC( ADJUSTMONTHCALSIZE )
 HB_FUNC( SETMONTHCAL )
 {
    SYSTEMTIME sysTime;
-   char *cDate;
+   const char *cDate;
 
    if( HB_ISDATE( 2 ) )
    {
-      cDate = (char *) hb_pards( 2 );
+      cDate = hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          memset( &sysTime, 0, sizeof( sysTime ) );
@@ -752,14 +752,14 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    SYSTEMTIME sysTime[ 2 ];
-   char *cDate;
+   const char *cDate;
    WPARAM wLimit = 0;
 
    if( HB_ISDATE( 1 ) && HB_ISDATE( 2 ) )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 
-      cDate = (char *) hb_pards( 1 );
+      cDate = hb_pards( 1 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 0 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
@@ -770,7 +770,7 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
          wLimit |= GDTR_MIN;
       }
 
-      cDate = ( char * ) hb_pards( 2 );
+      cDate = hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 1 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
@@ -788,13 +788,13 @@ HB_FUNC_STATIC( TMONTHCAL_SETRANGE )
 HB_FUNC( SETMONTHCALRANGE )
 {
    SYSTEMTIME sysTime[ 2 ];
-   char *cDate;
+   const char *cDate;
 
    if( HB_ISDATE( 2 ) && HB_ISDATE( 3 ) )
    {
       memset( &sysTime, 0, sizeof( sysTime ) );
 
-      cDate = (char *) hb_pards( 2 );
+      cDate = hb_pards( 2 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 0 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +
@@ -804,7 +804,7 @@ HB_FUNC( SETMONTHCALRANGE )
          sysTime[ 0 ].wDay   = (WORD) ( ( ( (int) cDate[ 6 ] - '0' ) * 10 ) + ( (int) cDate[ 7 ] - '0' ) );
       }
 
-      cDate = (char *) hb_pards( 3 );
+      cDate = hb_pards( 3 );
       if( ! ( cDate[ 0 ] == ' ' ) )
       {
          sysTime[ 1 ].wYear  = (WORD) ( ( ( (int) cDate[ 0 ] - '0' ) * 1000 ) +

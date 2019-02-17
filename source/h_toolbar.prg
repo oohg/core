@@ -910,7 +910,7 @@ HB_FUNC( SHOWTOOLBUTTONTIP )
    LPTOOLTIPTEXT lpttt;
    lpttt = ( LPTOOLTIPTEXT ) HB_PARNL( 1 );
    lpttt->hinst = GetModuleHandle( NULL );
-   lpttt->lpszText = ( LPSTR ) hb_parc( 2 );
+   lpttt->lpszText = ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) );
 }
 
 HB_FUNC( GETTOOLBUTTONID )
@@ -965,7 +965,7 @@ HB_FUNC( SETTOOLBUTTONCAPTION )
    memset( &tbbtn, 0, sizeof( tbbtn ) );
    tbbtn.cbSize  = sizeof( TBBUTTONINFO );
    tbbtn.dwMask  = TBIF_TEXT;
-   tbbtn.pszText = ( LPTSTR ) hb_parc( 3 );
+   tbbtn.pszText = ( LPTSTR ) HB_UNCONST( hb_parc( 3 ) );
 
    SendMessage( HWNDparam( 1 ), TB_SETBUTTONINFO, ( WPARAM ) lpBtn.idCommand, ( LPARAM ) &tbbtn );
 }

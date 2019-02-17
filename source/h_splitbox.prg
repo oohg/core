@@ -315,7 +315,7 @@ HB_FUNC( ADDSPLITBOXITEM )
    rbBand.fStyle     = Style ;
    rbBand.hbmBack    = 0;
    rbBand.wID        = iID;
-   rbBand.lpText     = ( char * ) hb_parc( 5 );
+   rbBand.lpText     = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
    rbBand.hwndChild  = HWNDparam( 1 );
 
    if ( !hb_parl( 8 ) )
@@ -375,7 +375,7 @@ HB_FUNC( SETSPLITBOXITEM )
    if( HB_ISCHAR( 5 ) )
    {
       rbBand.fMask |= RBBIM_TEXT;
-      rbBand.lpText = ( char * ) hb_parc( 5 );
+      rbBand.lpText = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
    }
 
    GetWindowRect( HWNDparam( 1 ), &rc );

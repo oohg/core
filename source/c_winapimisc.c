@@ -108,7 +108,7 @@ HB_FUNC( WAITRUNPIPE )
    HANDLE ReadPipeHandle;
    HANDLE WritePipeHandle;       // not used here
    CHAR Data[1024];
-   CHAR * szFile = ( CHAR * ) hb_parc( 3 );
+   const CHAR * szFile = hb_parc( 3 );
    HB_FHANDLE nHandle;
    SECURITY_ATTRIBUTES sa;
 
@@ -142,7 +142,7 @@ HB_FUNC( WAITRUNPIPE )
    StartupInfo.hStdOutput = WritePipeHandle;
    StartupInfo.hStdError = WritePipeHandle;
 
-   if( ! CreateProcess( 0, ( CHAR * ) hb_parc( 1 ), 0, 0, FALSE,
+   if( ! CreateProcess( 0, ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ), 0, 0, FALSE,
                         CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
                         0, 0, &StartupInfo, &ProcessInfo ) )
    {
@@ -243,7 +243,7 @@ HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko
    bi.hwndOwner = hwnd;
    bi.pidlRoot = NULL;
    bi.pszDisplayName = lpBuffer;
-   bi.lpszTitle = ( CHAR * ) hb_parc( 1 );
+   bi.lpszTitle = ( LPCSTR ) hb_parc( 1 );
    bi.ulFlags = 0;
    bi.lpfn = NULL;
    bi.lParam = 0;
@@ -454,7 +454,7 @@ HB_FUNC( WAITRUN )
    stInfo.wShowWindow = (SHORT) hb_parni( 2 );
 
    bResult = CreateProcess( NULL,
-                            ( CHAR * ) hb_parc( 1 ),
+                            ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ),
                             NULL,
                             NULL,
                             TRUE,
@@ -482,7 +482,7 @@ HB_FUNC( CREATEMUTEX )
 
    if( HB_ISCHAR( 2 ) && ! HB_ISNIL( 1 ) )
    {
-      sa = ( SECURITY_ATTRIBUTES * ) hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) );
+      sa = ( SECURITY_ATTRIBUTES * ) HB_UNCONST( hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) ) );
    }
 
    HB_RETNL( ( LONG_PTR ) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
@@ -759,15 +759,14 @@ HB_FUNC( WINVERSION )
 
             if( osvi.dwMajorVersion == 10 )
             {
-               HKEY hKey;
-               LONG lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                            _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
-                                            0,
-                                            KEY_QUERY_VALUE,
-                                            &hKey);
+               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                                       _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
+                                       0,
+                                       KEY_QUERY_VALUE,
+                                       &hKey);
                if( lRetVal == ERROR_SUCCESS )
                {
-                  DWORD dwBufLen = 0;
+                  dwBufLen = 0;
                   lRetVal = RegQueryValueEx( hKey,
                                              _TEXT( "ReleaseId" ),
                                              NULL,
@@ -776,7 +775,7 @@ HB_FUNC( WINVERSION )
                                              &dwBufLen );
                   if( lRetVal == ERROR_SUCCESS )
                   {
-                     BYTE * lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( ( INT ) dwBufLen + 1 ) );
+                     lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( ( INT ) dwBufLen + 1 ) );
                      lRetVal = RegQueryValueEx( hKey,
                                                 _TEXT( "ReleaseId" ),
                                                 NULL,
@@ -809,12 +808,11 @@ HB_FUNC( WINVERSION )
             }
             else if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, _TEXT( "Service Pack 6" ) ) == 0 )
             {
-               HKEY hKey;
-               LONG lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                            _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ),
-                                            0,
-                                            KEY_QUERY_VALUE,
-                                            &hKey );
+               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                                       _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ),
+                                       0,
+                                       KEY_QUERY_VALUE,
+                                       &hKey );
                if( lRetVal == ERROR_SUCCESS )
                {
                   szServicePack = _TEXT( "Service Pack 6a" );
@@ -927,7 +925,7 @@ HB_FUNC( GETCOMPACTPATH )
       }
       else
       {
-         hb_retl( PathCompactPathExA( ( LPTSTR ) hb_parc( 1 ), ( LPTSTR ) hb_parc( 2 ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) ) );
+         hb_retl( PathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) ) );
       }
       FreeLibrary( hDll );
    }

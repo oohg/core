@@ -2114,7 +2114,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    }
    if( bPaint )
    {
-      /* Paint using a brush derived from the BACKGROUND object or the TAB */
+        /* Paint using a brush derived from the BACKGROUND object or the TAB */
       SetBkMode( hdc, TRANSPARENT );
       DeleteObject( oSelf->BrushHandle );
       oSelf->BrushHandle = GetTabBrush( hwnd );
@@ -2519,7 +2519,8 @@ EXTERN _OOHG_UnTransform
 
 HB_FUNC( _OOHG_UNTRANSFORM )
 {
-   char *cText, *cPicture, *cReturn, cType;
+   const char *cText, *cPicture;
+   char *cReturn, cType;
    ULONG iText, iPicture, iReturn, iMax;
    BOOL bSign, bIgnoreMasks, bPadLeft;
 
@@ -2532,8 +2533,8 @@ HB_FUNC( _OOHG_UNTRANSFORM )
    }
    else if( iText )
    {
-      cText = ( char * ) hb_parc( 1 );
-      cPicture = ( char * ) hb_parc( 2 );
+      cText = ( const char * ) hb_parc( 1 );
+      cPicture = ( const char * ) hb_parc( 2 );
       cReturn = ( char * ) hb_xgrab( iMax );
       iReturn = 0;
 

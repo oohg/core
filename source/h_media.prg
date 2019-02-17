@@ -256,7 +256,7 @@ HB_FUNC( INITANIMATE )
 
 HB_FUNC( OPENANIMATE )
 {
-   Animate_Open( HWNDparam( 1 ), hb_parc(2));
+   Animate_Open( HWNDparam( 1 ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ) );
 }
 
 HB_FUNC( PLAYANIMATE )
@@ -316,7 +316,7 @@ HB_FUNC( MCIFUNC )
       case  6:  hb_retnl( MCIWndEject(mcihand)) ; break;
       case  7:  hb_retnl( MCIWndEnd(mcihand)) ; break;
       case  8:  hb_retnl( MCIWndHome(mcihand)) ; break;
-      case  9:  hb_retnl( MCIWndOpen(mcihand,hb_parc(3),NULL)) ; break;
+      case  9:  hb_retnl( MCIWndOpen(mcihand, (LPTSTR ) HB_UNCONST( hb_parc( 3 ) ),NULL)) ; break;
       case 10:  hb_retnl( MCIWndOpenDialog(mcihand)) ; break;
       case 11:  hb_retnl( MCIWndPlayReverse(mcihand)) ; break;
       case 12:  hb_retnl( MCIWndResume(mcihand)) ; break;

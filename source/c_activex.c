@@ -444,12 +444,11 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
 
 #else
 
-   ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ),
-      NULL, NULL, 0
    #ifdef __XHARBOUR__
-      , 0
+      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0, 0 );
+   #else
+      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0 );
    #endif
-      );
 
    if ( ulPos )
    {
@@ -595,10 +594,10 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 {
    IConnectionPointContainer*  pIConnectionPointContainerTemp = NULL;
    IUnknown*                   pIUnknown = NULL;
-   IConnectionPoint*           m_pIConnectionPoint;
+   IConnectionPoint*           m_pIConnectionPoint = NULL;
    IEnumConnectionPoints*      m_pIEnumConnectionPoints;
    HRESULT                     hr; //,r;
-   IID                         rriid;
+   IID                         rriid = IID_NULL;
    register IEventHandler *    selfobj;
    DWORD                       dwCookie = 0;
 
@@ -617,7 +616,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
    else
    {
       // Store IEventHandler's VTable in the object
-      selfobj->lpVtbl = (IEventHandlerVtbl *) &IEventHandler_Vtbl;
+      selfobj->lpVtbl = (IEventHandlerVtbl *) HB_UNCONST( &IEventHandler_Vtbl );
 
       // Increment the reference count so we can call Release() below and
       // it will deallocate only if there is an error with QueryInterface()

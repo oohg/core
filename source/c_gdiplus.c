@@ -171,25 +171,25 @@ BOOL LoadGdiPlusDll( void );
 BOOL GetEnCodecClsid( const char *, CLSID * );
 LONG LoadImageFromFile( const char *, void** );
 
-void *GdiPlusHandle = NULL;
-ULONG GdiPlusToken = 0;
-unsigned char *MimeTypeOld;
+static void *GdiPlusHandle = NULL;
+static ULONG GdiPlusToken = 0;
+static unsigned char *MimeTypeOld;
 
-GDIPLUS_STARTUP_INPUT GdiPlusStartupInput;
-GDIPLUSSTARTUP GdiPlusStartup;
-GDIPLUSSHUTDOWN GdiPlusShutdown;
-GDIPCREATEBITMAPFROMHBITMAP GdipCreateBitmapFromHBITMAP;
-GDIPGETIMAGEENCODERSSIZE GdipGetImageEncodersSize;
-GDIPGETIMAGEENCODERS GdipGetImageEncoders;
-GDIPSAVEIMAGETOFILE GdipSaveImageToFile;
-GDIPLOADIMAGEFROMSTREAM GdipLoadImageFromStream;
-GDIPCREATEBITMAPFROMSTREAM GdipCreateBitmapFromStream;
-GDIPCREATEHBITMAPFROMBITMAP GdipCreateHBITMAPFromBitmap;
-GDIPDISPOSEIMAGE GdipDisposeImage;
-GDIPGETIMAGETHUMBNAIL GdipGetImageThumbnail;
-GDIPLOADIMAGEFROMFILE GdipLoadImageFromFile;
-GDIPGETIMAGEWIDTH GdipGetImageWidth;
-GDIPGETIMAGEHEIGHT GdipGetImageHeight;
+static GDIPLUS_STARTUP_INPUT GdiPlusStartupInput;
+static GDIPLUSSTARTUP GdiPlusStartup;
+static GDIPLUSSHUTDOWN GdiPlusShutdown;
+static GDIPCREATEBITMAPFROMHBITMAP GdipCreateBitmapFromHBITMAP;
+static GDIPGETIMAGEENCODERSSIZE GdipGetImageEncodersSize;
+static GDIPGETIMAGEENCODERS GdipGetImageEncoders;
+static GDIPSAVEIMAGETOFILE GdipSaveImageToFile;
+static GDIPLOADIMAGEFROMSTREAM GdipLoadImageFromStream;
+static GDIPCREATEBITMAPFROMSTREAM GdipCreateBitmapFromStream;
+static GDIPCREATEHBITMAPFROMBITMAP GdipCreateHBITMAPFromBitmap;
+static GDIPDISPOSEIMAGE GdipDisposeImage;
+static GDIPGETIMAGETHUMBNAIL GdipGetImageThumbnail;
+static GDIPLOADIMAGEFROMFILE GdipLoadImageFromFile;
+static GDIPGETIMAGEWIDTH GdipGetImageWidth;
+static GDIPGETIMAGEHEIGHT GdipGetImageHeight;
 
 static gPlusImagePtr hb_pargPlusImage( int );
 static void hb_retgPlusImage( gPlusImagePtr );
@@ -812,7 +812,7 @@ LONG LoadImageFromFile( const char *FileName, gPlusImagePtr gImage )
 
 HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
 {
-   gPlusImage gImage;
+   gPlusImage gImage = 0;
    IStream *iStream;
    HGLOBAL hGlobal;
    int iSize;
@@ -826,7 +826,6 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
    }
    if( hGlobal )
    {
-      gImage = 0;
       memset( hGlobal, 0, iSize );
       memcpy( hGlobal, hb_parc( 1 ), iSize );
       CreateStreamOnHGlobal( hGlobal, FALSE, &iStream );

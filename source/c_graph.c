@@ -645,7 +645,7 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )
             pItem = hb_arrayGetItemPtr( pArray, ulPos );
             if( HB_IS_STRING( pItem ) )
             {
-               _OOHG_GraphCommand( hDC, ( struct _OOHG_GraphData * ) hb_itemGetCPtr( pItem ) );
+               _OOHG_GraphCommand( hDC, ( struct _OOHG_GraphData * ) HB_UNCONST( hb_itemGetCPtr( pItem ) ) );
             }
          }
          ReleaseDC( hWnd, hDC );
