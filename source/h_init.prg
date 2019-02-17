@@ -72,7 +72,7 @@ STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }     
 INIT PROCEDURE _OOHG_INIT()
 
    // Init mutexes
-   TApplication():Define()
+   TApplication():New()
 
    // TODO: Move to TApplication or make thread safe ?
    InitMessages()
