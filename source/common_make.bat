@@ -36,10 +36,16 @@ rem
       if errorlevel 1 (
          set OOHG_FILE=%%a
          goto ERROR ) )
+   if not exist winprint.prg echo winprint.prg is missing !!!
+   if not exist winprint.prg goto ERROR
    if exist winprint.prg  %HG_HRB%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
+   if not exist miniprint.prg echo miniprint.prg is missing !!!
+   if not exist miniprint.prg goto ERROR
    if exist miniprint.prg %HG_HRB%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
+   if not exist bostaurus.prg echo bostaurus.prg is missing !!!
+   if not exist bostaurus.prg goto ERROR
    if exist bostaurus.prg %HG_HRB%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
    goto END
