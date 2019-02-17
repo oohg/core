@@ -143,8 +143,8 @@ PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 
 #define _MDI_Limit 64
 
-int _MDI_Count = 0;
-HWND _MDI_Items[ _MDI_Limit ][ 2 ];
+static int _MDI_Count = 0;
+static HWND _MDI_Items[ _MDI_Limit ][ 2 ];
 
 HB_FUNC( _OOHG_ADDMDI )
 {
@@ -212,7 +212,6 @@ void _OOHG_ProcessMessage( PMSG Msg )
          {
             int iPos;
             int bLoop = 1;
-            HWND hWnd;
             hWnd = Msg->hwnd;
             while( bLoop )
             {
@@ -315,12 +314,12 @@ HB_FUNC( SHOWWINDOW )
    ShowWindow( HWNDparam( 1 ), SW_SHOW );
 }
 
-HB_FUNC( _EXITPROCESS )
+DECLSPEC_NORETURN HB_FUNC( _EXITPROCESS )
 {
    ExitProcess( ( UINT ) hb_parni( 1 ) );
 }
 
-HB_FUNC( _EXITPROCESS2 )
+DECLSPEC_NORETURN HB_FUNC( _EXITPROCESS2 )
 {
 
    /*  NOTE: This duplicated/useless OLE initialization/release is
@@ -340,7 +339,7 @@ HB_FUNC( INITSTATUS )
    hs = CreateStatusWindow( WS_CHILD | WS_BORDER | WS_VISIBLE, "", HWNDparam( 1 ), ( UINT ) hb_parni( 3 ) );
 
    SendMessage( hs, SB_SIMPLE, TRUE, 0 );
-   SendMessage( hs, SB_SETTEXT, 255, (LPARAM) (LPSTR) hb_parc( 2 ) );
+   SendMessage( hs, SB_SETTEXT, 255, (LPARAM) hb_parc( 2 ) );
    HWNDret( hs );
 }
 
@@ -349,7 +348,7 @@ HB_FUNC( SETSTATUS )
    HWND hwnd = HWNDparam( 1 );
 
    SendMessage( hwnd, SB_SIMPLE, TRUE, 0 );
-   SendMessage( hwnd, SB_SETTEXT, 255, (LPARAM) (LPSTR) hb_parc( 2 ) );
+   SendMessage( hwnd, SB_SETTEXT, 255, (LPARAM) hb_parc( 2 ) );
 }
 
 HB_FUNC( MAXIMIZE )
@@ -944,7 +943,7 @@ HB_FUNC( _SAVEBITMAP )                   // hBitmap, cFile
    HANDLE hDIB;
 
    hDIB = DDBToDIB( (HBITMAP) HWNDparam( 1 ), NULL );
-   SaveDIB( hDIB, (LPSTR) hb_parc( 2 ) );
+   SaveDIB( hDIB, ( LPSTR ) HB_UNCONST( hb_parc( 2 ) ) );
    GlobalFree( hDIB );
 }
 
@@ -956,7 +955,7 @@ HB_FUNC( WNDCOPY )  //  hWnd, bAll, cFile        Copies any Window to the Clipbo
    RECT rct;
    HBITMAP hBitmap, hOldBmp;
    HPALETTE hPal = NULL;
-   LPSTR myFile = (char *) hb_parc( 3 );
+   LPSTR myFile = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
    HANDLE hDIB;
    int iTop, iLeft;
 
@@ -1404,7 +1403,7 @@ HBRUSH GetTabBrush( HWND hWnd )
 
    hOldBmp = (HBITMAP) SelectObject( hDCMem, hBmp );
 
-   SendMessage( hWnd, WM_PRINT, (WPARAM) hDCMem, (LPARAM) ( PRF_ERASEBKGND | PRF_CLIENT | PRF_NONCLIENT ) );
+   BitBlt( hDCMem, 0, 0, rc.right - rc.left, rc.bottom - rc.top, hDC, 0, 0, SRCCOPY );
 
    hBrush = CreatePatternBrush( hBmp );
 
