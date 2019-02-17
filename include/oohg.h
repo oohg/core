@@ -276,6 +276,7 @@ HANDLE _OOHG_GlobalMutex( VOID );
 BOOL _OOHG_UseGDIP( VOID );
 HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr );
 BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, ULONG );
+VOID _oohg_calldump( CHAR * cTitle, CHAR * cOutput );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Table of symbols used at C level to access some datas and methods of different classes */
@@ -450,4 +451,10 @@ BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, U
 
 #ifdef _INCLUDE_OOHG_MENU_CONSTANTS_
    #include "menu.h"
+#endif
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/*  For Harbour 3.0 */
+#if ( __HARBOUR__ - 0 < 0x030200 ) 
+   #define HB_UNCONST( p ) ( ( void * ) ( HB_PTRUINT ) ( const void * ) ( p ) )
 #endif
