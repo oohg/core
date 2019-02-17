@@ -74,6 +74,14 @@
       => ;
          hb_HexToNum( <x> )
 
+   #xtranslate i18n( <x> ) ;
+      => ;
+         hb_i18n_gettext( <x> )
+
+   #xtranslate NumToHex( [<n,...>] ) ;
+      => ;
+         hb_NumToHex( <n> )
+
    #xtranslate CurDrive( [<x>] ) ;
       => ;
          hb_CurDrive( <x> )
