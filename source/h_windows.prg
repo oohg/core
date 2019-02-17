@@ -3029,6 +3029,22 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+void _oohg_calldump( CHAR * cTitle, CHAR * cOutput )
+{
+   static PHB_SYMB s_Func = 0;
+
+   if( ! s_Func )
+   {
+      s_Func = hb_dynsymSymbol( hb_dynsymFind( "_OOHG_CALLDUMP" ) );
+   }
+   hb_vmPushSymbol( s_Func );
+   hb_vmPushNil();
+   hb_vmPushString( cTitle, strlen( cTitle ) );
+   hb_vmPushString( cOutput, strlen( cOutput ) );
+   hb_vmDo( 2 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_EVAL )          /* FUNCTION _OOHG_Eval( bCodeblock ) -> uRet */
 {
    if( HB_ISBLOCK( 1 ) )
