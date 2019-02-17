@@ -12,6 +12,103 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-02-17 11:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     * Pacified some warnings under MINGW 8.1.0
+     ! MDI forms with VIRTUAL HEIGHT clause don't work properly.
+     ! Endless loop when painting at ON PAINT event.
+     ; This fix also restores Bostaurus functionality (now it works
+       in the same way that HMG Extended works).
+
+2019-02-17 11:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_dll.prg
+     * Pacified some warnings under MINGW 8.1.0
+
+2019-02-17 11:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Pacified some warnings under MINGW 8.1.0
+     * GetTabBrush function now uses BitBlt instead of WM_PRINT.
+     ; This fixes radiogroup's transparency when form's background
+       is painted at ON PAINT event.
+
+2019-02-17 11:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+   * core\source\c_activex.c
+   * core\source\c_controlmisc.c
+   * core\source\c_gdiplus.c
+   * core\source\c_graph.c
+   * core\source\c_image.c
+   * core\source\c_winapimisc.c
+   * core\source\h_controlmisc.prg
+   * core\source\h_crypt.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_grid.prg
+   * core\source\h_ini.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_listbox.prg
+   * core\source\h_media.prg
+   * core\source\h_menu.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_picture.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_tab.prg
+   * core\source\h_textarray.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tooltip.prg
+   * core\source\h_tree.prg
+   * core\source\miniprint.prg
+   * core\source\winprint.prg
+     * Pacified some warnings under MINGW 8.1.0
+
+2019-02-17 11:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + Function _oohg_calldump at C-level. It calls the homonymous
+       function at PRG-level.
+
+2019-02-17 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_pdf.prg
+     * Pacified some warnings under MINGW 8.1.0
+     - Some unneeded code.
+
+2019-02-17 11:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_notify.prg
+     ! Potencial buffer overrun at functions ChangeNotifyIcon,
+       ShowNotifyIcon and SetNotifyIconData.
+
+2019-02-17 11:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * Use TApplication:New() instead of TApplication:Define().
+
+2019-02-17 11:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     ! RTE at method Define (invalid self object).
+     * Method Define is no longer CONSTRUCTOR and it's sole purpose
+       is to return ::aAppObject.
+     + Method New to do what the old Method Define used to do.
+       Returns NIL.
+
+2019-02-17 10:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\common_make.bat
+     + Some error messages.
+
+2019-02-17 10:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + Prototype for _oohg_calldump.
+     + HB_UNCONST define for Harbour 3.0
+
+2019-02-17 10:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + WS_EX_COMPOSITED.
+
+2019-02-17 10:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     + Translation for i18n and NumToHex functions.
+
+2019-02-17 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_003.txt
+     ! Typo.
+
 2019-02-08 10:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_textarray.prg
      ! Controls shows no text.
