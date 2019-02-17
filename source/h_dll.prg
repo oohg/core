@@ -75,8 +75,8 @@ EXTERN PtrStr
 
 #define MAX_PARAMS  9
 
-HINSTANCE HB_DllStore[ 256 ];
-HINSTANCE HB_LoadDll( CHAR * );
+static HINSTANCE HB_DllStore[ 256 ];
+HINSTANCE HB_LoadDll( const CHAR * );
 VOID      HB_UnloadDll( VOID );
 typedef   INT ( CALLBACK * DYNACALL0 ) ( VOID );
 typedef   INT ( CALLBACK * DYNACALL1 ) ( INT d1 );
@@ -89,7 +89,7 @@ typedef   INT ( CALLBACK * DYNACALL7 ) ( INT d1, INT d2, INT d3, INT d4, INT d5,
 typedef   INT ( CALLBACK * DYNACALL8 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8 );
 typedef   INT ( CALLBACK * DYNACALL9 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8, INT d9 );
 
-HINSTANCE HB_LoadDll( CHAR * DllName )
+HINSTANCE HB_LoadDll( const CHAR * DllName )
 {
    static INT DllCnt = 0;
    static INT RegUnload = 0;
@@ -135,8 +135,8 @@ HB_FUNC( CALLDLL32 )
    DYNACALL1 lpAddr;
    INT result = -2000;
    CHAR buff[ 256 ];
-   CHAR * FuncName = ( CHAR * ) hb_parc( 1 );
-   CHAR * DllName = ( CHAR * ) hb_parc( 2 );
+   const CHAR * FuncName = ( const CHAR * ) hb_parc( 1 );
+   const CHAR * DllName = ( const CHAR * ) hb_parc( 2 );
    INT nArgs;
    INT dd[ MAX_PARAMS ];
 
@@ -175,7 +175,7 @@ HB_FUNC( CALLDLL32 )
       {
          if( HB_ISCHAR( i + 3 ) )
          {
-            dd[ i ] = ( INT ) ( char * ) hb_parc( i + 3 );
+            dd[ i ] = ( INT ) ( const char * ) hb_parc( i + 3 );
          }
          else if( ISPTR( i + 3 ) )
          {
@@ -237,7 +237,7 @@ HB_FUNC( CALLDLL32 )
 
 HB_FUNC( STRPTR )
 {
-   CHAR * cString = ( CHAR * ) hb_parc( 1 );
+   const CHAR * cString = ( const CHAR * ) hb_parc( 1 );
    HB_RETNL( ( LONG_PTR ) cString );
 }
 
