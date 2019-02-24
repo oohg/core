@@ -53,13 +53,13 @@ rem
 :INFO
 
    echo This file must be called from MAKELIB.BAT !!!
-   echo .
+   echo.
    goto END
 
 :ERROR
 
    if not .%3.==.. echo Error compiling %HG_ERRORAT%.prg !!!
-   if not .%3.==.. echo .
+   if not .%3.==.. echo.
    set HG_ERRORAT=
 
 :END

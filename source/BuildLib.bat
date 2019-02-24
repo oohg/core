@@ -110,7 +110,7 @@ rem -info to see informational messages
 
 :BUILDLIB_HM30
 
-   if "%HG_HRB%   "== "" set HG_HRB=%HG_ROOT%\hb30
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb30
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%

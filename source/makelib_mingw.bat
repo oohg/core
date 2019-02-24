@@ -91,5 +91,3 @@ rem
 :INFO
 
 :END
-
-   echo.

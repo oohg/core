@@ -46,7 +46,7 @@ rem
 :ERROR1
 
    echo This file must be called from BUILDLIB.BAT !!!
-   echo .
+   echo.
    goto END
 
 :RESTORE_PATH

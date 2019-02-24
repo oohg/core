@@ -148,10 +148,10 @@ rem
 
 :MAKELIB_HM30
 
-   if "%HG_HRB%   "== "" set HG_HRB=%HG_ROOT%\hb30
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb30
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
@@ -163,7 +163,7 @@ rem
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
@@ -175,7 +175,7 @@ rem
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb34
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
@@ -187,7 +187,7 @@ rem
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
    if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
    if "%HG_BCC%"   == "" set HG_BCC=c:\Borland\BCC55
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_BCC%
+   set HG_CCOMP=%HG_BCC%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
@@ -199,7 +199,7 @@ rem
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhmingw
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
