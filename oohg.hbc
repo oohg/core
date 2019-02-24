@@ -21,17 +21,14 @@ incpaths=${hb_curdir}
 # gui mode
 gt=gtgui
 
-# core lib
-libs=oohg
-
-# printing libs
-libs=hbprinter miniprint bostaurus
+# oohg libs
+libs=oohg hbprinter miniprint bostaurus
 
 # harbour contribs
-libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf libhpdf png
+libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbwin xhb hbzebra hbhpdf hbmemio png rddsql hbodbc sddodbc
+{HG_HB30}libs=libhpdf
+{HG_HB32}libs=libhpdf
+{HG_HB34}libs=hpdf
 
-# optional libs for HB 3.0
+# optional libs
 #libs=socket mysqldll dll hbmysql rddleto
-
-# system
-libs=msvfw32 vfw32 iphlpapi
