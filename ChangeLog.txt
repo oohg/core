@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-02-24 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\BuildLib.bat
+     ! HM30 build.
+   * core\source\BuildLib_hbmk2.bat
+   * core\source\common_make.bat
+     ! Echo displaying a dot.
+   * core\source\makelib.bat
+     ! HM30 build.
+     ! HG_CCOMP setting.
+   * core\source\makelib_mingw.bat
+     * Remove empty line at end.
+
 2019-02-24 01:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\buildapp.bat
    * core\BuildApp30.bat
@@ -38,7 +50,7 @@
    * core\source\makelib32.bat
    + core\source\makelib34.bat
    * core\source\makelib_bcc.bat
-   * core\source\makelib_hbmk2.bat
+   * core\source\makelib_mingw.bat
    + core\source\makelibXM.bat
      + Support for Viktor Szakats Harbour 3.4 + MinGW clang
        compiler (HM34).
