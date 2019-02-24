@@ -31,29 +31,50 @@ rem
 
 :TEST
 
-   if /I "%1" == "HB30" goto TEST_HB30
-   if /I "%1" == "HB32" goto TEST_HB32
+   if /I "%1" == "HM30" goto TEST_HM30
+   if /I "%1" == "HM32" goto TEST_HM32
+   if /I "%1" == "HM34" goto TEST_HM34
    if /I "%1" == "XB"   goto TEST_XB
+   if /I "%1" == "XM"   goto TEST_XM
 
-:DETECT_HB30
+:DETECT_HM30
 
-   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto DETECT_HB32
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto DETECT_HM32
    if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto SYNTAX
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib34.bat" goto SYNTAX
    if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto SYNTAX
-   goto COMPILE_HB30
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto SYNTAX
+   goto MAKELIB_HM30
 
-:DETECT_HB32
+:DETECT_HM32
 
-   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto DETECT_XB
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto DETECT_HM34
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib34.bat" goto SYNTAX
    if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto SYNTAX
-   goto COMPILE_HB32
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto SYNTAX
+   goto MAKELIB_HM32
+
+:DETECT_HM34
+
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLib34.bat" goto DETECT_XB
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto SYNTAX
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto SYNTAX
+   goto MAKELIB_HM34
 
 :DETECT_XB
 
-   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto COMPILE_XB
+   if not exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto DETECT_XM
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto SYNTAX
+   goto MAKELIB_XB
+
+:DETECT_XM
+
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto MAKELIB_XM
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLib30.bat not found !!!
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLib32.bat not found !!!
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib34.bat not found !!!
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat not found !!!
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -63,29 +84,43 @@ rem
 
    echo Syntax:
    echo    To build with Harbour 3.0 and MinGW
-   echo       MakeLib HB30 [options]
+   echo       MakeLib HM30 [options]
    echo   To build with Harbour 3.2 and MinGW
-   echo       MakeLib HB32 [options]
+   echo       MakeLib HM32 [options]
+   echo   To build with Harbour 3.4 and MinGW
+   echo       MakeLib HM34 [options]
    echo   To build with xHarbour and BCC
    echo       MakeLib XB [options]
+   echo   To build with xHarbour and MinGW
+   echo       MakeLib XM [options]
    echo.
    goto END
 
-:TEST_HB30
+:TEST_HM30
 
    shift
-   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto COMPILE_HB30
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib30.bat" goto MAKELIB_HM30
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
    goto END
 
-:TEST_HB32
+:TEST_HM32
 
    shift
-   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto COMPILE_HB32
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib32.bat" goto MAKELIB_HM32
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLib32.bat not found !!!
+   echo.
+   echo This file must be executed from SOURCE folder !!!
+   echo.
+   goto END
+
+:TEST_HM34
+
+   shift
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLib34.bat" goto MAKELIB_HM34
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLib34.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -94,14 +129,24 @@ rem
 :TEST_XB
 
    shift
-   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto COMPILE_XB
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat" goto MAKELIB_XB
    echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXB.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
    goto END
 
-:COMPILE_HB30
+:TEST_XM
+
+   shift
+   if exist "%HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat" goto MAKELIB_XM
+   echo File %HG_START_DP_MAKELIB_BAT%\MakeLibXM.bat not found !!!
+   echo.
+   echo This file must be executed from SOURCE folder !!!
+   echo.
+   goto END
+
+:MAKELIB_HM30
 
    if "%HG_HRB%   "== "" set HG_HRB=%HG_ROOT%\hb30
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
@@ -113,11 +158,11 @@ rem
    call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
    goto END
 
-:COMPILE_HB32
+:MAKELIB_HM32
 
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_ROOT%\hb32\comp\mingw
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
    if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
@@ -125,7 +170,19 @@ rem
    call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
    goto END
 
-:COMPILE_XB
+:MAKELIB_HM34
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb34
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
+   goto END
+
+:MAKELIB_XB
 
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
    if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
@@ -135,6 +192,18 @@ rem
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    call "%HG_START_DP_MAKELIB_BAT%\MakeLib_bcc.bat"
+   goto END
+
+:MAKELIB_XM
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhmingw
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   call "%HG_START_DP_MAKELIB_BAT%\MakeLib_mingw.bat"
    goto END
 
 :END

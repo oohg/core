@@ -28,24 +28,24 @@ rem
 
 :MORE_SETS
 
-   set TPATH=%PATH%
+   set HG_PATH=%PATH%
    set PATH=%HG_MINGW%\bin
 
 :COMPILE_C
 
    echo Compiling C files ...
-   set OOHG_X_FLAGS=-W -Wall -O3 -c -I%HG_HRB%\include -I%HG_MINGW%\include -I%HG_ROOT%\include -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
-   for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+   set HG_X_FLAGS=-W -Wall -O3 -c -I%HG_HRB%\include -I%HG_MINGW%\include -I%HG_ROOT%\include -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
+   for %%a in (%HG_FILES1_PRG%) do if not errorlevel 1 gcc %HG_X_FLAGS% %%a.c
    if errorlevel 1 goto EXIT2
-   for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+   for %%a in (%HG_FILES2_PRG%) do if not errorlevel 1 gcc %HG_X_FLAGS% %%a.c
    if errorlevel 1 goto EXIT2
-   for %%a in (%HG_FILES_C%)    do if not errorlevel 1 gcc %OOHG_X_FLAGS% %%a.c
+   for %%a in (%HG_FILES_C%)    do if not errorlevel 1 gcc %HG_X_FLAGS% %%a.c
    if errorlevel 1 goto EXIT2
-   if exist winprint.c  gcc %OOHG_X_FLAGS% winprint.c
+   if exist winprint.c  gcc %HG_X_FLAGS% winprint.c
    if errorlevel 1 goto EXIT2
-   if exist miniprint.c gcc %OOHG_X_FLAGS% miniprint.c
+   if exist miniprint.c gcc %HG_X_FLAGS% miniprint.c
    if errorlevel 1 goto EXIT2
-   if exist bostaurus.c gcc %OOHG_X_FLAGS% bostaurus.c
+   if exist bostaurus.c gcc %HG_X_FLAGS% bostaurus.c
    if errorlevel 1 goto EXIT2
 
 :BUILD_LIBS
@@ -71,8 +71,8 @@ rem
 
 :EXIT2
 
-   set PATH=%TPATH%
-   set TPATH=
+   set PATH=%HG_PATH%
+   set HG_PATH=
    for %%a in (*.o) do del %%a
 
 :EXIT1
@@ -82,7 +82,7 @@ rem
    if exist miniprint.c del miniprint.c
    if exist bostaurus.c del bostaurus.c
 
-   set OOHG_X_FLAGS=
+   set HG_X_FLAGS=
    set HG_FILES1_PRG=
    set HG_FILES2_PRG=
    set HG_FILES_C=

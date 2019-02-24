@@ -5,17 +5,17 @@ rem
 
 :BUILDLIB_HBMK2
 
-   if "%HG_ROOT%"  == "" goto INFO
-   if "%HG_HRB%"   == "" goto INFO
-   if "%HG_CCOMP%" == "" goto INFO
-   if "%LIB_GUI%"  == "" goto INFO
-   if "%LIB_HRB%"  == "" goto INFO
-   if "%BIN_HRB%"  == "" goto INFO
+   if "%HG_ROOT%"  == "" goto ERROR1
+   if "%HG_HRB%"   == "" goto ERROR1
+   if "%HG_CCOMP%" == "" goto ERROR1
+   if "%LIB_GUI%"  == "" goto ERROR1
+   if "%LIB_HRB%"  == "" goto ERROR1
+   if "%BIN_HRB%"  == "" goto ERROR1
 
 :PREPARE
 
    rem *** Set PATH ***
-   set TPATH=%PATH%
+   set HG_PATH=%PATH%
    set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
 
    rem *** Delete Old Log ***
@@ -43,7 +43,7 @@ rem
    hbmk2 bostaurus.hbp %2 %3 %4 %5 %6 %7 %8 %9 >> error.log 2>&1
    goto RESTORE_PATH
 
-:INFO
+:ERROR1
 
    echo This file must be called from BUILDLIB.BAT !!!
    echo .
@@ -52,7 +52,7 @@ rem
 :RESTORE_PATH
 
    rem *** Restore PATH ***
-   set PATH=%TPATH%
-   set TPATH=
+   set PATH=%HG_PATH%
+   set HG_PATH=
 
 :END

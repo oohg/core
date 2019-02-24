@@ -20,33 +20,33 @@ rem
 
 :HARBOUR_COMPILE
 
-   set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
+   set HG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
    goto PRG_COMPILE
 
 :XHARBOUR_COMPILE
 
-   set OOHG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
+   set HG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
    goto PRG_COMPILE
 
 :PRG_COMPILE
 
    echo Compiling prg files ...
    for %%a in ( %HG_FILES1_PRG% %HG_FILES2_PRG% ) do (
-      %HG_HRB%\%BIN_HRB%\harbour %%a %OOHG_X_FLAGS% %~3
+      %HG_HRB%\%BIN_HRB%\harbour %%a %HG_X_FLAGS% %~3
       if errorlevel 1 (
-         set OOHG_FILE=%%a
+         set HG_ERRORAT=%%a
          goto ERROR ) )
    if not exist winprint.prg echo winprint.prg is missing !!!
    if not exist winprint.prg goto ERROR
-   if exist winprint.prg  %HG_HRB%\%BIN_HRB%\harbour winprint  %OOHG_X_FLAGS% %~3
+   if exist winprint.prg  %HG_HRB%\%BIN_HRB%\harbour winprint  %HG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
    if not exist miniprint.prg echo miniprint.prg is missing !!!
    if not exist miniprint.prg goto ERROR
-   if exist miniprint.prg %HG_HRB%\%BIN_HRB%\harbour miniprint %OOHG_X_FLAGS% %~3
+   if exist miniprint.prg %HG_HRB%\%BIN_HRB%\harbour miniprint %HG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
    if not exist bostaurus.prg echo bostaurus.prg is missing !!!
    if not exist bostaurus.prg goto ERROR
-   if exist bostaurus.prg %HG_HRB%\%BIN_HRB%\harbour bostaurus %OOHG_X_FLAGS% %~3
+   if exist bostaurus.prg %HG_HRB%\%BIN_HRB%\harbour bostaurus %HG_X_FLAGS% %~3
    if errorlevel 1 goto ERROR
    goto END
 
@@ -58,8 +58,8 @@ rem
 
 :ERROR
 
-   if not .%3.==.. echo Error compiling %OOHG_FILE%.prg !!!
+   if not .%3.==.. echo Error compiling %HG_ERRORAT%.prg !!!
    if not .%3.==.. echo .
-   set OOHG_FILE=
+   set HG_ERRORAT=
 
 :END

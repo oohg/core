@@ -5,49 +5,43 @@ rem
 
 :BUILDAPP_HBMK2
 
-   if not "%HG_ROOT%" == "" goto CHECK
-
-   pushd "%~dp0"
-   set HG_ROOT=%CD%
-   popd
+   if "%HG_ROOT%"  == "" goto ERROR1
+   if "%HG_HRB%"   == "" goto ERROR1
+   if "%HG_CCOMP%" == "" goto ERROR1
+   if "%LIB_GUI%"  == "" goto ERROR1
+   if "%LIB_HRB%"  == "" goto ERROR1
+   if "%BIN_HRB%"  == "" goto ERROR1
 
 :CHECK
 
-   if "%1" == "" goto ERROR1
+   if "%1" == "" goto ERROR2
+   set HG_FILE=%1
    if exist %1.prg goto CONTINUE
-   if not exist %1.hbp goto ERROR2
+   if exist %1.hbp goto CONTINUE
+   set HG_FILE=%~n1
+   if /I "%~x1" == ".PRG" goto CONTINUE
+   if /I "%~x1" == ".HBP" goto CONTINUE
+   set HG_FILE=
+   goto ERROR3
 
 :CONTINUE
 
-   rem TODO: test for BuildApp30.bat and/or BuildApp32.bat ?
-
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-
-:CLEAN_EXE
-
    if exist %1.exe del %1.exe
-   if exist %1.exe goto ERROR3
+   if exist %1.exe goto ERROR4
    if exist output.log del output.log
-   if exist output.log goto ERROR4
+   if exist output.log goto ERROR5
 
 :MORE_SETS
 
    rem *** Set PATH ***
-   set TPATH=%PATH%
+   set HG_PATH=%PATH%
    set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
 
 :PARSE_SWITCHES
 
-   set TFILE=%1
-   set NO_LOG=NO
-   set RUNEXE=-run
-   set EXTRA=
+   set HG_NOLOG=NO
+   set HG_RUNEXE=-run
+   set HG_EXTRA=
 
 :LOOP_START
 
@@ -56,37 +50,37 @@ rem
    if /I "%2" == "-SL" goto SUPPRESS_LOG
    if /I "%2" == "-NR" goto SUPPRESS_RUN
    if /I "%2" == "/NR" goto SUPPRESS_RUN
-   set EXTRA=%EXTRA% %2
+   set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
 
 :SUPPRESS_LOG
 
-   set NO_LOG=YES
+   set HG_NOLOG=YES
    shift
    goto LOOP_START
 
 :SUPPRESS_RUN
 
-   set RUNEXE=-run-
+   set HG_RUNEXE=-run-
    shift
    goto LOOP_START
 
 :LOOP_END
 
    rem *** Process Resource File ***
-   echo Compiling %TFILE% ...
+   echo Compiling %HG_FILE% ...
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   copy /b "%HG_ROOT%\resources\oohg.rc" + "%TFILE%.rc" _temp.rc > nul
+   copy /b "%HG_ROOT%\resources\oohg.rc" + "%HG_FILE%.rc" _temp.rc > nul
    if exist _temp.rc goto BUILD
-   copy /b %TFILE%.rc _temp.rc > nul
-   if not exist _temp.rc goto ERROR5
+   copy /b %HG_FILE%.rc _temp.rc > nul
+   if not exist _temp.rc goto ERROR6
 
 :BUILD
 
    rem *** Compile and Link ***
-   if     "%NO_LOG%" == "YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA%
-   if not "%NO_LOG%" == "YES" hbmk2 %TFILE% _temp.rc %HG_ROOT%\oohg.hbc %RUNEXE% -prgflag=-q0 %EXTRA% >> output.log 2>&1
+   if     "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_ROOT%\oohg.hbc %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA%
+   if not "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_ROOT%\oohg.hbc %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% >> output.log 2>&1
    if exist output.log type output.log
 
 :CLEANUP
@@ -94,37 +88,44 @@ rem
    rem *** Cleanup ***
    if exist _oohg_resconfig.h del _oohg_resconfig.h
    if exist _temp.* del _temp.*
-   set PATH=%TPATH%
-   set TPATH=
-   set TFILE=
-   set RUNEXE=
-   set NO_LOG=
-   set EXTRA=
+   set PATH=%HG_PATH%
+   set HG_PATH=
+   set HG_FILE=
+   set HG_RUNEXE=
+   set HG_NOLOG=
+   set HG_EXTRA=
    goto END
 
 :ERROR1
 
-   echo COMPILE ERROR: No file specified !!!
+   echo This file must be called from BUILDAPP.BAT !!!
    goto END
 
 :ERROR2
 
-   echo COMPILE ERROR: Neither file %TFILE%.prg nor %TFILE%.hbp were found !!!
+   echo COMPILE ERROR: No file specified !!!
    goto END
 
 :ERROR3
 
-   echo COMPILE ERROR: Is %TFILE%.exe running ?
+   echo COMPILE ERROR: Neither file %HG_FILE%.prg nor %HG_FILE%.hbp were found !!!
    goto END
 
 :ERROR4
 
-   echo COMPILE ERROR: Can't delete output.log !!!
+   echo COMPILE ERROR: Is %HG_FILE%.exe running ?
    goto END
 
 :ERROR5
 
-   echo COMPILE ERROR: Neither file %TFILE%.rc nor oohg.rc were found !!!
+   echo COMPILE ERROR: Can't delete output.log !!!
+   goto END
+
+:ERROR6
+
+   echo COMPILE ERROR: Neither file %HG_FILE%.rc nor oohg.rc were found !!!
    goto END
 
 :END
+
+   echo.

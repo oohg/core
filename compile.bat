@@ -30,29 +30,50 @@ rem
 
 :TEST
 
-   if /I "%1" == "HB30" goto TEST_HB30
-   if /I "%1" == "HB32" goto TEST_HB32
+   if /I "%1" == "HM30" goto TEST_HM30
+   if /I "%1" == "HM32" goto TEST_HM32
+   if /I "%1" == "HM34" goto TEST_HM34
    if /I "%1" == "XB"   goto TEST_XB
+   if /I "%1" == "XM"   goto TEST_XM
 
-:DETECT_HB30
+:DETECT_HM30
 
-   if not exist "%HG_ROOT%\compile30.bat" goto DETECT_HB32
+   if not exist "%HG_ROOT%\compile30.bat" goto DETECT_HM32
    if exist "%HG_ROOT%\compile32.bat" goto SYNTAX
+   if exist "%HG_ROOT%\compile34.bat" goto SYNTAX
    if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
-   goto COMPILE_HB30
+   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   goto COMPILE_HM30
 
-:DETECT_HB32
+:DETECT_HM32
 
-   if not exist "%HG_ROOT%\compile32.bat" goto DETECT_XB
+   if not exist "%HG_ROOT%\compile32.bat" goto DETECT_HM34
+   if exist "%HG_ROOT%\compile34.bat" goto SYNTAX
    if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
-   goto COMPILE_HB32
+   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   goto COMPILE_HM32
+
+:DETECT_HM34
+
+   if not exist "%HG_ROOT%\compile34.bat" goto DETECT_XB
+   if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
+   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   goto COMPILE_HM34
 
 :DETECT_XB
 
-   if exist "%HG_ROOT%\compileXB.bat" goto COMPILE_XB
+   if not exist "%HG_ROOT%\compileXB.bat" goto DETECT_XM
+   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   goto COMPILE_XB
+
+:DETECT_XM
+
+   if exist "%HG_ROOT%\compileXM.bat" goto COMPILE_XM
    echo File %HG_ROOT%\compile30.bat not found !!!
    echo File %HG_ROOT%\compile32.bat not found !!!
+   echo File %HG_ROOT%\compile34.bat not found !!!
    echo File %HG_ROOT%\compileXB.bat not found !!!
+   echo File %HG_ROOT%\compileXM.bat not found !!!
    echo.
    goto END
 
@@ -60,27 +81,39 @@ rem
 
    echo Syntax:
    echo    To build with Harbour 3.0 and MinGW
-   echo       compile [/C] HB30 file [options]
+   echo       compile [/C] HM30 file [options]
    echo   To build with Harbour 3.2 and MinGW
-   echo       compile [/C] HB32 file [options]
+   echo       compile [/C] HM32 file [options]
+   echo   To build with Harbour 3.4 and MinGW
+   echo       compile [/C] HM34 file [options]
    echo   To build with xHarbour and BCC
    echo       compile [/C] XB file [options]
+   echo   To build with xHarbour and MinGW
+   echo       compile [/C] XM file [options]
    echo.
    goto END
 
-:TEST_HB30
+:TEST_HM30
 
    shift
-   if exist "%HG_ROOT%\compile30.bat" goto COMPILE_HB30
+   if exist "%HG_ROOT%\compile30.bat" goto COMPILE_HM30
    echo File compile30.bat not found !!!
    echo.
    goto END
 
-:TEST_HB32
+:TEST_HM32
 
    shift
-   if exist "%HG_ROOT%\compile32.bat" goto COMPILE_HB32
+   if exist "%HG_ROOT%\compile32.bat" goto COMPILE_HM32
    echo File compile32.bat not found !!!
+   echo.
+   goto END
+
+:TEST_HM34
+
+   shift
+   if exist "%HG_ROOT%\compile34.bat" goto COMPILE_HM34
+   echo File compile34.bat not found !!!
    echo.
    goto END
 
@@ -92,29 +125,53 @@ rem
    echo.
    goto END
 
-:COMPILE_HB30
+:TEST_XM
 
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb30
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
+   shift
+   if exist "%HG_ROOT%\compileXM.bat" goto COMPILE_XM
+   echo File compileXM.bat not found !!!
+   echo.
+   goto END
+
+:COMPILE_HM30
+
+   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb30
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"    == "" set LIB_GUI=lib
+   if "%LIB_HRB%"    == "" set LIB_HRB=lib
+   if "%BIN_HRB%"    == "" set BIN_HRB=bin
+   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -llibhpdf
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
-:COMPILE_HB32
+:COMPILE_HM32
 
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb32
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"    == "" set BIN_HRB=bin
+   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -llibhpdf
+   call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
+:COMPILE_HM34
+
+   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb34
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb34\mingw
+   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\clang
+   if "%BIN_HRB%"    == "" set BIN_HRB=bin
+   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb34.o
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -123,12 +180,27 @@ rem
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
    if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
    if "%HG_BCC%"   == "" set HG_BCC=c:\Borland\BCC55
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_BCC%
+   set HG_CCOMP=%HG_BCC%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=pcrepos libhpdf
    call "%HG_ROOT%\compile_bcc.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
+:COMPILE_XM
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhmingw
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
+   call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :END

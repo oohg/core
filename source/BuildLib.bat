@@ -38,71 +38,108 @@ rem -info to see informational messages
 
 :TEST
 
-   if /I "%1" == "HB30" goto TEST_HB30
-   if /I "%1" == "HB32" goto TEST_HB32
+   if /I "%1" == "HM30" goto TEST_HM30
+   if /I "%1" == "HM32" goto TEST_HM32
+   if /I "%1" == "HM34" goto TEST_HM34
 
-:DETECT_HB30
+:DETECT_HM30
 
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto DETECT_HB32
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB32
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto DETECT_HM32
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto SYNTAX
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto SYNTAX
+   goto BUILDLIB_HM30
+
+:DETECT_HM32
+
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto DETECT_HM34
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto SYNTAX
+   goto BUILDLIB_HM32
+
+:DETECT_HM34
+
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto BUILDLIB_HM34
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat not found !!!
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat not found !!!
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
    goto END
 
-:DETECT_HB32
+:SYNTAX
 
-   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB30
    echo Syntax:
-   echo    To build with Harbour 3.0
-   echo       buildlib HB30 [options]
-   echo   To build with Harbour 3.2
-   echo       buildlib HB32 [options]
+   echo    To build with Harbour 3.0 and MinGW
+   echo       BuildLib HM30 [options]
+   echo   To build with Harbour 3.2 and MinGW
+   echo       BuildLib HM32 [options]
+   echo   To build with Harbour 3.4 and MinGW
+   echo       BuildLib HM34 [options]
    echo.
    goto END
 
-:TEST_HB30
+:TEST_HM30
 
    shift
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto COMPILE_HB30
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto BUILDLIB_HM30
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
    goto END
 
-:TEST_HB32
+:TEST_HM32
 
    shift
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto COMPILE_HB32
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto BUILDLIB_HM32
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
    goto END
 
-:COMPILE_HB30
+:TEST_HM34
+
+   shift
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto BUILDLIB_HM34
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat not found !!!
+   echo.
+   echo This file must be executed from SOURCE folder !!!
+   echo.
+   goto END
+
+:BUILDLIB_HM30
 
    if "%HG_HRB%   "== "" set HG_HRB=%HG_ROOT%\hb30
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
-:COMPILE_HB32
+:BUILDLIB_HM32
 
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
    if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_ROOT%\hb32\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
+:BUILDLIB_HM34
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb34
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END

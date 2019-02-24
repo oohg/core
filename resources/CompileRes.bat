@@ -28,8 +28,10 @@ rem
 
 :MINGW
 
-   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile30.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HB30
-   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile32.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HB32
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile30.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HM30
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile32.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HM32
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compile34.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS HM34
+   if exist "%HG_START_DP_COMPILERES_BAT%\..\compileXM.bat" call "%HG_START_DP_COMPILERES_BAT%\CompileRes_mingw.bat" /NOCLS XM
 
 :EXIT
 

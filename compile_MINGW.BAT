@@ -5,356 +5,266 @@ rem
 
 :COMPILE_MINGW
 
-   if not "%HG_ROOT%" == "" goto CHECK
-
-   pushd "%~dp0"
-   set HG_ROOT=%CD%
-   popd
+   if "%HG_ROOT%"  == "" goto ERROR1
+   if "%HG_HRB%"   == "" goto ERROR1
+   if "%HG_CCOMP%" == "" goto ERROR1
+   if "%LIB_GUI%"  == "" goto ERROR1
+   if "%LIB_HRB%"  == "" goto ERROR1
+   if "%BIN_HRB%"  == "" goto ERROR1
 
 :CHECK
 
-   if "%1" == "" goto ERROR1
-   if not exist %1.prg goto ERROR2
-
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb32
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
-   if "%HG_CCOMP%" == "" set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
+   if "%1" == "" goto ERROR2
+   if not exist %1.prg goto ERROR3
 
 :CLEAN_EXE
 
    if exist %1.exe del %1.exe
-   if exist %1.exe goto ERROR3
+   if exist %1.exe goto ERROR4
+   if exist _temp.rc del _temp.rc
+   if exist _temp.rc goto ERROR5
+   if exist oohglog.txt del oohglog.txt
 
 :MORE_SETS
 
-   rem *** Third Party Libraries ***
-   rem set THR_LIB=-lsocket -liphlpapi -lmysqldll -ldll -lhbmysql -lrddleto -lrddado -lhbusrrdd
+   rem *** Third party libraries ***
+   rem set THR_LIB=-lsocket -lmysqldll -ldll -lhbmysql -lrddleto -lrddado -lhbusrrdd
+
+   rem *** Version dependent libraries ***
+   rem This var must be set by compile.bat
+   rem For Harbour 3.0 and 3.2
+   rem set HG_ADDLIBS=-lhbpcre -llibhpdf
+   rem For Harbour 3.4
+   rem set HG_ADDLIBS=-lhbpcre2
+   rem For xHarbour
+   rem set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
 
    rem *** Force static linking of this libs ***
-   set STATIC_LIBS=-static -static-libgcc
+   set HG_STATIC_LIBS=-static -static-libgcc
 
    rem *** Set PATH ***
-   set TPATH=%PATH%
+   set HG_PATH=%PATH%
    set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
 
 :PARSE_SWITCHES
 
-   set TFILE=%1
-   set COMP_TYPE=STD
-   set EXTRA=
-   set RC_FILE=TRUE
-   set NO_RUN=FALSE
-   set PRG_LOG=
-   set C_LOG=
+   set HG_FILE=%1
+   set HG_COMP_TYPE=STD
+   set HG_EXTRA=
+   set HG_USERC=TRUE
+   set HG_NO_RUN=FALSE
+   set HG_PRG_LOG=
+   set HG_C_LOG=1^>nul 2^>^&1
 
 :LOOP_START
 
    if "%2" == ""    goto LOOP_END
-   if "%2" == "/d"  goto COMP_DEBUG
-   if "%2" == "-d"  goto COMP_DEBUG
-   if "%2" == "/D"  goto COMP_DEBUG
-   if "%2" == "-D"  goto COMP_DEBUG
-   if "%2" == "/c"  goto COMP_CONSOLE
-   if "%2" == "-c"  goto COMP_CONSOLE
-   if "%2" == "/C"  goto COMP_CONSOLE
-   if "%2" == "-C"  goto COMP_CONSOLE
-   if "%2" == "/i"  goto NORC
-   if "%2" == "-i"  goto NORC
-   if "%2" == "/I"  goto NORC
-   if "%2" == "-I"  goto NORC
-   if "%2" == "-p"  goto PPO
-   if "%2" == "/p"  goto PPO
-   if "%2" == "-P"  goto PPO
-   if "%2" == "/P"  goto PPO
-   if "%2" == "-w3" goto W3
-   if "%2" == "/w3" goto W3
-   if "%2" == "-W3" goto W3
-   if "%2" == "/W3" goto W3
-   if "%2" == "-nr" goto NORUN
-   if "%2" == "-Nr" goto NORUN
-   if "%2" == "-nR" goto NORUN
-   if "%2" == "-NR" goto NORUN
-   if "%2" == "/nr" goto NORUN
-   if "%2" == "/Nr" goto NORUN
-   if "%2" == "/nR" goto NORUN
-   if "%2" == "/NR" goto NORUN
-   if "%2" == "/l"  goto USELOG
-   if "%2" == "-l"  goto USELOG
-   if "%2" == "/L"  goto USELOG
-   if "%2" == "-L"  goto USELOG
-   set EXTRA=%EXTRA% %2
+   if /I "%2" == "/D"  goto SW_DEBUG
+   if /I "%2" == "-D"  goto SW_DEBUG
+   if /I "%2" == "/C"  goto SW_CONSOLE
+   if /I "%2" == "-C"  goto SW_CONSOLE
+   if /I "%2" == "/I"  goto SW_NORC
+   if /I "%2" == "-I"  goto SW_NORC
+   if /I "%2" == "-P"  goto SW_PPO
+   if /I "%2" == "/P"  goto SW_PPO
+   if /I "%2" == "-W3" goto SW_W3
+   if /I "%2" == "/W3" goto SW_W3
+   if /I "%2" == "-NR" goto SW_NORUN
+   if /I "%2" == "/NR" goto SW_NORUN
+   if /I "%2" == "/L"  goto SW_USELOG
+   if /I "%2" == "-L"  goto SW_USELOG
+   if /I "%2" == "/S"  goto SW_SILENT
+   if /I "%2" == "-S"  goto SW_SILENT
+   set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
 
-:COMP_DEBUG
+:SW_DEBUG
 
-   set COMP_TYPE=DEBUG
+   set HG_COMP_TYPE=DEBUG
    shift
    goto LOOP_START
 
-:COMP_CONSOLE
+:SW_CONSOLE
 
-   set COMP_TYPE=CONSOLE
+   set HG_COMP_TYPE=CONSOLE
    shift
    goto LOOP_START
 
-:NORC
+:SW_NORC
 
-   set RC_FILE=FALSE
+   set HG_USERC=FALSE
    shift
    goto LOOP_START
 
-:PPO
+:SW_PPO
 
-   set EXTRA=%EXTRA% -p
+   set HG_EXTRA=%HG_EXTRA% -p
    shift
    goto LOOP_START
 
-:W3
+:SW_W3
 
-   set EXTRA=%EXTRA% -w3
+   set HG_EXTRA=%HG_EXTRA% -w3
    shift
    goto LOOP_START
 
-:NORUN
+:SW_NORUN
 
-   set NO_RUN=TRUE
+   set HG_NO_RUN=TRUE
    shift
    goto LOOP_START
 
-:USELOG
+:SW_USELOG
 
-   set PRG_LOG=-q0 1^>error.lst 2^>^&1
-   set C_LOG=1^>error.lst 2^>^&1
+   set HG_PRG_LOG=-q 1^>^>oohglog.txt 2^>^>^&1
+   set HG_C_LOG=1^>^>oohglog.txt 2^>^>^&1
+   shift
+   goto LOOP_START
+
+:SW_SILENT
+
+   set HG_PRG_LOG=1^>nul 2^>^&1
+   set HG_C_LOG=1^>nul 2^>^&1
    shift
    goto LOOP_START
 
 :LOOP_END
 
-   rem *** Check for Console Switch ***
-   if "%COMP_TYPE%" == "CONSOLE" goto CONSOLE_COMP
+   set HG_OBJS=%HG_FILE%.o
+   if "%HG_USERC%" == "FALSE" GOTO WITHOUT_HG_RC
 
-   rem *** Check for Debug Switch ***
-   if "%COMP_TYPE%" == "DEBUG" goto DEBUG_COMP
-
-   goto STD_COMP
-
-:CONSOLE_COMP
-
-   rem *** Compile with Harbour and Check for Errors ***
-   %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto CLEANUP1
-
-   rem *** Compile .c Files and Check for Errors ***
-   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
-   rem *** To Use -mno-cygwin Switch ***
-   rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
-   if errorlevel 1 goto CLEANUP2
-
-   rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%" == "TRUE" GOTO CONSOLE_COMP_WITHOUT_RC
-
-   rem *** Process Resource File and OOHG Resource File ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
+   if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
+   if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
+   windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
+   if errorlevel 1 goto CLEANUP
+   set HG_OBJS=%HG_OBJS% _temp.o
+   goto COMPILE_PRG
 
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** To Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
+:WITHOUT_HG_RC
 
-   goto CLEANUP
+   if not exist %HG_FILE%.rc goto COMPILE_PRG
 
-:CONSOLE_COMP_WITHOUT_RC
+   copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
+   windres -i _temp.rc -o _temp.o %HG_C_LOG%
+   if errorlevel 1 goto CLEANUP
+   set HG_OBJS=%HG_OBJS% _temp.o
 
-   rem *** Process Resource File Without OOHG Resource ***
-   if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
+:COMPILE_PRG
 
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o         -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** To Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o         -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
+   if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
+   if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
+   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n1 %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_PRG_LOG%
+   if errorlevel 1 goto CLEANUP
 
-   goto CLEANUP
+:COMPILE_C
 
-:DEBUG_COMP
+   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_C_LOG%
+   if errorlevel 1 goto CLEANUP
 
-   rem *** Compile with Harbour and Check for Errors ***
-   echo OPTIONS NORUNATSTARTUP > init.cld
-   %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -b -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto CLEANUP1
+:CHECK_COMP_TYPE
 
-   rem *** Compile .c Files and Check for Errors ***
-   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
-   rem *** To Use -mno-cygwin Switch ***
-   rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
-   if errorlevel 1 goto CLEANUP2
-
-   rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%" == "TRUE" GOTO DEBUG_COMP_WITHOUT_RC
-
-   rem *** Process Resource File and OOHG Resource File ***
-   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
-
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** To Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-
-   goto CLEANUP
-
-:DEBUG_COMP_WITHOUT_RC
-
-   rem *** Process Resource File Without OOHG Resource ***
-   if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
-
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o         -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** To Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %       -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lhbdebug -lgtgui -lgtwin -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-
-   goto CLEANUP
+   if "%HG_COMP_TYPE%" == "CONSOLE" goto CONSOLE_COMP
+   if "%HG_COMP_TYPE%" == "DEBUG" goto CONSOLE_COMP
 
 :STD_COMP
 
-   rem *** Compile with Harbour and Check for Errors ***
-   %HG_HRB%\%BIN_HRB%\harbour %TFILE%.prg -n1 %EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %PRG_LOG%
-   if errorlevel 1 goto CLEANUP1
+   set HG_CFLAGS=-Wall -mwindows
+   if not exist %HG_HRB%\%LIB_HRB%\mainwin.o goto LIBS_HARBOUR
+   set HG_OBJS=%HG_HRB%\%LIB_HRB%\mainwin.o %HG_OBJS%
+   goto LIBS_XHARBOUR
 
-   rem *** Compile .c Files and Check for Errors ***
-   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %TFILE%.c -o%TFILE%.o
-   rem *** Use -mno-cygwin Switch ***
-   rem gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -mno-cygwin -Wall -c %TFILE%.c -o%TFILE%.o
+:CONSOLE_COMP
 
-   rem *** Check for Exclude OOHG Resource Switch ***
-   if not "%RC_FILE%" == "TRUE" GOTO STD_COMP_WITHOUT_RC
+   set HG_CFLAGS=-Wall -mconsole
+   if not exist %HG_HRB%\%LIB_HRB%\mainstd.o goto LIBS_HARBOUR
+   set HG_OBJS=%HG_HRB%\%LIB_HRB%\mainstd.o %HG_OBJS%
 
-   rem *** Process Resource File ***
-   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   if exist %TFILE%.rc copy /b %HG_ROOT%\resources\ooHG.rc+%TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
+:LIBS_XHARBOUR
 
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o %HG_RC% -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
+   set HG_CLIBS=-lgtgui -lgtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=-lgtwin -lgtgui -ldebug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=-lgtwin -lgtgui
+   set HG_CLIBS=%HG_CLIBS% -lcodepage -lcommon -lct -ldbfcdx -ldbffpt -ldbfntx -lhbsix -lhsx
+   set HG_CLIBS=%HG_CLIBS% -llang -lmacro -lpp -lrdd -lrtl -lvmmt %THR_LIB% %HG_ADDLIBS%
+   set HG_CLIBS=%HG_CLIBS% -lfilemem -llibmisc -lhbmzip -lhbodbc -ltip -lhbzebra
+   set HG_CLIBS=%HG_CLIBS% -lhbzip -lzlib -lodbc32 -lpng -lrddsql -lsddodbc -lsevenzip
+   goto OTHER_LIBS
 
-   goto CLEANUP
+:LIBS_HARBOUR
 
-:STD_COMP_WITHOUT_RC
+   set HG_CLIBS=-lgtgui -lgtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=-lgtwin -lgtgui -lhbdebug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=-lgtwin -lgtgui
+   set HG_CLIBS=%HG_CLIBS% -lhbcpage -lhbcommon -lhbct -lrddcdx -lrddfpt -lrddntx -lhbsix -lhbhsx
+   set HG_CLIBS=%HG_CLIBS% -lhblang -lhbmacro -lhbpp -lhbrdd -lhbrtl -lhbvmmt %THR_LIB% %HG_ADDLIBS%
+   set HG_CLIBS=%HG_CLIBS% -lhbmemio -lhbmisc -lhbmzip -lhbnulrdd -lhbodbc -lhbtip -lhbwin -lhbzebra
+   set HG_CLIBS=%HG_CLIBS% -lhbziparc -lhbzlib -lminizip -lodbc32 -lpng -lrddsql -lsddodbc -lxhb
 
-   rem *** Process Resource File Without OOHG Resource ***
-   if exist %TFILE%.rc copy /b %TFILE%.rc _temp.rc > nul
-   if exist %TFILE%.rc windres -i _temp.rc -o _temp.o
-   if errorlevel 1 goto CLEANUP3
+:OTHER_LIBS
 
-   rem *** Link ***
-   if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o         -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem *** Use -mno-cygwin Switch ***
-   rem if     exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o _temp.o -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
-   rem if not exist %TFILE%.rc gcc -Wall -o%TFILE%.exe %TFILE%.o         -mwindows -L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI% -mno-cygwin -Wl,--start-group -looHG -lhbprinter -lminiprint -lbostaurus -lgtgui -lhbsix -lhbvm -lhbrdd -lhbmacro -lhbmemio -lhbpp -lhbrtl -lhbzebra -lhbhpdf -llibhpdf -lpng -lhbziparc -lhblang -lhbcommon -lhbnulrdd -lrddntx -lrddcdx -lrddfpt -lhbct -lhbmisc -lxhb -lhbodbc -lrddsql -lsddodbc -lodbc32 %THR_LIB% -lhbwin -lhbcpage -lhbmzip -lminizip -lhbzlib -lhbtip -lhbpcre -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lvfw32 -lwsock32 -lws2_32 -lmsimg32 -liphlpapi -Wl,--end-group %STATIC_LIBS% %C_LOG%
+   set HG_CLIBS=%HG_CLIBS% -lbostaurus -lhbprinter -lminiprint -looHG
+   set HG_CLIBS=%HG_CLIBS% -luser32 -lwinspool -lgdi32 -lcomctl32 -lcomdlg32 -lole32 -loleaut32 -luuid
+   set HG_CLIBS=%HG_CLIBS% -lmpr -lwsock32 -lws2_32 -lmapi32 -lwinmm -lvfw32 -lmsimg32 -liphlpapi
 
-   goto CLEANUP
+:LINK
+
+   set HG_SEARCH=-L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI%
+   set HG_CLIBS=-Wl,--start-group %HG_CLIBS% -Wl,--end-group
+   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_CFLAGS% %HG_SEARCH% %HG_CLIBS% %HG_STATIC_LIBS% %HG_C_LOG%
+
+:CLEANUP
+
+   set HG_CFLAGS=
+   set HG_CLIBS=
+   set HG_SEARCH=
+   if exist %HG_FILE%.o del %HG_FILE%.o
+   if exist %HG_FILE%.c del %HG_FILE%.c
+   for %%a in ( _temp.* ) do del %%a
+   if exist _oohg_resconfig.h del _oohg_resconfig.h
+   set HG_OBJS=
+   set HG_C_LOG=
+   set HG_PRG_LOG=
+   set HG_USERC=
+   set HG_EXTRA=
+   set HG_COMP_TYPE=
+   set PATH=%HG_PATH%
+   set HG_PATH=
+   set HG_STATIC_LIBS=
+
+   rem *** Run ***
+   if errorlevel 1 set HG_NO_RUN=TRUE
+   if "%HG_NO_RUN%" == "FALSE" %HG_FILE%
+
+   set HG_FILE=
+   set HG_NO_RUN=
+   if exist init.cld del init.cld
+   goto END
 
 :ERROR1
 
-   echo COMPILE ERROR: No file specified !!!
+   echo This file must be called from COMPILE.BAT !!!
    goto END
 
 :ERROR2
 
-   echo File %1.prg not found !!!
+   echo COMPILE ERROR: No file specified !!!
    goto END
 
 :ERROR3
 
+   echo File %1.prg not found !!!
+   goto END
+
+:ERROR4
+
    echo COMPILE ERROR: Is %1.exe running ?
    goto END
 
-:CLEANUP
+:ERROR5
 
-   rem *** Check for Errors in Linking ***
-   if errorlevel 1 goto CLEANUP4
-
-   rem *** Cleanup ***
-   if exist _temp.o del _temp.o
-   if exist _temp.rc del _temp.rc
-   if exist _oohg_resconfig.h del _oohg_resconfig.h
-   del %TFILE%.o
-   del %TFILE%.c
-   set THR_LIB=
-   set COMP_TYPE=
-   set EXTRA=
-   set PATH=%TPATH%
-   set TPATH=
-   set RC_FILE=
-   set PRG_LOG=
-   set C_LOG=
-   set STATIC_LIBS=
-
-   rem *** Execute ***
-   if "%NO_RUN%" == "FALSE" %TFILE%
-   set TFILE=
-   set NO_RUN=
+   echo Cant't delete _temp.rc file !!!
    goto END
 
-:CLEANUP4
-
-   rem *** Cleanup ***
-   if exist _temp.o del _temp.o
-
-:CLEANUP3
-
-   rem *** Cleanup ***
-   if exist _temp.rc del _temp.rc
-   del _oohg_resconfig.h
-   del %TFILE%.o
-
-:CLEANUP2
-
-   rem *** Cleanup ***
-   del %TFILE%.c
-
-:CLEANUP1
-
-   rem *** Cleanup ***
-   set THR_LIB=
-   set COMP_TYPE=
-   set EXTRA=
-   set PATH=%TPATH%
-   set TPATH=
-   set NO_RUN=
-   set RC_FILE=
-   set PRG_LOG=
-   set C_LOG=
-
 :END
-
-   rem *** Cleanup ***
-   if exist init.cld del init.cld
