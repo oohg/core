@@ -90,14 +90,16 @@ WINDOWS (THIS)
 WINDOWS (THISWINDOW)
 ---------------------------------------------------------------------------*/
 
-#xtranslate ThisWindow . <p: Title, NotifyIcon, NotifyTooltip, FocusedControl, ;
-      Name, Row, Col, Width, Height, MinWidth, MaxWidth, MinHeight, MaxHeight, ;
-      ClientWidth, ClientHeight> ;
+#xtranslate ThisWindow . <p: BackColor, BackColorCode, ClientHeight, ;
+      ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
+      HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
+      NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
+      VirtualHeight, VirtualWidth, Width> ;
    => ;
       _OOHG_ThisForm:<p>
 
-#xtranslate ThisWindow . <p: Activate, Center, Release, Maximize, Minimize, ;
-      Restore, Show, Hide, SetFocus, Object> [ () ] ;
+#xtranslate ThisWindow . <p: Activate, Center, Hide, Maximize, Minimize, ;
+      Object, Print, Redraw, Release, Restore, SetFocus, Show> [ () ] ;
    => ;
       _OOHG_ThisForm:<p>()
 
