@@ -1,11 +1,6 @@
 /*
  * $Id: ChangeLog_003.txt $
  */
-/* Use this format for the entry headers:
-   YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
-   For example:
-   2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
-*/
 
 2013-11-04 19:15 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_form.prg
