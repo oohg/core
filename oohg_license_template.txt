@@ -8,7 +8,8 @@
  * Copyright <start year-current year>, <name> <mail> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
  *
- * Based upon <project name and/or file>
+ * Based upon:
+ * <project name and/or file>
  * Copyright <year> by <person or project>
  * <mail or internet site>
  *
