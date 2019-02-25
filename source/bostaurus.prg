@@ -3271,7 +3271,7 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
    bt_RGBCOLORBYTE *RGBcolor;
    register        INT x, y;
    BYTE            GrayValue;
-   FLOAT           GrayLevel = 0;
+   DOUBLE          GrayLevel = 0;
    INT             LightLevel = 0, RLevel = 0, GLevel = 0, BLevel = 0;
    DOUBLE          ContrastAngle, ContrastConstant = 0, ContrastValue;
    DOUBLE          RedGamma, GreenGamma, BlueGamma;
@@ -3289,8 +3289,8 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
          break;
 
       case BT_BMP_PROCESS_GRAYNESS:
-         GrayLevel = ( FLOAT ) ( hb_parnd( 3 ) / 100.0 );
-         if( GrayLevel <= 0 || GrayLevel > 1 )
+         GrayLevel = ( DOUBLE ) hb_parnd( 3 ) / 100.0;
+         if( GrayLevel <= 0.0 || GrayLevel > 1.0 )
          {
             hb_retl( FALSE );
             return;
@@ -3399,9 +3399,9 @@ HB_FUNC( BT_BMP_PROCESS )    // ( hBitmap, Action, Value )
          if( Action == BT_BMP_PROCESS_GRAYNESS )
          {
             GrayValue = (BYTE) bt_RGB_TO_GRAY( RGBcolor->R, RGBcolor->G, RGBcolor->B );
-            RGBcolor->R = RGBcolor->R + ( GrayValue - RGBcolor->R ) * GrayLevel;
-            RGBcolor->G = RGBcolor->G + ( GrayValue - RGBcolor->G ) * GrayLevel;
-            RGBcolor->B = RGBcolor->B + ( GrayValue - RGBcolor->B ) * GrayLevel;
+            RGBcolor->R = (BYTE) ( RGBcolor->R + ( GrayValue - RGBcolor->R ) * GrayLevel );
+            RGBcolor->G = (BYTE) ( RGBcolor->G + ( GrayValue - RGBcolor->G ) * GrayLevel );
+            RGBcolor->B = (BYTE) ( RGBcolor->B + ( GrayValue - RGBcolor->B ) * GrayLevel );
          }
 
          if( Action == BT_BMP_PROCESS_BRIGHTNESS)
