@@ -349,22 +349,22 @@
     + Added ::InMemory property. It allows to determine if
       preview images are stored on temporal files or into
       memory buffers.
-    . Contributed by Cayetano Gomez.
+    ; Contributed by Cayetano Gomez.
 
 2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source\winprint.prg
-  + ::NoButtonSave property added. For not show SAVE button in
-    preview window.
-  + ::NoButtonOptions property added. For not show OPTIONS button
-    in preview window.
-  + ::BeforePrint property added. Executed when PRINT button is
-    pressed in preview window. It must returns .T. for allow print.
-  + ::AfterPrint property added. Executed after printing in preview
-    window.
-  + ::BeforePrintCopy property added. Executed previous each
-    document's copy is printed in preview window. It must returns
-    .T. for allow print. Otherwise, printing is stopped.
-  . Contributed by Johan.
+    + ::NoButtonSave property added. For not show SAVE button in
+      preview window.
+    + ::NoButtonOptions property added. For not show OPTIONS button
+      in preview window.
+    + ::BeforePrint property added. Executed when PRINT button is
+      pressed in preview window. It must returns .T. for allow print.
+    + ::AfterPrint property added. Executed after printing in preview
+      window.
+    + ::BeforePrintCopy property added. Executed previous each
+      document's copy is printed in preview window. It must returns
+      .T. for allow print. Otherwise, printing is stopped.
+    ; Contributed by Johan.
 
 2011-03-30 16:12 UTC-0600 Vicente Guerra <vicente@guerra.com.mx>
   * source\h_datepicker.prg
@@ -2259,19 +2259,19 @@
     ! syntax correct and reformating.
 
 2007-10-10 9:54 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  *source\h_windows.prg
-  ! fixed onsize event only when windows is active
+  * source\h_windows.prg
+    ! fixed onsize event only when windows is active
 
 2007-10-10 8:36 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  *source\h_tab.prg
-   ! Fixed ::caption() and ::picture() methods, they did not work until now
+  * source\h_tab.prg
+    ! Fixed ::caption() and ::picture() methods, they did not work until now
 
 2007-10-09 15:43 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  *source\h_tab.prg
-  ! optimizing code
+  * source\h_tab.prg
+    ! optimizing code
 
 2007-10-08 16:31 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
-  *source\h_edit.prg
+  * source\h_edit.prg
 
    the HB_string function are removed from all prgs because this function
    has diferent results in harbour and xharbour.
@@ -2628,8 +2628,8 @@
     + NOTABSTOP and DISABLED clauses added.
 
 2007-06-09 14:03 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
-   * source\h_print.prg
-     ! fixing prblems with ::lmargin() and ::tmargin() in Excel, RTF, HTML and CSV
+  * source\h_print.prg
+    ! fixing prblems with ::lmargin() and ::tmargin() in Excel, RTF, HTML and CSV
 
 2007-06-07 8:37 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_print.prg
