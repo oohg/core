@@ -10,3 +10,36 @@ https://es.groups.yahoo.com/neo/groups/oohg/info?showJoinPopup=true
 
 To contribute, please fork and submit pull requests at
 https://oohg.github.io
+
+
+```
+Contributors list
+
+Vicente Guerra
+Ciro Vargas C.
+Ehab Ouf
+Eduardo Fernandes
+Mitja Podgornik
+Eduar Saavedra
+Mirity Andor
+Paola Bruccoleri
+Gustavo Carlos Asborno
+Miguel Angel Juarez A.
+Fernando Yurisich
+Pierpaolo Martinello
+Johan
+Daniel Piperno
+Ricardo Sassy
+Hüseyin Aydin
+Marcelo Torres
+Sergio Castellari
+Esteban Ojeda
+Oskar Lira
+David Field
+Roberto Iturriaga
+Cayetano Gomez
+Lucho Miranda
+Ron Pinkas
+José M. C. Quintas
+Jacek Pospischil
+```
