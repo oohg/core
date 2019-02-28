@@ -201,4 +201,4 @@
 
 #xtranslate OOHGVersion() ;
    => ;
-      "OOHG Ver. 2019.02.26"
+      "OOHG Ver. 2019.02.27"
