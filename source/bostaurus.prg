@@ -5,13 +5,24 @@
  * ooHG source code:
  * Bos Taurus library code
  *
+ * Copyright 2015-2019 Fernando Yurisich <fyurisich@oohg.org> and contributors of
+ * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
+ *
  * Based upon
  * BOS TAURUS Graphic Library for HMG
  * Copyright 2012-2015 by Dr. Claudio Soto (from Uruguay).
  * <srvet@adinet.com.uy> http://srvet.blogspot.com.uy/
  *
- * Copyright 2015-2018 Fernando Yurisich <fyurisich@oohg.org>
- * https://oohg.github.io/
+ * Portions of this project are based upon:
+ *    "Harbour MiniGUI Extended Edition Library"
+ *       Copyright 2005-2019 MiniGUI Team, http://hmgextended.com
+ *    "Harbour GUI framework for Win32"
+ *       Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
+ *       Copyright 2001 Antonio Linares <alinares@fivetech.com>
+ *    "Harbour MiniGUI"
+ *       Copyright 2002-2016 Roberto Lopez <mail.box.hmg@gmail.com>
+ *    "Harbour Project"
+ *       Copyright 1999-2019 Contributors, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify

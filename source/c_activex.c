@@ -5,14 +5,14 @@
  * ooHG source code:
  * ActiveX control
  *
- * Based upon
+ * Copyright 2007-2019 Vicente Guerra <vicente@guerra.com.mx> and contributors of
+ * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
+ *
+ * Based upon:
  * TActiveX for [x]Harbour Minigui by Marcelo Torres and Fernando Santolin
  * Copyright 2006 <lichitorres@yahoo.com.ar> and <CarozoDeQuilmes@gmail.com>
  * TActiveX_FreeWin class for Fivewin programmed by Oscar Joel Lira Lira Oscar
  * Copyright 2006 [oSkAr] <oscarlira78@hotmail.com>
- *
- * Copyright 2007-2018 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
  *
  * Portions of this project are based upon:
  *    "Harbour MiniGUI Extended Edition Library"

@@ -3,15 +3,15 @@
  */
 /*
  * ooHG source code:
- * C cursor functions
+ * Cursor related functions
  *
- * Based upon
+ * Copyright 2005-2019 Vicente Guerra <vicente@guerra.com.mx> and contributors of
+ * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
+ *
+ * Based upon:
  * HMG Extended original work placed in public domain by
  * Jacek Kubica <kubica@wssk.wroc.pl>
  * Grigory Filatov <gfilatov@inbox.ru>
- *
- * Copyright 2005-2018 Vicente Guerra <vicente@guerra.com.mx>
- * https://oohg.github.io/
  *
  * Portions of this project are based upon:
  *    "Harbour MiniGUI Extended Edition Library"
