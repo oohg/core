@@ -297,7 +297,7 @@
     * ::ReadOnly now can be a logicals' array, a logical value,
       codeblocks' array or codeblock returning logical value.
 
-2006-11-9 14:34 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-09 14:34 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_print.prg
     *  replace ATNUM function in CT with own function.
   * source\h_image.prg
@@ -313,7 +313,7 @@
     * Modified control's label definition to higher lenght and
       NOWORDWRAP at InputWindow().
 
-2006-11-7 19:28 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-07 19:28 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_grid.prg
   * source\h_xbrowse.prg
     *   fixed return value
@@ -327,21 +327,21 @@
   * source\miniprint.prg
     * fixed ambiguos references
 
-2006-11-6 19:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-06 19:32 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_grid.prg
      + new method ::toexcel() added
   * source\h_xbrowse.prg
      + new method ::toexcel() added
 
-2006-11-6 11:25 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-06 11:25 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\winprint.prg
      * little fixes in hbprinter in order to improve a better preview
 
-2006-11-6 10:56 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-06 10:56 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_print.prg
      * adjusting initial preview size to size 2  (increase size in hbprinter)
 
-2006-11-5 15:42 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-11-05 15:42 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_print.prg
      * Changed Backcolor to White in DOSPRINT preview
 
@@ -567,11 +567,11 @@
   * source\h_grid.prg
     + Methods ::CellCaption() and ::CellImage() added.
 
-2006-10-5 13:24 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-10-05 13:24 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_print.prg
     * fixed column position problem in TPRINT.
 
-2006-10-4 11:22 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
+2006-10-04 11:22 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
   * source\h_grid.prg
     * fixed insertitem method.
 
