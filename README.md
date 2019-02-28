@@ -1,4 +1,4 @@
-Object Oriented Harbour GUI (ooHG) is a graphical interfase for developing Microsoft Windows applications using (x)Harbour.
+Object Oriented Harbour GUI (aka OOHG) is a graphical interfase for developing Microsoft Windows applications using (x)Harbour.
 
 ooHG enables (x)Harbour programmers to easily develop applications for Microsoft Windows with a graphical user interfase consistent with Microsoft's "Common Controls".
 
