@@ -12,6 +12,14 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-02-27 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    * OOHG's version date.
+
+2019-02-27 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\README.md
+    + Contributors list.
+
 2019-02-27 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\*.*
   * core\source\*.*
