@@ -147,6 +147,7 @@ rem
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
    windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
+   if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
    set HG_OBJS=%HG_OBJS% _temp.o
@@ -158,6 +159,7 @@ rem
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
    windres -i _temp.rc -o _temp.o %HG_C_LOG%
+   if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
    set HG_OBJS=%HG_OBJS% _temp.o
@@ -167,12 +169,13 @@ rem
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
    %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n1 %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_PRG_LOG%
-   if errorlevel 1 echo Error compiling %HG_FILE%.prg! %HG_PRG_LOG%
+   if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_C
 
    gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_C_LOG%
+   if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling %HG_FILE%.c! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
 
@@ -228,8 +231,8 @@ rem
    set HG_SEARCH=-L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI%
    set HG_CLIBS=-Wl,--start-group %HG_CLIBS% -Wl,--end-group
    gcc -o %HG_FILE%.exe %HG_OBJS% %HG_CFLAGS% %HG_SEARCH% %HG_CLIBS% %HG_STATIC_LIBS% %HG_C_LOG%
-   if errorlevel 1 echo Error linking %HG_FILE%.exe! %HG_PRG_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
+   if errorlevel 1 echo Error linking %HG_FILE%.exe! %HG_PRG_LOG%
 
 :CLEANUP
 
