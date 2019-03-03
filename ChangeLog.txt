@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-03-03 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.bat
+    ! "Command not recognized" message.
+
 2019-02-27 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_pseudofunc.ch
     * OOHG's version date.
