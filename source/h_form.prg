@@ -272,7 +272,9 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
    If HB_IsLogical( child ) .AND. child
       ::Type := "C"
       oParent := ::SearchParent( oParent )
-      hParent := oParent:hWnd
+      IF HB_ISOBJECT( oParent )
+         hParent := oParent:hWnd
+      ENDIF
    Else
       ::Type := "S"
       hParent := 0
