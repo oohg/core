@@ -1,0 +1,4708 @@
+/*
+ * $Id: ChangeLog.txt $
+ */
+
+2019-03-03 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.bat
+    ! "Command not recognized" message.
+
+2019-02-27 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    * OOHG's version date.
+
+2019-02-27 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\README.md
+    + Contributors list.
+
+2019-02-27 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\*.*
+  * core\source\*.*
+    * Copyright updated.
+
+2019-02-27 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\README.md
+    * oohg reference.
+
+2019-02-27 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.bat
+    ! Duplicate definition error at build time.
+    + /V switch = verbose build.
+
+2019-02-27 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_001.txt
+    ! Some dates.
+
+2019-02-25 17:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg_license_template.txt
+    ! Wrong version.
+
+2019-02-25 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg_license_template.txt
+    + Reference to HMG Extended.
+    * OOHG copyright following this site info:
+      https://ben.balter.com/2015/06/03/copyright-notices-for-websites-and-open-source-projects/
+
+2019-02-25 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_002.txt
+    * Synced to HMG Extended version.
+
+2019-02-25 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_002.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\ChangeLog_005.txt
+    ! Entry indentation was wrong.
+
+2019-02-24 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\BuildLib.bat
+    ! HM30 build.
+  * core\source\BuildLib_hbmk2.bat
+  * core\source\common_make.bat
+    ! Echo displaying a dot.
+  * core\source\makelib.bat
+    ! HM30 build.
+    ! HG_CCOMP setting.
+  * core\source\makelib_mingw.bat
+    * Remove empty line at end.
+
+2019-02-24 01:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp.bat
+  * core\BuildApp30.bat
+  * core\BuildApp32.bat
+  + core\BuildApp34.bat
+  * core\BuildApp_hbmk2.bat
+  * core\compile.bat
+  * core\compile30.bat
+  * core\compile32.bat
+  + core\compile34.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.bat
+  + core\compile_XM.bat
+  * core\resources\CompileRes.bat
+  * core\resources\Compile_mingw.bat
+  * core\source\BuildLib.bat
+  * core\source\BuildLib30.bat
+  * core\source\BuildLib32.bat
+  * core\source\BuildLib34.bat
+  * core\source\BuildLib_hbmk2.bat
+  * core\source\common_make.bat
+  * core\source\makelib.bat
+  * core\source\makelib30.bat
+  * core\source\makelib32.bat
+  + core\source\makelib34.bat
+  * core\source\makelib_bcc.bat
+  * core\source\makelib_mingw.bat
+  + core\source\makelibXM.bat
+    + Support for Viktor Szakats Harbour 3.4 + MinGW clang
+      compiler (HM34).
+    + Support for xHarbour + MinGW gcc compiler (XM).
+    * HB30 and HB32 switches changed to HM30 and HM32.
+    * All env var are now prefixed with "HG_".
+    ! Resource compilation under BCC.
+
+2019-02-24 01:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_001.txt
+  * core\ChangeLog_002.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\ChangeLog_005.txt
+    - Removed comment.
+
+2019-02-24 01:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.hbc
+    + Logic to handle libraries that differ between versions.
+
+2019-02-24 01:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_this.ch
+    + Missing properties and functions.
+
+2019-02-17 11:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Pacified some warnings under MINGW 8.1.0
+    ! MDI forms with VIRTUAL HEIGHT clause don't work properly.
+    ! Endless loop when painting at ON PAINT event.
+    ; This fix also restores Bostaurus functionality (now it works
+      in the same way that HMG Extended works).
+
+2019-02-17 11:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_dll.prg
+    * Pacified some warnings under MINGW 8.1.0
+
+2019-02-17 11:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Pacified some warnings under MINGW 8.1.0
+    * GetTabBrush function now uses BitBlt instead of WM_PRINT.
+    ; This fixes radiogroup's transparency when form's background
+      is painted at ON PAINT event.
+
+2019-02-17 11:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\c_activex.c
+  * core\source\c_controlmisc.c
+  * core\source\c_gdiplus.c
+  * core\source\c_graph.c
+  * core\source\c_image.c
+  * core\source\c_winapimisc.c
+  * core\source\h_controlmisc.prg
+  * core\source\h_crypt.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_grid.prg
+  * core\source\h_ini.prg
+  * core\source\h_ipaddress.prg
+  * core\source\h_listbox.prg
+  * core\source\h_media.prg
+  * core\source\h_menu.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_picture.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_tab.prg
+  * core\source\h_textarray.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+  * core\source\miniprint.prg
+  * core\source\winprint.prg
+    * Pacified some warnings under MINGW 8.1.0
+
+2019-02-17 11:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + Function _oohg_calldump at C-level. It calls the homonymous
+      function at PRG-level.
+
+2019-02-17 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_pdf.prg
+    * Pacified some warnings under MINGW 8.1.0
+    - Some unneeded code.
+
+2019-02-17 11:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_notify.prg
+    ! Potencial buffer overrun at functions ChangeNotifyIcon,
+      ShowNotifyIcon and SetNotifyIconData.
+
+2019-02-17 11:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * Use TApplication:New() instead of TApplication:Define().
+
+2019-02-17 11:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! RTE at method Define (invalid self object).
+    * Method Define is no longer CONSTRUCTOR and it's sole purpose
+      is to return ::aAppObject.
+    + Method New to do what the old Method Define used to do.
+      Returns NIL.
+
+2019-02-17 10:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\common_make.bat
+    + Some error messages.
+
+2019-02-17 10:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    + Prototype for _oohg_calldump.
+    + HB_UNCONST define for Harbour 3.0
+
+2019-02-17 10:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + WS_EX_COMPOSITED.
+
+2019-02-17 10:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + Translation for i18n and NumToHex functions.
+
+2019-02-17 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_003.txt
+    ! Typo.
+
+2019-02-08 10:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textarray.prg
+    ! Controls shows no text.
+
+2019-02-03 00:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_gdiplus.c
+  * core\source\c_scrsaver.c
+  * core\source\c_windows.c
+  * core\source\h_grid.prg
+  * core\source\h_textbox.prg
+    * Pacified some warnings under MINGW 8.1.0
+
+2019-02-02 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_dll.prg
+  * core\source\h_menu.prg
+  * core\source\h_grid.prg
+  * core\source\h_richeditbox.prg
+    * Pacified some warnings under MINGW 8.1.0
+
+2019-02-02 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tree.ch
+    + ONCHECKCHANGE as a synonym of ON CHECKCHANGE clause.
+
+2019-02-02 13:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_004.txt
+    ! Typo.
+
+2019-02-02 13:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_monthcal.prg
+    ! Compiler error for new versions of MINGW.
+
+2019-01-30 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    * DATA lLibDraw now defaults to _OOHG_UseLibraryDraw
+      instead of .F.
+
+2019-01-30 18:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    + Globlar var _OOHG_UseLibraryDraw. Defaults to .F.
+
+2019-01-30 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tree.ch
+    + NOBORDER as a synonym of ON BORDERLESS clause.
+
+2019-01-30 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_textbox.ch
+    + ONTEXTFILLED as a synonym of ON TEXTFILLED clause.
+
+2019-01-30 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_scroll.ch
+    + ONLINEUP as a synonym of ON LINEUP clause.
+    + ONLINELEFT as a synonym of ON LINELEFT clause.
+    + ONLINEDOWN as a synonym of ON LINEDOWN clause.
+    + ONLINERIGHT as a synonym of ON LINERIGHT clause.
+    + ONPAGEUP as a synonym of ON PAGEUP clause.
+    + ONPAGELEFT as a synonym of ON PAGELEFT clause.
+    + ONPAGEDOWN as a synonym of ON PAGEDOWN clause.
+    + ONPAGERIGHT as a synonym of ON PAGERIGHT clause.
+    + ONTOP as a synonym of ON TOP clause.
+    + ONLEFT as a synonym of ON LEFT clause.
+    + ONRIGHT as a synonym of ON RIGHT clause.
+    + ONBOTTOM as a synonym of ON BOTTOM clause.
+    + ONTHUMB as a synonym of ON THUMB clause.
+    + ONTRACK as a synonym of ON TRACK clause.
+    + ONENDTRACK as a synonym of ON ENDTRACK clause.
+
+2019-01-30 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_editbox.ch
+    + SUBCLASS clause.
+
+2019-01-30 18:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_button.ch
+    + ONMOUSEMOVE as synonym of ON MOUSEMOVE clause.
+    * Some format.
+
+2019-01-30 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_xbrowse.ch
+    + HEADERIMAGESALIGN as synonym of IMAGESALIGN clause.
+    % Use PP rule instead of iif.
+
+2019-01-30 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    ! Combo's REFRESH clause.
+
+2019-01-30 18:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+ * core\ChangeLog_005.txt
+  ! Some entries.
+
+2019-01-30 09:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! RTE at ENDDOC when lSize parameter is absent.
+
+2019-01-23 11:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! COMBOBOX's ON CHANGE event is not working.
+
+2019-01-20 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * The case of some functions.
+
+2019-01-20 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    ! Return value of function TreeView_GetImageList.
+
+2019-01-20 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * DATA lDestroyed was renamed to DATA lDisableDoEvent.
+    + DATA lDestroyed.
+    * Some format.
+
+2019-01-20 20:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! Missing release of "printing..." window.
+    + METHOD ReleaseX to TPDFPRINT (not needed but for clarity).
+
+2019-01-20 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    ! Missing event at DelFromCtrlsArrays.
+    * Some format.
+    + Public control's memvars are now released at control's
+      release after setting them to zero.
+
+2019-01-20 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    + Missing include files at C-level.
+
+2019-01-20 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+  * core\source\c_controlmisc.prg
+    - Events_NCDestroy because it's unnecessary.
+  * core\source\h_form.prg
+    - Events_NCDestroy because it's unnecessary.
+    * The code for app exiting in case the window initialization
+      fails was moved to PRG level to generate an entry at the
+      errors log and enable a more ordered exit.
+    + Public control's memvars are now released at form's
+      release after setting them to zero.
+    - Debugging code.
+    * Some format.
+
+2019-01-20 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_combobox.ch
+     + Missing clauses ONCHANGE, ONDISPLAYCHANGE, ONLISTDISPLAY,
+       ONLISTCLOSE and ONREFRESH.
+     + Missing parameters to splitbox version.
+
+2019-01-18 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\miniprint.ch
+    + Clauses NOWAIT, NOSIZE, OF and PARENT to
+      END PRINTDOC command.
+  * core\include\winprint.ch
+    - Clauses WAIT and NOSIZE from END DOC command because
+      they are the default ones.
+  * core\source\h_print.prg
+    + METHOD IsDocOpenX to CLASS TMiniPrint.
+    * METHOD InitX of CLASS TMiniPrint no longer creates the
+      public vars if they already exist.
+    + Parameters lWait and lSize to METHOD EndDocX of
+      CLASS TMiniPrint. When lWait is .F. the report won't pause
+      the execution until the preview is closed. Defaults to .T.
+      When lSize is .T. the user can redimension the preview
+      window. Defaults to .T.
+    * METHOD ReleaseX of CLASS TMiniPrint no longer releases
+      the public vars if the preview is still open.
+  * core\source\miniprint.prg
+    * FUNCTION _HMG_PRINTER_ShowPreview now receives three
+      parameters: cParent, lWait and lSize (default to NIL, .T.
+      and .T.). When lWait is .F. the preview window will
+      be activated with NOWAIT clause. When lSize is .T. the
+      preview window allows resizing.
+  ; This changes allow the simultaenous use of a MINIPRINT-based
+    TPrint object and an HBPRINTER-based TPrint object.
+
+2019-01-18 15:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! SET NAVIGATION EXTENDED is not working.
+
+2019-01-18 09:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    - Debugging code.
+
+2019-01-18 09:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! RTE at METHOD DoEventMouseCoords.
+
+2019-01-17 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! RTE when mouse goes over a textbox's context menu.
+
+2019-01-17 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_datepicker.prg
+  * core\source\h_hotkeybox.prg
+  * core\source\h_hyperlink.prg
+  * core\source\h_image.prg
+  * core\source\h_internal.prg
+  * core\source\h_ipaddress.prg
+  * core\source\h_label.prg
+  * core\source\h_listbox.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_picture.prg
+  * core\source\h_progressbar.prg
+  * core\source\h_radio.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_scroll.prg
+  * core\source\h_scrollbutton.prg
+  * core\source\h_slider.prg
+  * core\source\h_spinner.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_status.prg
+  * core\source\h_tab.prg
+  * core\source\h_textarray.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+    * More changes to achieve thread safety.
+    * Some format.
+
+2019-01-17 21:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    ! Typo.
+
+2019-01-17 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + METHOD DoEventMouseCoords.
+    + ON CLICK event now receives item and col clicked.
+  * core\source\h_browse.prg
+    + ON CLICK event now receives item and col clicked.
+  * core\source\h_xbrowse.prg
+    + ON CLICK event now receives item and col clicked.
+
+2019-01-17 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2019-01-17 21:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_textbox.ch
+    + NOCONTEXTMENU clause.
+  * core\source\h_textbox.prg
+    * More changes to achieve thread safety.
+    * Some format.
+    + Support for new clause.
+
+2019-01-17 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tab.ch
+    + ACTION as synonym of ON CLICK clause.
+
+2019-01-17 21:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_checklist.ch
+  * core\include\i_grid.ch
+  * core\include\i_xbrowse.ch
+    % Use PP rule instead of iif.
+
+2019-01-13 00:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    - CLASSVAR hClsMtx.
+    * Class now uses only the C-level mutex.
+    * Methods MutexLock and MutexUnlock are now defined at C-level.
+    ; This will allow to make thread-safe the following variables
+      shared by PRG and C levels: _OOHG_aControlhWnd, _OOHG_aControlIds,
+      _OOHG_aControlObjects and _OOHG_aControlNames.
+
+2019-01-13 00:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Function InputWindow now uses the default font.
+    * Function InputWindow now longer uses a form with fixed name.
+    ; Now we can have more than one input window simultaneously.
+    * Function _InputWindowOk is now static.
+    * Function _InputWindowCancel is now static.
+
+2019-01-13 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\hbprinter_dyns.hbx
+    * Updated.
+    ; Note that all the functions are prefixed with RR_ and all of
+      them are written in uppercase. These functions are meant for
+      internal use only.
+  * core\include\oohg_dyns.hbx
+    * Updated.
+  * core\include\winprint.ch
+    + Clauses WAIT, NOWAIT, SIZE, NOSIZE, OF and PARENT to
+      END DOC command.
+  * core\source\h_init.prg
+    * Some TPRINT messages.
+  * core\source\h_print.prg
+    - DATA Exit from class TPRINTBASE.
+    + DATA lDocIsOpen to class TPRINTBASE.
+    + DATA nPreviewSize to class TPRINTBASE.
+    + DATA nStage to class TPRINTBASE.
+    + DATA oWinReport to class TPRINTBASE.
+    + DATA uParent to class TPRINTBASE.
+    + METHOD IsDocOpen to class TPRINTBASE.
+    + METHOD IsDocOpenX to class TPRINTBASE.
+    + METHOD IsDocOpenX to class THBPRINTER.
+    + METHOD EndDoc of class TPRINTBASE and METHOD EndDocX of
+      class THBPRINTER have two new parameters: lWait and
+      lSize. When lWait is .F. the report won't pause the
+      execution until the preview is closed. When lSize is .T.
+      the user can redimension the preview window.
+    * Various methods now return the current value of the
+      related property. When there's no property associated
+      then they return .T. for success or .F. for failure.
+    * Varios methods no longer set the value of the related
+      property when an invalid value is received.
+    * Forms no longer have fixed names.
+    - STATIC FUNCTION Zoom.
+    + METHOD Zoom to class TDOSPRINT.
+    - METHOD SetPreviewSize from classes TTXTPRINT, TEXCELPRINT,
+      TSPREADSHEETPRINT, TRTFPRINT, TCSVPRINT, TPDFPRINT,
+      TCALCPRINT
+    - METHOD SetCPL from class TRTFPRINT.
+    * Codebar functions now return "" instead of NIL on error.
+    + FUNCTION ArrayIsValidColor( aColor ).
+    ; Now we can use two TPrint objects simultaneously!!!
+    ; Note that some printing libraries don't handle more
+      than one report at the same time (f.e. MINIPRINT).
+  * core\source\winprint.prg
+    * Some format and comments.
+    + DATA hData.
+    + New messages.
+    * Document's timestamp to avoid collisions.
+    * METHOD EndDoc now receives three parameters: cParent,
+      lWait and lSize (default to NIL, ::PreviewMode and ! lWait).
+      When lWait is .F. the preview window will be activated
+      with NOWAIT clause. When lSize is .T. the preview window
+      allows resizing.
+    * METHOD Preview now receives three parameters: cParent,
+      lWait and lSize (default to NIL, .T. and ! lWait).
+      When lWait is .F. the preview window will be activated
+      with NOWAIT clause. When lSize is .T. the preview window
+      allows resizing.
+    * STATIC FUNCTION str2file renamed as FUNCTION RR_STR2FILE.
+    * STATIC FUNCTION sayconvert renamed as FUNCTION RR_SAYCONVERT.
+    * FUNCTION str2arr renamed as FUNCTION RR_STR2ARR.
+    * Forms no longer have fixed names.
+    + Function RR_CREATEHBPRINTERDATA.
+    * All C-level module-static vars were moved to a C-level
+      structure.
+    * C-level functions now use the data structure instead of
+      the static vars.
+    ; Now we can use two HBPrinter objects simultaneously!!!
+
+2019-01-11 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * A C-level module-static var was moved to a C-level
+      function-static mutex-protected var.
+    * Static vars are now mutex-protected.
+
+2019-01-11 18:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    + METHOD SelectLastItem.
+    ! RTE when initializing a combobox with IMAGE clause.
+    ! RTE when method ItemValue is called with a string
+      that is not an item.
+    ! RTE when methods FindString or FindStringExact are called
+      without the second parameter or when it's not valid.
+    ! Combobox's display is not cleared after deleting the
+      selected item using method DeleteItem.
+    * Control's ID is "pre-registered" before it's creation
+      to allow its use at WM_MEASUREITEM event handler.
+    * Minor code simplifications at TCOMBO_EVENTS_MEASUREITEM
+      and TCOMBO_EVENTS_MEASUREITEM functions.
+    ! Mutex protection of static vars.
+  * core\source\h_listbox.prg
+    * Control's ID is "pre-registered" before it's creation
+      to allow its use at WM_MEASUREITEM event handler.
+    * Var renamed.
+  * core\source\h_windows.prg
+    ! WM_COMMAND handler causes app to crash after clicking a menu.
+    ! WM_MEASUREITEM handler is not working for combobox.
+
+2019-01-11 18:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  ; More changes to achieve thread safety.
+  * core\include\i_pseudofunc.ch
+    + Function GetActiveHelpFile.
+  * core\include\i_var.ch
+    + Global vars _OOHG_ActiveToolBar, _OOHG_ActiveHelpFile,
+      _OOHG_GetNullName, _OOHG_SettingFocus and _OOHG_Validating.
+  * core\include\oohg.h
+    + New parameter to GetFormObjectByHandle and
+      GetControlObjectByHandle function prototypes.
+  * core\source\bostaurus.prg
+    * Static vars are now mutex-protected.
+  * core\source\c_controlmisc.c
+    + New parameter to function GetControlObjectByHandle to
+      allow for optional mutex protection when calling function
+      _OOHG_SearchControlHandleInArray.
+    + Function GetControlObjectById is now mutex-protected.
+    * Some comments.
+  * core\source\c_msgbox.c
+    * Static var is now mutex-protected.
+  * core\source\c_windows.c
+    * Function _OOHG_GetExistingObject is now mutex-protected.
+    + Function ShowLastError.
+  * core\source\h_application.prg
+    - METHOD HotKeysGet.
+    + MESSAGE HotKeysGet.
+    + METHOD Value_Pos02.
+    + METHOD Value_Pos46.
+    + METHOD Value_Pos50.
+    + METHOD Value_Pos51.
+    + METHOD Value_Pos52.
+    + METHOD Value_Pos53.
+    * Some changes to improve readability.
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+    ! Mutex protection of static var.
+  * core\source\h_controlmisc.prg
+    * Two static vars at PRG-level were substituted by global vars.
+    * Function _OOHG_GetNullName was moved to h_application to make
+      it thread-safe.
+    * Some format and comments.
+    + METHOD PreAddToCtrlsArrays( Id ) to "pre-register" the control's
+      ID so it can be used at events fired after the control's creation
+      and before the control's registration.
+    * METHOD Register no longer accepts 0 as a valid ID.
+    * METHOD AddToCtrlsArrays now checks if the control was
+      "pre-registered" and updates the arrays.
+  * core\source\h_datepicker.c
+    * Two C-level module-static vars were moved to C-level
+      function-static mutex-protected vars.
+  * core\source\h_dll.prg
+    * Static vars are now mutex-protected.
+    * Some format.
+  * core\source\h_form.prg
+    * Function _OOHG_GetFormObjectByHandle is now thread-safe.
+    + New parameter to some function calls.
+    * Some format and comments.
+    * Three static vars are now mutex-protected.
+    * Var renamed.
+  * core\source\h_frame.prg
+    * A C-level module-static var was moved to a C-level
+      function-static mutex-protected var.
+  * core\source\h_help.prg
+    * One static var at PRG-level was substituted by a global var.
+    - Function GetActiveHelpFile.
+  * core\source\h_toolbar.prg
+    * One static var at PRG-level was substituted by a global var.
+  * core\source\h_tree.prg
+    + New parameter to some function calls.
+  * core\source\h_windows.prg
+    + New parameter to some function calls.
+    * Some format.
+
+2019-01-11 16:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+  * core\source\h_ipaddress.prg
+  * core\source\h_picture.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_textarray.prg
+    * C-level var renamed.
+
+2019-01-11 16:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scroll.prg
+    * ID assignment to NIL because 0 its an illegal value.
+
+2019-01-11 16:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_media.prg
+    - Commented out code.
+
+2019-01-11 18:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    * Var renamed.
+    ! When autosize is enabled, the control's height is wrongly
+      calculated whenever the caption is changed.
+
+2019-01-11 16:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_004.txt
+    + Credits to previous entry.
+
+2018-12-27 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_encrypt.ch
+    + RESULT clause to ENCODE FILE, DECODE FILE, ENCODE TO and
+      DECODE TO commands.
+  * core\include\h_crypt.prg
+    * Functions FI_CODE, FI_DECODE, DB_ENCRYPT and DB_UNENCRYPT
+      now return NIL if the file is already encrypted, .F. if
+      something went wrong and .T. if successful.
+    ! Functions DB_ENCRYPT and DB_UNENCRYPT don't accept
+      filenames with extension.
+    - Static function cFileName.
+
+2018-12-25 22:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_003.txt
+    ! Typo.
+  * core\ChangeLog_004.txt
+    ! Typo.
+  * core\include\i_hmg_compat.ch
+    + Support for MENUITEM's CHECKMARK clause.
+  * core\include\i_menu.ch
+    + New commands to handle menu controls.
+    + OWNERDRAW, DEFAULT, MESSAGE, FONT, TIMEOUT clauses.
+    + ONCLICK as synonym of ACTION clause.
+    + ICON as a synonym of IMAGE clause.
+    + MRU and MRUITEM commands, to build "most recently used" lists.
+    ; This changes are fully compatible with HMG Extended.
+  * core\include\i_var.ch
+    + Global vars _OOHG_DefaultStatusBarMsg, _OOHG_DefaultMenuParams
+      and _OOHG_OwnerDrawMenus.
+  * core\include\i_windefs.ch
+    + Defines for WM_MENUSELECT, MF_HILITE and MF_OWNERDRAW.
+  + core\include\menu.h
+    + Defines menu related constants used at PRG and C levels.
+  * core\include\oohg.h
+    + Menu related structure.
+    * Declaration of _OOHG_ScaleImage function.
+    + Defines for static s_Events_InitMenuPopUp and s_oMenu.
+    + Conditional inclusion of menu.h file.
+  * core\source\c_controlmisc.c
+    * Some changes for 64 bits support.
+    + Static symbols Events_InitMenuPopUp and oMenu.
+  * core\source\c_image.c
+    * Two parameters of _OOHG_ScaleImage function are now long.
+    ! _OOHG_ScaleImage function does not work when hWnd parameter
+      if null.
+  * core\source\h_application.prg
+    + METHOD ActiveMenuRemove.
+    + METHOD Value_Pos48.
+    ! METHOD DefineLogFont.
+  * core\source\h_combo.prg
+    ! Typo.
+  * core\source\h_controlmisc.prg
+    * METHOD SetFont of TControl now returns the font handle.
+  * core\source\h_form.prg
+    * Some changes for 64 bits support.
+    + WM_NCMOUSEMOVE message handler.
+  * core\source\h_grid.prg
+    ! Typo.
+  * core\source\h_internal.prg
+    * Some changes for 64 bits support.
+  * core\source\h_label.prg
+    ! Autosize is not working properly when the control's value
+      if a multiline text.
+    * METHOD SetFont of TLabel now returns the font handle.
+  * core\source\h_menu.prg
+    - STATIC _OOHG_xMenuActive.
+    + CLASS TMenuParams.
+    + DATA bOnInitPopUp to TMenu.
+    + DATA cFontID to TMenu.
+    + DATA cStatMsg to TMenu.
+    + DATA nTimeout to TMenu.
+    + DATA oMenuParams to TMenu.
+    + METHOD Border3D to TMenu.
+    + METHOD Colors to TMenu.
+    + METHOD CursorType to TMenu.
+    + METHOD Events_InitMenuPopUp to TMenu.
+    + METHOD Gradient to TMenu.
+    + METHOD ItemCount to TMenu.
+    + METHOD ItemPosition to TMenu.
+    + METHOD OwnerDraw to TMenu.
+    + METHOD Params to TMenu.
+    + METHOD PopUpPosition to TMenu.
+    + METHOD SeparatorType to TMenu.
+    ! METHOD DisableVisualStyle() of TMenu
+    + New parameters to several methods to support new
+      commands and clauses (see i_menu.ch).
+    - DATA xId ftom TMenuItem.
+    + DATA bOnInitPopUp to TMenuItem.
+    + DATA cCaption to TMenuItem.
+    + DATA cFontID to TMenuItem.
+    + DATA cStatMsg to TMenuItem.
+    + DATA hExternFont to TMenuItem.
+    + DATA lIsAtBar to TMenuItem.
+    + DATA lIsMenuBreak to TMenuItem.
+    + DATA lIsSeparator to TMenuItem.
+    + DATA lOwnerDraw to TMenuItem.
+    + DATA nTimeout to TMenuItem.
+    + DATA oMenuParams to TMenuItem.
+    + DATA xData to TMenuItem.
+    + METHOD Border3D to TMenuItem.
+    + METHOD Colors to TMenuItem.
+    + METHOD CursorType to TMenuItem.
+    + METHOD DefaultItemById to TMenuItem.
+    + METHOD Events_DrawItem to TMenuItem.
+    + METHOD Events_InitMenuPopUp to TMenuItem.
+    + METHOD Events_MeasureItem to TMenuItem.
+    + METHOD Events_MenuHilited to TMenuItem.
+    + METHOD Gradient to TMenuItem.
+    + METHOD OwnerDraw to TMenuItem.
+    + METHOD Position to TMenuItem.
+    + METHOD SeparatorType to TMenuItem.
+    ! METHOD Checked of TMenuItem for popups at the menu bar.
+    * Methods DefinePopUp and InsertPopUp of TmenuItem now use
+      an ID instead of using the hWnd.
+    + Class TMenuItemMRU to create a "Most Recently Used" menu.
+    ! Return value of InsertMenu.
+    + Support for MF_OWNERDRAW flag at InsertMenu and
+      AppendMenu functions.
+    * Functions MenuChecked, MenuEnabled and MenuHilited
+      now use MF_BYPOSITION flag.
+    + Support for MF_OWNERDRAW flag at MenuItem_SetBitmaps
+      function.
+    + Functions CreateMenuItemData, DeleteMenuItemData,
+      SetMenuDefaultItemByID, TMenuItemMeasure,
+      FindItemPosition, FindPopUpPosition, DefaultMenuParams,
+      GetMenuItemCount, TMenuItemDraw, _OOHG_MenuCursorType,
+      _OOHG_MenuSeparator, _OOHG_MenuBorderStyle,
+      _OOHG_MenuGradientStyle and _OOHG_MenuBitmapMetrics.
+    + C-level functions BitmapFromIcon, FillGradient,
+      DrawMenuTextBkgrnd, DrawMenuSelectedItemBorder,
+      DrawMenuImage, DrawMenuCheckMark, DrawMenuSeparator,
+      FindItemPos and FindPopUpPos.
+    * Some casting.
+    * Some changes for 64 bits support.
+    * Some format.
+  ; Parts of this code are based on the original works of
+    P.Chornyj <myorg63@mail.ru> and
+    Grigory Filatov <gfilatov@inbox.ru> for HMG Extended project.
+  * core\source\h_monthcal.prg
+    * METHOD SetFont of TMonthCal now returns the font handle.
+  * core\source\h_picture.prg
+    * Some changes for 64 bits support.
+  * core\source\h_radio.prg
+    * METHOD SetFont of TRadioGroup now returns the font handle
+      of the first option.
+  * core\source\h_status.prg
+    + DATA oTimer.
+    + METHOD InitTimeout.
+    + METHOD Release.
+  * core\source\h_textarray.prg
+    - Some commented text.
+  * core\source\h_windows.prg
+    * A C-level module-static var was moved to a C-level
+      function-static var.
+    - Removed a no longer needed C-level module-static var.
+    - Removed hack for WM_MEASUREITEM messages.
+    * Some comments.
+    + Support for menu controls at WM_DRAWITEM message handler.
+    + Support for menu controls at WM_MEASUREITEM message handler.
+    + WM_INITMENUPOPUP message handler.
+    + WM_MENUSELECT message handler.
+    * Funtction _OOHG_GLOBALRTL at C-level now uses a static
+      local var and it's setting is protected by _OOHG_GlobalMutex.
+
+2018-12-13 20:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! PrintRoundRectangle and PrintRectangle were painting the
+      inside with a black brush.
+
+2018-12-13 09:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! Compilation fails because some missing constants.
+
+2018-12-09 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    * Format.
+    * Three C-level module-static vars were moved to C-level
+      function-static vars, thus making the class thread safe.
+
+2018-12-09 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\winprint.prg
+    + Support for PNG and TIFF images from resources.
+
+2018-12-09 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_grid.prg
+  * core\source\h_print.prg
+    * GetDesktopHeight changed by GetDeskTopRealHeight.
+    * GetDesktopWidth changed by GetDeskTopRealWidth.
+
+2018-12-09 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+  * core\source\h_toolbar.prg
+    * Format.
+
+2018-12-09 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Format.
+    * DEFINE WINDOW TEMPLATE to DEFINE WINDOW 0.
+
+2018-12-09 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\miniprint.prg
+    * GetDesktopHeight changed by GetDeskTopRealHeight.
+    * GetDesktopWidth changed by GetDeskTopRealWidth.
+    * Some changes for 64 bit support.
+
+2018-12-09 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    * METHOD Value now accepts a codeblock.
+
+2018-12-09 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_ini.prg
+    * Format.
+
+2018-12-09 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + App.DefineFont
+    + App.ReleaseFont
+
+2018-12-04 20:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + App.MutexLock
+    + App.MutexUnlock
+
+2018-12-04 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + Translation for Function DateTime.
+
+2018-12-04 20:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    * NDX_OOHG_DEFAULTMENUCOLORS changed by NDX_OOHG_DEFAULTMENUPARAMS.
+    + METHOD MutexLock.
+    + METHOD MutexUnlock.
+
+2018-12-04 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    * Some DEFAULT changed by ASSIGN.
+
+2018-12-04 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_crypt.prg
+    + Message localization.
+    * Function DB_CODE should be thread safe now.
+    * Format.
+
+2018-12-04 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Define for tagNMLVSCROLL structure because it's not
+      present in BCC.
+
+2018-12-04 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    + Some messages for h_crypt.prg
+
+2018-12-04 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    ! Compiler error on App.FileName.
+
+2018-12-03 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Compilation with BORLAND.
+
+2018-12-03 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_pdf.prg
+    + DATA cExecuteApp
+    + DATA cExecuteParams
+    + DATA cPrintApp
+    + DATA cPrintParams
+    + DATA cFileName
+    * File's name now defaults to "file.pdf".
+    * METHOD FilePrint now calls the app defined by DATA cPrintApp.
+    * METHOD Execute now calls the app defined by DATA cExecuteApp.
+
+2018-12-03 19:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    ! SOLID clause is not working.
+
+2018-12-02 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_004.txt
+    ! Typo.
+
+2018-12-02 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Updated function declaration.
+    + New symbol Events_MenuHilited.
+
+2018-12-02 23:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    * Some changes for 64 bit support.
+
+2018-12-02 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * Some format.
+    * Some changes for 64 bit support.
+
+2018-12-02 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Some format.
+
+2018-12-02 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+  * core\source\h_button.prg
+    + New parameter to function _OOHG_ReplaceColor that enables
+      the replace of one color by another color.
+    * Some format.
+
+2018-12-02 23:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    * Some changes for 64 bit support.
+
+2018-12-02 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_pdf.prg
+    + METHOD Height.
+    + METHOD Width.
+    + METHOD Left.
+    + METHOD Right.
+    + METHOD Top.
+    + METHOD Bottom.
+    ! METHOD Center.
+    * METHOD Length now takes parameter cUnits to properly
+      compute the length of a string. Note that for ROWCOL
+      the number of available columns is estimated using
+      the size of the largest char in the selected font.
+    * METHOD Reverse and METHOD Underline now check the string
+      before appending the mark.
+    ! METHOD RJust.
+    ! METHOD TextCount.
+    + Some comments.
+    * Some static functions were removed.
+    * Remaining static functions were renamed adding TPDF_ prefix.
+
+2018-12-02 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    + Support for printing BMP images using TPDFPRINT.
+
+2018-12-02 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_graph.prg
+  * core\source\h_grid.prg
+  * core\source\h_help.prg
+  * core\source\h_ini.prg
+  * core\source\h_init.prg
+  * core\source\h_registry.prg
+  * core\source\h_report.prg
+  * core\source\h_scrsaver.prg
+    + Message localization.
+
+2018-12-02 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_gdiplus.c
+  * core\source\h_status.prg
+  * core\source\h_ipaddress.prg
+    * UINT instead of unsigned int.
+
+2018-12-02 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_toolbar.prg
+    * Some format.
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+    * Some changes for 64 bit support.
+
+2018-12-02 22:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Code reorganized.
+    * Some format.
+    + METHOD ArcTo.
+    + METHOD Chord.
+    + METHOD Polygon.
+    + METHOD PolyBezier.
+    + METHOD PolyBezierTo.
+    * Function InputBox no longer creates it's window
+      with a fixed name.
+
+2018-12-02 22:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\c_activex.c
+  * core\source\h_monthcal.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_tree.prg
+    * Some format.
+
+2018-12-02 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    * Some format.
+
+2018-12-02 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    + Message localization.
+
+2018-12-02 22:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\miniprint.prg
+    * Some format.
+    ! Missing title of a message box.
+
+2018-12-02 22:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\winprint.prg
+    * Some format.
+
+2018-12-01 11:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    + New parameter lMode to methods PrintBarCode and Int25.
+      When is set to .T. a leading "0" and a trailing check
+      digit is added to the barcode.
+      Set to .F. to avoid including the extra digits.
+      Defaults to .T.
+    * Some format.
+    + METHOD MaxRow and METHOD MaxCol to class TPDFPRINT.
+    + Underline support to method PrintDataX of class TPDFPRINT.
+      Note that trailing spaces are not underlined when the
+      string alignment is set to CENTER o RIGHT.
+    + Support for CENTER and RIGHT string aligment when the
+      printing units are set to "MM".
+
+2018-11-27 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_picture.prg
+    * Some changes for 64 bit support.
+    * Use TRUE instead of 1 to match function's declaration.
+
+2018-11-27 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textarray.prg
+    * Use TRUE instead of 1 to match function's declaration.
+
+2018-11-27 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    - Functions GETGRIDCOLUMN, GETGRIDOLDSTATE, GETGRIDNEWSTATE,
+      GETGRIDDISPINFOINDEX, SETGRIDQUERYDATA and SETGRIDQUERYIMAGE
+      moved to h_grid.prg
+
+2018-11-27 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * DATA bOnScroll.
+      This codeblock is evaluated when the grid is scrolled.
+      Receives an array with 4 items:
+      1: Pixels horizontally scrolled (> 0 right, < 0 left).
+      2: Pixels vertically scrolled (> 0 bottom, < 0 top).
+      3: Actual horizontal scrollbar position.
+      4: Actual vertical scrollbar position.
+    * HEADERS clause is no longer needed when NOHEADERS
+      clause is present.
+    ! PICTURE clause for numeric columns shows unneeded commas.
+    % Function GET_XY_LPARAM at C level.
+    + Function GET_DXDY_LPARAM at C level
+    * Some changes for 64 bit support.
+    + Functions GETGRIDCOLUMN, GETGRIDOLDSTATE, GETGRIDNEWSTATE,
+      GETGRIDDISPINFOINDEX, SETGRIDQUERYDATA and SETGRIDQUERYIMAGE
+      from c_windows.c
+
+2018-11-23 19:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! RTE at method Item line 3634: & Argument error.
+
+2018-11-19 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + New BUTTON, CHECBOX and RADIOGROUP clauses.
+
+2018-11-19 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_button.ch
+    ! FORCESCALE is now a synonym of AUTOFIT instead of STRETCH.
+      *** INCOMPATIBLE ***
+    + STRETCH, FONTCOLOR, TEXTALIGN, NOPRINTOVER, FITIMG, FITTXT,
+      TEXTMARGIN, IMAGESIZE, NOFOCUSRECT and TRANSPARENT clauses.
+  * core\source\h_button.prg
+    + Support for new clauses.
+    + DATA aTextMargin.
+    + DATA lFitImg.
+    + DATA lFitTxt.
+    + DATA lNoFocusRect.
+    + DATA lNoPrintOver.
+    + DATA nTextAlign.
+    + METHOD TextMargin.
+    + Some info about parameters.
+    + New parameters to METHOD Define of TButton class.
+    + New parameters to METHOD Define of TButtonCheck class.
+    + New parameters to METHOD DefineImage of TButton class.
+    + New parameters to METHOD DefineImage of TButtonCheck class.
+    * Format.
+    * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+    * 'DEFAULT var TO value' changed to 'ASSIGN var ...'
+    + New parameters to FUNCTION SetImageXP.
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+    ! OOHGDRAW now mimics Windows behaviour.
+    + OOHGDRAW now supports FONTCOLOR and customizable image
+      and text support.
+    * DATA lLibDraw is now init to .F.
+      ; If the WINDRAW or OOHGDRAW clauses are not present,
+        the first one will be assumed, except when NOFOCUSRECT,
+        NOHOTLIGHT, NOPRINTOVER, TEXTMARGIN, SOLID or FITTXT
+        are specified and the app is themed.
+
+2018-11-19 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    * Custom draw now mimics Windows behaviour.
+
+2018-11-18 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    ! BACKGROUND clause is not working properly.
+
+2018-11-18 11:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    ! Control's autoadjust was not working properly.
+
+2018-11-15 19:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    ! Default value of painting clause is not set properly.
+
+2018-11-15 18:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checkbox.prg
+    ! BACKGROUND clause is not working properly.
+
+2018-11-15 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    ! C compiler warning.
+
+2018-11-14 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  ! Background painting of controls that do not honor the brush
+    returned by WM_CTLCOLORBTN, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT
+    and WM_CTLCOLORLISTBOX handlers.
+
+  * core\source\c_windows.c
+    ! WM_PRINTCLIENT changed to WM_PRINT.
+
+  * core\source\h_checkbox.prg
+    * Some format.
+    * DATA IconWidt is now init to 21 px.
+    - DATA TabHandle.
+    * DATA lLibDraw is now init to .F.
+      ; If the WINDRAW or OOHGDRAW clauses are not present,
+        the first one will be assumed, except when NOFOCUSRECT
+        is specified and the app is themed.
+    % Set ::lAutosize instead of calling ::Autosize.
+    * Method Events_Color now calls TCONTROL_EVENTS_COLOR.
+    ! Function TCheckBox_Notify_CustomDraw.
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+
+  * core\source\h_controlmisc.prg
+    + New parameter to method TCONTROL_EVENTS_COLOR for painting
+      the control's parent background.
+    + Logic for painting the background using a brush from an
+      image or tab (moved from function EVENTS_COLOR_INTAB).
+    - Function EVENTS_COLOR_INTAB.
+
+  * core\include\i_radio.ch
+    + NOFOCUSRECT clause.
+  * core\source\h_radio.prg
+    + DATA lNoFocusRect to TRadioGroup.
+    + DATA lTabStop to TRadioGroup.
+    * DATA nSpacing of TRadioGroup now defaults to 25.
+    - DATA oBkGrnd from TRadioGroup.
+    - DATA TabHandle from TRadioGroup.
+    - DATA TabStop from TRadioGroup.
+    + METHOD BackGround to TRadioGroup.
+    + METHOD DoChange to TRadioGroup.
+    + METHOD TabStop to TRadioGroup.
+    + METHOD ItemToolTip to TRadioGroup to set an item's tooltip.
+    + METHOD ToolTip to TRadioGroup to set all the item's tooltips
+      at once.
+    * Some format.
+    + New parameters to TRadioGroup:Define.
+    * WINDRAW clause is default except when NOFOCUSRECT is used.
+    ! Method SetFont was not saving the font characteristics.
+    ! Control's tabstop. Tab key now sets the focus at the
+      selected item or the first one is none is selected.
+    * Moved item's default settings to TRadioItem.
+    + DATA lLibDraw to TRadioItem.
+    + DATA lNoFocusRect to TRadioItem.
+    - DATA oBkGrnd from TRadioItem.
+    - DATA TabHandle from TRadioItem.
+    + METHOD BackGround to TRadioItem.
+    + New parameters to TRadioItem:Define.
+    * A TRadioItem control now inherits from its container if
+      it is a TRadioGroup.
+    * Two C-level module-static vars were moved to C-level
+      function-static vars, thus making the class thread safe.
+
+  * core\source\h_tab.prg
+    + METHOD BackColor to TMultiPage.
+    + Backcolor to tab pages so contained controls properly inherit
+      from the container.
+    ; Under themed XP it's not possible to achieve transparency
+      using backcolor because tab pages are painted with a color
+      gradiente. You must use TRASPARENT clause.
+
+  * core\source\h_windows.prg
+    + DATA TabHandle.
+    + Third parameter, set to NIL, to Events_Color call.
+    * Some format.
+    % Use Eval instead of _OOHG_Eval.
+
+2018-11-14 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-11-14 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    % Use Eval instead of _OOHG_Eval.
+
+2018-11-14 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    % Set ::lAutosize instead of calling ::Autosize.
+
+2018-11-14 19:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_status.ch
+    + DEFAULT clause to STATUSITEM.
+  * core\source\h_status.prg
+    + Support for DEFAULT clause.
+  ; This clause sets the message as the default for menus
+    without their own message.
+  ; Functionality will be committed in a few days.
+
+2018-11-14 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\oohg.hbp
+    * One flag commented out.
+
+2018-11-08 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_frame.prg
+    - Useless METHOD Events_Color.
+
+2018-11-10 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + BackColorCode to semi-oop syntax.
+
+2018-11-08 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\oohg.hbp
+    - Some MINGW compiler flags.
+
+2018-11-08 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    + New grid messages.
+
+2018-11-08 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Message localization.
+
+2018-11-08 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Change for 64 bit support.
+
+2018-11-08 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\bostaurus.ch
+    + ifdef to avoid multiple inclusions.
+  * core\include\i_graph.ch
+    + define ArrayRGB_TO_COLORREF and COLORREF_TO_ArrayRGB.
+
+2018-11-07 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! PrintRectangle does not honor color parameter.
+
+2018-11-07 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    ! Search for first item is not working when combo has
+      VALUESOURCE clause.
+    + METHOD FindString of TCOMBO class to find the first item
+      that starts with the specified string.
+    + METHOD FindStringExact of TCOMBO class to find the first
+      item that is exactly equal to the specified string.
+    + METHOD FindString of TLISTCOMBO class.
+    + METHOD FindStringExact of TLISTCOMBO class.
+    * C functions COMBOBOXFINDSTRING and COMBOBOXFINDSTRINGEXACT
+      now expect a one-based starting item number or a 0 that
+      means "start from the top". INCOMPATIBLE.
+  * core\source\h_listbox.prg
+    + METHOD FindString of TLIST class.
+    + METHOD FindStringExact of TLIST class.
+    + C functions LISTBOXFINDSTRING and LISTBOXFINDSTRINGEXACT.
+
+2018-11-06 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_004.txt
+    ! Typo.
+
+2018-11-06 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! TPDFPRINT does not print image after drawing a rectangle.
+    * Methods PrintRectangle and PrintRoundRectangle of TPRINT.
+      The filler color now defaults to NIL instead of WHITE.
+      To fill with WHITE you must explicitly specified it.
+    ! Methods PrintBarcodeX and PrintLineX of TPDFPRINT.
+      The line color now defaults to NIL.
+    ! Methods PrintRectangleX and PrintRoundRectangleX of
+      TPDFPRINT. The line and filler colors now default to NIL.
+
+2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-11-06 00:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\winprint.prg
+    * Format and comments.
+    - define HB_OS_WIN_USED.
+    * Some changes for 64 bit support.
+    * Use new _OOHG_ULTOA, _OOHG_LTOA and _OOHG_ITOA macros.
+
+2018-11-06 00:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    - define HB_OS_WIN_USED.
+    * METHOD ImageList of TWindow now destroy the previous
+      imagelist if one is defined.
+    % METHOD BrushHandle of TWindow.
+    * METHOD FontHandle of TWindow now deletes the previous
+      font object if one is defined.
+    * Use HMENUparam macro.
+
+2018-11-06 00:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Some changes for 64 bit support.
+    - Unreachable code at EVENTS_COLOR_INTAB.
+    * Deletion of font object moved to C level.
+    * Destruction of imagelist moved to C level.
+
+2018-11-06 00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_registry.prg
+    ! Compilation with xHarbour.
+    ! Compilation with BORLAND.
+
+2018-11-05 23:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + METHOD EditControlLikeExcel.
+    - FUNCTION EditControlLikeExcel.
+    - define HB_OS_WIN_USED.
+    * Use HMENUparam macro.
+  * core\source\h_xbrowse.prg
+    * Use new method instead of function.
+
+2018-11-05 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    - define HB_OS_WIN_USED.
+    * Some format.
+
+2018-11-05 23:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressmeter.prg
+  * core\source\h_textarray.prg
+    * Format.
+
+2018-11-05 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+  * core\source\h_radio.prg
+  * core\source\h_scroll.prg
+  * core\source\h_spinner.prg
+    * Changed some parameters at call to CreateWindowX.
+    - Comments.
+    - define HB_OS_WIN_USED.
+
+2018-11-05 23:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+  * core\source\h_toolbar.prg
+    * Use HMENUparam macro.
+    - define HB_OS_WIN_USED.
+
+2018-11-05 23:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    - define HB_OS_WIN_USED.
+    * Some format.
+
+2018-11-05 23:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    ! HMENUparam and HMENUret macros.
+    * MAKEWORD and MAKELONG macros.
+    - Some unused defines.
+    * ultoa, ltoa and itoa renamed to _OOHG_ULTOA, _OOHG_LTOA
+      and _OOHG_ITOA.
+    * Formated and uncrustified with Harbour's configuration.
+
+2018-11-05 23:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_combo.prg
+  * core\source\h_frame.prg
+  * core\source\h_hotkeybox.prg
+  * core\source\h_label.prg
+  * core\source\h_listbox.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_slider.prg
+  * core\source\h_textbox.prg
+    * Use HMENUparam macro.
+
+2018-11-05 23:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_ipaddress.prg
+    + METHOD IsBlank.
+    * Format.
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+    * Some changes for 64 bit support.
+
+2018-11-05 23:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    - define HB_OS_WIN_USED.
+    * Some changes for 64 bit support.
+    * Some format.
+
+2018-11-05 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+  * core\source\c_image.c
+  * core\source\c_msgbox.c
+  * core\source\c_resource.c
+  * core\source\c_scrsaver.c
+  * core\source\c_winapimisc.c
+  * core\source\c_windows.c
+    - define HB_OS_WIN_USED.
+
+2018-11-05 23:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_anigif.prg
+  * core\source\h_application.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_ini.prg
+  * core\source\h_internal.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_notify.prg
+  * core\source\h_picture.prg
+  * core\source\h_print.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_status.prg
+  * core\source\h_tab.prg
+  * core\source\h_timer.prg
+  * core\source\h_tooltip.prg
+    - define HB_OS_WIN_USED.
+
+2018-11-05 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Pacified some MINGW compiler warnings.
+
+2018-11-05 23:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    - C define moved to oohg.h
+    * Pacified some MINGW compiler warnings.
+    * Use new _OOHG_ULTOA, _OOHG_LTOA and _OOHG_ITOA macros.
+    * Type of function AnsiToWide.
+    * Some changes for 64 bit support.
+
+2018-11-05 23:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_scrsaver.c
+    - define HB_OS_WIN_USED.
+    * Some format.
+
+2018-11-05 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_resource.c
+    - Static var and unneeded function.
+    * Some format.
+    * Some changes for 64 bit support.
+
+2018-11-05 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_msgbox.c
+    - define HB_OS_WIN_USED.
+
+2018-11-05 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_media.c
+    - define HB_OS_WIN_USED.
+    * Some format.
+
+2018-11-05 22:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+    - define HB_OS_WIN_USED.
+
+2018-11-05 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_graph.c
+    * Pacified some MINGW compiler warnings.
+    - Some unneeded casting.
+    * Some changes for 64 bit support.
+
+2018-11-05 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_gdiplus.c
+    * Some changes for 64 bit support.
+
+2018-11-05 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    * Pacified some MINGW compiler warnings.
+    ! BORLAND compiler errors.
+    * Some format.
+    * First parameter of PrepareFont is now defined as
+     'const char *' instead of 'char *'.
+
+2018-11-05 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_dialogs.c
+    - define HB_OS_WIN_USED.
+    * Pacified some MINGW compiler warnings.
+    * Some format.
+
+2018-11-05 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_cursor.c
+    - define HB_OS_WIN_USED.
+
+2018-11-05 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_activex.c
+    * Changed some parameters at call to CreateWindowX.
+
+2018-11-05 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+    - define HB_OS_WIN_USED.
+    * Pacified some MINGW compiler warnings.
+    * Use OOHG.h macros whenever posible.
+
+2018-11-05 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\oohg.hbp
+    + Some commented MINGW compiler flags to detect warnings.
+
+2018-11-05 20:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_bcc.bat
+    ! Compile error because Function GetThreadID is not defined.
+
+2018-11-01 14:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_label.ch
+  * core\include\i_xbrowse.ch
+    * <picture> marker renamed to <inputmask>.
+
+2018-11-01 14:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    ! TEXTBOX's PICTURE clause is not recognized as synonim of
+      INPUTMASK clause.
+    ; INPUTMASK takes precedence over PICTURE.
+
+2018-10-31 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\source\h_application.prg
+    ! Control definition using alternative syntax.
+    ; Alternative syntax is now thread safe.
+    + METHOD EventInfoClear to TApplication class.
+      ; Use it to clear the thread's events stack.
+
+2018-10-30 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + New combobox clauses.
+
+2018-10-25 00:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+  * core\include\i_var.ch
+  * core\include\winprint.ch
+  * core\source\h_application.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_tab.prg
+  * core\source\h_windows.prg
+    ! RTE when trying to access _OOHG_ActiveFrame.
+    * _OOHG_ActiveFrame now returns the last active frame of
+      the thread instead of the full array of active frames.
+      It no longer admits setting the array. INCOMPATIBLE.
+    - METHOD Value_Pos02 from TApplication. See previous.
+    + METHOD ActiveFrameContainer to TApplication to search
+      the thread's array of active frame for an open container.
+    + METHOD ActiveFramePush to add a new active frame.
+    + METHOD ActiveFramePop to remove the last active frame.
+    + METHOD ActiveFrameGet to obtain the last active frame.
+    + DATA aFramesStack to TApplication.
+    + METHOD HotKeySet to TApplication.
+    - METHOD Value_Pos46 from TApplication. See previous.
+    + METHOD HotKeysGet to TApplication.
+    ! METHOD ActiveMenuGet returns wrong data.
+    ! METHOD ActiveMenuPop was not working properly.
+
+2018-10-24 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    + Added for future improvement:
+      DATA aMenusStack.
+      METHOD ActiveMenuGet.
+      METHOD ActiveMenuPop.
+      METHOD ActiveMenuPush.
+      METHOD Value_Pos47.
+      METHOD Value_Pos48.
+    + Call to _GETDDLMESSAGE() TApplication:Define.
+    ! Method EventInfoPop was not working properly.
+    ! _OOHG_ActiveControlInfo and _OOHG_ActiveFrame now return
+      a cloned array instead the class' array.
+
+2018-10-24 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + DATA cStatMsg for future improvement.
+    * Function _GETDDLMESSAGE() registers the message only once.
+    * Some comments.
+    ! Wrong error message.
+
+2018-10-24 21:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * Call to _GETDDLMESSAGE() moved to TApplication.
+
+2018-10-24 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    * Some changes for 64 bit support.
+
+2018-10-24 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checklist.prg
+    ! Typo in comment.
+
+2018-10-24 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    * Some changes for 64 bit support.
+
+2018-10-24 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+    * Some changes for 64 bit support.
+
+2018-10-24 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_font.ch
+    ! DEFINE FONT and RELEASE FONT commands do not accept
+      expressions enclosed in parentheses.
+
+2018-10-19 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    + METHOD SizePos.
+    ! Painting after resizing a control created with height and
+      width set to zero.
+
+2018-10-19 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_listbox.prg
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+    * Some changes for 64 bit support.
+    * Some format.
+
+2018-10-19 23:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! Call to method release of TApplication at ExitProcess.
+
+2018-10-19 23:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+  * core\source\h_internal.prg
+  * core\source\h_picture.prg
+  * core\source\h_textarray.prg
+    * Some format.
+
+2018-10-19 23:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    * METHOD DefineFont renamed to DefineLogFont.
+    * METHOD GetFontHandle renamed to GetLogFontHandle.
+    * METHOD GetFontID renamed to GetLogFontID.
+    * METHOD GetFontParams renamed to GetLogFontParams.
+    * METHOD GetFontParamsByRef renamed to GetLogFontParamsByRef.
+    * METHOD ReleaseFont renamed to ReleaseLogFont.
+    + Validation of cFontID.
+    * cFontID is now handled in uppercase.
+
+2018-10-19 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    - GetFontHandle, GetFontParam and GetFontParamByRef functions.
+  * core\include\i_pseudofunc.ch
+    + GetFontHandle, GetFontParam and GetFontParamByRef functions.
+
+2018-10-19 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_font.ch
+    ! DEFINE FONT and RELEASE FONT commands.
+
+2018-10-18 21:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-10-18 21:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+  * core\source\h_picture.prg
+  * core\source\h_textarray.prg
+    * The code for app exiting in case the class registration
+      fails was moved to PRG level to generate an entry at the
+      errors log and enable a more ordered exit.
+  * core\source\h_picture.prg
+    * Two C-level module-static vars were moved to C-level
+      function-static vars, thus making the class thread safe.
+
+2018-10-18 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Function TGrid_Notify_CustomDraw_GetSelColor will now
+      return -1 instead of exiting app when the color array
+      is not valid.
+
+2018-10-18 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    - Call to dbCloseAll() because it's done at ExitProcess.
+
+2018-10-18 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_font.ch
+    + DEFINE FONT and RELEASE FONT commands.
+  * core\include\i_hmg_compat.ch
+    + GetFontHandle, GetFontParam and GetFontParamByRef functions.
+  * core\source\c_font.c
+    + ENumFontsEx and _EnumFontFamExProc functions.
+  * core\source\h_application.prg
+    + DATA aEventStack renamed to aEventsStack.
+    + METHOD DefineFont to TApplication class.
+      ; Use this method to define an application-wide logical font.
+      ; Do not explicitly deleted de object returned by this method,
+        use METHOD ReleaseFont instead.
+      ; See DEFINE FONT command.
+    + METHOD GetFontHandle to TApplication class.
+    + METHOD GetFontID to TApplication class.
+    + METHOD GetFontParamsByRef to TApplication class.
+    + METHOD Release to TApplication class.
+      ; This method will be called at app's end. Currently it only
+        deletes all defined application-wide fonts.
+    + METHOD ReleaseFont to TApplication class.
+      ; Do not delete an application-wide font unless you are
+        completely sure that it's not in use.
+      ; See RELEASE FONT command.
+    ! Methods EventInfoList, EventInfoPush and EventInfoPop were
+      missing mutex locking logic.
+    ! Methods EventInfoList, EventInfoPush and EventInfoPop were
+      not using direct access to class datas.
+  * core\source\h_error.prg
+    * _ListEventInfo() changed by call to TApplication class.
+  * core\source\h_windows.prg
+    + Call to TApplication():Release at ExitProcess function.
+    + Function GetFontList, borrowed from HGM Extended.
+
+2018-10-18 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    ! SetAppHotKey, _PushEventInfo, _PopEventInfo and _PushEventList
+      were not working properly and causing a lot of awful errors.
+
+2018-10-17 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Some changes for 64 bit support.
+
+2018-10-17 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    + GetUserProfileFolder, GetUserTempFolder, GetApplicationDataFolder,
+      SetAppHotKey, _PopEventInfo, _PushEventInfo, _PushEventList and
+      _OOHG_SetbKeyDown pp translations.
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    + _OOHG_bKeyDown and _OOHG_HotKeys global vars.
+    + DATA aEventStack to TApplication class.
+    + DATA aFonts to TApplication class.
+    + METHOD EventInfoList to TApplication class.
+    + METHOD EventInfoPop to TApplication class.
+    + METHOD EventInfoPush to TApplication class.
+    + METHOD Value_Pos45 to TApplication class.
+    + METHOD Value_Pos46 to TApplication class.
+  * core\source\h_windows.prg
+    - STATIC _OOHG_aEventInfo
+    - STATIC _OOHG_HotKeys
+    - STATIC _OOHG_bKeyDown
+    - _PushEventInfo, _PopEventInfo, _ListEventInfo,
+      SetAppHotKey and _OOHG_SetbKeyDown functions.
+    * SetAppHotKeyByName function now calls SetAppHotKey.
+  ; The events stack is now thread aware.
+
+2018-10-17 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Reenabled comment code at _OOHG_ProcessMessage function.
+
+2018-10-17 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    - Clause MDITABNAV.
+
+2018-10-17 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.ch
+    + Some defines to improve code readability.
+    - DATA TabNavMDI from TForm class.
+    - Support for clause MDITABNAV from TForm class.
+    * Some format and comments.
+    + WS_EX_CONTROLPARENT to TFormMDIClient's Define method.
+    + WS_EX_CONTROLPARENT to TFormMDIChild's Define method.
+    ; This commit resolves the problem that an MDI app freezes when
+      you click a button placed inside an INTERNAL window which is
+      placed inside an MDICHILD.
+    ; This commit also fixes the tabbing navigation problem (see
+      22018-10-11 21:01 UTC-0300 commit) without the MDITABNAV hack.
+      The current behaviour is Windows default: after going through
+      all the controls of a MDICHILD form, the navigation will
+      continue on the next opened MDICHILD window. This behaviour
+      can't be changed.
+
+2018-10-17 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_keybd.ch
+    + Comments.
+
+2018-10-17 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    + CopyToClipboard and RetrieveTextFromClipboard functions.
+
+2018-10-17 18:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + GetThreadId function.
+
+2018-10-17 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    % Removed one pp rule.
+
+2018-10-16 18:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\winprint.prg
+    ! Compiler warning on duplicated defined symbols.
+
+2018-10-16 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    + i_font.ch
+
+2018-10-16 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_msgbox.prg
+    + Function MsgDebug, borrowed from HGM Extended.
+  * core\include\i_hb_compat.ch
+    + Translation for ValToPrgExp function.
+
+2018-10-16 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_controlmisc.ch
+  + core\include\i_font.ch
+    ; SET FONT TO commands moved to new file.
+
+2018-10-16 17:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Defines for messages CB_SETITEMHEIGHT and CB_GETITEMHEIGHT.
+  * core\include\i_combo.ch
+    + Clause EDITHEIGHT to set the height of the editbox's part
+      of the combobox at define time.
+    + Clause OPTIONSHEIGHT to set the height of the items in the
+      listbox part of the combobox at define time.
+  * core\source\h_combo.prg
+    + METHOD EditHeight to set/get the height of the editbox's part
+      of the combobox.
+    + METHOD OptionsHeight to set/get the height of the items in the
+      listbox part of the combobox.
+
+2018-10-16 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\common_make.bat
+  * core\source\makelib_mingw.bat
+  * core\source\oohg.hbp
+    - Reference to h_font.prg
+
+2018-10-15 15:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    ! Some warnings were pacified.
+
+2018-10-15 14:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + Functions _GetFontOrientation, _GetFontAdvancedGM and
+      _SetFontAdvancedGM.
+    + METHOD FontAdvancedGM to TControl.
+    + Parameter AdvancedGM to METHOD SetFont.
+    * METHOD SetFont sets Orientation parameter to Escapement
+      when AdvancedGM is .F. (default).
+
+2018-10-15 14:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Declaration of function PrepareFont.
+
+2018-10-15 14:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    + Function SetFontNameSize.
+
+2018-10-15 14:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_radio.prg
+  * core\source\h_textarray.prg
+    + New parameter to METHOD SetFont.
+
+2018-10-15 14:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    ! Restored behaviour of function PrepareFont (by default
+      Escapement and Orientation are the same value).
+    + Parameter AdvancedGM to function PrepareFont.
+      Set to 1 to set Escapement and Orientation to different
+      values. Defaults to 0.
+    + Parameter AdvancedGM to function _SetFont.
+    + Function InitFont. Returns a pointer to a font object.
+      The object must be released using DeleteObject.
+    - Function SetFontNameSize. Replaced by pseudofunction.
+
+2018-10-15 14:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Parameter AdvencedGM to METHOD HeaderSetFont.
+
+2018-10-15 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+  * core\source\c_graph.c
+    + Parameter in call to function PrepareFont.
+
+2018-10-15 14:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + DATA FntAdvancedGM INIT .F..
+
+2018-10-15 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_status.ch
+    + Reference to https://oohg.github.io/
+
+2018-10-15 10:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_menu.ch
+    ! Not ready to use code.
+
+2018-10-14 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-10-14 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+  * core\source\h_textarray.prg
+    + New parameters to METHOD SetFont.
+
+2018-10-14 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + DATA FntCharset.
+    + DATA FntOrientation.
+
+2018-10-14 22:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    + Parameters in call to function PrepareFont.
+
+2018-10-14 22:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_monthcal.prg
+    + Parameters Charset and Orientation to METHOD SetFont.
+    * Position of parameter FntWidth at METHOD SetFont to
+      maintain coherence. INCOMPATIBLE.
+    * METHOD SetFont now returns NIL instead of the font handle
+      like TControl. INCOMPATIBLE.
+
+2018-10-14 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    + Parameters Charset and Orientation to METHOD SetFont.
+    * Position of parameter FntWidth at METHOD SetFont to
+      maintain coherence. INCOMPATIBLE.
+
+2018-10-14 22:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * Some messages.
+
+2018-10-14 22:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Parameters Charset and Orientation to METHOD HeaderSetFont.
+    * Position of parameter FntWidth at METHOD HeaderSetFont to
+      maintain coherence. INCOMPATIBLE.
+
+2018-10-14 22:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\source\h_font.prg
+    ; Functions were moved to h_controlmisc.prg
+
+2018-10-14 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + Functions _GetFontName, _GetFontSize, _GetFontBold,
+      _GetFontItalic, _GetFontUnderline, _GetFontStrikeOut,
+      _GetFontAngle, _GetFontWidth, _GetFontCharset, _SetFontName,
+      _SetFontSize, _SetFontBold, _SetFontItalic, _SetFontUnderline,
+      _SetFontStrikeOut, _SetFontAngle, _SetFontCharset,
+      _SetFontWidth and _SetFontOrientation. Moved from h_font.prg
+    + METHOD FontCharset and METHOD FontOrientation to TControl.
+    + Parameters Charset and Orientation to method SetFont.
+    * Position of parameter FntWidth at METHOD SetFont to maintain
+      coherence. INCOMPATIBLE.
+    + New parameters to _SetFont call at METHOD FocusEffect.
+
+2018-10-14 21:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_graph.c
+    + Parameters in call to function PrepareFont.
+
+2018-10-14 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+    + Parameter Escapement to function BT_DRAW_HDC_TEXTOUT.
+    * Function BT_DRAW_HDC_TEXTOUT: Escapement can be different
+      from Orientation.
+    + Parameter Escapement to function BT_DRAW_HDC_TEXTSIZE.
+    * Function BT_DRAW_HDC_TEXTSIZE: Escapement can be different
+      from Orientation.
+
+2018-10-14 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Declaration of function PrepareFont.
+    + Reference to https://oohg.github.io/
+
+2018-10-14 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    + Parameters Charset and Width to function PrepareFont.
+    * Position of parameter Orientation in function PrepareFont
+      to make it compatible with HMG Extended. INCOMPATIBLE.
+    * Function PrepareFont now sets graphic mode to advance so
+      Escapement and Orientation may be different.
+    + Parameters Charset and Width to function _SetFont.
+    * Position of parameter Orientation in function _SetFont
+      to maintain coherence. INCOMPATIBLE.
+    + Parameters Charset and Width to function SetFontNameSize.
+    * Position of parameter Orientation in function SetFontNameSize
+      to maintain coherence. INCOMPATIBLE.
+
+2018-10-14 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\hmg.ch
+  * core\include\i_activex.ch
+  * core\include\i_anigif.ch
+  * core\include\i_checkbox.ch
+  * core\include\i_checklist.ch
+  * core\include\i_color.ch
+  * core\include\i_combobox.ch
+  * core\include\i_comm.ch
+  * core\include\i_datepicker.ch
+  * core\include\i_dll.ch
+  * core\include\i_edit.ch
+  * core\include\i_editbox.ch
+  * core\include\i_encrypt.ch
+  * core\include\i_exec.ch
+  * core\include\i_frame.ch
+  * core\include\i_graph.ch
+  * core\include\i_grid.ch
+  * core\include\i_hb_compat.ch
+  * core\include\i_help.ch
+  * core\include\i_hmg_compat.ch
+  * core\include\i_hotkeybox.ch
+  * core\include\i_hyperlink.ch
+  * core\include\i_image.ch
+  * core\include\i_ini.ch
+  * core\include\i_internal.ch
+  * core\include\i_ipaddress.ch
+  * core\include\i_keybd.ch
+  * core\include\i_label.ch
+  * core\include\i_lang.ch
+  * core\include\i_listbox.ch
+  * core\include\i_media.ch
+  * core\include\i_menu.ch
+  * core\include\i_misc.ch
+  * core\include\i_monthcal.ch
+  * core\include\i_picture.ch
+  * core\include\i_progressbar.ch
+  * core\include\i_progressmeter.ch
+  * core\include\i_pseudofunc.ch
+  * core\include\i_radiogroup.ch
+  * core\include\i_region.ch
+  * core\include\i_registry.ch
+  * core\include\i_report.ch
+  * core\include\i_richeditbox.ch
+  * core\include\i_scroll.ch
+  * core\include\i_scrsaver.ch
+  * core\include\i_slider.ch
+  * core\include\i_spinner.ch
+  * core\include\i_splitbox.ch
+  * core\include\i_tab.ch
+  * core\include\i_textarray.ch
+  * core\include\i_textbox.ch
+  * core\include\i_this.ch
+  * core\include\i_timer.ch
+  * core\include\i_toolbar.ch
+  * core\include\i_tooltip.ch
+  * core\include\i_tree.ch
+  * core\include\i_var.ch
+  * core\include\i_windefs.ch
+  * core\include\i_window.ch
+  * core\include\i_xbrowse.ch
+  * core\include\i_zip.ch
+  * core\include\minigui.ch
+  * core\include\miniprint.ch
+    + Reference to https://oohg.github.io/
+
+2018-10-13 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.BAT
+  * core\oohg.hbc
+    + iphlpapi.dll to build chain.
+
+2018-10-12 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_report.ch
+    + Clauses QUALITY, DEFAULTSOURCE, DUPLEX, COLLATE, COPIES,
+      COLOR, SCALE, PAPERLENGTH and PAPERWIDTH to DO REPORT
+      command.
+    + Clauses NOSEPARATORS, SELECT, PREVIEW, LANDSCAPE,
+      PAPERSIZE, QUALITY, DEFAULTSOURCE, DUPLEX, COLLATE,
+      COPIES, COLOR, SCALE, PAPERLENGTH and PAPERWIDTH to
+      REPORTFORMWIN command.
+  * core\source\h_report.prg
+    + Support for new clauses.
+    + Support for missing TPrint subclasses.
+    * Format.
+    * Comments.
+    - All static and private variables.
+    + Class TReport.
+    + Class TReportFormWin.
+    ! Memo printing in DO REPORT.
+    % DO EVENTS is now executed every 10 records.
+
+2018-10-11 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Clause MDITABNAV. Enables tabbing navigation on MDICHILD
+      forms. Note that, after going through all the controls of
+      a MDICHILD form, the navigation will continue on the next
+      opened MDICHILD window. Defaults to .F.
+  * core\source\h_form.prg
+    + DATA TabNavMDI. Defaults to .F.
+    + Support for tabbing navigation on MDICHILD forms.
+    * Some format.
+
+2018-10-09 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    + DATA lIgnorePropertyError.
+      ; When .F. TMINIPRINT class will abort printing if a
+        property set in SELECT PRINTER is not supported by
+        the printer's driver.
+        Defaults to .T.
+    + DATA lNoErrMsg.
+      ; When .F. TMINIPRINT class will not show an error
+        message if a property set in SELECT PRINTER is not
+        supported by the printer's driver.
+        Defaults to .T.
+
+2018-10-08 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    ! Warning at _OOHG_ActiveControlCtrlAtLeft.
+
+2018-10-06 09:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    ! Methods DeleteItem and DeleteAllItems do not update Data
+      aValues resulting in wrong values when using VALUESOURCE.
+    * Method DeleteItem returns .T. if the item was deleted.
+    ! Method AddItem does not admit adding to an empty combobox
+      an item with valuesource.
+    * Function ComboBoxDeleteString now returns .T. on success.
+
+2018-10-06 09:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    ! Window is still visible after close under WinXP.
+
+2018-10-04 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+    + Casting.
+
+2018-09-30 08:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+    ! Wrong parameter at function _OOHG_ReplaceColor.
+
+2018-09-22 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_textbox.ch
+    + CTRLSATLEFT clause: places textbox's client controls at
+      the left side of the clientarea instead of the right.
+  * core\source\h_textbox.prg
+    + Support for new clause.
+    + METHOD ControlPosition to TText class.
+      Note that the position of the client controls can be
+      changed at runtime but only if no control is defined.
+    + New parameter to methods Define and Define2 of TText class,
+      method Define of TTextPicture, method Define of TTextNum
+      and function DefineTextBox.
+
+2018-09-21 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Use _OOHG_ActiveControlAutoFit instead of _OOHG_ActiveControlScale.
+
+2018-09-21 18:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_picture.ch
+    + Added AUTOFIT and ADJUST as equivalents to FORCESCALE.
+
+2018-09-21 18:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+    * A C-level function is now static.
+
+2018-09-21 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textarray.prg
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+
+2018-09-19 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    * Use ::IsVisualStyled instead of ::lVisualStyled.
+
+2018-09-19 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scrollbutton.prg
+    * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+
+2018-09-16 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_button.ch
+    + SOLID clause: use with OOHGDRAW and BACKCOLOR clause to
+      paint the button as a solid colored rectangle.
+  * core\source\h_button.prg
+    + Support for SOLID clause.
+    + DATA cBuffer.
+    + DATA lSolid.
+    + New parameter to METHOD Define of TButton class.
+    + New parameter to METHOD DefineImage of TButton class.
+    ! Transparent color of images with more than 8 bpp.
+    * METHOD Buffer now returns DATA cBuffer.
+    % Small optimization of METHOD Value.
+    * Some format.
+    * Some changes for 64 bit support.
+    + New parameter to METHOD Define of TButtonCheck class.
+    + New parameter to METHOD DefineImage of TButtonCheck class.
+
+2018-09-16 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-09-16 10:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_combobox.ch
+    + MAXLENGTH clause.
+  * core\source\h_combo.prg
+    + Parameter to METHOD Define.
+
+2018-09-15 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\x_browse.prg
+    % Return data instead of calling super class.
+
+2018-09-15 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Some changes for 64 bit support.
+
+2018-09-15 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    * Some changes for 64 bit support.
+
+2018-09-15 22:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textarray.prg
+    * Some changes for 64 bit support.
+
+2018-09-15 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_richeditbox.prg
+    * Some changes for 64 bit support.
+
+2018-09-15 22:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressmeter.prg
+    * Some changes for 64 bit support.
+
+2018-09-15 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_picture.prg
+    ! METHOD Tooltip clears the tooltip when you try to get
+      the current tooltip.
+    * Some changes for 64 bit support.
+
+2018-09-15 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+    * Some changes for 64 bit support.
+    * Some format.
+    * A C-level module-static var was moved to a C-level
+      function-static var, thus making the class thread safe.
+
+2018-09-15 22:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    ! METHOD Tooltip clears the tooltip when you try to get
+      the current tooltip.
+    * Some changes for 64 bit support.
+
+2018-09-15 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    - _OOHG_QuitFastButDirty global var.
+  * core\source\h_form.prg
+    * Some changes for 64 bit support.
+    ! All controls are now released properly when the MAIN form
+      is released, thus _OOHG_QuitFastButDirty is no longer
+      needed. See 22018-09-13 19:05 UTC-0300.
+
+2018-09-15 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_frame.ch
+    + TOOLTIP and EXCLUDEAREA clauses.
+  * core\source\h_frame.prg
+    + DATA aExcludeArea.
+    + METHOD Events.
+    + METHOD ToolTip.
+    + FUNCTION TFrame_SetToolTip at C level.
+
+2018-09-14 16:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! RTE: Control already defined when re-entering a previously
+      closed form.
+
+2018-09-13 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    - DATA lIgnoreInteractiveClose.
+    * Restored default behaviour of form's release modified on
+      22018-08-23 18:43 UTC-0300, with the addition of the release
+      of all the form's controls (method ReleaseAttached).
+      Before that date, when the MAIN form was released, the
+      controls in the forms were not being released and thus
+      the app ended quickly at the cost of leaking resources.
+      To replicate this behaviour set _OOHG_QuitFastButDirty
+      global var to .T.
+      To avoid leaking resources, release controls manually
+      at the ON RELEASE event.
+    * Static function Carga renamed to LoadObjData.
+    * Static function Valor renamed to ValueToStr.
+    * Static function Selecciona renamed to ChangeObjValue.
+    ! Handling of timestamp values in function ValueToStr.
+    * Some format.
+    * Inspector control's are now defined without fixed names
+      to allow reentrancy.
+
+2018-09-13 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    - METHOD PreRelease.
+    + METHOD Release.
+    * Use method ClearBitMaps instead of directly handling
+      the control's imagelist.
+    * Some format.
+
+2018-09-13 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+  * core\source\h_picture.prg
+    + DATA aCopies to hold the handles to the bitmaps created
+      by METHOD Copy.
+    * METHOD Release now deletes the copied bitmaps so the user
+      no longer needs to delete then manually.
+
+2018-09-13 17:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+  * core\source\h_dll.prg
+    * Some changes for 64 bit support.
+
+2018-09-13 17:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+  * core\include\i_var.ch
+    + _OOHG_ActiveMessageBar global var.
+    + _OOHG_ActiveIniFile global var.
+    + _OOHG_QuitFastButDirty global var.
+  * core\source\h_status.prg
+    - STATIC _OOHG_ActiveMessageBar.
+  * core\source\h_ini.prg
+    - STATIC _OOHG_ActiveIniFile.
+
+2018-09-13 17:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    + DragImageList destroy at method release.
+
+2018-09-12 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_listbox.prg
+    + METHOD aItems.
+
+2018-09-12 19:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_toolbar.prg
+    ! RTE at controls defined when bottom parameter is NIL.
+
+2018-09-12 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! The release of child controls is always reversed because
+      method ReleaseAttached does not honor _OOHG_WinReleaseSameOrder.
+
+2018-09-12 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * DATAs aHeadClick, aJust, ColType and Picture of TGrid class
+      are now initialized to {} instead of NIL.
+    * DATA DynamicBackColor of TGrid class renamed to
+      aDynamicBackColor.
+    * DATA DynamicForeColor of TGrid class renamed to
+      aDynamicForeColor.
+    + METHOD aItems to TGrid class. Set/gets an array
+      containing all the data of all the items.
+    + METHOD DynamicBackColor to TGrid class.
+    + METHOD DynamicForeColor to TGrid class.
+    + METHOD RefreshColors to TGrid class.
+    ! Potencial crashes caused by using full oop syntax with
+      omited parameters. See samples\oohg\maindemooop.prg
+    + FUNCTION GetPictureFromArray.
+    + FUNCTION GetColTypeFromArray.
+    % METHOD AddColumn of TGrid class.
+    % FUNCTION TGrid_AddColumnColor.
+    % METHOD SetColumn of TGrid class.
+    * METHOD SetItemColor return value.
+    % FUNCTION TGrid_CreateColorArray.
+    ! OnDelete event of a TGridMulti with ::lDeleteAll set to .T.
+      was receiving an array with the data of the deleted item
+      instead of an array with one item containing the data of
+      the deleted item.
+
+2018-09-12 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    + DATA nMaxLength to TEditCombo class.
+    + METHOD MaxLength to TEditCombo class.
+
+2018-09-09 08:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_label.ch
+  * core\source\h_label.prg
+    + ON DBLCLICK clause.
+    ; ACTION (aka ON CLICK) takes precedence over ON DBLCLICK.
+
+2018-09-08 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-09-08 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_registry.prg
+    * Some format.
+    + Numeric values can be saved as REG_DWORD.
+    + Support for 64 bits.
+    + Support for saving/getting an array of binary values.
+
+2018-09-08 23:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_registry.ch
+    + Some registry related defines.
+
+2018-09-08 23:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Internet Explorer related defines.
+
+2018-09-08 23:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    + Variable _OOHG_SaveAsDWORD. When .T. numeric values are
+      save as REG_DWORD instead of REG_SZ. Defaults to .F.
+
+2018-09-06 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + App.Filename.
+
+2018-09-05 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    + METHOD LeftAlign to TLabel.
+    + METHOD RightAlign to TLabel.
+    + METHOD CenterAlign to TLabel.
+    * METHOD Align of TLabel now supports "LEFT", "RIGHT" and
+      "CENTER" as parameters.
+
+2018-09-05 18:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! RTE: Control already defined when re-entering a previously
+      closed form.
+
+2018-08-23 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    ! Form is not released by Release method when Interactive
+      close is set to OFF.
+    + DATA lIgnoreInteractiveClose.
+
+2018-08-21 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scroll.prg
+    * Use SB_ENDSCROLL instead of SB_ENDSCROLL.
+
+2018-08-21 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    ! Infinite loop at method ReleaseAttached when a control
+      has been renamed.
+    ; Note that control renaming is not supported and may
+      cause RTE or impredictable behaviour.
+
+2018-08-20 21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    ! When closed, main form is realeased before all other forms.
+    % Method Release of TForm class.
+    % Method Events_Destroy of TForm class.
+    % Function _ReleaseWindowList.
+
+2018-08-19 22:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Method Item was wrongly returning a string instead of real type
+      for columns edited with INPUTMASK.
+
+2018-08-19 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+    ! RTE "Bound error: array access" when the cell edition is
+      ended by Enter key.
+    + METHOD NextPosToEdit to TGrid class.
+
+2018-08-19 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Infinite loop when the exit key of a cell edition of a FullMove
+      control, selects the next cell to edit into a readonly, not when
+      or hidden column.
+    ! INPUTMASK not working properly when the column is numeric or date.
+    + DATA ColType.
+
+2018-08-19 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+    ! Infinite loop when the exit key of a cell edition of a FullMove
+      control, selects the next cell to edit into a readonly, not when
+      or hidden column.
+
+2018-08-17 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    * Some changes for 64 bit support.
+
+2018-08-17 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Some changes for 64 bit support.
+
+2018-08-17 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_activex.c
+    ! RTE at function SetupConnectionPoint caused by wrong casting.
+    ! Other wrong castings.
+
+2018-08-17 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    ! Method Buffer is not returning the current buffer.
+
+2018-08-17 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    ! RTE at TTabRaw:TabToolTip when no tooltip is defined.
+
+2018-08-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2018-08-16 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    - DATA DefBkColorTab.
+    - DATA DefBkColorTabPage.
+  * core\include\i_tab.ch
+    + LEFT clause to TAB, equivalent to VERTICAL.
+    + ON CLICK, ON RCLICK, RIGHT, BOTTOM, FIXEDWIDTH, LABELLEFT,
+      ICONLEFT, ITEMSIZE, MINWIDTH, PADDING, RIGHTJUSTIFY,
+      RAGGEDRIGHT and SCROLLOP clauses.
+      ; LEFT and RIGHT controls use old XP style (gray background)
+        TOP and BOTTOM controls use new style (white background).
+      ; ITEMSIZE must be used with FIXEDWIDTH.
+      ; ICONLEFT must be used with FIXEDWIDTH.
+        LABELLEFT must be used with FIXEDWIDTH and ICONLEFT.
+        Note that, by default, the icon and the text are centered.
+      ; MULTILINE implies RIGHJUSTIFY.
+      ; RAGGEDRIGHT must be used with MULTILINE.
+      ; SCROLLOP implies MULTILINE.
+    + POSITION and TOOLTIP clauses to TAB pages.
+  * core\source\h_tab.prg
+    * Some format.
+    + Support for new clauses.
+    + DATA aToolTips to TTabRaw class.
+    + DATA DefaultToolTip to TTabRaw class.
+    + METHOD TabToolTip to TTabRaw class.
+    + METHOD MinTabWidth to TTabRaw class.
+    + METHOD ItemSize to TTabRaw class.
+    + METHOD ItemAtPos to TTabRaw class.
+    + METHOD SetPadding to TTabRaw class.
+    - WM_RBUTTONDOWN handler from TTabRaw:Events.
+    * The backcolor is no longer set to -1. When the app has no
+      visual style or when the TAB has TCS_BUTTONS or TCS_VERTICAL
+      style, backcolor is set to COLOR_BTNFACE. In other cases is
+      set to COLOR_WINDOW.
+    + DATA cToolTip to TTabPageInternal.
+    + METHOD ToolTip to TTabPageInternal.
+    % Function TabCtrl_SetCurSel.
+    + Function TabCtrl_HitTest at C level.
+    + Function TabCtrl_SetItemSize at C level.
+    + Function TabCtrl_SetMinTabWidth at C level.
+    + Function TabCtrl_SetPadding at C level.
+    ! Controls inside the TAB are not displayed properly when the
+      TAB is defined outside DEFINE WINDOW / END WINDOW structure.
+
+2018-08-16 10:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! RTE "TBrowse:RowPos not found".
+
+2018-08-14 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_report.prg
+    * TReport() no longer sets or gets _OOHG_PrintLibrary.
+    ; The class fully relies on TPrint() for the creation of the
+      print object (see above).
+
+2018-08-14 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    * Data cPrintLibrary initial value is now "".
+    * 'DEFAULT var TO value' changed to 'ASSIGN var ...'
+    * TPrint() no longer sets _OOHG_PrintLibrary.
+    ; TPrint() with a parameter returns an object of the class
+      indicate by the parameter. If this variable does not
+      exist of it's value is invalid then a TMiniPrint() object
+      is returned.
+    ; TPrint() without a parameter returns an object of the class
+      indicate by _OOHG_PrintLibrary. If this variable does not
+      exist of it's value is invalid then a TMiniPrint() object
+      is returned.
+
+2018-08-14 17:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+  * core\include\i_var.ch
+    + _OOHG_ComboRefresh global var.
+  * core\source\h_combo.prg
+    - Function SetComboRefresh.
+    - STATIC _OOHG_ComboRefresh.
+  * core\include\i_pseudofunc.ch
+    + Translate for SetComboRefresh pseudofunction.
+    * The parameters of some pseudofunctions are now optional
+      to allow getting the current value.
+
+2018-08-14 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.ch
+    ! RTE TIMAGE:lNoCheckDepth not found.
+
+2018-08-13 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Some comments.
+    * Some changes for 64 bit support.
+
+2018-08-13 20:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * WM_PRINTCLIENT changed back to WM_PRINT.
+  * core\source\h_windows.prg
+    - WM_PRINTCLIENT handler.
+  ; This changes were reverted because they break OOHG painting.
+
+2018-08-11 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    ! Scrollbutton is visible when there's no horizontal scrollbar.
+
+2018-08-11 16:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    - DATA RecCount.
+    * Some format.
+    % Method FastUpdate: call to method CurrentRow replaced by
+      calls to it's needed functions only.
+    ! Method VScrollUpdate.
+    % Method CurrentRow no longer checks if a row is selected
+      when clearing the selection.
+    ! Method Refresh when last value record has become filtered.
+    ! Search by column is not setting control's value when a
+      match is found.
+    ! Method SetScrollPos is not working properly.
+
+2018-08-11 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_image.ch
+    + NOPARENTREDRAW clause.
+  * core\source\h_image.prg
+    + DATA lParentRedraw INIT .T.
+      .F. suppresses sending Redraw message to control's parent
+      thus reducing flicker.
+
+2018-08-10 19:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    ! Vertical scrollbar is not positioned properly.
+
+2018-08-10 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_image.ch
+    + NOCHECKDEPTH clause
+  * core\source\h_image.prg
+    + DATA cBuffer.
+    + DATA lCheckDepth INIT .T.
+    % Do not call some functions when the handles is not valid.
+    % Do not check image's depth when NOLOADTRANSPARENT nor
+      NO3DCOLORS clauses are set.
+    % Do not check image's depth when lNoCheckDepth is .T. and
+      NOLOADTRANSPARENT and/or NO3DCOLORS clauses are set.
+      This may have impredictable results if the image has a
+      depth greater than 8 bpp.
+    + METHOD hBitmap checks if it's parameter is a valid handle.
+    * Data hBitmap is set to NIL when the picture can't be loaded.
+    * On release, datas cPicture, cBuffer and hBitmap are cleared.
+
+2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    ! RTE "Method Width does not exist" at ::SizePos (872).
+    ! Support of SET AUTOAJUST ON.
+
+2018-08-08 19:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_registry.prg
+    * Some changes for 64 bit support.
+
+2018-08-08 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Some defines for 64 bit support.
+  * core\source\bostaurus.prg
+  * core\source\c_controlmisc.c
+  * core\source\c_dialogs.c
+  * core\source\c_windows.c
+  * core\source\h_form.prg
+  * core\source\h_menu.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_registry.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_tree.prg
+  * core\source\miniprint.prg
+  * core\source\winprint.prg
+    * Some changes for 64 bit support.
+
+2018-08-07 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    * Comment.
+  * core\source\h_windows.prg
+    * Changed obsolete define.
+    + WM_PRINTCLIENT handler.
+
+2018-08-06 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_datepicker.ch
+  * core\source\h_datepicker.prg
+    + Support for VALID clause.
+
+2018-08-06 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    + Method Save to write the control's content to a file.
+    * Some changes for 64 bit support.
+
+2018-08-06 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! TGridControlMemo editing window can be maximized when
+      it has NOSIZE style.
+
+2018-08-05 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\c_activex.c
+  * core\source\c_controlmisc.c
+  * core\source\c_cursor.c
+  * core\source\c_dialogs.c
+  * core\source\c_font.c
+  * core\source\c_graph.c
+  * core\source\c_image.c
+  * core\source\c_media.c
+  * core\source\c_msgbox.c
+  * core\source\c_resource.c
+  * core\source\c_scrsaver.c
+  * core\source\c_winapimisc.c
+  * core\source\c_windows.c
+  * core\source\h_anigif.prg
+  * core\source\h_application.prg
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_ini.prg
+  * core\source\h_internal.prg
+  * core\source\h_ipadress.prg
+  * core\source\h_menu.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_notify.prg
+  * core\source\h_picture.prg
+  * core\source\h_progressbar.prg
+  * core\source\h_progressmeter.prg
+  * core\source\h_radio.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_slider.prg
+  * core\source\h_spinner.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_spinner.prg
+  * core\source\h_status.prg
+  * core\source\h_tab.prg
+  * core\source\h_textarray.prg
+  * core\source\h_textbox.prg
+  * core\source\h_timer.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+  * core\source\winprint.prg
+    * Some changes for 64 bit support.
+    * Changed obsolete define.
+    * Some format.
+
+2018-08-05 01:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_xbrowse.ch
+    + NOVSCROLLBAR and NOHSCROLLBAR clauses.
+  * core\include\oohg_dyns.hbx
+    * Updated.
+  * core\source\c_controlmisc.c
+    ! ImageList_Init function is not returning a valid object.
+  * core\source\h_browse.prg
+    * METHOD ScrollUpdate renamed to VScrollUpdate.
+      ; INCOMPATIBLE.
+    * Some format.
+    ! Control shows two scrollbars.
+    ! Value of vertical scrollbar is wrong.
+  * core\source\h_grid.prg
+    + DATA lNeedsAdjust.
+    * METHOD HScrollAdjust renamed to HScrollUpdate.
+    * METHOD VScrollAdjust renamed to VScrollUpdate.
+      ; INCOMPATIBLE.
+    ! Methods FirstVisibleColumn, LastVisibleColumn an EditCell2
+      do not scroll properly.
+    ! Control disapears when a column divider is dragged.
+    ! In some cases NOVSCROLL and NOHSCROLL are not honored.
+    * Function EXECOLDWNDPROC renamed to TGRID_EXECOLDWNDPROC.
+      ; INCOMPATIBLE.
+  * core\source\h_xbrowse.prg
+    - DATA lVscrollVisible.
+    + METHOD HScrollVisible.
+    + METHOD VScrollUpdate.
+    * Some format.
+    ! Control shows two scrollbars.
+    ! Value of vertical scrollbar is wrong.
+    + Handler for WM_NCCALCSIZE message.
+    * Method AdjustRightScroll moved to PRG level.
+
+2018-08-05 00:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Function _OOHG_CallDump now prints ProcFile info.
+
+2018-08-05 00:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scrollbutton.prg
+    + lSunken parameter to method Define.
+      Defaults to .F. if the app is using visual styles, thus
+      showing a flat gray square.
+      Before this change it was always .T., thus showing a
+      sunken gray square.
+      INCOMPATIBLE.
+    * Some changes for 64 bit support.
+
+2018-08-05 00:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+    * Method PutMsg now prints ProcFile info.
+
+2018-08-03 21:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    + Function MAKEWPARAM.
+
+2018-08-03 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    ! Form's BACKIMAGE is not stretched wen AUTOADJUST is ON.
+
+2018-08-03 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\resources\WindowsXP.Manifest
+  - core\resources\WindowsXP64.Manifest
+  - core\resources\oohg.res
+  + core\resources\Windows.Manifest
+  * core\resources\oohg.rc
+  * core\resources\oohg_bcc.rc
+    ; Now only one manifest is used.
+
+2018-08-01 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    ! Translations for Harbour 3.4 version.
+
+2018-08-01 19:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+  * core\source\h_frame.prg
+    * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+  * core\source\h_checkbox.prg
+  * core\source\h_radio.prg
+    * Use ::IsVisualStyled instead of _OOHG_UsesVisualStyle.
+    ! RTE at C level under XP because DrawThemeTextEx function
+      does not exist. Now function DrawThemeText will be used
+      under XP, which may cause that the focus rectangle gets
+      painted at a different placed.
+
+2018-07-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Grid is not displayed when NOHSCROLLBAR and NOVSCROLLBAR
+      clauses are used together.
+
+2018-07-28 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_grid.ch
+  * core\include\i_windefs.ch
+    + Support for NOVSCROLLBAR clause.
+  * core\source\h_grid.prg
+    + DATA lNoVSB.
+    + METHOD VScrollAdjust.
+    + METHOD VScrollVisible.
+    + METHOD HScrollAdjust.
+    + METHOD HScrollVisible.
+    * Some changes for 64 bit support.
+    ! Return value of functions LisView_SortItemsEx and
+      LisView_SortItemsEx_User.
+
+2018-07-28 18:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    * Some changes for 64 bit support.
+
+2018-07-28 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+  * core\source\h_scroll.prg
+    + Function ShowScrollBar.
+
+2018-07-28 18:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + OnRclick and OnDblClick to semi-oop syntax.
+
+2018-07-23 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+    ! Error on HB_STORNI2.
+
+2018-07-21 18:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    + Function GetWindowExStyle.
+  * core\source\h_windows.prg
+    + DATA DefBkColorTab.
+    + DATA DefBkColorTabPage.
+    + METHOD ExStyle.
+
+2018-07-20 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_image.ch
+    + ON RCLICK, MCLICK, RDBLCLICK and MDBLCLICK clauses.
+  * core\source\h_image.prg
+    + DATAs bOnDblClick, bOnMClick, bOnMDblClick, bOnRClick
+      and bOnRDblClick.
+    + METHODs OnDblClick, OnMClick, OnMDblClick, OnRClick
+      and OnRDblClick.
+
+2018-07-20 20:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_windefs.ch
+  * core\include\i_xbrowse.ch
+  * core\source\h_browse.prg
+  * core\source\h_grid.prg
+    + DATA lNoHSB to CLASS TGrid().
+  * core\source\h_xbrowse.prg
+    + NOHSCROLLBAR clause to GRID, XBROWSE and BROWSE controls.
+
+2018-07-18 16:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    - Commented out code.
+    * Some defines for 64 bit support.
+    * Some function declarations.
+  * core\source\winprint.hbp
+    * Macro call.
+
+2018-07-18 14:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\include\bostaurus_dyns.hbx
+  + core\include\miniprint_dyns.hbx
+  + core\include\oohg_dyns.hbx
+  + core\include\winprint_dyns.hbx
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+  * core\source\oohg.hbp
+    * .hbx files renamed.
+
+2018-07-18 14:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.BAT
+    ! Warning when compiling without RC file.
+
+2018-07-16 21:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+  * core\source\oohg.hbp
+    * .hbx files are now create at include folder.
+
+2018-07-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+  * core\source\miniprint.prg
+    * Function TextAlign renamed as _HMG_PRINTER_TextAlign.
+    * Function CreateThumbnails renamed as _HMG_PRINTER_CreateThumbnails.
+    * Function CVSSetTextAlign renamed as _HMG_PRINTER_SetTextAlign.
+
+2018-07-16 21:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit.prg
+    * Functions ABMListado, ABMListadoEvento and ABMListadoImprimir
+      are now static.
+  * core\source\h_edit_ex.prg
+    * Function ABM2Borrar is now static.
+
+2018-07-16 21:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    - Commented out code.
+
+2018-07-16 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + BackColorCode, Transparent, Parent and Container properties.
+
+2018-07-16 21:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Various alternate event clauses.
+
+2018-07-16 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_002.txt
+    * Private email changed by public one.
+
+2018-07-16 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\resources\oohg_bw_532x532.png
+  + core\resources\oohg_color_3d_133x133.bmp
+  + core\resources\oohg_color_3d_32x32_825clrs.ico
+  + core\resources\oohg_color_3d_32x32_878clrs.ico
+  + core\resources\oohg_color_3d_534x534.bmp
+  + core\resources\oohg_color_flat_32x32_334clrs.ico
+  + core\resources\oohg_color_flat_532x532x3clrs.png
+  + core\resources\oohg_mono_32x32.ico
+    ; Thanks to Miguel Angel Juarez Apaza.
+
+2018-07-15 11:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! CHANGEBEFOREEDIT clause is ignored because TOBrowse
+      forces data lChangeBeforeEdit to .F.
+
+2018-07-15 10:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! RTE at method PageDown of TOBrowseByCell with KEYSLIKECLIPPER
+      clause and no value set.
+
+2018-07-03 22:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checkbox.prg
+    * Some format.
+    * Changed initial value of data lLibDraw.
+    ! Type of var at C level.
+    % Now the control is painted in one pass.
+  * core\source\h_controlmisc.prg
+    ! Removed some leftover code that displayed a "here" message.
+  * core\source\h_textarray.prg
+    * Some format.
+
+2018-07-01 22:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_checkbox.ch
+    + BACKGROUND and NOFOCUSRECT clauses.
+  * core\source\c_windows.c
+    * WM_PRINTCLIENT replaced by WM_PRINT.
+  * core\source\h_controlmisc.prg
+    ! Background painting using a brush derived from the
+      underlying control (tab, form or image).
+  * core\source\h_checkbox.prg
+    + Support for BACKGROUND and NOFOCUSRECT clauses.
+    * No longer forces TRANSPARENT to .F. when visual styles
+      are enabled.
+    * Custom draw now mimics Windows behaviour.
+    ; Checkboxes can now appear "transparent".
+  * core\source\h_form.prg
+    * Format.
+
+2018-07-01 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + oBkGrnd to semi-oop syntax.
+
+2018-07-01 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! Initial values of data TOBrowseByCell():lFocusRect.
+  * core\source\h_grid.prg
+    ! Initial values of data TGridByCell():lFocusRect.
+  * core\source\h_xbrowse.prg
+    ! Initial values of data TXBrowseByCell():lFocusRect.
+
+2018-06-28 19:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    ! Wrong casting.
+
+2018-06-26 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    + METHOD ItemValue. Returns the combo's value for a given
+      item (displayed string).
+
+2018-06-23 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_bcc.bat
+    - Duplicated lib.
+
+2018-06-23 10:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_report.prg
+    * Do not force PRINTER_RES_LOW when selecting the printer.
+
+2018-06-22 17:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\c_dialogs.c
+  * core\source\c_winapimisc.c
+  * core\source\c_windows.c
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_controlmisc.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_grid.prg
+  * core\source\h_hotkeybox.prg
+  * core\source\h_internal.prg
+  * core\source\h_ipaddress.prg
+  * core\source\h_label.prg
+  * core\source\h_listbox.prg
+  * core\source\h_media.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_picture.prg
+  * core\source\h_progressbar.prg
+  * core\source\h_radio.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_scroll.prg
+  * core\source\h_scrollbutton.prg
+  * core\source\h_slider.prg
+  * core\source\h_tab.prg
+  * core\source\h_textarray.prg
+  * core\source\h_textbox.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+  * core\source\h_windows.prg
+  * core\source\h_xbrowse.prg
+  * core\source\winprint.prg
+    * Some changes for 64 bit support.
+
+2018-06-20 22:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_image.ch
+    + ON CHANGE to IMAGE control.
+  * core\include\oohg.h
+    * Some defines for 64 bit support.
+  * core\source\h_image.prg
+    * Format.
+    + ON CHANGE event.
+    * Replaced SetWindowLong call by SetWindowLongPtr call.
+    * Replaced LONG cast by LONG_PTR cast.
+    * Replaced HWND cast by HWNDparam cast.
+    * Replaced hb_parnl call by HB_PARNL call.
+    ; This module should be 64 bit ready.
+
+2018-06-18 11:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_editbox.ch
+  * core\include\i_richeditbox.ch
+  * core\source\h_editbox.prg
+  * core\source\h_richeditbox.prg
+    + INSERTTYPE clause to EDITBOX and RICHEDITBOX controls.
+  * core\include\i_frame.ch
+  * core\include\i_graph.ch
+  * core\include\i_grid.ch
+  * core\include\i_menu.ch
+    * Format.
+  * core\include\i_hyperlink.ch
+  * core\include\i_progressbar.ch
+  * core\include\i_spinner.ch
+    + SUBCLASS clause.
+  * core\source\h_grid.prg
+    ! ON CHANGE event is not fired when the selection
+      of a multiselect grid is changed by clicking on
+      an already selected item.
+
+2018-06-14 18:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    + Some defines to enable support for 64 bit builds.
+  * core\source\h_application.prg
+    ! Some vars can't be set to NIL.
+  * core\source\h_browse.prg
+    ! At define time, On Change event must be set after
+      setting the control's initial value.
+  * core\source\h_combo.prg
+    * The initialization of some properties was moved before
+      the setting of the control's events.
+  * core\source\h_window.prg
+    + METHOD BringToTop.
+  * core\source\h_window.prg
+    * Extra space removed from function call.
+
+2018-05-30 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\oohg.hbp
+    - c_progressbar.c
+
+2018-05-30 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + NOTABSTOP clause.
+  * core\include\i_hmg_compat.ch
+    - Unneeded clause.
+  * core\source\h_label.prg
+    * Method Value now validates the new value before assigning.
+      Now the method is coherent with method Caption.
+
+2018-05-27 11:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\source\c_progressbar.c
+    * Code was moved to core\source\h_progressbar.prg
+  * core\source\h_progressbar.prg
+    + Code from core\source\c_progressbar.c
+    * Format.
+  * core\source\common_make.bat
+  * core\source\makelib_mingw.bat
+    - c_progressbar.c
+
+2018-05-24 19:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * include\source\i_window.ch
+     + Added window status constants.
+   * core\source\h_form.prg
+     * Use new window status constants.
+
+2018-05-21 10:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textarray.prg
+     * Some format.
+     * Some comments.
+     + Some defines to improve readability.
+
+2018-05-21 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\*.*
+    * Copyright updated.
+
+2018-05-19 22:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    ! LABEL with TRANSPARENT clause is not painted correctly
+      after font change.
+  * core\source\c_font.c
+    * Some format.
+
+2018-05-17 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    ! Container is not set when a TAB is added to a page
+      using method AddControl.
+
+2018-05-16 17:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_checkbox.ch
+  * core\include\i_comm.ch
+  * core\include\i_controlmisc.ch
+  * core\include\i_checkbox.ch
+  * core\include\i_datepicker.ch
+  * core\include\i_editbox.ch
+  * core\include\i_encrypt.ch
+  * core\include\i_hmg_compat.ch
+  * core\include\i_ini.ch
+  * core\include\i_listbox.ch
+  * core\include\i_media.ch
+  * core\include\i_menu.ch
+  * core\include\i_report.ch
+  * core\include\i_richeditbox.ch
+  * core\include\i_status.ch
+  * core\include\i_textbox.ch
+  * core\include\i_checkbox.ch
+    * Format.
+  * core\include\miniprint.ch
+    ! Typos that prevent using BRUSHCOLOR color in some commands.
+  * core\include\winprint.ch
+    + SET POLYFILL MODE ALTERNATE command.
+    + SET POLYFILL MODE WINDING command.
+    - ALTERNATE defined constant.
+    - WINDING defined constant.
+    + POLYFILL_ALTERNATE defined constant.
+    + POLYFILL_WINDING defined constant.
+
+2018-05-12 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    ! Typo
+
+2018-05-01 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_exec.ch
+    * Some format.
+
+2018-05-01 10:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    ! Method Value of ComboBox controls with VALUESOURCE returns 0
+      when you try to set an invalid value and the allowed values
+      are of type character, instead of returning an empty string.
+
+2018-04-30 22:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\ChangeLog_005.txt
+    ! Typos and missing entries.
+
+2018-04-30 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog.txt
+  * core\ChangeLog_001.txt
+  * core\ChangeLog_002.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\ChangeLog_005.txt
+    * Slash chars in paths changed by backslash chars.
+    * Minor corrections.
+
+2018-04-30 13:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  ; Data nOnFocusPos controls the behaviour of textbox, editbox and
+    richeditbox controls whenever those controls got the focus.
+
+  ; When nOnFocusPos is < -3, no text is selected, and the caret
+    is placed before the first character.
+  ; When nOnFocusPos == -3, the control's leftmost non-blank
+    characters are selected, the first character becomes the
+    anchor point and the caret is placed after the last character.
+  ; When nOnFocusPos == -2, all the text is selected, the first
+    character becomes the anchor point and the caret is placed
+    after the last character.
+  ; When nOnFocusPos == -1, no text is selected and the caret is
+    placed after the last character.
+  ; When nOnFocusPos >= 0 and < Len(text), no text is selected
+    and the caret is placed before the corresponding character,
+    being 0 the first.
+  ; When nOnFocusPos >= Len(text), it behaves likes -1.
+
+  ; For editbox and richeditbox controls defaults to -4.
+  ; For textbox controls defaults to -2.
+
+2018-04-30 11:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+  * core\source\h_grid.prg
+    + _OOHG_InitTGridControlDatas global var.
+      When setted to a codeblock it'll be evaluated whenever a
+      new TGridControl is created. It can be used to change the
+      default values of its datas. Defaults to NIL.
+
+2018-04-26 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+  * core\source\h_checklist.prg
+  * core\source\h_combo.prg
+  * core\source\h_controlmisc.prg
+  * core\source\h_grid.prg
+  * core\source\h_monthcal.prg
+    + DATA OldValue. It's set to control's previous value
+      before calling event OnChange.
+    ; Do not use data xOldValue because is meant to be used
+      internally by controls.
+  * core\source\h_init.prg
+    * Spanish translation of 'Warning' is now "Advertencia".
+    + Missing translation.
+  * core\source\h_textbox.prg
+    ! DoChange is called twice when processing EN_CHANGE message.
+
+2018-04-19 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Some var names.
+  * core\source\c_font.c
+    * Format.
+    * Some var names.
+  * core\source\c_graph.c
+    - Redundant declaration.
+
+2018-04-19 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Method CheckItem wrongly returns .T. instead of .F.
+      for non-existent items.
+    * Some format.
+    * TGrid_AddColumnColor, TGrid_CreateColorArray and TGrid_FillColorArea
+      functions now receive Self instead of hWnd.
+    * Vars _OOHG_ThisForm, _OOHG_ThisType, _OOHG_ThisControl and
+      _OOHG_ThisObject are set before evaluating block colors in
+      TGrid_AddColumnColor, TGrid_CreateColorArray and TGrid_FillColorArea
+      functions. Now you can access grid's properties and methods in block
+      colors used by AddColumn, SetColumn, SetItemColor and SetRangeColor
+      methods. Note that because AddColumn adds the new column _after_
+      evaluating the block colors, you can´t use the column's content
+      inside the block.
+    * Parameters nTop, nLeft, nBottom and nRight of SetRangeColor method
+      now default to 1, 1, ::ItemCount and Len( ::aHeaders ).
+
+2018-03-11 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_richeditbox.prg
+    ; At define time the FONTCOLOR clause will be ignored if the
+      VALUE clause contains RTF text with a color table.
+    ; The FONTCOLOR applies to ALL the control's text.
+    ; Method SetFont applies new font to ALL the control's text.
+  * core\include\i_altsyntax.ch
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_xbrowse.ch
+  * core\source\h_browse.prg
+  * core\source\h_grid.prg
+  * core\source\h_xbrowse.prg
+    + CELLTOOLTIP clause. For columns that partially display the
+      cell's text, the control will show the full text in a
+      superimposed tooltip window when the mouse is placed over
+      the cell.
+  * core\source\h_checklist.prg
+    + Added missing parameters for clarity.
+
+2018-03-10 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_richeditbox.prg
+    ! Text color is missing at define time.
+
+2018-03-06 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + Translates for TToS and SToT so xhb library is no longer need by core.
+
+2018-03-05 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_richeditbox.prg
+    + METHODs GetSelFont and SetSelFont to get/set the font of
+      the control's selected text.
+    + MESSAGEs GetSelectionFont and SetSelectionFont as aliases
+      of methods GetSelFont and SetSelFont.
+    + MESSAGEs SetSelTextColor and SetSelBackColor as aliases
+      of method SetSelectionTextColor and SetSelectionBackColor.
+
+2018-03-05 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    ! Function _ReleaseWindowList is not releasing all child windows
+      because of missing STEP clause.
+    * Function _ReleaseWindowList now realeases child forms before
+      releasing the form if _OOHG_WinReleaseSameOrder is set to .F.
+
+2018-02-27 14:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    ! Typo.
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+  * core\source\h_form.prg
+    + _OOHG_WinReleaseSameOrder global var.
+      When set to .F. the release order of forms is inverted, so the last
+      defined forms if released in the first place. Defaults to .T.
+
+2018-02-05 18:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    * Format.
+    ! COMBOBOX with DISPLAYEDIT clause does not display select item
+      after the form is resized when SET AUTOADJUST is ON.
+    * TEditCombo control is explicitly released on Combo's release.
+    + DATA Type and METHOD Release to TEditCombo.
+  * core\source\h_controlmisc.prg
+    + METHODs AddToCtrlsArrays and DelFromCtrlsArrays to add/delete
+      controls from _OOHG_aControlhWnd, _OOHG_aControlObjects,
+      _OOHG_aControlIds and _OOHG_aControlNames arrays.
+
+2018-02-05 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + HexToNum translation.
+    * Format.
+  * core\include\i_lang.ch
+  * core\include\i_pseudofunc.ch
+  * core\include\i_windefs.ch
+  * core\source\h_activex.prg
+    * Format.
+  * core\source\h_error.prg
+    * Format.
+    * Use CRLF constant.
+    * Use HB_ISSTRING instead of ISCHARACTER.
+    * Use HB_ISNUMERIC instead of ISNUMBER.
+  * core\source\h_msgbox.prg
+    * Format.
+    - Removed #ifdef.
+  * core\source\h_pdf.prg
+    * Use HB_ISSTRING instead of ISCHARACTER.
+    * Use HB_ISNUMERIC instead of ISNUMBER.
+    * Use HB_ISDATA instead of ISDATE.
+    * Use HB_ISLOGICAL instead of ISLOGICAL.
+    * Use HB_ISARRAY instead of ISARRAY.
+    * Format.
+  * core\source\miniprint.prg
+    - Unneeded code.
+
+2018-01-24 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checklist.prg
+    ! Control does not scroll properly with mouse wheel.
+
+2018-01-24 17:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * Function _OOHG_Messages now accepts a 3rd parameter 'nSubItem' to enable
+      support for items of array type instead of string.
+      See items 24 and 25 of acPrint array at function ooHG_Messages_EN.
+  * core\source\h_print.prg
+    + Class TTxtPrint. This class generates TXT files but do not print them.
+      To print them use TDosPrint.
+    * Version changed to 4.20
+    * Some format.
+
+2018-01-22 20:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checklist.prg
+    ! Control has no border nor scrollbar when is placed in a Tab and
+      it's items are loaded after control's creation.
+  * core\source\h_windows.prg
+    * Some format.
+  * core\source\h_xbrowse.prg
+    ! Visibility should be restore instead of forced.
+  * core\include\i_windefs.prg
+    + LVN_INSERTITEM.
+
+2018-01-20 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scroll.prg
+    * Format.
+    * Methods LineUp, LineDown, PageUp, PageDown, Top, Bottom, Thumb and
+      Track now return the result of evaluating their respective codeblocks.
+  * core\source\h_browse.prg
+    * Methods PageUp, PageDown, Home and End of TOBrowse now return .T./.F.
+      on success/failure.
+    * Return 0 after processing scrollbar's events.
+    ! App freezes when adding a record by clicking in the scrollbar's
+      down arrow.
+  * core\source\h_xbrowse.prg
+    * Methods Up, PageUp and PageDown of TXBrowse now return .T./.F.
+      on success/failure.
+    * Return 0 after processing scrollbar's events.
+    ! App freezes when adding a record by clicking in the scrollbar's
+      down arrow.
+
+2018-01-18 21:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hb_compat.ch
+    + Translates for TTOC, CTOT, PrintFileRaw and GetDefaultPrinter
+      so xhb library is no longer need by core.
+    * Changed the casing of some functions.
+  * core\include\i_window.ch
+    ! win.control.property syntax is not recognized by preprocessor
+      when used in DEFINE WINDOW sentence.
+  * core\source\h_checklist.prg
+    + T*O*D*O note.
+  * core\source\h_tab.prg
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+    * Changed the casing of some functions and keywords.
+
+2018-01-18 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp.bat
+  * core\BuildApp_hbmk2.bat
+  * core\compile.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.BAT
+  * core\ofmt.bat
+  * core\oide.bat
+  * core\resources\CompileRes.bat
+  * core\resources\CompileRes_mingw.bat
+  * core\source\buildlib.bat
+  * core\source\makelib.bat
+    * Deduce HG_ROOT from .bat's starting folder if not set.
+
+2017-12-31 08:12 UTC-0300 Jose Quintas
+  * core\source\h_browse.prg
+  * core\source\h_combo.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_graph.prg
+  * core\source\h_grid.prg
+  * core\source\h_listbox.prg
+  * core\source\h_menu.prg
+  * core\source\h_window.prg
+  * core\source\h_xbrowse.prg
+    * hb_IsNil() replace by '== NIL' to avoid using xhb library.
+
+2017-12-18 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_003.txt
+    ! Typo.
+  * core\buildapp.bat
+  * core\BuildApp30.bat
+  * core\BuildApp32.bat
+  * core\BuildApp_hbmk2.bat
+  * core\compile.bat
+  * core\compile30.bat
+  * core\compile32.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.BAT
+  * core\compileXB.bat
+  * core\ofmt.bat
+  * core\oide.bat
+  * core\resources\CompileRes.bat
+  * core\resources\CompileRes_bcc.bat
+  * core\resources\CompileRes_mingw.bat
+  * core\source\buildlib.bat
+  * core\source\BuildLib30.bat
+  * core\source\BuildLib32.bat
+  * core\source\BuildLib_hbmk2.bat
+  * core\source\common_make.bat
+  * core\source\makelib.bat
+  * core\source\makelib_30.bat
+  * core\source\makelib_32.bat
+  * core\source\makelib_bcc.bat
+  * core\source\makelib_mingw.bat
+  * core\source\makelibXB.bat
+    * Run without adding C:\OOHG to PATH.
+    * Changed some remarks and labels to improve readability.
+
+  - core\compile_pc.bat
+  - core\compile_vc.bat
+  - core\source\makelib_pc.bat
+  - core\source\makelib_vc.bat
+
+  * core\compile_MINGW.BAT
+    !  Error: gcc: error : unrecognized option '-static-libstdc++'
+
+2017-11-17 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\*.*
+    * References to sourceforge changed to github.
+
+2017-11-15 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+    - Removed no longer used _dummy function.
+  * core\source\h_tooltip.prg
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+
+2017-11-15 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\*.*
+  * core\resources\*.*
+  * core\source\*.c
+  * core\source\*.bat
+    * Id.
+
+2017-11-13 21:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Some comments added.
+
+2017-11-13 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\bostaurus.ch
+  * core\source\bostaurus.prg
+    * Id.
+
+2017-11-13 13:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_activex.prg
+   * core\source\h_anigif.prg
+   * core\source\h_application.prg
+   * core\source\h_browse.prg
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_checklist.prg
+   * core\source\h_combo.prg
+   * core\source\h_comm.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_crypt.prg
+   * core\source\h_cursor.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_dialogs.prg
+   * core\source\h_dll.prg
+   * core\source\h_edit.prg
+   * core\source\h_edit_ex.prg
+   * core\source\h_editbox.prg
+   * core\source\h_error.prg
+   * core\source\h_font.prg
+   * core\source\h_form.prg
+   * core\source\h_frame.prg
+   * core\source\h_graph.prg
+   * core\source\h_grid.prg
+   * core\source\h_help.prg
+   * core\source\h_hotkey.prg
+   * core\source\h_hotkeybox.prg
+   * core\source\h_hyperlink.prg
+   * core\source\h_image.prg
+   * core\source\h_ini.prg
+   * core\source\h_init.prg
+   * core\source\h_internal.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_label.prg
+   * core\source\h_listbox.prg
+   * core\source\h_media.prg
+   * core\source\h_menu.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_msgbox.prg
+   * core\source\h_notify.prg
+   * core\source\h_pdf.prg
+   * core\source\h_picture.prg
+   * core\source\h_print.prg
+   * core\source\h_progressbar.prg
+   * core\source\h_progressmeter.prg
+   * core\source\h_radio.prg
+   * core\source\h_registry.prg
+   * core\source\h_report.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_scroll.prg
+   * core\source\h_scrollbutton.prg
+   * core\source\h_scrsaver.prg
+   * core\source\h_slider.prg
+   * core\source\h_spinner.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_status.prg
+   * core\source\h_tab.prg
+   * core\source\h_textarray.prg
+   * core\source\h_textbox.prg
+   * core\source\h_timer.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tooltip.prg
+   * core\source\h_tree.prg
+   * core\source\h_winapimisc.prg
+   * core\source\h_windows.prg
+   * core\source\h_xbrowse.prg
+   * core\source\h_zip.prg
+   * core\source\miniprint.prg
+   * core\source\winprint.prg
+     * Id.
+    ; Thanks to José M. C. Quintas.
+
+2017-11-10 18:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + Support for App.Errorlevel and App.DoEvents
+  * core\include\i_hmg_compat.ch
+    ! Wrong translation of DIALOG clause.
+  * core\include\i_pseudofunc.ch
+    + Translate for ooHGVersion and MiniGuiVersion pseudofunctions.
+  * core\include\i_var.ch
+    + Support for _OOHG_Errolevel var.
+  * core\source\h_application.prg
+    + Support for _OOHG_Errolevel var.
+    * Errorlevel is set to 1 in case of error.
+  * core\source\h_error.prg
+    * Errorlevel is set to 1 in case of error.
+    - Functions ooHGVersion and MiniGuiVersion.
+  * core\source\h_form.prg
+    Errorlevel is set to _OOHG_Errorlevel at app's exit.
+  * core\source\h_grid.prg
+  * core\source\h_internal.prg
+  * core\source\h_picture.prg
+  * core\source\h_textarray.prg
+    * Errorlevel is set to 1 in case of error.
+
+2017-11-03 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\*.*
+  * core\source\*.c
+    * COPYING changed to LICENSE.txt
+  * core\source\*.prg
+    * COPYING changed to LICENSE.txt
+    - Remove some commented out code.
+  * core\source\h_edit.prg
+    * Changed some comments.
+
+2017-11-02 21:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp30.bat
+  * core\BuildApp32.bat
+  * core\ChangeLog_001.txt
+  * core\ChangeLog_002.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\ChangeLog_005.txt
+  * core\compile.bat
+  * core\compile30.bat
+  * core\compile32.bat
+  * core\compile_MINGW.BAT
+  * core\compile_pc.bat
+  * core\compile_vc.bat
+  * core\compileXB.bat
+  * core\ofmt.bat
+  * core\oide.bat
+  * core\oohg.hbc
+    * Id.
+
+2017-11-02 20:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\oohgaux.bat
+
+2017-11-02 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+    !  Additional hbmk2 parameters are ignored.
+
+2017-11-02 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+    % Improved.
+    ! Do not try to compile an RC file if neither app's nor oohg's exist.
+    ! App's RC file is not compiled when oohg's doesn't exists.
+    * Now _temp.rc is part of the call to hbmk2.
+  * core\oohg.hbc
+    ! Lib bindings are dynamic instead of static.
+    * Resource file is not forced anymore into building chain.
+      To compile and app that has an RC file using hbmk2 you must add
+      'app.rc' to the command line or to the hbp file.
+      To make oohg's resources available to your app, you must include
+      (manually or using and #include directive) the content of oohg.rc
+      file into your app's RC file.
+      e.g.
+                  #include "C:\OOHG\RESOURCES\OOHG.RC"
+                  I1 PNG image.png
+                  ...
+
+2017-11-02 18:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\makelib_bcc.bat
+    * Command's output cleaned.
+    ! Label not found error.
+
+2017-11-02 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\makelib.bat
+    * References to compile*.bat changed to makelib*.bat
+
+2017-11-02 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\buildlib.bat
+    * References to compile*.bat changed to buildlib*.bat
+
+2017-11-02 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile.bat
+    * Error message.
+
+2017-11-02 18:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compileXB.bat
+    * Format.
+
+2017-11-02 18:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp.bat
+    * References to compile*.bat changed to buildapp*.bat
+    * Some comments.
+
+2017-10-02 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp30.bat
+  * core\buildapp32.bat
+    * Content moved to buildapp.bat
+    * Now they call buildapp.bat
+  * core\buildapp.bat
+    * Added content from buildapp30.bat and buildapp32.bat
+
+  * core\compile30.bat
+  * core\compile32.bat
+  * core\compileXB.bat
+    * Content moved to compile.bat
+    * Now they call compile.bat
+  * core\compile.bat
+    * Added content from compile30.bat and compile32.bat
+
+  * core\compile_bcc.bat
+  * core\compile_pc.bat
+  * core\compile_vc.bat
+    % Improved.
+
+  * core\source\buildlib30.bat
+  * core\source\buildlib32.bat
+    * Content moved to source\buildlib.bat
+    * Now they call source\buildlib.bat
+  * core\source\buildlib.bat
+    * Added content from source\buildlib30.bat and source\buildlib32.bat
+
+  * core\source\makelib30.bat
+  * core\source\makelib32.bat
+  * core\source\makelibXB.bat
+    * Content moved to source\makelib.bat
+    * Now they call source\makelib.bat
+  * core\source\makelib.bat
+    * Added content from source\makelib30.bat and source\makelib32.bat
+
+  ; Thanks to José M. C. Quintas.
+
+2017-11-02 15:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_graph.prg
+    * Pacified xHarbour warning.
+
+2017-11-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\source\xml.bat
+
+2017-11-02 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_005.txt
+    ! Comment on .hbx files.
+
+2017-11-02 14:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+  * core\source\oohg.hbp
+    - Removed switch not supported by HB30.
+
+2017-10-30 19:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\oohg_license_template.txt
+    * Improved as template.
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+  * core\source\oohg.hbp
+    + Some flags.
+
+2017-10-29 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_browse.ch
+  * core\include\i_xbrowse.ch
+    + Added support for KEYSLIKECLIPPER clause.
+      See below.
+  * core\source\h_browse.prg
+    + Added support for KEYSLIKECLIPPER clause to TOBrowseByCell's methods.
+    + Added METHODs MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+      and MoveToLastVisibleCol to class TOBrowseByCell.
+    * Methods Home and End of class TOBrowseByCell no longer move record
+      pointer when KEYSLIKECLIPPER clause is present. They just change the
+      selected cell to the first/last visible column on the current row.
+    + Added parameter lKeys to method EditCell of class TOBrowseByCell.
+      Set to .F. to stop processing exit keys after edition end.
+      It's like "edit this cell and stay here afterwards". Defaults to .T.
+    ! Method EditCell of class TOBrowseByCell was not refreshing after
+      appending a record.
+    + Added support for KEYSLIKECLIPPER clause to methods EditCell and
+      EditGrid of class TOBrowseByCell.
+  * core\source\h_xbrowse.prg
+    + Added support for KEYSLIKECLIPPER clause to TXBrowseByCell's methods.
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+    + Added METHODs MoveToFirstCol, MoveToFirstVisibleCol, MoveToLastCol
+      and MoveToLastVisibleCol to class TXBrowseByCell.
+    * Methods Home and End of class TXBrowseByCell no longer move record
+      pointer when KEYSLIKECLIPPER clause is present. They just change the
+      selected cell to the first/last visible column on the current row.
+
+  ; Key's expected behavior in Clipper's Browse mode:
+
+      Key          Action
+      ------------------------------------------------------------------------
+      Up           Move up one row (previous record).
+      Down         Move down one row (next record).
+      Left         Move one column to the left (previous field).
+      Right        Move one column to the right (next field).
+      Ctrl+Left    Pan one column to the left.
+      Ctrl+Right   Pan one column to the right.
+      Home         Move to the leftmost visible column.
+      End          Move to the rightmost visible column.
+      Ctrl+Home    Move to the leftmost column.
+      Ctrl+End     Move to the rightmost column.
+      PgUp         Move to the previous screen.
+                   If cursor was on, lets say 4th row of 12 visible rows,
+                   pressing that key should show next 12 rows and position
+                   cursor on 4th of them. If there are no more rows to load,
+                   cursor should be placed at last row. Cursor should remain
+                   in the same column.
+      PgDn         Move to the next screen.
+                   If cursor was on, lets say 4th row of 12 visible rows,
+                   pressing that key should show previous 12 rows and position
+                   cursor on 4th of them. If there are no more rows to load,
+                   cursor should be placed at first row. Cursor should remain
+                   in the same column.
+      Ctrl+PgUp    Move to the first record.
+                   Cursor should remain in the same column.
+      Ctrl+PgDn    Move to the last record.
+                   Cursor should remain in the same column.
+
+2017-10-29 12:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\.gitignore
+    + resul.txt file.
+  * core\BuildApp_hbmk2.bat
+    * -q to -q0
+  * core\compile_bcc.bat
+  * core\compile_MINGW.bat
+  * core\compile_pc.bat
+  * core\compile_vc.bat
+    * -n to -n1
+  * core\source\common_make.bat
+    * -w2 to -w3.
+    + Added support for message redirection.
+  * core\source\makelib_bcc.bat
+  * core\source\xml.bat
+    * Improved message redirection to resul.txt file.
+
+2017-10-29 12:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_graph.prg
+  * core\source\h_pdf.prg
+  * core\source\h_print.prg
+  * core\source\h_windows.prg
+    ! Some xHarbour's compiler warnings.
+
+2017-10-28 09:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * Message changed.
+
+2017-10-26 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_grid.ch
+    * Changed translations of commands SET GRIDFIXEDCONTROLS.
+    + Clause KEYSLIKECLIPPER. When present, keys behave like
+      Clipper's browse. Applies to TGridByCell only.
+  * core\include\i_pseudofunc.ch
+    + Added xtranslate for function SetGridFixedControls.
+  * core\include\i_var.ch
+    + Added xtranslate for pseudo var _OOHG_GridFixedControls.
+  * core\source\h_application.prg
+    * Added support for _OOHG_GridFixedControls.
+  * core\source\h_grid.prg
+    - STATIC var and function SetGridFixedControls were
+      substituted by TApplication method and pseudo-function.
+    + DATA lKeysLikeClipper.
+    + DATA lKeysOn. When .F. the editcontrols will ignore all
+      exit keys and user defined keys except ESCAPE and RETURN.
+    + MESSAGE End to class TGrid.
+    + MESSAGE Home to class TGrid.
+    + MESSAGE PanToLeft to class TGrid.
+    + MESSAGE PanToRight to class TGrid.
+    + New parameter klc to TGrid's methods Define, Define2
+      and Define4.
+    * Some comments.
+    * Some format.
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+    + METHOD End to class TGridByCell.
+    + METHOD Home to class TGridByCell.
+    + METHOD End to class TGridByCell.
+    + METHOD MoveToFirstCol to class TGridByCell.
+    + METHOD MoveToFirstVisibleCol to class TGridByCell.
+    + METHOD MoveToLastCol to class TGridByCell.
+    + METHOD MoveToLastVisibleCol to class TGridByCell.
+    * Methods Right, Left, Up and Down of TGridByCell now
+      honor ::FullMove.
+    * Method Up accepts parameter lLast. When .T. the
+      column changes to the righmost one.
+    * Method EditCell of TGridByCell now uses methods to
+      move the selected cell.
+
+2017-10-26 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\winprint.prg
+    * Function MYCLOSEP is now STATIC.
+    - Function JK_ODD
+    * Function EF_RESETPRINTER renamed to RR_RESETPRINTER.
+
+2017-10-25 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    * Id.
+    + Clause EDITCELLVALUE to grid, browse and xbrowse.
+  * core\include\i_browse.ch
+    * Id.
+    + Clause EDITCELLVALUE.
+    * Changed translations of commands SET BROWSESYNC,
+      SET BROWSEFIXEDBLOCKS and SET BROWSEFIXEDCONTROLS.
+  * core\include\i_grid.ch
+    * Id.
+    + Clause EDITCELLVALUE.
+  * core\include\i_pseudofunc.ch
+    * Id.
+    + Added xtranslates for functions SetBrowseFixedBlocks,
+      SetBrowseFixedControls, SetBrowseSync, SetXBrowseFixedBlocks
+      and SetXBrowseFixedControls.
+  * core\include\i_var.ch
+    * Id.
+    + Added xtranslates for pseudo vars _OOHG_BrowseSyncStatus,
+      _OOHG_BrowseFixedBlocks, _OOHG_BrowseFixedControls,
+      _OOHG_XBrowseFixedBlocks and _OOHG_XBrowseFixedControls.
+  * core\include\i_xbrowse.ch
+    * Id.
+    + Clause EDITCELLVALUE.
+    * Changed translations of commands SET XBROWSEFIXEDBLOCKS and
+      SET XBROWSEFIXEDCONTROLS.
+  * core\source\h_application.prg
+    * Id.
+    * Added support for _OOHG_BrowseSyncStatus,
+      _OOHG_BrowseFixedBlocks, _OOHG_BrowseFixedControls,
+      _OOHG_XBrowseFixedBlocks and _OOHG_XBrowseFixedControls.
+    * Changed case style of some words according Harbour's syntax.
+  * core\source\h_browse.prg
+    * Id.
+    - STATIC vars and functions SetBrowseSync, SetBrowseFixedBlocks
+      and SetBrowseFixedBlocks were substituted by TApplication methods
+      and pseudo-functions. This should make the class thread safe.
+    * Changed some comments.
+    + Support for clause EDITCELLVALUE bCodeBlock.
+      The bCodeblock is evaluated by method EditCell2 just
+      before the cell edition starts.
+      The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+      where nRow and nCol identify the cell that will be edited and
+      uOldValue is the 'face value' to show.
+      It should return uOldValue or another value of the same type.
+      Note that changes to uOldValue do not affect the data source.
+    * Changed Empty( <var> ) to HB_SYMBOL_UNUSED( <var> ).
+    + Default value for CheckBeforeEdit parameter at method Define3
+      of class TOBrowseByCell.
+    ! Method EditGrid of TOBrowseByCell when edition was ended
+      because of mouse exit.
+    % Method SetValue of class TOBrowseByCell.
+    * Methods Left and Right of TOBrowseByCell now return .T. if
+      and only if row and or col where changed.
+    * Changed some var names to improve readability.
+  * core\source\h_grid.prg
+    * Id.
+    + Support for clause EDITCELLVALUE bCodeBlock.
+      The bCodeblock is evaluated by method EditCell2 just
+      before the cell edition starts.
+      The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+      where nRow and nCol identify the cell that will be edited and
+      uOldValue is the 'face value' to show.
+      It should return uOldValue or another value of the same type.
+      Note that changes to uOldValue do not affect the grid's cell.
+  * core\source\h_xbrowse.prg
+    * Id.
+    - STATIC vars and functions SetXBrowseFixedBlocks and
+      SetX BrowseFixedBlocks were substituted by TApplication methods
+      and pseudo-functions. This should make the class thread safe.
+    + Support for clause EDITCELLVALUE bCodeBlock.
+      The bCodeblock is evaluated by method EditCell2 just
+      before the cell edition starts.
+      The codeblock receives 3 parametes: nCol, nRow and uOldValue,
+      where nRow and nCol identify the cell that will be edited and
+      uOldValue is the 'face value' to show.
+      It should return uOldValue or another value of the same type.
+      Note that changes to uOldValue do not affect the data source.
+    * Some format.
+
+2017-10-25 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\winprint.prg
+    * hb_osnewline() replaced by Chr(13)+Chr(10).
+
+2017-10-25 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    * ABM_CRLF and Chr(13) replaced by CRLF.
+    * Call to TApplication's method New replaced by Define.
+    * Some comments.
+    * Some messages.
+    * Changed case style of some words according Harbour's syntax.
+
+2017-10-25 22:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit_ex.prg
+    - Removed unneeded define.
+
+2017-10-25 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Some format.
+    * Some comments.
+    - Removed unneeded code from function _ActivateAllWindows.
+
+2017-10-25 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_dll.prg
+    + Comment.
+
+2017-10-25 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_datepicker.prg
+    * Changed some format.
+    + Comment.
+
+2017-10-25 20:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    + Comment.
+
+2017-10-25 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    - Wrong xtranslate.
+
+2017-10-24 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_activex.c
+    * Some unused code was commented out.
+    * Two global vars were made local.
+    * Some format.
+    * Use _OOHG_GlobalMutex to initialize static var.
+    ; Module is thread safe.
+
+2017-10-24 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    * CLASSDATA changed to CLASSVAR to avoid inheritance.
+    + Hidden method CreateGlobalMutex to set a C level mutex
+      called _OOHG_GlobalMutex at startup. The purpose of this
+      mutex is to enable thread safe use of C static vars.
+
+2017-10-24 18:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_bcc.bat
+    + Switch /H for harbour.
+    + Use D__XHARBOUR__ in bcc32 calls.
+  * core\ofmt.bat
+  * core\oide.bat
+    + Added variable to set path.
+  * core\README.md
+    + Link to GitHub.
+
+2017-10-24 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+  * core\source\oohg.hbp
+    * Some flags and comments.
+    ; Build will generate .hbx file. Thanks to José M. C. Quintas.
+
+2017-10-23 22:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+    * Id.
+    * Flag -norun changed by -run-
+  * core\ChangeLog_002.txt
+    ! Typo.
+  + core\oohg_license_template.txt
+  * core\source\h_msgbox.prg
+    * Function MsgInfoExt no longer creates it's window
+      with a fixed name.
+  * core\source\h_windows.prg
+    * Change made 22017-10-16 at 23:10 was reverted because
+      it generates a GPF under Harbour 3.4 and MinGW 7.1
+
+2017-10-21 00:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\source\oohgaux.bat
+    ; To handle envvars.
+  * core\ChangeLog_002.txt
+  * core\ChangeLog_003.txt
+  * core\ChangeLog_004.txt
+  * core\include\bostaurus.ch
+  * core\include\i_dll.ch
+  * core\include\i_exec.ch
+  * core\include\i_label.ch
+  * core\include\i_misc.ch
+  * core\include\i_monthcal.ch
+  * core\include\i_picture.ch
+  * core\include\i_pseudofunc.ch
+  * core\include\i_registry.ch
+  * core\include\i_richeditbox.ch
+  * core\include\i_splitbox.ch
+  * core\include\i_timer.ch
+  * core\include\i_xbrowse.ch
+  * core\include\oohg.h
+  * core\source\bostaurus.prg
+  * core\source\c_dialogs.c
+  * core\source\c_font.c
+  * core\source\c_media.c
+  * core\source\c_msgbox.c
+  * core\source\c_progressbar.c
+  * core\source\c_scrsaver.c
+  * core\source\c_windows.c
+  * core\source\h_activex.prg
+  * core\source\h_anigif.prg
+  * core\source\h_application.prg
+  * core\source\h_browse.prg
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_checklist.prg
+  * core\source\h_combo.prg
+  * core\source\h_comm.prg
+  * core\source\h_controlmisc.prg
+  * core\source\h_crypt.prg
+  * core\source\h_cursor.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_dialogs.prg
+  * core\source\h_dll.prg
+  * core\source\h_edit.prg
+  * core\source\h_editbox.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_error.prg
+  * core\source\h_font.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_graph.prg
+  * core\source\h_grid.prg
+  * core\source\h_help.prg
+  * core\source\h_hotkey.prg
+  * core\source\h_hotkeybox.prg
+  * core\source\h_hyperlink.prg
+  * core\source\h_image.prg
+  * core\source\h_ini.prg
+  * core\source\h_init.prg
+  * core\source\h_internal.prg
+  * core\source\h_ipaddress.prg
+  * core\source\h_label.prg
+  * core\source\h_listbox.prg
+  * core\source\h_media.prg
+  * core\source\h_menu.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_msgbox.prg
+  * core\source\h_notify.prg
+  * core\source\h_pdf.prg
+  * core\source\h_picture.prg
+  * core\source\h_print.prg
+  * core\source\h_progressbar.prg
+  * core\source\h_progressmeter.prg
+  * core\source\h_radio.prg
+  * core\source\h_registry.prg
+  * core\source\h_report.prg
+  * core\source\h_richeditbox.prg
+  * core\source\h_scroll.prg
+  * core\source\h_scrollbutton.prg
+  * core\source\h_scrsaver.prg
+  * core\source\h_slider.prg
+  * core\source\h_spinner.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_status.prg
+  * core\source\h_tab.prg
+  * core\source\h_textarray.prg
+  * core\source\h_textbox.prg
+  * core\source\h_timer.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+  * core\source\h_winapimisc.prg
+  * core\source\h_windows.prg
+  * core\source\h_xbrowse.prg
+  * core\source\h_zip.prg
+  * core\source\miniprint.prg
+  * core\source\winprint.prg
+    - Trailing spaces.
+    * Format.
+    ; Thanks to José M. C. Quintas.
+
+2017-10-20 11:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\winprint.ch
+    ! RTE: HBPRN not defined.
+
+2017-10-18 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\h_activex.prg
+  * core\source\h_application.prg
+  * core\source\h_browse.prg
+  * core\source\h_button.prg
+  * core\source\h_checkbox.prg
+  * core\source\h_crypt.prg
+  * core\source\h_datepicker.prg
+  * core\source\h_dll.prg
+  * core\source\h_edit.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_grid.prg
+  * core\source\h_image.prg
+  * core\source\h_monthcal.prg
+  * core\source\h_msgbox.prg
+  * core\source\h_print.prg
+  * core\source\h_progressbar.prg
+  * core\source\h_report.prg
+  * core\source\h_scrollbutton.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_status.prg
+  * core\source\h_textbox.prg
+  * core\source\h_tree.prg
+  * core\source\h_windows.prg
+  * core\source\h_xbrowse.prg
+  * core\source\h_miniprint.prg
+  * core\source\h_winprint.prg
+    - Trailing spaces.
+    * Format.
+    ; Thanks to José M. C. Quintas.
+
+2017-10-18 15:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\CompileRes_mingw.bat
+    ! Wrong label.
+
+2017-10-17 21:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\.gitignore
+    + Some files.
+  + core\ofmt.bat
+    * Batch file to execute fmt.
+  + core\oide.bat
+    * Batch file to execute ide.
+  * core\oohg.hbc
+    - Remove unneeded directive.
+    ! Static building directive.
+  * core\source\h_application.prg
+    ! Typo that causes error "TApplication_MinObject" function not found
+      when building librares.
+
+2017-10-16 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\oohg.hbp
+    * Changed comment.
+
+2017-10-16 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Var _OOHG_LastSelf is now declared as __thread type.
+
+2017-10-16 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\h_controlmisc.prg
+    + Check for upper limit in control's ID.
+
+2017-10-16 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit.prg
+    + Define NO_HBPRN_DECLARATION to pacify warning.
+    - Call to function InitMessages.
+    * Commented out some unneeded code.
+
+2017-10-16 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+  * core\source\c_gdiplus.c
+  * core\source\c_msgbox.c
+  * core\source\h_controlmisc.prg
+  * core\source\h_dll.prg
+  * core\source\h_edit.prg
+  * core\source\h_form.prg
+  * core\source\h_init.prg
+  * core\source\h_internal.prg
+  * core\source\h_picture.prg
+  * core\source\h_tooltip.prg
+  * core\source\h_tree.prg
+  * core\source\h_windows.prg
+  * core\source\h_xbrowse.prg
+  * core\source\winprint.prg
+     + T*O*D*O related to thread safety.
+
+2017-10-16 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_controlmisc.ch
+  * core\source\h_bostaurus.prg
+  * core\source\h_browse.prg
+  * core\source\h_checklist.prg
+  * core\source\h_combo.prg
+  * core\source\h_comm.prg
+  * core\source\h_controlsmisc.prg
+  * core\source\h_edit.prg
+  * core\source\h_edit_ex.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_graph.prg
+  * core\source\h_grid.prg
+  * core\source\h_hotkey.prg
+  * core\source\h_hyperlink.prg
+  * core\source\h_init.prg
+  * core\source\h_msgbox.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_tab.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tree.prg
+  * core\source\h_windows.prg
+  * core\source\h_windows.prg
+  * core\source\h_xbrowse.prg
+    * Changed case style of some words.
+
+2017-10-16 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    + Function CloseHandle.
+
+2017-10-16 21:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_cursor.c
+    * Function SetWindowCursor now returns .T. on success or .F. on error.
+
+2017-10-16 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    + Added DATA uFormCursor with current cursor's name.
+    ! Method TForm:Cursor is now truly setget.
+    * Changed case style of some words.
+
+2017-10-16 21:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    - Unneeded code in methods TFormInternal:Define and TFormSplit:Define.
+  * core\source\h_internal.prg
+    - Unneeded code in methods TInternal:Define.
+  * core\source\h_windows.prg
+    - Removed no longer needed function _OOHG_SetControlParent.
+
+2017-10-16 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_help.prg
+    - Removed some commented out code.
+
+2017-10-16 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\h_print.prg
+    * Static var at source level moved to local var.
+
+2017-10-16 21:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_msgbox.prg
+    * Changed "=" comparisons to "==".
+    + Check for NIL and types "T" and "S" in function AutoType.
+
+2017-10-16 21:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\incluce\i_app.ch
+    * Changed translation for Application.<property>.
+    + Added new properties.
+  * core\include\i_pseudofunc.ch
+    + Added translate for function _OOHG_SetMultiple.
+  * core\include\i_var.ch
+    * Changed translation for _OOHG_* vars.
+  * core\source\c_controlmisc.c
+    + T*O*D*O note.
+  * core\source\h_application.prg
+    * Static var changed to CLASS VAR.
+    * Access to array of properties is now handled by methods
+      with mutex protection.
+    * Method New was renamed Define.
+  * core\source\h_controlsmisc.prg
+    - Static var _OOHG_lMultiple.
+    - Function _OOHG_SetMultiple.
+  ; This changes should make thread safe the access to _oohg_* var.
+
+2017-10-16 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_gdiplus.c
+    * Some format.
+
+2017-10-16 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit_ex.prg
+    - Call to function InitMessages.
+
+2017-10-16 09:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.bat
+  * core\oohg.hbc
+    + Set static building.
+  + README.md
+
+2017-10-15 21:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\.gitattributes
+  + core\.gitignore
+
+2017-10-14 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\manual\*.*
+    ; Files moved to doc repository.
+
+2017-10-14 00:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ide\*.*
+    ; Files moved to ide repository.
+
+2017-10-14 00:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\doc\*.*
+    ; Files moved to core\doc.
+  - core\doc
+  * core\ChangeLog.txt
+    ! Previous entries fixed.
+
+2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\samples\dbview\*.*
+  - core\samples\http\*.*
+  - core\samples\mpm\*.*
+  - core\samples\oohg\*.*
+  - core\samples
+    ; Moved to a separated repository.
+
+2017-10-12 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  - core\distros\hb30mingw.iss
+  - core\distros\hb32mingw.iss
+  - core\distros\infoafter_bcc.txt
+  - core\distros\infoafter_mingw.txt
+  - core\distros\infobefore.txt
+  - core\distros\license.txt
+  - core\distros\lista.txt
+  - core\distros\makedistro.bat
+  - core\distros\makeexclude.txt
+  - core\distros\xhbbcc.iss
+  - core\distros
+    ; Moved to a separated repository.
+
+2017-10-12 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\*.*
+    ; Initial upload to GitHub from SourceForge.
+
+2017-10-01 13:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! Array access error on _OOHG_* vars.
+
+2017-10-01 12:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include\i_var.ch
+    - References to _OOHG_AllVars array.
+    * Variables _OOHG_* are now defined as datas of TApplication
+      object.
+
+  * source\bostaurus.prg
+  * source\h_activex.prg
+  * source\h_anigif.prg
+  * source\h_application.prg
+  * source\h_button.prg
+  * source\h_checkbox.prg
+  * source\h_checklist.prg
+  * source\h_combo.prg
+  * source\h_comm.prg
+  * source\h_datepicker.prg
+  * source\h_dialogs.prg
+  * source\h_edit.prg
+  * source\h_editbox.prg
+  * source\h_error.prg
+  * source\h_frame.prg
+  * source\h_hotkey.prg
+  * source\h_hotkeybox.prg
+  * source\h_hyperlink.prg
+  * source\h_image.prg
+  * source\h_ini.prg
+  * source\h_init.prg
+  * source\h_internal.prg
+  * source\h_ipaddress.prg
+  * source\h_label.prg
+  * source\h_media.prg
+  * source\h_menu.prg
+  * source\h_monthcal.prg
+  * source\h_notify.prg
+  * source\h_picture.prg
+  * source\h_progressbar.prg
+  * source\h_progressmeter.prg
+  * source\h_radio.prg
+  * source\h_registry.prg
+  * source\h_report.prg
+  * source\h_richeditbox.prg
+  * source\h_scroll.prg
+  * source\h_scrollbutton.prg
+  * source\h_scrsaver.prg
+  * source\h_slider.prg
+  * source\h_spinner.prg
+  * source\h_splitbox.prg
+  * source\h_status.prg
+  * source\h_textarray.prg
+  * source\h_textbox.prg
+  * source\h_timer.prg
+  * source\h_toolbar.prg
+  * source\h_tooltip.prg
+  * source\h_xbrowse.prg
+  * source\winprint.prg
+    - EMPTY( _OOHG_AllVars ).
+
+  * source\h_application.prg
+    + Method New to initialize application wide variables.
+
+  * source\h_init.prg
+    - Initialization of application wide variables.
+    - Public var _OOHG_AllVars.
+    ! Errorlog errors in multithreaded apps.
+
+  * source\h_error.prg
+    + ProcFile() info to error messages.
+
+2017-10-01 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+    ! Order of parameters in hbmk2 call.
+  * source\h_tab.prg
+  * source\h_windows.prg
+    * Format.
+  * source\h_edit_ex.prg
+    - Unused public variable nImpLen.
+    * Var hbprn is now local.
+  * source\winprint.prg
+    - Defines for background modes.
+    * Some comments.
+    - EMPTY( hbprn ).
+  * include\winprint.ch
+    + Defines for background modes.
+
+2017-09-28 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include\i_report.ch
+  * include\miniprint.ch
+  * include\winprint.ch
+  * manual\DO_REPORT.HTM
+  * manual\HBPRINTER_CONSTANTS.HTM
+  * manual\MINIPRINT_CONSTANTS.HTM
+    * Some comments on paper sizes.
+
+2017-09-14 18:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_grid.prg
+    * Method Justify now can change the justification of all columns
+      in a single call. Usage:
+      One column change:   oGrid:Justify( nItem, nJust, lRedraw ) -> nJust
+      All columns change:  oGrid:Justify( aJust, lRedraw ) -> aJust
+      One column retrieve: oGrid:Justify( nItem ) -> nJust
+      All columns retrive: oGrid:Justify() -> aJust
+    * Function SetGridColumnJustify now returns current justification.
+
+2017-09-14 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_combobox.prg
+    ! Incremental search text was not being reseted.
+    ! GotFocus event was being fired twice.
+    ! DisplayChange was not being fired.
+    * Some format.
+
+2017-09-13 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_image.prg
+  * source\h_internal.prg
+  * source\h_notify.prg
+  * source\h_picture.prg
+  * source\h_progressmeter.prg
+  * source\h_textarray.prg
+  * source\h_windows.prg
+    + Some comments.
+
+2017-09-13 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include\i_hmg_compat.ch
+    + Some clauses to improve compatibility.
+
+2017-09-13 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * ide\prgs\formedit.prg
+    ! Statubar's items is displayed with wrong font after resetting
+      font to default values.
+    + Support for ON KEY, BKGNDCOLOR, DATEFORMAT and TIMEFORMAT clauses.
+  * ide\prgs\mgide.prg
+    * The items of the statusbar of method myInputWindow are now
+      more customizable.
+
+2017-09-13 19:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * doc\classes.txt
+  * doc\Maintenance.txt
+    * Updated.
+
+2017-09-13 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_browse.prg
+    ! RTE "CALIAS__ method not found" when Browse was defined with
+      FIXEDCONTROLS and FIXEDBLOCKS clauses.
+
+2017-09-09 13:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_grid.prg
+    + METHOD LastVisibleColumn( lEnd ): when lEnd is .F.
+      (default value) returns the number of the column shown at
+      grid's right side; when lEnd is .T. returns the number of the
+      rightmost column with it's right border visible.
+
+2017-09-09 12:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_windows.prg
+    + Support for writing _OOHG_CALLDUMP() output to a text file
+      named DumpLog.txt at the current folder.
+      Usage: _OOHG_CALLDUMP( uTitle, cOutput ) where
+      - uTitle: data (any type) to output. Defaults to NIL.
+      - cOutput: S to get screen output only, F to get file output
+        only, or B to get screen and file output simultaneously.
+        Defaults to S.
+
+2017-09-09 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include\i_altsyntax.ch
+    + Added clause BKGNDCOLOR.
+  * include\i_monthcal.ch
+    + Support for BKGNDCOLOR clause.
+
+2017-09-09 11:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * include\i_altsyntax.ch
+  * include\i_datepicker.ch
+    + Added clause DATEFORMAT in DATEPICKER control.
+    + Added clause TIMEFORMAT in TIMEPICKER control.
+    * Parameters UPDOWN and RIGHTALIGN in call to TTimePick():Define
+      are now forced to .T. and .F. respectively.
+    ; TIMEPICKER control always has UPDOWN style.
+    ; TIMEPICKER control ignores RIGHTALIGN style.
+  * include\i_hmg_compat.ch
+    + PP rules to ignore BACKCOLOR, FONTCOLOR, TITLEBACKCOLOR,
+      TITLEFONTCOLOR and TRAILINGFONTCOLOR clauses of DATEPICKER control.
+    ; These clauses have no effect under when visual styles are on.
+    - Unneeded PP rule related to RADIOGROUP control.
+  * source\h_datepicker.prg
+    + Support for new clauses in DATEPICKER and TIMEPICKER controls.
+    + DATA cDateFormat and METHOD DateFormat in TDatePick class.
+    + DATA cTimeFormat METHOD TimeFormat in TTimePick class.
+    * TTimePick():Value for controls with SHOWNONE style will now
+      set the control to NULL if passed value is an empty string,
+      instead of setting it to 00:00:00.
+    * TTimePick():Value for controls with SHOWNONE style will now
+      set the control to NULL if passed value is NIL, instead of
+      setting it to current time.
+    + Function SetDatePickerDateFormat.
+    * Empty() replaced with HB_SYMBOL_UNUSED.
+
+2017-09-02 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_image.prg
+    ! Image can't be cleared.
+    ! Control disappears when an inexistent image is assigned.
+
+2017-09-01 17:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * source\h_tab.prg
+    ! Save data block of controls inside a Tab was not being evaluated.
+
+2017-08-26 00:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\ChangeLog_005.txt
+  * core\ChangeLog.txt
+    * Renamed to ChangeLog_005.txt and started a new one.
+  * manual\Changelog.htm
+    * Updated.
