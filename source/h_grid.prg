@@ -8592,7 +8592,7 @@ HB_FUNC( GET_XY_LPARAM )
    HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
 }
 
-#if ( defined( __BORLANDC__ ) && __BORLANDC__ < 1410 ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
+#if defined( __BORLANDC__ ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
 typedef struct tagNMLVSCROLL {
    NMHDR hdr;
    INT dx;
