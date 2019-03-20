@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-03-20 20:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Compiler error under BCC58 on struct tagNMLVSCROLL.
+
 2019-03-07 22:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_form.prg
     * TForm() for CHILD forms now accepts a hWnd instead of an
