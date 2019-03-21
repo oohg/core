@@ -443,6 +443,15 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
          ::oWinReport:Show()
       ENDIF
    ELSE
+     IF ! IsWindowDefined( _modalhide )
+         DEFINE WINDOW _modalhide ;
+            AT 0,0 ;
+            WIDTH 0 HEIGHT 0 ;
+            TITLE cTitle MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
+         END WINDOW
+         ACTIVATE WINDOW _modalhide NOWAIT
+     ENDIF
+
       DEFINE WINDOW 0 OBJ ::oWinReport ;
          PARENT ( ::uParent ) ;
          AT 0,0 ;
@@ -1207,7 +1216,7 @@ METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .T.
    IF lSize
-      IF lWait
+      IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
          END PRINTDOC
          ::lDocIsOpen := .F.
       ELSE
@@ -1215,7 +1224,7 @@ METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
          ::lDocIsOpen := .T.
       ENDIF
    ELSE
-      IF lWait
+      IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
          END PRINTDOC NOSIZE
          ::lDocIsOpen := .F.
       ELSE
@@ -2156,7 +2165,7 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .F.
    IF lSize
-      IF lWait
+      IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
          END DOC SIZE
          ::lDocIsOpen := .F.
       ELSE
@@ -2164,7 +2173,7 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
          ::lDocIsOpen := .T.
       ENDIF
    ELSE
-      IF lWait
+      IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
          END DOC
          ::lDocIsOpen := .F.
       ELSE
@@ -4378,7 +4387,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxCol
+METHOD MaxCol CLASS TPDFPRINT
 
    LOCAL nRet
 
@@ -4391,7 +4400,7 @@ METHOD MaxCol
    RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxRow
+METHOD MaxRow CLASS TPDFPRINT
 
    LOCAL nRet
 
