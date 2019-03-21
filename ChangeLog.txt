@@ -12,6 +12,22 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-03-20 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! Restored _modalhide window at method BeginDoc. It's needed
+       in case no MAIN window is defined to avoid and RTE.
+     + Some validations to avoid an RTE if ::oWinReport is not
+       defined at method EndDoc.
+     ! Missing CLASS clause at TPDFPRINT's MaxCol and MaxRow methods.
+
+2019-03-20 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_006.txt
+    ! File's title.
+
+2019-03-20 21:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_activex.prg
+    ! Unresolved external '_HB_FUN_TACTIVEX___ERROR' under xHarbour.
+
 2019-03-20 20:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     ! Compiler error under BCC58 on struct tagNMLVSCROLL.
