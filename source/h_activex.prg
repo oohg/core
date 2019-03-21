@@ -70,6 +70,7 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TActiveX FROM TControl
 
    DATA Type      INIT "ACTIVEX" READONLY
@@ -93,6 +94,7 @@ CLASS TActiveX FROM TControl
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
                lNoTabStop, lDisabled, lInvisible ) CLASS TActiveX
 
@@ -137,6 +139,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
 
    RETURN SELF
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TActiveX
 
    ::oOle := Nil
@@ -145,7 +148,7 @@ METHOD Release() CLASS TActiveX
 
    RETURN ::Super:Release()
 
-//-----------------------------------------------------------------------------------------------//
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 /*
  * oSkAr 20070829
  * Soporte de eventos para los controles ActiveX
@@ -176,10 +179,10 @@ METHOD Release() CLASS TActiveX
    Method OnChangeTitle( cTitle ) From MiClase
       ::oWnd:Title := cTitle
       Return NIL
+*/
 
- */
-
-METHOD EventMap( nMsg, xExec, oSelf )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD EventMap( nMsg, xExec, oSelf ) CLASS TActiveX
 
    LOCAL nAt
 
@@ -193,10 +196,8 @@ METHOD EventMap( nMsg, xExec, oSelf )
 
    RETURN NIL
 
-#ifndef __XHARBOUR__       //// si es harbour
-#ifndef __BORLANDC__       //// y no es borlandc
-
-METHOD __Error( ... )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD __Error( ... ) CLASS TActiveX
 
    LOCAL cMessage
 
@@ -207,6 +208,3 @@ METHOD __Error( ... )
    //   ENDIF
 
    RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
-
-#endif
-#endif
