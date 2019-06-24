@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-06-24 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! RTE 1132 "Array access error" at HBPRINTER:ENDDOC line 425.
+
 2019-03-20 22:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      ! Restored _modalhide window at method BeginDoc. It's needed

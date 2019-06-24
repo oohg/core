@@ -418,9 +418,8 @@ METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::PreviewMode
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT ! lWait
 
-   IF ::PreviewMode
-      ::Preview( cParent, lWait, lSize )
-   ELSE
+   ::Preview( cParent, lWait, lSize )
+   IF ! ::PreviewMode
       IF lWait
          MsgInfo( ::aopisy[ 31 ], "" )
       ENDIF
