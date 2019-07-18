@@ -184,8 +184,8 @@ CLASS TPRINTBASE
    DATA nUnitsLin                 INIT 1                     READONLY
    DATA nvFij                     INIT ( 12 / 1.65 )         READONLY
    DATA nwPen                     INIT 0.1                   READONLY    // pen width in MM, do not exceed 1
+   DATA oParent                   INIT NIL                   READONLY
    DATA oWinReport                INIT NIL                   READONLY
-   DATA uParent                   INIT NIL                   READONLY
 
    METHOD BeginDoc
    METHOD BeginDocX               BLOCK { || NIL }
@@ -237,20 +237,20 @@ CLASS TPRINTBASE
    METHOD SetBarColor
    METHOD SetColor
    METHOD SetColorX               BLOCK { || NIL }
-   METHOD SetCpl                  
-   METHOD SetDosPort              
+   METHOD SetCpl
+   METHOD SetDosPort
    METHOD SetFont
-   METHOD SetFontType             
+   METHOD SetFontType
    METHOD SetFontX                BLOCK { || NIL }
-   METHOD SetIndentation          
-   METHOD SetLMargin              
-   METHOD SetPreviewSize          
+   METHOD SetIndentation
+   METHOD SetLMargin
+   METHOD SetPreviewSize
    METHOD SetPreviewSizeX         BLOCK { |Self| ::nPreviewSize }
-   METHOD SetProp                 
+   METHOD SetProp
    METHOD SetRawPrinter
-   METHOD SetSeparateSheets       
-   METHOD SetShowErrors           
-   METHOD SetTMargin              
+   METHOD SetSeparateSheets
+   METHOD SetShowErrors
+   METHOD SetTMargin
    METHOD SetUnits
    METHOD Sup5
    METHOD Upca
@@ -349,6 +349,7 @@ METHOD Release() CLASS TPRINTBASE
    IF HB_ISOBJECT( ::oWinReport )
       ::oWinReport:Release()
    ENDIF
+   TApplication():Define():WinMHRelease()
 
    RETURN .T.
 
@@ -358,7 +359,11 @@ METHOD Init( uParent ) CLASS TPRINTBASE
    LOCAL lOk
 
    IF ::nStage == 0
-      ::uParent := uParent
+      IF ValType( uParent ) == "C"
+         ::oParent := GetExistingFormObject( uParent )
+      ELSE
+         ::oParent := uParent
+      ENDIF
       IF ( lOk := ::InitX() )
          ::nStage := 1
       ENDIF
@@ -382,7 +387,7 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
    ENDIF
 
    ASSIGN lSelect    VALUE lSelect    TYPE "L" DEFAULT .T.
-   ASSIGN lPreview   VALUE lPreview   TYPE "L" DEFAULT .T.
+   ASSIGN lPreview   VALUE lPreview   TYPE "L" DEFAULT ::ImPreview
    ASSIGN lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
    ASSIGN lHide      VALUE lHide      TYPE "L" DEFAULT .F.
 
@@ -443,18 +448,11 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
          ::oWinReport:Show()
       ENDIF
    ELSE
-     IF ! IsWindowDefined( _modalhide )
-         DEFINE WINDOW _modalhide ;
-            AT 0,0 ;
-            WIDTH 0 HEIGHT 0 ;
-            TITLE cTitle MODAL NOSHOW NOSIZE NOSYSMENU NOCAPTION
-         END WINDOW
-         ACTIVATE WINDOW _modalhide NOWAIT
-     ENDIF
+      TApplication():Define():WinMHDefine()
 
       DEFINE WINDOW 0 OBJ ::oWinReport ;
-         PARENT ( ::uParent ) ;
-         AT 0,0 ;
+         PARENT ( ::oParent ) ;
+         AT 0, 0 ;
          WIDTH 300 HEIGHT 120 ;
          CHILD NOSIZE NOSYSMENU NOCAPTION
 
@@ -547,7 +545,7 @@ METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPRINTBASE
    ENDIF
 
    ASSIGN ::lSaveTemp VALUE lSaveTemp TYPE "L" DEFAULT .F.
-   ASSIGN lWait       VALUE lWait     TYPE "L" DEFAULT .T.
+   ASSIGN lWait       VALUE lWait     TYPE "L" DEFAULT ::ImPreview
    ASSIGN lSize       VALUE lSize     TYPE "L" DEFAULT NIL
 
    IF ::ImPreview .AND. HB_ISOBJECT( ::oWinReport )
@@ -1222,6 +1220,10 @@ METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
       ELSE
          END PRINTDOC NOWAIT PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
+         DEFINE TIMER 0 ;
+            PARENT ( ::oWinReport:Name ) ;
+            INTERVAL 800 ;
+            ACTION { || iif( ::IsDocOpen(), NIL, ::Release() ) }
       ENDIF
    ELSE
       IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
@@ -1230,6 +1232,10 @@ METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
       ELSE
          END PRINTDOC NOWAIT NOSIZE PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
+         DEFINE TIMER 0 ;
+            PARENT ( ::oWinReport:Name ) ;
+            INTERVAL 800 ;
+            ACTION { || iif( ::IsDocOpen(), NIL, ::Release() ) }
       ENDIF
    ENDIF
 
@@ -2171,6 +2177,10 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
       ELSE
          END DOC NOWAIT SIZE PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
+         DEFINE TIMER 0 ;
+            PARENT ( ::oWinReport:Name ) ;
+            INTERVAL 800 ;
+            ACTION { || iif( ::IsDocOpen(), NIL, ::Release() ) }
       ENDIF
    ELSE
       IF lWait .OR. ! HB_ISOBJECT( ::oWinReport )
@@ -2179,6 +2189,10 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
       ELSE
          END DOC NOWAIT PARENT ( ::oWinReport:Name )
          ::lDocIsOpen := .T.
+         DEFINE TIMER 0 ;
+            PARENT ( ::oWinReport:Name ) ;
+            INTERVAL 800 ;
+            ACTION { || iif( ::IsDocOpen(), NIL, ::Release() ) }
       ENDIF
    ENDIF
 
@@ -4373,7 +4387,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    METHOD BeginPageX
    METHOD EndDocX
    METHOD InitX
-   METHOD MaxCol         
+   METHOD MaxCol
    METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX

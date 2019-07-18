@@ -71,7 +71,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             ClientWidth, VirtualHeight, VirtualWidth, Col, Row, BackColor, ;
             FocusedControl, hWnd, Object, Cursor, NotifyIcon, NotifyToolTip, ;
             SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight, Topmost, ;
-            HelpButton, Closable, Handle, BackColorCode\> ;
+            HelpButton, Closable, Handle, BackColorCode, ClientAdjust, ;
+            NoDefWinProc\> ;
             => GetExistingFormObject( <(w)> ):\<p\> ;;
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
             Restore, Show, Hide, Print, SetFocus, Redraw\> \[()\] ;
@@ -296,6 +297,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ MINHEIGHT <minheight> ] ;
       [ MAXHEIGHT <maxheight> ] ;
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
+      [ <nodwp: NODWP> ] ;
    => ;
       DECLARE WINDOW <w> ;;
       [ <obj> := ] DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, ;
@@ -317,7 +319,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor> )
+            <backimage>, <.stretch.>, <FontColor>, <.nodwp.> )
 
 #xcommand LOAD WINDOW <w> ;
    => ;
@@ -468,6 +470,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ MINHEIGHT <minheight> ] ;
       [ MAXHEIGHT <maxheight> ] ;
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
+      [ <nodwp: NODWP> ] ;
    => ;
       [ <obj> := ] DefineWindow(, <title>, <col>, <row>, <wi>, <h>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
@@ -488,7 +491,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor> )
+            <backimage>, <.stretch.>, <FontColor>, <.nodwp.> )
 
 /*---------------------------------------------------------------------------
 AUTOADJUST

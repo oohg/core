@@ -155,9 +155,11 @@ CLASS TApplication
    DATA Drive                     INIT NIL READONLY
    DATA ExeName                   INIT NIL READONLY
    DATA FileName                  INIT NIL READONLY
+   DATA oWinMH                    INIT NIL READONLY
+   DATA oWinMHCount               INIT 0   READONLY
    DATA Path                      INIT NIL READONLY
 
-   METHOD Define                  
+   METHOD Define
 
    METHOD ActiveFrameContainer
    METHOD ActiveFrameGet
@@ -253,6 +255,8 @@ CLASS TApplication
    METHOD Value_Pos53             SETGET
    METHOD Value_Pos54             SETGET
    METHOD Width                   SETGET
+   METHOD WinMHDefine
+   METHOD WinMHRelease
 
    MESSAGE Cargo                  METHOD Value_Pos31
    MESSAGE ErrorLevel             METHOD Value_Pos38
@@ -1991,6 +1995,7 @@ METHOD Value_Pos54( lValue ) CLASS TApplication
    ::MutexUnlock()
 
    RETURN ( uRet )
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TApplication
 
@@ -2015,6 +2020,42 @@ METHOD Width( nWidth ) CLASS TApplication
    ::MutexUnlock()
 
    RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD WinMHDefine CLASS TApplication
+
+   IF ! HB_ISOBJECT( ::oWinMH )
+      DEFINE WINDOW 0 OBJ ::oWinMH ;
+         AT 0, 0 ;
+         WIDTH 0 HEIGHT 0 ;
+         TITLE "Modal Hidden Window" ;
+         MODAL ;
+         NOSHOW NOSIZE NOSYSMENU NOCAPTION
+      END WINDOW
+      ::oWinMH:Activate( .T. )
+   ENDIF
+   ::oWinMHCount ++
+
+   RETURN ( ::oWinMH )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD WinMHRelease CLASS TApplication
+
+   IF HB_ISOBJECT( ::oWinMH )
+      IF ::oWinMH:Active
+         IF ::oWinMHCount == 1
+            ::oWinMH:Release()
+            ::oWinMH := NIL
+         ENDIF
+         ::oWinMHCount --
+      ELSE
+         ::oWinMH := NIL
+      ENDIF
+   ELSE
+      ::oWinMH := NIL
+   ENDIF
+
+   RETURN ( ::oWinMH )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION GetCommandLineArgs

@@ -1267,6 +1267,7 @@ METHOD End() CLASS HBPrinter
    ENDIF
    IF HB_ISOBJECT( ::oWinPrOpt )
       ::oWinPrOpt:Release()
+      ::oWinPrOpt := NIL
    ENDIF
 
    RETURN NIL
@@ -2077,8 +2078,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             HEIGHT ::ahs[ 1, 5 ] - 45 ;
             TITLE ::aopisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            CHILD ;
-            ON SIZE ::PrevAdjust()
+            ON SIZE ::PrevAdjust() ;
+            ON RELEASE ::PrevClose()
       ENDIF
    ELSE
       IF lWait
@@ -2098,8 +2099,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             HEIGHT ::ahs[ 1, 5 ] - 45 ;
             TITLE ::aopisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            CHILD ;
-            NOSIZE
+            NOSIZE ;
+            ON RELEASE ::PrevClose()
       ENDIF
    ENDIF
 
@@ -2241,6 +2242,10 @@ METHOD PrevClose() CLASS HBPrinter
       ::oWinThumbs:Release()
    ENDIF
    ::oWinPreview:Release()
+
+   ::oWinPagePreview := NIL
+   ::oWinThumbs := NIL
+   ::oWinPreview := NIL
 
    RETURN NIL
 

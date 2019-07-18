@@ -139,6 +139,7 @@ CLASS TWindow
    DATA nFocusFontSize            INIT 0
    DATA nFontSize                 INIT 0
    DATA nHeight                   INIT 0
+   DATA NoDefWinProc              INIT .F.                                    // See WM_PAINT message in h_form.prg
    DATA nOLdh                     INIT NIL
    DATA nOldw                     INIT NIL
    DATA nPaintCount                                                           // counter for GetDC and ReleaseDC methods
