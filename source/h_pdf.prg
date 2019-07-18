@@ -1128,16 +1128,12 @@ METHOD _OOHG_Line( x1, y1, x2, y2, nBorder, cBColor ) CLASS TPDF
 
       IF x1 == x2
          ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + LTrim( Str( ::M2X( nBorder ) ) ) + " w " + cBoxColor + ;
-            LTrim( Str( ::M2X( y1 ) ) ) + " " + LTrim( Str( ::M2Y( x1 - nBorder / 2 ) ) ) + " m " + ;
-            LTrim( Str( ::M2X( y2 ) ) ) + " " + LTrim( Str( ::M2Y( x2 - nBorder / 2 ) ) ) + " l " + ;
-            LTrim( Str( ::M2X( y2 ) ) ) + " " + LTrim( Str( ::M2Y( x2 + nBorder ) ) ) + " l " + ;
-            LTrim( Str( ::M2X( y1 ) ) ) + " " + LTrim( Str( ::M2Y( x1 + nBorder ) ) ) + " l h f"
+            LTrim( Str( ::M2X( y1 ) ) ) + " " + LTrim( Str( ::M2Y( x1 ) ) ) + " m " + ;
+            LTrim( Str( ::M2X( y2 ) ) ) + " " + LTrim( Str( ::M2Y( x2 ) ) ) + " l h f"
       ELSE
          ::aReport[ PAGEBUFFER ] += CRLF + "0 g " + LTrim( Str( ::M2X( nBorder ) ) ) + " w " + cBoxColor + ;
-            LTrim( Str( ::M2X( y1 - nBorder / 2 ) ) ) + " " + LTrim( Str( ::M2Y( x1 ) ) ) + " m " + ;
-            LTrim( Str( ::M2X( y2 - nBorder / 2 ) ) ) + " " + LTrim( Str( ::M2Y( x2 ) ) ) + " l " + ;
-            LTrim( Str( ::M2X( y2 + nBorder ) ) ) + " " + LTrim( Str( ::M2Y( x2 ) ) ) + " l " + ;
-            LTrim( Str( ::M2X( y1 + nBorder ) ) ) + " " + LTrim( Str( ::M2Y( x1 ) ) ) + " l h f"
+            LTrim( Str( ::M2X( y1 ) ) ) + " " + LTrim( Str( ::M2Y( x1 ) ) ) + " m " + ;
+            LTrim( Str( ::M2X( y2 ) ) ) + " " + LTrim( Str( ::M2Y( x2 ) ) ) + " l h f"
       ENDIF
    ENDIF
 
