@@ -12,6 +12,63 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-07-18 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\oohg.hbc
+     + Switch mt (because it's oohg specific).
+     - Switch gtgui (must be used in .hbp file).
+     * Some comments.
+
+2019-07-18 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.ch
+     + Two requests to fix building with Harbour 3.4
+       compiled with clang compiler.
+
+2019-07-18 20:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + Support for NoDefWinProc property.
+     + Support for NODWP clause.
+
+   * core\source\h_application.prg
+     + Support for a global modal hidden window.
+
+   * core\source\h_windows.prg
+     + DATA NoDefWinProc.
+       Defaults to .F.
+       When set to .T., the WM_PAINT handler will not call
+       function DefWindowProc at it's beginning but at it's end.
+
+   * core\source\h_form.prg
+     * Reverted the change to WM_PAINT handler's default behavior
+       done by commit 2019-02-17 11:36 UTC-0300 (hash 0073c75).
+     ! This reversion fixes miniprint's not displaying the
+       document in the preview window.
+     * This reversion breaks code based on BosTaurus functions
+       that paint on the form at ON PAINT event.
+       To fix the code you must add the NODWP clause to the form
+       or set to .T. it's NoDefWinProc data.
+       See samples\bostaurus folder.
+       INCOMPATIBLE
+     + Support for NoDefWinProc switch at WM_PAINT handler to
+       alter it's default behavior.
+
+   * core\source\h_print.prg
+     ! RTE at method BeginDoc.
+     ! RTE at method EndDoc.
+     ! Wrong default value of SelPrinter's preview parameter.
+     ! Wrong default value of EndDoc's wait parameter.
+
+   * core\source\miniprint.prg
+     * Minor simplifications.
+     ! Preview form can't be restored after minimizing it to the taskbar.
+
+   * core\source\winprint.prg
+     ! Minor simplifications.
+     ! Preview form can't be restored after minimizing it to the taskbar.
+
+2019-07-18 20:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_pdf.prg
+     ! Wrong line's thickness.
+
 2019-06-24 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\winprint.prg
      ! RTE 1132 "Array access error" at HBPRINTER:ENDDOC line 425.
