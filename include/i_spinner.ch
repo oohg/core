@@ -64,7 +64,7 @@
 #command @ <row>, <col> SPINNER <name> ;
       [ OBJ <obj> ] ;
       [ <dummy1: OF, PARENT> <parent> ] ;
-      RANGE <rl>, <rh> ;
+      [ RANGE <rl>, <rh> ] ;
       [ VALUE <value> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
