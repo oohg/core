@@ -1090,6 +1090,8 @@ METHOD SetRawPrinter( cPrinter ) CLASS TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMINIPRINT FROM TPRINTBASE
 
+   DATA Type                      INIT "MINIPRINT"           READONLY
+
    METHOD BeginDocX
    METHOD BeginPageX
    METHOD EndDocX
@@ -2066,6 +2068,7 @@ METHOD GetDefPrinterX() CLASS TMINIPRINT
 CLASS THBPRINTER FROM TPRINTBASE
 
    DATA oHBPrn                    INIT NIL                   READONLY
+   DATA Type                      INIT "HBPRINTER"           READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -2515,6 +2518,7 @@ CLASS TDOSPRINT FROM TPRINTBASE
    DATA cString                   INIT ""                    READONLY
    DATA nOccur                    INIT 0                     READONLY
    DATA oWinPreview               INIT NIL                   READONLY
+   DATA Type                      INIT "DOSPRINT"            READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -2894,6 +2898,7 @@ CLASS TTXTPRINT FROM TDOSPRINT
    DATA cBusca                    INIT ""                    READONLY
    DATA cString                   INIT ""                    READONLY
    DATA nOccur                    INIT 0                     READONLY
+   DATA Type                      INIT "TXTPRINT"            READONLY
 
    METHOD BeginDocX
    METHOD EndDocX
@@ -3029,6 +3034,8 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TRAWPRINT FROM TDOSPRINT
 
+   DATA Type                      INIT "RAWPRINT"            READONLY
+
    METHOD BeginDocX
    METHOD InitX
    METHOD PrintModeX
@@ -3163,6 +3170,7 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    DATA oExcel                    INIT NIL                   READONLY
    DATA oBook                     INIT NIL                   READONLY
    DATA oHoja                     INIT NIL                   READONLY
+   DATA Type                      INIT "EXCELPRINT"          READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -3435,6 +3443,7 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    DATA nLinRel                   INIT 0                     READONLY
    DATA nLpp                      INIT 60                    READONLY    // lines per page
    DATA nXls                      INIT 0                     READONLY
+   DATA Type                      INIT "SPREADSHEETPRINT"    READONLY
 
    METHOD AddPage
    METHOD BeginDocX
@@ -3617,6 +3626,8 @@ FUNCTION THtmlPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
 
+   DATA Type                      INIT "HTMLPRINTFROMEXCEL"  READONLY
+
    METHOD BeginDocX
    METHOD EndDocX
    METHOD InitX
@@ -3685,6 +3696,8 @@ METHOD InitX() CLASS THTMLPRINTFROMEXCEL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
+
+   DATA Type                      INIT "HTMLPRINTFROMCALC"   READONLY
 
    METHOD BeginDocX
    METHOD EndDocX
@@ -3769,6 +3782,7 @@ CLASS TRTFPRINT FROM TPRINTBASE
    DATA nMarginSup                INIT 15                    READONLY    // in mm
    DATA nMarginRig                INIT 10                    READONLY    // in mm
    DATA nMarginInf                INIT 15                    READONLY    // in mm
+   DATA Type                      INIT "RTFPRINT"            READONLY
 
    METHOD BeginDocX
    METHOD EndDocX
@@ -4266,6 +4280,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 CLASS TCSVPRINT FROM TPRINTBASE
 
    DATA aPrintCsv                 INIT {}                    READONLY
+   DATA Type                      INIT "CSVPRINT"            READONLY
 
    METHOD BeginDocX
    METHOD EndDocX
@@ -4382,6 +4397,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    DATA cPageOrient               INIT "P"                   READONLY // P = portrait, L = Landscape
    DATA cPageSize                 INIT ""                    READONLY // page size
    DATA oPDF                      INIT NIL                   READONLY // reference to the TPDF object
+   DATA Type                      INIT "PDFPRINT"            READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
@@ -4714,6 +4730,7 @@ CLASS TCALCPRINT FROM TPRINTBASE
    DATA oSheet                    INIT NIL                   READONLY
    DATA nHorzResol                INIT PixelsPerInchX()      READONLY
    DATA nVertResol                INIT PixelsPerInchY()      READONLY
+   DATA Type                      INIT "CALCPRINT"           READONLY
 
    METHOD BeginDocX
    METHOD BeginPageX
