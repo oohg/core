@@ -65,8 +65,6 @@
 #include 'hbclass.ch'
 #include 'common.ch'
 
-MEMVAR _OOHG_PrintLibrary
-
 #define DOUBLE_QUOTATION_MARK '"'
 #define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
@@ -126,7 +124,7 @@ FUNCTION JustificaLinea( cLine, nLastCol )
 CLASS TReport FROM TPRINTBASE
 
    DATA Type                      INIT "REPORT"
-   DATA aLine                     INIT {}
+   DATA aLines                    INIT {}
    DATA aNGrpBy                   INIT {}
    DATA lExcel                    INIT .F.
    DATA nFSize                    INIT 0
@@ -274,27 +272,27 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
    ELSE
       ::oPrint := TPrint()                          // if _OOHG_PrintLibrary is not set defaults TO MINIPRINT
       ::oPrint:Init()
-      IF _OOHG_PrintLibrary == "EXCELPRINT"
+      IF ::oPrint:Type == "EXCELPRINT"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "RTFPRINT"
+      ELSEIF ::oPrint:Type == "RTFPRINT"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "CALCPRINT"
+      ELSEIF ::oPrint:Type == "CALCPRINT"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "CSVPRINT"
+      ELSEIF ::oPrint:Type == "CSVPRINT"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "SPREADSHEETPRINT"
+      ELSEIF ::oPrint:Type == "SPREADSHEETPRINT"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMCALC"
+      ELSEIF ::oPrint:Type == "HTMLPRINTFROMCALC"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "HTMLPRINTFROMEXCEL"
+      ELSEIF ::oPrint:Type == "HTMLPRINTFROMEXCEL"
          ::lExcel := .T.
-      ELSEIF _OOHG_PrintLibrary == "DOSPRINT"
+      ELSEIF ::oPrint:Type == "DOSPRINT"
          IF nCPL <= 80
             ::oPrint:NormalDos()
          ELSE
             ::oPrint:CondenDos()
          ENDIF
-      ELSEIF _OOHG_PrintLibrary == "RAWPRINT"
+      ELSEIF ::oPrint:Type == "RAWPRINT"
          IF nCPL <= 80
             ::oPrint:NormalDos()
          ELSE
@@ -794,8 +792,13 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    lSelect := ::LeaDatoLogic( 'REPORT', 'SELECT' )
    // load image
    nFI := nCI := nFF := nCF := 0
-   cGraphic := ::Clean( ::LeaImage() )   // IMAGE <cgraphic> AT <nfi>, <nci> TO <nff>, <ncf>
-   IF Empty( cGraphic )
+   cGraphic := AllTrim( ::Clean( ::LeaImage() ) )   // IMAGE <cgraphic> AT <nfi>, <nci> TO <nff>, <ncf>
+   IF Upper( Left( cGraphic, 3 ) ) == "AT "
+      nFI := Val( ::LeaRowI( 1 ) )
+      nCI := Val( ::LeaColI( 1 ) )
+      nFF := Val( ::LeaRowI( 2 ) )
+      nCF := Val( ::LeaColI( 2 ) )
+   ELSE
       cGraphicAlt := ::LeaDato( 'DEFINE REPORT', 'IMAGE', '' )   // IMAGE { <cgraphic>, <nfi>, <nci> TO <nff>, <ncf> }
       IF ! Empty( cGraphicAlt )
          cGraphicAlt := &( cGraphicalt )
@@ -810,11 +813,6 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
             ENDIF
          ENDIF
       ENDIF
-   ELSE
-      nFI := Val( ::LeaRowI( 1 ) )
-      nCI := Val( ::LeaColI( 1 ) )
-      nFF := Val( ::LeaRowI( 2 ) )
-      nCF := Val( ::LeaColI( 2 ) )
    ENDIF
    // load multiple
    lMul := ::LeaDatoLogic( 'REPORT', 'MULTIPLE' )
