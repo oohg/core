@@ -12,6 +12,12 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-07-20 16:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_spinner.ch
+     * Required clause was changed to optional. This allows to
+       change the order of the clauses without triggering a
+       compiler error.
+
 2019-07-19 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_report.prg
      ! RTE when memvar _OOHG_PrintLibrary is not defined.
