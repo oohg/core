@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-07-19 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_report.prg
+     ! RTE when memvar _OOHG_PrintLibrary is not defined.
+     ! RTE because aLines is not defined.
+     ! IMAGE clause is ignored when parsing a report file.
+
+2019-07-19 22:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     + Added data TYPE to each subclass of TPrintBase.
+       If you have a TPrint object named oPrint, you can identify
+       it's subclass using oPrint:Type.
+
 2019-07-18 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\oohg.hbc
      + Switch mt (because it's oohg specific).
