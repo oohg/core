@@ -146,7 +146,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
       IF lWait
          DEFINE WINDOW _OOHG_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
-            MODAL ;
+            CHILD ;
             AT 0, 0 ;
             WIDTH GetDesktopRealWidth() - 123 ;
             HEIGHT GetDesktopRealHeight() - 123 ;
@@ -168,7 +168,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
       IF lWait
          DEFINE WINDOW _OOHG_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages [02] + '. ' + _HMG_PRINTER_UserMessages [01] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber)) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']';
-            MODAL ;
+            CHILD ;
             AT 0, 0 ;
             WIDTH GetDesktopRealWidth() - 123 ;
             HEIGHT GetDesktopRealHeight() - 123 ;
