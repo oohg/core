@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-07-23 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     ! Print dialog does not respond to clicks.
+
 2019-07-20 16:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_spinner.ch
      * Required clause was changed to optional. This allows to
