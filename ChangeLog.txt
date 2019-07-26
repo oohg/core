@@ -12,6 +12,11 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-07-26 20:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     ! Exe build with xHarbour+BCC fails to start with message
+       "no starting procedure".
+
 2019-07-23 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\miniprint.prg
      ! Print dialog does not respond to clicks.
