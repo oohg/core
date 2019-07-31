@@ -548,8 +548,8 @@
 2015-03-06 19:41 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
   * include\i_hmg_compat.ch
     + STYLE clause: cosmetic, has no effect in Extended.
-    + DEFAULT clause: it's ignored, in Extendex this clause if linked to
-      menu item´s with MESSAGE clause shows. TODO: implement.
+    + DEFAULT clause for compatibility, it's ignored for now.
+      Implemented at 2018-12-25 22:33 UTC-0300 (hash 3c59685).
 
 2015-03-04 20:30 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
   * include\i_altsyntax.ch
