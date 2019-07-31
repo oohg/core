@@ -81,6 +81,10 @@
    #include "oohg.ch"
 #endif
 
+#ifndef __OOHG__
+#define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#endif
+
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
 
@@ -217,6 +221,7 @@ CLASS HBPrinter
    METHOD SetTextAlign
    METHOD GetTextAlign
    METHOD Picture
+   METHOD BitMap
    METHOD Line
    METHOD LineTo
    METHOD End
@@ -317,10 +322,10 @@ METHOD SetDevMode( what, newvalue ) CLASS HBPrinter
 
    RETURN Self
 
-METHOD StartDoc( lDocName ) CLASS HBPrinter
+METHOD StartDoc( cDocName ) CLASS HBPrinter
 
    ::Printing := .T.
-   ASSIGN ::DocName VALUE lDocName TYPE "C" DEFAULT "HBPRINTER"
+   ::DocName := iif( HB_ISCHAR( cDocName ), cDocName, "HBPRINTER" )
    IF ! ::PreviewMode
       RR_STARTDOC( ::DocName, ::hData )
    ENDIF
@@ -415,8 +420,12 @@ METHOD SaveMetaFiles( number ) CLASS HBPrinter
 
 METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
 
-   ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::PreviewMode
-   ASSIGN lSize VALUE lSize TYPE "L" DEFAULT ! lWait
+   IF ! HB_ISLOGICAL( lWait )
+      lWait := ::PreviewMode
+   ENDIF
+   IF ! HB_ISLOGICAL( lSize )
+      lSize := ! lWait
+   ENDIF
 
    ::Preview( cParent, lWait, lSize )
    IF ! ::PreviewMode
@@ -1482,6 +1491,59 @@ METHOD Picture( row, col, torow, tocol, cpicture, extrow, extcol, lImageSize ) C
 
    RETURN Self
 
+METHOD Bitmap( hBitmap, nRow, nCol, nToRow, nToCol, nMode, lClrOnClr, lTransparent, uColor ) CLASS HBPrinter
+
+   LOCAL aP1, aP2, nColor
+
+   IF ! HB_ISNUMERIC( nRow )
+      nRow := 0
+   ENDIF
+   IF ! HB_ISNUMERIC( nCol )
+      nCol := 0
+   ENDIF
+   aP1 := ::Convert( { nRow, nCol } )
+   IF ! HB_ISNUMERIC( nToRow )
+      nToRow := ::maxrow
+   ENDIF
+   IF ! HB_ISNUMERIC( nToCol )
+      nToCol := ::maxcol
+   ENDIF
+   aP2 := ::Convert( { nToRow, nToCol }, 1 )
+   DO CASE
+   CASE ! HB_ISNUMERIC( nMode )
+      nMode := 0
+   CASE nMode == 0
+      // SCALE
+   CASE nMode == 1
+      // STRETCH
+   CASE nMode == 3
+      // COPY
+   OTHERWISE
+      nMode := 0
+   ENDCASE
+   IF ! HB_ISLOGICAL( lClrOnClr )
+      lClrOnClr := .F.
+   ENDIF
+   IF ! HB_ISLOGICAL( lTransparent )
+      lTransparent := .F.
+   ENDIF
+   IF HB_ISNUMERIC( uColor )
+      nColor := uColor
+   ELSEIF ArrayIsValidColor( uColor )
+      nColor := ArrayRGB_TO_COLORREF( uColor )
+   ELSE
+      nColor := RR_GETPIXELCOLOR( hBitmap, 0, 0 )
+   ENDIF
+
+   RETURN RR_DRAWBITMAP( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData  )
+
+STATIC FUNCTION ArrayIsValidColor( aColor )
+
+   RETURN HB_ISARRAY( aColor ) .AND. ;
+          HB_ISNUMERIC( aColor[1] ) .AND. aColor[1] >= 0 .AND. aColor[1] <= 255 .AND. ;
+          HB_ISNUMERIC( aColor[2] ) .AND. aColor[2] >= 0 .AND. aColor[2] <= 255 .AND. ;
+          HB_ISNUMERIC( aColor[3] ) .AND. aColor[3] >= 0 .AND. aColor[3] <= 255
+
 FUNCTION RR_STR2FILE( ctxt, cfile )
 
    LOCAL hand, lrec
@@ -1752,8 +1814,12 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
 
    LOCAL i, pi, cLang, cName
 
-   ASSIGN lWait VALUE lWait TYPE "L" DEFAULT .T.
-   ASSIGN lSize VALUE lSize TYPE "L" DEFAULT ! lWait
+   IF ! HB_ISLOGICAL( lWait )
+      lWait := .T.
+   ENDIF
+   IF ! HB_ISLOGICAL( lSize )
+      lSize := ! lWait
+   ENDIF
 
    ::aopisy := { "Preview", ;
       "&Cancel", ;
@@ -4559,6 +4625,101 @@ HB_FUNC( RR_GETTEMPFOLDER )
 
    GetTempPath( MAX_PATH, szBuffer );
    hb_retc( szBuffer );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETPIXELCOLOR )
+{
+   BITMAP bm;
+   HBITMAP hBmp;
+   int x, y;
+   HDC memDC;
+   COLORREF color;
+
+   memset( &bm, 0, sizeof( bm ) );
+   hBmp = ( HBITMAP ) HWNDparam( 1 );
+   if( hBmp )
+   {
+      x = hb_parni( 2 );
+      y = hb_parni( 3 );
+      memDC = CreateCompatibleDC( NULL );
+      SelectObject( memDC, hBmp );
+      color = GetPixel( memDC, x, y );
+      DeleteDC( memDC );
+   }
+   else
+   {
+      color = -1;
+   }
+   hb_retnl( ( LONG ) color );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_DRAWBITMAP )    // ( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData  )
+{
+   HBITMAP hBitmap = (HBITMAP) HWNDparam( 1 );
+   INT rF = HB_PARNI( 2, 1 );
+   INT cF = HB_PARNI( 2, 2 );
+   INT rT = HB_PARNI( 3, 1 );
+   INT cT = HB_PARNI( 3, 2 );
+   INT Mode = hb_parni( 4 );
+   BOOL ClrOnClr = hb_parl( 5 );
+   BOOL Transparent = hb_parl( 6 );
+   COLORREF color_transp = (COLORREF) hb_parnl( 7 );
+   LPHBPRINTERDATA lpData = (HBPRINTERDATA *) HB_PARNL( 8 );
+   HDC memDC;
+   HBITMAP hOld;
+   BITMAP bm;
+   POINT Point;
+   INT Width = rT - rF;
+   INT Height = cT - cF;
+
+   memset( &bm, 0, sizeof( bm ) );
+   GetObject( hBitmap, sizeof( bm ), &bm );
+
+   memDC = CreateCompatibleDC( lpData->hDC );
+   hOld = SelectObject( memDC, hBitmap );
+
+   switch( Mode )
+   {
+      case 0:   // SCALE
+         if( (INT) ( bm.bmWidth * Height / bm.bmHeight ) <= Width )
+            Width = (INT) ( bm.bmWidth * Height / bm.bmHeight );
+         else
+            Height = (INT) ( bm.bmHeight * Width / bm.bmWidth );
+         break;
+
+      case 1:   // STRETCH
+          break;
+
+      case 3:   /// COPY
+          Width = bm.bmWidth = min( Width,  bm.bmWidth );
+          Height = bm.bmHeight = min( Height, bm.bmHeight );
+          break;
+   }
+
+   GetBrushOrgEx( lpData->hDC, &Point );
+   if( ClrOnClr )
+   {
+      SetStretchBltMode( lpData->hDC, COLORONCOLOR );
+   }
+   else
+   {
+      SetStretchBltMode( lpData->hDC, HALFTONE );
+   }
+   SetBrushOrgEx( lpData->hDC, Point.x, Point.y, NULL );
+
+   if( Transparent )
+   {
+      TransparentBlt( lpData->hDC, cF, rF, Width, Height, memDC, 0, 0, bm.bmWidth, bm.bmHeight, color_transp );
+   }
+   else
+   {
+      StretchBlt( lpData->hDC, cF, rF, Width, Height, memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY );
+   }
+
+   SelectObject( memDC, hOld );
+   DeleteDC( memDC );
 }
 
 #pragma ENDDUMP

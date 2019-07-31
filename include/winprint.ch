@@ -65,6 +65,10 @@
 MEMVAR HBPRN
 #endif
 
+#ifndef __OOHG__
+#define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#endif
+
 #xcommand SET CHANGES GLOBAL ;
    => ;
       hbprn:lGlobalChanges := .T.
@@ -622,6 +626,28 @@ MEMVAR HBPRN
       [ EXTEND <row3>, <col3> ] ;
    => ;
       hbprn:Picture( <row>, <col>, <row2>, <col2>, <cpic>, <row3>, <col3> )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ SCALE ] ;
+      [ <coc: COLORONCOLOR> ] ;
+      [ <trans: TRANSPARENT> [ <color> ] ] ;
+   => ;
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 0, <.coc.>, <.trans.>, <color> )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> COPY ;
+      [ <coc: COLORONCOLOR> ] ;
+      [ <trans: TRANSPARENT> [ <color> ] ] ;
+   => ;
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 3, <.coc.>, <.trans.>, <color> )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> STRETCH ;
+      [ <coc: COLORONCOLOR> ] ;
+      [ <trans: TRANSPARENT> [ <color> ] ] ;
+   => ;
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 1, <.coc.>, <.trans.>, <color> )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ <x> ]  HALFTONE [ <y> ] ;
+   => ;
+      @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ <x> ] [ <y> ]
 
 #xcommand @ <row>, <col> PICTURE <cpic> IMAGESIZE ;
    => ;

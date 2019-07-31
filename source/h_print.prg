@@ -218,6 +218,8 @@ CLASS TPRINTBASE
    METHOD NormalDosX              BLOCK { || NIL }
    METHOD PrintBarcode
    METHOD PrintBarcodeX           BLOCK { || NIL }
+   METHOD PrintBitmap
+   METHOD PrintBitmapX            BLOCK { || NIL }
    METHOD PrintData
    METHOD PrintDataX              BLOCK { || NIL }
    METHOD PrintImage
@@ -905,6 +907,38 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
          ENDIF
       ENDIF
    NEXT n
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransparent, uColor ) CLASS TPRINTBASE
+
+   IF ! ValidHandler( hBitmap )
+      RETURN .F.
+   ENDIF
+
+   ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
+   ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
+   ASSIGN nLinF  VALUE nLinF  TYPE "N" DEFAULT 4
+   ASSIGN nColF  VALUE nColF  TYPE "N" DEFAULT 4
+
+   IF ::cUnits == "MM"
+      ::nmVer := 1
+      ::nvFij := 0
+      ::nmHor := 1
+      ::nhFij := 0
+   ELSE
+      ::nmHor := ( ::nFontSize / 4.75 )
+      IF ::lProp
+         ::nmVer := ( ::nFontSize / 2.35 )
+      ELSE
+         ::nmVer := ( 10 / 2.35 )
+      ENDIF
+      ::nvFij := ( 12 / 1.65 )
+      ::nhFij := ( 12 / 3.70 )
+   ENDIF
+
+   ::PrintBitmapX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, hBitmap, nMode, lClrOnClr, lTransparent, uColor )
 
    RETURN .T.
 
@@ -2081,6 +2115,7 @@ CLASS THBPRINTER FROM TPRINTBASE
    METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX
+   METHOD PrintBitmapX
    METHOD PrintImageX
    METHOD PrintLineX
    METHOD PrintRectangleX
@@ -2319,6 +2354,17 @@ METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS THBPRINTER
 
    CHANGE BRUSH "B0" COLOR aColor STYLE BS_SOLID
    @ y, x, y1, x1 FILLRECT BRUSH "B0"
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransparent, uColor ) CLASS THBPRINTER
+
+   IF ::cUnits == "MM"
+      ::oHBPrn:Bitmap( hBitmap, nLin, nCol, nLinF, nColF, nMode, lClrOnClr, lTransparent, uColor )
+   ELSE
+      ::oHBPrn:Bitmap( hBitmap, nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer + ::nvFij, nColF * ::nmHor + ::nhFij * 2, nMode, lClrOnClr, lTransparent, uColor )
+   ENDIF
 
    RETURN .T.
 

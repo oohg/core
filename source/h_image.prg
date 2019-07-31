@@ -156,14 +156,14 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
       nStyleEx += WS_EX_TRANSPARENT
    ENDIF
 
-   nControlHandle := INITIMAGE( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
+   nControlHandle := InitImage( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
    ::Register( nControlHandle, cControlName, nHelpId, , cToolTip )
 
    ::Picture := cFileName
-   IF ! VALIDHANDLER( ::hImage )
+   IF ! ValidHandler( ::hImage )
       ::Buffer := cBuffer
-      IF ! VALIDHANDLER( ::hImage )
+      IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
       ENDIF
    ENDIF
@@ -291,8 +291,8 @@ METHOD OnClick( bOnClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnClick
@@ -312,8 +312,8 @@ METHOD OnDblClick( bOnDblClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnDblClick
@@ -333,8 +333,8 @@ METHOD OnMClick( bOnMClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnMClick
@@ -354,8 +354,8 @@ METHOD OnMDblClick( bOnMDblClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnMDblClick
@@ -375,8 +375,8 @@ METHOD OnRClick( bOnRClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnRClick
@@ -396,8 +396,8 @@ METHOD OnRDblClick( bOnRDblClick ) CLASS TImage
               HB_ISBLOCK( ::bOnRClick ) .OR. ;
               HB_ISBLOCK( ::bOnRDblClick )
 
-      WINDOWSTYLEFLAG( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
-      TIMAGE_SETNOTIFY( Self, lSet )
+      WindowStyleFlag( ::hWnd, SS_NOTIFY, iif( lSet, SS_NOTIFY, 0 ) )
+      TImage_SetNotify( Self, lSet )
    ENDIF
 
    RETURN ::bOnRDblClick
@@ -406,7 +406,7 @@ METHOD OnRDblClick( bOnRDblClick ) CLASS TImage
 METHOD ToolTip( uToolTip ) CLASS TImage
 
    IF PCount() > 0
-      TIMAGE_SETTOOLTIP( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+      TImage_SetToolTip( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
       ::Super:ToolTip( uToolTip )
    ENDIF
 
@@ -425,22 +425,22 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint() CLASS TImage
 
-   IF VALIDHANDLER( ::hImage )
-      IF VALIDHANDLER( ::AuxHandle )
-         DELETEOBJECT( ::AuxHandle )
+   IF ValidHandler( ::hImage )
+      IF ValidHandler( ::AuxHandle )
+         DeleteObject( ::AuxHandle )
       ENDIF
       ::AuxHandle := NIL
       ::Super:SizePos()
       IF ::Stretch .OR. ::AutoFit
-         ::AuxHandle := _OOHG_SETBITMAP( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
       ELSE
-         SENDMESSAGE( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+         SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF
       IF ::lParentRedraw
          ::Parent:Redraw()
       ENDIF
    ELSE
-      PAINTBKGND( ::hWnd, ::BackColor )
+      PaintBkgnd( ::hWnd, ::BackColor )
    ENDIF
 
    RETURN NIL
@@ -450,7 +450,7 @@ METHOD Release() CLASS TImage
 
    LOCAL i
 
-   DELETEOBJECT( ::hImage )
+   DeleteObject( ::hImage )
    ::hImage := NIL
    ::cPicture := ""
    ::cBuffer := ""
@@ -465,8 +465,8 @@ METHOD OriginalSize() CLASS TImage
 
    LOCAL aRet
 
-   IF VALIDHANDLER( ::hImage )
-      aRet := { _OOHG_BITMAPWIDTH( ::hImage ), _OOHG_BITMAPHEIGHT( ::hImage ) }
+   IF ValidHandler( ::hImage )
+      aRet := { _OOHG_BitmapWidth( ::hImage ), _OOHG_BitmapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
@@ -478,10 +478,10 @@ METHOD CurrentSize() CLASS TImage
 
    LOCAL aRet
 
-   IF VALIDHANDLER( ::AuxHandle )
-      aRet := { _OOHG_BITMAPWIDTH( ::AuxHandle ), _OOHG_BITMAPHEIGHT( ::AuxHandle ) }
-   ELSEIF VALIDHANDLER( ::hImage )
-      aRet := { _OOHG_BITMAPWIDTH( ::hImage ), _OOHG_BITMAPHEIGHT( ::hImage ) }
+   IF ValidHandler( ::AuxHandle )
+      aRet := { _OOHG_BitmapWidth( ::AuxHandle ), _OOHG_BitmapHeight( ::AuxHandle ) }
+   ELSEIF ValidHandler( ::hImage )
+      aRet := { _OOHG_BitmapWidth( ::hImage ), _OOHG_BitmapHeight( ::hImage ) }
    ELSE
       aRet := { 0, 0 }
    ENDIF
@@ -491,7 +491,7 @@ METHOD CurrentSize() CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, nSprH ) CLASS TImage
 
-   _OOHG_BLENDIMAGE( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
+   _OOHG_BlendImage( ::hImage, nImgX, nImgY, nImgW, nImgH, hSprite, aColor, nSprX, nSprY, nSprW, nSprH )
    ::RePaint()
 
    RETURN NIL
@@ -499,9 +499,11 @@ METHOD Blend( hSprite, nImgX, nImgY, nImgW, nImgH, aColor, nSprX, nSprY, nSprW, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Copy( lAsDIB ) CLASS TImage
 
-   DEFAULT lAsDIB TO ! ::lNoDIBSection
+   IF ! HB_ISLOGICAL( lAsDIB )
+      lAsDib := ! ::lNoDIBSection
+   ENDIF
 
-   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0 ) )
+   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0, iif( lAsDib, LR_CREATEDIBSECTION, 0 ) ) )
 
    RETURN ATail( ::aCopies )
 
@@ -510,7 +512,7 @@ METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
 
    LOCAL nHeight, nWidth
 
-   IF ! VALIDHANDLER( ::hImage )
+   IF ! ValidHandler( ::hImage )
       RETURN .F.
    ENDIF
 
