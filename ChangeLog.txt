@@ -12,6 +12,37 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-01 20:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+   * core\include\winprint.ch
+     ! Duplicated defines error when both file are included.
+   * core\source\c_image.c
+     * _OOHG_BITMAPFROMFILE function can now work without an object.
+   * core\source\h_print.prg
+     + PrintResource method.
+     ; This method uses the same logic than the Picture method of
+       the TImage class.
+     ; Use oPrint:PrintResource( ... ) to print an image from the
+       resource file. Parameters:
+       nLin, nCol   - line and column of the upper-left corner.
+       nLinF, nColF - line and column of the bottom-right corner.
+       cResource    - a resource identifier.
+       lNoDIB       - See lNoDIBSection data of TImage class.
+       lNo3DC       - See lNo3DColors data of TImage class.
+       lNoTra       - See lNoTransparent data of TImage class.
+       lNoChk       - See lNoCheckDepth data of TImage class.
+       nMode        - what to do if the bitmap's size is different
+                      from the canvas size: 0 for SCALE, 1 for
+                      STRETCH and 3 for COPY.
+       lClrOnClr    - bitmap stretching mode: .T. for COLORONCOLOR
+                      or .F. for HALFTONE.
+       lTransparent - painting method: .T. for painting with
+                      TransparentBlt function and .F. for painting
+                      with StretchBlt and SRCCOPY parameter.
+       uColor       - color that will be treated as transparent by
+                      the TransparentBlt function: color number or
+                      RGE array.
+
 2019-07-31 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.prg
      * Some format.
@@ -24,7 +55,7 @@
      + BITMAP command for printing an image using its handle.
    * core\source\h_image.prg
      * Some format.
-     * Method Copy does not honor its parameter.
+     * Copy method does not honor its parameter.
    * core\source\h_print.prg
      + PrintBitmap and PrintBitmapX methods to TPRINTBASE class.
      + PrintBitmapX method to THBPRINTER class.
