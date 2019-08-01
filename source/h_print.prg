@@ -63,6 +63,7 @@
 
 #include 'hbclass.ch'
 #include 'oohg.ch'
+#include 'i_windefs.ch'
 #include 'miniprint.ch'
 #define NO_HBPRN_DECLARATION
 #include 'winprint.ch'
@@ -230,6 +231,7 @@ CLASS TPRINTBASE
    METHOD PrintModeX              BLOCK { || NIL }
    METHOD PrintRectangle
    METHOD PrintRectangleX         BLOCK { || NIL }
+   METHOD PrintResource
    METHOD PrintRoundRectangle
    METHOD PrintRoundRectangleX    BLOCK { || NIL }
    METHOD Release
@@ -907,6 +909,47 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
          ENDIF
       ENDIF
    NEXT n
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTra, lNoChk, nMode, lClrOnClr, lTransparent, uColor ) CLASS TPRINTBASE
+
+   LOCAL nAttrib, aPictSize, lSet, hBitmap
+
+   // This is the same code used by the Picture method of TImage class
+   IF ValType( cResource ) $ "CM"
+      ASSIGN lNoDIB VALUE lNoDIB TYPE "L" DEFAULT .F.
+      ASSIGN lNo3DC VALUE lNo3DC TYPE "L" DEFAULT .F.
+      ASSIGN lNoTra VALUE lNoTra TYPE "L" DEFAULT .F.
+      ASSIGN lNoChk VALUE lNoChk TYPE "L" DEFAULT .F.
+
+      IF lNoDIB
+         nAttrib := LR_DEFAULTCOLOR
+         IF ! lNo3DC .OR. ! lNoTra
+            IF lNoChk
+               lSet := .T.
+            ELSE
+               aPictSize := _OOHG_SizeOfBitmapFromFile( cResource )      // {width, height, depth}
+               lSet := aPictSize[ 3 ] <= 8
+            ENDIF
+            IF lSet
+              IF ! lNo3DC
+                 nAttrib += LR_LOADMAP3DCOLORS
+              ENDIF
+              IF ! lNoTra
+                 nAttrib += LR_LOADTRANSPARENT
+              ENDIF
+            ENDIF
+         ENDIF
+      ELSE
+         nAttrib := LR_CREATEDIBSECTION
+      ENDIF
+      hBitmap := _OOHG_BitmapFromFile( NIL, cResource, nAttrib, .F. )
+
+      ::PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransparent, uColor )
+      DeleteObject( hBitmap )
+   ENDIF
 
    RETURN .T.
 

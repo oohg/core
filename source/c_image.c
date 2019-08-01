@@ -560,32 +560,44 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
 HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize, lIgnoreBkColor )
 {
-   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+   POCTRL oSelf = NULL;
+   HWND hWnd;
    HBITMAP hBitmap, hBitmap2;
-   int iAttributes;
-   LONG lWidth, lHeight;
+   LONG lWidth, lHeight, lBackColor;
+   BOOL bAutoSize;
+   RECT rect;
 
-   iAttributes = hb_parni( 3 );
-   if( hb_parl( 4 ) )
+   if( strlen( hb_parc( 2 ) ) )
    {
-      RECT rect;
-      GetClientRect( oSelf->hWnd, &rect );
-      lWidth = rect.right;
-      lHeight = rect.bottom;
+      hb_ret();
+   }
+   if( hb_param( 1, HB_IT_OBJECT ) )
+   {
+      oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+      hWnd = oSelf->hWnd;
+      bAutoSize = hb_parl( 4 );
+      lBackColor = oSelf->lBackColor;
    }
    else
    {
-      lWidth = lHeight = 0;
+      hWnd = NULL;
+      bAutoSize = FALSE;
+      lBackColor = -1;
    }
-   hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), iAttributes, lWidth, lHeight, oSelf->hWnd, oSelf->lBackColor, hb_parl( 5 ) );
-   if( hb_parl( 4 ) )
+   if( bAutoSize )
    {
-      hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap, 0, 0, FALSE, oSelf->lBackColor, hb_parl( 5 ), 0, 0 );
+      GetClientRect( hWnd, &rect );
+      lWidth = rect.right;
+      lHeight = rect.bottom;
+      hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), lWidth, lHeight, hWnd, lBackColor, hb_parl( 5 ) );
+      hBitmap2 = _OOHG_ScaleImage( hWnd, hBitmap, 0, 0, FALSE, lBackColor, hb_parl( 5 ), 0, 0 );
       DeleteObject( hBitmap );
       HWNDret( hBitmap2 );
    }
    else
    {
+      lWidth = lHeight = 0;
+      hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), lWidth, lHeight, hWnd, lBackColor, hb_parl( 5 ) );
       HWNDret( hBitmap );
    }
 }
@@ -595,7 +607,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )   // ( cFile )
    HBITMAP hBitmap;
    BITMAP bm;
 
-   hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 1 ) ), LR_CREATEDIBSECTION, 0, 0, NULL, 0, TRUE );
+   hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 1 ) ), LR_CREATEDIBSECTION, 0, 0, NULL, -1, TRUE );
 
    memset( &bm, 0, sizeof( bm ) );
 

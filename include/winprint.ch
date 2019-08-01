@@ -840,21 +840,25 @@ TEXT ALIGNMENT OPTIONS
 SCROLL BAR CONSTANTS
 ---------------------------------------------------------------------------*/
 
+#ifndef __I_WINDEFS__
 #define SB_HORZ                               0
 #define SB_VERT                               1
 #define SB_CTL                                2
 #define SB_BOTH                               3
+#endif
 
 /*---------------------------------------------------------------------------
 DRAWTEXT() FORMAT FLAGS
 ---------------------------------------------------------------------------*/
 
+#ifndef __I_WINDEFS__
 #define DT_TOP                                0x00000000
 #define DT_LEFT                               0x00000000
 #define DT_CENTER                             0x00000001
 #define DT_RIGHT                              0x00000002
 #define DT_VCENTER                            0x00000004
 #define DT_BOTTOM                             0x00000008
+#endif
 #define DT_WORDBREAK                          0x00000010
 #define DT_SINGLELINE                         0x00000020
 #define DT_EXPANDTABS                         0x00000040
@@ -907,6 +911,7 @@ CHARSET CONSTANTS
 STOCK LOGICAL OBJECTS
 ---------------------------------------------------------------------------*/
 
+#ifndef __I_WINDEFS__
 #define WHITE_BRUSH                           0
 #define LTGRAY_BRUSH                          1
 #define GRAY_BRUSH                            2
@@ -924,6 +929,7 @@ STOCK LOGICAL OBJECTS
 #define DEVICE_DEFAULT_FONT                   14
 #define DEFAULT_PALETTE                       15
 #define SYSTEM_FIXED_FONT                     16
+#endif
 
 /*---------------------------------------------------------------------------
 DUPLEX
