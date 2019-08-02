@@ -1491,7 +1491,7 @@ METHOD Picture( row, col, torow, tocol, cpicture, extrow, extcol, lImageSize ) C
 
    RETURN Self
 
-METHOD Bitmap( hBitmap, nRow, nCol, nToRow, nToCol, nMode, lClrOnClr, lTransparent, uColor ) CLASS HBPrinter
+METHOD Bitmap( hBitmap, nRow, nCol, nToRow, nToCol, nMode, lClrOnClr, lTransparent, uColor, lImageSize ) CLASS HBPrinter
 
    LOCAL aP1, aP2, nColor
 
@@ -1534,8 +1534,14 @@ METHOD Bitmap( hBitmap, nRow, nCol, nToRow, nToCol, nMode, lClrOnClr, lTranspare
    ELSE
       nColor := RR_GETPIXELCOLOR( hBitmap, 0, 0 )
    ENDIF
+   IF ! HB_ISLOGICAL( lImageSize )
+      lImageSize := .F.
+   ENDIF
+   IF lImageSize
+      nMode := 3
+   ENDIF
 
-   RETURN RR_DRAWBITMAP( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData  )
+   RETURN RR_DRAWBITMAP( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData, lImageSize  )
 
 STATIC FUNCTION ArrayIsValidColor( aColor )
 
@@ -4655,7 +4661,7 @@ HB_FUNC( RR_GETPIXELCOLOR )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWBITMAP )    // ( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData  )
+HB_FUNC( RR_DRAWBITMAP )    // ( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData, lImageSize  )
 {
    HBITMAP hBitmap = (HBITMAP) HWNDparam( 1 );
    INT rF = HB_PARNI( 2, 1 );
@@ -4667,15 +4673,27 @@ HB_FUNC( RR_DRAWBITMAP )    // ( hBitmap, aP1, aP2, nMode, lClrOnClr, lTranspare
    BOOL Transparent = hb_parl( 6 );
    COLORREF color_transp = (COLORREF) hb_parnl( 7 );
    LPHBPRINTERDATA lpData = (HBPRINTERDATA *) HB_PARNL( 8 );
+   BOOL ImgSize = hb_parl( 9 );
    HDC memDC;
    HBITMAP hOld;
    BITMAP bm;
    POINT Point;
-   INT Width = rT - rF;
-   INT Height = cT - cF;
+   INT Width;
+   INT Height;
 
    memset( &bm, 0, sizeof( bm ) );
    GetObject( hBitmap, sizeof( bm ), &bm );
+
+   if( ImgSize )
+   {
+      Width = bm.bmWidth;
+      Height = bm.bmHeight;
+   }
+   else
+   {
+      Width = rT - rF;
+      Height = cT - cF;
+   }
 
    memDC = CreateCompatibleDC( lpData->hDC );
    hOld = SelectObject( memDC, hBitmap );

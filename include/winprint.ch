@@ -627,31 +627,41 @@ MEMVAR HBPRN
    => ;
       hbprn:Picture( <row>, <col>, <row2>, <col2>, <cpic>, <row3>, <col3> )
 
+#xcommand @ <row>, <col> PICTURE <cpic> IMAGESIZE ;
+   => ;
+      hbprn:Picture( <row>, <col>,,, <cpic>,,, .T. )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> IMAGESIZE ;
+      [ <coc: COLORONCOLOR> ] ;
+      [ <trans: TRANSPARENT> [ <color> ] ] ;
+   => ;
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, NIL, NIL, 3, <.coc.>, <.trans.>, <color>, .T. )
+
+#xcommand @ <row>, <col> BITMAP <hbitmap> IMAGESIZE [ <x> ]  HALFTONE [ <y> ] ;
+   => ;
+      @ <row>, <col> BITMAP <hbitmap> IMAGESIZE [ <x> ] [ <y> ]
+
 #xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ SCALE ] ;
       [ <coc: COLORONCOLOR> ] ;
       [ <trans: TRANSPARENT> [ <color> ] ] ;
    => ;
-      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 0, <.coc.>, <.trans.>, <color> )
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 0, <.coc.>, <.trans.>, <color>, .F. )
 
 #xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> COPY ;
       [ <coc: COLORONCOLOR> ] ;
       [ <trans: TRANSPARENT> [ <color> ] ] ;
    => ;
-      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 3, <.coc.>, <.trans.>, <color> )
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 3, <.coc.>, <.trans.>, <color>, .F. )
 
 #xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> STRETCH ;
       [ <coc: COLORONCOLOR> ] ;
       [ <trans: TRANSPARENT> [ <color> ] ] ;
    => ;
-      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 1, <.coc.>, <.trans.>, <color> )
+      hbprn:Bitmap( <hbitmap>, <row>, <col>, <row2>, <col2>, 1, <.coc.>, <.trans.>, <color>, .F. )
 
 #xcommand @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ <x> ]  HALFTONE [ <y> ] ;
    => ;
       @ <row>, <col> BITMAP <hbitmap> SIZE <row2>, <col2> [ <x> ] [ <y> ]
-
-#xcommand @ <row>, <col> PICTURE <cpic> IMAGESIZE ;
-   => ;
-      hbprn:Picture( <row>, <col>,,, <cpic>,,, .T. )
 
 #xcommand @ <row>, <col>, <row2>, <col2> LINE [ PEN <cpen> ] ;
    => ;
