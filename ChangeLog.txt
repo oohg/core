@@ -12,6 +12,16 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-02 20:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+     + BITMAP IMAGESIZE command.
+   * core\source\h_print.prg
+     + New parameter to PrintResource and PrintBitmap methods
+       of TPRINTBASE class.
+     + New parameter to PrintBitmapX method of THBPRINTER class.
+   * core\source\winprint.prg
+     + New parameter to Bitmap method of HBPRINTER class.
+
 2019-08-01 20:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_windefs.ch
    * core\include\winprint.ch
@@ -36,12 +46,14 @@
                       STRETCH and 3 for COPY.
        lClrOnClr    - bitmap stretching mode: .T. for COLORONCOLOR
                       or .F. for HALFTONE.
-       lTransparent - painting method: .T. for painting with
+       lTranspBlt   - painting method: .T. for painting with
                       TransparentBlt function and .F. for painting
                       with StretchBlt and SRCCOPY parameter.
        uColor       - color that will be treated as transparent by
                       the TransparentBlt function: color number or
                       RGE array.
+       lImgSize     - image size: .T. means ignore nLinF, nColF and
+                      print using image size, .F. means honor them.
 
 2019-07-31 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.prg
@@ -71,15 +83,17 @@
                       STRETCH and 3 for COPY.
        lClrOnClr    - bitmap stretching mode: .T. for COLORONCOLOR
                       or .F. for HALFTONE.
-       lTransparent - painting method: .T. for painting with
+       lTranspBlt   - painting method: .T. for painting with
                       TransparentBlt function and .F. for painting
                       with StretchBlt and SRCCOPY parameter.
        uColor       - color that will be treated as transparent by
                       the TransparentBlt function: color number or
                       RGE array.
+       lImgSize     - image size: .T. means ignore nLinF, nColF and
+                      print using image size, .F. means honor them.
    * core\source\winprint.prg
      ! ASSIGN sentences are not compiled when NO_GUI is defined.
-     + Bitmap method to HBPRINT class.
+     + Bitmap method of HBPRINTER class.
      + ArrayIsValidColor static function at PRG level.
      + RR_GETPIXELCOLOR and RR_DRAWBITMAP functions at C level.
 
