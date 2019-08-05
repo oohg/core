@@ -2833,7 +2833,7 @@
     + EXCLUDEAREA clause.
   * include\i_picture.ch
     + TRANSPARENT and EXCLUDEAREA clause.
-    ; By default, picture control do not autofit (scale) the image.
+    ; By default, picture control does not autofit (scale) the image.
       This is the opposite behaviour of image control.
       To force autofit in picture controls use FORCESCALE clause.
       To avoid autofit in image controls use NORESIZE clause.
