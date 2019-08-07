@@ -12,6 +12,18 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-07 17:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! RTE when adding of deleting rows of a virtual grid.
+
+2019-08-07 17:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+   * core\compile_MINGW.BAT
+   * core\resources\CompileRes_mingw.bat
+   * core\source\BuildLib_hbmk2.bat
+   * core\source\makelib_mingw.bat
+     ! Path is not properly restored if it contains & chars.
+
 2019-08-02 20:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\winprint.ch
      + BITMAP IMAGESIZE command.
