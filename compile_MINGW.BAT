@@ -43,8 +43,8 @@ rem
    set HG_STATIC_LIBS=-static -static-libgcc
 
    rem *** Set PATH ***
-   set HG_PATH=%PATH%
-   set PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%
+   set "HG_PATH=%PATH%"
+   set "PATH=%HG_MINGW%\bin;%HG_HRB%\%BIN_HRB%"
 
 :PARSE_SWITCHES
 
@@ -54,7 +54,7 @@ rem
    set HG_USERC=TRUE
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
-   set HG_C_LOG=1^>nul 2^>^&1
+   set HG_C_LOG=1^>nul
 
 :LOOP_START
 
@@ -249,7 +249,7 @@ rem
    set HG_USERC=
    set HG_EXTRA=
    set HG_COMP_TYPE=
-   set PATH=%HG_PATH%
+   set "PATH=%HG_PATH%"
    set HG_PATH=
    set HG_STATIC_LIBS=
 

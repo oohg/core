@@ -28,8 +28,8 @@ rem
 
 :MORE_SETS
 
-   set HG_PATH=%PATH%
-   set PATH=%HG_MINGW%\bin
+   set "HG_PATH=%PATH%"
+   set "PATH=%HG_MINGW%\bin"
 
 :COMPILE_C
 
@@ -71,7 +71,7 @@ rem
 
 :EXIT2
 
-   set PATH=%HG_PATH%
+   set "PATH=%HG_PATH%"
    set HG_PATH=
    for %%a in (*.o) do del %%a
 

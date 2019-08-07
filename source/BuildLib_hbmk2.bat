@@ -15,8 +15,8 @@ rem
 :PREPARE
 
    rem *** Set PATH ***
-   set HG_PATH=%PATH%
-   set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
+   set "HG_PATH=%PATH%"
+   set "PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%"
 
    rem *** Delete Old Log ***
    if exist error.log del error.log
@@ -52,7 +52,7 @@ rem
 :RESTORE_PATH
 
    rem *** Restore PATH ***
-   set PATH=%HG_PATH%
+   set "PATH=%HG_PATH%"
    set HG_PATH=
 
 :END

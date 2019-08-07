@@ -78,15 +78,15 @@ rem
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if not exist _oohg_resconfig.h goto ERROR3
 
-   set HG_PATH=%PATH%
-   set PATH=%HG_MINGW%\bin
+   set "HG_PATH=%PATH%"
+   set "PATH=%HG_MINGW%\bin"
 
    if /I "%1"=="HM30" ( windres -i oohg.rc -o oohg_hb30.o )
    if /I "%1"=="HM32" ( windres -i oohg.rc -o oohg_hb32.o )
    if /I "%1"=="HM34" ( windres -i oohg.rc -o oohg_hb34.o )
    if /I "%1"=="XM"   ( windres -i oohg.rc -o oohg_xm.o )
 
-   set PATH=%HG_PATH%
+   set "PATH=%HG_PATH%"
    set HG_PATH=
 
    rem Do not delete _oohg_resconfig.h, QAC/QPM needs it

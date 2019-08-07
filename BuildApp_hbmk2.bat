@@ -34,8 +34,8 @@ rem
 :MORE_SETS
 
    rem *** Set PATH ***
-   set HG_PATH=%PATH%
-   set PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%
+   set "HG_PATH=%PATH%"
+   set "PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%"
 
 :PARSE_SWITCHES
 
@@ -88,7 +88,7 @@ rem
    rem *** Cleanup ***
    if exist _oohg_resconfig.h del _oohg_resconfig.h
    if exist _temp.* del _temp.*
-   set PATH=%HG_PATH%
+   set "PATH=%HG_PATH%"
    set HG_PATH=
    set HG_FILE=
    set HG_RUNEXE=
