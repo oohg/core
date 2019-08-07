@@ -238,7 +238,7 @@ CLASS TGrid FROM TControl
    METHOD IsColumnReadOnly
    METHOD IsColumnWhen
    METHOD Item
-   METHOD ItemCount               BLOCK { | Self | ListViewGetItemCount( ::hWnd ) }
+   METHOD ItemCount               SETGET 
    METHOD ItemHeight
    METHOD Justify
    METHOD LastColInOrder
@@ -410,6 +410,10 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
    ASSIGN lNoHSB              VALUE lNoHSB            TYPE "L" DEFAULT .F.
    ASSIGN lNoVSB              VALUE lNoVSB            TYPE "L" DEFAULT .F.
+
+   If ownerdata .AND. ( ! HB_IsNumeric( itemcount ) .OR. itemcount < 1 )
+      itemcount := Max( Len( aRows ), 1 )
+   EndIf
 
    /*
     * This must be placed before calling ::Register because when the
@@ -641,6 +645,14 @@ METHOD FirstVisibleItem CLASS TGrid
    EndIf
 
    Return nRet
+
+METHOD ItemCount( nCount ) CLASS TGrid
+
+   IF HB_ISNUMERIC( nCount ) .AND. nCount > 0
+      ListView_SetItemCount( ::hWnd, Int( nCount ) )
+   ENDIF
+
+   RETURN ListViewGetItemCount( ::hWnd )
 
 METHOD FirstVisibleColumn( lStart ) CLASS TGrid
 
