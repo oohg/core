@@ -172,6 +172,7 @@ STANDARD VERSION
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
+      [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -199,7 +200,7 @@ STANDARD VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -305,6 +306,7 @@ SPLITBOX VERSION
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLLBAR> ] ;
       [ <novsb: NOVSCROLLBAR> ] ;
+      [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -332,7 +334,7 @@ SPLITBOX VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

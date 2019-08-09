@@ -154,6 +154,7 @@ CLASS TGrid FROM TControl
    DATA OnAbortEdit               INIT Nil
    DATA OnAppend                  INIT Nil
    DATA OnBeforeEditCell          INIT Nil
+   DATA OnBeforeInsert            INIT Nil
    DATA OnCheckChange             INIT Nil
    DATA OnDelete                  INIT Nil
    DATA OnDispInfo                INIT Nil
@@ -297,7 +298,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB ) CLASS TGrid
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -318,7 +319,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
               bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue )
+              bbeforeditcell, bEditCellValue, bbeforeinsert )
 
    Return Self
 
@@ -534,7 +535,9 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    EndIf
 
    // Load rows
-   AEval( aRows, { |u| ::AddItem( u ) } )
+   If ! ownerdata
+      AEval( aRows, { |u| ::AddItem( u ) } )
+   EndIf
 
    If ! HB_IsArray( aSelectedColors )
       aSelectedColors := {}
@@ -556,7 +559,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
                 onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
                 bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-                bbeforeditcell, bEditCellValue ) CLASS TGrid
+                bbeforeditcell, bEditCellValue, bbeforeinsert ) CLASS TGrid
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
@@ -582,6 +585,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
    ASSIGN ::OnInsert         VALUE oninsert       TYPE "B"
    ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
+   ASSIGN ::OnBeforeInsert   VALUE bbeforeinsert  TYPE "B"
    ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
 
    Return Self
@@ -3339,8 +3343,10 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   aItemValues := ::Item( uValue )
                   ::DeleteItem( uValue )
-                  ::Value := Min( uValue, ::ItemCount )
+                  _SetThisCellInfo( ::hWnd, uValue, 1, Nil )
                   ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
+                  _ClearThisCellInfo()
+                  ::Value := Min( uValue, ::ItemCount )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 3 ) )
@@ -3623,6 +3629,8 @@ METHOD InsertBlank( nItem ) CLASS TGrid
    IF Len( aGrid ) < nItem
       ASize( aGrid, nItem )
    ENDIF
+
+   ::DoEvent( ::OnBeforeInsert, "BEFOREINSERT", { nItem } )
 
    nItem := InsertListViewItem( ::hWnd, Array( Len( ::aHeaders ) ), nItem )
 
@@ -4403,7 +4411,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB ) CLASS TGridMulti
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4428,7 +4436,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue )
+              bbeforeditcell, bEditCellValue, bbeforeinsert )
 
    Return Self
 
@@ -4505,7 +4513,7 @@ METHOD DoChange() CLASS TGridMulti
 
 METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
 
-   Local nvkey, uValue, lGo, aSel, aDeletedItemsData, i, nNotify := GetNotifyCode( lParam )
+   Local nvkey, uValue, lGo, aDeletedItemsData, i, nNotify := GetNotifyCode( lParam )
 
    If nNotify == LVN_KEYDOWN
       If GetGridvKeyAsChar( lParam ) == 0
@@ -4527,19 +4535,21 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   If ::lDeleteAll
                      aDeletedItemsData := {}
-                     aSel := ::Value
-                     For i := Len( aSel ) To 1 Step -1
+                     uValue := ::Value
+                     For i := Len( uValue ) To 1 Step -1
                         ASize( aDeletedItemsData, Len( aDeletedItemsData ) + 1 )
                         AIns( aDeletedItemsData, 1 )
-                        aDeletedItemsData[ 1 ] := ::Item( aSel[ i ] )
-                        ::DeleteItem( aSel[ i ] )
+                        aDeletedItemsData[ 1 ] := ::Item( uValue[ i ] )
+                        ::DeleteItem( uValue[ i ] )
                      Next i
                   Else
                      aDeletedItemsData := { ::Item( uValue ) }
                      ::DeleteItem( uValue )
                   EndIf
-                  ::Value := { Min( uValue, ::ItemCount ) }
+                  _SetThisCellInfo( ::hWnd, uValue, 1, Nil )
                   ::DoEvent( ::OnDelete, "DELETE", { aDeletedItemsData } )
+                  _ClearThisCellInfo()
+                  ::Value := { Min( uValue, ::ItemCount ) }
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
@@ -4613,7 +4623,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB ) CLASS TGridByCell
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4641,7 +4651,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue )
+              bbeforeditcell, bEditCellValue, bbeforeinsert )
 
    Return Self
 
@@ -5796,12 +5806,14 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   nCol := ::nColPos
                   aItemValues := ::Item( nRow )
                   ::DeleteItem( nRow )
+                  _SetThisCellInfo( ::hWnd, nRow, 1, Nil )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
+                  _ClearThisCellInfo()
                   If ::ItemCount > 0
                      ::Value := { Min( nRow, ::ItemCount ), nCol }
                   Else
                      ::Value := { 0, 0 }
                   Endif
-                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
