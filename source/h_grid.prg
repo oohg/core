@@ -3343,10 +3343,10 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
                   aItemValues := ::Item( uValue )
                   ::DeleteItem( uValue )
+                  ::Value := Min( uValue, ::ItemCount )
                   _SetThisCellInfo( ::hWnd, uValue, 1, Nil )
                   ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
                   _ClearThisCellInfo()
-                  ::Value := Min( uValue, ::ItemCount )
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 3 ) )
@@ -4546,10 +4546,10 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
                      aDeletedItemsData := { ::Item( uValue ) }
                      ::DeleteItem( uValue )
                   EndIf
+                  ::Value := { Min( uValue, ::ItemCount ) }
                   _SetThisCellInfo( ::hWnd, uValue, 1, Nil )
                   ::DoEvent( ::OnDelete, "DELETE", { aDeletedItemsData } )
                   _ClearThisCellInfo()
-                  ::Value := { Min( uValue, ::ItemCount ) }
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
@@ -5806,14 +5806,14 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   nCol := ::nColPos
                   aItemValues := ::Item( nRow )
                   ::DeleteItem( nRow )
-                  _SetThisCellInfo( ::hWnd, nRow, 1, Nil )
-                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
-                  _ClearThisCellInfo()
                   If ::ItemCount > 0
                      ::Value := { Min( nRow, ::ItemCount ), nCol }
                   Else
                      ::Value := { 0, 0 }
                   Endif
+                  _SetThisCellInfo( ::hWnd, nRow, 1, Nil )
+                  ::DoEvent( ::OnDelete, "DELETE", { aItemValues } )
+                  _ClearThisCellInfo()
                EndIf
             ElseIf ! Empty( ::DelMsg )
                MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
