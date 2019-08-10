@@ -233,13 +233,13 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
          IF Empty( aBitmap[ 1 ] )
             @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
          ELSE
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] AUTOFIT OBJ ::oButton1
          ENDIF
       ELSE
          IF Empty( aBitmap[ 1 ] )
             @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
          ELSE
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] OBJ ::oButton1
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] AUTOFIT OBJ ::oButton1
          ENDIF
       ENDIF
    ENDIF
@@ -249,13 +249,13 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
          IF Empty( aBitmap[ 2 ] )
             @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) CAPTION '...' OBJ ::oButton2
          ELSE
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] AUTOFIT OBJ ::oButton2
          ENDIF
       ELSE
          IF Empty( aBitmap[ 2 ] )
             @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton2
          ELSE
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 2 ] OBJ ::oButton2
+            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) AUTOFIT PICTURE aBitmap[ 2 ] OBJ ::oButton2
          ENDIF
       ENDIF
    ENDIF
