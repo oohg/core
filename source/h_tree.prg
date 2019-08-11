@@ -102,7 +102,9 @@ CLASS TTree FROM TControl
    DATA nLastIDNumber        INIT 0                // last number used by AutoID function
    DATA aItemIDs             INIT {}
    DATA OnMouseDrop          INIT Nil
-   DATA OnDrop              INIT nil               // executed after drop is finished
+   DATA OnDrop               INIT Nil               // executed after drop is finished
+   DATA OnExpand             INIT Nil
+   DATA OnCollapse           INIT Nil
 
    METHOD Define
    METHOD AddItem
@@ -157,7 +159,8 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
                invisible, notabstop, fontcolor, BackColor, lFullRowSel, ;
                lChkBox, lEdtLbl, lNoHScr, lNoScroll, lHotTrak, lNoLines, ;
                lNoBut, lDrag, lSingle, lNoBor, aSelCol, labeledit, valid, ;
-               checkchange, indent, lSelBold, lDrop, aTarget, ondrop, lOwnToolTip ) CLASS TTree
+               checkchange, indent, lSelBold, lDrop, aTarget, ondrop, ;
+               lOwnToolTip, bExpand, bCollapse ) CLASS TTree
 
    Local Controlhandle, nStyle, ImgDefNode, ImgDefItem, aBitmaps := array(4), oCtrl
 
@@ -252,6 +255,8 @@ METHOD Define( ControlName, ParentForm, row, col, width, height, change, ;
 
    ::BackColor := BackColor
 
+   ASSIGN ::OnExpand      VALUE bExpand     TYPE "B"
+   ASSIGN ::OnCollapse    VALUE bCollapse   TYPE "B"
    ASSIGN ::OnDrop        VALUE ondrop      TYPE "B"
    ASSIGN ::OnLostFocus   VALUE lostfocus   TYPE "B"
    ASSIGN ::OnGotFocus    VALUE gotfocus    TYPE "B"
@@ -1074,6 +1079,16 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTree
 
       ::DoChange()
       Return Nil
+
+   ElseIf nNotify == TVN_ITEMEXPANDING
+      TreeItemHandle := TreeView_ItemExpandingItem( lParam )
+      Item := ::HandleToItem( TreeItemHandle )
+      IF TreeView_ItemExpandingAction( lParam ) == TVE_EXPAND
+         ::DoEvent( ::OnExpand, "TREEVIEW_ITEMEXPANDING", {Item, ::Item( Item )} )
+      ELSE   // TVE_COLLAPSE
+         ::DoEvent( ::OnCollapse, "TREEVIEW_ITEMCOLLAPSING", {Item, ::Item( Item )} )
+      ENDIF
+      Return 0
 
    ElseIf nNotify == TVN_BEGINLABELEDIT
      If ::ReadOnly .OR. ::ItemReadOnly( ::Value ) .OR. ! ::ItemEnabled( ::Value )
@@ -2570,14 +2585,14 @@ HB_FUNC( SUBCLASSEDITCTRL )
 
 HB_FUNC( TREEVIEW_GETKEYDOWN )
 {
-   LPNMLVKEYDOWN ptvkd = (LPNMLVKEYDOWN) (LPARAM) hb_parnl( 1 );
+   LPNMLVKEYDOWN ptvkd = (LPNMLVKEYDOWN) (LPARAM) HB_PARNL( 1 );
 
    hb_retni( ptvkd->wVKey );
 }
 
 HB_FUNC( TREEVIEW_LABELVALUE )
 {
-   LPNMTVDISPINFO lptvdi = (LPNMTVDISPINFO) (LPARAM) hb_parnl( 1 );
+   LPNMTVDISPINFO lptvdi = (LPNMTVDISPINFO) (LPARAM) HB_PARNL( 1 );
 
    if( lptvdi->item.pszText )
       hb_retc( lptvdi->item.pszText );
@@ -2663,12 +2678,12 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
 
 HB_FUNC( TREEVIEW_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), hb_parl( 3 ) ) );
+   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ) ) );
 }
 
 HB_FUNC( TREEVIEW_GETITEMHIT )
 {
-   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) hb_parnl( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
    TVHITTESTINFO ht;
 
    DWORD dwpos = GetMessagePos();
@@ -2685,7 +2700,7 @@ HB_FUNC( TREEVIEW_GETITEMHIT )
 
 HB_FUNC( TREEVIEW_HITISONSTATEICON )
 {
-   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) hb_parnl( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
    TVHITTESTINFO ht;
    BOOL bRet;
 
@@ -2850,16 +2865,30 @@ HB_FUNC( TREEVIEW_GETEXPANDEDSTATE )
    hb_retl( ( TreeItem.state & TVIS_EXPANDED ) == TVIS_EXPANDED );
 }
 
+HB_FUNC( TREEVIEW_ITEMEXPANDINGITEM )
+{
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+
+   HTREEret( lpnmtv->itemNew.hItem );
+}
+
+HB_FUNC( TREEVIEW_ITEMEXPANDINGACTION )
+{
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+
+   hb_retni( lpnmtv->action );
+}
+
 HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    HTREEret( lpnmtv->itemOld.hItem );
 }
 
 HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
@@ -2867,7 +2896,7 @@ HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )
 HB_FUNC( TREEVIEW_BEGINDRAG )
 {
    HWND hTree = HWNDparam( 1 );
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) hb_parnl( 2 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 2 );
    HIMAGELIST himl;
    HFONT oldFont, newFont;
    UINT iIndent;
@@ -2978,7 +3007,7 @@ HB_FUNC( TREEVIEW_ONMOUSEDRAG )
 
             if( hb_parl( -1 ) )
             {
-               SetDragCursorARROW( ( ( (WPARAM) hb_parnl( 4 ) & MK_CONTROL) == MK_CONTROL ) );
+               SetDragCursorARROW( ( ( (WPARAM) HB_PARNL( 4 ) & MK_CONTROL) == MK_CONTROL ) );
             }
             else
             {
