@@ -524,21 +524,17 @@ TREEVIEW CONTROL
 #define TVS_NOSCROLL                  8192
 #define TVS_NONEVENHEIGHT             16384
 #define TVS_NOHSCROLL                 32768
+#define TVN_ITEMEXPANDINGA	          ( - 405 )
+#define TVN_ITEMEXPANDING             TVN_ITEMEXPANDINGA
 #define TVN_SELCHANGINGA              ( -401 )
-#define TVN_SELCHANGINGW              ( -450 )
 #define TVN_SELCHANGING               TVN_SELCHANGINGA
-#define TVN_SELCHANGEDW               ( -451 )
 #define TVN_SELCHANGED                TVN_SELCHANGEDA
 #define TVN_SELCHANGEDA               ( -402 )
-#define TVN_BEGINLABELEDITW           ( -459 )
 #define TVN_BEGINLABELEDIT            TVN_BEGINLABELEDITA
 #define TVN_BEGINLABELEDITA           ( -410 )
-#define TVN_ENDLABELEDITW             ( -460 )
 #define TVN_ENDLABELEDIT              TVN_ENDLABELEDITA
 #define TVN_ENDLABELEDITA             ( -411 )
-#define TVN_KEYDOWN                   ( -412 )
 #define TVN_BEGINDRAGA                ( -407 )
-#define TVN_BEGINDRAGW                ( -456 )
 #define TVN_BEGINDRAG                 TVN_BEGINDRAGA
 #define DLGC_WANTCHARS                128
 #define DLGC_WANTMESSAGE              4
