@@ -4425,7 +4425,8 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
    SHELLDETAILS  psd;
    SHFILEINFO    psfi;
    INT           nCSIDL;
-   PHB_ITEM pArray, pSubarray;
+   PHB_ITEM      pArray, pSubarray;
+   LPCITEMIDLIST *apidl;
 
    CoInitialize( NULL );
 
@@ -4494,13 +4495,14 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
       Found_Ok = FALSE;
 
       uAttr = SFGAO_FOLDER | SFGAO_STREAM | SFGAO_ISSLOW;
-      if( IShellFolder2_GetAttributesOf( psfFolders, 1, ( LPCITEMIDLIST * ) &pidlItems, &uAttr ) != S_OK )
+      apidl = ( LPCITEMIDLIST * ) ( const LPITEMIDLIST ) &pidlItems;
+      if( IShellFolder2_GetAttributesOf( psfFolders, 1, apidl, &uAttr ) != S_OK )
          break;
 
       if( ( nFlags & SHCONTF_FOLDERS ) && ( uAttr & SFGAO_FOLDER ) && ! ( uAttr & SFGAO_STREAM ) && ! ( uAttr & SFGAO_ISSLOW ) )
       {
          uAttr = SFGAO_HASSUBFOLDER;
-         IShellFolder2_GetAttributesOf( psfFolders, 1, (LPCITEMIDLIST *) &pidlItems, &uAttr );
+         IShellFolder2_GetAttributesOf( psfFolders, 1, apidl, &uAttr );
          if( uAttr & SFGAO_HASSUBFOLDER )
             lstrcpy( cInternalType, _TEXT( BT_DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER ) );    // Folder with Sub-Folder
          else
