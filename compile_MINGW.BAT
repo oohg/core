@@ -33,9 +33,9 @@ rem
    rem *** Version dependent libraries ***
    rem This var must be set by compile.bat
    rem For Harbour 3.0 and 3.2
-   rem set HG_ADDLIBS=-lhbpcre -llibhpdf
+   rem set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
    rem For Harbour 3.4
-   rem set HG_ADDLIBS=-lhbpcre2
+   rem set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
    rem For xHarbour
    rem set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
 
@@ -217,7 +217,7 @@ rem
    set HG_CLIBS=%HG_CLIBS% -lhblang -lhbmacro -lhbpp -lhbrdd -lhbrtl -lhbvmmt %THR_LIB% %HG_ADDLIBS%
    set HG_CLIBS=%HG_CLIBS% -lhbmemio -lhbmisc -lhbmzip -lhbodbc -lhbtip -lhbwin -lhbzebra
    set HG_CLIBS=%HG_CLIBS% -lhbziparc -lhbzlib -lminizip -lodbc32 -lpng -lrddsql -lsddodbc -lxhb
-   set HG_CLIBS=%HG_CLIBS% -lhbcplr -lhbextern -lhbuddall -lhbusrrdd -lrddads -lrddnsx
+   set HG_CLIBS=%HG_CLIBS% -lhbcplr -lhbextern -lhbusrrdd -lrddnsx
 
 :OTHER_LIBS
 
