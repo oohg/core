@@ -12,6 +12,32 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-10 22:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+     * Pacified some BCC compiler warnings.
+
+2019-08-10 22:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     * Pacified some MinGW CLang compiler warnings.
+
+2019-08-10 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + Some treeview related notification codes.
+
+2019-08-10 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_tree.ch
+   * core\source\h_tree.prg
+     + ON EXPAND and ON COLLAPSE events.
+
+2019-08-10 22:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile.bat
+   * core\compile_MINGW.BAT
+     ! Wrong additional libraries prevent building harupdf sample.
+
+2019-08-10 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textbox.prg
+     ! The images of the action buttons are shown clipped.
+
 2019-08-10 10:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! Control's value must be settled before calling ON DELETE
