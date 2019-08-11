@@ -560,7 +560,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
 HB_FUNC( _OOHG_BITMAPFROMFILE )   // ( oSelf, cFile, iAttributes, lAutoSize, lIgnoreBkColor )
 {
-   POCTRL oSelf = NULL;
+   POCTRL oSelf;
    HWND hWnd;
    HBITMAP hBitmap, hBitmap2;
    LONG lWidth, lHeight, lBackColor;
