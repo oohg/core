@@ -65,6 +65,10 @@
 
 #define __OOHG_HMG_COMPAT__
 
+#xtranslate _SetWindowBackColor( <FormHandle>, <aColor> ) ;
+   => ;
+      GetFormObjectByHandle( <FormHandle> ):BackColor( <aColor> )
+
 #xtranslate CopyToClipboard( [ <x> ] ) ;
    => ;
       SetClipboardText( <x> )
@@ -76,6 +80,10 @@
 #xtranslate Random( <arg1> ) ;
    => ;
       HB_Random( <arg1> )
+
+#xtranslate GlobalMemoryStatusEx() ;
+   => ;
+      GlobalMemoryStatus()
 
 #xtranslate GetExeFileName() ;
    => ;
