@@ -12,6 +12,84 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-28 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\bostaurus.ch
+     + BT_DIRECTORYINFO as pseudofunction.
+   * core\source\bostaurus.prg
+     - Comments.
+     + Function bt_Bitmap_To_Stream (previously commented out).
+     + Function bt_GetEncoderCLSID (previously commented out).
+     + Function bt_SaveGDIPlusPicture (previously commented out).
+     * Function bt_SpaceToBlank now calls _SpaceToBlank.
+     * Function bt_LocalDateTimeToDateTimeANSI now calls
+       _LocalDateTimeToDateTimeANSI.
+     - Function win_StrRetToBuf (moved to c_winapimisc.c).
+     * Functions that need GDI+ support now use c_gdiplus.c
+   * core\source\c_activex.c
+     + Function _Ax_DeInit. Now atl.dll is loaded once.
+   * core\source\c_gdiplus.c
+     * Comments and format.
+     * Uncrustified using Harbour specs.
+     * Static vars are now thread safe.
+     - Uneeded code from function SaveHBitmapToFile that was
+       leaking memory.
+   * core\source\c_image.c
+     * Static var _OOHG_StretchBltMode is now thread safe.
+     ! GDI object leak at function _OOHG_LoadImage.
+     * Use hb_parclen() instead of strlen( hb_parc() ).
+     - Unneeded code.
+   * core\source\c_msgbox.c
+     - Function MessageBoxTimeout (moved to c_winapimisc.c).
+   * core\source\c_winapimisc.c
+     * Comments.
+     * Function MemoryStatus now returns an array when no valid
+       numeric parameter is specified. Useful  to chase leaks.
+     + Function _ShlWAPI_DeInit. Now shlwapi.dll is loaded once.
+     + Function _ProcessLib_DeInit. Now psapi.dll is loaded once.
+     + Function _User32_DeInit. Now user32.dll is loaded once.
+     + Functions _SpaceToBlank, _LocalDateTimeToDateTimeANSI,
+       win_StrRetToBuf and DirectoryInfo (from bostaurus.prg).
+     + Function GetObjectCount. It returns an array with the
+       current number of opened GDI, user and kernel objects.
+     + Function EmptyWorkingSet.
+     + Function MessageBoxTimeout (from c_msgbox.c).
+     + Function SetLayeredWindowAttributes (from c_windows.c).
+     + Function FreeLibraries to unload libs loaded by OOHG.
+   * core\source\c_windows.c
+     - Function SetLayeredWindowAttributes (moved to c_winapimisc.c).
+     * Function DestroyWindow now return .T./.F. on success/fail.
+     + Comments.
+     ! Function SetWindowBackColor now will call method BackColor
+       if the window's hWnd belongs to a TForm object.
+     + Function GetWindowBackColor.
+     + Function _DWMAPI_DeInit. Now dwmapi.dll is loaded once.
+     - Function SetLayeredWindowAttributes (moved to c_winapimisc.c).
+
+2019-08-28 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     ! Typo.
+
+2019-08-28 17:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     ! Typo.
+     + Pseudofunctions:
+          _HMG_PRINTER_GetPrintableAreaWidth,
+          _HMG_PRINTER_GetPrintableAreaHeight,
+          _HMG_PRINTER_GetPrintableAreaHorizontalOffset,
+          _HMG_PRINTER_GetPrintableAreaVerticalOffset,
+          _HMG_PRINTER_GetPrinter and
+          _HMG_PRINTER_aPrinters.
+
+2019-08-28 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hmg_compat.ch
+     + Pseudofunctions _SetWindowBackColor and GlobalMemoryStatusEx.
+
+2019-08-28 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_001.txt
+   * core\ChangeLog_002.txt
+   * core\ChangeLog_003.txt
+     ! Typos.
+
 2019-08-10 22:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_image.c
      * Pacified some BCC compiler warnings.
