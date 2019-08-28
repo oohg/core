@@ -518,7 +518,7 @@
     * Comments updated.
     * Changed ooHG_INSTALL by HG_ROOT.
     * EnvVars normalized.
-    * Allways use user-defined envvars.
+    * Always use user-defined envvars.
     + Added support for different drives.
     + Added support for %9 parameter.
     + Added check for EXE running.
@@ -3288,7 +3288,7 @@
 2012-03-05 09:42 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_browse.prg
     ! Fixed: in browses with "set browsesync off", after editing a row
-      the selected row is allways changed to row 1.
+      the selected row is always changed to row 1.
 
 2012-02-27 14:00 UTC-0200 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_grid.prg

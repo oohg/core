@@ -130,7 +130,7 @@
 
 2011-07-11 23:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\c_image.c
-    ! Fixed ICON images allways loaded as 32x32, now they are loaded
+    ! Fixed ICON images always loaded as 32x32, now they are loaded
       with their real size.
     ! Fixed ICON images not being show in menu items.
 

@@ -1105,7 +1105,7 @@
   * source\h_scroll.prg
     * Fixed "TAB" next-control movement for Internal windows.
     * ::HScrollBar and ::VScrollBar properties added for
-      TForm. These controls manages scrollbar's movement in
+      TForm. These controls manage scrollbar's movement in
       forms.
     + Added GetScrollRangeMin() function.
     * Moved ::Events_VScroll() and ::Events_HScroll() methods
