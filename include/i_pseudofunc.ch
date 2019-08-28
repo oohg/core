@@ -81,7 +81,7 @@
    => ;
       GetPrinter()
 
-#xtranslate _HMG_PRINTER_aPrinters() :
+#xtranslate _HMG_PRINTER_aPrinters() ;
    => ;
       aPrinters()
 
