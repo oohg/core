@@ -108,7 +108,6 @@
 #include <commctrl.h>
 #include "oohg.h"
 
-BOOL Array2Rect( PHB_ITEM aRect, RECT *rc );
 
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )
 {
@@ -384,7 +383,7 @@ HB_FUNC( POSTQUITMESSAGE )
 
 HB_FUNC( DESTROYWINDOW )
 {
-   DestroyWindow( HWNDparam( 1 ) );
+   hb_retl( DestroyWindow( HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( ISWINDOWENABLED )
@@ -512,10 +511,30 @@ HB_FUNC( GETCLIENTRECT )
    HB_STORNL3( rect.bottom, 2, 4 );
 }
 
+/* To avoid leaking resources when using this function with a hWnd
+ * which not pertains to a TForm class object:
+ * 1. Obtain the old brush using GetWindowBackcolor().
+ * 2. Set the new brush.
+ * 3. Delete the old brush using DeleteObject().
+ */
 HB_FUNC( SETWINDOWBACKCOLOR )
 {
    HWND hWnd = HWNDparam( 1 );
    HBRUSH hBrush, color;
+
+   if( _OOHG_SearchFormHandleInArray( hWnd ) )
+   {
+      PHB_ITEM pSelf = GetFormObjectByHandle( hWnd, FALSE );
+      if( pSelf )
+      {
+         _OOHG_Send( pSelf, s_BackColor );
+         hb_vmPush( hb_param( 2, HB_IT_ANY ) );
+         hb_vmSend( 1 );
+
+         POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+         HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
+      }
+   }
 
    if( hb_param( 2, HB_IT_ARRAY ) == 0 || HB_PARNI( 3, 1 ) == -1 )
    {
@@ -533,6 +552,11 @@ HB_FUNC( SETWINDOWBACKCOLOR )
    RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 
    HB_RETNL( (LONG_PTR) hBrush );
+}
+
+HB_FUNC( GETWINDOWBACKCOLOR )
+{
+   HB_RETNL( ( LONG_PTR ) ( HBRUSH ) GetClassLongPtr( HWNDparam( 1 ), GCLP_HBRBACKGROUND ) );
 }
 
 HB_FUNC( GETDESKTOPWIDTH )
@@ -841,6 +865,19 @@ void getwinver( OSVERSIONINFO * pOSvi )
    GetVersionEx( pOSvi );
 }
 
+static HMODULE hDllDWMAPI = NULL;
+
+void _DWMAPI_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllDWMAPI )
+   {
+      FreeLibrary( hDllDWMAPI );
+      hDllDWMAPI = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
 HB_FUNC( _GETBITMAP )                   // hWnd, bAll
 {
    HWND hWnd = HWNDparam( 1 );
@@ -850,7 +887,6 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    HBITMAP hBitmap, hOldBmp;
    int iTop, iLeft;
    OSVERSIONINFO osvi;
-   HMODULE Library;
    DWMGETWINDOWATTRIBUTE DwmGetWindowAttribute;
    HRESULT Ret;
    BOOL isEnabled;
@@ -860,13 +896,18 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
    {
       hDC = GetDC( HWND_DESKTOP );
 
-      if( ( Library = LoadLibrary( "dwmapi.dll") ) == NULL )
+      if( hDllDWMAPI == NULL )
+      {
+         hDllDWMAPI = LoadLibrary( "DWMAPI.DLL");
+      }
+
+      if( hDllDWMAPI == NULL )
       {
          GetWindowRect( hWnd, &rct );
       }
       else
       {
-         if( ( DwmIsCompositionEnabled = (DWMISCOMPOSITIONENABLED) GetProcAddress( Library, "DwmIsCompositionEnabled" ) ) == NULL )
+         if( ( DwmIsCompositionEnabled = (DWMISCOMPOSITIONENABLED) GetProcAddress( hDllDWMAPI, "DwmIsCompositionEnabled" ) ) == NULL )
          {
             GetWindowRect( hWnd, &rct );
          }
@@ -876,7 +917,7 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
 
             if( ( Ret == S_OK ) && isEnabled )
             {
-               if( ( DwmGetWindowAttribute = (DWMGETWINDOWATTRIBUTE) GetProcAddress( Library, "DwmGetWindowAttribute" ) ) == NULL )
+               if( ( DwmGetWindowAttribute = (DWMGETWINDOWATTRIBUTE) GetProcAddress( hDllDWMAPI, "DwmGetWindowAttribute" ) ) == NULL )
                {
                   GetWindowRect( hWnd, &rct );
                }
@@ -904,13 +945,10 @@ HB_FUNC( _GETBITMAP )                   // hWnd, bAll
                GetWindowRect( hWnd, &rct );
             }
          }
-
-         FreeLibrary( Library );
       }
 
       iTop = rct.top;
       iLeft = rct.left;
-
    }
    else
    {
@@ -1415,45 +1453,6 @@ HBRUSH GetTabBrush( HWND hWnd )
    ReleaseDC( hWnd, hDC );
 
    return hBrush;
-}
-
-HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
-{
-   HWND hWnd = HWNDparam( 1 );
-   COLORREF crKey = (COLORREF) hb_parnl( 2 );
-   BYTE bAlpha = (BYTE) hb_parni( 3 );
-   DWORD dwFlags = (DWORD) hb_parnl( 4 );
-
-#if defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION )
-   if( ! ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & WS_EX_LAYERED ) )
-   {
-      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED ) );
-   }
-
-   hb_retl( SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
-#else
-   typedef BOOL (__stdcall * PFN_SETLAYEREDWINDOWATTRIBUTES)( HWND, COLORREF, BYTE, DWORD );
-   PFN_SETLAYEREDWINDOWATTRIBUTES pfnSetLayeredWindowAttributes;
-   BOOL bRet;
-
-   HINSTANCE hLib = LoadLibrary( "user32.dll" );
-   if( hLib == NULL )
-   {
-      hb_retl( FALSE );
-   }
-
-   pfnSetLayeredWindowAttributes = (PFN_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hLib, "SetLayeredWindowAttributes" );
-   if( pfnSetLayeredWindowAttributes == NULL )
-   {
-      hb_retl( FALSE );
-   }
-
-   SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
-   bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
-
-   FreeLibrary( hLib );
-   hb_retl( bRet );
-#endif
 }
 
 HB_FUNC( FLASHWINDOWEX )   // hWnd, dwFlags, uCount, dwTimeout

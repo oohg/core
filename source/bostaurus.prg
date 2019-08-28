@@ -1074,172 +1074,6 @@ HBITMAP bt_LoadOLEPicture( TCHAR *FileName, TCHAR *TypePictureResource, BOOL bCo
 }
 
 
-/*
-GDI Plus: Functions and Definitions TODO: Check against c_gdiplus.c
-*/
-/*
-typedef enum GpStatus {
-   Ok                        = 0,
-   GenericError              = 1,
-   InvalidParameter          = 2,
-   OutOfMemory               = 3,
-   ObjectBusy                = 4,
-   InsufficientBuffer        = 5,
-   NotImplemented            = 6,
-   Win32Error                = 7,
-   WrongState                = 8,
-   Aborted                   = 9,
-   FileNotFound              = 10,
-   ValueOverflow             = 11,
-   AccessDenied              = 12,
-   UnknownImageFormat        = 13,
-   FontFamilyNotFound        = 14,
-   FontStyleNotFound         = 15,
-   NotTrueTypeFont           = 16,
-   UnsupportedGdiplusVersion = 17,
-   GdiplusNotInitialized     = 18,
-   PropertyNotFound          = 19,
-   PropertyNotSupported      = 20,
-   ProfileNotFound           = 21
-} GpStatus;
-
-#define WINGDIPAPI __stdcall
-#define GDIPCONST  const
-
-typedef void GpBitmap;
-typedef void GpGraphics;
-typedef void GpImage;
-typedef void *DebugEventProc;
-
-typedef struct GdiplusStartupInput {
-   UINT32         GdiplusVersion;
-   DebugEventProc DebugEventCallback;
-   BOOL           SuppressBackgroundThread;
-   BOOL           SuppressExternalCodecs;
-} GdiplusStartupInput;
-
-typedef GpStatus WINGDIPAPI (*NotificationHookProc) ( ULONG_PTR *token );
-
-typedef VOID WINGDIPAPI (*NotificationUnhookProc) ( ULONG_PTR token );
-
-typedef struct GdiplusStartupOutput {
-   NotificationHookProc   NotificationHook;
-   NotificationUnhookProc NotificationUnhook;
-} GdiplusStartupOutput;
-
-typedef struct ImageCodecInfo {
-   CLSID Clsid;
-   GUID  FormatID;
-   WCHAR *CodecName;
-   WCHAR *DllName;
-   WCHAR *FormatDescription;
-   WCHAR *FilenameExtension;
-   WCHAR *MimeType;
-   DWORD Flags;
-   DWORD Version;
-   DWORD SigCount;
-   DWORD SigSize;
-   BYTE *SigPattern;
-   BYTE *SigMask;
-} ImageCodecInfo;
-
-typedef struct EncoderParameter {
-   GUID Guid;
-   ULONG NumberOfValues;
-   ULONG Type;
-   VOID *Value;
-} EncoderParameter;
-
-typedef struct EncoderParameters {
-   UINT Count;
-   EncoderParameter Parameter[ 1 ];
-} EncoderParameters;
-
-typedef ULONG ARGB;
-typedef GpStatus (WINGDIPAPI *Func_GdiPlusStartup)              ( ULONG_PTR*, GDIPCONST GdiplusStartupInput*, GdiplusStartupOutput* );
-typedef VOID     (WINGDIPAPI *Func_GdiPlusShutdown)             ( ULONG_PTR );
-typedef GpStatus (WINGDIPAPI *Func_GdipCreateBitmapFromStream)  ( IStream*, GpBitmap** );
-typedef GpStatus (WINGDIPAPI *Func_GdipCreateHBITMAPFromBitmap) ( GpBitmap*, HBITMAP*, ARGB );
-typedef GpStatus (WINGDIPAPI *Func_GdipCreateFromHDC)           ( HDC, GpGraphics** );
-typedef GpStatus (WINGDIPAPI *Func_GdipDrawImageI)              ( GpGraphics*,GpImage*, INT,INT );
-typedef GpStatus (WINGDIPAPI *Func_GdipGetImageEncodersSize)    ( UINT*, UINT* );
-typedef GpStatus (WINGDIPAPI *Func_GdipGetImageEncoders)        ( UINT, UINT, ImageCodecInfo* );
-typedef GpStatus (WINGDIPAPI *Func_GdipSaveImageToFile)         ( GpImage*, GDIPCONST WCHAR*, GDIPCONST CLSID*,GDIPCONST EncoderParameters* );
-typedef GpStatus (WINGDIPAPI *Func_GdipLoadImageFromStream)     ( IStream*, GpImage** );
-
-Func_GdiPlusStartup              GdiPlusStartup;
-Func_GdiPlusShutdown             GdiPlusShutdown;
-Func_GdipCreateBitmapFromStream  GdipCreateBitmapFromStream;
-Func_GdipCreateHBITMAPFromBitmap GdipCreateHBITMAPFromBitmap;
-Func_GdipGetImageEncodersSize    GdipGetImageEncodersSize;
-Func_GdipGetImageEncoders        GdipGetImageEncoders;
-Func_GdipLoadImageFromStream     GdipLoadImageFromStream;
-Func_GdipSaveImageToFile         GdipSaveImageToFile;
-
-VOID                *GdiPlusHandle = NULL;
-ULONG_PTR           GdiPlusToken;
-GdiplusStartupInput GDIPlusStartupInput;
-
-BOOL bt_Load_GDIplus()
-{
-   GdiPlusHandle = LoadLibrary( _TEXT( "GdiPlus.dll" ) );
-   if( GdiPlusHandle == NULL )
-       return FALSE;
-
-   GdiPlusStartup              = (Func_GdiPlusStartup)              GetProcAddress( GdiPlusHandle, "GdiplusStartup" );
-   GdiPlusShutdown             = (Func_GdiPlusShutdown)             GetProcAddress( GdiPlusHandle, "GdiplusShutdown" );
-   GdipCreateBitmapFromStream  = (Func_GdipCreateBitmapFromStream)  GetProcAddress( GdiPlusHandle, "GdipCreateBitmapFromStream" );
-   GdipCreateHBITMAPFromBitmap = (Func_GdipCreateHBITMAPFromBitmap) GetProcAddress( GdiPlusHandle, "GdipCreateHBITMAPFromBitmap" );
-   GdipGetImageEncodersSize    = (Func_GdipGetImageEncodersSize)    GetProcAddress( GdiPlusHandle, "GdipGetImageEncodersSize" );
-   GdipGetImageEncoders        = (Func_GdipGetImageEncoders)        GetProcAddress( GdiPlusHandle, "GdipGetImageEncoders" );
-   GdipLoadImageFromStream     = (Func_GdipLoadImageFromStream)     GetProcAddress( GdiPlusHandle, "GdipLoadImageFromStream" );
-   GdipSaveImageToFile         = (Func_GdipSaveImageToFile)         GetProcAddress( GdiPlusHandle, "GdipSaveImageToFile" );
-
-
-   if( GdiPlusStartup               == NULL ||
-       GdiPlusShutdown              == NULL ||
-       GdipCreateBitmapFromStream   == NULL ||
-       GdipCreateHBITMAPFromBitmap  == NULL ||
-       GdipGetImageEncodersSize     == NULL ||
-       GdipGetImageEncoders         == NULL ||
-       GdipLoadImageFromStream      == NULL ||
-       GdipSaveImageToFile          == NULL )
-   {
-       FreeLibrary( GdiPlusHandle );
-       GdiPlusHandle = NULL;
-       return FALSE;
-   }
-
-   GDIPlusStartupInput.GdiplusVersion           = 1;
-   GDIPlusStartupInput.DebugEventCallback       = NULL;
-   GDIPlusStartupInput.SuppressBackgroundThread = FALSE;
-   GDIPlusStartupInput.SuppressExternalCodecs   = FALSE;
-
-   if( GdiPlusStartup( &GdiPlusToken, &GDIPlusStartupInput, NULL ) )
-   {
-      FreeLibrary( GdiPlusHandle );
-      GdiPlusHandle = NULL;
-      return FALSE;
-   }
-
-   return TRUE;
-}
-
-BOOL bt_Release_GDIplus()
-{
-   if( GdiPlusHandle == NULL )
-      return FALSE;
-   else
-   {
-      GdiPlusShutdown( GdiPlusToken );
-      FreeLibrary( GdiPlusHandle );
-      GdiPlusHandle = NULL;
-      return TRUE;
-   }
-}
-*/
-
-
 HBITMAP bt_LoadGDIPlusPicture( TCHAR *FileName, TCHAR *TypePictureResource )    // Loads BMP, GIF, JPG, TIF and PNG images
 {
    HBITMAP hBitmap;
@@ -1264,7 +1098,6 @@ HBITMAP bt_LoadGDIPlusPicture( TCHAR *FileName, TCHAR *TypePictureResource )    
 }
 
 
-/*
 HGLOBAL bt_Bitmap_To_Stream( HBITMAP hBitmap )
 {
    HGLOBAL          hGlobalAlloc;
@@ -1317,37 +1150,34 @@ HGLOBAL bt_Bitmap_To_Stream( HBITMAP hBitmap )
    return hGlobalAlloc;
 }
 
+
+BOOL GetEnCodecClsid( const char *, CLSID * );
+
 BOOL bt_GetEncoderCLSID( WCHAR *format, CLSID *pClsid )
 {
-   UINT           num = 0;          // number of image encoders
-   UINT           size = 0;         // size of the image encoder array in bytes
-   UINT           i;
-   ImageCodecInfo *pImageCodecInfo;
-
-   GdipGetImageEncodersSize( &num, &size );
-   if( size == 0 )
-      return FALSE;
-
-   pImageCodecInfo = (ImageCodecInfo*) malloc( size ) ;
-   if( pImageCodecInfo == NULL )
-      return FALSE;
-
-   GdipGetImageEncoders( num, size, pImageCodecInfo );
-
-   for( i = 0; i < num; ++i )
-   {
-      if( wcscmp( pImageCodecInfo[ i ].MimeType, format ) == 0 )
-      {
-         *pClsid = pImageCodecInfo[ i ].Clsid;
-         free( pImageCodecInfo );
-         return TRUE;
-      }
-   }
-
-   free( pImageCodecInfo );
-
-   return FALSE;
+   return GetEnCodecClsid( ( const char * ) format, pClsid );
 }
+
+
+typedef struct
+{
+   GUID   Guid;
+   ULONG  NumberOfValues;
+   ULONG  Type;
+   void * Value;
+} ENCODER_PARAMETER;
+
+typedef struct
+{
+   UINT Count;
+   ENCODER_PARAMETER Parameter[];
+} ENCODER_PARAMETERS;
+
+typedef void * gPlusImage;
+
+INT GdipLoadImageFromStream( IStream *, void ** );
+
+INT GdipSaveImageToFile( void *, const unsigned short *, const CLSID *, const ENCODER_PARAMETERS * );
 
 #define BT_FILEFORMAT_BMP 0
 #define BT_FILEFORMAT_JPG 1
@@ -1357,78 +1187,70 @@ BOOL bt_GetEncoderCLSID( WCHAR *format, CLSID *pClsid )
 
 BOOL bt_SaveGDIPlusPicture( HBITMAP hBitmap, TCHAR *FileName, INT TypePicture )    // Saves BMP, GIF, JPG, TIF and PNG images
 {
-   CLSID    encoderClsid;
-   BOOL     result;
-   IStream  *iStream;
-   GpImage  *image;
-   WCHAR    format[ 21 ];
-   HGLOBAL  hGlobalAlloc;
-   INT      ret1, ret2;
-   WCHAR    wFileName[ MAX_PATH ];
+   CLSID      encoderClsid;
+   BOOL       result;
+   IStream *  iStream;
+   gPlusImage image;
+   WCHAR      format[ 21 ];
+   HGLOBAL    hGlobalAlloc;
+   INT        ret1, ret2;
+   WCHAR      wFileName[ MAX_PATH ];
+
+   if( ! _OOHG_UseGDIP() )
+       return FALSE;
 
    switch( TypePicture )
    {
       case BT_FILEFORMAT_BMP:
          wcscpy( format, L"image/bmp" );
          break;
-
       case BT_FILEFORMAT_JPG:
          wcscpy( format, L"image/jpeg" );
          break;
-
       case BT_FILEFORMAT_GIF:
          wcscpy( format, L"image/gif" );
          break;
-
       case BT_FILEFORMAT_TIF:
          wcscpy( format, L"image/tiff" );
          break;
-
       case BT_FILEFORMAT_PNG:
          wcscpy( format, L"image/png" );
          break;
-
       default:
          return FALSE;
    }
 
-   if( bt_Load_GDIplus() == FALSE )
-       return FALSE;
-
-   result = bt_GetEncoderCLSID( (WCHAR *) format, &encoderClsid );
+   result = bt_GetEncoderCLSID( ( WCHAR * ) format, &encoderClsid );
 
    if( result == TRUE )
    {
       hGlobalAlloc = bt_Bitmap_To_Stream( hBitmap );
+
       iStream = NULL;
       if( CreateStreamOnHGlobal( hGlobalAlloc, FALSE, &iStream ) == S_OK )
       {
          #ifdef UNICODE
-            lstrcpy( wFileName, FileName );
+         lstrcpy( wFileName, FileName );
          #else
-              MultiByteToWideChar( CP_ACP, 0, FileName, -1, wFileName, MAX_PATH );
+         MultiByteToWideChar( CP_ACP, 0, FileName, -1, wFileName, MAX_PATH );
          #endif
 
-          ret1 = GdipLoadImageFromStream( iStream, &image );
-          ret2 = GdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );
+         ret1 = GdipLoadImageFromStream( iStream, &image );
+         ret2 = GdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );
 
-          iStream->lpVtbl->Release( iStream );
-          bt_Release_GDIplus();
+         iStream->lpVtbl->Release( iStream );
 
          GlobalFree( hGlobalAlloc );
 
-          if( ret1 == 0 && ret2 == 0 )
-             return TRUE;
-          else
-             return FALSE;
+         if( ret1 == 0 && ret2 == 0 )
+            return TRUE;
+         else
+            return FALSE;
       }
    }
 
-   bt_Release_GDIplus();
-
-   return FALSE;    // The File encoder is not installed
+   return FALSE;
 }
-*/
 
 
 typedef struct
@@ -4311,75 +4133,13 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
 
 TCHAR * bt_LocalDateTimeToDateTimeANSI( TCHAR *cLocalDateTime )
 {
-   INT           i;
-   TCHAR         cDateFormat[ 80 ];
-   TCHAR         Year[ 12 ], Month[ 12 ], Day[ 12 ], Time[ 24 ];
-   TCHAR         *p2 = cLocalDateTime;
-   TCHAR         *p;
-
-   GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SSHORTDATE, cDateFormat, sizeof( cDateFormat ) / sizeof( TCHAR ) );
-   p = (TCHAR*) &cDateFormat;
-
-   ZeroMemory( Year,  sizeof( Year ) );
-   ZeroMemory( Month, sizeof( Month ) );
-   ZeroMemory( Day,   sizeof( Day ) );
-
-   while( *p != 0 )
-   {
-      if( ( *p == _TEXT( 'y' ) || *p == _TEXT( 'Y' ) ) && ( Year[ 0 ] == 0 ) )
-      {
-         i = 0;
-         while( _istdigit( *p2 ) )
-            Year[ i ++ ] = *p2 ++;
-         while( ! _istdigit( *p2 ) )
-            p2 ++;
-      }
-      if( ( *p == _TEXT( 'm' ) || *p == _TEXT( 'M' ) ) && ( Month[ 0 ] == 0 ) )
-      {
-         i = 0;
-         while( _istdigit( *p2 ) )
-            Month[ i ++ ] = *p2 ++;
-         while( ! _istdigit( *p2 ) )
-            p2 ++;
-      }
-      if( ( *p == _TEXT( 'd' ) || *p == _TEXT( 'D' ) ) && ( Day[ 0 ] == 0 ) )
-      {
-         i = 0;
-         while( _istdigit( *p2 ) )
-            Day[ i ++ ] = *p2 ++;
-         while( ! _istdigit( *p2 ) )
-            p2 ++;
-      }
-      p ++;
-   }
-   if( lstrlen( Month ) == 1 )
-   {
-      Month[ 1 ] = Month[ 0 ];
-      Month[ 0 ] = _TEXT( '0' );
-   }
-   if( lstrlen( Day ) == 1 )
-   {
-      Day[ 1 ] = Day[ 0 ];
-      Day[ 0 ] = _TEXT( '0' );
-   }
-   lstrcpy( Time, p2 );
-   wsprintf( cLocalDateTime, _TEXT( "%s/%s/%s  %s" ), Year, Month, Day, Time );
-   return cLocalDateTime;
+   return _LocalDateTimeToDateTimeANSI( *cLocalDateTime );
 }
 
 
 TCHAR * bt_SpaceToBlank( TCHAR *cStr )
 {
-   TCHAR *p = cStr;
-
-   while( *p != 0 )
-   {
-      if( _istspace( *p ) )   // space character (0x09, 0x0D or 0x20)
-         *p = _TEXT( ' ' );
-      p ++;
-   }
-
-   return cStr;
+   return _SpaceToBlank( *cStr );
 }
 
 

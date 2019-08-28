@@ -62,52 +62,81 @@
 
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
-#if ( _WIN32_IE < 0x0500 )
+#if ( _WIN32_IE < 0x0501 )
    #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
+   #define _WIN32_WINNT 0x0501
 #endif
-#if ( _WIN32_WINNT < 0x0500 )
+#if ( _WIN32_WINNT < 0x0501 )
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include <shlobj.h>
 #include <windows.h>
 #include <lmcons.h>
 #include <commctrl.h>
+#include <psapi.h>
+#include <time.h>
+#include <tchar.h>
+#include <winreg.h>
+
 #include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
-#include "winreg.h"
-#include "tchar.h"
 #include "hbapifs.h"
 #include "oohg.h"
+
+#ifndef IShellFolder2_Release
+   #define IShellFolder2_Release(T) (T)->lpVtbl->Release(T)
+#endif
+#ifndef IShellFolder2_ParseDisplayName
+   #define IShellFolder2_ParseDisplayName(T,a,b,c,d,e,f) (T)->lpVtbl->ParseDisplayName(T,a,b,c,d,e,f)
+#endif
+#ifndef IShellFolder2_EnumObjects
+   #define IShellFolder2_EnumObjects(T,a,b,c) (T)->lpVtbl->EnumObjects(T,a,b,c)
+#endif
+#ifndef IShellFolder2_BindToObject
+   #define IShellFolder2_BindToObject(T,a,b,c,d) (T)->lpVtbl->BindToObject(T,a,b,c,d)
+#endif
+#ifndef IShellFolder2_GetAttributesOf
+   #define IShellFolder2_GetAttributesOf(T,a,b,c) (T)->lpVtbl->GetAttributesOf(T,a,b,c)
+#endif
+#ifndef IShellFolder2_GetDisplayNameOf
+   #define IShellFolder2_GetDisplayNameOf(T,a,b,c) (T)->lpVtbl->GetDisplayNameOf(T,a,b,c)
+#endif
+#ifndef IShellFolder2_GetDetailsOf
+   #define IShellFolder2_GetDetailsOf(T,a,b,c) (T)->lpVtbl->GetDetailsOf(T,a,b,c)
+#endif
+#ifndef IEnumIDList_Next
+   #define IEnumIDList_Next(T,a,b,c) (T)->lpVtbl->Next(T,a,b,c)
+#endif
+#ifndef IEnumIDList_Release
+   #define IEnumIDList_Release(T) (T)->lpVtbl->AddRef(T)
+#endif
 
 #ifdef __XHARBOUR__
    #define HB_FHANDLE FHANDLE
 #endif
 
-BOOL SysRefresh( void );
-
 /*
-WaitRun function For minigui With Pipe redirection
-Author Luiz Rafael Culik Guimaraes: culikr@uol.com.br
-Parameters WaitRunPipe(cCommand,nShowWindow,cFile)
-*/
+ * WaitRun function For minigui With Pipe redirection
+ * Author Luiz Rafael Culik Guimaraes: culikr@uol.com.br
+ * Parameters WaitRunPipe(cCommand,nShowWindow,cFile)
+ */
 
 HB_FUNC( WAITRUNPIPE )
 {
    STARTUPINFO StartupInfo;
    PROCESS_INFORMATION ProcessInfo;
    HANDLE ReadPipeHandle;
-   HANDLE WritePipeHandle;       // not used here
+   HANDLE WritePipeHandle;     
    CHAR Data[1024];
    const CHAR * szFile = hb_parc( 3 );
    HB_FHANDLE nHandle;
@@ -156,13 +185,13 @@ HB_FUNC( WAITRUNPIPE )
       DWORD TotalBytes;
       DWORD BytesLeft;
 
-      // Check for the presence of data in the pipe
+      /* Check for the presence of data in the pipe */
       if( ! PeekNamedPipe( ReadPipeHandle, Data, sizeof( Data ), &BytesRead, &TotalBytes, &BytesLeft ) )
       {
          hb_retnl( -1 );
       }
 
-      // If there is bytes, read them
+      /* If there is bytes, read them */
       if( BytesRead )
       {
          if( ! ReadFile( ReadPipeHandle, Data, sizeof( Data ) - 1, &BytesRead, NULL ) )
@@ -174,7 +203,7 @@ HB_FUNC( WAITRUNPIPE )
       }
       else
       {
-         // Is the console app terminated?
+         /* Is the console app terminated? */
          if( WaitForSingleObject( ProcessInfo.hProcess, 0 ) == WAIT_OBJECT_0 )
          {
             break;
@@ -234,12 +263,13 @@ HB_FUNC( GET_WHEEL_DELTA_WPARAM )
    hb_retnl( GET_WHEEL_DELTA_WPARAM( hb_parnl( 1 ) ) );
 }
 
-HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko
+HB_FUNC( C_GETFOLDER )
+/* Based Upon Code Contributed By Ryszard Ryüko */
 {
    HWND hwnd = GetActiveWindow();
    BROWSEINFO bi;
    CHAR * lpBuffer = ( CHAR * ) hb_xgrab( MAX_PATH + 1 );
-   LPITEMIDLIST pidlBrowse;    // PIDL selected by user
+   LPITEMIDLIST pidlBrowse;    /* PIDL selected by user */
 
    bi.hwndOwner = hwnd;
    bi.pidlRoot = NULL;
@@ -249,17 +279,18 @@ HB_FUNC( C_GETFOLDER ) // Based Upon Code Contributed By Ryszard Ryüko
    bi.lpfn = NULL;
    bi.lParam = 0;
 
-   // Browse for a folder and return its PIDL.
+   /* Browse for a folder and return its PIDL. */
    pidlBrowse = SHBrowseForFolder( &bi );
    SHGetPathFromIDList( pidlBrowse, lpBuffer );
    hb_retc( lpBuffer );
    hb_xfree( lpBuffer );
 }
 
-HB_FUNC( C_GETSPECIALFOLDER ) // Contributed By Ryszard Ryüko
+HB_FUNC( C_GETSPECIALFOLDER ) 
+/* Contributed By Ryszard Ryüko */
 {
    CHAR * lpBuffer = ( CHAR * ) hb_xgrab( MAX_PATH + 1 );
-   LPITEMIDLIST pidlBrowse;    // PIDL selected by user
+   LPITEMIDLIST pidlBrowse;    /* PIDL selected by user */
    SHGetSpecialFolderLocation( GetActiveWindow(), hb_parni( 1 ), &pidlBrowse );
    SHGetPathFromIDList( pidlBrowse, lpBuffer );
    hb_retc( lpBuffer );
@@ -268,59 +299,81 @@ HB_FUNC( C_GETSPECIALFOLDER ) // Contributed By Ryszard Ryüko
 
 typedef BOOL ( WINAPI * GlobalMemoryStatusEx_ptr )( MEMORYSTATUSEX * );
 
-HB_FUNC( MEMORYSTATUS )
+HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue */
 {
-   HMODULE hDll = GetModuleHandle( TEXT( "kernel32.dll" ) );
+   GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = ( GlobalMemoryStatusEx_ptr ) GetProcAddress( GetModuleHandle( "KERNEL32.DLL" ), "GlobalMemoryStatusEx" );
 
-   if( NULL == hDll )
+   if( fn_GlobalMemoryStatusEx )
    {
-      hb_retnl( 0 );
-   }
-   else
-   {
-      GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = (GlobalMemoryStatusEx_ptr) GetProcAddress( hDll, "GlobalMemoryStatusEx" );
+      MEMORYSTATUSEX mstex;
 
-      if( NULL != fn_GlobalMemoryStatusEx )
+      mstex.dwLength = sizeof( mstex );
+
+      if( fn_GlobalMemoryStatusEx( &mstex ) )
       {
-         MEMORYSTATUSEX mstex;
-
-         mstex.dwLength = sizeof( mstex );
-
-         if( fn_GlobalMemoryStatusEx( &mstex ) )
+         if( HB_ISNUM( 1 ) && hb_parni( 1 ) >= 0 && hb_parni( 1 ) <= 6 )
          {
             switch( hb_parni( 1 ) )
             {
-               case 1:  hb_retnll( mstex.ullTotalPhys / ( 1024*1024 ) ); break;
-               case 2:  hb_retnll( mstex.ullAvailPhys / ( 1024*1024 ) ); break;
-               case 3:  hb_retnll( mstex.ullTotalPageFile / ( 1024*1024 ) ); break;
-               case 4:  hb_retnll( mstex.ullAvailPageFile / ( 1024*1024 ) ); break;
-               case 5:  hb_retnll( mstex.ullTotalVirtual / ( 1024*1024 ) ); break;
-               case 6:  hb_retnll( mstex.ullAvailVirtual / ( 1024*1024 ) ); break;
-               default: hb_retnl( 0 );
+               case 0:  HB_RETNL( mstex.dwMemoryLoad     / ( 1024 * 1024 ) ); break;
+               case 1:  HB_RETNL( mstex.ullTotalPhys     / ( 1024 * 1024 ) ); break;
+               case 2:  HB_RETNL( mstex.ullAvailPhys     / ( 1024 * 1024 ) ); break;
+               case 3:  HB_RETNL( mstex.ullTotalPageFile / ( 1024 * 1024 ) ); break;
+               case 4:  HB_RETNL( mstex.ullAvailPageFile / ( 1024 * 1024 ) ); break;
+               case 5:  HB_RETNL( mstex.ullTotalVirtual  / ( 1024 * 1024 ) ); break;
+               case 6:  HB_RETNL( mstex.ullAvailVirtual  / ( 1024 * 1024 ) ); break;
+               default: HB_RETNL( 0 );
             }
          }
          else
          {
-            hb_retnl( 0 );
+            hb_reta( 7 );
+            HB_STORNL3( mstex.dwMemoryLoad     / ( 1024 * 1024 ), -1, 1 );
+            HB_STORNL3( mstex.ullTotalPhys     / ( 1024 * 1024 ), -1, 2 );
+            HB_STORNL3( mstex.ullAvailPhys     / ( 1024 * 1024 ), -1, 3 );
+            HB_STORNL3( mstex.ullTotalPageFile / ( 1024 * 1024 ), -1, 4 );
+            HB_STORNL3( mstex.ullAvailPageFile / ( 1024 * 1024 ), -1, 5 );
+            HB_STORNL3( mstex.ullTotalVirtual  / ( 1024 * 1024 ), -1, 6 );
+            HB_STORNL3( mstex.ullAvailVirtual  / ( 1024 * 1024 ), -1, 7 );
          }
       }
       else
       {
-         MEMORYSTATUS mst;
+         HB_RETNL( 0 );
+      }
+   }
+   else
+   {
+      MEMORYSTATUS mst;
 
-         mst.dwLength = sizeof( MEMORYSTATUS );
-         GlobalMemoryStatus( &mst );
+      mst.dwLength = sizeof( MEMORYSTATUS );
 
+      GlobalMemoryStatus( &mst );
+
+      if( HB_ISNUM( 1 ) && hb_parni( 1 ) >= 0 && hb_parni( 1 ) <= 6 )
+      {
          switch( hb_parni( 1 ) )
          {
-            case 1:  hb_retnl( mst.dwTotalPhys / ( 1024*1024 ) ); break;
-            case 2:  hb_retnl( mst.dwAvailPhys / ( 1024*1024 ) ); break;
-            case 3:  hb_retnl( mst.dwTotalPageFile / ( 1024*1024 ) ); break;
-            case 4:  hb_retnl( mst.dwAvailPageFile / ( 1024*1024 ) ); break;
-            case 5:  hb_retnl( mst.dwTotalVirtual / ( 1024*1024 ) ); break;
-            case 6:  hb_retnl( mst.dwAvailVirtual / ( 1024*1024 ) ); break;
-            default: hb_retnl( 0 );
+            case 0:  HB_RETNL( mst.dwMemoryLoad    / ( 1024 * 1024 ) ); break;
+            case 1:  HB_RETNL( mst.dwTotalPhys     / ( 1024 * 1024 ) ); break;
+            case 2:  HB_RETNL( mst.dwAvailPhys     / ( 1024 * 1024 ) ); break;
+            case 3:  HB_RETNL( mst.dwTotalPageFile / ( 1024 * 1024 ) ); break;
+            case 4:  HB_RETNL( mst.dwAvailPageFile / ( 1024 * 1024 ) ); break;
+            case 5:  HB_RETNL( mst.dwTotalVirtual  / ( 1024 * 1024 ) ); break;
+            case 6:  HB_RETNL( mst.dwAvailVirtual  / ( 1024 * 1024 ) ); break;
+            default: HB_RETNL( 0 );
          }
+      }
+      else
+      {
+         hb_reta( 7 );
+         HB_STORNL3( mst.dwMemoryLoad    / ( 1024 * 1024 ), -1, 1 );
+         HB_STORNL3( mst.dwTotalPhys     / ( 1024 * 1024 ), -1, 2 );
+         HB_STORNL3( mst.dwAvailPhys     / ( 1024 * 1024 ), -1, 3 );
+         HB_STORNL3( mst.dwTotalPageFile / ( 1024 * 1024 ), -1, 4 );
+         HB_STORNL3( mst.dwAvailPageFile / ( 1024 * 1024 ), -1, 5 );
+         HB_STORNL3( mst.dwTotalVirtual  / ( 1024 * 1024 ), -1, 6 );
+         HB_STORNL3( mst.dwAvailVirtual  / ( 1024 * 1024 ), -1, 7 );
       }
    }
 }
@@ -907,34 +960,50 @@ HB_FUNC( GETUSERNAME )
    hb_retc( lpBuffer );
 }
 
+static HMODULE hDllShlWAPI = NULL;
+
+void _ShlWAPI_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllShlWAPI )
+   {
+      FreeLibrary( hDllShlWAPI );
+      hDllShlWAPI = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
 typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, INT cchMax, DWORD dwFlags );
+
+static PathCompactPathExA_Ptr PathCompactPathExA = NULL;
 
 HB_FUNC( GETCOMPACTPATH )
 {
-   HINSTANCE hDll = LoadLibrary( "shlwapi.dll" );
+   BOOL bRet = FALSE;
 
-   if( hDll == NULL )
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllShlWAPI == NULL )
    {
-      hb_retl( FALSE ) ;
+      hDllShlWAPI = LoadLibrary( "SHLWAPI.DLL" );
    }
-   else
+   if( hDllShlWAPI != NULL )
    {
-      PathCompactPathExA_Ptr PathCompactPathExA = ( PathCompactPathExA_Ptr ) GetProcAddress( hDll, "PathCompactPathExA" );
       if( PathCompactPathExA == NULL )
       {
-         hb_retl( FALSE ) ;
+         PathCompactPathExA = ( PathCompactPathExA_Ptr ) GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
       }
-      else
+      if( PathCompactPathExA != NULL )
       {
-         hb_retl( PathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) ) );
+         bRet = PathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
       }
-      FreeLibrary( hDll );
    }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bRet ) ;
 }
 
-// Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a
-
 HB_FUNC( GETSHORTPATHNAME )
+/* Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a */
 {
    CHAR buffer[ MAX_PATH + 1 ] = {0};
    DWORD iRet;
@@ -965,4 +1034,492 @@ LPWSTR AnsiToWide( const CHAR * szString )
 HB_FUNC( CLOSEHANDLE )
 {
    CloseHandle( ( HANDLE ) HB_PARNL( 1 ) );
+}
+
+typedef HRESULT ( WINAPI * STRRETTOBUFA )( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
+
+static STRRETTOBUFA StrRetToBufA = NULL;
+
+HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf, UINT cchBuf )
+{
+   HRESULT hRet = ( HRESULT ) -1;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllShlWAPI == NULL )
+   {
+   hDllShlWAPI = LoadLibrary( "SHLWAPI.DLL" );
+   }
+   if( hDllShlWAPI != NULL )
+   {
+      if( StrRetToBufA == NULL )
+      {
+         StrRetToBufA = ( STRRETTOBUFA ) GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
+      }
+      if( StrRetToBufA != NULL )
+      {
+         hRet = StrRetToBufA( pstr, pidl, pszBuf, cchBuf );
+      }
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return hRet;
+}
+
+TCHAR * _LocalDateTimeToDateTimeANSI( TCHAR *cLocalDateTime )
+{
+   INT           i;
+   TCHAR         cDateFormat[ 80 ];
+   TCHAR         Year[ 12 ], Month[ 12 ], Day[ 12 ], Time[ 24 ];
+   TCHAR         *p2 = cLocalDateTime;
+   TCHAR         *p;
+
+   GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SSHORTDATE, cDateFormat, sizeof( cDateFormat ) / sizeof( TCHAR ) );
+   p = (TCHAR*) &cDateFormat;
+
+   ZeroMemory( Year,  sizeof( Year ) );
+   ZeroMemory( Month, sizeof( Month ) );
+   ZeroMemory( Day,   sizeof( Day ) );
+
+   while( *p != 0 )
+   {
+      if( ( *p == _TEXT( 'y' ) || *p == _TEXT( 'Y' ) ) && ( Year[ 0 ] == 0 ) )
+      {
+         i = 0;
+         while( _istdigit( *p2 ) )
+            Year[ i ++ ] = *p2 ++;
+         while( ! _istdigit( *p2 ) )
+            p2 ++;
+      }
+      if( ( *p == _TEXT( 'm' ) || *p == _TEXT( 'M' ) ) && ( Month[ 0 ] == 0 ) )
+      {
+         i = 0;
+         while( _istdigit( *p2 ) )
+            Month[ i ++ ] = *p2 ++;
+         while( ! _istdigit( *p2 ) )
+            p2 ++;
+      }
+      if( ( *p == _TEXT( 'd' ) || *p == _TEXT( 'D' ) ) && ( Day[ 0 ] == 0 ) )
+      {
+         i = 0;
+         while( _istdigit( *p2 ) )
+            Day[ i ++ ] = *p2 ++;
+         while( ! _istdigit( *p2 ) )
+            p2 ++;
+      }
+      p ++;
+   }
+   if( lstrlen( Month ) == 1 )
+   {
+      Month[ 1 ] = Month[ 0 ];
+      Month[ 0 ] = _TEXT( '0' );
+   }
+   if( lstrlen( Day ) == 1 )
+   {
+      Day[ 1 ] = Day[ 0 ];
+      Day[ 0 ] = _TEXT( '0' );
+   }
+   lstrcpy( Time, p2 );
+   wsprintf( cLocalDateTime, _TEXT( "%s/%s/%s  %s" ), Year, Month, Day, Time );
+   return cLocalDateTime;
+}
+
+TCHAR * _SpaceToBlank( TCHAR *cStr )
+{
+   TCHAR *p = cStr;
+
+   while( *p != 0 )
+   {
+      if( _istspace( *p ) )   // space character (0x09, 0x0D or 0x20)
+         *p = _TEXT( ' ' );
+      p ++;
+   }
+
+   return cStr;
+}
+
+#define DIRECTORYINFO_NAME                      1
+#define DIRECTORYINFO_DATE                      2
+#define DIRECTORYINFO_TYPE                      3
+#define DIRECTORYINFO_SIZE                      4
+#define DIRECTORYINFO_FULLNAME                  5
+#define DIRECTORYINFO_INTERNALDATA_TYPE         6
+#define DIRECTORYINFO_INTERNALDATA_DATE         7
+#define DIRECTORYINFO_INTERNALDATA_IMAGEINDEX   8
+#define DIRECTORYINFO_INTERNALDATA_FOLDER       "D-"
+#define DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER "D+"
+#define DIRECTORYINFO_INTERNALDATA_NOFOLDER     "F"
+#define DIRECTORYINFO_INFOROOT                  -1
+#define DIRECTORYINFO_LISTALL                   0
+#define DIRECTORYINFO_LISTFOLDER                1
+#define DIRECTORYINFO_LISTNONFOLDER             2
+
+#ifndef SFGAO_STREAM
+   #define SFGAO_STREAM 0x00400000
+#endif
+#ifndef SFGAO_ISSLOW
+   #define SFGAO_ISSLOW 0x00004000
+#endif
+
+HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, @CSIDL_Name ) --> { { Data1, Data2, Data3, ... } , ... }
+{
+   LPITEMIDLIST  pidlFolders = NULL;
+   LPITEMIDLIST  pidlItems = NULL;
+   IShellFolder2 *psfFolders = NULL;
+   IShellFolder  *psfDeskTop = NULL;
+   LPENUMIDLIST  ppenum = NULL;
+   ULONG         celtFetched, chEaten, uAttr;
+   STRRET        strDispName;
+   DWORD         nFlags;
+   BOOL          Found_Ok;
+   TCHAR         cDisplayData[ MAX_PATH ];
+   TCHAR         cFullPath[ MAX_PATH ];
+   TCHAR         cDateTime[ 80 ];
+   TCHAR         cInternalType[ 33 ];
+   SHELLDETAILS  psd;
+   SHFILEINFO    psfi;
+   INT           nCSIDL;
+   PHB_ITEM      pArray, pSubarray;
+   LPCITEMIDLIST *apidl;
+
+   CoInitialize( NULL );
+
+   if( SHGetDesktopFolder( &psfDeskTop ) != S_OK )
+      return;
+
+   if( HB_ISCHAR( 1 ) )
+   {
+      const TCHAR *cPath = hb_parc( 1 );
+      if( IShellFolder2_ParseDisplayName( psfDeskTop, NULL, NULL, hb_mbtowc( cPath ), &chEaten, &pidlFolders, NULL ) != S_OK )
+         return;
+   }
+   else
+   {
+      nCSIDL = HB_ISNUM( 1 ) ? hb_parni( 1 ) : CSIDL_DRIVES;
+      if( SHGetFolderLocation( NULL, nCSIDL, NULL, 0, &pidlFolders ) != S_OK )
+         return;
+
+      if( HB_ISBYREF( 4 ) )
+      {
+         TCHAR cParsingName[ MAX_PATH ] = { 0 };
+         IShellFolder2_GetDisplayNameOf( psfDeskTop, pidlFolders, SHGDN_INFOLDER, &strDispName );
+         win_StrRetToBuf( &strDispName, pidlItems, cParsingName, MAX_PATH );
+         hb_storc( cParsingName, 4 );
+      }
+   }
+
+   if( HB_ISBYREF( 3 ) )
+   {
+      SHGetFileInfo( (LPCTSTR) pidlFolders, 0, &psfi, sizeof( SHFILEINFO ), SHGFI_PIDL | SHGFI_SYSICONINDEX );
+      hb_storni( psfi.iIcon, 3 );
+   }
+
+   switch( hb_parni( 2 ) )
+   {
+      case DIRECTORYINFO_LISTFOLDER:
+         nFlags = SHCONTF_FOLDERS;
+         break;
+
+      case DIRECTORYINFO_LISTNONFOLDER:
+         nFlags = SHCONTF_NONFOLDERS;
+         break;
+
+      default:
+         nFlags = SHCONTF_FOLDERS | SHCONTF_NONFOLDERS;
+   }
+
+   if( IShellFolder2_BindToObject( psfDeskTop, pidlFolders, NULL, &IID_IShellFolder2, (LPVOID *) &psfFolders ) != S_OK || hb_parni( 2 ) == DIRECTORYINFO_INFOROOT )
+   {
+      if( pidlFolders )
+         CoTaskMemFree( pidlFolders );
+      IShellFolder2_Release( psfDeskTop );
+      return;
+   }
+
+   IShellFolder2_Release( psfDeskTop );
+
+   if( IShellFolder2_EnumObjects( psfFolders, NULL, nFlags, &ppenum ) != S_OK)
+      return;
+
+   pArray = hb_itemArrayNew( 0 );
+   pSubarray = hb_itemNew( NULL );
+
+   while( ( IEnumIDList_Next( ppenum, 1, &pidlItems, &celtFetched ) == S_OK ) && ( celtFetched == 1 ) )
+   {
+      Found_Ok = FALSE;
+
+      uAttr = SFGAO_FOLDER | SFGAO_STREAM | SFGAO_ISSLOW;
+      apidl = ( LPCITEMIDLIST * ) ( const LPITEMIDLIST ) &pidlItems;
+      if( IShellFolder2_GetAttributesOf( psfFolders, 1, apidl, &uAttr ) != S_OK )
+         break;
+
+      if( ( nFlags & SHCONTF_FOLDERS ) && ( uAttr & SFGAO_FOLDER ) && ! ( uAttr & SFGAO_STREAM ) && ! ( uAttr & SFGAO_ISSLOW ) )
+      {
+         uAttr = SFGAO_HASSUBFOLDER;
+         IShellFolder2_GetAttributesOf( psfFolders, 1, apidl, &uAttr );
+         if( uAttr & SFGAO_HASSUBFOLDER )
+            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER ) );    // Folder with Sub-Folder
+         else
+            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_FOLDER ) );    // Folder without Sub-Folder
+         Found_Ok = TRUE;
+      }
+      else if( nFlags & SHCONTF_NONFOLDERS )
+      {
+         lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_NOFOLDER ) );    // File
+         Found_Ok = TRUE;
+      }
+
+      if( Found_Ok )
+      {
+         hb_arrayNew( pSubarray, 8 );
+
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 0, &psd );    // Name
+         win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_NAME, cDisplayData );
+
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 3, &psd );    // Date
+         win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_DATE, _SpaceToBlank( cDisplayData ) );
+         lstrcpy( cDateTime, cDisplayData );
+
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 2, &psd );    // Type
+         win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_TYPE, _SpaceToBlank( cDisplayData ) );
+
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 1, &psd );    // Size
+         win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_SIZE, _SpaceToBlank( cDisplayData ) );
+
+         IShellFolder2_GetDisplayNameOf( psfFolders, pidlItems, SHGDN_FORPARSING, &strDispName );    // FullName
+         win_StrRetToBuf( &strDispName, pidlItems, cFullPath, MAX_PATH );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_FULLNAME, cFullPath );
+
+         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_TYPE, cInternalType );    // D+ | D- | F
+
+         _LocalDateTimeToDateTimeANSI( cDateTime );
+         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_DATE, cDateTime );    // YYYY:MM:DD  HH:MM:SS
+
+         SHGetFileInfo( (LPCTSTR) cFullPath, 0, &psfi, sizeof( SHFILEINFO ), SHGFI_SYSICONINDEX );
+         hb_arraySetNI( pSubarray, DIRECTORYINFO_INTERNALDATA_IMAGEINDEX, (INT) psfi.iIcon );    // nImageIndex
+
+         hb_arrayAddForward( pArray, pSubarray );
+      }
+      CoTaskMemFree( pidlItems );
+   }
+   IEnumIDList_Release( ppenum );
+
+   CoTaskMemFree( pidlFolders );
+   IShellFolder2_Release( psfFolders );
+
+   hb_itemReturnRelease( pArray );
+   hb_itemRelease( pSubarray );
+}
+
+HB_FUNC( GETOBJECTCOUNT )          /* GetObjectCount( [ nProcessId ] ) -> { nGDIObjects, nUserObjects, nKernelObjects } */
+/*
+ * GDI Objects: https://docs.microsoft.com/es-es/windows/win32/sysinfo/gdi-objects
+ * User Objects: https://docs.microsoft.com/es-es/windows/win32/sysinfo/user-objects
+ * Kernel Objects: https://docs.microsoft.com/es-es/windows/win32/sysinfo/kernel-objects
+ */
+{
+   DWORD nProcessId;
+   HANDLE hProcess;
+   DWORD gdi, user, kernel;
+
+   nProcessId = HB_ISNUM( 1 ) ? ( DWORD ) hb_parnl( 1 ) : GetCurrentProcessId();
+   hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, nProcessId );
+
+   if( hProcess )
+   {
+      gdi = GetGuiResources( hProcess, GR_GDIOBJECTS );
+      user = GetGuiResources( hProcess, GR_USEROBJECTS );
+      GetProcessHandleCount( hProcess, &kernel );
+
+      CloseHandle( hProcess );
+
+      hb_reta(3);
+      HB_STORNI( ( INT ) gdi, -1, 1 );
+      HB_STORNI( ( INT ) user, -1, 2 );
+      HB_STORNI( ( INT ) kernel, -1, 3 );
+   }
+}
+
+static HMODULE hDllProcess = NULL;
+
+void _ProcessLib_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllProcess )
+   {
+      FreeLibrary( hDllProcess );
+      hDllProcess = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
+typedef BOOL ( WINAPI * Func_EmptyWorkingSet )( HANDLE );
+
+static Func_EmptyWorkingSet pEmptyWorkingSet = NULL;
+
+HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] ) -> lSuccess */
+{
+   /*
+    * It removes as many pages as possible from the process working set (clean the working set memory).
+    * This operation is useful primarily for testing and tuning.
+    */
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( pEmptyWorkingSet == NULL )
+   {
+      if( hDllProcess == NULL )
+      {
+         hDllProcess = LoadLibrary( "KERNEL32.DLL" );
+         if( hDllProcess == NULL )
+         {
+            hDllProcess = LoadLibrary( "PSAPI.DLL" );
+         }
+      }
+      if( hDllProcess != NULL )
+      {
+         pEmptyWorkingSet = ( Func_EmptyWorkingSet ) GetProcAddress( hDllProcess, "K32EmptyWorkingSet" );
+      }
+   }
+   if( ( hDllProcess != NULL ) && ( pEmptyWorkingSet == NULL ) )
+   {
+      pEmptyWorkingSet = ( Func_EmptyWorkingSet ) GetProcAddress( hDllProcess, "EmptyWorkingSet" );
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   if( pEmptyWorkingSet == NULL )
+   {
+      hb_retl( FALSE );
+   }
+   else
+   {
+      DWORD ProcessID = HB_ISNUM( 1 ) ? ( DWORD ) hb_parnl( 1 ) : GetCurrentProcessId();
+      HANDLE hProcess = OpenProcess( PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_SET_QUOTA, FALSE, ProcessID );
+
+      if( hProcess == NULL )
+      {
+         hb_ret();
+      }
+      else
+      {
+         hb_retl( ( BOOL) pEmptyWorkingSet( hProcess ) );
+         CloseHandle( hProcess );
+      }
+   }
+}
+
+static HMODULE hDllUser32 = NULL;
+
+void _User32_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllUser32 )
+   {
+      FreeLibrary( hDllUser32 );
+      hDllUser32 = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
+typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
+static PMessageBoxTimeout pMessageBoxTimeout = NULL;
+
+#if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
+typedef BOOL ( WINAPI * PSetLayeredWindowAttributes )( HWND, COLORREF, BYTE, DWORD );
+static PSetLayeredWindowAttributes pSetLayeredWindowAttributes = NULL;
+#endif
+
+int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
+{
+   int iRet;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllUser32 == NULL )
+   {
+      hDllUser32 = LoadLibrary( "USER32.DLL" );
+      if( hDllUser32 != NULL )
+      {
+         pMessageBoxTimeout = ( PMessageBoxTimeout ) GetProcAddress( hDllUser32, "MessageBoxTimeoutA" );
+      }
+   }
+   if( pMessageBoxTimeout == NULL )
+   {
+      iRet = 0;
+   }
+   else
+   {
+      iRet = pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return iRet;
+}
+
+HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
+{
+   HWND hWnd = HWNDparam( 1 );
+   COLORREF crKey = ( COLORREF ) hb_parnl( 2 );
+   BYTE bAlpha = ( BYTE ) hb_parni( 3 );
+   DWORD dwFlags = ( DWORD ) hb_parnl( 4 );
+
+#if defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION )
+   if( ! ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & WS_EX_LAYERED ) )
+   {
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED ) );
+   }
+
+   hb_retl( SetLayeredWindowAttributes( hWnd, crKey, bAlpha, dwFlags ) );
+#else
+   BOOL bRet;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllUser32 == NULL )
+   {
+      hDllUser32 = LoadLibrary( "USER32.DLL" );
+   }
+   if( hDllUser32 == NULL )
+   {
+      bRet = FALSE;
+   }
+   else
+   {
+      if( pSetLayeredWindowAttributes == NULL )
+      {
+         pSetLayeredWindowAttributes = ( PSetLayeredWindowAttributes ) GetProcAddress( hDllUser32, "SetLayeredWindowAttributes" );
+      }
+      if( pSetLayeredWindowAttributes == NULL )
+      {
+         bRet = FALSE;
+      }
+      else
+      {
+         SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
+         bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
+      }
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bRet );
+#endif
+}
+
+void _Ax_DeInit( void );
+void _ComCtl32_DeInit( void );
+void _DWMAPI_DeInit( void );
+void _RichEdit_DeInit( void );
+void _UxTheme_DeInit( void );
+BOOL InitDeinitGdiPlus( BOOL );
+
+HB_FUNC( FREELIBRARIES )
+{
+   _Ax_DeInit();
+   _ComCtl32_DeInit();
+   _DWMAPI_DeInit();
+   _ProcessLib_DeInit();
+   _RichEdit_DeInit();
+   _ShlWAPI_DeInit();
+   _User32_DeInit();
+   _UxTheme_DeInit();
+   InitDeinitGdiPlus( FALSE );
 }

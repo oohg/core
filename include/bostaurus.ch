@@ -282,6 +282,10 @@
 #define BT_DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER "D+"
 #define BT_DIRECTORYINFO_INTERNALDATA_NOFOLDER     "F"
 
+#xtranslate BT_DIRECTORYINFO( [ <param,...> ] ) ;
+   => ;
+      DirectoryInfo( <param> )
+
 // BT_DRAW_HDC_POLY()
 // nPOLY
 #define BT_DRAW_POLYLINE                           0

@@ -255,32 +255,7 @@ HB_FUNC( MESSAGEBOXINDIRECT )
    hb_retni( ( int ) MessageBoxIndirect( &mbp ) );
 }
 
-typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
-
-static PMessageBoxTimeout pMessageBoxTimeout = NULL;
-
-int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
-{
-   int iRet;
-
-   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if( pMessageBoxTimeout == NULL )
-   {
-      HMODULE hLib = LoadLibrary( "User32.dll" );
-      pMessageBoxTimeout = ( PMessageBoxTimeout ) GetProcAddress( hLib, "MessageBoxTimeoutA" );
-   }
-   if( pMessageBoxTimeout == NULL )
-   {
-      iRet = 0;
-   }
-   else
-   {
-      iRet = pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
-   }
-   ReleaseMutex( _OOHG_GlobalMutex() );
-
-   return iRet;
-}
+int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds );
 
 // MessageBoxTimeout( Text, Caption, nTypeButton, nMilliseconds ) ---> Return iRetButton
 HB_FUNC( MESSAGEBOXTIMEOUT )

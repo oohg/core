@@ -130,7 +130,8 @@ typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );
 typedef HRESULT ( WINAPI *LPAtlAxCreateControl ) ( LPCOLESTR, HWND, IStream*, IUnknown** );
 */
 
-static LPAtlAxGetControl AtlAxGetControl;   // Thread safe, see _Ax_Init()
+static HMODULE hAtl = NULL;                 // Thread safe, see _Ax_Init() and _Ax_DeInit()
+static LPAtlAxGetControl AtlAxGetControl;   // Thread safe, see _Ax_Init() and _Ax_DeInit()
 /*
 LPAtlAxCreateControl AtlAxCreateControl;
 */
@@ -138,20 +139,32 @@ LPAtlAxCreateControl AtlAxCreateControl;
 //------------------------------------------------------------------------------
 static void _Ax_Init( void )
 {
-   static HMODULE hAtl = NULL;
    LPAtlAxWinInit AtlAxWinInit;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
    if( ! hAtl )
    {
-      hAtl = LoadLibrary( "Atl.Dll" );
+      hAtl = LoadLibrary( "ATL.DLL" );
       AtlAxWinInit       = ( LPAtlAxWinInit ) GetProcAddress( hAtl, "AtlAxWinInit" );
       AtlAxGetControl    = ( LPAtlAxGetControl ) GetProcAddress( hAtl, "AtlAxGetControl" );
       /*
       AtlAxCreateControl = ( LPAtlAxCreateControl ) GetProcAddress( hAtl, "AtlAxCreateControl" );
       */
       ( AtlAxWinInit )();
+   }
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
+void _Ax_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   if( hAtl )
+   {
+      FreeLibrary( hAtl );
+      hAtl = NULL;
    }
 
    ReleaseMutex( _OOHG_GlobalMutex() );
