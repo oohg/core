@@ -61,13 +61,37 @@
  */
 
 
+#xtranslate _HMG_PRINTER_GetPrintableAreaWidth() ;
+   => ;
+      GetPrintableAreaWidth()
+
+#xtranslate _HMG_PRINTER_GetPrintableAreaHeight() ;
+   => ;
+      GetPrintableAreaHeight()
+
+#xtranslate _HMG_PRINTER_GetPrintableAreaHorizontalOffset() ;
+   => ;
+      GetPrintableAreaHorizontalOffset()
+
+#xtranslate _HMG_PRINTER_GetPrintableAreaVerticalOffset() ;
+   => ;
+      GetPrintableAreaVerticalOffset()
+
+#xtranslate _HMG_PRINTER_GetPrinter() ;
+   => ;
+      GetPrinter()
+
+#xtranslate _HMG_PRINTER_aPrinters() :
+   => ;
+      aPrinters()
+
 #translate IsControlDefined( <ControlName>, <FormName> ) ;
    => ;
       _IsControlDefined( <(ControlName)>, <(FormName)> )
 
-#translate IsWIndowActive( <FormName> ) ;
+#translate IsWindowActive( <FormName> ) ;
    => ;
-      _IsWIndowActive( <(FormName)> )
+      _IsWindowActive( <(FormName)> )
 
 #translate IsWindowDefined( <FormName> ) ;
    => ;
