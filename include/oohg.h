@@ -238,6 +238,7 @@ typedef struct OOHG_Window
    HFONT      hFontHandle;
    LONG       lOldBackColor;
    LONG       lUseBackColor;
+   HICON      IconHandle;
 } OCTRL, * POCTRL;
 
 #define _OOHG_Struct_Size  ( sizeof( OCTRL ) + 100 )      // TODO: Check is the + 100 is necessary
@@ -278,6 +279,16 @@ BOOL _OOHG_UseGDIP( VOID );
 HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr );
 BOOL SaveHBitmapToFile( VOID *, const CHAR *, UINT, UINT, const CHAR *, ULONG, ULONG );
 VOID _oohg_calldump( CHAR * cTitle, CHAR * cOutput );
+VOID _Ax_DeInit( VOID );
+VOID _ComCtl32_DeInit( VOID );
+VOID _DWMAPI_DeInit( VOID );
+VOID _ProcessLib_DeInit( VOID );
+VOID _RichEdit_DeInit( VOID );
+VOID _ShlWAPI_DeInit( VOID );
+VOID _User32_DeInit( VOID );
+VOID _UxTheme_DeInit( VOID );
+BOOL InitDeinitGdiPlus( BOOL );
+HMODULE _UxTheme_Init( VOID );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Table of symbols used at C level to access some datas and methods of different classes */
