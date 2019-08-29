@@ -4131,15 +4131,19 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    return( ret );
 }
 
-TCHAR * bt_LocalDateTimeToDateTimeANSI( TCHAR *cLocalDateTime )
+TCHAR * _LocalDateTimeToDateTimeANSI( TCHAR * );
+
+TCHAR * bt_LocalDateTimeToDateTimeANSI( TCHAR * cLocalDateTime )
 {
-   return _LocalDateTimeToDateTimeANSI( *cLocalDateTime );
+   return _LocalDateTimeToDateTimeANSI( cLocalDateTime );
 }
 
 
-TCHAR * bt_SpaceToBlank( TCHAR *cStr )
+TCHAR * _SpaceToBlank( TCHAR * );
+
+TCHAR * bt_SpaceToBlank( TCHAR * cStr )
 {
-   return _SpaceToBlank( *cStr );
+   return _SpaceToBlank( cStr );
 }
 
 
