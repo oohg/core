@@ -1504,13 +1504,6 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
 #endif
 }
 
-void _Ax_DeInit( void );
-void _ComCtl32_DeInit( void );
-void _DWMAPI_DeInit( void );
-void _RichEdit_DeInit( void );
-void _UxTheme_DeInit( void );
-BOOL InitDeinitGdiPlus( BOOL );
-
 HB_FUNC( FREELIBRARIES )
 {
    _Ax_DeInit();
