@@ -66,120 +66,134 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TEditRich FROM TEdit
 
-   DATA Type                      INIT "RICHEDIT" READONLY
-   DATA nWidth                    INIT 120
-   DATA nHeight                   INIT 240
-   DATA OnSelChange               INIT Nil
-   DATA lSelChanging              INIT .F.
    DATA lDefault                  INIT .T.
+   DATA lSelChanging              INIT .F.
+   DATA nHeight                   INIT 240
+   DATA nWidth                    INIT 120
+   DATA OnSelChange               INIT NIL
+   DATA Type                      INIT "RICHEDIT" READONLY
 
-   METHOD Define
-   METHOD FontColor               SETGET
    METHOD BackColor               SETGET
-   METHOD RichValue               SETGET
+   METHOD Define
    METHOD Events
    METHOD Events_Notify
-   METHOD SetSelectionTextColor
-   METHOD SetSelectionBackColor
-   METHOD HideSelection
-   METHOD GetSelText
-   METHOD MaxLength               SETGET
-   METHOD LoadFile
-   METHOD SaveFile
-   METHOD GetLastVisibleLine
+   METHOD FontColor               SETGET
    METHOD GetCharFromPos
+   METHOD GetLastVisibleLine
    METHOD GetSelFont
+   METHOD GetSelText
+   METHOD HideSelection
+   METHOD LoadFile
+   METHOD MaxLength               SETGET
+   METHOD Release
+   METHOD RichValue               SETGET
+   METHOD SaveFile
+   METHOD SetSelectionBackColor
+   METHOD SetSelectionTextColor
    METHOD SetSelFont
 
-   MESSAGE SetSelTextColor        METHOD SetSelectionTextColor
-   MESSAGE SetSelBackColor        METHOD SetSelectionBackColor
    MESSAGE GetSelectionFont       METHOD GetSelFont
+   MESSAGE SetSelBackColor        METHOD SetSelectionBackColor
    MESSAGE SetSelectionFont       METHOD SetSelFont
+   MESSAGE SetSelTextColor        METHOD SetSelectionTextColor
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
-               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, lRtl, lDisabled, ;
-               selchange, fontcolor, nohidesel, OnFocusPos, novscroll, ;
-               nohscroll, file, type, OnHScroll, OnVScroll, nInsType ) CLASS TEditRich
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, ;
+               nFontSize, cToolTip, nMaxLength, bGotFocus, bChange, bLostFocus, ;
+               lReadonly, lBreak, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, ;
+               lUnderline, lStrikeout, cField, uBackColor, lRtl, lDisabled, ;
+               bSelChange, uFontColor, lNoHideSel, nOnFocusPos, lNoVScroll, ;
+               lNoHScroll, cFile, nType, bOnHScroll, bOnVScroll, nInsType ) CLASS TEditRich
 
-   Local ControlHandle, nStyle
+   LOCAL nControlHandle, nStyle
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
-   ASSIGN ::nRow    VALUE y TYPE "N"
-   ASSIGN ::nCol    VALUE x TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
+   ASSIGN ::nRow    VALUE nRow    TYPE "N"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N"
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             if( HB_IsLogical( readonly ) .AND. readonly, ES_READONLY, 0 ) + ;
-             if( HB_IsLogical( nohidesel ) .AND. nohidesel, ES_NOHIDESEL, 0 ) + ;
-             if( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
-             if( HB_IsLogical( nohscroll ) .AND. nohscroll, 0, WS_HSCROLL )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
+             iif( HB_ISLOGICAL( lReadonly ) .AND. lReadonly, ES_READONLY, 0 ) + ;
+             iif( HB_ISLOGICAL( lNoHideSel ) .AND. lNoHideSel, ES_NOHIDESEL, 0 ) + ;
+             iif( HB_ISLOGICAL( lNoVScroll ) .AND. lNoVScroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+             iif( HB_ISLOGICAL( lNoHScroll ) .AND. lNoHScroll, 0, WS_HSCROLL )
 
-   ::SetSplitBoxInfo( Break, )
-   ControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, maxlength, ::lRtl )
+   ::SetSplitBoxInfo( lBreak, )
+   nControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nMaxLength, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ::BackColor := ::BackColor
    ::FontColor := ::FontColor
 
-   If Empty( file )
-      ::SetVarBlock( Field, Value )
-   Else
-      ::LoadFile( file, type )
-   EndIf
+   IF Empty( cFile )
+      ::SetVarBlock( cField, uValue )
+   ELSE
+      ::LoadFile( cFile, nType )
+   ENDIF
 
-   ASSIGN ::OnHScroll   VALUE OnHScroll  TYPE "B"
-   ASSIGN ::OnVScroll   VALUE OnVScroll  TYPE "B"
-   ASSIGN ::OnLostFocus VALUE lostfocus  TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus   TYPE "B"
-   ASSIGN ::OnChange    VALUE change     TYPE "B"
-   ASSIGN ::OnSelChange VALUE selchange  TYPE "B"
-   ASSIGN ::nOnFocusPos VALUE OnFocusPos TYPE "N"
-   ASSIGN ::nInsertType VALUE nInsType   TYPE "N"
+   ASSIGN ::OnHScroll   VALUE bOnHScroll  TYPE "B"
+   ASSIGN ::OnVScroll   VALUE bOnVScroll  TYPE "B"
+   ASSIGN ::OnLostFocus VALUE bLostFocus  TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE bGotFocus   TYPE "B"
+   ASSIGN ::OnChange    VALUE bChange     TYPE "B"
+   ASSIGN ::OnSelChange VALUE bSelChange  TYPE "B"
+   ASSIGN ::nOnFocusPos VALUE nOnFocusPos TYPE "N"
+   ASSIGN ::nInsertType VALUE nInsType    TYPE "N"
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Release CLASS TEditRich
+
+   ::OnSelChange := NIL
+
+   RETURN ::Super:Release()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD LoadFile( cFile, nType ) CLASS TEditRich
 
-   Local lRet := .F.
+   LOCAL lRet := .F.
 
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
-   If ! Empty( cFile ) .and. File( cFile )
+   IF ! Empty( cFile ) .AND. File( cFile )
       lRet := FileStreamIn( ::hWnd, cFile, nType )
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SaveFile( cFile, nType ) CLASS TEditRich
 
-   Local lRet := .F.
+   LOCAL lRet := .F.
 
    ASSIGN cFile VALUE cFile TYPE "C" DEFAULT ""
    ASSIGN nType VALUE nType TYPE "N" DEFAULT 2
-   If ! Empty( cFile )
+   IF ! Empty( cFile )
       lRet := FileStreamOut( ::hWnd, cFile, nType )
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RichValue( cValue ) CLASS TEditRich
 
-   If VALTYPE( cValue ) $ "CM"
+   IF ValType( cValue ) $ "CM"
       RichStreamIn( ::hWnd, cValue )
-   EndIf
+   ENDIF
 
    RETURN RichStreamOut( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetSelFont( lSelection ) CLASS TEditRich
 
    LOCAL aRet, nTextColor
@@ -197,13 +211,88 @@ METHOD GetSelFont( lSelection ) CLASS TEditRich
 
    RETURN aRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetSelFont( lSelection, cFontName, nFontSize, lBold, lItalic, aTextColor, lUnderline, lStrikeout, nMask ) CLASS TEditRich
 
    ASSIGN lSelection VALUE lSelection TYPE "L" DEFAULT .T.               // .F. means control's default font
 
    RETURN SetFontRTF( ::hWnd, iif( lSelection, 1, 0 ), cFontName, nFontSize, lBold, lItalic, RGB( aTextColor[1], aTextColor[2], aTextColor[3] ), lUnderline, lStrikeout, nMask )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
 
+   LOCAL Self := QSelf()
+   LOCAL cText, lRet
+
+   IF nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
+
+      cText := ::Value
+      ::Value := ::xUndo
+      ::xUndo := cText
+      RETURN 1
+
+   ELSEIF nMsg == WM_LBUTTONDBLCLK
+      lRet := ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+      IF HB_ISLOGICAL( lRet ) .AND. lRet
+         IF ::lDefault
+            // Do default action: select word
+            RETURN NIL
+         ELSE
+            // Prevent default action
+            RETURN 1
+         ENDIF
+      ENDIF
+
+   ENDIF
+
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
+
+   LOCAL nNotify := GetNotifyCode( lParam )
+
+   IF nNotify == EN_SELCHANGE
+      IF ! ::lSelChanging
+         ::lSelChanging := .T.
+         ::DoEvent( ::OnSelChange, "SELCHANGE" )
+         ::lSelChanging := .F.
+      ENDIF
+   ENDIF
+
+   RETURN ::Super:Events_Notify( wParam, lParam )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetSelText( lTranslate ) CLASS TEditRich
+
+   LOCAL cSelText := RichEdit_GetSelText( ::hWnd )
+
+   IF HB_ISLOGICAL( lTranslate ) .AND. lTranslate
+     cSelText := StrTran( cSelText, Chr( 13 ), Chr( 13 ) + Chr( 10 ) )
+   ENDIF
+
+   RETURN cSelText
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxLength( nLen ) CLASS TEditRich
+
+   IF HB_ISNUMERIC( nLen )
+      SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
+   ENDIF
+
+   RETURN SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetLastVisibleLine CLASS TEditRich
+
+   LOCAL aRect, nChar
+
+   aRect := ::GetRect()            // top, left, bottom, right
+   nChar := ::GetCharFromPos( aRect[3] - 2, aRect[2] + 1 )
+
+   RETURN ::GetLineFromChar( nChar )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -239,6 +328,20 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TEditRich_lpfnOldWndProc( 0 ) );
 }
 
+static HMODULE hDllRichEdit = NULL;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+VOID _RichEdit_DeInit( VOID )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllRichEdit )
+   {
+      FreeLibrary( hDllRichEdit );
+      hDllRichEdit = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLength, lRtl ) -> hWnd */
 {
@@ -250,7 +353,15 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
    Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL;
 
    InitCommonControls();
-   if ( LoadLibrary( "RichEd20.dll" ) )
+
+   if( hDllRichEdit == NULL )
+   {
+      WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+      hDllRichEdit = LoadLibrary( "RICHED20.DLL" );
+      ReleaseMutex( _OOHG_GlobalMutex() );
+   }
+
+   if ( hDllRichEdit )
    {
       hCtrl = CreateWindowEx( StyleEx, RICHEDIT_CLASS, (LPSTR) NULL, Style,
                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
@@ -269,7 +380,8 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
    }
 }
 
-HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS TEditRich -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -293,7 +405,8 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )
    // Return value was set in _OOHG_DetermineColorReturn()
 }
 
-HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )          /* METHOD FontColor( uColor ) CLASS TEditRich -> aColor */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -324,6 +437,7 @@ struct StreamInfo {
    struct StreamInfo *pNext;
 };
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    struct StreamInfo *si;
@@ -349,7 +463,8 @@ DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb,
    return 0;
 }
 
-HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RICHSTREAMIN )          /* FUNCTION RichStreamIn( hWnd, cValue ) -> NIL */
 {
    int iType = SF_RTF;
    EDITSTREAM es;
@@ -366,6 +481,7 @@ HB_FUNC( RICHSTREAMIN )   // hWnd, cValue
    SendMessage( HWNDparam( 1 ), EM_STREAMIN, ( WPARAM ) iType, ( LPARAM ) &es );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    struct StreamInfo *si;
@@ -402,7 +518,8 @@ DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb
    return 0;
 }
 
-HB_FUNC( RICHSTREAMOUT )   // hWnd
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RICHSTREAMOUT )          /* FUNCTION RichStreamOut( hWnd ) -> NIL */
 {
    int iType = SF_RTF;
    EDITSTREAM es;
@@ -451,6 +568,7 @@ HB_FUNC( RICHSTREAMOUT )   // hWnd
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
@@ -465,6 +583,7 @@ DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
@@ -479,7 +598,8 @@ DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LON
    }
 }
 
-HB_FUNC( FILESTREAMIN )        // hWnd, cFile, nType
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) -> lSuccess */
 {
    HWND hwnd = HWNDparam( 1 );
    HANDLE hFile;
@@ -555,7 +675,8 @@ HB_FUNC( FILESTREAMIN )        // hWnd, cFile, nType
    }
 }
 
-HB_FUNC( FILESTREAMOUT )       // hWnd, cFile, nType
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( FILESTREAMOUT )          /* FUNCTION FileStreamOut( hWnd, cFile, nType ) -> lSuccess */
 {
    HWND hwnd = HWNDparam( 1 );
    HANDLE hFile;
@@ -625,9 +746,8 @@ HB_FUNC( FILESTREAMOUT )       // hWnd, cFile, nType
 
 #define s_Super s_TEdit
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditRich
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditRich -> uRet */
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = ( UINT )   hb_parni( 2 );
@@ -662,7 +782,8 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
    }
 }
 
-HB_FUNC_STATIC( TEDITRICH_SETSELECTIONTEXTCOLOR )       // METHOD SetSelectionTextColor( lColor ) CLASS TEditRich
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_SETSELECTIONTEXTCOLOR )          /* METHOD SetSelectionTextColor( lColor ) CLASS TEditRich -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -686,7 +807,8 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONTEXTCOLOR )       // METHOD SetSelectionTe
    SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
 }
 
-HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )       // METHOD SetSelectionBackColor( lColor ) CLASS TEditRich
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )          /* METHOD SetSelectionBackColor( lColor ) CLASS TEditRich -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -710,7 +832,8 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )       // METHOD SetSelectionBa
    SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
 }
 
-HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )       // METHOD HideSelection( lHide ) CLASS TEditRich
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )          /* METHOD HideSelection( lHide ) CLASS TEditRich -> NIL */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -718,8 +841,8 @@ HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )       // METHOD HideSelection( lHide )
    SendMessage( oSelf->hWnd, EM_HIDESELECTION, (WPARAM) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
 }
 
-HB_FUNC( RICHEDIT_GETSELTEXT )
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RICHEDIT_GETSELTEXT )          /* FUNCTION RichEdit_GetSelText( hWnd ) -> cText */
 {
    GETTEXTLENGTHEX gtl;
    GETTEXTEX gte;
@@ -742,9 +865,8 @@ HB_FUNC( RICHEDIT_GETSELTEXT )
    hb_xfree( cBuffer );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( nRow, nCol ) CLASS TEditRich
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )          /* METHOD GetCharFromPos( nRow, nCol ) CLASS TEditRich -> nIndex */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -756,10 +878,8 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )           // METHOD GetCharFromPos( n
    hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, (LPARAM) &pnt ) );        // zero-based index
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC( GETFONTRTF )
-// -----------------------------------------------------------------------------
-// GetFontRTF( hWnd, nSel ) -> { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset }
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETFONTRTF )          /* FUNCTION GetFontRTF( hWnd, nSel ) -> { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset } */
 {
    CHARFORMAT  cF;
    LONG        PointSize;
@@ -801,13 +921,13 @@ HB_FUNC( GETFONTRTF )
    HB_STORNI( cF.bCharSet, -1, 8 );
 }
 
-// -----------------------------------------------------------------------------
-HB_FUNC( SETFONTRTF )
-// -----------------------------------------------------------------------------
-// SetFontRTF( hWnd, nSel, cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nMask )
-// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb788026(v=vs.85).aspx
-// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb774230(v=vs.85).aspx
-// See https://msdn.microsoft.com/en-us/library/windows/desktop/bb787881(v=vs.85).aspx
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nMask ) -> lSuccess */
+/*
+ * See https://msdn.microsoft.com/en-us/library/windows/desktop/bb788026(v=vs.85).aspx
+ * See https://msdn.microsoft.com/en-us/library/windows/desktop/bb774230(v=vs.85).aspx
+ * See https://msdn.microsoft.com/en-us/library/windows/desktop/bb787881(v=vs.85).aspx
+ */
 {
    LRESULT     lResult;
    CHARFORMAT  cF;
@@ -881,73 +1001,3 @@ HB_FUNC( SETFONTRTF )
 }
 
 #pragma ENDDUMP
-
-
-FUNCTION TEditRich_Events2( hWnd, nMsg, wParam, lParam )
-
-   Local Self := QSelf()
-   Local cText, lRet
-
-   If nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. ( GetKeyFlagState() == MOD_CONTROL .OR. GetKeyFlagState() == MOD_CONTROL + MOD_SHIFT )
-
-      cText := ::Value
-      ::Value := ::xUndo
-      ::xUndo := cText
-      Return 1
-
-   ElseIf nMsg == WM_LBUTTONDBLCLK
-      lRet := ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-      If HB_IsLogical( lRet ) .AND. lRet
-         If ::lDefault
-            // Do default action: select word
-            Return Nil
-         Else
-            // Prevent default action
-            Return 1
-         EndIf
-      EndIf
-
-   Endif
-
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
-
-METHOD Events_Notify( wParam, lParam ) CLASS TEditRich
-
-   Local nNotify := GetNotifyCode( lParam )
-
-   If nNotify == EN_SELCHANGE
-      If ! ::lSelChanging
-         ::lSelChanging := .T.
-         ::DoEvent( ::OnSelChange, "SELCHANGE" )
-         ::lSelChanging := .F.
-      EndIf
-   EndIf
-
-   Return ::Super:Events_Notify( wParam, lParam )
-
-METHOD GetSelText( lTranslate ) CLASS TEditRich
-
-   Local cSelText := RichEdit_GetSelText( ::hWnd )
-
-   If HB_IsLogical( lTranslate ) .AND. lTranslate
-     cSelText := StrTran( cSelText, Chr(13), Chr(13) + Chr(10) )
-   EndIf
-
-   Return cSelText
-
-METHOD MaxLength( nLen ) CLASS TEditRich
-
-   If HB_IsNumeric( nLen )
-      SendMessage( ::hWnd, EM_EXLIMITTEXT, 0, nLen )
-   EndIf
-
-   Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
-
-METHOD GetLastVisibleLine CLASS TEditRich
-
-   LOCAL aRect, nChar
-
-   aRect := ::GetRect()            // top, left, bottom, right
-   nChar := ::GetCharFromPos( aRect[3] - 2, aRect[2] + 1 )
-
-   Return ::GetLineFromChar( nChar )
