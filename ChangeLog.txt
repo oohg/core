@@ -12,6 +12,44 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-30 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_var.prg
+     + _OOHG_EnableClassUnreg and _OOHG_ExitOnMainRelease.
+     ; Both default to .T.
+   * core\source\h_application.prg
+     + Logic to handle the registration and unregistration of
+       window classes.
+     + Support for _OOHG_EnableClassUnreg and
+       _OOHG_ExitOnMainRelease.
+     ! Initial values of ThisControl var.
+     * Use _OOHG_DeleteArrayItem instead of ADel + ASize.
+     + Cleanup code to method Release that releases stacks,
+       mutexes, objects and arrays.
+   * core\source\h_form.prg
+     * Some format and comments.
+     % Reduced the amount of memory used by a program which
+       creates a great number of nameless windows.
+     ; Note that the old behaviour was not leaking memory but
+       delaying its release until app's end.
+     ; To restore previous behaviour set _OOHG_EnableClassUnreg
+       var to .F.
+     ! Method BackColor was not resetting the window class brush.
+     * Event codeblocks are set to NIL at method Events_Destroy
+       to avoid problems with detached references.
+     + Method Events_Destroy is now called by _ReleaseWindowList
+       function to release all attached controls and data.
+     * Function RegisterWindow now returns the bitmap asociated
+       with the class icon to allow releasing it at class unreg.
+
+2019-08-30 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_menu.prg
+     + Some cleanup code to release attached objects.
+
+2019-08-30 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_richeditbox.prg
+     + Function _RichEdit_DeInit. Now RICHED20.DLL is loaded once.
+     * Format.
+
 2019-08-30 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_winapimisc.c
      + Functions _ComCtl32_DeInit, GetComCtl32Version, IsAppThemed
