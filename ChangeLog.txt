@@ -12,6 +12,47 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-08-30 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Functions _ComCtl32_DeInit, GetComCtl32Version, IsAppThemed
+       and IsXPThemeActive moved from h_windows.prg.
+     + Wrapper functions for theme related functions.
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_radio.prg
+   * core\source\h_tooltip.prg
+     * Use wrapper functions to call theme related functions.
+   * core\source\h_windows.prg
+     + Method IconHandle to CLASS TWindow.
+     + Method ReleaseAttached of CLASS TWindow now sets to NIL the
+       codeblocks associated to hot keys, accelerator commands and
+       scrollbars.
+     * _OOHG_NestedSameEvent and _OOHG_GlobalRTL are now declared
+       as BOOL.
+     * _OOHG_NestedSameEvent is now thread safe.
+     ! Resource leak at method Release of CLASS TWindows.
+     * Use wrapper functions to call theme related functions.
+     - Functions _ComCtl32_DeInit, GetComCtl32Version, IsAppThemed
+       and IsXPThemeActive moved to c_winapimisc.c.
+
+2019-08-30 17:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + Declarations for some functions.
+
+2019-08-29 16:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     - No longer needed function declarations.
+
+2019-08-29 16:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + Declarations for some functions.
+     + IconHandle member to OCTRL structure.
+
+2019-08-29 16:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     ! Wrong parameters prevent library building.
+
 2019-08-28 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\bostaurus.ch
      + BT_DIRECTORYINFO as pseudofunction.
