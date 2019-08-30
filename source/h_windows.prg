@@ -232,6 +232,7 @@ CLASS TWindow
    METHOD GetTextWidth
    METHOD Hide                    BLOCK { |Self| ::Visible := .F. }
    METHOD HotKey                                                              // OS-controlled hotkeys
+   METHOD IconHandle              SETGET
    METHOD ImageList               SETGET
    METHOD IsVisualStyled
    METHOD Line
@@ -809,16 +810,25 @@ METHOD Property( cProperty, xValue ) CLASS TWindow
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReleaseAttached() CLASS TWindow
 
-   // Release hot keys
-   AEval( ::aHotKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+   // Release hot keys commands
+   AEval( ::aKeys, { |a| a[ HOTKEY_ACTION ] := NIL } )
+   ::aKeys := {}
+
+   // Release accelerator commands
+   AEval( ::aHotKeys, { |a| ( ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ), a[ HOTKEY_ACTION ] := NIL ) } )
    ::aHotKeys := {}
-   AEval( ::aAcceleratorKeys, { |a| ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ) } )
+
+   // Release application-wide hot keys commands
+   AEval( ::aAcceleratorKeys, { |a| ( ReleaseHotKey( ::hWnd, a[ HOTKEY_ID ] ), a[ HOTKEY_ACTION ] := NIL ) } )
    ::aAcceleratorKeys := {}
 
    // Remove Child Controls
    DO WHILE Len( ::aControls ) > 0
       ATail( ::aControls ):Release()
    ENDDO
+
+   ::HScrollBar := NIL
+   ::VScrollBar := NIL
 
    RETURN NIL
 
@@ -2085,46 +2095,38 @@ METHOD Error( xParam ) CLASS TDynamicValues
 #pragma BEGINDUMP
 
 #ifndef WINVER
-   #define WINVER 0x0500
+   #define WINVER 0x0501
 #endif
-#if ( WINVER < 0x0500 )
+#if ( WINVER < 0x0501 )
    #undef WINVER
-   #define WINVER 0x0500
+   #define WINVER 0x0501
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
+   #define _WIN32_WINNT 0x0501
 #endif
-#if ( _WIN32_WINNT < 0x0500 )
+#if ( _WIN32_WINNT < 0x0501 )
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include <windows.h>
 #include <commctrl.h>
 #include <olectl.h>
-#include <shlwapi.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "oohg.h"
 
-typedef LONG ( * CALL_ISTHEMEACTIVE )( VOID );
-typedef LONG ( * CALL_ISAPPTHEMED )( VOID );
-typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
-
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )
 #endif
 
-// C static variables                            // TODO: Thread safe ?
-static INT      _OOHG_ShowContextMenus = 1;
-static INT      _OOHG_NestedSameEvent = 0;       // Allows to nest an event currently performed (i.e. CLICK button)
-static INT      _OOHG_MouseCol = 0;              // Mouse's column
-static INT      _OOHG_MouseRow = 0;              // Mouse's row
-
-typedef INT ( CALLBACK * CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+static INT _OOHG_ShowContextMenus = 1;      // TODO: Thread safe ?
+static BOOL _OOHG_NestedSameEvent = FALSE;  // TRUE allows event nesting
+static INT _OOHG_MouseCol = 0;              // TODO: Thread safe ?
+static INT _OOHG_MouseRow = 0;              // TODO: Thread safe ?
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 VOID _OOHG_SetMouseCoords( PHB_ITEM pSelf, INT iCol, INT iRow )
@@ -2183,13 +2185,17 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
       oSelf->AuxBufferLen = 0;
    }
 
+   // Icon handle
+   DeleteObject( oSelf->IconHandle );
+   oSelf->IconHandle = NULL;
+
    // Brush handle
    DeleteObject( oSelf->BrushHandle );
    oSelf->BrushHandle = NULL;
 
    // Font handle
    DeleteObject( oSelf->hFontHandle );
-   oSelf->BrushHandle = NULL;
+   oSelf->hFontHandle = NULL;
 
    // Context menu
    _OOHG_Send( pSelf, s_ContextMenu );
@@ -2262,6 +2268,26 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )          /* METHOD Imagelist( handle ) CLASS
    }
 
    HB_RETNL( ( LONG_PTR ) oSelf->ImageList );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TWINDOW_ICONHANDLE )          /* METHOD IconHandle( hIcon ) CLASS TWindow -> hIcon */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+
+   if( hb_pcount() >= 1 )
+   {
+      HICON hIcon = ( HICON ) HB_PARNL( 1 );
+
+      if( oSelf->IconHandle )
+      {
+         DeleteObject( oSelf->IconHandle );
+      }
+      oSelf->IconHandle = hIcon;
+   }
+
+   HB_RETNL( ( LONG_PTR ) oSelf->IconHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2872,22 +2898,14 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DISABLEVISUALSTYLE )          /* FUNCTION DisableVisualStyle() -> lSuccess */
 {
-   CALL_SETWINDOWTHEME dwSetWindowTheme;
-   HMODULE hInstDLL;
    BOOL bRet = FALSE;
 
-   hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-   if( hInstDLL )
+   if( _UxTheme_Init() )
    {
-      dwSetWindowTheme = (CALL_SETWINDOWTHEME) GetProcAddress( hInstDLL, "SetWindowTheme" );
-      if( dwSetWindowTheme )
+      if( ProcSetWindowTheme( HWNDparam( 1 ), L" ", L" " ) == S_OK )
       {
-         if( dwSetWindowTheme( HWNDparam( 1 ), L" ", L" " ) == S_OK )
-         {
-            bRet = TRUE;
-         }
+         bRet = TRUE;
       }
-      FreeLibrary( hInstDLL );
    }
    hb_retl( bRet );
 }
@@ -2934,100 +2952,6 @@ HB_FUNC( _OOHG_HEX )          /* FUNCTION _OOHG_Hex( nNum, nDigits ) -> cHexNum 
       cLine[ iLen++ ] = cBuffer[ --iCount ];
    }
    hb_retclen( cLine, iLen );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( ISXPTHEMEACTIVE )          /* FUNCTION IsXPThemeActive() -> lRet */
-{
-   BOOL bResult = FALSE;
-   HMODULE hInstDLL;
-   CALL_ISTHEMEACTIVE dwProcAddr;
-   LONG lResult;
-   OSVERSIONINFO os;
-
-   os.dwOSVersionInfoSize = sizeof( os );
-
-   if( GetVersionEx( &os ) && os.dwPlatformId == VER_PLATFORM_WIN32_NT && os.dwMajorVersion == 5 && os.dwMinorVersion == 1 )
-   {
-      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-      if( hInstDLL )
-      {
-         dwProcAddr = ( CALL_ISTHEMEACTIVE ) GetProcAddress( hInstDLL, "IsThemeActive" );
-         if( dwProcAddr )
-         {
-            lResult = ( dwProcAddr )();
-            if( lResult )
-            {
-               bResult = TRUE;
-            }
-         }
-
-         FreeLibrary( hInstDLL );
-      }
-   }
-
-   hb_retl( bResult );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
-{
-   BOOL bResult = FALSE;
-   HMODULE hInstDLL;
-   CALL_ISAPPTHEMED dwProcAddr;
-   LONG lResult;
-   OSVERSIONINFO os;
-
-   os.dwOSVersionInfoSize = sizeof( os );
-
-   if( GetVersionEx( &os ) && ( os.dwMajorVersion > 5 || ( os.dwMajorVersion == 5 && os.dwMinorVersion >= 1 ) ) )
-   {
-      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-      if( hInstDLL )
-      {
-         dwProcAddr = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
-         if( dwProcAddr )
-         {
-            lResult = ( dwProcAddr )();
-            if( lResult )
-            {
-               bResult = TRUE;
-            }
-         }
-
-         FreeLibrary( hInstDLL );
-      }
-   }
-
-   hb_retl( bResult );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
-{
-   INT iResult = 0;
-   HMODULE hInstDLL;
-   CALL_DLLGETVERSION dwProcAddr;
-   DLLVERSIONINFO dll;
-
-   hInstDLL = LoadLibrary( "Comctl32.dll" );
-   if( hInstDLL )
-   {
-      dwProcAddr = ( CALL_DLLGETVERSION ) GetProcAddress( hInstDLL, "DllGetVersion" );
-      if( dwProcAddr )
-      {
-         memset( &dll, 0, sizeof( dll ) );
-         dll.cbSize = sizeof( dll );
-         if( ( dwProcAddr )( &dll ) == S_OK )
-         {
-            iResult = dll.dwMajorVersion;
-         }
-      }
-
-      FreeLibrary( hInstDLL );
-   }
-
-   hb_retni( iResult );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -3110,27 +3034,34 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )          /* FUNCTION _OOHG_ShowContextMenus( l
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GLOBALRTL )          /* FUNCTION _OOHG_GlobalRTL( lOnOff ) -> lOnOff */
 {
-   static INT _OOHG_GlobalRTL = FALSE;             // TRUE forces RTL functionality on all forms and controls
+   static BOOL _OOHG_GlobalRTL = FALSE;             // TRUE forces RTL functionality on all forms and controls
+   BOOL bRet;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-
    if( HB_ISLOG( 1 ) )
    {
       _OOHG_GlobalRTL = hb_parl( 1 );
    }
-   hb_retl( _OOHG_GlobalRTL );
-
+   bRet = _OOHG_GlobalRTL;
    ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bRet );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_NESTEDSAMEEVENT )          /* FUNCTION _OOHG_NestedSameEvent( lOnOff ) -> lOnOff */
 {
-   if( HB_ISLOG( 1 ) )
+   BOOL bRet;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ( hb_pcount() > 1 ) && ( HB_ISLOG( 1 ) ) )
    {
       _OOHG_NestedSameEvent = hb_parl( 1 );
    }
-   hb_retl( _OOHG_NestedSameEvent );
+   bRet = _OOHG_NestedSameEvent;
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bRet );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

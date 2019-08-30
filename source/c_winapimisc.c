@@ -85,6 +85,7 @@
 #include <time.h>
 #include <tchar.h>
 #include <winreg.h>
+#include <shlwapi.h>
 
 #include "hbapi.h"
 #include "hbvm.h"
@@ -975,7 +976,7 @@ void _ShlWAPI_DeInit( void )
 
 typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, INT cchMax, DWORD dwFlags );
 
-static PathCompactPathExA_Ptr PathCompactPathExA = NULL;
+static PathCompactPathExA_Ptr pPathCompactPathExA = NULL;
 
 HB_FUNC( GETCOMPACTPATH )
 {
@@ -988,13 +989,13 @@ HB_FUNC( GETCOMPACTPATH )
    }
    if( hDllShlWAPI != NULL )
    {
-      if( PathCompactPathExA == NULL )
+      if( pPathCompactPathExA == NULL )
       {
-         PathCompactPathExA = ( PathCompactPathExA_Ptr ) GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
+         pPathCompactPathExA = ( PathCompactPathExA_Ptr ) GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
       }
-      if( PathCompactPathExA != NULL )
+      if( pPathCompactPathExA != NULL )
       {
-         bRet = PathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
+         bRet = pPathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1038,7 +1039,7 @@ HB_FUNC( CLOSEHANDLE )
 
 typedef HRESULT ( WINAPI * STRRETTOBUFA )( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
 
-static STRRETTOBUFA StrRetToBufA = NULL;
+static STRRETTOBUFA pStrRetToBufA = NULL;
 
 HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf, UINT cchBuf )
 {
@@ -1051,13 +1052,13 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    }
    if( hDllShlWAPI != NULL )
    {
-      if( StrRetToBufA == NULL )
+      if( pStrRetToBufA == NULL )
       {
-         StrRetToBufA = ( STRRETTOBUFA ) GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
+         pStrRetToBufA = ( STRRETTOBUFA ) GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
       }
-      if( StrRetToBufA != NULL )
+      if( pStrRetToBufA != NULL )
       {
-         hRet = StrRetToBufA( pstr, pidl, pszBuf, cchBuf );
+         hRet = ( pStrRetToBufA ) ( pstr, pidl, pszBuf, cchBuf );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1502,6 +1503,267 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
 
    hb_retl( bRet );
 #endif
+}
+
+static HMODULE hDllComctl32 = NULL;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+void _ComCtl32_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllComctl32 )
+   {
+      FreeLibrary( hDllComctl32 );
+      hDllComctl32 = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
+typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
+
+static CALL_DLLGETVERSION dwProcAddr = NULL;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
+{
+   INT iResult = 0;
+   DLLVERSIONINFO dll;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllComctl32 == NULL )
+   {
+      hDllComctl32 = LoadLibrary( "COMCTL32.DLL" );
+   }
+   if( hDllComctl32 != NULL )
+   {
+      if( dwProcAddr == NULL )
+      {
+         dwProcAddr = ( CALL_DLLGETVERSION ) GetProcAddress( hDllComctl32, "DllGetVersion" );
+      }
+      if( dwProcAddr != NULL )
+      {
+         memset( &dll, 0, sizeof( dll ) );
+         dll.cbSize = sizeof( dll );
+         if( ( dwProcAddr )( &dll ) == S_OK )
+         {
+            iResult = dll.dwMajorVersion;
+         }
+      }
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retni( iResult );
+}
+
+static HMODULE hDllUxTheme = NULL;
+static CALL_CLOSETHEMEDATA pProcCloseThemeData = NULL;
+static CALL_DRAWTHEMEBACKGROUND pProcDrawThemeBackground = NULL;
+static CALL_DRAWTHEMEPARENTBACKGROUND pProcDrawThemeParentBackground = NULL;
+static CALL_DRAWTHEMETEXT pProcDrawThemeText = NULL;
+static CALL_DRAWTHEMETEXTEX pProcDrawThemeTextEx = NULL;
+static CALL_GETTHEMEBACKGROUNDCONTENTRECT pProcGetThemeBackgroundContentRect = NULL;
+static CALL_GETTHEMEPARTSIZE pProcGetThemePartSize = NULL;
+static CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT pProcIsThemeBackgroundPartiallyTransparent = NULL;
+static CALL_OPENTHEMEDATA pProcOpenThemeData = NULL;
+static CALL_SETWINDOWTHEME pProcSetWindowTheme = NULL;
+static CALL_ISTHEMEACTIVE pProcIsThemeActive = NULL;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HMODULE _UxTheme_Init( void )
+{
+   HMODULE hUxTheme;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( ! hDllUxTheme )
+   {
+      hDllUxTheme = LoadLibrary( "UXTHEME.DLL" );
+
+      if( hDllUxTheme )
+      {
+         pProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hDllUxTheme, "CloseThemeData" );
+         pProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hDllUxTheme, "DrawThemeBackground" );
+         pProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hDllUxTheme, "DrawThemeParentBackground" );
+         pProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) GetProcAddress( hDllUxTheme, "DrawThemeText" );
+         pProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) GetProcAddress( hDllUxTheme, "DrawThemeTextEx" );
+         pProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hDllUxTheme, "GetThemeBackgroundContentRect" );
+         pProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) GetProcAddress( hDllUxTheme, "GetThemePartSize" );
+         pProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hDllUxTheme, "IsThemeBackgroundPartiallyTransparent" );
+         pProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hDllUxTheme, "OpenThemeData" );
+         pProcSetWindowTheme = ( CALL_SETWINDOWTHEME ) GetProcAddress( hDllUxTheme, "SetWindowTheme" );
+         pProcIsThemeActive = ( CALL_ISTHEMEACTIVE ) GetProcAddress( hDllUxTheme, "IsThemeActive" );
+
+         if( ! ( pProcCloseThemeData &&
+                 pProcDrawThemeBackground &&
+                 pProcDrawThemeParentBackground &&
+                 pProcGetThemeBackgroundContentRect &&
+                 pProcGetThemePartSize &&
+                 pProcIsThemeBackgroundPartiallyTransparent &&
+                 pProcOpenThemeData &&
+                 pProcSetWindowTheme &&
+                 pProcIsThemeActive &&
+                 ( pProcDrawThemeText || pProcDrawThemeTextEx ) ) )
+         {
+            FreeLibrary( hDllUxTheme );
+
+            hDllUxTheme = NULL;
+            pProcCloseThemeData = NULL;
+            pProcDrawThemeBackground = NULL;
+            pProcDrawThemeParentBackground = NULL;
+            pProcDrawThemeText = NULL;
+            pProcDrawThemeTextEx = NULL;
+            pProcGetThemeBackgroundContentRect = NULL;
+            pProcGetThemePartSize = NULL;
+            pProcIsThemeBackgroundPartiallyTransparent = NULL;
+            pProcOpenThemeData = NULL;
+            pProcSetWindowTheme = NULL;
+            pProcIsThemeActive = NULL;
+         }
+      }
+   }
+   hUxTheme = hDllUxTheme;
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+  return hUxTheme;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcCloseThemeData( HTHEME hTheme )
+{
+   return ( pProcCloseThemeData )( hTheme );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcDrawThemeBackground( HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect )
+{
+   return ( pProcDrawThemeBackground )( hTheme, hdc, iPartId, iStateId, pRect, pClipRect );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcDrawThemeParentBackground( HWND hwnd, HDC hdc, LPCRECT prc )
+{
+   return ( pProcDrawThemeParentBackground )( hwnd, hdc, prc );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcDrawThemeText( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect )
+{
+   return ( pProcDrawThemeText )( hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcDrawThemeTextEx( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS * pOptions )
+{
+   return ( pProcDrawThemeTextEx )( hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, pRect, pOptions );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcGetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect )
+{
+   return ( pProcGetThemeBackgroundContentRect )( hTheme, hdc, iPartId, iStateId, pBoundingRect, pContentRect );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE * psz )
+{
+   return ( pProcGetThemePartSize )( hTheme, hdc, iPartId, iStateId, prc, eSize, psz );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int iStateId )
+{
+   return ( pProcIsThemeBackgroundPartiallyTransparent )( hTheme, iPartId, iStateId );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcOpenThemeData( HWND hwnd, LPCWSTR pszClassList )
+{
+   return ( pProcOpenThemeData )( hwnd, pszClassList );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcSetWindowTheme( HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList )
+{
+   return ( pProcSetWindowTheme )( hwnd, pszSubAppName, pszSubIdList );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcIsThemeActive( VOID )
+{
+   return ( pProcIsThemeActive )();
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+void _UxTheme_DeInit( void )
+{
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllUxTheme )
+   {
+      FreeLibrary( hDllUxTheme );
+
+      hDllUxTheme = NULL;
+      pProcCloseThemeData = NULL;
+      pProcDrawThemeBackground = NULL;
+      pProcDrawThemeParentBackground = NULL;
+      pProcDrawThemeText = NULL;
+      pProcDrawThemeTextEx = NULL;
+      pProcGetThemeBackgroundContentRect = NULL;
+      pProcGetThemePartSize = NULL;
+      pProcIsThemeBackgroundPartiallyTransparent = NULL;
+      pProcOpenThemeData = NULL;
+      pProcSetWindowTheme = NULL;
+      pProcIsThemeActive = NULL;
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ISXPTHEMEACTIVE )          /* FUNCTION IsXPThemeActive() -> lRet */
+{
+   BOOL bResult = FALSE;
+   OSVERSIONINFO os;
+
+   os.dwOSVersionInfoSize = sizeof( os );
+
+   if( GetVersionEx( &os ) && os.dwPlatformId == VER_PLATFORM_WIN32_NT && os.dwMajorVersion == 5 && os.dwMinorVersion == 1 )
+   {
+      if( _UxTheme_Init() )
+      {
+         bResult = ( BOOL ) ProcIsThemeActive();
+      }
+   }
+
+   hb_retl( bResult );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
+{
+   BOOL bResult = FALSE;
+   HMODULE hInstDLL;
+   CALL_ISAPPTHEMED dwProcAddr;
+   LONG lResult;
+   OSVERSIONINFO os;
+
+   os.dwOSVersionInfoSize = sizeof( os );
+
+   if( GetVersionEx( &os ) && ( os.dwMajorVersion > 5 || ( os.dwMajorVersion == 5 && os.dwMinorVersion >= 1 ) ) )
+   {
+      hInstDLL = _UxTheme_Init();
+      if( hInstDLL )
+      {
+         dwProcAddr = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
+         if( dwProcAddr )
+         {
+            lResult = ( dwProcAddr )();
+            if( lResult )
+            {
+               bResult = TRUE;
+            }
+         }
+      }
+   }
+
+   hb_retl( bResult );
 }
 
 HB_FUNC( FREELIBRARIES )

@@ -389,7 +389,7 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nW
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
           lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent ) CLASS TButton
 
-   IF Empty( cBuffer )          // TODO: test
+   IF Empty( cBuffer )
       cBuffer := ""
    ENDIF
 
@@ -627,11 +627,11 @@ METHOD TextMargin( aMargins ) CLASS TButton
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
-#if ( _WIN32_IE < 0x0500 )
+#if ( _WIN32_IE < 0x0501 )
    #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
 
 #ifndef _WIN32_WINNT
@@ -646,69 +646,6 @@ METHOD TextMargin( aMargins ) CLASS TButton
 #include <windows.h>
 #include <commctrl.h>
 #include "oohg.h"
-
-/*
-This files are not present in BCC 551
-#include <uxtheme.h>
-#include <tmschema.h>
-*/
-
-typedef HANDLE HTHEME;
-
-typedef enum THEMESIZE {
-   TS_MIN,
-   TS_TRUE,
-   TS_DRAW
-} THEMESIZE;
-
-#ifndef __MSABI_LONG
-#  ifndef __LP64__
-#    define __MSABI_LONG( x )  ( x ## l )
-#  else
-#    define __MSABI_LONG( x )  ( x )
-#  endif
-#endif
-
-#define DTT_TEXTCOLOR     ( __MSABI_LONG( 1U ) << 0 )
-#define DTT_BORDERCOLOR   ( __MSABI_LONG( 1U ) << 1 )
-#define DTT_SHADOWCOLOR   ( __MSABI_LONG( 1U ) << 2 )
-#define DTT_SHADOWTYPE    ( __MSABI_LONG( 1U ) << 3 )
-#define DTT_SHADOWOFFSET  ( __MSABI_LONG( 1U ) << 4 )
-#define DTT_BORDERSIZE    ( __MSABI_LONG( 1U ) << 5 )
-#define DTT_FONTPROP      ( __MSABI_LONG( 1U ) << 6 )
-#define DTT_COLORPROP     ( __MSABI_LONG( 1U ) << 7 )
-#define DTT_STATEID       ( __MSABI_LONG( 1U ) << 8 )
-#define DTT_CALCRECT      ( __MSABI_LONG( 1U ) << 9 )
-#define DTT_APPLYOVERLAY  ( __MSABI_LONG( 1U ) << 10 )
-#define DTT_GLOWSIZE      ( __MSABI_LONG( 1U ) << 11 )
-#define DTT_CALLBACK      ( __MSABI_LONG( 1U ) << 12 )
-#define DTT_COMPOSITED    ( __MSABI_LONG( 1U ) << 13 )
-#define DTT_VALIDBITS     ( DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
-                            DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED )
-
-typedef int ( WINAPI * DTT_CALLBACK_PROC )( HDC hdc, LPWSTR pszText, INT cchText, LPRECT prc, UINT dwFlags, LPARAM lParam );
-
-#ifdef __BORLANDC__
-   typedef BOOL WINBOOL;
-#endif
-
-typedef struct _DTTOPTS {
-   DWORD dwSize;
-   DWORD dwFlags;
-   COLORREF crText;
-   COLORREF crBorder;
-   COLORREF crShadow;
-   INT iTextShadowType;
-   POINT ptShadowOffset;
-   INT iBorderSize;
-   INT iFontPropId;
-   INT iColorPropId;
-   INT iStateId;
-   WINBOOL fApplyOverlay;
-   INT iGlowSize;
-   DTT_CALLBACK_PROC pfnDrawTextCallback;
-   LPARAM lParam;
-} DTTOPTS, *PDTTOPTS;
 
 #ifndef BCM_FIRST
    #define BCM_FIRST     0x1600
@@ -746,16 +683,6 @@ enum {
 #define BUTTON_IMAGELIST_ALIGN_TOP    2
 #define BUTTON_IMAGELIST_ALIGN_BOTTOM 3
 #define BUTTON_IMAGELIST_ALIGN_CENTER 4
-
-typedef INT ( CALLBACK * CALL_CLOSETHEMEDATA ) ( HTHEME );
-typedef INT ( CALLBACK * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, INT, INT, const RECT *, const RECT * );
-typedef INT ( CALLBACK * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, RECT * );
-typedef INT ( CALLBACK * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, const RECT *, const DTTOPTS * pOptions );
-typedef INT ( CALLBACK * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, DWORD, const RECT * );
-typedef INT ( CALLBACK * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, INT, INT, const RECT *, RECT * );
-typedef INT ( CALLBACK * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, INT, INT, const RECT *, THEMESIZE, SIZE * );
-typedef INT ( CALLBACK * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, INT, INT );
-typedef INT ( CALLBACK * CALL_OPENTHEMEDATA ) ( HWND, LPCWSTR );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TButton_lpfnOldWndProc( WNDPROC lp )
@@ -896,16 +823,6 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
-   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
-   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
-   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
-   CALL_DRAWTHEMETEXT dwProcDrawThemeText;
-   CALL_DRAWTHEMETEXTEX dwProcDrawThemeTextEx;
-   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
-   CALL_GETTHEMEPARTSIZE dwProcGetThemePartSize;
-   CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT dwProcIsThemeBackgroundPartiallyTransparent;
-   CALL_OPENTHEMEDATA dwProcOpenThemeData;
-   HMODULE hInstDLL;
    HTHEME hTheme;
    INT state_id, x = 0, y = 0, dx = 0, dy = 0, w, h, iHrzNeeded, iVrtNeeded, nTextAlign = 0;
    LONG_PTR style;
@@ -917,39 +834,14 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
    {
-      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-      if( ! hInstDLL )
+      if( ! _UxTheme_Init() )
       {
          return CDRF_DODEFAULT;
       }
 
-      dwProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hInstDLL, "CloseThemeData" );
-      dwProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeBackground" );
-      dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
-      dwProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) GetProcAddress( hInstDLL, "DrawThemeText" );
-      dwProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) GetProcAddress( hInstDLL, "DrawThemeTextEx" );
-      dwProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
-      dwProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) GetProcAddress( hInstDLL, "GetThemePartSize" );
-      dwProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hInstDLL, "IsThemeBackgroundPartiallyTransparent" );
-      dwProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hInstDLL, "OpenThemeData" );
-
-      if( ! ( dwProcCloseThemeData &&
-              dwProcDrawThemeBackground &&
-              dwProcDrawThemeParentBackground &&
-              dwProcGetThemeBackgroundContentRect &&
-              dwProcGetThemePartSize &&
-              dwProcIsThemeBackgroundPartiallyTransparent &&
-              dwProcOpenThemeData &&
-              ( dwProcDrawThemeText || dwProcDrawThemeTextEx ) ) )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-
-      hTheme = ( HTHEME ) ( dwProcOpenThemeData ) ( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+      hTheme = ( HTHEME ) ProcOpenThemeData( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
       if( ! hTheme )
       {
-         FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
       }
 
@@ -982,9 +874,9 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       }
 
       /* draw parent background */
-      if( ( dwProcIsThemeBackgroundPartiallyTransparent )( hTheme, BP_PUSHBUTTON, state_id ) )
+      if( ProcIsThemeBackgroundPartiallyTransparent( hTheme, BP_PUSHBUTTON, state_id ) )
       {
-         ( dwProcDrawThemeParentBackground )( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+         ProcDrawThemeParentBackground( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
       }
 
       if( bSolid )
@@ -1000,11 +892,11 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       else
       {
          /* draw themed button background appropriate to button state */
-         ( dwProcDrawThemeBackground )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
+         ProcDrawThemeBackground( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, NULL );
       }
 
       /* get content rectangle (space inside button for image) */
-      ( dwProcGetThemeBackgroundContentRect )( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
+      ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
 
 		/* draw the image */
       memset( &bi, 0, sizeof( bi ) );
@@ -1231,8 +1123,7 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
 		}
 
       /* cleanup */
-     ( dwProcCloseThemeData ) ( hTheme );
-      FreeLibrary( hInstDLL );
+     ProcCloseThemeData( hTheme );
    }
 
    return CDRF_SKIPDEFAULT;

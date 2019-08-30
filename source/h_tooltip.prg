@@ -337,19 +337,19 @@ METHOD Title( cTitle ) CLASS TToolTip
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
-#if ( _WIN32_IE < 0x0500 )
+#if ( _WIN32_IE < 0x0501 )
    #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
+   #define _WIN32_IE 0x0501
 #endif
 
 #ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0501
 #endif
-#if ( _WIN32_WINNT < 0x0400 )
+#if ( _WIN32_WINNT < 0x0501 )
    #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
+   #define _WIN32_WINNT 0x0501
 #endif
 
 #include <windows.h>
@@ -359,8 +359,6 @@ METHOD Title( cTitle ) CLASS TToolTip
 
 static LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
 static LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
-
-typedef int (CALLBACK *CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
 
 #ifndef TTS_CLOSE
    #define TTS_CLOSE 0x80
@@ -390,8 +388,6 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTOOLTIP )
 {
-   CALL_SETWINDOWTHEME dwSetWindowTheme;
-   HMODULE hInstDLL;
    HWND htooltip;
    int Style = TTS_ALWAYSTIP;
 
@@ -413,26 +409,20 @@ HB_FUNC( INITTOOLTIP )
 
    if( ( _OOHG_TooltipBackcolor != -1 ) || ( _OOHG_TooltipForecolor != -1 ) )
    {
-      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-      if( hInstDLL )
+      if( _UxTheme_Init() )
       {
-         dwSetWindowTheme = (CALL_SETWINDOWTHEME) GetProcAddress( hInstDLL, "SetWindowTheme" );
-         if( dwSetWindowTheme )
+         if( ProcSetWindowTheme( htooltip, L" ", L" " ) == S_OK )
          {
-            if( ( dwSetWindowTheme )( htooltip, L" ", L" " ) == S_OK )
+            if( _OOHG_TooltipBackcolor != -1 )
             {
-               if( _OOHG_TooltipBackcolor != -1 )
-               {
-                  SendMessage( htooltip, TTM_SETTIPBKCOLOR, ( WPARAM ) _OOHG_TooltipBackcolor, 0 );
-               }
+               SendMessage( htooltip, TTM_SETTIPBKCOLOR, ( WPARAM ) _OOHG_TooltipBackcolor, 0 );
+            }
 
-               if( _OOHG_TooltipForecolor != -1 )
-               {
-                  SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, ( WPARAM ) _OOHG_TooltipForecolor, 0 );
-               }
+            if( _OOHG_TooltipForecolor != -1 )
+            {
+               SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, ( WPARAM ) _OOHG_TooltipForecolor, 0 );
             }
          }
-         FreeLibrary( hInstDLL );
       }
    }
 

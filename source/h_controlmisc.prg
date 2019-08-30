@@ -1522,7 +1522,7 @@ METHOD InitStyle( nStyle, nStyleEx, lInvisible, lNoTabStop, lDisabled ) CLASS TC
 METHOD PreAddToCtrlsArrays( Id ) CLASS TControl
 
    IF HB_ISNUMERIC( Id ) .AND. Id # 0
-      // The four arrays must allways have the same length
+      // The four arrays must always have the same length
       AAdd( _OOHG_aControlhWnd, NIL )
       AAdd( _OOHG_aControlObjects, Self )
       AAdd( _OOHG_aControlIds, { Id, ::Parent:hWnd } )
@@ -1582,7 +1582,7 @@ METHOD AddToCtrlsArrays() CLASS TControl
       _OOHG_aControlhWnd[ nPos ] := ::hWnd
       _OOHG_aControlIds[ nPos ] := { ::Id, ::Parent:hWnd }
    ELSE
-      // The four arrays must allways have the same length
+      // The four arrays must always have the same length
       AAdd( _OOHG_aControlhWnd, ::hWnd )
       AAdd( _OOHG_aControlObjects, Self )
       AAdd( _OOHG_aControlIds, { ::Id, ::Parent:hWnd } )
@@ -1598,7 +1598,7 @@ METHOD DelFromCtrlsArrays() CLASS TControl
    nPos := aScan( _OOHG_aControlNames, { |c| c == Upper( ::Parent:Name + Chr( 255 ) + ::Name ) } )
 
    IF nPos > 0
-      // The four arrays must allways have the same length
+      // The four arrays must always have the same length
       _OOHG_DeleteArrayItem( _OOHG_aControlhWnd, nPos )
       _OOHG_DeleteArrayItem( _OOHG_aControlObjects, nPos )
       _OOHG_DeleteArrayItem( _OOHG_aControlIds, nPos )
@@ -1611,7 +1611,7 @@ METHOD Release() CLASS TControl
 
    LOCAL mVar, oCont
 
-   // Erases events to avoid wrong re-usage
+   // Erase events to avoid problems with detached references
    ::OnChange       := NIL
    ::OnClick        := NIL
    ::OnDblClick     := NIL
@@ -2062,8 +2062,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
    }
 }
 
-typedef INT ( CALLBACK * CALL_DRAWTHEMEPARENTBACKGROUND )( HWND, HDC, RECT * );
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TControl -> hBrush */
 {
@@ -2072,8 +2070,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    HDC hdc = ( HDC ) HB_PARNL( 1 );
    HBRUSH OldBrush;
    LONG lBackColor;
-   HMODULE hInstDLL;
-   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground = 0;
    RECT rc;
    BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
    HWND hwnd = 0;
@@ -2145,17 +2141,11 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       /* FRAME, CHECKBOX, BUTTON, RADIOITEM */
       if( lDrawBkGrnd )
       {
-         hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-         if( hInstDLL )
-         {
-            dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
-         }
-         if( dwProcDrawThemeParentBackground )
+         if( _UxTheme_Init() )
          {
             GetClientRect( oSelf->hWnd, &rc );
-            ( dwProcDrawThemeParentBackground )( oSelf->hWnd, hdc, &rc );
+            ProcDrawThemeParentBackground( oSelf->hWnd, hdc, &rc );
          }
-         FreeLibrary( hInstDLL );
       }
    }
    else

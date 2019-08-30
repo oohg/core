@@ -213,11 +213,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE  0x0500
+   #define _WIN32_IE  0x0501
 #endif
-#if ( _WIN32_IE < 0x0500 )
+#if ( _WIN32_IE < 0x0501 )
    #undef _WIN32_IE
-   #define _WIN32_IE  0x0500
+   #define _WIN32_IE  0x0501
 #endif
 
 #ifndef _WIN32_WINNT
@@ -238,76 +238,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
 #ifndef BST_HOT
    #define BST_HOT  0x0200
 #endif
-
-/*
-This files are not present in BCC 551
-#include <uxtheme.h>
-#include <tmschema.h>
-*/
-
-typedef struct _MARGINS {
-   INT cxLeftWidth;
-   INT cxRightWidth;
-   INT cyTopHeight;
-   INT cyBottomHeight;
-} MARGINS, *PMARGINS;
-
-typedef HANDLE HTHEME;
-
-typedef enum THEMESIZE {
-   TS_MIN,
-   TS_TRUE,
-   TS_DRAW
-} THEMESIZE;
-
-#ifndef __MSABI_LONG
-#  ifndef __LP64__
-#    define __MSABI_LONG( x )  ( x ## l )
-#  else
-#    define __MSABI_LONG( x )  ( x )
-#  endif
-#endif
-
-#define DTT_TEXTCOLOR     ( __MSABI_LONG( 1U ) << 0 )
-#define DTT_BORDERCOLOR   ( __MSABI_LONG( 1U ) << 1 )
-#define DTT_SHADOWCOLOR   ( __MSABI_LONG( 1U ) << 2 )
-#define DTT_SHADOWTYPE    ( __MSABI_LONG( 1U ) << 3 )
-#define DTT_SHADOWOFFSET  ( __MSABI_LONG( 1U ) << 4 )
-#define DTT_BORDERSIZE    ( __MSABI_LONG( 1U ) << 5 )
-#define DTT_FONTPROP      ( __MSABI_LONG( 1U ) << 6 )
-#define DTT_COLORPROP     ( __MSABI_LONG( 1U ) << 7 )
-#define DTT_STATEID       ( __MSABI_LONG( 1U ) << 8 )
-#define DTT_CALCRECT      ( __MSABI_LONG( 1U ) << 9 )
-#define DTT_APPLYOVERLAY  ( __MSABI_LONG( 1U ) << 10 )
-#define DTT_GLOWSIZE      ( __MSABI_LONG( 1U ) << 11 )
-#define DTT_CALLBACK      ( __MSABI_LONG( 1U ) << 12 )
-#define DTT_COMPOSITED    ( __MSABI_LONG( 1U ) << 13 )
-#define DTT_VALIDBITS     ( DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
-                            DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED )
-
-typedef int ( WINAPI * DTT_CALLBACK_PROC )( HDC hdc, LPWSTR pszText, INT cchText, LPRECT prc, UINT dwFlags, LPARAM lParam );
-
-#ifdef __BORLANDC__
-typedef BOOL WINBOOL;
-#endif
-
-typedef struct _DTTOPTS {
-   DWORD dwSize;
-   DWORD dwFlags;
-   COLORREF crText;
-   COLORREF crBorder;
-   COLORREF crShadow;
-   INT iTextShadowType;
-   POINT ptShadowOffset;
-   INT iBorderSize;
-   INT iFontPropId;
-   INT iColorPropId;
-   INT iStateId;
-   WINBOOL fApplyOverlay;
-   INT iGlowSize;
-   DTT_CALLBACK_PROC pfnDrawTextCallback;
-   LPARAM lParam;
-} DTTOPTS, *PDTTOPTS;
 
 enum {
    BP_PUSHBUTTON = 1,
@@ -331,16 +261,6 @@ enum {
    CBS_MIXEDPRESSED = 11,
    CBS_MIXEDDISABLED = 12
 };
-
-typedef INT ( CALLBACK * CALL_CLOSETHEMEDATA ) ( HTHEME );
-typedef INT ( CALLBACK * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, INT, INT, const RECT *, const RECT * );
-typedef INT ( CALLBACK * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, RECT * );
-typedef INT ( CALLBACK * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, const RECT *, const DTTOPTS * pOptions );
-typedef INT ( CALLBACK * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, DWORD, const RECT * );
-typedef INT ( CALLBACK * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, INT, INT, const RECT *, RECT * );
-typedef INT ( CALLBACK * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, INT, INT, const RECT *, THEMESIZE, SIZE * );
-typedef INT ( CALLBACK * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, INT, INT );
-typedef INT ( CALLBACK * CALL_OPENTHEMEDATA ) ( HWND, LPCWSTR );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TCheckBox_lpfnOldWndProc( WNDPROC lp )
@@ -386,22 +306,13 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
-   CALL_CLOSETHEMEDATA dwProcCloseThemeData;
-   CALL_DRAWTHEMEBACKGROUND dwProcDrawThemeBackground;
-   CALL_DRAWTHEMEPARENTBACKGROUND dwProcDrawThemeParentBackground;
-   CALL_DRAWTHEMETEXT dwProcDrawThemeText;
-   CALL_DRAWTHEMETEXTEX dwProcDrawThemeTextEx;
-   CALL_GETTHEMEBACKGROUNDCONTENTRECT dwProcGetThemeBackgroundContentRect;
-   CALL_GETTHEMEPARTSIZE dwProcGetThemePartSize;
-   CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT dwProcIsThemeBackgroundPartiallyTransparent;
-   CALL_OPENTHEMEDATA dwProcOpenThemeData;
    DTTOPTS pOptions;
-   HMODULE hInstDLL;
    HTHEME hTheme;
    INT state_id, checkState, drawState;
    LONG_PTR style, state;
    RECT content_rect, aux_rect;
    SIZE s;
+   OSVERSIONINFO osvi;
    static const INT cb_states[ 3 ][ 5 ] =
    {
       { CBS_UNCHECKEDNORMAL, CBS_UNCHECKEDHOT, CBS_UNCHECKEDPRESSED, CBS_UNCHECKEDDISABLED, CBS_UNCHECKEDNORMAL },
@@ -411,39 +322,14 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
    {
-      hInstDLL = LoadLibrary( "UXTHEME.DLL" );
-      if( ! hInstDLL )
+      if( ! _UxTheme_Init() )
       {
          return CDRF_DODEFAULT;
       }
 
-      dwProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hInstDLL, "CloseThemeData" );
-      dwProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeBackground" );
-      dwProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hInstDLL, "DrawThemeParentBackground" );
-      dwProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) GetProcAddress( hInstDLL, "DrawThemeText" );
-      dwProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) GetProcAddress( hInstDLL, "DrawThemeTextEx" );
-      dwProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hInstDLL, "GetThemeBackgroundContentRect" );
-      dwProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) GetProcAddress( hInstDLL, "GetThemePartSize" );
-      dwProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hInstDLL, "IsThemeBackgroundPartiallyTransparent" );
-      dwProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hInstDLL, "OpenThemeData" );
-
-      if( ! ( dwProcCloseThemeData &&
-              dwProcDrawThemeBackground &&
-              dwProcDrawThemeParentBackground &&
-              dwProcGetThemeBackgroundContentRect &&
-              dwProcGetThemePartSize &&
-              dwProcIsThemeBackgroundPartiallyTransparent &&
-              dwProcOpenThemeData &&
-              ( dwProcDrawThemeText || dwProcDrawThemeTextEx ) ) )
-      {
-         FreeLibrary( hInstDLL );
-         return CDRF_DODEFAULT;
-      }
-
-      hTheme = ( HTHEME ) ( dwProcOpenThemeData ) ( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
+      hTheme = ( HTHEME ) ProcOpenThemeData( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
       if( ! hTheme )
       {
-         FreeLibrary( hInstDLL );
          return CDRF_DODEFAULT;
       }
 
@@ -488,18 +374,18 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       /* draw parent background */
       if( bDrawBkGrnd )
       {
-         if( ( dwProcIsThemeBackgroundPartiallyTransparent ) ( hTheme, BP_CHECKBOX, state_id ) )
+         if( ProcIsThemeBackgroundPartiallyTransparent( hTheme, BP_CHECKBOX, state_id ) )
          {
             /* pCustomDraw->rc is the item´s client area */
-            ( dwProcDrawThemeParentBackground ) ( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+            ProcDrawThemeParentBackground( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
          }
       }
 
       /* get button size */
-      ( dwProcGetThemePartSize ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, NULL, TS_TRUE, &s );
+      ProcGetThemePartSize( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, NULL, TS_TRUE, &s );
 
       /* get content rectangle */
-      ( dwProcGetThemeBackgroundContentRect ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &pCustomDraw->rc, &content_rect );
+      ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &pCustomDraw->rc, &content_rect );
 
       aux_rect.top = content_rect.top + ( content_rect.bottom - content_rect.top - s.cy ) / 2;
       aux_rect.bottom = aux_rect.top + s.cy;
@@ -517,11 +403,12 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       }
 
       /* aux_rect is the rect of the item's button area */
-      ( dwProcDrawThemeBackground ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
+      ProcDrawThemeBackground( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
 
       if( strlen( cCaption ) > 0 )
       {
-         if( dwProcDrawThemeTextEx )
+         getwinver( &osvi );
+         if( osvi.dwMajorVersion >= 6 )
          {
             /* paint caption */
             memset( &pOptions, 0, sizeof( DTTOPTS ) );
@@ -531,14 +418,14 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
                pOptions.dwFlags |= DTT_TEXTCOLOR;
                pOptions.crText = (COLORREF) oSelf->lFontColor;
             }
-            ( dwProcDrawThemeTextEx ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
+            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
             {
                aux_rect = content_rect;
                pOptions.dwFlags = DTT_CALCRECT;
-               ( dwProcDrawThemeTextEx ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
+               ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
                aux_rect.top += 5;
                aux_rect.bottom += 1;
                aux_rect.right += 1;
@@ -552,7 +439,7 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
          else
          {
             /* paint caption */
-            ( dwProcDrawThemeText ) ( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &content_rect );
+            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &content_rect );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
@@ -571,8 +458,7 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       }
 
       /* cleanup */
-     ( dwProcCloseThemeData ) ( hTheme );
-      FreeLibrary( hInstDLL );
+     ProcCloseThemeData( hTheme );
    }
 
    return CDRF_SKIPDEFAULT;
