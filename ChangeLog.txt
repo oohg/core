@@ -12,15 +12,6 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2019-08-30 18:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\h_menu.prg
-     + Some cleanup code to release attached objects.
-
-2019-08-30 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\h_richeditbox.prg
-     + Function _RichEdit_DeInit. Now RICHED20.DLL is loaded once.
-     * Format.
-
 2019-08-30 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_winapimisc.c
      + Functions _ComCtl32_DeInit, GetComCtl32Version, IsAppThemed

@@ -195,7 +195,7 @@ CLASS TMenu FROM TControl
    METHOD Params                       SETGET
    METHOD PopUpPosition( hWndPopUp )   BLOCK { |Self, hWndPopUp| FindPopUpPosition( ::hWnd, hWndPopUp ) }
    METHOD Refresh
-   METHOD Release                      BLOCK { |Self| DestroyMenu( ::hWnd ), ::oMenuParams := NIL, ::Super:Release() }
+   METHOD Release                      BLOCK { |Self| DestroyMenu( ::hWnd ), ::Super:Release() }
    METHOD Separator                    BLOCK { |Self| TMenuItem():DefineSeparator( NIL, Self ) }
    METHOD SeparatorType                SETGET
    METHOD SetMenuBarColor
@@ -1010,8 +1010,6 @@ METHOD SeparatorType( nType ) CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TMenuItem
 
-   ::oMenuParams := NIL
-
    IF ::hBitMaps[1] != NIL
      DeleteObject( ::hBitMaps[1] )
      ::hBitMaps[1] := NIL
@@ -1414,9 +1412,7 @@ METHOD Release() CLASS TMenuItemMRU
 
    ::Save()
    ::Clear()
-   ::oTopItem:Release()
    ::oTopItem := NIL
-   ::oMenuParams := NIL
 
    RETURN ::Super:Release()
 
