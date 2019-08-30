@@ -244,6 +244,88 @@ typedef struct OOHG_Window
 #define _OOHG_Struct_Size  ( sizeof( OCTRL ) + 100 )      // TODO: Check is the + 100 is necessary
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+/*
+This files are not present in BCC 551
+#include <uxtheme.h>
+#include <tmschema.h>
+*/
+
+typedef HANDLE HTHEME;
+
+typedef enum THEMESIZE {
+   TS_MIN,
+   TS_TRUE,
+   TS_DRAW
+} THEMESIZE;
+
+#ifndef __MSABI_LONG
+#  ifndef __LP64__
+#    define __MSABI_LONG( x )  ( x ## l )
+#  else
+#    define __MSABI_LONG( x )  ( x )
+#  endif
+#endif
+
+#define DTT_TEXTCOLOR     ( __MSABI_LONG( 1U ) << 0 )
+#define DTT_BORDERCOLOR   ( __MSABI_LONG( 1U ) << 1 )
+#define DTT_SHADOWCOLOR   ( __MSABI_LONG( 1U ) << 2 )
+#define DTT_SHADOWTYPE    ( __MSABI_LONG( 1U ) << 3 )
+#define DTT_SHADOWOFFSET  ( __MSABI_LONG( 1U ) << 4 )
+#define DTT_BORDERSIZE    ( __MSABI_LONG( 1U ) << 5 )
+#define DTT_FONTPROP      ( __MSABI_LONG( 1U ) << 6 )
+#define DTT_COLORPROP     ( __MSABI_LONG( 1U ) << 7 )
+#define DTT_STATEID       ( __MSABI_LONG( 1U ) << 8 )
+#define DTT_CALCRECT      ( __MSABI_LONG( 1U ) << 9 )
+#define DTT_APPLYOVERLAY  ( __MSABI_LONG( 1U ) << 10 )
+#define DTT_GLOWSIZE      ( __MSABI_LONG( 1U ) << 11 )
+#define DTT_CALLBACK      ( __MSABI_LONG( 1U ) << 12 )
+#define DTT_COMPOSITED    ( __MSABI_LONG( 1U ) << 13 )
+#define DTT_VALIDBITS     ( DTT_TEXTCOLOR | DTT_BORDERCOLOR | DTT_SHADOWCOLOR | DTT_SHADOWTYPE | DTT_SHADOWOFFSET | DTT_BORDERSIZE | \
+                            DTT_FONTPROP | DTT_COLORPROP | DTT_STATEID | DTT_CALCRECT | DTT_APPLYOVERLAY | DTT_GLOWSIZE | DTT_COMPOSITED )
+
+typedef int ( WINAPI * DTT_CALLBACK_PROC )( HDC hdc, LPWSTR pszText, INT cchText, LPRECT prc, UINT dwFlags, LPARAM lParam );
+
+typedef BOOL WINBOOL;
+
+typedef struct _MARGINS {
+   INT cxLeftWidth;
+   INT cxRightWidth;
+   INT cyTopHeight;
+   INT cyBottomHeight;
+} MARGINS, *PMARGINS;
+
+typedef struct _DTTOPTS {
+   DWORD dwSize;
+   DWORD dwFlags;
+   COLORREF crText;
+   COLORREF crBorder;
+   COLORREF crShadow;
+   INT iTextShadowType;
+   POINT ptShadowOffset;
+   INT iBorderSize;
+   INT iFontPropId;
+   INT iColorPropId;
+   INT iStateId;
+   WINBOOL fApplyOverlay;
+   INT iGlowSize;
+   DTT_CALLBACK_PROC pfnDrawTextCallback;
+   LPARAM lParam;
+} DTTOPTS, *PDTTOPTS;
+
+typedef INT ( CALLBACK * CALL_CLOSETHEMEDATA ) ( HTHEME );
+typedef INT ( CALLBACK * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, INT, INT, const RECT *, const RECT * );
+typedef INT ( CALLBACK * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, const RECT * );
+typedef INT ( CALLBACK * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, const RECT *, const DTTOPTS * pOptions );
+typedef INT ( CALLBACK * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, DWORD, const RECT * );
+typedef INT ( CALLBACK * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, INT, INT, const RECT *, RECT * );
+typedef INT ( CALLBACK * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, INT, INT, const RECT *, THEMESIZE, SIZE * );
+typedef INT ( CALLBACK * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, INT, INT );
+typedef INT ( CALLBACK * CALL_OPENTHEMEDATA ) ( HWND, LPCWSTR );
+typedef INT ( CALLBACK * CALL_SETWINDOWTHEME )( HWND, LPCWSTR, LPCWSTR );
+typedef INT ( CALLBACK * CALL_ISTHEMEACTIVE )( VOID );
+typedef INT ( CALLBACK * CALL_ISAPPTHEMED )( VOID );
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Prototypes for C functions used in several modules */
 
 VOID SetDragCursorARROW( BOOL isCtrlKeyDown );
@@ -289,6 +371,17 @@ VOID _User32_DeInit( VOID );
 VOID _UxTheme_DeInit( VOID );
 BOOL InitDeinitGdiPlus( BOOL );
 HMODULE _UxTheme_Init( VOID );
+INT ProcCloseThemeData( HTHEME hTheme );
+INT ProcDrawThemeBackground( HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect );
+INT ProcDrawThemeParentBackground( HWND hwnd, HDC hdc, LPCRECT prc );
+INT ProcDrawThemeText( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect );
+INT ProcDrawThemeTextEx( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS * pOptions );
+INT ProcGetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect );
+INT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE * psz );
+INT ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int iStateId );
+INT ProcOpenThemeData( HWND hwnd, LPCWSTR pszClassList );
+INT ProcSetWindowTheme( HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList );
+INT ProcIsThemeActive( VOID );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Table of symbols used at C level to access some datas and methods of different classes */
