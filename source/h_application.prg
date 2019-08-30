@@ -137,13 +137,16 @@
 #define NDX_OOHG_VALIDATING            52
 #define NDX_OOHG_ACTIVEHELPFILE        53
 #define NDX_OOHG_USELIBRARYDRAW        54
-#define NUMBER_OF_APP_WIDE_VARS        54
+#define NDX_OOHG_ENABLEUNREGUNUSED     55
+#define NDX_OOHG_EXITONMAINRELEASE     56
+#define NUMBER_OF_APP_WIDE_VARS        56
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
 
    CLASSVAR oAppObj               INIT NIL HIDDEN
 
+   DATA aClasses                  INIT {}  HIDDEN
    DATA aEventsStack              INIT {}  HIDDEN
    DATA aFonts                    INIT {}  READONLY
    DATA aFramesStack              INIT {}  HIDDEN
@@ -174,6 +177,7 @@ CLASS TApplication
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
    METHOD DefineLogFont
+   METHOD DeleteGlobalMutex       HIDDEN
    METHOD EventInfoClear
    METHOD EventInfoList
    METHOD EventInfoPop
@@ -186,12 +190,12 @@ CLASS TApplication
    METHOD HelpButton              SETGET
    METHOD HotKeySet
    METHOD hWnd
-   METHOD MultipleInstances       SETGET
    METHOD MainClientHeight        SETGET
    METHOD MainClientWidth         SETGET
    METHOD MainName
    METHOD MainObject
    METHOD MainStyle               SETGET
+   METHOD MultipleInstances       SETGET
    METHOD MutexLock
    METHOD MutexUnlock
    METHOD New
@@ -254,7 +258,11 @@ CLASS TApplication
    METHOD Value_Pos52             SETGET
    METHOD Value_Pos53             SETGET
    METHOD Value_Pos54             SETGET
+   METHOD Value_Pos55             SETGET
+   METHOD Value_Pos56             SETGET
    METHOD Width                   SETGET
+   METHOD WinClassReg
+   METHOD WinClassUnreg
    METHOD WinMHDefine
    METHOD WinMHRelease
 
@@ -300,7 +308,7 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]     := 0
       ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]      := 0
       ::aVars[ NDX_OOHG_THISITEMROWINDEX ]      := 0
-      ::aVars[ NDX_OOHG_THISOBJECT ]            := ''
+      ::aVars[ NDX_OOHG_THISOBJECT ]            := NIL
       ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]     := 0
       ::aVars[ NDX_OOHG_THISQUERYDATA ]         := ""
       ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]     := 0
@@ -331,6 +339,8 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_VALIDATING ]            := {}
       ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]        := ""
       ::aVars[ NDX_OOHG_USELIBRARYDRAW ]        := .F.
+      ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]     := .T.
+      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .T.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -398,15 +408,14 @@ METHOD ActiveFrameGet() CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFramePop() CLASS TApplication
 
-   LOCAL nThreadID, i, nLen
+   LOCAL nThreadID, i
 
    ::MutexLock()
    nThreadID := GetThreadId()
-   i := nLen := Len( ::aFramesStack )
+   i := Len( ::aFramesStack )
    DO WHILE i > 0
       IF ::aFramesStack[ i ][ 1 ] == nThreadID
-         ADel( ::aFramesStack, i )
-         ASize( ::aFramesStack, nLen - 1 )
+         _OOHG_DeleteArrayItem( ::aFramesStack, i )
          EXIT
       ENDIF
       i --
@@ -447,15 +456,14 @@ METHOD ActiveMenuGet() CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveMenuPop() CLASS TApplication
 
-   LOCAL nThreadID, i, nLen
+   LOCAL nThreadID, i
 
    ::MutexLock()
    nThreadID := GetThreadId()
-   i := nLen := Len( ::aMenusStack )
+   i := Len( ::aMenusStack )
    DO WHILE i > 0
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
-         ADel( ::aMenusStack, i )
-         ASize( ::aMenusStack, nLen - 1 )
+         _OOHG_DeleteArrayItem( ::aMenusStack, i )
          EXIT
       ENDIF
       i --
@@ -485,8 +493,7 @@ METHOD ActiveMenuRemove( oMenu ) CLASS TApplication
    DO WHILE i <= nLen
       IF ::aMenusStack[ i ][ 1 ] == nThreadID
          IF ::aMenusStack[ i ][ 2 ]:hWnd == oMenu:hWnd
-            ADel( ::aMenusStack, i )
-            ASize( ::aMenusStack, nLen - 1 )
+            _OOHG_DeleteArrayItem( ::aMenusStack, i )
             EXIT
          ENDIF
       ENDIF
@@ -645,11 +652,11 @@ METHOD EventInfoList() CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoPop() CLASS TApplication
 
-   LOCAL nThreadID, i, nLen
+   LOCAL nThreadID, i
 
    ::MutexLock()
    nThreadID := GetThreadId()
-   i := nLen := Len( ::aEventsStack )
+   i := Len( ::aEventsStack )
    DO WHILE i > 0
       IF ::aEventsStack[ i ][ 01 ] == nThreadID
          ::aVars[ NDX_OOHG_THISCONTROL ]        := ::aEventsStack[ i ][ 02 ]
@@ -664,8 +671,7 @@ METHOD EventInfoPop() CLASS TApplication
          ::aVars[ NDX_OOHG_THISITEMROWINDEX ]   := ::aEventsStack[ i ][ 11 ]
          ::aVars[ NDX_OOHG_THISOBJECT ]         := ::aEventsStack[ i ][ 12 ]
          ::aVars[ NDX_OOHG_THISTYPE ]           := ::aEventsStack[ i ][ 13 ]
-         ADel( ::aEventsStack, i )
-         ASize( ::aEventsStack, nLen - 1 )
+         _OOHG_DeleteArrayItem( ::aEventsStack, i )
          ::MutexUnlock()
          RETURN NIL
       ENDIF
@@ -697,8 +703,7 @@ METHOD EventInfoClear( nThreadID ) CLASS TApplication
    i := Len( ::aEventsStack )
    DO WHILE i > 0
       IF ::aEventsStack[ i ][ 01 ] == nThreadID
-         ADel( ::aEventsStack, i )
-         ASize( ::aEventsStack, Len( ::aEventsStack ) - 1 )
+         _OOHG_DeleteArrayItem( ::aEventsStack, i )
       ENDIF
       i --
    ENDDO
@@ -1064,11 +1069,49 @@ METHOD Release() CLASS TApplication
    LOCAL i
 
    ::MutexLock()
+
    FOR i := 1 TO Len( ::aFonts )
       DeleteObject( ::aFonts[ i ] )
    NEXT i
-   ::aFonts := {}
+   ::aFonts := NIL
+
+   IF HB_ISOBJECT( ::oWinMH )
+      ::oWinMH:Release()
+   ENDIF
+   ::oWinMH := NIL
+
+   ::WinClassUnreg()
+
+   FOR i := 1 TO Len( ::aVars )
+      ::aVars[ i ] := NIL
+   NEXT i
+   ::aVars := NIL
+
+   FOR i := 1 TO Len( ::aEventsStack )
+      ::aEventsStack[ i ] := NIL
+   NEXT i
+   ::aEventsStack := NIL
+
+   FOR i := 1 TO Len( ::aFramesStack )
+      ::aFramesStack[ i ] := NIL
+   NEXT i
+   ::aFramesStack := NIL
+
+   FOR i := 1 TO Len( ::aMenusStack )
+      ::aMenusStack[ i ] := NIL
+   NEXT i
+   ::aMenusStack := NIL
+
+   FreeLibraries()
+
+   ::oAppObj := NIL
+
+   CloseHandle( ::AppMutex )
+   ::AppMutex := NIL
+
    ::MutexUnlock()
+
+   ::DeleteGlobalMutex()
 
    RETURN ( NIL )
 
@@ -1081,8 +1124,7 @@ METHOD ReleaseLogFont( cFontID ) CLASS TApplication
    IF HB_ISSTRING( cFontID ) .AND. ! Empty( cFontID )
       IF ( i := AScan( ::aFonts, { |f| f[ FONT_ID ] == Upper( cFontID ) } ) ) > 0
          DeleteObject( ::aFonts[ i, FONT_HANDLE ] )
-         ADel( ::aFonts[ i ] )
-         ASize( ::aFonts, Len( ::aFonts ) - 1 )
+         _OOHG_DeleteArrayItem( ::aFonts, i )
       ENDIF
    ENDIF
    ::MutexUnlock()
@@ -1174,8 +1216,7 @@ METHOD Value_Pos01( uValue ) CLASS TApplication
    IF PCount() > 0
       IF uValue == NIL
          IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], { |a| a[ 1 ] == nThreadID } ) ) > 0
-            ADel( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], i )
-            ASize( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], Len( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ] ) - 1 )
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ], i )
          ENDIF
          uRet := NIL
       ELSE
@@ -1207,8 +1248,7 @@ METHOD Value_Pos02( uValue ) CLASS TApplication
    IF PCount() > 0
       IF uValue == NIL
          IF ( i := AScan( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], { |a| a[ 1 ] == nThreadID } ) ) > 0
-            ADel( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], i )
-            ASize( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], Len( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ] ) - 1 )
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_ACTIVETOOLBAR ], i )
          ENDIF
          uRet := NIL
       ELSE
@@ -1929,8 +1969,7 @@ METHOD Value_Pos51( lValue ) CLASS TApplication
          uRet := .T.
       ELSE
          IF ( i := AScan( ::aVars[ NDX_OOHG_SETTINGFOCUS ], nThreadID ) ) # 0
-            ADel( ::aVars[ NDX_OOHG_SETTINGFOCUS ], i )
-            ASize( ::aVars[ NDX_OOHG_SETTINGFOCUS ], Len( ::aVars[ NDX_OOHG_SETTINGFOCUS ] ) - 1 )
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_SETTINGFOCUS ], i )
          ENDIF
          uRet := .F.
       ENDIF
@@ -1956,8 +1995,7 @@ METHOD Value_Pos52( lValue ) CLASS TApplication
          uRet := .T.
       ELSE
          IF ( i := AScan( ::aVars[ NDX_OOHG_VALIDATING ], nThreadID ) ) # 0
-            ADel( ::aVars[ NDX_OOHG_VALIDATING ], i )
-            ASize( ::aVars[ NDX_OOHG_VALIDATING ], Len( ::aVars[ NDX_OOHG_VALIDATING ] ) - 1 )
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_VALIDATING ], i )
          ENDIF
          uRet := .F.
       ENDIF
@@ -1997,6 +2035,34 @@ METHOD Value_Pos54( lValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos55( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos56( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TApplication
 
    LOCAL uRet, oMain
@@ -2020,6 +2086,39 @@ METHOD Width( nWidth ) CLASS TApplication
    ::MutexUnlock()
 
    RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD WinClassReg( cIcon, cName, aRGB, nWindowType ) CLASS TApplication
+
+   LOCAL aRet
+
+   ::MutexLock()
+   IF ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]
+      aRet := RegisterWindow( cIcon, cName, aRGB, nWindowType )   // Len( cName ) must be < 256
+      IF ! aRet[ 2 ]
+         AAdd( ::aClasses, cName )
+      ENDIF
+   ENDIF
+   ::MutexUnlock()
+
+   RETURN ( aRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD WinClassUnreg() CLASS TApplication
+
+   LOCAL i
+
+   ::MutexLock()
+   IF ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]
+      FOR i := Len( ::aClasses ) TO 1 STEP -1
+         IF UnRegisterWindow( ::aClasses[i] )
+            _OOHG_DeleteArrayItem( ::aClasses, i )
+         ENDIF
+      NEXT i
+   ENDIF
+   ::MutexUnlock()
+
+   RETURN ( NIL )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD WinMHDefine CLASS TApplication
@@ -2122,6 +2221,17 @@ HB_FUNC_STATIC( TAPPLICATION_MUTEXLOCK )
 HB_FUNC_STATIC( TAPPLICATION_MUTEXUNLOCK )
 {
    ReleaseMutex( hGlobalMutex );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TAPPLICATION_DELETEGLOBALMUTEX )
+{
+   if( hGlobalMutex )
+   {
+      CloseHandle( hGlobalMutex );
+      hGlobalMutex = NULL;
+   }
+   hb_retl( hGlobalMutex == NULL );
 }
 
 #pragma ENDDUMP
