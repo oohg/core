@@ -23,5 +23,8 @@ Detail the steps to build, execute and reproduce the bug.
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Suggested solution**
+If you want to suggest a solution, keep in mind that the preferred method is to send an extraction request.In any other case, please make a copy of the original source file, add your suggestion to it and attach the resulting file to this issue report.
+
 **Additional information**
 Add any additional information about the problem here.
