@@ -450,7 +450,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitMonthCal( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType, nStyle )) -> hWnd */
+HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType, nStyle )) -> hWnd */
 {
    HWND hCtrl;
    INT Style, StyleEx;
