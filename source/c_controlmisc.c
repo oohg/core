@@ -79,7 +79,6 @@
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
-//  TODO: Thread safe ?
 static PHB_SYMB *s_Symbols = NULL;
 
 static char *s_SymbolNames[] = { "EVENTS_NOTIFY",
@@ -166,6 +165,7 @@ static char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                                  "EVENTS_MENUHILITED",
                                  "EVENTS_INITMENUPOPUP",
                                  "OMENU",
+                                 "EVENTS_TIMEOUT",
                                  "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )

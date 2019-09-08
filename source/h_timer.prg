@@ -64,44 +64,53 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTimer FROM TControl
 
-   DATA Type      INIT "TIMER" READONLY
-   DATA Interval  INIT 0
+   DATA Interval                  INIT 0
+   DATA lOnce                     INIT .F.
+   DATA Type                      INIT "TIMER" READONLY
 
    METHOD Define
-   METHOD Value        SETGET
-   METHOD Enabled      SETGET
+   METHOD Enabled                 SETGET
+   METHOD Events_TimeOut
    METHOD Release
+   METHOD Value                   SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, Interval, ProcedureName, lDisabled ) CLASS TTimer
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nInterval, bProcedureName, lDisabled, lOnce ) CLASS TTimer
 
-   ::SetForm( ControlName, ParentForm )
-   ::InitStyle( ,,,, lDisabled )
-   ::Register( 0, ControlName, , , , _GetId() )
-   ::OnClick  := ProcedureName
+   ::SetForm( cControlName, uParentForm )
+   ::InitStyle( NIL, NIL, NIL, NIL, lDisabled )
+   ::Register( 0, cControlName, NIL, NIL, NIL, _GetId() )
+
+   ASSIGN ::OnClick   VALUE bProcedureName TYPE "B"
+   ASSIGN ::lOnce     VALUE lOnce          TYPE "L"
+
    // "Real" initialization
-   ::Value := Interval
+   ::Value := nInterval
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( nValue ) CLASS TTimer
 
-   If VALTYPE( nValue ) == "N"
-      If ::lEnabled
+   IF ValType( nValue ) == "N"
+      IF ::lEnabled
          KillTimer( ::Parent:hWnd, ::Id )
          InitTimer( ::Parent:hWnd, ::Id, nValue )
-      EndIf
+      ENDIF
       ::Interval := nValue
-   EndIf
+   ENDIF
 
    RETURN ::Interval
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Enabled( lEnabled ) CLASS TTimer
 
-   IF VALTYPE( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
+   IF ValType( lEnabled ) == "L" .AND. ::lEnabled != lEnabled
       IF lEnabled
          InitTimer( ::Parent:hWnd, ::Id, ::Interval )
       ELSE
@@ -112,18 +121,27 @@ METHOD Enabled( lEnabled ) CLASS TTimer
 
    RETURN ::lEnabled
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TTimer
 
-   If ::lEnabled
+   IF ::lEnabled
       KillTimer( ::Parent:hWnd, ::Id )
-   EndIf
+   ENDIF
    ::lEnabled := .F.
 
    RETURN ::Super:Release()
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Events_TimeOut() CLASS TTimer
 
-EXTERN InitTimer, KillTimer
+   ::DoEvent( ::OnClick, "TIMER" )
+   IF ::lOnce
+      ::Enabled := .F.
+   ENDIF
 
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
@@ -153,12 +171,14 @@ EXTERN InitTimer, KillTimer
 #include "tchar.h"
 #include "oohg.h"
 
-HB_FUNC( INITTIMER )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTIMER )          /* FUNCTION InitTimer( hWnd, nId, nInterval ) -> NIL */
 {
-   SetTimer( HWNDparam( 1 ),( UINT ) hb_parni( 2 ), ( UINT ) hb_parni( 3 ), ( TIMERPROC ) NULL );
+   SetTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( UINT ) hb_parni( 3 ), ( TIMERPROC ) NULL );
 }
 
-HB_FUNC( KILLTIMER )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( KILLTIMER )          /* FUNCTION KillTimer( hWnd, nId ) -> NIL */
 {
    KillTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ) );
 }

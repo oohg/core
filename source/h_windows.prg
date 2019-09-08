@@ -217,6 +217,7 @@ CLASS TWindow
    METHOD Events_Enter            BLOCK { || NIL }
    METHOD Events_HScroll          BLOCK { || NIL }
    METHOD Events_Size             BLOCK { || NIL }
+   METHOD Events_TimeOut          BLOCK { |Self| ::DoEvent( ::OnClick, "TIMER" ) }
    METHOD Events_VScroll          BLOCK { || NIL }
    METHOD ExStyle                 SETGET
    METHOD Fill
@@ -1900,7 +1901,9 @@ STATIC FUNCTION _OOHG_MacroCall_Error( oError )
 FUNCTION ExitProcess( nExit )
 
    dbCloseAll()
-   TApplication():Define():Release()
+   IF HB_ISOBJECT( TApplication():Define() )
+      TApplication():Define():Release()
+   ENDIF
 
    RETURN _ExitProcess2( nExit )
 
@@ -2172,6 +2175,8 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HDC hdc;
+   HBRUSH OldBrush;
 
    // ImageList
    ImageList_Destroy( oSelf->ImageList );
@@ -2190,8 +2195,18 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
    oSelf->IconHandle = NULL;
 
    // Brush handle
-   DeleteObject( oSelf->BrushHandle );
-   oSelf->BrushHandle = NULL;
+   if( ValidHandler( oSelf->hWnd ) )
+   {
+      hdc = GetDC( oSelf->hWnd );
+      if( ValidHandler( hdc ) )
+      {
+         OldBrush = SelectObject( hdc, oSelf->OriginalBrush );
+         DeleteObject( OldBrush );
+         DeleteObject( oSelf->BrushHandle );
+         oSelf->BrushHandle = NULL;
+         ReleaseDC( oSelf->hWnd, hdc );
+      }
+   }
 
    // Font handle
    DeleteObject( oSelf->hFontHandle );
@@ -2211,9 +2226,6 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
 
    // ::hWnd := -1
    oSelf->hWnd = ( HWND )( ~0 );
-   _OOHG_Send( pSelf, s__hWnd );
-   HWNDpush( ~0 );
-   hb_vmSend( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2520,7 +2532,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
-         hb_vmPushLong( GetSysColor( COLOR_3DFACE ) );
+         hb_vmPushLong( COLOR_3DFACE );
          hb_vmPushNil();
          hb_vmSend( 3 );
          break;
@@ -2529,7 +2541,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CTLCOLORLISTBOX:
          _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
-         hb_vmPushLong( GetSysColor( COLOR_WINDOW ) );
+         hb_vmPushLong( COLOR_WINDOW );
          hb_vmPushNil();
          hb_vmSend( 3 );
          break;
@@ -2613,7 +2625,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_TIMER:
-         _OOHG_DoEvent( GetControlObjectById( LOWORD( wParam ), hWnd ), s_OnClick, "TIMER", NULL );
+         _OOHG_Send( GetControlObjectById( LOWORD( wParam ), hWnd ), s_Events_TimeOut );
+         hb_vmSend( 0 );
          hb_ret();
          break;
 

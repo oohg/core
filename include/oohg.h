@@ -239,6 +239,7 @@ typedef struct OOHG_Window
    LONG       lOldBackColor;
    LONG       lUseBackColor;
    HICON      IconHandle;
+   HBRUSH     OriginalBrush;
 } OCTRL, * POCTRL;
 
 #define _OOHG_Struct_Size  ( sizeof( OCTRL ) + 100 )      // TODO: Check is the + 100 is necessary
@@ -382,6 +383,8 @@ INT ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int i
 INT ProcOpenThemeData( HWND hwnd, LPCWSTR pszClassList );
 INT ProcSetWindowTheme( HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList );
 INT ProcIsThemeActive( VOID );
+INT GetGDIObjects( DWORD );
+INT GetUserObjects( DWORD);
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Table of symbols used at C level to access some datas and methods of different classes */
@@ -470,7 +473,8 @@ INT ProcIsThemeActive( VOID );
 #define s_Events_MenuHilited    81
 #define s_Events_InitMenuPopUp  82
 #define s_oMenu                 83
-#define s_LastSymbol            84
+#define s_Events_TimeOut        84
+#define s_LastSymbol            85
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */

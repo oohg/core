@@ -1288,6 +1288,7 @@ CLASS TControl FROM TWindow
    METHOD Register
    METHOD AddToCtrlsArrays
    METHOD PreAddToCtrlsArrays
+   METHOD PosAddToCtrlsArrays
    METHOD DelFromCtrlsArrays
    METHOD TabIndex           SETGET
    METHOD Refresh            BLOCK { |Self| ::ReDraw() }
@@ -1591,6 +1592,19 @@ METHOD AddToCtrlsArrays() CLASS TControl
 
    RETURN NIL
 
+METHOD PosAddToCtrlsArrays() CLASS TControl
+
+   LOCAL nPos
+
+   nPos := AScan( _OOHG_aControlNames, { |c| c == Upper( ::Parent:Name + Chr( 255 ) + ::Name ) } )
+
+   IF nPos > 0
+      _OOHG_aControlhWnd[ nPos ] := ::hWnd
+      RETURN .T.
+   ENDIF
+
+   RETURN .F.
+
 METHOD DelFromCtrlsArrays() CLASS TControl
 
    LOCAL nPos
@@ -1633,7 +1647,9 @@ METHOD Release() CLASS TControl
       oCont:LastFocusedControl := 0
    ENDIF
 
-   // Remove from container
+   DeleteObject( ::FontHandle )
+   DeleteObject( ::AuxHandle )
+
    IF ::Container != NIL
       ::Container:DeleteControl( Self )
    ENDIF
@@ -1642,20 +1658,20 @@ METHOD Release() CLASS TControl
 
    ::Parent:DeleteControl( Self )
 
-   If ValidHandler( ::hWnd )
-      ReleaseControl( ::hWnd )
-   EndIf
-
-   DeleteObject( ::FontHandle )
-   DeleteObject( ::AuxHandle )
-
    mVar := '_' + ::Parent:Name + '_' + ::Name
    IF Type ( mVar ) != 'U'
       __mvPut( mVar , 0 )
       __mvXRelease( mVar )
    ENDIF
 
-   Return ::Super:Release()
+   ::Super:Release()
+
+   IF ValidHandler( ::hWnd )
+      ReleaseControl( ::hWnd )
+   ENDIF
+   ::hWnd := NIL
+
+   RETURN NIL
 
 METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TControl
 
@@ -1696,6 +1712,8 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
    ELSE
       ::FntOrientation := ::FntAngle
    ENDIF
+
+   DeleteObject( ::FontHandle )
    ::FontHandle := _SetFont( ::hWnd, ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout, ::FntAngle, ::FntCharset, ::FntWidth, ::FntOrientation, ::FntAdvancedGM )
 
    RETURN ::FontHandle
@@ -1857,7 +1875,10 @@ METHOD SetVarBlock( cField, uValue ) CLASS TControl
 
 METHOD ClearBitMaps CLASS TControl
 
-   ::ImageList := 0
+   IF ValidHandler( ::ImageList )
+      ImageList_Destroy( ::ImageList )
+      ::ImageList := 0
+   ENDIF
 
    RETURN NIL
 
@@ -2068,7 +2089,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hdc = ( HDC ) HB_PARNL( 1 );
-   HBRUSH OldBrush;
+   HBRUSH OldBrush, NewBrush;
    LONG lBackColor;
    RECT rc;
    BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
@@ -2077,6 +2098,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    POCTRL oBkGrnd;
    POINT pt;
    BOOL bPaint = FALSE;
+   BOOL bUseSys = FALSE;
 
    if( oSelf->lFontColor != -1 )
    {
@@ -2154,16 +2176,31 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
       if( lBackColor == -1 )
       {
-         lBackColor = hb_parnl( 2 );
+         lBackColor = GetSysColor( hb_parnl( 2 ) );
+         bUseSys = TRUE;
       }
       SetBkColor( hdc, ( COLORREF ) lBackColor );
       if( lBackColor != oSelf->lOldBackColor )
       {
          oSelf->lOldBackColor = lBackColor;
-         DeleteObject( oSelf->BrushHandle );
-         oSelf->BrushHandle = CreateSolidBrush( lBackColor );
-         OldBrush = SelectObject( hdc, oSelf->BrushHandle );
-         DeleteObject( OldBrush );
+         if( bUseSys )
+         {
+            NewBrush = GetSysColorBrush( hb_parnl( 2 ) );
+         }
+         else
+         {
+            NewBrush = CreateSolidBrush( lBackColor );
+         }
+         OldBrush = SelectObject( hdc, NewBrush );
+         if( oSelf->OriginalBrush )
+         {
+            DeleteObject( OldBrush );
+         }
+         else
+         {
+            oSelf->OriginalBrush = OldBrush;
+         }
+         oSelf->BrushHandle = NewBrush;
       }
    }
 
