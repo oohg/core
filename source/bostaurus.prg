@@ -1175,9 +1175,9 @@ typedef struct
 
 typedef void * gPlusImage;
 
-INT GdipLoadImageFromStream( IStream *, void ** );
+INT ProcGdipLoadImageFromStream( IStream *, void ** );
 
-INT GdipSaveImageToFile( void *, const unsigned short *, const CLSID *, const ENCODER_PARAMETERS * );
+INT ProcGdipSaveImageToFile( void *, const unsigned short *, const CLSID *, const ENCODER_PARAMETERS * );
 
 #define BT_FILEFORMAT_BMP 0
 #define BT_FILEFORMAT_JPG 1
@@ -1235,8 +1235,8 @@ BOOL bt_SaveGDIPlusPicture( HBITMAP hBitmap, TCHAR *FileName, INT TypePicture ) 
          MultiByteToWideChar( CP_ACP, 0, FileName, -1, wFileName, MAX_PATH );
          #endif
 
-         ret1 = GdipLoadImageFromStream( iStream, &image );
-         ret2 = GdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );
+         ret1 = ProcGdipLoadImageFromStream( iStream, &image );
+         ret2 = ProcGdipSaveImageToFile( image, wFileName, &encoderClsid, NULL );
 
          iStream->lpVtbl->Release( iStream );
 
@@ -4106,31 +4106,6 @@ HB_FUNC( BT_IMAGELISTEXTRACTICON )    // ( hImagelist, nIndex )
    HB_RETNL( (LONG_PTR) hIcon );
 }
 
-HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf, UINT cchBuf )
-{
-   typedef HRESULT ( WINAPI *STRRETTOBUFA ) ( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
-   static STRRETTOBUFA StrRetToBufA = NULL;
-   HMODULE hLib;
-   HRESULT ret;
-
-   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if( StrRetToBufA == NULL )
-   {
-      hLib = LoadLibrary( "Shlwapi.dll" );
-      StrRetToBufA = (STRRETTOBUFA) GetProcAddress( hLib, "StrRetToBufA" );
-   }
-   if( StrRetToBufA == NULL )
-   {
-      ret = (HRESULT) -1;
-   }
-   else
-   {
-      ret = StrRetToBufA( pstr, pidl, pszBuf, cchBuf );
-   }
-   ReleaseMutex( _OOHG_GlobalMutex() );
-   return( ret );
-}
-
 TCHAR * _LocalDateTimeToDateTimeANSI( TCHAR * );
 
 TCHAR * bt_LocalDateTimeToDateTimeANSI( TCHAR * cLocalDateTime )
@@ -4146,6 +4121,7 @@ TCHAR * bt_SpaceToBlank( TCHAR * cStr )
    return _SpaceToBlank( cStr );
 }
 
+HRESULT WINAPI win_StrRetToBuf( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
 
 #define BT_DIRECTORYINFO_NAME                      1
 #define BT_DIRECTORYINFO_DATE                      2

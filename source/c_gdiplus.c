@@ -341,6 +341,17 @@ BOOL InitDeinitGdiPlus( BOOL OnOff )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcGdipLoadImageFromStream( IStream * istream, void ** image )
+{
+   return ( INT ) GdipLoadImageFromStream( istream, image );
+}
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcGdipSaveImageToFile( void * gbitmap, const unsigned short * wfilename, const CLSID * clsid, const ENCODER_PARAMETERS * params )
+{
+   return ( INT ) GdipSaveImageToFile( gbitmap, wfilename, clsid, params );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static BOOL LoadGdiPlusDll( void )
 {
    void * GdiPlusHandle_pre;
@@ -786,7 +797,7 @@ HB_FUNC( GPLUSLOADIMAGEFROMFILE )
 LONG LoadImageFromFile( const char * FileName, gPlusImagePtr gImage )
 {
    LPWSTR WFileName;
-   long   result;
+   LONG result;
 
    WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
    if( WFileName == NULL )
