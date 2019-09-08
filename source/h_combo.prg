@@ -1855,6 +1855,7 @@ METHOD Define( Parent, hWnd ) CLASS TEditCombo
    ::Name   := _OOHG_GetNullName()
    ::Parent := Parent
    ::hWnd   := hWnd
+   ::SethWnd( hWnd )
 
    ::AddToCtrlsArrays()
 
