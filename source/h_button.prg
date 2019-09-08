@@ -80,6 +80,7 @@ CLASS TButton FROM TControl
    DATA lFitTxt                   INIT .F.
    DATA lLibDraw                  INIT .F.
    DATA lNo3DColors               INIT .F.
+   DATA lNoDestroy                INIT .F.
    DATA lNoDIBSection             INIT .T.
    DATA lNoFocusRect              INIT .F.
    DATA lNoHotLight               INIT .F.
@@ -205,7 +206,8 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
           lItalic, lUnderline, lStrikeOut, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, cImage, ;
           lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
-          lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, lNoImgLst ) CLASS TButton
+          lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, ;
+          lNoImgLst, lNoDestroy ) CLASS TButton
 
    LOCAL nControlHandle, nStyle, lBitMap, i
 
@@ -228,6 +230,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
    ASSIGN ::Transparent    VALUE lTransparent TYPE "L"
    ASSIGN ::lNoFocusRect   VALUE lNoFocusRect TYPE "L"
    ASSIGN ::lNoImgLst      VALUE lNoImgLst    TYPE "L"
+   ASSIGN ::lNoDestroy     VALUE lNoDestroy   TYPE "L"
 
    IF HB_ISARRAY( aTextMargin )
       FOR i := 1 TO Min( 4, Len( aTextMargin ) )
@@ -387,7 +390,8 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nW
           lItalic, lUnderline, lStrikeOut, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, cImage, ;
           lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
-          lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent ) CLASS TButton
+          lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, lNoImgLst, ;
+          lNoDestroy ) CLASS TButton
 
    IF Empty( cBuffer )
       cBuffer := ""
@@ -398,7 +402,8 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nW
              lItalic, lUnderline, lStrikeOut, lRtl, lNoPrefix, lDisabled, cBuffer, hBitMap, cImage, ;
              lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
              lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
-             lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent )
+             lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, lNoImgLst, ;
+             lNoDestroy )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFocus() CLASS TButton
@@ -470,7 +475,11 @@ METHOD HBitMap( hBitMap ) CLASS TButton
       ::cBuffer := ""
 
       IF ValidHandler( hBitMap )
-         ::hImage := hBitMap
+         IF ::lNoDestroy
+            ::hImage := _OOHG_CopyBitmap( hBitMap, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE )
+         ELSE
+            ::hImage := hBitMap
+         ENDIF
          IF ::ImageSize
             ::nWidth  := _OOHG_BitMapWidth( ::hImage )
             ::nHeight := _OOHG_BitMapHeight( ::hImage )
@@ -560,14 +569,9 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TButton
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TButton
 
-   LOCAL hIml
-
    DeleteObject( ::hImage )
-   hIml := ClearImageXP( ::hWnd )
-   IF hIml # ::ImageList
-      // This is an error because they should be the same
-      ::ImageList := hIml
-   ENDIF
+   ClearImageXP( ::hWnd )
+   ::Imagelist := NIL
 
    RETURN ::Super:Release()
 
@@ -725,7 +729,7 @@ HB_FUNC( INITBUTTON )          /* FUNCTION InitButton( hWnd, cCaption, hMenu, nC
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> hImageList */
+HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> NIL */
 {
    HIMAGELIST himl;
    BUTTON_IMAGELIST bi ;
@@ -736,13 +740,12 @@ HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> hImageList 
    himl = bi.himl;
    if( himl )
    {
+      ImageList_Destroy( himl );
+
       memset( &bi, 0, sizeof( bi ) );
       bi.himl = ( HIMAGELIST ) ( -1 ) ;
       SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
    }
-
-   // This handle must be explicitly released !!!
-   HB_RETNL( (LONG_PTR) himl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -767,10 +770,12 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
       if( himl )
       {
          ImageList_Destroy( himl );
+
          memset( &bi, 0, sizeof( bi ) );
          bi.himl = ( HIMAGELIST ) ( -1 ) ;
          SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
       }
+
       if( hb_parnl( 4 ) == -1 )
       {
          clrColor = GetSysColor( COLOR_BTNFACE );
@@ -800,10 +805,13 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
       {
          hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, FALSE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
       }
+
       memset( &bm, 0, sizeof( bm ) );
       GetObject( hBmp2, sizeof( bm ), &bm );
       himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );
       ImageList_AddMasked( himl, hBmp2, clrColor );
+      DeleteObject( hBmp2 );
+
       memset( &bi, 0, sizeof( bi ) );
       bi.himl = himl;
       bi.margin.top = HB_PARNI( 5, 1 );
@@ -812,7 +820,7 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
       bi.margin.right = HB_PARNI( 5, 4 );
       bi.uAlign = hb_parni( 3 );
       SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
-      DeleteObject( hBmp2 );
+
       // This handle must be explicitly released !!!
       HB_RETNL( (LONG_PTR) himl );
    }

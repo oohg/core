@@ -88,7 +88,7 @@
       [ CAPTION <caption> ] ;
       [ <dummy6: PICTURE, ICON> <bitmap> ] ;
       [ BUFFER <buffer> ] ;
-      [ HBITMAP <hbitmap> ] ;
+      [ HBITMAP <hbitmap> [ <nodestroy: NODESTROY> ] ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <stretch: STRETCH> ] ;
       [ <cancel: CANCEL> ] ;
@@ -125,7 +125,7 @@
             <aimagemargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.ldib.>, <backcolor>, <.nohotlight.>, <.solidbk.>, <fontcolor>, ;
             {<"txth">, <"txtv">}, <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, ;
-            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.> )
+            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.> )
 
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
@@ -151,7 +151,7 @@
       [ <rtl: RTL> ] ;
       [ <dummy5: PICTURE, ICON> <bitmap> ] ;
       [ BUFFER <buffer> ] ;
-      [ HBITMAP <hbitmap> ] ;
+      [ HBITMAP <hbitmap> [ <nodestroy: NODESTROY> ] ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <stretch: STRETCH> ] ;
       [ FIELD <field> ] ;
@@ -191,4 +191,4 @@
             <aimagemargin>, <{onmousemove}>, <"imgalign">, <.multiline.>, ;
             <.flat.>, <.nohotlight.>, <.solidbk.>, <fontcolor>, {<"txth">, <"txtv">}, ;
             <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, <.imgsize.>, ;
-            <.ltransp.>, <.lnofocus.>, <.lnoimglst.> )
+            <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.> )
