@@ -446,11 +446,25 @@ static LRESULT CALLBACK _OOHG_TPicture_WndProc( HWND hWnd, UINT message, WPARAM 
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
+static BOOL bRegistered = FALSE;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_TPICTURE_UNREGISTER )          /* FUNCTION _OOHG_TPicture_UnRegister() -> lRegisteredStatus */
+{
+   if( bRegistered )
+   {
+      if( UnregisterClass( "_OOHG_TPICTURE", GetModuleHandle( NULL ) ) )
+      {
+         bRegistered = FALSE;
+      }
+   }
+
+   hb_retl( bRegistered );
+}
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_TPICTURE_REGISTER )          /* FUNCTION _OOHG_TPicture_Register() -> nError */
 {
-   static BOOL bRegistered = FALSE;
-
    if( ! bRegistered )
    {
       WNDCLASS WndClass;
@@ -535,7 +549,7 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
 
    if( oSelf->lBackColor == -1 )
    {
-      hBrush = CreateSolidBrush( GetSysColor( COLOR_BTNFACE ) );
+      hBrush = GetSysColorBrush( COLOR_BTNFACE );
    }
    else
    {

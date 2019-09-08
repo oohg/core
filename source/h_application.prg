@@ -1104,6 +1104,10 @@ METHOD Release() CLASS TApplication
 
    FreeLibraries()
 
+   _OOHG_TInternal_UnRegister()
+   _OOHG_TPicture_UnRegister()
+   _OOHG_TTextArray_UnRegister()
+
    ::oAppObj := NIL
 
    CloseHandle( ::AppMutex )
