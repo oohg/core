@@ -1315,6 +1315,54 @@ HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, 
    hb_itemRelease( pSubarray );
 }
 
+int GetGDIObjects( DWORD nProcessId )
+{
+   HANDLE hProcess;
+   DWORD gdi = 0;
+
+   nProcessId = nProcessId ? nProcessId : GetCurrentProcessId();
+   hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, nProcessId );
+
+   if( hProcess )
+   {
+      gdi = GetGuiResources( hProcess, GR_GDIOBJECTS );
+      CloseHandle( hProcess );
+   }
+   return gdi;
+}
+
+int GetUserObjects( DWORD nProcessId )
+{
+   HANDLE hProcess;
+   DWORD user = 0;
+
+   nProcessId = nProcessId ? nProcessId : GetCurrentProcessId();
+   hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, nProcessId );
+
+   if( hProcess )
+   {
+      user = GetGuiResources( hProcess, GR_USEROBJECTS );
+      CloseHandle( hProcess );
+   }
+   return user;
+}
+
+int GetKernelObjects( DWORD nProcessId )
+{
+   HANDLE hProcess;
+   DWORD kernel = 0;
+
+   nProcessId = nProcessId ? nProcessId : GetCurrentProcessId();
+   hProcess = OpenProcess( PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, nProcessId );
+
+   if( hProcess )
+   {
+      GetProcessHandleCount( hProcess, &kernel );
+      CloseHandle( hProcess );
+   }
+   return kernel;
+}
+
 HB_FUNC( GETOBJECTCOUNT )          /* GetObjectCount( [ nProcessId ] ) -> { nGDIObjects, nUserObjects, nKernelObjects } */
 /*
  * GDI Objects: https://docs.microsoft.com/es-es/windows/win32/sysinfo/gdi-objects
