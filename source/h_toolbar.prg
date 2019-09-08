@@ -257,7 +257,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
          aPos:= { 0, 0, 0, 0 }
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
-         ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
+         IF ::aControls[ x ]:ContextMenu != NIL
+            ::aControls[ x ]:ContextMenu:Activate( aPos[ 2 ] + HiWord( ws ) +( aPos[ 4 ] -aPos[ 2 ] - HiWord( ws ) ) / 2, aPos[ 1 ] + LoWord( ws ) )
+         ENDIF
       EndIf
       Return Nil
 
