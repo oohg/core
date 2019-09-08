@@ -222,25 +222,11 @@ static LRESULT CALLBACK _OOHG_TTextArray_WndProc( HWND hWnd, UINT message, WPARA
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
-static BOOL bRegistered = FALSE;
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_TTEXTARRAY_UNREGISTER )          /* FUNCTION _OOHG_TTextArray_UnRegister() -> lRegisteredStatus */
-{
-   if( bRegistered )
-   {
-      if( UnregisterClass( "_OOHG_TTEXTARRAY", GetModuleHandle( NULL ) ) )
-      {
-         bRegistered = FALSE;
-      }
-   }
-
-   hb_retl( bRegistered );
-}
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_TTEXTARRAY_REGISTER )          /* FUNCTION _OOHG_TTextArray_Register() -> nError */
 {
+   static BOOL bRegistered = FALSE;
+
    if( ! bRegistered )
    {
       WNDCLASS WndClass;

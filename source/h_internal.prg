@@ -285,25 +285,11 @@ static LRESULT CALLBACK _OOHG_TInternal_WndProc( HWND hWnd, UINT message, WPARAM
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
-static BOOL bRegistered = FALSE;
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_TINTERNAL_UNREGISTER )          /* FUNCTION _OOHG_TInternal_UnRegister() -> lRegisteredStatus */
-{
-   if( bRegistered )
-   {
-      if( UnregisterClass( "_OOHG_TINTERNAL", GetModuleHandle( NULL ) ) )
-      {
-         bRegistered = FALSE;
-      }
-   }
-
-   hb_retl( bRegistered );
-}
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_TINTERNAL_REGISTER )          /* FUNCTION _OOHG_TInternal_Register() -> nError */
 {
+   static BOOL bRegistered = FALSE; 
+
    if( ! bRegistered )
    {
       WNDCLASS WndClass;
