@@ -524,17 +524,18 @@ METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
 
    ASSIGN nFlags VALUE nFlags TYPE "N"
    ASSIGN nTime  VALUE nTime  TYPE "N" DEFAULT 200
-   IF HB_IsLogical( lVisible )
+
+   IF HB_ISLOGICAL( lVisible )
       ::lVisible := lVisible
       IF ! ::ContainerVisible
-         IF PCOUNT() == 1
+         IF PCount() == 1
             HideWindow( ::hWnd )
          ELSE
             AnimateWindow( ::hWnd, nTime, nFlags, .T. )
          ENDIF
          ::OnHideFocusManagement()
       ELSE
-         IF PCOUNT() > 1
+         IF PCount() > 1
             AnimateWindow( ::hWnd, nTime, nFlags, .F. )
          ELSEIF ::Focused
             CShowControl( ::hWnd )
@@ -556,7 +557,7 @@ METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
 
 METHOD Show( nFlags, nTime ) CLASS TForm
 
-   IF PCOUNT() == 0
+   IF PCount() == 0
       ::Visible := .T.
    ELSE
       ::Visible( .T., nFlags, nTime )
@@ -566,7 +567,7 @@ METHOD Show( nFlags, nTime ) CLASS TForm
 
 METHOD Hide( nFlags, nTime ) CLASS TForm
 
-   IF PCOUNT() == 0
+   IF PCount() == 0
       ::Visible := .F.
    ELSE
       ::Visible( .F., nFlags, nTime )
@@ -576,28 +577,28 @@ METHOD Hide( nFlags, nTime ) CLASS TForm
 
 METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
-   If ::Active
+   IF ::Active
       MsgOOHGError( "ACTIVATE WINDOW: window " + ::Name + " is already active. Program terminated." )
-   Endif
+   ENDIF
 
    ASSIGN lNoStop VALUE lNoStop TYPE "L" DEFAULT .F.
 
-   If _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
+   IF _OOHG_ThisEventType == 'WINDOW_RELEASE' .AND. ! lNoStop
       MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON RELEASE is not allowed. Program terminated." )
-   Endif
+   ENDIF
 
    TForm_WindowStructureClosed( Self )
    // If Len( _OOHG_ActiveForm ) > 0
    //    MsgOOHGError( "ACTIVATE WINDOW: DEFINE WINDOW structure is not closed. Program terminated." )
    // Endif
 
-   If _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
+   IF _OOHG_ThisEventType == 'WINDOW_GOTFOCUS'
       MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON GOTFOCUS is not allowed. Program terminated." )
-   Endif
+   ENDIF
 
-   If _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
+   IF _OOHG_ThisEventType == 'WINDOW_LOSTFOCUS'
       MsgOOHGError( "ACTIVATE WINDOW: activation within a window's ON LOSTFOCUS is not allowed. Program terminated." )
-   Endif
+   ENDIF
 
    // Checks for non-stop window
    IF ! HB_ISOBJECT( oWndLoop )
@@ -607,16 +608,15 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::ActivateCount[ 1 ]++
    ::Active := .T.
 
-   If ! ::oWndClient == NIL
+   IF ::oWndClient !=  NIL
       ::oWndClient:Events_Size()
-   EndIf
-
+   ENDIF
 
    // Show window
-   If ::lVisible
+   IF ::lVisible
       _OOHG_UserWindow := Self
       ::Show()
-   EndIf
+   ENDIF
 
    ::ProcessInitProcedure()
 
@@ -624,11 +624,11 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::RefreshData()
 
    // Starts the Message Loop
-   If ! lNoStop
+   IF ! lNoStop
       ::MessageLoop()
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 STATIC FUNCTION TForm_WindowStructureClosed( Self )
 
@@ -1166,6 +1166,9 @@ METHOD Events_Destroy() CLASS TForm
    IF ::oMenu != NIL
       ::oMenu:Release()
       ::oMenu := NIL
+   ENDIF
+   IF HB_ISOBJECT( ::oToolTip )
+      ::oToolTip:Release()
    ENDIF
    ::oToolTip := NIL
    ::oWndClient := NIL
@@ -1753,6 +1756,7 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
       ENDIF
 
       DestroyWindow( ::hWnd )
+      ::hWnd := NIL
 
       RETURN 0
 
@@ -1778,7 +1782,6 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
    otherwise
 
-      // return ::Super:Events( hWnd, nMsg, wParam, lParam )
       return ::TWindow:Events( hWnd, nMsg, wParam, lParam )
 
    EndCase
@@ -2864,6 +2867,7 @@ FUNCTION ReleaseAllWindows()
       ExitProcess( _OOHG_ErrorLevel )
       // Processing will never reach this point
    ENDIF
+//   TApplication():Define():Release()
 
    RETURN NIL
 
