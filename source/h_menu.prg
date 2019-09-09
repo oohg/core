@@ -186,6 +186,7 @@ CLASS TMenu FROM TControl
    METHOD CursorType                   SETGET
    METHOD Define
    METHOD DisableVisualStyle
+   METHOD Enabled                      SETGET
    METHOD EndMenu
    METHOD Events_InitMenuPopUp( nPos ) BLOCK { |Self, nPos| _OOHG_EVAL( ::bOnInitPopUp, Self, nPos ) }
    METHOD Gradient                     SETGET
@@ -216,6 +217,16 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
    TApplication():Define():ActiveMenuPush( Self )
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Enabled( lEnabled ) CLASS TMenu
+
+   IF HB_ISLOGICAL( lEnabled )
+      ::lEnabled := lEnabled
+      AEval( ::aControls, { |o| o:Enabled := ::lEnabled } )
+   ENDIF
+
+   RETURN ::lEnabled
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DisableVisualStyle() CLASS TMenu
@@ -2170,12 +2181,12 @@ static VOID DrawMenuImage( HDC hDC, int x, int y, int dx, int dy, HBITMAP hBmp, 
 
    if( disabled )
    {
-      newBrush = CreateSolidBrush( GetSysColor( COLOR_BTNHIGHLIGHT ) );
+      newBrush = GetSysColorBrush( COLOR_BTNHIGHLIGHT );
       oldBrush = ( HBRUSH ) SelectObject( hDCNoBlink, newBrush );
       BitBlt( hDCNoBlink, 1, 1, dx, dy, hDCMask, 0, 0, 12060490 );
       SelectObject( hDCNoBlink, oldBrush );
       DeleteObject( newBrush );
-      newBrush = CreateSolidBrush( GetSysColor( COLOR_BTNSHADOW ) );
+      newBrush = GetSysColorBrush( COLOR_BTNSHADOW );
       oldBrush = ( HBRUSH ) SelectObject( hDCNoBlink, newBrush );
       BitBlt( hDCNoBlink, 0, 0, dx, dy, hDCMask, 0, 0, 12060490 );
       SelectObject( hDCNoBlink, oldBrush );
