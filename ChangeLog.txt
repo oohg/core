@@ -12,6 +12,145 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-08 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     + ToolTip release at METHOD Events_Destroy.
+     + Set form's hWnd to NIL after window destruction.
+     * Some format.
+
+2019-09-08 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_textbox.ch
+     + TOOLTIP sub-clause to ACTION and ACTION2 clauses.
+   * core\include\i_windefs.ch
+     + Defines for EM_SETPASSWORDCHAR and EM_GETPASSWORDCHAR.
+   * core\source\h_textbox.prg
+     * Some format.
+     + DATA aBitmap to hold buttons bitmaps.
+     + DATA bAction1 to hold button1 action.
+     + DATA bAction2 to hold button2 action.
+     + DATA cToolTipBut1 to hold button1 tooltip.
+     + DATA cToolTipBut2 to hold button2 tooltip.
+     + DATA nBtnWidth to hold button's width.
+     + DATA lRecreateOnReset. For textbox with PASSWORD
+       clause, .T. forces control recreation to reset
+       password char to windows default. .F. means use
+       an '*' as password char instead.
+     + METHOD Release.
+     + METHOD ReleaseAction.
+     + METHOD ReleaseAction2.
+     + METHOD DefineAction.
+     + METHOD DefineAction2.
+     + METHOD RedefinePasswordStyle.
+     + METHOD PasswordChar.
+
+2019-09-08 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_menu.prg
+     + METHOD Enabled to TMenu CLASS.
+     * Use stock brushes to reduce resource usage.
+
+2019-09-08 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_toolbar.prg
+     * The lib no longer generates an RTE when the user clicks a
+       DROPDOWN button that has no menu defined.
+
+2019-09-08 20:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostarus.prg
+     ! Wrong function names and declarations.
+     - Duplicated code.
+   * core\source\c_gdiplus.c
+     ! Missing wrapper functions.
+
+2019-09-08 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * Comments.
+     + Functions InitMessages and _OOHG_Messages are now
+       thread safe.
+
+2019-09-08 20:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Functions GetGDIObjects, GetUserObjects and GetKernelObjects.
+
+2019-09-08 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     ! Missing call to ::SethWnd at TEditCombo CLASS.
+
+2019-09-08 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+     ! Resource leaks at C functions _OOHG_OleLoadPicture,
+       _OOHG_ScaleImage, _OOHG_RotateImage and _OOHG_LoadImage.
+     + Check for empty filename at function _OOHG_SIZEOFBITMAPFROMFILE.
+     * Function _OOHG_SCALEIMAGE can now operate on a standalone hImage.
+     ! Resource leak at function _OOHG_BLENDIMAGE.
+     * Some format.
+
+2019-09-08 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     + Code to unregister TInternal, TPicture and TTextArray
+       window classes.
+   * core\source\h_internal.prg
+     + Function _OOHG_TINTERNAL_UNREGISTER.
+   * core\source\h_picture.prg
+     + Function _OOHG_TPICTURE_UNREGISTER.
+     * Use stock brush to reduce resource usage.
+   * core\source\h_textarray.prg
+     + Function _OOHG_TTEXTARRAY_UNREGISTER.
+
+2019-09-08 20:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_timer.ch
+     + ONCE clause.
+
+   * core\include\oohg.h
+     + Define of s_Events_TimeOut.
+     + Member OriginalBrush to OOHG_Window structure.
+     + Declarations for some functions.
+
+   * core\source\c_controlmisc.c
+     + Events_TimeOut to s_SymbolNames array.
+
+   * core\source\h_controlmisc.prg
+     ! Resource leak at METHOD Release of TControl CLASS
+       caused by the release of the control before the
+       execution of METHOD Release of TWindow CLASS.
+     ! Resource leak at METHOD SetFont of TControl CLASS.
+     ! Resource leak at METHOD ClearBitmaps of TControl CLASS.
+     ! Resource leak at METHOD Events_Color of TControl CLASS.
+     + METHOD PosAddToCtrlsArrays to TControl CLASS.
+
+   * core\source\h_timer.prg
+     * Some format.
+     + DATA lOnce. Defaults to .F.
+     + METHOD Events_TimeOut to executed the associated action.
+
+   * core\source\h_windows.prg
+     + METHOD Events_Timeout to CLASS TWindow.
+     ! RTE at function ExitProcess when Application object
+       is not defined.
+     ! Resouce leak at METHOD Release of TWindow CLASS.
+     * METHOD Release of TWindow CLASS no longer sets
+       ::hWnd to NIL.
+       ; For forms it's done by WM_CLOSE handler.
+       ; For controls it's done by METHOD Release of
+         TControl CLASS.
+     * WM_CTLCOLORSTATIC and WM_CTLCOLORLISTBOX handlers
+       at METHOD Events of TWindow CLASS now send a color
+       constant to METHOD Events_Color instead of sending
+       a COLORREF.
+     * WM_TIMER handler now calls METHOD Events_TimeOut
+       instead of executing OnClick event.
+
+2019-09-08 20:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scroll.prg
+     * Comment.
+
+2019-09-08 18:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_button.ch
+     + NODESTROY clause.
+       It prevents the destruction of the hbitmap at release.
+   * core\source\h_button.prg
+     + DATA lNoDestroy. Defaults to .F.
+     ! Missing parameters at method DefineImage.
+     ! Resource leak.
+
 2019-08-30 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_var.prg
      + _OOHG_EnableClassUnreg and _OOHG_ExitOnMainRelease.
