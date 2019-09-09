@@ -326,7 +326,9 @@ EDIT CONTROL
 #define EM_GETSEL                     176
 #define EM_LIMITTEXT                  197
 #define EM_UNDO                       199
+#define EM_SETPASSWORDCHAR            204
 #define EM_SETREADONLY                207
+#define EM_GETPASSWORDCHAR            210
 #define EM_GETLIMITTEXT               213
 #define EM_SETBKGNDCOLOR              1091
 #define EM_GETFIRSTVISIBLELINE        206

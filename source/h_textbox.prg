@@ -68,105 +68,111 @@
 #include "set.ch"
 #include "hblang.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TText FROM TLabel
 
-   DATA Type                      INIT "TEXT" READONLY
-   DATA lSetting                  INIT .F.
-   DATA nMaxLength                INIT 0
+   DATA aBitmap                   INIT NIL
+   DATA bAction1                  INIT NIL
+   DATA bAction2                  INIT NIL
+   DATA bWhen                     INIT NIL
+   DATA cToolTipBut1              INIT NIL
+   DATA cToolTipBut2              INIT NIL
    DATA lAutoSkip                 INIT .F.
+   DATA lFocused                  INIT .F.
+   DATA lInsert                   INIT .T.
+   DATA lPrevUndo                 INIT .F.
+   DATA lRecreateOnReset          INIT .T.
+   DATA lSetting                  INIT .F.
+   DATA nBtnWidth                 INIT 20
+   DATA nDefAnchor                INIT 13   // TopBottomRight
+   DATA nHeight                   INIT 24
+   DATA nInsertType               INIT 0
+   DATA nMaxLength                INIT 0
    DATA nOnFocusPos               INIT -2
    DATA nWidth                    INIT 120
-   DATA nHeight                   INIT 24
-   DATA OnTextFilled              INIT Nil
-   DATA nDefAnchor                INIT 13   // TopBottomRight
-   DATA bWhen                     INIT Nil
-   DATA When_Processed            INIT .F.
+   DATA oButton1                  INIT NIL
+   DATA oButton2                  INIT NIL
+   DATA OnTextFilled              INIT NIL
+   DATA Type                      INIT "TEXT" READONLY
    DATA When_Procesing            INIT .F.
-   DATA lInsert                   INIT .T.
-   DATA lFocused                  INIT .F.
-   DATA xUndo                     INIT Nil
-   DATA lPrevUndo                 INIT .F.
-   DATA xPrevUndo                 INIT Nil
-   DATA nInsertType               INIT 0
-   DATA oButton1                  INIT Nil
-   DATA oButton2                  INIT Nil
+   DATA When_Processed            INIT .F.
+   DATA xPrevUndo                 INIT NIL
+   DATA xUndo                     INIT NIL
 
-   METHOD Define
-   METHOD Define2
-   METHOD RefreshData
-   METHOD Refresh                      BLOCK { |Self| ::RefreshData() }
-   METHOD SizePos
-   METHOD Enabled                      SETGET
-   METHOD Visible                      SETGET
    METHOD AddControl
-   METHOD DeleteControl
-   METHOD AdjustResize( nDivh, nDivw ) BLOCK { |Self,nDivh,nDivw| ::Super:AdjustResize( nDivh, nDivw, .T. ) }
-   METHOD Value                        SETGET
-   METHOD SetFocus
+   METHOD AdjustResize( nDivh, nDivw ) BLOCK { |Self, nDivh, nDivw| ::Super:AdjustResize( nDivh, nDivw, .T. ) }
    METHOD CaretPos                     SETGET
-   METHOD ReadOnly                     SETGET
-   METHOD MaxLength                    SETGET
-   METHOD DoAutoSkip
-   METHOD Events_Command
-   METHOD Events
    METHOD ControlArea                  SETGET
    METHOD ControlPosition              SETGET
-   METHOD ScrollCaret                  BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
-   METHOD GetSelection
-   METHOD SetSelection
-   METHOD GetSelText
-   METHOD InsertStatus                 SETGET
-   METHOD GetLine
-   METHOD GetLineIndex( nLine )        BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
+   METHOD Define
+   METHOD Define2
+   METHOD DefineAction
+   METHOD DefineAction2
+   METHOD DeleteControl
+   METHOD DoAutoSkip
+   METHOD Enabled                      SETGET
+   METHOD Events
+   METHOD Events_Command
+   METHOD GetCharFromPos
+   METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
    METHOD GetFirstVisibleLine          BLOCK { |Self| SendMessage( ::hWnd, EM_GETFIRSTVISIBLELINE, 0, 0 ) }
+   METHOD GetLastVisibleLine
+   METHOD GetLine
    METHOD GetLineCount                 BLOCK { |Self| SendMessage( ::hWnd, EM_GETLINECOUNT, 0, 0 ) }
    METHOD GetLineFromChar( nChar )
-   METHOD GetCurrentLine               BLOCK { |Self| ::GetLineFromChar( -1 ) }
-   METHOD GetLineLength( nLine )       BLOCK { |Self,nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
-   METHOD GetLastVisibleLine
-   METHOD GetCharFromPos
+   METHOD GetLineIndex( nLine )        BLOCK { |Self, nLine| SendMessage( ::hWnd, EM_LINEINDEX, nLine, 0 ) }
+   METHOD GetLineLength( nLine )       BLOCK { |Self, nLine| SendMessage( ::hWnd, EM_LINELENGTH, ::GetLineIndex( nLine ), 0 ) }
    METHOD GetRect
+   METHOD GetSelection
+   METHOD GetSelText
+   METHOD InsertStatus                 SETGET
+   METHOD MaxLength                    SETGET
+   METHOD PasswordChar                 SETGET
+   METHOD ReadOnly                     SETGET
+   METHOD RedefinePasswordStyle
+   METHOD Refresh                      BLOCK { |Self| ::RefreshData() }
+   METHOD RefreshData
+   METHOD Release
+   METHOD ReleaseAction
+   METHOD ReleaseAction2
+   METHOD ScrollCaret                  BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
+   METHOD SetFocus
+   METHOD SetSelection
+   METHOD SizePos
+   METHOD Value                        SETGET
+   METHOD Visible                      SETGET
 
    ENDCLASS
 
-METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-               cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
-               lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
-               HelpId, readonly, bold, italic, underline, strikeout, field, ;
-               backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-               lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu ) CLASS TText
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+               lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
+               lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
+               bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 ) CLASS TText
 
-   Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
+   LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
-   nStyle += If( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
-             If( HB_IsLogical( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
+   nStyle += iif( HB_ISLOGICAL( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+             iif( HB_ISLOGICAL( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
 
-   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-              cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
-              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
-              readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
+   ::Define2( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+              lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
+              lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
+              bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
+              lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
 
-   Return Self
+   RETURN Self
 
-METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
-                cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
-                uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
-                readonly, bold, italic, underline, strikeout, field, ;
-                backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-                lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
-                bValid, bAction, aBitmap, nBtnwidth, bAction2, bWhen, ;
-                lCenter, OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu ) CLASS TText
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
+                bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
+                cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
+                bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
+                lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 ) CLASS TText
 
-   Local nControlHandle
-   Local break := Nil
+   LOCAL nControlHandle, aAux, lBreak := NIL
 
-   // Assign STANDARD values to optional params.
    ASSIGN ::nCol         VALUE x        TYPE "N"
    ASSIGN ::nRow         VALUE y        TYPE "N"
    ASSIGN ::nWidth       VALUE w        TYPE "N"
@@ -174,91 +180,65 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
    ASSIGN ::bWhen        VALUE bWhen    TYPE "B"
    ASSIGN ::nInsertType  VALUE nInsType TYPE "N"
 
-   If HB_IsNumeric( nMaxLength ) .AND. nMaxLength >= 0
+   IF HB_ISNUMERIC( nMaxLength ) .AND. nMaxLength >= 0
       ::nMaxLength := Int( nMaxLength )
-   EndIf
+   ENDIF
 
    ASSIGN nStyle   VALUE nStyle   TYPE "N" DEFAULT 0
    ASSIGN nStyleEx VALUE nStyleEx TYPE "N" DEFAULT 0
 
-   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, FontColor, BackColor, .T., lRtl )
+   ::SetForm( cControlName, cParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
-   If HB_IsLogical( lCenter ) .AND. lCenter
-      right := .F.
-   Else
+   IF HB_ISLOGICAL( lCenter ) .AND. lCenter
+      lRight := .F.
+   ELSE
       lCenter := .F.
-   EndIf
+   ENDIF
 
    // Style definition
-   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             If( HB_IsLogical( lPassword ) .AND. lPassword, ES_PASSWORD,  0 ) + ;
-             If( HB_IsLogical( right     ) .AND. right,     ES_RIGHT,     0 ) + ;
-             If( HB_IsLogical( lCenter   ) .AND. lCenter,   ES_CENTER,    0 ) + ;
-             If( HB_IsLogical( readonly  ) .AND. readonly,  ES_READONLY,  0 )
+   nStyle += ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
+             iif( HB_ISLOGICAL( lPassword ) .AND. lPassword, ES_PASSWORD, 0 ) + ;
+             iif( HB_ISLOGICAL( lRight ) .AND. lRight, ES_RIGHT, 0 ) + ;
+             iif( HB_ISLOGICAL( lCenter ) .AND. lCenter, ES_CENTER, 0 ) + ;
+             iif( HB_ISLOGICAL( lReadOnly ) .AND. lReadOnly, ES_READONLY, 0 )
 
-   nStyleEx += If( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += iif( ! HB_ISLOGICAL( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
 
    // Creates the control window.
-   ::SetSplitBoxInfo( Break, )
+   ::SetSplitBoxInfo( lBreak )
 
    nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
 
-   ::Register( nControlHandle, cControlName, HelpId,, cToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
-   ::SetVarBlock( Field, cValue )
+   ::SetVarBlock( cField, cValue )
 
-   ASSIGN ::OnLostFocus  VALUE uLostFocus   TYPE "B"
-   ASSIGN ::OnGotFocus   VALUE uGotFocus    TYPE "B"
-   ASSIGN ::OnChange     VALUE uChange      TYPE "B"
-   ASSIGN ::OnEnter      VALUE uEnter       TYPE "B"
-   ASSIGN ::OnTextFilled VALUE OnTextFilled TYPE "B"
-   ASSIGN ::postBlock    VALUE bValid       TYPE "B"
-   ASSIGN ::lAutoSkip    VALUE lAutoSkip    TYPE "L"
-   ASSIGN ::nOnFocusPos  VALUE OnFocusPos   TYPE "N"
-   ASSIGN nBtnwidth      VALUE nBtnwidth    TYPE "N" DEFAULT 20
-   ASSIGN lAtLeft        VALUE lAtLeft      TYPE "L" DEFAULT .F.
+   ASSIGN ::OnLostFocus  VALUE bLostFocus    TYPE "B"
+   ASSIGN ::OnGotFocus   VALUE bGotFocus     TYPE "B"
+   ASSIGN ::OnChange     VALUE bChange       TYPE "B"
+   ASSIGN ::OnEnter      VALUE bEnter        TYPE "B"
+   ASSIGN ::OnTextFilled VALUE bOnTextFilled TYPE "B"
+   ASSIGN ::postBlock    VALUE bValid        TYPE "B"
+   ASSIGN ::lAutoSkip    VALUE lAutoSkip     TYPE "L"
+   ASSIGN ::nOnFocusPos  VALUE bOnFocusPos   TYPE "N"
+   ASSIGN ::nBtnWidth    VALUE nBtnWidth     TYPE "N"
+   ASSIGN lAtLeft        VALUE lAtLeft       TYPE "L" DEFAULT .F.
 
    ::ControlPosition := iif( lAtLeft, 0, 1 )
 
-   If ! HB_IsArray( aBitmap )
-      aBitmap := { aBitmap, Nil }
-   EndIf
-   If Len( aBitmap ) < 2
-      aSize( aBitmap, 2 )
-   EndIf
-
-   IF HB_ISBLOCK( bAction )
-      IF lAtLeft
-         IF Empty( aBitmap[ 1 ] )
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
-         ELSE
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] AUTOFIT OBJ ::oButton1
-         ENDIF
-      ELSE
-         IF Empty( aBitmap[ 1 ] )
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton1
-         ELSE
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) PICTURE aBitmap[ 1 ] AUTOFIT OBJ ::oButton1
-         ENDIF
+   IF HB_ISARRAY( aBitmap )
+      aAux := AClone( aBitmap )
+      IF Len( aAux ) < 2
+         ASize( aAux, 2 )
       ENDIF
+   ELSE
+      aAux := { aBitmap, NIL }
    ENDIF
+   ::aBitmap := aBitmap
 
-   IF HB_ISBLOCK( bAction2 )
-      IF lAtLeft
-         IF Empty( aBitmap[ 2 ] )
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) CAPTION '...' OBJ ::oButton2
-         ELSE
-            @ 2,2 BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction2 ) OF ( Self ) PICTURE aBitmap[ 2 ] AUTOFIT OBJ ::oButton2
-         ENDIF
-      ELSE
-         IF Empty( aBitmap[ 2 ] )
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) CAPTION '...' OBJ ::oButton2
-         ELSE
-            @ 2,::ClientWidth + 2 - nBtnwidth BUTTON 0 WIDTH nBtnwidth HEIGHT 100 ACTION Eval( bAction ) OF ( Self ) AUTOFIT PICTURE aBitmap[ 2 ] OBJ ::oButton2
-         ENDIF
-      ENDIF
-   ENDIF
+   ::DefineAction( bAction1, aAux[ 1 ], cTTipB1 )
+   ::DefineAction2( bAction2, aAux[ 2 ], cTTipB2 )
 
    IF HB_ISLOGICAL( lNoCntxtMnu ) .AND. lNoCntxtMnu
       ::ContextMenu := TMenuContext():Define( Self )
@@ -266,52 +246,289 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, ;
 
    RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Release() CLASS TText
+
+   ::ReleaseAction()
+   ::bAction1 := NIL
+   ::cToolTipBut1 := NIL
+
+   ::ReleaseAction2()
+   ::bAction2 := NIL
+   ::cToolTipBut2 := NIL
+
+   ::aBitmap := NIL
+
+   /* ::ContextMenu is released by ::Super */
+
+   RETURN ::Super:Release()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ReleaseAction()  CLASS TText
+
+   IF HB_ISOBJECT( ::oButton1 )
+     ::oButton1:Release()
+     ::oButton1 := NIL
+     ::Redraw()
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ReleaseAction2()  CLASS TText
+
+   IF HB_ISOBJECT( ::oButton2 )
+     ::oButton2:Release()
+     ::oButton1 := NIL
+     ::Redraw()
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DefineAction( bAction, uBitmap, cToolTip ) CLASS TText
+
+   IF HB_ISBLOCK( bAction )
+      ::bAction1 := bAction
+      ::cToolTipBut1 := cToolTip
+
+      IF ::ControlPosition == 0
+         IF Empty( uBitmap )
+            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               CAPTION '...' ;
+               TOOLTIP cToolTip
+         ELSE
+            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               PICTURE uBitmap AUTOFIT ;
+               TOOLTIP cToolTip
+         ENDIF
+      ELSE
+         IF Empty( uBitmap )
+            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               CAPTION '...' ;
+               TOOLTIP cToolTip
+         ELSE
+            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               PICTURE uBitmap AUTOFIT ;
+               TOOLTIP cToolTip
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DefineAction2( bAction, uBitmap, cToolTip ) CLASS TText
+
+   IF HB_ISBLOCK( bAction )
+      ::bAction2 := bAction
+      ::cToolTipBut2 := cToolTip
+
+      IF ::ControlPosition == 0
+         IF Empty( uBitmap )
+            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               CAPTION '...' ;
+               TOOLTIP cToolTip
+         ELSE
+            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               PICTURE uBitmap AUTOFIT ;
+               TOOLTIP cToolTip
+         ENDIF
+      ELSE
+         IF Empty( uBitmap )
+            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               CAPTION '...' ;
+               TOOLTIP cToolTip
+         ELSE
+            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+               WIDTH ::nBtnWidth HEIGHT 100 ;
+               ACTION Eval( bAction ) ;
+               PICTURE uBitmap AUTOFIT ;
+               TOOLTIP cToolTip
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD RedefinePasswordStyle() CLASS TText
+
+   LOCAL nStyle, nStyleEx, nNewHandle, nOldHandle, cOldValue, aBitmap1, aBitmap2
+
+   nOldHandle := ::hWnd
+   cOldValue := ::Value
+
+   nStyle := GetWindowStyle( nOldHandle ) + iif( IsWindowStyle( nOldHandle, ES_PASSWORD ), 0, ES_PASSWORD )
+   nStyleEx := GetWindowExStyle( nOldHandle )
+
+   nNewHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::nMaxLength, ::lRtl, nStyleEx )
+   ::hWnd := nNewHandle
+   ::SethWnd( nNewHandle )
+
+   ::SetFont()
+   ::Value := cOldValue
+
+   IF ! ::PosAddToCtrlsArrays()
+      MsgOOHGError( "Cant' redefine TText control: " + ::Name + " of " + ::ParentName + ". Program terminated." )
+   ENDIF
+
+   IF HB_ISARRAY( ::aBitmap )
+      IF Len( ::aBitmap ) > 0
+         aBitmap1 := ::aBitmap[ 1 ]
+         IF Len( ::aBitmap ) > 1
+            aBitmap2 := ::aBitmap[ 2 ]
+         ENDIF
+      ENDIF
+   ENDIF
+
+   ::ReleaseAction()
+   ::ReleaseAction2()
+   ::DefineAction( ::bAction1, aBitmap1, ::cToolTipBut1 )
+   ::DefineAction2( ::bAction2, aBitmap2, ::cToolTipBut2 )
+
+   DestroyWindow( nOldHandle )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PasswordChar( uPassChr ) CLASS TText
+
+   IF PCount() > 0
+      IF uPassChr == NIL
+         IF IsWindowStyle( ::hWnd, ES_PASSWORD )
+            /* Remove password char */
+            SendMessage( ::hWnd, EM_SETPASSWORDCHAR, 0, 0 )
+            ::Value := ::Value
+            // ::Redraw()
+            // ::SetFocus()
+         ENDIF
+      ELSEIF ValType( uPassChr ) == "N"
+         IF uPassChr == 32
+            /* Reset to default password char.
+             * Note that we can't reset to the
+             * original char because it's
+             * unicode 0x25cf (9679)
+             */
+            IF ::lRecreateOnReset
+               ::RedefinePasswordStyle()
+            ELSE
+               SendMessage( ::hWnd, EM_SETPASSWORDCHAR, Asc( "*" ), 0 )
+            ENDIF
+            ::Value := ::Value
+            // ::Redraw()
+            // ::SetFocus()
+         ELSEIF uPassChr > 32
+            /* Set to char */
+            SendMessage( ::hWnd, EM_SETPASSWORDCHAR, uPassChr, 0 )
+            ::Value := ::Value
+            // ::Redraw()
+            // ::SetFocus()
+         ENDIF
+      ELSEIF ValType( uPassChr ) $ "CM"
+         IF Len( uPassChr ) >= 1
+            uPassChr := Left( uPassChr, 1 )
+            IF uPassChr == " "
+               /* Reset to default password char.
+                * Note that we can't reset to the
+                * original char because it's
+                * unicode 0x25cf (9679)
+                */
+               IF ::lRecreateOnReset
+                  ::RedefinePasswordStyle()
+               ELSE
+                  SendMessage( ::hWnd, EM_SETPASSWORDCHAR, Asc( "*" ), 0 )
+               ENDIF
+            ELSE
+               /* Set to char */
+               SendMessage( ::hWnd, EM_SETPASSWORDCHAR, Asc( uPassChr ), 0 )
+            ENDIF
+            ::Value := ::Value
+            // ::Redraw()
+            // ::SetFocus()
+         ELSEIF IsWindowStyle( ::hWnd, ES_PASSWORD )
+            /* Remove password char */
+            SendMessage( ::hWnd, EM_SETPASSWORDCHAR, 0, 0 )
+            ::Value := ::Value
+            // ::Redraw()
+            // ::SetFocus()
+         ENDIF
+      ENDIF
+   ENDIF
+
+   IF IsWindowStyle( ::hWnd, ES_PASSWORD )
+      uPassChr := SendMessage( ::hWnd, EM_GETPASSWORDCHAR, 0, 0 )
+   ELSE
+      uPassChr := ""
+   ENDIF
+
+   RETURN uPassChr
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RefreshData() CLASS TText
 
-   Local uValue
+   LOCAL uValue
 
-   If HB_IsBlock( ::Block )
+   IF HB_ISBLOCK( ::Block )
       uValue := Eval( ::Block )
-      If ValType ( uValue ) $ 'CM'
+      IF ValType ( uValue ) $ 'CM'
          uValue := RTrim( uValue )
-      EndIf
+      ENDIF
       ::Value := uValue
-   EndIf
-   aEval( ::aControls, { |o| If( o:Container == Nil, o:RefreshData(), ) } )
+   ENDIF
+   AEval( ::aControls, { |o| iif( o:Container == NIL, o:RefreshData(), ) } )
 
-   Return Nil
+   RETURN NIL
 
-METHOD SizePos( Row, Col, Width, Height ) CLASS TText
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TText
 
-   Local xRet
+   LOCAL xRet
 
-   xRet := ::Super:SizePos( Row, Col, Width, Height )
-   aEval( ::aControls, { |o| o:Redraw() } )
+   xRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
+   AEval( ::aControls, { |o| o:Redraw() } )
 
-   Return xRet
+   RETURN xRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Enabled( lEnabled ) CLASS TText
 
-   If HB_IsLogical( lEnabled )
+   IF HB_ISLOGICAL( lEnabled )
       ::Super:Enabled := lEnabled
-      aEval( ::aControls, { |o| o:Enabled := o:Enabled } )
-   EndIf
+      AEval( ::aControls, { |o| o:Enabled := o:Enabled } )
+   ENDIF
 
-   Return ::Super:Enabled
+   RETURN ::Super:Enabled
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Visible( lVisible ) CLASS TText
 
-   If HB_IsLogical( lVisible )
+   IF HB_ISLOGICAL( lVisible )
       ::Super:Visible := lVisible
-      If lVisible
-         aEval( ::aControls, { |o| o:Visible := o:Visible } )
+      IF lVisible
+         AEval( ::aControls, { |o| o:Visible := o:Visible } )
       ELSE
-         aEval( ::aControls, { |o| o:ForceHide() } )
-      EndIf
-   EndIf
+         AEval( ::aControls, { |o| o:ForceHide() } )
+      ENDIF
+   ENDIF
 
-   Return ::lVisible
+   RETURN ::lVisible
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AddControl( oCtrl ) CLASS TText
 
    LOCAL nArea
@@ -332,6 +549,7 @@ METHOD AddControl( oCtrl ) CLASS TText
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteControl( oCtrl ) CLASS TText
 
    LOCAL nCount
@@ -341,170 +559,174 @@ METHOD DeleteControl( oCtrl ) CLASS TText
    IF Len( ::aControls ) < nCount
       ::ControlArea := ::ControlArea - oCtrl:Width
       IF ::ControlPosition == 1   // on the right
-         aEval( ::aControls, { |o| iif( o:Col < oCtrl:Col + oCtrl:Width, o:Col += oCtrl:Width, NIL ) } )
+         AEval( ::aControls, { |o| iif( o:Col < oCtrl:Col + oCtrl:Width, o:Col += oCtrl:Width, NIL ) } )
       ELSE
-         aEval( ::aControls, { |o| iif( o:Col > oCtrl:Col, o:Col -= oCtrl:Width, NIL ) } )
+         AEval( ::aControls, { |o| iif( o:Col > oCtrl:Col, o:Col -= oCtrl:Width, NIL ) } )
       ENDIF
    ENDIF
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TText
 
-   Return ( ::Caption := If( ValType( uValue ) $ "CM" , RTrim( uValue ), Nil ) )
+   RETURN ( ::Caption := iif( ValType( uValue ) $ "CM", RTrim( uValue ), NIL ) )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFocus() CLASS TText
 
-   Local uRet, nLen
+   LOCAL uRet, nLen
 
    uRet := ::Super:SetFocus()
-   If ::nOnFocusPos == -3
+   IF ::nOnFocusPos == -3
       nLen := Len( RTrim( ::Caption ) )
       SendMessage( ::hWnd, EM_SETSEL, 0, nLen )
-   ElseIf ::nOnFocusPos == -2
+   ELSEIF ::nOnFocusPos == -2
       SendMessage( ::hWnd, EM_SETSEL, 0, -1 )
-   ElseIf ::nOnFocusPos == -1
+   ELSEIF ::nOnFocusPos == -1
       nLen := Len( ::Caption )
       SendMessage( ::hWnd, EM_SETSEL, nLen, nLen )
-   ElseIf ::nOnFocusPos >= 0
+   ELSEIF ::nOnFocusPos >= 0
       SendMessage( ::hWnd, EM_SETSEL, ::nOnFocusPos, ::nOnFocusPos )
-   EndIf
+   ENDIF
 
-   Return uRet
+   RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CaretPos( nPos ) CLASS TText
 
-   Local aPos
+   LOCAL aPos
 
-   If HB_IsNumeric( nPos )
+   IF HB_ISNUMERIC( nPos )
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
       ::ScrollCaret()
-   EndIf
+   ENDIF
    aPos := ::GetSelection()
 
-   Return aPos[ 2 ]                                // nEnd
+   RETURN aPos[ 2 ]                                // nEnd
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetSelection() CLASS TText
 
-   Local aPos
+   LOCAL aPos
 
    aPos := TText_GetSelectionData( ::hWnd )
 
-   Return aPos                                     // { nStart, nEnd }
+   RETURN aPos                                     // { nStart, nEnd }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetSelection( nStart, nEnd ) CLASS TText
 
    // Use nStart = 0 and nEnd = -1 to select all
    SendMessage( ::hWnd, EM_SETSEL, nStart, nEnd )
 
-   Return ::GetSelection()
+   RETURN ::GetSelection()
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetSelText CLASS TText
 
-   Local aPos := ::GetSelection()
+   LOCAL aPos := ::GetSelection()
 
-   Return SubStr( ::Caption, aPos[1] + 1, aPos[2] - aPos[1] )
+   RETURN SubStr( ::Caption, aPos[1] + 1, aPos[2] - aPos[1] )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReadOnly( lReadOnly ) CLASS TText
 
-   If HB_IsLogical( lReadOnly )
-      SendMessage( ::hWnd, EM_SETREADONLY, If( lReadOnly, 1, 0 ), 0 )
-   EndIf
+   IF HB_ISLOGICAL( lReadOnly )
+      SendMessage( ::hWnd, EM_SETREADONLY, iif( lReadOnly, 1, 0 ), 0 )
+   ENDIF
 
-   Return IsWindowStyle( ::hWnd, ES_READONLY )
+   RETURN IsWindowStyle( ::hWnd, ES_READONLY )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MaxLength( nLen ) CLASS TText
 
-   If HB_IsNumeric( nLen )
-      ::nMaxLength := If( nLen >= 1, nLen, 0 )
+   IF HB_ISNUMERIC( nLen )
+      ::nMaxLength := iif( nLen >= 1, nLen, 0 )
       SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
-   EndIf
+   ENDIF
 
-   Return SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
+   RETURN SendMessage( ::hWnd, EM_GETLIMITTEXT, 0, 0 )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DoAutoSkip() CLASS TText
 
-   If HB_IsBlock( ::OnTextFilled )
+   IF HB_ISBLOCK( ::OnTextFilled )
       ::DoEvent( ::OnTextFilled, "TEXTFILLED" )
-   Else
+   ELSE
       _SetNextFocus()
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TText
 
-   Local Hi_wParam := HiWord( wParam )
-   Local lWhen
+   LOCAL nNotifyCode := HiWord( wParam )
+   LOCAL lWhen
 
-   If Hi_wParam == EN_CHANGE
-      If ::Transparent
+   IF nNotifyCode == EN_CHANGE
+      IF ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-      EndIf
-      If ::lSetting
+      ENDIF
+      IF ::lSetting
          ::lSetting := .F.
-      Else
+      ELSE
          ::DoChange()
-         If ::lAutoSkip .AND. ::nMaxLength > 0 .AND. ::CaretPos >= ::nMaxLength
+         IF ::lAutoSkip .AND. ::nMaxLength > 0 .AND. ::CaretPos >= ::nMaxLength
             ::DoAutoSkip()
-         EndIf
-      Endif
-      If ::lPrevUndo
+         ENDIF
+      ENDIF
+      IF ::lPrevUndo
          ::xUndo := ::xPrevUndo
          ::lPrevUndo := .F.
-      EndIf
-      Return Nil
+      ENDIF
+      RETURN NIL
 
-   ElseIf Hi_wParam == EN_KILLFOCUS
-      If ! ::When_Procesing
+   ELSEIF nNotifyCode == EN_KILLFOCUS
+      IF ! ::When_Procesing
          ::When_Processed := .F.
-      EndIf
-      //::SetFont( ::cFontName, ::nFontSize, ::Bold, ::Italic, ::Underline, ::Strikeout )
+      ENDIF
       ::lFocused := .F.
-      Return ::DoLostFocus()
+      RETURN ::DoLostFocus()
 
-   ElseIf Hi_wParam == EN_SETFOCUS
+   ELSEIF nNotifyCode == EN_SETFOCUS
       lWhen := .T.
 
-      If ! ::When_Processed
+      IF ! ::When_Processed
          ::When_Processed := .T.
          ::When_Procesing := .T.
-
-         If ! Empty( ::bWhen )
+         IF ! Empty( ::bWhen )
             lWhen := Eval ( ::bWhen, ::Value )
-         EndIf
-
+         ENDIF
          ::When_Procesing := .F.
-      EndIf
+      ENDIF
 
-      If ::When_Processed
-         If lWhen
+      IF ::When_Processed
+         IF lWhen
             ::xPrevUndo := ::Value
             ::lPrevUndo := .T.
-
             ::lFocused := .T.
-
-            If ::nInsertType == 0
+            IF ::nInsertType == 0
                ::InsertStatus := ( ::Type != "TEXTPICTURE" )
-            EndIf
-
+            ENDIF
             ::SetFocus()
-
             // TControl's Events_Command method is responsible for
             // setting the focus effect and firing the OnGotFocus event.
-         Else
-            If GetKeyState( VK_TAB ) < 0 .AND. GetKeyFlagState() == MOD_SHIFT
+         ELSE
+            IF GetKeyState( VK_TAB ) < 0 .AND. GetKeyFlagState() == MOD_SHIFT
                _SetPrevFocus()
-            Else
+            ELSE
                _SetNextFocus()
-            EndIf
-         EndIf
-      EndIf
+            ENDIF
+         ENDIF
+      ENDIF
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InsertStatus( lValue ) CLASS TText
 
    /*
@@ -518,33 +740,34 @@ METHOD InsertStatus( lValue ) CLASS TText
    *
    * 2 = The state of the INSERT key is used to set the type, instead of lInsert.
    */
-   If HB_IsLogical( lValue )
+   IF HB_ISLOGICAL( lValue )
       // Set
-      If ::nInsertType != 2
+      IF ::nInsertType != 2
          ::lInsert := lValue
-      EndIf
-   Else
+      ENDIF
+   ELSE
       // Get
-      If ::nInsertType == 2
+      IF ::nInsertType == 2
          ::lInsert := IsInsertActive()
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::lInsert
+   RETURN ::lInsert
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetLineFromChar( nChar ) CLASS TText
 
-   Local nLine
+   LOCAL nLine
 
-   If nChar > 64000
+   IF nChar > 64000
       nLine := SendMessage( ::hWnd, EM_EXLINEFROMCHAR, 0, nChar)
-   Else
+   ELSE
       nLine := SendMessage( ::hWnd, EM_LINEFROMCHAR, nChar, 0)
-   EndIf
+   ENDIF
 
-   Return nLine
+   RETURN nLine
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -593,7 +816,7 @@ HB_FUNC( INITTEXTBOX )          /* FUNCTION InitTextBox( hWnd, hMenu, nCol, nRow
 
    if( hb_parni( 8 ) )
    {
-      SendMessage( hCtrl, ( UINT ) EM_LIMITTEXT, ( WPARAM) hb_parni( 8 ), ( LPARAM ) 0 );
+      SendMessage( hCtrl, ( UINT ) EM_LIMITTEXT, ( WPARAM ) hb_parni( 8 ), ( LPARAM ) 0 );
    }
 
    _OOHG_TText_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
@@ -615,7 +838,7 @@ HB_FUNC_STATIC( TTEXT_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
       case WM_NCCALCSIZE:
       {
          int iRet;
-         RECT *rect2;
+         RECT * rect2;
          POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
          iRet = DefWindowProc( hWnd, message, wParam, lParam );
@@ -719,11 +942,11 @@ HB_FUNC( TTEXT_GETSELECTIONDATA )          /* FUNCTION TText_GetSelectionData( h
    DWORD wParam;
    DWORD lParam;
 
-   SendMessage( HWNDparam( 1 ), EM_GETSEL, (WPARAM) &wParam, (LPARAM) &lParam );
+   SendMessage( HWNDparam( 1 ), EM_GETSEL, ( WPARAM ) &wParam, ( LPARAM ) &lParam );
 
    hb_reta( 2 );
-   HB_STORNI( (int) wParam, -1, 1 );
-   HB_STORNI( (int) lParam, -1, 2 );
+   HB_STORNI( ( INT ) wParam, -1, 1 );
+   HB_STORNI( ( INT ) lParam, -1, 2 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -736,8 +959,8 @@ HB_FUNC_STATIC( TTEXT_GETCHARFROMPOS )          /* METHOD GetCharFromPos( nRow, 
    lRet = SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, MAKELPARAM( hb_parni( 2 ), hb_parni( 1 ) ) );
 
    hb_reta( 2 );
-   HB_STORNI( (int) LOWORD( lRet ), -1, 1 );        // zero-based index of the char
-   HB_STORNI( (int) HIWORD( lRet ), -1, 2 );        // zero-based line containing the char
+   HB_STORNI( ( INT ) LOWORD( lRet ), -1, 1 );        // zero-based index of the char
+   HB_STORNI( ( INT ) HIWORD( lRet ), -1, 2 );        // zero-based line containing the char
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -747,13 +970,13 @@ HB_FUNC_STATIC( TTEXT_GETRECT )          /* METHOD GetRect() CLASS TText -> { nT
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    RECT rect;
 
-   SendMessage( oSelf->hWnd, EM_GETRECT, 0, (LPARAM) &rect );
+   SendMessage( oSelf->hWnd, EM_GETRECT, 0, ( LPARAM ) &rect );
 
    hb_reta( 4 );
-   HB_STORNI( (int) rect.top, -1, 1 );
-   HB_STORNI( (int) rect.left, -1, 2 );
-   HB_STORNI( (int) rect.bottom, -1, 3 );
-   HB_STORNI( (int) rect.right, -1, 4 );
+   HB_STORNI( ( INT ) rect.top, -1, 1 );
+   HB_STORNI( ( INT ) rect.left, -1, 2 );
+   HB_STORNI( ( INT ) rect.bottom, -1, 3 );
+   HB_STORNI( ( INT ) rect.right, -1, 4 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -763,7 +986,7 @@ HB_FUNC_STATIC( TTEXT_GETLASTVISIBLELINE )          /* METHOD GetLastVisibleLine
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    RECT rect;
 
-   SendMessage( oSelf->hWnd, EM_GETRECT, 0, (LPARAM) &rect );
+   SendMessage( oSelf->hWnd, EM_GETRECT, 0, ( LPARAM ) &rect );
 
    hb_retni( HIWORD( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, MAKELPARAM( rect.left + 1, rect.bottom - 2 ) ) ) );
 }
@@ -779,21 +1002,21 @@ HB_FUNC_STATIC( TTEXT_GETLINE )          /* METHOD GetLine( nLine ) CLASS TText 
    LPWORD pBuffer;
    LRESULT lResult;
 
-   nChar = SendMessage( oSelf->hWnd, EM_LINEINDEX, (WPARAM) hb_parnl( 1 ), 0 );
+   nChar = SendMessage( oSelf->hWnd, EM_LINEINDEX, ( WPARAM ) hb_parnl( 1 ), 0 );
    if( nChar < 0 )
    {
       hb_retc( "" );
    }
    else
    {
-      LenBuff = (WORD) SendMessage( oSelf->hWnd, EM_LINELENGTH, nChar, 0 );
+      LenBuff = ( WORD ) SendMessage( oSelf->hWnd, EM_LINELENGTH, nChar, 0 );
       if( LenBuff )
       {
-         strBuffer = (LPTSTR) hb_xgrab( ( LenBuff + 1 ) * sizeof( TCHAR ) );
-         pBuffer = (LPWORD) strBuffer;
+         strBuffer = ( LPTSTR ) hb_xgrab( ( LenBuff + 1 ) * sizeof( TCHAR ) );
+         pBuffer = ( LPWORD ) strBuffer;
          pBuffer[0] = LenBuff;
-         strBuffer[LenBuff] = (TCHAR) 0;
-         lResult = SendMessage( oSelf->hWnd, EM_GETLINE, (WPARAM) hb_parnl( 1 ), (LPARAM) strBuffer );
+         strBuffer[LenBuff] = ( TCHAR ) 0;
+         lResult = SendMessage( oSelf->hWnd, EM_GETLINE, ( WPARAM ) hb_parnl( 1 ), ( LPARAM ) strBuffer );
          if( lResult )
          {
             hb_retc( strBuffer );
@@ -813,13 +1036,13 @@ HB_FUNC_STATIC( TTEXT_GETLINE )          /* METHOD GetLine( nLine ) CLASS TText 
 
 #pragma ENDDUMP
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
 
-   Local Self := QSelf()
-   Local aPos, nStart, nEnd, cText
+   LOCAL Self := QSelf()
+   LOCAL aPos, nStart, nEnd, cText
 
-   If nMsg == WM_CHAR .AND. wParam >= 32 .AND. ! ::InsertStatus
+   IF nMsg == WM_CHAR .AND. wParam >= 32 .AND. ! ::InsertStatus
       aPos := ::GetSelection()
       nStart := aPos[ 1 ]
       nEnd := aPos[ 2 ]
@@ -828,400 +1051,399 @@ FUNCTION TText_Events2( hWnd, nMsg, wParam, lParam )
        * at the end of line then use control's default behavior.
        * Else, select the next character and invoke default behavior.
        */
-      If nEnd == nStart
-         If SubStr( ::Caption, nStart + 1, 2) != Chr(13) + Chr(10)
+      IF nEnd == nStart
+         IF SubStr( ::Caption, nStart + 1, 2) != Chr( 13 ) + Chr( 10 )
             SendMessage( ::hWnd, EM_SETSEL, nStart, nStart + 1)
-         EndIf
-      EndIf
+         ENDIF
+      ENDIF
 
-   ElseIf nMsg == WM_UNDO
+   ELSEIF nMsg == WM_UNDO .OR. ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
       cText := ::Value
       ::Value := ::xUndo
       ::xUndo := cText
 
-   ElseIf nMsg == WM_LBUTTONDOWN
-      If ! ::lFocused
+   ELSEIF nMsg == WM_LBUTTONDOWN
+      IF ! ::lFocused
          ::SetFocus()
-      EndIf
+      ENDIF
       ::DoEventMouseCoords( ::OnClick, "CLICK" )
 
-   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_INSERT .AND. GetKeyFlagState() == 0
+   ELSEIF nMsg == WM_KEYDOWN .AND. wParam == VK_INSERT .AND. GetKeyFlagState() == 0
       // Toggle insertion
-      ::InsertStatus :=  ! ::InsertStatus
+      ::InsertStatus := ! ::InsertStatus
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTextPicture FROM TText
 
-   DATA Type           INIT "TEXTPICTURE" READONLY
-   DATA lBritish       INIT .F.
-   DATA cPicture       INIT ""
-   DATA PictureFun     INIT ""
-   DATA PictureFunShow INIT ""
-   DATA PictureMask    INIT ""
-   DATA PictureShow    INIT ""
-   DATA ValidMask      INIT {}
-   DATA ValidMaskShow  INIT {}
-   DATA nDecimal       INIT 0
-   DATA nDecimalShow   INIT 0
-   DATA DataType       INIT "."
-   DATA cDateFormat    INIT Nil
-   DATA lToUpper       INIT .F.
-   DATA lNumericScroll INIT .F.
-   DATA nYear          INIT Nil
+   DATA cDateFormat               INIT NIL
+   DATA cPicture                  INIT ""
+   DATA DataType                  INIT "."
+   DATA lBritish                  INIT .F.
+   DATA lNumericScroll            INIT .F.
+   DATA lToUpper                  INIT .F.
+   DATA nDecimal                  INIT 0
+   DATA nDecimalShow              INIT 0
+   DATA nYear                     INIT NIL
+   DATA PictureFun                INIT ""
+   DATA PictureFunShow            INIT ""
+   DATA PictureMask               INIT ""
+   DATA PictureShow               INIT ""
+   DATA Type                      INIT "TEXTPICTURE" READONLY
+   DATA ValidMask                 INIT {}
+   DATA ValidMaskShow             INIT {}
 
    METHOD Define
-   METHOD Value       SETGET
-   METHOD Picture     SETGET
    METHOD Events
-   METHOD KeyPressed
    METHOD Events_Command
+   METHOD KeyPressed
+   METHOD Picture                 SETGET
+   METHOD Value                   SETGET
 
    ENDCLASS
 
-METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
-               cInputMask, cFontName, nFontSize, cToolTip, uLostFocus, ;
-               uGotFocus, uChange, uEnter, right, HelpId, readonly, bold, ;
-               italic, underline, strikeout, field, backcolor, fontcolor, ;
-               invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-               lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-               nInsType, lAtLeft, lNoCntxtMnu ) CLASS TTextPicture
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cInputMask, cFontName, nFontSize, cToolTip, ;
+               bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
+               cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, bOnFocusPos, lDisabled, ;
+               bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, nInsType, ;
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 ) CLASS TTextPicture
 
-   Local nStyle := ES_AUTOHSCROLL, nStyleEx := 0
+   LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
-   nStyle += If( HB_IsLogical( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
-             If( HB_IsLogical( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
+   nStyle += iif( HB_ISLOGICAL( lUpper ) .AND. lUpper, ES_UPPERCASE, 0 ) + ;
+             iif( HB_ISLOGICAL( lLower ) .AND. lLower, ES_LOWERCASE, 0 )
 
    ASSIGN ::nYear VALUE nYear TYPE "N" DEFAULT -1
 
-   If uValue == Nil
+   IF uValue == NIL
       uValue := ""
-   ElseIf HB_IsNumeric( uValue )
-      right := .T.
+   ELSEIF HB_ISNUMERIC( uValue )
+      lRight := .T.
       ::InsertStatus := .F.
       ::lNumericScroll := .T.
-   ElseIf HB_IsDate( uValue )
+   ELSEIF HB_ISDATE( uValue )
       ::lNumericScroll := .T.
-   EndIf
+   ENDIF
 
-   If ValType( cInputMask ) $ "CM"
+   IF ValType( cInputMask ) $ "CM"
       ::cPicture := cInputMask
-   EndIf
+   ENDIF
    ::Picture( ::cPicture, uValue )
 
-   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, uValue, ;
-              cFontName, nFontSize, cToolTip, 0, .F., ;
-              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
-              readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
+   ::Define2( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, 0, .F., ;
+              bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
+              cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
+              bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, ;
+              nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Picture( cInputMask, uValue ) CLASS TTextPicture
 
-   Local cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
+   LOCAL cType, cPicFun, cPicMask, nPos, nScroll, lOldCentury
 
-   If ValType( cInputMask ) $ "CM"
-      If uValue == Nil
+   IF ValType( cInputMask ) $ "CM"
+      IF uValue == NIL
          uValue := ::Value
-      EndIf
+      ENDIF
 
-      lOldCentury := __SETCENTURY()
+      lOldCentury := __SetCentury()
       ::cDateFormat := Set( _SET_DATEFORMAT )
       cType := ValType( uValue )
 
-      If ! ValType( cInputMask ) $ "CM"
+      IF ! ValType( cInputMask ) $ "CM"
          cInputMask := ""
-      EndIf
+      ENDIF
       ::lBritish := .F.
       ::lToUpper := .F.
 
       cPicFun := ""
-      If Left( cInputMask, 1 ) == "@"
+      IF Left( cInputMask, 1 ) == "@"
          nPos := At( " ", cInputMask )
-         If nPos != 0
-            cPicMask := Substr( cInputMask, nPos + 1 )
+         IF nPos != 0
+            cPicMask := SubStr( cInputMask, nPos + 1 )
             cInputMask := Upper( Left( cInputMask, nPos - 1 ) )
-         Else
+         ELSE
             cPicMask := ""
             cInputMask := Upper( cInputMask )
-         EndIf
+         ENDIF
 
-         Do While "S" $ cInputMask
+         DO WHILE "S" $ cInputMask
             nScroll := 0
             // It's automatic at textbox's width
             nPos := At( "S", cInputMask )
             cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-            Do While Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
+            DO WHILE Len( cInputMask ) >= nPos .AND. SubStr( cInputMask, nPos, 1 ) $ "0123456789"
                nScroll := ( nScroll * 10 ) + Val( SubStr( cInputMask, nPos, 1 ) )
                cInputMask := Left( cInputMask, nPos - 1 ) + SubStr( cInputMask, nPos + 1 )
-            EndDo
-            If cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
+            ENDDO
+            IF cType $ "CM" .AND. Empty( cPicMask ) .AND. nScroll > 0
                cPicMask := Replicate( "X", nScroll )
-            EndIf
-         EndDo
+            ENDIF
+         ENDDO
 
-         If "A" $ cInputMask
-            If cType $ "CM" .AND. Empty( cPicMask )
+         IF "A" $ cInputMask
+            IF cType $ "CM" .AND. Empty( cPicMask )
                cPicMask := Replicate( "A", Len( uValue ) )
-            EndIf
+            ENDIF
             cInputMask := StrTran( cInputMask, "A", "" )
-         EndIf
+         ENDIF
 
          /*
-         If "B" $ cInputMask
+         IF "B" $ cInputMask
             cPicFun += "B"
             cInputMask := StrTran( cInputMask, "B", "" )
-         EndIf
+         ENDIF
          */
 
-         If "2" $ cInputMask
+         IF "2" $ cInputMask
             SET CENTURY OFF
             cInputMask := StrTran( cInputMask, "2", "" )
-         EndIf
+         ENDIF
 
-         If "4" $ cInputMask
+         IF "4" $ cInputMask
             SET CENTURY ON
             cInputMask := StrTran( cInputMask, "4", "" )
-         EndIf
+         ENDIF
 
          ::cDateFormat := Set( _SET_DATEFORMAT )
 
-         If "C" $ cInputMask
+         IF "C" $ cInputMask
             cPicFun += "C"
             cInputMask := StrTran( cInputMask, "C", "" )
-         EndIf
+         ENDIF
 
-         If "D" $ cInputMask
+         IF "D" $ cInputMask
             cPicMask := ""
             cInputMask := StrTran( cInputMask, "D", "" )
-         EndIf
+         ENDIF
 
-         If "E" $ cInputMask
+         IF "E" $ cInputMask
             ::lBritish := .T.
-            If cType == "D"
-               cPicMask := If( __SETCENTURY(), "dd/mm/yyyy", "dd/mm/yy" )
-            ElseIf cType != "N"
-               cPicMask := If( __SETCENTURY(), "99/99/9999", "99/99/99" )
-            EndIf
+            IF cType == "D"
+               cPicMask := iif( __SetCentury(), "dd/mm/yyyy", "dd/mm/yy" )
+            ELSEIF cType != "N"
+               cPicMask := iif( __SetCentury(), "99/99/9999", "99/99/99" )
+            ENDIF
             cPicFun += "E"
             cInputMask := StrTran( cInputMask, "E", "" )
-         EndIf
+         ENDIF
 
-         If "K" $ cInputMask
+         IF "K" $ cInputMask
             // Since all text is selected when textbox gets focus, it's automatic
             cInputMask := StrTran( cInputMask, "K", "" )
-         EndIf
+         ENDIF
 
-         If "R" $ cInputMask
+         IF "R" $ cInputMask
             cPicFun += "R"
             cInputMask := StrTran( cInputMask, "R", "" )
-         EndIf
+         ENDIF
 
-         If "X" $ cInputMask
+         IF "X" $ cInputMask
             cPicFun += "X"
             cInputMask := StrTran( cInputMask, "X", "" )
-         EndIf
+         ENDIF
 
-         If "Z" $ cInputMask
+         IF "Z" $ cInputMask
             cPicFun += "Z"
             cInputMask := StrTran( cInputMask, "Z", "" )
-         EndIf
+         ENDIF
 
-         If "(" $ cInputMask
+         IF "(" $ cInputMask
             cPicFun += "("
             cInputMask := StrTran( cInputMask, "(", "" )
-         EndIf
+         ENDIF
 
-         If ")" $ cInputMask
+         IF ")" $ cInputMask
             cPicFun += ")"
             cInputMask := StrTran( cInputMask, ")", "" )
-         EndIf
+         ENDIF
 
-         If "!" $ cInputMask
+         IF "!" $ cInputMask
             ::lToUpper := .T.
             cPicFun += "!"
-            If cType $ "CM" .AND. Empty( cPicMask )
+            IF cType $ "CM" .AND. Empty( cPicMask )
                cPicMask := Replicate( "!", Len( uValue ) )
-            EndIf
+            ENDIF
             cInputMask := StrTran( cInputMask, "!", "" )
-         EndIf
+         ENDIF
 
-         If ! cInputMask == "@"
+         IF ! cInputMask == "@"
             MsgOOHGError( "@...TEXTBOX: Wrong Format Definition" )
-         EndIf
+         ENDIF
 
-         If ! Empty( cPicFun )
+         IF ! Empty( cPicFun )
             cPicFun := "@" + cPicFun + " "
-         EndIf
-      Else
+         ENDIF
+      ELSE
          cPicMask := cInputMask
-      EndIf
+      ENDIF
 
-      If Empty( cPicMask )
-         Do Case
-         Case cType $ "CM"
+      IF Empty( cPicMask )
+         DO CASE
+         CASE cType $ "CM"
             cPicMask := Replicate( "X", Len( uValue ) )
-         Case cType $ "N"
+         CASE cType $ "N"
             cPicMask := Str( uValue )
             nPos := At( ".", cPicMask )
             cPicMask := Replicate( "#", Len( cPicMask ) )
-            If nPos != 0
+            IF nPos != 0
                cPicMask := Left( cPicMask, nPos - 1 ) + "." + SubStr( cPicMask, nPos + 1 )
-            EndIf
-         Case cType $ "D"
+            ENDIF
+         CASE cType $ "D"
             cPicMask := ::cDateFormat
-         Case cType $ "L"
+         CASE cType $ "L"
             cPicMask := "L"
-         Otherwise
+         OTHERWISE
             // Invalid data type
-         EndCase
-      EndIf
+         ENDCASE
+      ENDIF
 
-      If cType $ "D"
+      IF cType $ "D"
          ::cDateFormat := cPicMask
          cPicMask := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( cPicMask, "Y", "9" ), "y", "9" ), "M", "9" ), "m", "9" ), "D", "9" ), "d", "9" )
-      EndIf
+      ENDIF
 
       ::PictureFunShow := cPicFun
-      ::PictureFun     := If( ::lBritish, "E", "" ) + If( "R" $ cPicFun, "R", "" ) + If( ::lToUpper, "!", "" )
-      If ! Empty( ::PictureFun )
+      ::PictureFun     := iif( ::lBritish, "E", "" ) + iif( "R" $ cPicFun, "R", "" ) + iif( ::lToUpper, "!", "" )
+      IF ! Empty( ::PictureFun )
          ::PictureFun := "@" + ::PictureFun + " "
-      EndIf
+      ENDIF
       ::PictureShow    := cPicMask
       ::PictureMask    := cPicMask
-      ::DataType       := If( cType == "M", "C", cType )
-      ::nDecimal       := If( cType == "N", At( ".", cPicMask ), 0 )
-      ::nDecimalShow   := If( cType == "N", At( ".", cPicMask ), 0 )
+      ::DataType       := iif( cType == "M", "C", cType )
+      ::nDecimal       := iif( cType == "N", At( ".", cPicMask ), 0 )
+      ::nDecimalShow   := iif( cType == "N", At( ".", cPicMask ), 0 )
       ::ValidMask      := ValidatePicture( cPicMask )
       ::ValidMaskShow  := ValidatePicture( cPicMask )
 
-      If ::DataType == "N"
+      IF ::DataType == "N"
          ::PictureMask := StrTran( StrTran( StrTran( ::PictureMask, ",", "" ), "*", "9" ), "$", "9" )
          ::nDecimal    := At( ".", ::PictureMask )
          ::ValidMask   := ValidatePicture( ::PictureMask )
-      EndIf
+      ENDIF
 
       ::cPicture := ::PictureFunShow + ::PictureShow
       ::Value := uValue
-      __SETCENTURY( lOldCentury )
-   EndIf
+      __SetCentury( lOldCentury )
+   ENDIF
 
-   Return ::cPicture
+   RETURN ::cPicture
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION ValidatePicture( cPicture )
 
-   Local aValid, nPos
-   Local cValidPictures := "ANX9#LY!anxly$*"
+   LOCAL aValid, nPos
+   LOCAL cValidPictures := "ANX9#LY!anxly$*"
 
    aValid := Array( Len( cPicture ) )
-   For nPos := 1 To Len( cPicture )
+   FOR nPos := 1 TO Len( cPicture )
       aValid[ nPos ] := ( SubStr( cPicture, nPos, 1 ) $ cValidPictures )
-   Next
+   NEXT
 
-   Return aValid
+   RETURN aValid
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TTextPicture
 
-   Local cType, cAux, cDateFormat, lOldCentury, nAt
+   LOCAL cType, cAux, cDateFormat, lOldCentury, nAt
 
-   If ! ValidHandler( ::hWnd )
-      Return Nil
-   EndIf
+   IF ! ValidHandler( ::hWnd )
+      RETURN NIL
+   ENDIF
 
-   If ::DataType == "D"
+   IF ::DataType == "D"
       cDateFormat := Set( _SET_DATEFORMAT )
-      lOldCentury := __SETCENTURY()
-      __SETCENTURY( ( "YYYY" $ Upper( ::cDateFormat ) ) )
+      lOldCentury := __SetCentury()
+      __SetCentury( ( "YYYY" $ Upper( ::cDateFormat ) ) )
       Set( _SET_DATEFORMAT, ::cDateFormat )
-   EndIf
+   ENDIF
 
-   If PCount() > 0
+   IF PCount() > 0
       cType := ValType( uValue )
-      cType := If( cType == "M", "C", cType )
-      If cType == ::DataType
-         If cType == "D"
+      cType := iif( cType == "M", "C", cType )
+      IF cType == ::DataType
+         IF cType == "D"
             cAux := Transform( uValue, "@D" )
-            If Len( cAux ) < Len( ::cDateFormat )
+            IF Len( cAux ) < Len( ::cDateFormat )
                cAux := cAux + Space( Len( ::cDateFormat ) - Len( cAux ) )
-            EndIf
-         ElseIf ::lFocused
+            ENDIF
+         ELSEIF ::lFocused
             cAux := Transform( uValue, ::PictureFun + ::PictureMask )
-            If Len( cAux ) < Len( ::PictureMask )
+            IF Len( cAux ) < Len( ::PictureMask )
                cAux := cAux + Space( Len( ::PictureMask ) - Len( cAux ) )
-            EndIf
-         Else
+            ENDIF
+         ELSE
             cAux := Transform( uValue, ::PictureFunShow + ::PictureShow )
-            If Len( cAux ) != Len( ::PictureShow )
+            IF Len( cAux ) != Len( ::PictureShow )
                cAux := PADR( cAux, Len( ::PictureShow ) )
-            EndIf
-         EndIf
+            ENDIF
+         ENDIF
          ::Caption := cAux
-      Else
-         // Wrong data types
-      EndIf
-   EndIf
+      ELSE
+         // Wrong data type
+      ENDIF
+   ENDIF
    cType := ::DataType
 
    // Removes mask
-   Do Case
-   Case cType == "C"
-      uValue := If( ( "R" $ ::PictureFun ), xUnTransform( Self, ::Caption ), ::Caption )
-   Case cType == "N"
+   DO CASE
+   CASE cType == "C"
+      uValue := iif( ( "R" $ ::PictureFun ), xUnTransform( Self, ::Caption ), ::Caption )
+   CASE cType == "N"
       uValue := Val( StrTran( xUnTransform( Self, ::Caption ), " ", "" ) )
-   Case cType == "D"
+   CASE cType == "D"
       uValue := ::Caption
-      If ::nYear >= 100 .and. ::nYear <= 2999
-         nAt := At( "YY", upper(::cDateFormat) )
-         If nAt > 0
+      IF ::nYear >= 100 .and. ::nYear <= 2999
+         nAt := At( "YY", Upper(::cDateFormat) )
+         IF nAt > 0
             cAux := Transform( uValue, "@D" )
 
-            If __SETCENTURY()
-               If Empty( SubStr( cAux, nAt, 4 ) )
+            IF __SetCentury()
+               IF Empty( SubStr( cAux, nAt, 4 ) )
                   uValue := Stuff( cAux, nAt, 4, StrZero( ::nYear, 4, 0 ) )
-               EndIf
-            Else
-               If Empty( SubStr( cAux, nAt, 2 ) )
+               ENDIF
+            ELSE
+               IF Empty( SubStr( cAux, nAt, 2 ) )
                   uValue := Stuff( cAux, nAt, 2, StrZero( ::nYear % 100, 2, 0 ) )
-               EndIf
-            EndIf
-         EndIf
-      EndIf
-      uValue := CtoD( uValue )
-   Case cType == "L"
-      uValue := ( Left( xUnTransform( Self, ::Caption ), 1 ) $ "YT" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) )
-   Otherwise
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+      uValue := CToD( uValue )
+   CASE cType == "L"
+      uValue := ( Left( xUnTransform( Self, ::Caption ), 1 ) $ "YT" + hb_langMessage( HB_LANG_ITEM_BASE_TEXT + 1 ) )
+   OTHERWISE
       // Wrong data type
-      uValue := Nil
-   EndCase
+      uValue := NIL
+   ENDCASE
 
-   If ::DataType == "D"
-      __SETCENTURY( lOldCentury )
+   IF ::DataType == "D"
+      __SetCentury( lOldCentury )
       Set( _SET_DATEFORMAT, cDateFormat )
-   EndIf
+   ENDIF
 
-   Return uValue
+   RETURN uValue
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION xUnTransform( Self, cCaption )
 
-   Local cRet
+   LOCAL cRet
 
-   If ::lFocused
+   IF ::lFocused
       cRet := _OOHG_UnTransform( cCaption, ::PictureFun + ::PictureMask, ::DataType )
-   Else
+   ELSE
       cRet := _OOHG_UnTransform( cCaption, ::PictureFunShow + ::PictureShow, ::DataType )
-   EndIf
+   ENDIF
 
-   Return cRet
+   RETURN cRet
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #undef s_Super
@@ -1265,35 +1487,35 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wPa
 
 #pragma ENDDUMP
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
 
-   Local Self := QSelf()
-   Local nPos, nPos1, nPos2, cText, aPos
-   Local aValidMask := ::ValidMask
+   LOCAL Self := QSelf()
+   LOCAL nPos, nPos1, nPos2, cText, aPos
+   LOCAL aValidMask := ::ValidMask
 
-   If nMsg == WM_CHAR .AND. wParam >= 32
+   IF nMsg == WM_CHAR .AND. wParam >= 32
       aPos := ::GetSelection()
       nPos1 := aPos[ 1 ]
       nPos2 := aPos[ 2 ]
       cText := ::Caption
       nPos := nPos1 + 1
       cText := TTextPicture_Clear( cText, nPos, nPos2 - nPos1, aValidMask, ::InsertStatus )
-      If TTextPicture_Events2_Key( Self, @cText, @nPos, Chr( wParam ), aValidMask, ::PictureMask, ::InsertStatus )
+      IF TTextPicture_Events2_Key( Self, @cText, @nPos, Chr( wParam ), aValidMask, ::PictureMask, ::InsertStatus )
          ::Caption := cText
-         If ! ::lNumericScroll
-            Do While nPos < Len( aValidMask ) .AND. ! aValidMask[ nPos + 1 ]
+         IF ! ::lNumericScroll
+            DO WHILE nPos < Len( aValidMask ) .AND. ! aValidMask[ nPos + 1 ]
                nPos++
-            EndDo
-         EndIf
+            ENDDO
+         ENDIF
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
-      EndIf
-      If ::lAutoSkip .AND. nPos >= Len( aValidMask )
+      ENDIF
+      IF ::lAutoSkip .AND. nPos >= Len( aValidMask )
          ::DoAutoSkip()
-      EndIf
-      Return 1
+      ENDIF
+      RETURN 1
 
-   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_DELETE .AND. GetKeyFlagState() == 0
+   ELSEIF nMsg == WM_KEYDOWN .AND. wParam == VK_DELETE .AND. GetKeyFlagState() == 0
       aPos := ::GetSelection()
       nPos1 := aPos[ 1 ]
       nPos2 := aPos[ 2 ]
@@ -1301,450 +1523,442 @@ FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
       cText := TTextPicture_Delete( Self, cText, nPos1 + 1, Max( nPos2 - nPos1, 1 ) )
       ::Caption := cText
       SendMessage( ::hWnd, EM_SETSEL, nPos1, nPos1 )
-      Return 1
+      RETURN 1
 
-   ElseIf nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyFlagState() == 0
+   ELSEIF nMsg == WM_KEYDOWN .AND. wParam == VK_END .AND. GetKeyFlagState() == 0
       cText := ::Caption
       nPos := Len( aValidMask )
-      Do While nPos > 0 .AND. ( ! aValidMask[ nPos ] .OR. SubStr( cText, nPos, 1 ) == " " )
+      DO WHILE nPos > 0 .AND. ( ! aValidMask[ nPos ] .OR. SubStr( cText, nPos, 1 ) == " " )
          nPos--
-      EndDo
+      ENDDO
       SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
-      Return 1
+      RETURN 1
 
-   ElseIf nMsg == WM_PASTE
+   ELSEIF nMsg == WM_PASTE
       aPos := ::GetSelection()
       nPos1 := aPos[ 1 ]
       nPos2 := aPos[ 2 ]
       cText := ::Caption
       nPos := nPos1
       cText := TTextPicture_Clear( cText, nPos + 1, nPos2 - nPos1, aValidMask, ::InsertStatus )
-      If TTextPicture_Events2_String( Self, @cText, @nPos, GetClipboardText(), aValidMask, ::PictureMask, ::InsertStatus )
+      IF TTextPicture_Events2_String( Self, @cText, @nPos, GetClipboardText(), aValidMask, ::PictureMask, ::InsertStatus )
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nPos, nPos )
-      EndIf
+      ENDIF
       // Must ::lAutoSkip works when PASTE?
-      // If ::lAutoSkip .AND. nPos >= Len( aValidMask )
+      // IF ::lAutoSkip .AND. nPos >= Len( aValidMask )
       //    ::DoAutoSkip()
-      // EndIf
-      Return 1
+      // ENDIF
+      RETURN 1
 
-   ElseIf nMsg == WM_LBUTTONDOWN
-      If ::lFocused
+   ELSEIF nMsg == WM_LBUTTONDOWN
+      IF ::lFocused
          ::DoEventMouseCoords( ::OnClick, "CLICK" )
-      Else
+      ELSE
          ::SetFocus()
          ::DoEventMouseCoords( ::OnClick, "CLICK" )
-         Return 1
-      EndIf
+         RETURN 1
+      ENDIF
 
-   ElseIf nMsg == WM_UNDO .OR. ;
+   ELSEIF nMsg == WM_UNDO .OR. ;
           ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
       cText := ::Value
       ::Value := ::xUndo
       ::xUndo := cText
 
       // This is necesary to repaint with inputmask
-      If ::lFocused
+      IF ::lFocused
          ::SetFocus()
-      EndIf
-      Return 1
+      ENDIF
+      RETURN 1
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events( hWnd, nMsg, wParam, lParam )
+   RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD KeyPressed( cString, nPos ) CLASS TTextPicture
 
-   If ! ValType( cString ) $ "CM"
+   IF ! ValType( cString ) $ "CM"
       cString := ""
-   EndIf
-   If ! HB_IsNumeric( nPos ) .OR. nPos < -2
+   ENDIF
+   IF ! HB_ISNUMERIC( nPos ) .OR. nPos < -2
       nPos := ::CaretPos
-   ElseIf nPos < 0
+   ELSEIF nPos < 0
       nPos := Len( ::Caption )
-   EndIf
+   ENDIF
 
-   Return TTextPicture_Events2_String( Self, @::Caption, @nPos, cString, ::ValidMask, ::PictureMask, ::InsertStatus )
+   RETURN TTextPicture_Events2_String( Self, @::Caption, @nPos, cString, ::ValidMask, ::PictureMask, ::InsertStatus )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, cPictureMask, lInsert )
 
-   Local lChange := .F., nPos1, cMask
+   LOCAL lChange := .F., nPos1, cMask
 
-   If ::nDecimal != 0 .AND. cChar $ If( ::lBritish, ",.", "." )
+   IF ::nDecimal != 0 .AND. cChar $ iif( ::lBritish, ",.", "." )
       cText := xUnTransform( Self, cText )
-      nPos1 := If( Left( LTrim( cText ), 1 ) == "-", 1, 0 )
-      cText := Transform( Val( StrTran( cText, " ", "" ) ), If( ::lBritish, "@E ", "" ) + cPictureMask )
-      If nPos1 == 1 .AND. Left( cText, 1 ) == " " .AND. ! "-" $ cText
+      nPos1 := iif( Left( LTrim( cText ), 1 ) == "-", 1, 0 )
+      cText := Transform( Val( StrTran( cText, " ", "" ) ), iif( ::lBritish, "@E ", "" ) + cPictureMask )
+      IF nPos1 == 1 .AND. Left( cText, 1 ) == " " .AND. ! "-" $ cText
          nPos1 := Len( cText ) - Len( LTrim( cText ) )
          cText := Left( cText, nPos1 - 1 ) + "-" + SubStr( cText, nPos1 + 1 )
-      EndIf
+      ENDIF
       nPos := ::nDecimal
-      Return .T.
-   EndIf
-   If ::lNumericScroll .AND. nPos > 1 .AND. aValidMask[ nPos - 1 ]
-      If nPos > Len( cPictureMask ) .OR. ! aValidMask[ nPos ]
+      RETURN .T.
+   ENDIF
+   IF ::lNumericScroll .AND. nPos > 1 .AND. aValidMask[ nPos - 1 ]
+      IF nPos > Len( cPictureMask ) .OR. ! aValidMask[ nPos ]
          nPos1 := nPos
-         Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+         DO WHILE nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
             nPos1--
-         EndDo
-         If aValidMask[ nPos1 ] .AND. SubStr( cText, nPos1, 1 ) == " "
+         ENDDO
+         IF aValidMask[ nPos1 ] .AND. SubStr( cText, nPos1, 1 ) == " "
             cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + " " + SubStr( cText, nPos )
             nPos--
-         EndIf
-      EndIf
-   EndIf
-   Do While nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
+         ENDIF
+      ENDIF
+   ENDIF
+   DO WHILE nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
       nPos++
-   EndDo
-   If nPos <= Len( cPictureMask )
-      cMask := Substr( cPictureMask, nPos, 1 )
-      If ::lToUpper .OR. cMask $ "!lLyY"
+   ENDDO
+   IF nPos <= Len( cPictureMask )
+      cMask := SubStr( cPictureMask, nPos, 1 )
+      IF ::lToUpper .OR. cMask $ "!lLyY"
          cChar := Upper( cChar )
-      EndIf
-      If ( cMask $ "Nn"  .AND. ( IsAlpha( cChar ) .OR. IsDigit( cChar ) .OR. cChar $ " " )  ) .OR. ;
+      ENDIF
+      IF ( cMask $ "Nn"  .AND. ( IsAlpha( cChar ) .OR. IsDigit( cChar ) .OR. cChar $ " " )  ) .OR. ;
          ( cMask $ "Aa"  .AND. ( IsAlpha( cChar ) .OR. cChar == " " ) ) .OR. ;
          ( cMask $ "#$*" .AND. ( IsDigit( cChar ) .OR. cChar == "-" ) ) .OR. ;
          ( cMask $ "9"   .AND. ( IsDigit( cChar ) .OR. ( cChar == "-" .AND. ::DataType == "N" ) ) ) .OR. ;
-         ( cMask $ "Ll"  .AND. cChar $ ( "TFYN" + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
-         ( cMask $ "Yy"  .AND. cChar $ ( "YN"   + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 1 ) + HB_LANGMESSAGE( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
+         ( cMask $ "Ll"  .AND. cChar $ ( "TFYN" + hb_langMessage( HB_LANG_ITEM_BASE_TEXT + 1 ) + hb_langMessage( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
+         ( cMask $ "Yy"  .AND. cChar $ ( "YN"   + hb_langMessage( HB_LANG_ITEM_BASE_TEXT + 1 ) + hb_langMessage( HB_LANG_ITEM_BASE_TEXT + 2 ) ) ) .OR. ;
            cMask $ "Xx!"
-         If ::lNumericScroll
-            If SubStr( cText, nPos, 1 ) == " "
+         IF ::lNumericScroll
+            IF SubStr( cText, nPos, 1 ) == " "
                cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
-            Else
+            ELSE
                nPos1 := nPos
-               Do While nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+               DO WHILE nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
                   nPos1++
-               EndDo
-               If SubStr( cText, nPos1, 1 ) == " "
+               ENDDO
+               IF SubStr( cText, nPos1, 1 ) == " "
                   cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos, nPos1 - nPos ) + SubStr( cText, nPos1 + 1 )
-               Else
+               ELSE
                   nPos1 := nPos
-                  Do While nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
+                  DO WHILE nPos1 > 1 .AND. aValidMask[ nPos1 - 1 ] .AND. ! SubStr( cText, nPos1, 1 ) == " "
                      nPos1--
-                  EndDo
-                  If SubStr( cText, nPos1, 1 ) == " "
+                  ENDDO
+                  IF SubStr( cText, nPos1, 1 ) == " "
                      cText := Left( cText, nPos1 - 1 ) + SubStr( cText, nPos1 + 1, nPos - nPos1 - 1 ) + cChar + SubStr( cText, nPos )
                      nPos--
-                  Else
+                  ELSE
                      cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
-                  EndIf
-               EndIf
-            EndIf
-         ElseIf lInsert
+                  ENDIF
+               ENDIF
+            ENDIF
+         ELSEIF lInsert
             nPos1 := nPos
-            Do While nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ]
+            DO WHILE nPos1 < Len( cPictureMask ) .AND. aValidMask[ nPos1 + 1 ]
                nPos1++
-            EndDo
+            ENDDO
             cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos, nPos1 - nPos ) + SubStr( cText, nPos1 + 1 )
-         Else
+         ELSE
             cText := Left( cText, nPos - 1 ) + cChar + SubStr( cText, nPos + 1 )
-         EndIf
+         ENDIF
          lChange := .T.
-      Else
+      ELSE
          nPos--
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return lChange
+   RETURN lChange
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TTextPicture_Events2_String( Self, cText, nPos, cString, aValidMask, cPictureMask, lInsert )
 
-   Local lChange := .F.
+   LOCAL lChange := .F.
 
-   Do While Len( cString ) > 0 .AND. nPos < Len( cPictureMask )
+   DO WHILE Len( cString ) > 0 .AND. nPos < Len( cPictureMask )
       nPos++
-      If ! aValidMask[ nPos ] .AND. Left( cString, 1 ) == SubStr( cPictureMask, nPos, 1 )
+      IF ! aValidMask[ nPos ] .AND. Left( cString, 1 ) == SubStr( cPictureMask, nPos, 1 )
          cText := Left( cText, nPos - 1 ) + Left( cString, 1 ) + SubStr( cText, nPos + 1 )
          lChange := .T.
-      Else
+      ELSE
          lChange := TTextPicture_Events2_Key( Self, @cText, @nPos, Left( cString, 1 ), aValidMask, cPictureMask, lInsert ) .OR. lChange
-      EndIf
+      ENDIF
       cString := SubStr( cString, 2 )
-   EndDo
+   ENDDO
 
-   Return lChange
+   RETURN lChange
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TTextPicture_Clear( cText, nPos, nCount, aValidMask, lInsert )
 
-   Local nClear, nBase
+   LOCAL nClear, nBase
 
    nCount := Max( Min( nCount, ( Len( aValidMask ) - nPos + 1 ) ), 0 )
-   If lInsert
-      Do While nCount > 0
+   IF lInsert
+      DO WHILE nCount > 0
          // Skip non-template characters
-         Do While nCount > 0 .AND. ! aValidMask[ nPos ]
+         DO WHILE nCount > 0 .AND. ! aValidMask[ nPos ]
             nPos++
             nCount--
-         EndDo
+         ENDDO
          // Count how many blank spaces
          nClear := 0
          nBase := nPos - 1
-         Do While nCount > 0 .AND. aValidMask[ nPos ]
+         DO WHILE nCount > 0 .AND. aValidMask[ nPos ]
             nPos++
             nCount--
             nClear++
-         EndDo
-         If nCount > 0
+         ENDDO
+         IF nCount > 0
             // There's a non-template character
             cText := Left( cText, nBase ) + Space( nClear ) + SubStr( cText, nPos )
-         ElseIf nClear != 0
+         ELSEIF nClear != 0
             // The clear area is out of the count's range
-            Do While nPos <= Len( aValidMask ) .AND. aValidMask[ nPos ]
+            DO WHILE nPos <= Len( aValidMask ) .AND. aValidMask[ nPos ]
                nPos++
-            EndDo
+            ENDDO
             cText := Left( cText, nBase ) + SubStr( cText, nBase + nClear + 1, nPos - nBase - nClear - 1 ) + Space( nClear ) + SubStr( cText, nPos )
-         EndIf
-      EndDo
-   Else
-      Do While nCount > 0
-         If aValidMask[ nPos ]
+         ENDIF
+      ENDDO
+   ELSE
+      DO WHILE nCount > 0
+         IF aValidMask[ nPos ]
             cText := Left( cText, nPos - 1 ) + " " + SubStr( cText, nPos + 1 )
-         EndIf
+         ENDIF
          nPos++
          nCount--
-      EndDo
-   EndIf
+      ENDDO
+   ENDIF
 
-   Return cText
+   RETURN cText
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION TTextPicture_Delete( Self, cText, nPos, nCount )
 
-   Local i, j
+   LOCAL i, j
 
    // number of template characters to delete
    nCount := Max( Min( nCount, ( Len( ::ValidMask ) - nPos + 1 ) ), 0 )
 
    // process from right to left
-   For i := nPos + nCount - 1 to nPos step -1
+   FOR i := nPos + nCount - 1 TO nPos STEP -1
 
       // process template characters only
-      If ::ValidMask[ i ]
+      IF ::ValidMask[ i ]
 
          // Delete character, shifting to the left all remaining characters
          // until end of line or until next non-template character (whatever
          // occurs first).
-         For j := i + 1 to Len( cText )
-            If ! ::ValidMask[ j ]
-               Exit
-            EndIf
-         Next j
+         FOR j := i + 1 TO Len( cText )
+            IF ! ::ValidMask[ j ]
+               EXIT
+            ENDIF
+         NEXT j
 
          cText := Left( cText, i - 1 ) + SubStr( cText, i + 1, j - i - 1 ) + " " + SubStr( cText, j )
-      EndIf
-   Next i
+      ENDIF
+   NEXT i
 
-   Return cText
+   RETURN cText
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TTextPicture
 
-   Local Hi_wParam := HIWORD( wParam )
-   Local cText, nPos, nPos2, cAux, aPos
-   Local cPictureMask, aValidMask
+   LOCAL nNotifyCode := HiWord( wParam )
+   LOCAL cText, nPos, nPos2, cAux, aPos, cPictureMask, aValidMask
 
-   If Hi_wParam == EN_CHANGE
+   IF nNotifyCode == EN_CHANGE
       cText := ::Caption
       cPictureMask := ::PictureMask
-      If Len( cText ) != Len( cPictureMask ) .AND. ! ::lSetting .AND. ::lFocused
+      IF Len( cText ) != Len( cPictureMask ) .AND. ! ::lSetting .AND. ::lFocused
          aValidMask := ::ValidMask
          aPos := ::GetSelection()
          nPos := aPos[ 2 ]
-         If Len( cText ) > Len( cPictureMask )
+         IF Len( cText ) > Len( cPictureMask )
             nPos2 := Len( cPictureMask ) - ( Len( cText ) - nPos )
             cAux := SubStr( cText, nPos2 + 1, nPos - nPos2 )
             cText := Left( cText, nPos2 ) + SubStr( cText, nPos + 1 )
             TTextPicture_Events2_String( Self, @cText, @nPos2, cAux, aValidMask, cPictureMask, .F. )
-         Else
-            If nPos > 0 .AND. nPos < Len( cPictureMask ) .AND. ! aValidMask[ nPos + 1 ]
+         ELSE
+            IF nPos > 0 .AND. nPos < Len( cPictureMask ) .AND. ! aValidMask[ nPos + 1 ]
                nPos--
-            EndIf
+            ENDIF
             nPos2 := nPos
             nPos := Len( cPictureMask ) - Len( cText )
             cText := Left( cText, nPos2 ) + Space( nPos ) + SubStr( cText, nPos2 + 1 )
             cText := TTextPicture_Clear( cText, nPos2 + 1, nPos, aValidMask, ::InsertStatus )
-         EndIf
-         For nPos := 1 To Len( cPictureMask )
-            If ! aValidMask[ nPos ]
+         ENDIF
+         FOR nPos := 1 TO Len( cPictureMask )
+            IF ! aValidMask[ nPos ]
                cAux := SubStr( cPictureMask, nPos, 1 )
-               If cAux $ ",." .AND. ::lBritish
-                  cAux := If( cAux == ",", ".", "," )
-               EndIf
+               IF cAux $ ",." .AND. ::lBritish
+                  cAux := iif( cAux == ",", ".", "," )
+               ENDIF
                cText := Left( cText, nPos - 1 ) + cAux + SubStr( cText, nPos + 1 )
-            EndIf
-         Next
+            ENDIF
+         NEXT
          ::Caption := cText
-         SendMessage( ::hWnd, EM_SETSEL , nPos2, nPos2 )
-      EndIf
+         SendMessage( ::hWnd, EM_SETSEL, nPos2, nPos2 )
+      ENDIF
 
-   elseIf Hi_wParam == EN_KILLFOCUS
+   ELSEIF nNotifyCode == EN_KILLFOCUS
       // This is necesary to repaint with inputmask
       cText := ::Value
       ::lFocused := .F.
       ::lSetting := .T.
       ::Value := cText
 
-   elseIf Hi_wParam == EN_SETFOCUS
+   ELSEIF nNotifyCode == EN_SETFOCUS
       // This is necesary to repaint with inputmask
       cText := ::Value
       ::lFocused := .T.
       ::lSetting := .T.
       ::Value := cText
 
-   EndIf
+   ENDIF
 
-   Return ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTextNum FROM TText
 
-   DATA Type          INIT "NUMTEXT" READONLY
+   DATA Type                      INIT "NUMTEXT" READONLY
 
    METHOD Define
-   METHOD Value       SETGET
    METHOD Events_Command
+   METHOD Value                   SETGET
 
    ENDCLASS
 
-METHOD Define( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-               cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
-               lPassword, uLostFocus, uGotFocus, uChange , uEnter , right  , ;
-               HelpId, readonly, bold, italic, underline, strikeout, field , ;
-               backcolor , fontcolor , invisible , notabstop, lRtl, lAutoSkip, ;
-               lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-               nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu ) CLASS TTextNum
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+               lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
+               lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
+               bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 ) CLASS TTextNum
 
-   Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
+   LOCAL nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
-   Empty( lUpper )
-   Empty( lLower )
+   HB_SYMBOL_UNUSED( lUpper )
+   HB_SYMBOL_UNUSED( lLower )
 
-   ::Define2( cControlName, cParentForm, nx, ny, nWidth, nHeight, cValue, ;
-              cFontName, nFontSize, cToolTip, nMaxLength, lPassword, ;
-              uLostFocus, uGotFocus, uChange, uEnter, right, HelpId, ;
-              readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              lAutoSkip, nStyleEx, lNoBorder, OnFocusPos, lDisabled, bValid, ;
-              bAction, aBitmap, nBtnwidth, bAction2, bWhen, lCenter, ;
-              OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
+   ::Define2( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+              lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
+              lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, ;
+              lNoBorder, bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
+              bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TTextNum
 
-   If HB_IsNumeric( uValue )
+   IF HB_ISNUMERIC( uValue )
       uValue := Int( uValue )
       ::Caption := AllTrim( Str( uValue ) )
    ELSE
       uValue := Int( Val( ::Caption ) )
-   EndIf
+   ENDIF
 
-   Return uValue
+   RETURN uValue
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TTextNum
 
-   Local Hi_wParam := HIWORD( wParam )
-   Local cText, nPos, nCursorPos, lChange, aPos
+   LOCAL nNotifyCode := HiWord( wParam )
+   LOCAL cText, nPos, nCursorPos, lChange, aPos
 
-   If Hi_wParam == EN_CHANGE
+   IF nNotifyCode == EN_CHANGE
       aPos := ::GetSelection()
       nCursorPos := aPos[ 2 ]
       lChange := .F.
       cText := ::Caption
       nPos := 1
-      Do While nPos <= Len( cText )
-         If IsDigit( SubStr( cText, nPos, 1 ) )
+      DO WHILE nPos <= Len( cText )
+         IF IsDigit( SubStr( cText, nPos, 1 ) )
             nPos++
-         Else
+         ELSE
             cText := Left( cText, nPos - 1 ) + SubStr( cText, nPos + 1 )
             lChange := .T.
-            If nCursorPos >= nPos
+            IF nCursorPos >= nPos
                nCursorPos--
-            EndIf
-         EndIf
-      EndDo
+            ENDIF
+         ENDIF
+      ENDDO
 
-      If lChange
+      IF lChange
          ::Caption := cText
          SendMessage( ::hWnd, EM_SETSEL, nCursorPos, nCursorPos )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION DefineTextBox( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, ;
+                        nMaxLength, lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, ;
+                        lReadOnly, lBold, lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, ;
+                        lNoTabStop, lRtl, lAutoSkip, lNoBorder, bOnFocusPos, lDisabled, bValid, lDate, lNumeric, cInputmask, ;
+                        cFormat, oSubclass, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, ;
+                        nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
 
-FUNCTION DefineTextBox( cControlName, cParentForm, x, y, Width, Height, ;
-                        Value, cFontName, nFontSize, cToolTip, nMaxLength, ;
-                        lUpper, lLower, lPassword, uLostFocus, uGotFocus, ;
-                        uChange, uEnter, right, HelpId, readonly, bold, ;
-                        italic, underline, strikeout, field, backcolor, ;
-                        fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-                        lNoBorder, OnFocusPos, lDisabled, bValid, ;
-                        date, numeric, inputmask, format, subclass, bAction, ;
-                        aBitmap, nBtnwidth, bAction2, bWhen, lCenter, nYear, ;
-                        OnTextFilled, nInsType, lAtLeft, lNoCntxtMnu )
-
-   Local Self, lInsert
+   LOCAL Self, lInsert
 
    // If format is specified, inputmask is enabled
-   If ValType( format ) $ "CM"
-      If ValType( inputmask ) $ "CM"
-         inputmask := "@" + format + " " + inputmask
-      Else
-         inputmask := "@" + format
-      EndIf
-   EndIf
+   IF ValType( cFormat ) $ "CM"
+      IF ValType( cInputmask ) $ "CM"
+         cInputmask := "@" + cFormat + " " + cInputmask
+      ELSE
+         cInputmask := "@" + cFormat
+      ENDIF
+   ENDIF
 
    // Checks for date textbox
-   If ( HB_IsLogical( date ) .AND. date ) .OR. HB_IsDate( value )
+   IF ( HB_ISLOGICAL( lDate ) .AND. lDate ) .OR. HB_ISDATE( uValue )
       lInsert := .F.
-      numeric := .F.
-      If ValType( Value ) $ "CM"
-         Value := CtoD( Value )
-      ElseIf !HB_IsDate( Value )
-         Value := StoD( "" )
-      EndIf
-      If ! ValType( inputmask ) $ "CM"
-         inputmask := "@D"
-      EndIf
-   EndIf
+      lNumeric := .F.
+      IF ValType( uValue ) $ "CM"
+         uValue := CToD( uValue )
+      ELSEIF ! HB_ISDATE( uValue )
+         uValue := SToD( "" )
+      ENDIF
+      IF ! ValType( cInputmask ) $ "CM"
+         cInputmask := "@D"
+      ENDIF
+   ENDIF
 
    // Checks for numeric textbox
-   If ! HB_IsLogical( numeric )
-      numeric := .F.
-   ElseIf numeric
+   IF ! HB_ISLOGICAL( lNumeric )
+      lNumeric := .F.
+   ELSEIF lNumeric
       lInsert := .F.
-      If ValType( Value ) $ "CM"
-         Value := Val( Value )
-      ElseIf ! HB_IsNumeric( Value )
-         Value := 0
-      EndIf
-   EndIf
+      IF ValType( uValue ) $ "CM"
+         uValue := Val( uValue )
+      ELSEIF ! HB_ISNUMERIC( uValue )
+         uValue := 0
+      ENDIF
+   ENDIF
 
-   If ValType( inputmask ) $ "CM"
+   IF ValType( cInputmask ) $ "CM"
       // If inputmask is defined, it's TTextPicture()
-      Self := _OOHG_SelectSubClass( TTextPicture(), subclass )
-      ::Define( cControlName, cParentForm, x, y, width, height, value, ;
-                inputmask, cFontname, nFontsize, cTooltip, uLostfocus, ;
-                uGotfocus, uChange, uEnter, right, HelpId, readonly, bold, ;
-                italic, underline, strikeout, field, backcolor, fontcolor, ;
-                invisible, notabstop, lRtl, lAutoSkip, lNoBorder, OnFocusPos, ;
-                lDisabled, bValid, lUpper, lLower, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, nYear, OnTextFilled, ;
-                nInsType, lAtLeft, lNoCntxtMnu )
-   Else
-      Self := _OOHG_SelectSubClass( If( numeric, TTextNum(), TText() ), subclass )
-      ::Define( cControlName, cParentForm, x, y, Width, Height, Value, ;
-                cFontName, nFontSize, cToolTip, nMaxLength, lUpper, lLower, ;
-                lPassword, uLostFocus, uGotFocus, uChange, uEnter, right, ;
-                HelpId, readonly, bold, italic, underline, strikeout, field, ;
-                backcolor, fontcolor, invisible, notabstop, lRtl, lAutoSkip, ;
-                lNoBorder, OnFocusPos, lDisabled, bValid, bAction, aBitmap, ;
-                nBtnwidth, bAction2, bWhen, lCenter, OnTextFilled, nInsType, ;
-                lAtLeft, lNoCntxtMnu )
-   EndIf
+      Self := _OOHG_SelectSubClass( TTextPicture(), oSubclass )
+      ::Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cInputmask, cFontname, nFontsize, ;
+                cTooltip, bLostfocus, bGotfocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
+                lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
+                bOnFocusPos, lDisabled, bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
+                nYear, bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
+   ELSE
+      Self := _OOHG_SelectSubClass( iif( lNumeric, TTextNum(), TText() ), oSubclass )
+      ::Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+                lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, ;
+                lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, ;
+                lNoBorder, bOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
+                bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2 )
+   ENDIF
 
    ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
 
-   Return Self
+   RETURN Self

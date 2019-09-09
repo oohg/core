@@ -104,8 +104,8 @@
       [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
       [ FORMAT <format> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ ACTION <action> ] ;
-      [ ACTION2 <action2> ] ;
+      [ ACTION <action> [ TOOLTIP <tb1> ] ]  ;
+      [ ACTION2 <action2> [ TOOLTIP <tb2> ] ]  ;
       [ IMAGE <abitmap> ] ;
       [ BUTTONWIDTH <btnwidth> ] ;
       [ WHEN <bWhen> ] ;
@@ -123,4 +123,4 @@
             <.date.>, <.numeric.>, <inputmask>, <format>, [ <subclass>() ], ;
             <{action}>, <abitmap>, <btnwidth>, <{action2}>, <{bWhen}>, ;
             <.centeralign.>, <year>, <{textfilled}>, <nInsType>, <.place.>, ;
-            <.nocm.> )
+            <.nocm.>, <tb1>, <tb2> )
