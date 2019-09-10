@@ -124,7 +124,7 @@ FUNCTION JustificaLinea( cLine, nLastCol )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TReport FROM TPRINTBASE
 
-   DATA Type                      INIT "REPORT"
+   DATA Type                      INIT "REPORT" READONLY
    DATA aLines                    INIT {}
    DATA aNGrpBy                   INIT {}
    DATA lExcel                    INIT .F.
@@ -1205,7 +1205,7 @@ CLASS TReportFormWin FROM TPRINTBASE
    DATA nPoscol                   INIT 0
    DATA nPosrow                   INIT 0
    DATA oPrint                    INIT NIL
-   DATA Type                      INIT "REPORTFORMWIN"
+   DATA Type                      INIT "REPORTFORMWIN" READONLY
 
    METHOD DoEvents
    METHOD DoReport
