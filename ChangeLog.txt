@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-10 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_report.prg
+     ! Missing READONLY property at DATA Type.
+
 2019-09-10 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_xbrowse.prg
      * Includes reordered.
