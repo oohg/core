@@ -61,9 +61,10 @@
  */
 
 
+#include "hbclass.ch"
 #include "oohg.ch"
 #include "i_windefs.ch"
-#include "hbclass.ch"
+#include "i_init.ch"
 
 #define HOTKEY_ID       1
 #define HOTKEY_MOD      2
@@ -1108,10 +1109,10 @@ METHOD CheckInteractiveClose() CLASS TForm
    */
    DO CASE
    CASE ::InteractiveClose == 0 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 0 )
-      MsgStop( _OOHG_Messages( 1, 3 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 3 ) )
       lRet := .F.
    CASE ::InteractiveClose == 2 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 2 )
-      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+      lRet := MsgYesNo( _OOHG_Messages( MT_MISCELL, 1 ), _OOHG_Messages( MT_MISCELL, 2 ) )
    ENDCASE
 
    RETURN lRet
@@ -2036,7 +2037,7 @@ METHOD CheckInteractiveClose() CLASS TFormMain
    LOCAL lRet
 
    IF ::InteractiveClose == 3 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 3 )
-      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+      lRet := MsgYesNo( _OOHG_Messages( MT_MISCELL, 1 ), _OOHG_Messages( MT_MISCELL, 2 ) )
    ELSE
       lRet := ::Super:CheckInteractiveClose()
    ENDIF
