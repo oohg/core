@@ -62,9 +62,10 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 #define GO_TOP    -1
 #define GO_BOTTOM  1
@@ -923,13 +924,13 @@ METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 13 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( _OOHG_Messages( 1, 13 ), _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 13 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #EndIf
@@ -1008,20 +1009,20 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    // open service manager
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 14 ) + " [" + win_oleErrorText()+ "]", _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #else
       oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( _OOHG_Messages( 1, 14 ), _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 14 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #EndIf
 
    // open desktop service
    If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
-      MsgStop( _OOHG_Messages( 1, 15 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 15 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       Return Self
    EndIf
 
@@ -1032,7 +1033,7 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 
    // open new book
    If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
-      MsgStop( _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 16 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       oDesk := Nil
       Return Self
    EndIf
@@ -1399,11 +1400,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
                EndIf
 
                If lGo
-                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
+                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
-                  MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 2 ) )
+                  MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 2 ) )
                EndIf
             EndIf
          EndCase
@@ -1656,7 +1657,7 @@ METHOD Delete() CLASS TXBrowse
 
    If ::Lock
       If ! ::oWorkArea:Lock()
-         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
+         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
          Return .F.
       EndIf
    EndIf
@@ -1759,11 +1760,11 @@ METHOD EditItem_B( lAppend ) CLASS TXBrowse
    EndIf
 
    If lAppend
-      cTitle := _OOHG_Messages( 2, 1 )
+      cTitle := _OOHG_Messages( MT_BRW_BTN, 1 )
       nOld := ::oWorkArea:RecNo()
       ::oWorkArea:GoTo( 0 )
    Else
-      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 2, 2 ) )
+      cTitle := if( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( MT_BRW_BTN, 2 ) )
    EndIf
 
    l := Len( ::aHeaders )
@@ -1791,7 +1792,7 @@ METHOD EditItem_B( lAppend ) CLASS TXBrowse
 
    If ::Lock .AND. ! lAppend
       If ! ::oWorkArea:Lock()
-         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
+         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_ERR, 10 ) )
          Return .F.
       EndIf
    EndIf
@@ -1939,7 +1940,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
       ::Item( nRow, aNewI )
    Else
       If ::Lock .AND. ! ::oWorkArea:Lock()
-         MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 3, 10 ) )
+         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_ERR, 10 ) )
          Return .F.
       EndIf
       ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
@@ -2502,6 +2503,14 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
       nColIndex := 1
    EndIf
 
+   nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
+                              uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
+                              uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
+                              uReadOnly )
+   If nRet # nColIndex
+      MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
+   EndIf
+
    aSize( ::aFields, nColumns )
    aIns( ::aFields, nColIndex )
    ::aFields[ nColIndex ] := xField
@@ -2510,26 +2519,9 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    aSize( ::aDefaultValues, nColumns )
    ::aDefaultValues[ nColIndex ] := uDefault
 
-   If ValType( uEditControl ) != Nil .OR. HB_IsArray( ::EditControls )
-      If ! HB_IsArray( ::EditControls )
-         ::EditControls := Array( nColumns )
-      ElseIf Len( ::EditControls ) < nColumns
-         aSize( ::EditControls, nColumns )
-      EndIf
-      aIns( ::EditControls, nColIndex )
-      ::EditControls[ nColIndex ] := uEditControl
-      If ::FixControls()
-         ::FixControls( .T. )
-      EndIf
-   EndIf
-
-   // Update after updating ::EditControls
+   // Update after updating ::EditControls (was done by ::Super)
    If ::FixBlocks()
-      // Update before calling ::ColumnBlock
-      ASize( ::Picture, nColumns )
-      AIns( ::Picture, nColIndex )
-      ::Picture[ nColIndex ] := iif( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
-
+      // Update after updating ::Picture (was done by ::Super)
       aSize( ::aColumnBlocks, nColumns )
       aIns( ::aColumnBlocks, nColIndex )
       ::aColumnBlocks[ nColIndex ] := ::ColumnBlock( nColIndex )
@@ -2542,14 +2534,6 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
       ::aReplaceField := ARRAY( nColumns )
    EndIf
    ::aReplaceField[ nColIndex ] := uReplaceField
-
-   nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
-                              uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
-                              uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                              uReadOnly )
-   If nRet # nColIndex
-      MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
-   EndIf
 
    If ! HB_IsLogical( lRefresh ) .OR. lRefresh
       ::Refresh()
@@ -4132,11 +4116,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                EndIf
 
                If lGo
-                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 2 ) )
+                  If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
                      ::Delete()
                   EndIf
                ElseIf ! Empty( ::DelMsg )
-                  MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 2 ) )
+                  MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 2 ) )
                EndIf
             EndIf
 
