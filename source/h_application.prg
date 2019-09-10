@@ -61,8 +61,9 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
@@ -1058,7 +1059,7 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
             ::AppMutex := CreateMutex( , .T., StrTran( GetModuleFileName(), '\', '_' ) )
             IF Empty( ::AppMutex ) .OR. _OOHG_GetLastError() > 0
                IF HB_ISLOGICAL( lWarning ) .AND. lWarning
-                  MsgStop( _OOHG_Messages( 1, 4 ) )
+                  MsgStop( _OOHG_Messages( MT_MISCELL, 4 ) )
                ENDIF
                ExitProcess( 1 )
             ENDIF
@@ -1079,7 +1080,7 @@ METHOD Release() CLASS TApplication
    FOR i := 1 TO Len( ::aFonts )
       DeleteObject( ::aFonts[ i ] )
    NEXT i
-   ::aFonts := NIL
+   ::aFonts := {}
 
    IF HB_ISOBJECT( ::oWinMH )
       ::oWinMH:Release()
@@ -1096,25 +1097,23 @@ METHOD Release() CLASS TApplication
    FOR i := 1 TO Len( ::aEventsStack )
       ::aEventsStack[ i ] := NIL
    NEXT i
-   ::aEventsStack := NIL
+   ::aEventsStack := {}
 
    FOR i := 1 TO Len( ::aFramesStack )
       ::aFramesStack[ i ] := NIL
    NEXT i
-   ::aFramesStack := NIL
+   ::aFramesStack := {}
 
    FOR i := 1 TO Len( ::aMenusStack )
       ::aMenusStack[ i ] := NIL
    NEXT i
-   ::aMenusStack := NIL
+   ::aMenusStack := {}
 
    FreeLibraries()
 
    _OOHG_TInternal_UnRegister()
    _OOHG_TPicture_UnRegister()
    _OOHG_TTextArray_UnRegister()
-
-   ::aVars[ NDX_OOHG_MAIN ] := NIL
 
    ::oAppObj := NIL
 
