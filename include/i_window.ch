@@ -298,6 +298,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ MAXHEIGHT <maxheight> ] ;
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
       [ <nodwp: NODWP> ] ;
+      [ INTERACTIVECLOSE <icl: OFF, ON, QUERY> ] ;
    => ;
       DECLARE WINDOW <w> ;;
       [ <obj> := ] DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, ;
@@ -319,7 +320,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor>, <.nodwp.> )
+            <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1 )
 
 #xcommand LOAD WINDOW <w> ;
    => ;
@@ -471,7 +473,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ MAXHEIGHT <maxheight> ] ;
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
       [ <nodwp: NODWP> ] ;
-   => ;
+      [ INTERACTIVECLOSE <icl: OFF, ON, QUERY> ] ;
+=> ;
       [ <obj> := ] DefineWindow(, <title>, <col>, <row>, <wi>, <h>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
             <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
@@ -491,7 +494,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{MClickProcedure}>, <{DblClickProcedure}>, ;
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
-            <backimage>, <.stretch.>, <FontColor>, <.nodwp.> )
+            <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1 )
 
 /*---------------------------------------------------------------------------
 AUTOADJUST

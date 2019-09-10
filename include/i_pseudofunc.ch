@@ -139,6 +139,10 @@
    => ;
       _OOHG_ActiveHelpFile
 
+#xtranslate SetInteractiveClose( [ <nValue> ] ) ;
+   => ;
+      _OOHG_InteractiveClose [ := <nValue> ]
+
 #xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
    => ;
       hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ) , <Sep> , Chr(9) ) )

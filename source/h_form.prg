@@ -78,7 +78,6 @@
 
 STATIC _OOHG_aFormhWnd := {}, _OOHG_aFormObjects := {}               // TODO: thread safe: C-level is safe but scan, add and del at PRG-level are not.
 STATIC _OOHG_UserWindow := nil       // User's window                // TODO: thread safe
-STATIC _OOHG_InteractiveClose := 1   // Interactive close            // TODO: thread safe
 STATIC _OOHG_ActiveModal := {}       // Modal windows' stack         // TODO: thread safe
 STATIC _OOHG_ActiveForm := {}        // Forms under creation         // TODO: thread safe
 
@@ -151,7 +150,7 @@ CLASS TForm FROM TWindow
    DATA OnMaximize                INIT NIL
    DATA OnMinimize                INIT NIL
    DATA OnRestore                 INIT NIL
-
+   DATA InteractiveClose          INIT -1
    DATA nVirtualHeight            INIT 0
    DATA nVirtualWidth             INIT 0
    DATA RangeHeight               INIT 0
@@ -264,7 +263,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp ) CLASS TForm
+               fontcolor, nodwp, nICL ) CLASS TForm
 
    Local nStyle := 0, nStyleEx := 0
    Local hParent
@@ -289,7 +288,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp )
+              MoveProcedure, fontcolor, nodwp, nICL )
 
    Return Self
 
@@ -300,7 +299,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                MoveProcedure, fontcolor, nodwp ) CLASS TForm
+                MoveProcedure, fontcolor, nodwp, nICL ) CLASS TForm
 
    Local FormHandle, aRet
 
@@ -336,6 +335,13 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
    ASSIGN ::lTopmost       VALUE topmost       TYPE "L"
    ASSIGN mdi              VALUE mdi           TYPE "L" DEFAULT .F.
    ASSIGN ::NoDefWinProc   VALUE nodwp         TYPE "L"
+
+   IF HB_ISNUMERIC( nICL ) .AND. nICL >= 0 .AND. nICL <= 3
+      nICL := Int( nICL )
+      IF nICL != 3 .OR. ::Type == "A"
+         ::InteractiveClose := nICL
+      ENDIF
+   ENDIF
 
    If ! Valtype( aRGB ) $ 'AN'
       aRGB := -1
@@ -662,17 +668,15 @@ METHOD Release() CLASS TForm
       IF ! ::Active
          MsgOOHGError( "WINDOW RELEASE: " + ::Name + " is not active. Program terminated." )
       ENDIF
-
-      _ReleaseWindowList( { Self } )
+      ::lReleasing := .T.
 
       IF ValidHandler( ::hWnd )
          EnableWindow( ::hWnd )
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
       ELSE
+         _ReleaseWindowList( { Self } )
          ::OnHideFocusManagement()
       ENDIF
-
-      ::Events_Destroy()
    ENDIF
 
    RETURN NIL
@@ -1096,21 +1100,22 @@ METHOD Closable( lCloseable ) CLASS TForm
 
 METHOD CheckInteractiveClose() CLASS TForm
 
-   Local lRet := .T.
+   LOCAL lRet := .T.
    /*
    0 - close is not allowed
    1 - close is allowed, no question is asked before
    2 - close is allowed when question is answered yes
    */
-   Do Case
-      Case _OOHG_InteractiveClose == 0
-         MsgStop( _OOHG_Messages( 1, 3 ) )
-         lRet := .F.
-      Case _OOHG_InteractiveClose == 2
-         lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   EndCase
+   DO CASE
+   CASE ::InteractiveClose == 0 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 0 )
+_OOHG_CallDump( {::Name, ::InteractiveClose, _OOHG_InteractiveClose } )
+      MsgStop( _OOHG_Messages( 1, 3 ) )
+      lRet := .F.
+   CASE ::InteractiveClose == 2 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 2 )
+      lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
+   ENDCASE
 
-   Return lRet
+   RETURN lRet
 
 METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
@@ -1222,17 +1227,22 @@ METHOD Events_Destroy() CLASS TForm
    ENDIF
 
    ::Active := .F.
+
    ::Super:Release()
+
+   ::hWnd := NIL
 
    /*
     * UnRegisterWindow( ::Name )
     *
-    * This doen't works because a class cant be
-    * unregistered if a window of that class exists.
-    * To avoid problems we must unregister in
-    * ::Define before defining again.
-    * Windows automatically unregisteres all
-    * remaining classes at the end of the application.
+    * This doesn't work because a class can't be unregistered
+    * while a window of that class still exists.
+    * After destroying the window at WM_CLOSE, we also can't do
+    * that because we no longer have access to the form's object.
+    * To circumvent this limitation we must unregister at ::Define
+    * before registering the class again.
+    * Unregistered classes will not leak because Windows automatically
+    * disposes them at the end of the application.
     */
 
    RETURN NIL
@@ -1748,37 +1758,11 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          ENDIF
          // Destroy other windows
          ReleaseAllWindows()
-         // Processing will never reach this point
       ELSE
          // Destroy window
          _ReleaseWindowList( { Self } )
          ::OnHideFocusManagement()
       ENDIF
-
-      DestroyWindow( ::hWnd )
-      ::hWnd := NIL
-
-      RETURN 0
-
-      /*
-       * This function must return 0 after processing WM_CLOSE so the
-       * OS can do it's default processing. This processing ends with
-       * (a) posting a WM_DESTROY message to the queue (will be
-       * processed by this same function), immediately followed by
-       * (b) sending a WM_NCDESTROY message to the form's WindowProc,
-       * (there's no need to process it because all child control are
-       * already released).
-       */
-
-   case nMsg == WM_DESTROY
-
-      /*
-       * This will be executed for all windows except MAIN
-       * but only if ReleaseAllWindows() is not executed
-       */
-      ::Events_Destroy()
-
-      RETURN 0
 
    otherwise
 
@@ -2006,7 +1990,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                mdi, clientarea, restoreprocedure, RClickProcedure, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
                MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-               MoveProcedure, fontcolor, nodwp ) CLASS TFormMain
+               MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormMain
 
    Local nStyle := 0, nStyleEx := 0
 
@@ -2026,7 +2010,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NIL, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp )
+              MoveProcedure, fontcolor, nodwp, nICL )
 
    ::NotifyIconObject:Picture := NotifyIconName
    ::NotifyIconObject:ToolTip := NotifyIconToolTip
@@ -2042,25 +2026,23 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
 
 METHOD Release() CLASS TFormMain
 
-   IF _OOHG_WinReleaseSameOrder
-      _ReleaseWindowList( { Self } )
-   ENDIF
+   ::Super:Release()
    ReleaseAllWindows()
    // Processing will never reach this point
 
-   RETURN ::Super:Release()
+   RETURN NIL
 
 METHOD CheckInteractiveClose() CLASS TFormMain
 
-   Local lRet
+   LOCAL lRet
 
-   If _OOHG_InteractiveClose == 3
+   IF ::InteractiveClose == 3 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 3 )
       lRet := MsgYesNo( _OOHG_Messages( 1, 1 ), _OOHG_Messages( 1, 2 ) )
-   Else
+   ELSE
       lRet := ::Super:CheckInteractiveClose()
-   EndIf
+   ENDIF
 
-   Return lRet
+   RETURN lRet
 
 
 CLASS TFormModal FROM TForm
@@ -2089,7 +2071,7 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
                MDblClickProcedure, nominimize, nomaximize, maximizeprocedure, ;
                minimizeprocedure, minwidth, maxwidth, minheight, maxheight, ;
-               MoveProcedure, fontcolor, nodwp ) CLASS TFormModal
+               MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormModal
 
    LOCAL nStyle := 0, nStyleEx := 0
    LOCAL oParent, hParent
@@ -2115,7 +2097,7 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp )
+              MoveProcedure, fontcolor, nodwp, nICL )
 
    RETURN Self
 
@@ -2216,7 +2198,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
                hscrollbox, vscrollbox, cursor, Focused, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp ) CLASS TFormInternal
+               minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormInternal
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2235,7 +2217,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
               MouseMoveProcedure, MouseDragProcedure, NIL, NIL, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, NIL, clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp )
+              NIL, fontcolor, nodwp, nICL )
 
    Return Self
 
@@ -2246,7 +2228,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                MoveProcedure, fontcolor, nodwp ) CLASS TFormInternal
+                MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormInternal
 
    ::Super:Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                     nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2255,7 +2237,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                     MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                     nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                     DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                    MoveProcedure, fontcolor, nodwp )
+                    MoveProcedure, fontcolor, nodwp, nICL )
 
    ::ActivateCount[ 1 ] += 999
    aAdd( ::Parent:SplitChildList, Self )
@@ -2327,7 +2309,7 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
-               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp ) CLASS TFormSplit
+               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormSplit
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2351,7 +2333,7 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
               NIL, NIL, NIL, .F., nStyle, nStyleEx, ;
               TYPE_SPLITCHILD, lRtl, mdi, .F., clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp )
+              NIL, fontcolor, nodwp, nICL )
 
    IF ::Container:lForceBreak .AND. ! ::Container:lInverted
       Break := .T.
@@ -2387,7 +2369,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                hscrollbox, vscrollbox, cursor, oParent, Focused, lRtl, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
-               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp ) CLASS TFormMDIClient
+               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormMDIClient
 
    LOCAL nStyle := 0, nStyleEx := 0, aClientRect
 
@@ -2419,7 +2401,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, NIL, .F., nStyle, nStyleEx, ;
               TYPE_MDICLIENT, lRtl, .F.,, clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp )
+              NIL, fontcolor, nodwp, nICL )
 
    ::Parent:hWndClient := ::hWnd
    ::Parent:oWndClient := Self
@@ -2502,7 +2484,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp ) CLASS TFormMDIChild
+               fontcolor, nodwp, nICL ) CLASS TFormMDIChild
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2528,7 +2510,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_MDICHILD, lRtl,,, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp )
+              MoveProcedure, fontcolor, nodwp, nICL )
 
    ::ProcessInitProcedure()
 
@@ -2550,7 +2532,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        RClickProcedure, MClickProcedure, DblClickProcedure, ;
                        RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
                        minheight, maxheight, MoveProcedure, cBackImage, lStretchBack, ;
-                       fontcolor, nodwp )
+                       fontcolor, nodwp, nICL )
 
    Local Self
    Local aError := {}
@@ -2604,6 +2586,9 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
 
    If main
       Self := _OOHG_SelectSubClass( TFormMain(), subclass )
+      IF HB_ISNUMERIC( nICL ) .AND. nICL == 3
+         nICL := 4   // QUERY MAIN
+      ENDIF
       ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
@@ -2616,7 +2601,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp )
+               fontcolor, nodwp, nICL )
    ElseIf splitchild
       Self := _OOHG_SelectSubClass( TFormSplit(), subclass )
       ::Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
@@ -2625,7 +2610,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp )
+               minheight, maxheight, fontcolor, nodwp, nICL )
    ElseIf modal .OR. modalsize
       Self := _OOHG_SelectSubClass( TFormModal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
@@ -2640,7 +2625,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                nominimize, nomaximize, maximizeprocedure, minimizeprocedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp )
+               fontcolor, nodwp, nICL )
    ElseIf mdiclient
       Self := _OOHG_SelectSubClass( TFormMDIClient(), subclass )
       ::Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
@@ -2650,7 +2635,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                hscrollbox, vscrollbox, cursor, oParent, Focused, lRtl, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp )
+               minheight, maxheight, fontcolor, nodwp, nICL )
    ElseIf mdichild
       Self := _OOHG_SelectSubClass( TFormMDIChild(), subclass )
       ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
@@ -2664,7 +2649,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                InteractiveCloseProcedure, Focused, lRtl, clientarea, restoreprocedure, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, ;
-               maxheight, MoveProcedure, fontcolor, nodwp )
+               maxheight, MoveProcedure, fontcolor, nodwp, nICL )
    ElseIf internal
       Self := _OOHG_SelectSubClass( TFormInternal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
@@ -2674,7 +2659,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                hscrollbox, vscrollbox, cursor, Focused, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, ;
-               maxheight, fontcolor, nodwp )
+               maxheight, fontcolor, nodwp, nICL )
    Else // Child and "S"
       Self := _OOHG_SelectSubClass( TForm(), subclass )
       ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
@@ -2688,7 +2673,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                InteractiveCloseProcedure, lRtl, child, mdi, clientarea, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, ;
-               maxwidth, minheight, maxheight, MoveProcedure, fontcolor, nodwp )
+               maxwidth, minheight, maxheight, MoveProcedure, fontcolor, nodwp, nICL )
    EndIf
 
    ::NotifyIconObject:Picture := NotifyIconName
@@ -2867,7 +2852,11 @@ FUNCTION ReleaseAllWindows()
       ExitProcess( _OOHG_ErrorLevel )
       // Processing will never reach this point
    ENDIF
-//   TApplication():Define():Release()
+   IF _OOHG_KeepAppOnMainRelease
+      _OOHG_Main := NIL
+   ELSE
+      TApplication():Define():Release()
+   ENDIF
 
    RETURN NIL
 
@@ -2878,54 +2867,53 @@ FUNCTION _ReleaseWindowList( aWindows )
    IF _OOHG_WinReleaseSameOrder
       FOR i := 1 TO nLen
          oWnd := aWindows[ i ]
-         IF ! oWnd:lReleasing
-            oWnd:lReleasing := .T.
 
-            IF oWnd:Active
-               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
-            ENDIF
+         oWnd:lReleasing := .T.
 
-            // Disable form's doevent
-            oWnd:lDisableDoEvent := .T.
-
-            // Prepare all controls to be destroyed
-            oWnd:PreRelease()
-
-            // Release child windows
-            _ReleaseWindowList( oWnd:aChildPopUp )
-            oWnd:aChildPopUp := {}
-
-            HideWindow( oWnd:hWnd )
-
-            // Release attached controls et al.
-            oWnd:Events_Destroy()
+         IF oWnd:Active
+            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
          ENDIF
+
+         // Disable form's doevent
+         oWnd:lDisableDoEvent := .T.
+
+         // Prepare all controls to be destroyed
+         oWnd:PreRelease()
+
+         // Release child windows
+         _ReleaseWindowList( oWnd:aChildPopUp )
+         oWnd:aChildPopUp := {}
+
+         HideWindow( oWnd:hWnd )
+
+         // Release attached controls et al.
+         oWnd:Events_Destroy()
       NEXT i
    ELSE
       // Reverse order: release first the latest defined forms
       FOR i := nLen TO 1 STEP -1
          oWnd := aWindows[ i ]
-         IF ! oWnd:lReleasing
-            oWnd:lReleasing := .T.
 
-            // Release child windows
-            _ReleaseWindowList( oWnd:aChildPopUp )
-            oWnd:aChildPopUp := {}
+         oWnd:lReleasing := .T.
 
-            IF oWnd:Active
-               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
-            ENDIF
+         // Release child windows
+         _ReleaseWindowList( oWnd:aChildPopUp )
+         oWnd:aChildPopUp := {}
 
-               // Disable form's doevent
-            oWnd:lDisableDoEvent := .T.
-
-               // Prepare all controls to be destroyed
-            oWnd:PreRelease()
-
-            // Release attached controls et al.
-            HideWindow( oWnd:hWnd )
-            oWnd:Events_Destroy()
+         IF oWnd:Active
+            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
          ENDIF
+
+         // Disable form's doevent
+         oWnd:lDisableDoEvent := .T.
+
+         // Prepare all controls to be destroyed
+         oWnd:PreRelease()
+
+         HideWindow( oWnd:hWnd )
+
+         // Release attached controls et al.
+         oWnd:Events_Destroy()
       NEXT i
    ENDIF
 
@@ -3231,7 +3219,7 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd, TRUE ) );     // See ::Events_Destroy()
+   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd, TRUE ) );  
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
@@ -3395,16 +3383,6 @@ HB_FUNC( GETSYSTEMMENU )
 
 #pragma ENDDUMP
 
-
-Function SetInteractiveClose( nValue )
-
-   Local nRet := _OOHG_InteractiveClose
-
-   If HB_IsNumeric( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
-      _OOHG_InteractiveClose := INT( nValue )
-   EndIf
-
-   Return nRet
 
 FUNCTION Inspector( oWind )
 

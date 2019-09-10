@@ -63,6 +63,10 @@
 
 #ifndef __XHARBOUR__                                 // This pp rules are only needed for Harbour compilers
 
+   #xtranslate AScan( <a>, <b>, [ <c> ], [ <d> ], <e> ) ;
+      => ;
+         hb_AScan( <a>, <b>, <c>, <d>, <e> )
+
    #xtranslate GetThreadId( [<x,...>] ) ;
       => ;
          hb_threadID( <x> )
