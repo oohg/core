@@ -62,6 +62,10 @@
 
 
 #include "oohg.ch"
+#include "i_init.ch"
+
+#define DOUBLE_QUOTATION_MARK '"'
+#define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
 #ifndef __XHARBOUR__
    REQUEST DBFNTX, DBFDBT
@@ -101,18 +105,18 @@ PROCEDURE InitMessages( cLang )
       aLang := {}
    ENDIF
 
-   _OOHG_Messages[  1 ] := InitMessagesMerge( aLang, aLangDefault,  1 )
-   _OOHG_Messages[  2 ] := InitMessagesMerge( aLang, aLangDefault,  2 )
-   _OOHG_Messages[  3 ] := InitMessagesMerge( aLang, aLangDefault,  3 )
-   _OOHG_Messages[  4 ] := InitMessagesMerge( aLang, aLangDefault,  4 )
-   _OOHG_Messages[  5 ] := InitMessagesMerge( aLang, aLangDefault,  5 )
-   _OOHG_Messages[  6 ] := InitMessagesMerge( aLang, aLangDefault,  6 )
-   _OOHG_Messages[  7 ] := InitMessagesMerge( aLang, aLangDefault,  7 )
-   _OOHG_Messages[  8 ] := InitMessagesMerge( aLang, aLangDefault,  8 )
-   _OOHG_Messages[  9 ] := InitMessagesMerge( aLang, aLangDefault,  9 )
-   _OOHG_Messages[ 10 ] := InitMessagesMerge( aLang, aLangDefault, 10 )
-   _OOHG_Messages[ 11 ] := InitMessagesMerge( aLang, aLangDefault, 11 )
-   _OOHG_Messages[ 12 ] := InitMessagesMerge( aLang, aLangDefault, 12 )
+   _OOHG_Messages[ MT_MISCELL ] := InitMessagesMerge( aLang, aLangDefault, MT_MISCELL )
+   _OOHG_Messages[ MT_BRW_BTN ] := InitMessagesMerge( aLang, aLangDefault, MT_BRW_BTN )
+   _OOHG_Messages[ MT_BRW_ERR ] := InitMessagesMerge( aLang, aLangDefault, MT_BRW_ERR )
+   _OOHG_Messages[ MT_BRW_MSG ] := InitMessagesMerge( aLang, aLangDefault, MT_BRW_MSG )
+   _OOHG_Messages[ MT_ABM_USR ] := InitMessagesMerge( aLang, aLangDefault, MT_ABM_USR )
+   _OOHG_Messages[ MT_ABM_LBL ] := InitMessagesMerge( aLang, aLangDefault, MT_ABM_LBL )
+   _OOHG_Messages[ MT_ABM_BTN ] := InitMessagesMerge( aLang, aLangDefault, MT_ABM_BTN )
+   _OOHG_Messages[ MT_ABM_ERR ] := InitMessagesMerge( aLang, aLangDefault, MT_ABM_ERR )
+   _OOHG_Messages[ MT_EXT_BTN ] := InitMessagesMerge( aLang, aLangDefault, MT_EXT_BTN )
+   _OOHG_Messages[ MT_EXT_LBL ] := InitMessagesMerge( aLang, aLangDefault, MT_EXT_LBL )
+   _OOHG_Messages[ MT_EXT_USR ] := InitMessagesMerge( aLang, aLangDefault, MT_EXT_USR )
+   _OOHG_Messages[ MT_PRINTER ] := InitMessagesMerge( aLang, aLangDefault, MT_PRINTER )
 
    App.MutexUnlock
 
@@ -164,11 +168,12 @@ FUNCTION ooHG_Messages_EN // English (default)
    LOCAL acABMUser, acABMLabel, acABMButton, acABMError
    LOCAL acButton, acLabel, acUser, acPrint
 
-   // MISC MESSAGES
-   acMisc           := { 'Are you sure ?', ;                                                                                        // 1
-                         'Close Window', ;                                                                                          // 2
-                         'Close not allowed', ;                                                                                     // 3
-                         'Program is already running', ;                                                                            // 4
+   // MISCELLANEOUS MESSAGES
+   // MT_MISCELL
+   acMisc           := { 'Are you sure?', ;                                                                                         // 1
+                         'The window is about to close...', ;                                                                       // 2
+                         'Close is not allowed!', ;                                                                                 // 3
+                         'Program is already running!', ;                                                                           // 4
                          'Edit', ;                                                                                                  // 5
                          'Ok', ;                                                                                                    // 6
                          'Cancel', ;                                                                                                // 7
@@ -177,28 +182,34 @@ FUNCTION ooHG_Messages_EN // English (default)
                          'Warning', ;                                                                                               // 10
                          'Edit Memo', ;                                                                                             // 11
                          "Can't determine cell type for INPLACE edit.", ;                                                           // 12
-                         "Excel is not available.", ;                                                                               // 13
-                         "OpenOffice is not available.", ;                                                                          // 14
-                         "OpenOffice Desktop is not available.", ;                                                                  // 15
-                         "OpenOffice Calc is not available.", ;                                                                     // 16
+                         "Excel is not available!", ;                                                                               // 13
+                         "OpenOffice is not available!", ;                                                                          // 14
+                         "OpenOffice Desktop is not available!", ;                                                                  // 15
+                         "OpenOffice Calc is not available!", ;                                                                     // 16
                          " successfully installed.", ;                                                                              // 17
                          " not installed.", ;                                                                                       // 18
                          "Error creating TReg32 object ", ;                                                                         // 19
                          "This screen saver has no configurable options.", ;                                                        // 20
                          "Can't open file ", ;                                                                                      // 21
-                         "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
-                         "File I/O error, can not proceed !!!", ;                                                                   // 24
-                         "File is already encrypted !!!", ;                                                                         // 25
-                         "File is not encrypted !!!", ;                                                                             // 26
-                         "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "Not enough space for legends!", ;                                                                         // 22
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
+                         "File I/O error, can not proceed!", ;                                                                      // 24
+                         "File is already encrypted!", ;                                                                            // 25
+                         "File is not encrypted!", ;                                                                                // 26
+                         "Password is not valid!", ;                                                                                // 27
+                         "The names of the new file and the old file must be different!" }                                          // 28
 
    // BROWSE MESSAGES
+   //MT_BRW_BTN
    acBrowseButton   := { "Append", ;
                          "Edit", ;
                          "&Cancel", ;
                          "&OK" }
+   //MT_BRW_ERR
    acBrowseError    := { "Window: ", ;
                          " is not defined. Program terminated.", ;
                          "Error", ;
@@ -210,18 +221,21 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Record Is Being Edited By Another User", ;
                          "Warning", ;
                          "Invalid Entry" }
-   acBrowseMessages := { 'Are you sure ?', ;
+   //MT_BRW_MSG
+   acBrowseMessages := { 'Are you sure?', ;
                          'Delete Record', ;
                          'Delete Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { CRLF + "Delete record" + CRLF + "Are you sure ?" + CRLF, ;
+   // MT_ABM_USR
+   acABMUser        := { CRLF + "Delete record" + CRLF + "Are you sure?" + CRLF, ;
                          CRLF + "Index file missing" + CRLF + "Can't do search" + CRLF, ;
                          CRLF + "Can't find index field" + CRLF + "Can't do search" + CRLF, ;
                          CRLF + "Can't do search by" + CRLF + "fields memo or logic" + CRLF, ;
                          CRLF + "Record not found" + CRLF, ;
                          CRLF + "Too many cols" + CRLF + "The report don't fit in the sheet" + CRLF, ;
                          CRLF + "Record is locked by another user" + CRLF + "Retry later" + CRLF }
+   // MT_ABM_LBL
    acABMLabel       := { "Record", ;
                          "Record count", ;
                          "       (New)", ;
@@ -245,6 +259,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "No", ;
                          "Page ", ;
                          " of " }
+   // MT_ABM_BTN
    acABMButton      := { "Close", ;
                          "New", ;
                          "Edit", ;
@@ -262,6 +277,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Remove", ;
                          "Print", ;
                          "Close" }
+   // MT_ABM_ERR
    acABMError       := { "EDIT, workarea name is missing", ;
                          "EDIT, this workarea has more than 16 fields", ;
                          "EDIT, refresh mode out of range (please report bug)", ;
@@ -269,6 +285,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "EDIT, list event number out of range (please report bug)" }
 
    // EDIT EXTENDED MESSAGES
+   // MT_EXT_BTN
    acButton         := { "&Close", ;                                            // 1
                          "&New", ;                                              // 2
                          "&Modify", ;                                           // 3
@@ -280,6 +297,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "&Copy", ;                                             // 9
                          "&Activate Filter", ;                                  // 10
                          "&Deactivate Filter" }                                 // 11
+   // MT_EXT_LBL
    acLabel          := { "None", ;                                              // 1
                          "Record", ;                                            // 2
                          "Total", ;                                             // 3
@@ -312,6 +330,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "Lower Than", ;                                        // 30
                          "Greater or Equal Than", ;                             // 31
                          "Lower or Equal Than" }                                // 32
+   // MT_EXT_USR
    acUser           := { CRLF + "Can't find an active area" + CRLF + "Please select any area before calling EDIT" + CRLF, ;          // 1
                          "Type the field value (any text)", ;                                                                        // 2
                          "Type the field value (any number)", ;                                                                      // 3
@@ -355,6 +374,7 @@ FUNCTION ooHG_Messages_EN // English (default)
                          CRLF + "Record locked by another user" + CRLF }                                                             // 41
 
    // PRINT MESSAGES
+   // MT_PRINTER
    acPrint          := { "TPrint object already initialized!", ;                                                                     // 1
                          "Printing ......", ;                                                                                        // 2
                          "Auxiliar printing command", ;                                                                              // 3
@@ -417,7 +437,7 @@ FUNCTION ooHG_Messages_HR852 // Croatian
    LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
-   acMisc           := { 'Are you sure ?', ;
+   acMisc           := { 'Are you sure?', ;
                          'Zatvori prozor', ;
                          'Zatvaranje nije dozvoljeno', ;
                          'Program je veæ pokrenut', ;
@@ -429,17 +449,21 @@ FUNCTION ooHG_Messages_HR852 // Croatian
                          'Upozorenje', ;
                          'Uredi Memo', ;
                          "Can't determine cell type for INPLACE edit.", ;
-                         "Excel is not available.", ;
-                         "OpenOffice is not available.", ;
-                         "OpenOffice Desktop is not available.", ;
-                         "OpenOffice Calc is not available.", ;
+                         "Excel is not available!", ;
+                         "OpenOffice is not available!", ;
+                         "OpenOffice Desktop is not available!", ;
+                         "OpenOffice Calc is not available!", ;
                          " successfully installed.", ;
                          " not installed.", ;
                          "Error creating TReg32 object ", ;
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
-                         "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         "Not enough space for legends!", ;                                                                        // 22
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -612,6 +636,11 @@ FUNCTION ooHG_Messages_FR // French
                          "Impossible d'ouvrir le fichier ", ;                                                                       // 21
                          "Pas assez d'espace pour les légendes !!!", ;                                                              // 22
                          "Le format du rapport n'est pas valide ", ;                                                                // 23
+                         { "Le format du rapport n'est pas valide: aucun " + DQM( "DO REPORT" ) + ' ni ' + DQM( "DEFINE REPORT" ) + ' trouvé!', ;
+                           "Le format du rapport n'est pas valide: aucun " + DQM( "FIELDS" ) + " trouvé!", ;
+                           "Le format du rapport n'est pas valide: aucun " + DQM( "FIELDS" ) + " trouvé!", ;
+                           "Le format du rapport n'est pas valide: aucun " + DQM( "WIDTHS" ) + " trouvé!", ;
+                           "Le format du rapport n'est pas valide: aucun " + DQM( "WIDTHS" ) + " trouvé!" }, ;                      // 23
                          "Erreur d' E/S de fichier, impossible de continuer !!!", ;                                                 // 24
                          "Le fichier est déjà crypté !!!", ;                                                                        // 25
                          "Le fichier n'est pas crypté !!!", ;                                                                       // 26
@@ -776,7 +805,7 @@ FUNCTION ooHG_Messages_FR // French
                          CRLF + "Entrer une valeur au filtre    " + CRLF, ;                                                                          // 38
                          CRLF + "Il n'y a aucun filtre actif    " + CRLF, ;                                                                          // 39
                          CRLF + "Désactiver le filtre?   " + CRLF, ;                                                                                 // 40
-                         CRLF + "Record locked by another user" + CRLF }                                                                             // 41
+                         CRLF + "Enregistrement verrouillé par un autre utilisateur" + CRLF }                                                        // 41
 
    // PRINT MESSAGES
    acPrint          := {}
@@ -819,7 +848,11 @@ FUNCTION ooHG_Messages_DEWIN // German
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -1009,7 +1042,11 @@ FUNCTION ooHG_Messages_IT // Italian
                          "Questo screen saver non ha opzioni configurabili.", ;
                          "Impossibile aprire il file INI.", ;
                          "Non c'è abbastanza spazio per le leggende !!!", ;                                                         // 22
-                         "Il formato del rapporto non è valido ", ;                                                                 // 23
+                         { 'Il formato del rapporto non è valido: nessuna ' + DQM( "DO REPORT" ) + ' né ' + DQM( "DEFINE REPORT" ) + ' trovata.!', ;
+                           'Il formato del rapporto non è valido: nessuna ' + DQM( "FIELDS" ) + ' trovata.!', ;
+                           'Il formato del rapporto non è valido: nessuna ' + DQM( "FIELDS" ) + ' trovata.!', ;
+                           'Il formato del rapporto non è valido: nessuna ' + DQM( "WIDTHS" ) + ' trovata.!', ;
+                           'Il formato del rapporto non è valido: nessuna ' + DQM( "WIDTHS" ) + ' trovata.!' }, ;                   // 23
                          "Errore I / O file, impossibile procedere !!!", ;                                                          // 24
                          "Il file è già crittografato !!!", ;                                                                       // 25
                          "Il file non è crittografato !!!", ;                                                                       // 26
@@ -1227,7 +1264,11 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -1430,7 +1471,11 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          "Esta proteção de tela não possui opções configuráveis.", ;
                          "Não é possível abrir o arquivo ", ;
                          "Não há espaço suficiente para lendas !!!", ;                                                              // 22
-                         "Formato do relatório não é válido ", ;                                                                    // 23
+                         { 'O formato do relatório não é válido: nenhum ' + DQM( "DO REPORT" ) + ' nem ' + DQM( "DEFINE REPORT" ) + ' encontrado.!', ;
+                           'O formato do relatório não é válido: nenhum ' + DQM( "FIELDS" ) + ' encontrado.!', ;
+                           'O formato do relatório não é válido: nenhum ' + DQM( "FIELDS" ) + ' encontrado.!', ;
+                           'O formato do relatório não é válido: nenhum ' + DQM( "WIDTHS" ) + ' encontrado.!', ;
+                           'O formato do relatório não é válido: nenhum ' + DQM( "WIDTHS" ) + ' encontrado.!' }, ;                  // 23
                          "Erro de E / S de arquivo, não pode continuar !!!", ;                                                      // 24
                          "O arquivo já está criptografado !!!", ;                                                                   // 25
                          "O arquivo não está criptografado !!!", ;                                                                  // 26
@@ -1643,7 +1688,11 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -1748,34 +1797,38 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
    LOCAL acButton, acLabel, acUser, acPrint
 
    // MISC MESSAGES
-   acMisc           := { '¿ Está seguro ?', ;
-                         'Cerrar Ventana', ;
-                         'Operación no permitida', ;
-                         'El programa ya está ejecutándose', ;
-                         'Editar', ;
-                         'Aceptar', ;
-                         'Cancelar', ;
-                         'Pág.', ;
-                         'Error', ;
-                         'Advertencia', ;
-                         'Editar Memo', ;
-                         "No se pudo determinar el tipo de celda para la edición INPLACE.", ;
-                         "Excel no está disponible.", ;
-                         "OpenOffice no está disponible.", ;
-                         "OpenOffice Desktop no está disponible.", ;
-                         "OpenOffice Calc no está disponible.", ;
-                         " instalado exitosamente.", ;
-                         " no instalado.", ;
-                         "Error creando el objecto TReg32 ", ;
-                         "Este protector de pantalla no tiene opciones configurables.", ;
-                         "No se pudo abrir el archivo ", ;
-                         "Insuficiente espacio para las leyendas !!!", ;                                                            // 22
-                         "El formato del reporte no es válido ", ;                                                                  // 23
-                         "Error de E/S en el archivo, no se puede continuar !!!", ;                                                 // 24
-                         "El archivo ya está encriptado !!!", ;                                                                     // 25
-                         "El archivo no está encriptado !!!", ;                                                                     // 26
-                         "La contraseña es inválida !!!", ;                                                                         // 27
-                         "Los nombres del nuevo archivo y el antiguo deben ser diferentes !!!" }                                    // 28
+   acMisc           := { '¿Está seguro?', ;                                                                                         // 1
+                         'La ventana está a punto de cerrarse...', ;                                                                // 2
+                         '¡Operación no permitida!', ;                                                                              // 3
+                         '¡El programa ya está ejecutándose!', ;                                                                    // 4
+                         'Editar', ;                                                                                                // 5
+                         'Aceptar', ;                                                                                               // 6
+                         'Cancelar', ;                                                                                              // 7
+                         'Pág.', ;                                                                                                  // 8
+                         'Error', ;                                                                                                 // 9
+                         'Advertencia', ;                                                                                           // 10
+                         'Editar Memo', ;                                                                                           // 11
+                         "No se pudo determinar el tipo de celda para la edición INPLACE.", ;                                       // 12
+                         "¡Excel no está disponible!", ;                                                                            // 13
+                         "¡OpenOffice no está disponible!", ;                                                                       // 14
+                         "¡OpenOffice Desktop no está disponible!", ;                                                               // 15
+                         "¡OpenOffice Calc no está disponible!", ;                                                                  // 16
+                         " instalado exitosamente.", ;                                                                              // 17
+                         " no instalado.", ;                                                                                        // 18
+                         "Error creando el objecto TReg32 ", ;                                                                      // 19
+                         "Este protector de pantalla no tiene opciones configurables.", ;                                           // 20
+                         "No se pudo abrir el archivo ", ;                                                                          // 21
+                         "¡Insuficiente espacio para las leyendas!", ;                                                              // 22
+                         { 'El formato del reporte no es válido: falta ' + DQM( "DO REPORT" ) + ' o ' + DQM( "DEFINE REPORT" ) + ".", ;
+                           'El formato del reporte no es válido: falta ' + DQM( "FIELDS" ) + ".", ;
+                           'El formato del reporte no es válido: falta ' + DQM( "FIELDS" ) + ".", ;
+                           'El formato del reporte no es válido: falta ' + DQM( "WIDTHS" ) + ".", ;
+                           'El formato del reporte no es válido: falta ' + DQM( "WIDTHS" ) + "." }, ;                               // 23
+                         "¡Error de E/S en el archivo, no se puede continuar!", ;                                                   // 24
+                         "¡El archivo ya está encriptado!", ;                                                                       // 25
+                         "¡El archivo no está encriptado!", ;                                                                       // 26
+                         "¡La contraseña es inválida!", ;                                                                           // 27
+                         "¡Los nombres del nuevo archivo y el antiguo deben ser diferentes!" }                                      // 28
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
@@ -1789,21 +1842,21 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          " ya definido. Programa Terminado.", ;
                          "Browse: Tipo no permitido. Programa Terminado.", ;
                          "Browse: La cláusula APPEND no puede ser usada con campos no pertenecientes al area del BROWSE. Programa Terminado.", ;
-                         "El registro está siendo editado por otro usuario", ;
+                         "El registro está siendo editado por otro usuario.", ;
                          "Peligro", ;
-                         "Entrada no válida" }
-   acBrowseMessages := { '¿ Está seguro ?', ;
+                         "Entrada no válida." }
+   acBrowseMessages := { '¿Está seguro?', ;
                          'Eliminar Registro', ;
                          'Eliminar Item' }
 
    // EDIT MESSAGES
-   acABMUser        := { CRLF + "Va a eliminar el registro actual" + CRLF + "¿ Está seguro ?" + CRLF, ;
-                         CRLF + "No hay un índice activo" + CRLF + "No se puede realizar la búsqueda" + CRLF, ;
-                         CRLF + "No se encuentra el campo índice" + CRLF + "No se puede realizar la búsqueda" + CRLF, ;
-                         CRLF + "No se pueden realizar búsquedas" + CRLF + "por campos memo o lógico" + CRLF, ;
-                         CRLF + "Registro no encontrado" + CRLF, ;
-                         CRLF + "Ha incluido demasiadas columnas" + CRLF + "El listado no cabe en la hoja" + CRLF, ;
-                         CRLF + "El registro está bloqueado por otro usuario" + CRLF + "Reintente más tarde" + CRLF }
+   acABMUser        := { CRLF + "Va a eliminar el registro actual." + CRLF + "¿Está seguro?" + CRLF, ;
+                         CRLF + "No hay un índice activo." + CRLF + "No se puede realizar la búsqueda." + CRLF, ;
+                         CRLF + "No se encuentra el campo índice." + CRLF + "No se puede realizar la búsqueda." + CRLF, ;
+                         CRLF + "No se pueden realizar búsquedas." + CRLF + "por campos memo o lógico." + CRLF, ;
+                         CRLF + "Registro no encontrado." + CRLF, ;
+                         CRLF + "Ha incluido demasiadas columnas." + CRLF + "El listado no cabe en la hoja." + CRLF, ;
+                         CRLF + "El registro está bloqueado por otro usuario." + CRLF + "Reintente más tarde." + CRLF }
    acABMLabel       := { "Registro Actual", ;
                          "Registros Totales", ;
                          "     (Nuevo)", ;
@@ -1821,7 +1874,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "Listado de ", ;
                          "Fecha:", ;
                          "Primer registro:", ;
-                         "Ultimo registro:", ;
+                         "Último registro:", ;
                          "Ordenado por:", ;
                          "Si", ;
                          "No", ;
@@ -1876,7 +1929,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "Campos del listado", ;                                // 12
                          "Impresoras disponibles", ;                            // 13
                          "Primer registro a imprimir", ;                        // 14
-                         "Ultimo registro a imprimir", ;                        // 15
+                         "Último registro a imprimir", ;                        // 15
                          "Borrar registro", ;                                   // 16
                          "Vista previa", ;                                      // 17
                          "Páginas en miniatura", ;                              // 18
@@ -1894,7 +1947,7 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "Menor que", ;                                         // 30
                          "Mayor o igual que", ;                                 // 31
                          "Menor o igual que" }                                  // 32
-   acUser           := { CRLF + "No hay un area activa   " + CRLF + "Por favor seleccione un area antes de llamar a EDIT EXTENDED   " + CRLF, ;  // 1
+   acUser           := { CRLF + "No hay un área activa   " + CRLF + "Por favor seleccione un área antes de llamar a EDIT EXTENDED   " + CRLF, ;  // 1
                          "Introduzca el valor del campo (texto)", ;                                                                              // 2
                          "Introduzca el valor del campo (numérico)", ;                                                                           // 3
                          "Seleccione la fecha", ;                                                                                                // 4
@@ -1916,8 +1969,8 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          CRLF + "Primero seleccione el campo a incluir   " + CRLF, ;                                                             // 20
                          CRLF + "No hay campos para excluir   " + CRLF, ;                                                                        // 21
                          CRLF + "Primero seleccione el campo a excluir   " + CRLF, ;                                                             // 22
-                         CRLF + "No ha seleccionado ningún campo   " + CRLF, ;                                                                   // 23
-                         CRLF + "El listado no cabe en la página   " + CRLF + "Reduzca el numero de campos   " + CRLF, ;                         // 24
+                         CRLF + "No ha seleccionado campo alguno   " + CRLF, ;                                                                   // 23
+                         CRLF + "El listado no cabe en la página   " + CRLF + "Reduzca el número de campos   " + CRLF, ;                         // 24
                          CRLF + "La impresora no está disponible   " + CRLF, ;                                                                   // 25
                          "Ordenado por", ;                                                                                                       // 26
                          "Del registro", ;                                                                                                       // 27
@@ -1937,19 +1990,19 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          CRLF + "Registro bloqueado por otro usuario    " + CRLF }                                                               // 41
 
    // PRINT MESSAGES
-   acPrint          := { "El objecto TPrint ya está inicializado!", ;
-                         "Imprimiendo ......", ;
+   acPrint          := { "¡El objecto TPrint ya está inicializado!", ;
+                         "Imprimiendo...", ;
                          "Comando auxiliar de impresión", ;
                          " IMPRESO OK !!!", ;
-                         "Los parámetros pasados a la función no son válidos !!!", ;
-                         "Fracasó la llamada a WinAPI OpenPrinter() !!!", ;
-                         "Fracasó la llamada a WinAPI StartDocPrinter() !!!", ;
-                         "Fracasó la llamada a WinAPI StartPagePrinter() !!!", ;
-                         "Fracasó la llamada a WinAPI malloc() !!!", ;
+                         "Los parámetros pasados a la función no son válidos!", ;
+                         "¡Fracasó la llamada a WinAPI OpenPrinter!", ;
+                         "¡Fracasó la llamada a WinAPI StartDocPrinter!", ;
+                         "¡Fracasó la llamada a WinAPI StartPagePrinter!", ;
+                         "¡Fracasó la llamada a WinAPI malloc!", ;
                          " NO ENCONTRADO !!!", ;
-                         "No se detectó impresora !!!", ;
+                         "¡No se detectó impresora!", ;
                          "Error", ;
-                         "El puerto no es válido !!!", ;
+                         "¡El puerto no es válido!", ;
                          "Seleccione la impresora", ;
                          "OK", ;
                          "Cancelar", ;
@@ -1970,24 +2023,23 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          'Cadena a buscar', ;
                          "Búsqueda finalizada.", ;
                          "Información", ;
-                         'No se detectó Excel !!!', ;
-                         "La extensión XLS no está asociada !!!", ;
+                         '¡No se detectó Excel!', ;
+                         "¡La extensión XLS no está asociada!", ;
                          "Archivo guardado en: ", ;
-                         "La extensión HTML no está asociada !!!", ;
-                         "La extensión RTF no está asociada !!!", ;
-                         "La extensión CSV no está asociada !!!", ;
-                         "La extensión PDF no está asociada !!!", ;
-                         "La extensión ODT no está asociada !!!", ;
-                         'Los códigos de barra requieren una cadena !!!', ;
-                         'Los modos válidos de códigos de barra c128 son A, B or C !!!', ;
-                         "No se detectó OpenCalc !!!", ;
+                         "¡La extensión HTML no está asociada!", ;
+                         "¡La extensión RTF no está asociada!", ;
+                         "¡La extensión CSV no está asociada!", ;
+                         "¡La extensión PDF no está asociada!", ;
+                         "¡La extensión ODT no está asociada!", ;
+                         '¡Los códigos de barra requieren una cadena!', ;
+                         '¡Los modos válidos de códigos de barra c128 son A, B or C!', ;
+                         "¡No se detectó OpenCalc!", ;
                          "No se pudo guardar el archivo: ", ;
-                         "La vista previa TPrint está activa!", ;
-                         "El documento TPrint está abierto!", ;
-                         "El objeto TPrint no está inicializado!", ;
-                         "El objeto TPrint está en estado de error!", ;
-                         "El documento TPrint no está abierto!" }
-
+                         "¡La vista previa TPrint está activa!", ;
+                         "¡El documento TPrint está abierto!", ;
+                         "¡El objeto TPrint no está inicializado!", ;
+                         "¡El objeto TPrint está en estado de error!", ;
+                         "¡El documento TPrint no está abierto!" }
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
@@ -2022,7 +2074,11 @@ FUNCTION ooHG_Messages_FI // Finnish
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -2225,7 +2281,11 @@ FUNCTION ooHG_Messages_NL // Dutch
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -2443,7 +2503,11 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
@@ -2646,7 +2710,11 @@ FUNCTION ooHG_Messages_TR
                          "This screen saver has no configurable options.", ;
                          "Can't open file ", ;                                                                                      // 21
                          "Not enough space for legends !!!", ;                                                                      // 22
-                         "Report format is not valid ", ;                                                                           // 23
+                         { 'Report format is not valid: no ' + DQM( "DO REPORT" ) + ' nor ' + DQM( "DEFINE REPORT" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "FIELDS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.', ;
+                           'Report format is not valid: no ' + DQM( "WIDTHS" ) + ' found.' }, ;                                     // 23
                          "File I/O error, can not proceed !!!", ;                                                                   // 24
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
