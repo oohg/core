@@ -61,8 +61,8 @@
  */
 
 
-#include 'oohg.ch'
-#include 'i_windefs.ch'
+#include "oohg.ch"
+#include "i_windefs.ch"
 
 STATIC _OOHG_AutoTypeNoSpaces  := .F.
 STATIC _OOHG_OneItemPerLine    := .F.

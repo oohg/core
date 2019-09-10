@@ -61,8 +61,8 @@
  */
 
 
-#include 'oohg.ch'
-#include 'hbclass.ch'
+#include "oohg.ch"
+#include "hbclass.ch"
 #include "i_windefs.ch"
 #include "common.ch"
 
