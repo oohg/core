@@ -61,9 +61,10 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 #define GO_TOP    -1
 #define GO_BOTTOM  1
@@ -974,7 +975,7 @@ METHOD Delete() CLASS TOBrowse
    ::DbGoTo( Value )
 
    If ::Lock .AND. ! ( cWorkArea )->( Rlock() )
-      MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
+      MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
    Else
       ( cWorkArea )->( DbDelete() )
 
@@ -2124,11 +2125,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
             If lGo
                If ::lNoDelMsg
                   ::Delete()
-               ElseIf MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
+               ElseIf MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
                   ::Delete()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 2) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 2) )
             EndIf
          EndIf
       EndCase
@@ -2895,11 +2896,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages(4, 1), _OOHG_Messages(4, 2) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
                   ::Delete()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 2) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 2 ) )
             EndIf
          EndIf
       EndCase
@@ -3652,7 +3653,7 @@ METHOD Delete() CLASS TOBrowseByCell
    ::DbGoTo( nRow )
 
    If ::Lock .AND. ! ( cWorkArea )->( Rlock() )
-      MsgExclamation( _OOHG_Messages( 3, 9 ), _OOHG_Messages( 4, 2 ) )
+      MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_MSG, 2 ) )
    Else
       ( cWorkArea )->( DbDelete() )
 

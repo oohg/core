@@ -65,8 +65,9 @@
  */
 
 
-#include "oohg.ch"
 #include "fileio.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 #define DOUBLE_QUOTATION_MARK '"'
 #define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
@@ -93,12 +94,12 @@ FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
    LOCAL nHandle, cBuffer, cStr, nRead := 1, nOutHandle
 
    IF Empty( cInFile ) .OR. ! File( cInFile )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cInFile ) + ".", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cInFile ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF AllTrim( Upper( cInFile ) ) == AllTrim( Upper( cOutFile ) )
-      MsgStop( _OOHG_Messages( 1, 28 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 28 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -119,7 +120,7 @@ FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
    nHandle := FOpen( cInFile, FO_READWRITE )
 
    IF FError() <> 0
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -128,7 +129,7 @@ FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
 
    IF cBuffer == "ENCRYPTED FILE (C) ODESSA 2002"
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -137,7 +138,7 @@ FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -170,12 +171,12 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
    LOCAL nHandle, cBuffer, cStr, nRead := 1, nOutHandle
 
    IF Empty( cInFile ) .OR. ! File( cInFile )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cInFile ) + ".", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cInFile ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF AllTrim( Upper( cInFile ) ) == AllTrim( Upper( cOutFile ) )
-      MsgStop( _OOHG_Messages( 1, 28 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 28 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -196,7 +197,7 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
    nHandle := FOpen( cInFile, FO_READWRITE )
 
    IF FError() <> 0
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -205,7 +206,7 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
 
    IF cBuffer <> "ENCRYPTED FILE (C) ODESSA 2002"
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 26 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 26 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -214,7 +215,7 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
 
    IF cBuffer <> _ENCRYPT( cPass )
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 27 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 27 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -222,7 +223,7 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -270,14 +271,14 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
    ENDIF
 
    IF ! FILE( cFile )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ".", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cFile ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    nHandle := FOpen( cFile, FO_READWRITE )
 
    IF FError() <> 0
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -285,19 +286,19 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FRead( nHandle, @cFlag, 3 ) <> 3
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF cFlag == "ENC"
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 25 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 25 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -305,13 +306,13 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FRead( nHandle, @cBuffer, 4) <> 4
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -320,13 +321,13 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FWrite( nHandle, cBuffer ) <> 4
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -334,7 +335,7 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -342,7 +343,7 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FWrite( nHandle, cBuffer ) <> Len( cPass )
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -350,7 +351,7 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
 
    IF FWrite( nHandle, "ENC" ) <> 3
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -382,14 +383,14 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
    ENDIF
 
    IF ! FILE( cFile )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ".", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cFile ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    nHandle := FOpen( cFile, FO_READWRITE )
 
    IF FError() <> 0
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -397,19 +398,19 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FRead( nHandle, @cFlag, 3 ) <> 3
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF cFlag <> "ENC"
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 26 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 26 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -417,7 +418,7 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -425,13 +426,13 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FRead( nHandle, @cSavePass, 10 ) <> Len( cPass )
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF cBuffer <> cSavePass
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 27 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 27 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -440,13 +441,13 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FRead( nHandle, @cBuffer, 4 ) <> 4
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -455,13 +456,13 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FError() <> 0
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    IF FWrite( nHandle, cBuffer ) <> 4
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
@@ -469,7 +470,7 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
 
    IF FWrite( nHandle, Replicate( Chr( 0 ), 20 ) ) <> 20
       FClose( nHandle )
-      MsgStop( _OOHG_Messages( 1, 24 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 24 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 

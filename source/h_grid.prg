@@ -61,9 +61,10 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 CLASS TGrid FROM TControl
 
@@ -1284,13 +1285,13 @@ METHOD ToExcel( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    #ifndef __XHARBOUR__
       If ( oExcel := win_oleCreateObject( "Excel.Application" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 13 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 13 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #else
       oExcel := TOleAuto():New( "Excel.Application" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( _OOHG_Messages( 1, 13 ), _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 13 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #EndIf
@@ -1358,20 +1359,20 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
    // open service manager
    #ifndef __XHARBOUR__
       If ( oSerMan := win_oleCreateObject( "com.sun.star.ServiceManager" ) ) == Nil
-         MsgStop( _OOHG_Messages( 1, 14 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 14 ) + " [" + win_oleErrorText() + "]", _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #else
       oSerMan := TOleAuto():New( "com.sun.star.ServiceManager" )
       If Ole2TxtError() != "S_OK"
-         MsgStop( _OOHG_Messages( 1, 14 ), _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 14 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          Return Self
       EndIf
    #EndIf
 
    // open desktop service
    If ( oDesk := oSerMan:CreateInstance( "com.sun.star.frame.Desktop" ) ) == Nil
-      MsgStop( _OOHG_Messages( 1, 15 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 15 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       Return Self
    EndIf
 
@@ -1382,7 +1383,7 @@ METHOD ToOpenOffice( cTitle, nItemFrom, nItemTo, nColFrom, nColTo ) CLASS TGrid
 
    // open new book
    If ( oBook := oDesk:LoadComponentFromURL( "private:factory/scalc", "_blank", 0, {oPropVals} ) ) == Nil
-      MsgStop( _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 16 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       oDesk := Nil
       Return Self
    EndIf
@@ -1505,7 +1506,7 @@ METHOD EditItem( nItem, lAppend, lOneRow, lChange ) CLASS TGrid
    Do While .T.
       aItemValues := ::Item( nItem )
 
-      aItemValues := ::EditItem2( nItem, aItemValues, , , If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( 1, 5 ) ) )
+      aItemValues := ::EditItem2( nItem, aItemValues, , , If( ValType( ::cRowEditTitle ) $ "CM", ::cRowEditTitle, _OOHG_Messages( MT_MISCELL, 5 ) ) )
 
       If Empty( aItemValues )
          ::DoEvent( ::OnAbortEdit, "ABORTEDIT", { nItem, 0 } )
@@ -1736,10 +1737,10 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
       nRow += 10
    EndIf
 
-   @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 6 ) ;
+   @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ;
          ACTION ( TGrid_EditItem_Check( aEditControls2, aItemValues, oMain, aReturn ) )
 
-   @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( 1, 7 ) ;
+   @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ;
          ACTION oMain:Release()
 
    END WINDOW
@@ -1818,7 +1819,7 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
             MsgExclamation( cValidMessage )                                        // TODO: Add title
          Else
-            MsgExclamation( _OOHG_Messages( 3, 11 ) )                              // TODO: Add title
+            MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ) )                              // TODO: Add title
          EndIf
          aEditControls[ nItem ]:SetFocus()
       EndIf
@@ -2595,7 +2596,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
    ENDIF
 
    If ! HB_IsObject( EditControl )
-      MsgExclamation( _OOHG_Messages( 1, 12 ), _OOHG_Messages( 1, 5 ) )
+      MsgExclamation( _OOHG_Messages( MT_MISCELL, 12 ), _OOHG_Messages( MT_MISCELL, 5 ) )
    Else
       r := { 0, 0, 0, 0 }                                        // left, top, right, bottom
       GetClientRect( ::hWnd, r )
@@ -3340,7 +3341,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 3 ) )
                   aItemValues := ::Item( uValue )
                   ::DeleteItem( uValue )
                   ::Value := Min( uValue, ::ItemCount )
@@ -3349,7 +3350,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   _ClearThisCellInfo()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages( 4, 3 ) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 3 ) )
             EndIf
          Endif
       ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
@@ -4532,7 +4533,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 3 ) )
                   If ::lDeleteAll
                      aDeletedItemsData := {}
                      uValue := ::Value
@@ -4552,7 +4553,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
                   _ClearThisCellInfo()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 3) )
             EndIf
          Endif
 
@@ -5801,7 +5802,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             EndIf
 
             If lGo
-               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( 4, 1 ), _OOHG_Messages( 4, 3 ) )
+               If ::lNoDelMsg .OR. MsgYesNo( _OOHG_Messages( MT_BRW_MSG, 1 ), _OOHG_Messages( MT_BRW_MSG, 3 ) )
                   nRow := ::nRowPos
                   nCol := ::nColPos
                   aItemValues := ::Item( nRow )
@@ -5816,7 +5817,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   _ClearThisCellInfo()
                EndIf
             ElseIf ! Empty( ::DelMsg )
-               MsgExclamation( ::DelMsg, _OOHG_Messages(4, 3) )
+               MsgExclamation( ::DelMsg, _OOHG_Messages( MT_BRW_MSG, 3) )
             EndIf
          EndIf
       ElseIf nvKey == VK_A .AND. GetKeyFlagState() == MOD_ALT
@@ -6323,7 +6324,7 @@ METHOD Valid() CLASS TGridControl
       If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
          MsgExclamation( cValidMessage )                                        // TODO: Add title
       Else
-         MsgExclamation( _OOHG_Messages( 3, 11 ) )                              // TODO: Add title
+         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ) )                              // TODO: Add title
       EndIf
       ::oControl:SetFocus()
    EndIf
@@ -6787,7 +6788,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
 CLASS TGridControlMemo FROM TGridControl
 
    DATA nDefHeight                INIT 84
-   DATA cTitle                    INIT _OOHG_Messages( 1, 11 )
+   DATA cTitle                    INIT _OOHG_Messages( MT_MISCELL, 11 )
    DATA lCleanCRLF                INIT .F.
    DATA nWidth                    INIT 350
    DATA nHeight                   INIT 265
@@ -6899,8 +6900,8 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 
       i := Int( Max( ::oWindow:ClientWidth - 200, 0 ) / 3 )
 
-      @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 6 ) ACTION EVAL( ::bOk, -1 )
-      @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( 1, 7 ) ACTION EVAL( ::bCancel )
+      @ ::oWindow:ClientHeight - 40,i BUTTON 0 OBJ oBut1 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ACTION EVAL( ::bOk, -1 )
+      @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ACTION EVAL( ::bCancel )
    END WINDOW
 
    ::oWindow:Center()

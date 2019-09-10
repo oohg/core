@@ -61,8 +61,9 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TReg32
@@ -97,7 +98,7 @@ METHOD New( nKey, cRegKey, lShowError ) CLASS TReg32
       ELSE
          ::lError := .T.
          IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
-            MsgStop( _OOHG_Messages( 1, 19 ) + " [" + LTrim( Str( nReturn ) ) + "]", _OOHG_Messages( 1, 9 ) )
+            MsgStop( _OOHG_Messages( MT_MISCELL, 19 ) + " [" + LTrim( Str( nReturn ) ) + "].", _OOHG_Messages( MT_MISCELL, 9 ) )
          ENDIF
       ENDIF
    ENDIF
@@ -119,7 +120,7 @@ METHOD Create( nKey, cRegKey, lShowError ) CLASS TReg32
    ELSE
       ::lError := .T.
       IF ! HB_ISLOGICAL( lShowError ) .OR. lShowError
-         MsgStop( _OOHG_Messages( 1, 19 ) + " [" + LTrim( Str( nReturn ) ) + "]", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 19 ) + " [" + LTrim( Str( nReturn ) ) + "].", _OOHG_Messages( MT_MISCELL, 9 ) )
       ENDIF
    ENDIF
 

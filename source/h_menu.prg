@@ -61,9 +61,10 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenuParams
@@ -1237,7 +1238,7 @@ METHOD Define( uParent, cName, cCaption, uAction, nItems, cFile, cSection, uImag
    ::Register( 0, cName, NIL, NIL, NIL, _GetId() )
 
    IF ! ValType( cCaption ) $ "CM" .OR. Empty( cCaption )
-      cCaption := _OOHG_Messages( 1, 13 )
+      cCaption := _OOHG_Messages( MT_MISCELL, 13 )
    ENDIF
    IF ValType( uAction ) $ "CM"
       IF ( i := At( "(", uAction ) ) > 0

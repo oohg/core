@@ -61,8 +61,9 @@
  */
 
 
-#include "oohg.ch"
 #include "fileio.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 #define DOUBLE_QUOTATION_MARK  '"'
 #define DQM( x )               ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
@@ -75,14 +76,14 @@ FUNCTION SetHelpFile( cFile )
    _OOHG_ActiveHelpFile := ""
 
    IF ! File( cFile )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 
    hFile := FOpen( cFile, FO_READ + FO_SHARED )
 
    IF FError() != 0
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN .F.
    ENDIF
 

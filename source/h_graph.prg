@@ -62,7 +62,7 @@
 
 
 #include "oohg.ch"
-
+#include "i_init.ch"
 
 Function DrawTextOut( window, row, col, string, fontcolor, backcolor, fontname, fontsize, bold, italic, underline, strikeout, transparent )
 
@@ -1059,7 +1059,7 @@ Function DrawPieGraph( window, fromrow, fromcol, torow, tocol, series, aname, co
 
    If lsleg
       If Len( aname ) * 20 > ( torow - fromrow )
-         MsgInfo( _OOHG_Messages( 1, 22 ), _OOHG_Messages( 12, 33 ) )
+         MsgInfo( _OOHG_Messages( MT_MISCELL, 22 ), _OOHG_Messages( MT_PRINTER, 33 ) )
       Else
          torow := torow - ( Len( aname ) * 20 )
       EndIf

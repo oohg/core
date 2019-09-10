@@ -61,9 +61,10 @@
  */
 
 
-#include 'oohg.ch'
-#include 'hbclass.ch'
-#include 'common.ch'
+#include "common.ch"
+#include "hbclass.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 #define DOUBLE_QUOTATION_MARK '"'
 #define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
@@ -350,7 +351,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
       IF File( cGraphic )
          ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
       ELSE
-         MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
+         MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       ENDIF
    ENDIF
    nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader )
@@ -480,7 +481,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
                IF File( cGraphic )
                   ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
                ELSE
-                  MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
+                  MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
                ENDIF
             ENDIF
          ENDIF
@@ -507,7 +508,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
                   IF File( cGraphic )
                      ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
                   ELSE
-                     MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( 1, 9 ) )
+                     MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
                   ENDIF
                ENDIF
             ENDIF
@@ -604,7 +605,7 @@ METHOD Headers( aHeaders1, aHeaders2, aWidths, nLin, cTitle, lMode, cGrpBy, cHdr
    ::nPageNumber ++
 
    IF ::lExcel
-      cLinea := PadR( _OOHG_Messages( 1, 8 ), 6 ) + Str( ::nPageNumber, 4 ) + Space( 7 ) + cTitle1 + Space( 7 ) + DToC( Date() )
+      cLinea := PadR( _OOHG_Messages( MT_MISCELL, 8 ), 6 ) + Str( ::nPageNumber, 4 ) + Space( 7 ) + cTitle1 + Space( 7 ) + DToC( Date() )
       ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
       nLin ++
       IF Len( cTitle2 ) > 0
@@ -614,7 +615,7 @@ METHOD Headers( aHeaders1, aHeaders2, aWidths, nLin, cTitle, lMode, cGrpBy, cHdr
       ENDIF
       nLin ++
    ELSE
-      cLinea := PadR( _OOHG_Messages( 1, 8 ), 6 ) + Str( ::nPageNumber, 4 )
+      cLinea := PadR( _OOHG_Messages( MT_MISCELL, 8 ), 6 ) + Str( ::nPageNumber, 4 )
       ::oPrint:PrintData( nLin, ::nLMargin, cLinea, NIL, ::nFSize )
       ::oPrint:PrintData( nLin, ::nLMargin + nCenter1, cTitle1, NIL, ::nFSize + 1, .T. )
       ::oPrint:PrintData( nLin, ::nLMargin + nSum + Len( aWidths ) - 11, DToC( Date() ), NIL, ::nFSize )
@@ -671,7 +672,7 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    LOCAL nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cLine
 
    IF ! File( cFileRep + '.rpt' )
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cFileRep + ".rpt" ) + ".", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cFileRep + ".rpt" ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
 
@@ -693,7 +694,7 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
       ENDIF
    NEXT i
    IF i > nCount
-      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "DO REPORT" ) + " nor " + DQM( "DEFINE REPORT" ) + "found]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 23, 1 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    // load lines until EOF or END REPORT line
@@ -724,23 +725,23 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    // load fields
    aFields := ::LeaDato( 'REPORT', 'FIELDS', '{}' )
    IF Len( aFields ) == 0
-      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "FIELDS" ) + "found]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 23, 2 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    aFields := &aFields
    IF ! HB_ISARRAY( aFields ) .OR. Len( aFields ) == 0
-      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "FIELDS" ) + "found]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 23, 3 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    // load widths
    aWidths := ::LeaDato( 'REPORT', 'WIDTHS', '{}' )
    IF Len( aWidths )=0
-      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "WIDTHS" ) + "found]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 23, 4), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    aWidths := &aWidths
    IF ! HB_ISARRAY( aWidths ) .OR. Len( aWidths ) == 0
-      MsgStop( _OOHG_Messages( 1, 23 ) + " [no " + DQM( "WIDTHS" ) + "found]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 23, 5 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    // load totals

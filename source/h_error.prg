@@ -65,10 +65,11 @@
  */
 
 
-#include "oohg.ch"
-#include "error.ch"
 #include "common.ch"
+#include "error.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION MsgOOHGError( cMessage )
@@ -138,7 +139,7 @@ FUNCTION _OOHG_ErrorMessage( oError )
    LOCAL cMessage
 
    // start error message
-   cMessage := iif( oError:severity > ES_WARNING, _OOHG_Messages( 1, 9 ), _OOHG_Messages( 1, 10 ) ) + " "
+   cMessage := iif( oError:severity > ES_WARNING, _OOHG_Messages( MT_MISCELL, 9 ), _OOHG_Messages( MT_MISCELL, 10 ) ) + " "
 
    // add subsystem name if available
    IF HB_ISSTRING( oError:subsystem )
@@ -168,7 +169,7 @@ FUNCTION _OOHG_ErrorMessage( oError )
    ENDCASE
 
    IF ! Empty( oError:osCode )
-      cMessage += " (DOS " + _OOHG_Messages( 1, 9 ) + " " + LTrim( Str( oError:osCode ) ) + ")"
+      cMessage += " (DOS " + _OOHG_Messages( MT_MISCELL, 9 ) + " " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
 
    RETURN cMessage

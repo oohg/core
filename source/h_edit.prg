@@ -103,6 +103,7 @@
 
 
 #include "oohg.ch"
+#include "i_init.ch"
 
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
@@ -247,7 +248,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
    // Control de parámetros.
    // Área de la base de datos.---------------------------------------------------
    if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
-      MsgOOHGError( _OOHG_Messages( 8, 1 ), "" )
+      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 1 ), "" )
    else
       _cArea       := cArea
       _aEstructura := (_cArea)->( dbStruct() )
@@ -256,7 +257,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
    // Número de campos.-----------------------------------------------------------
    if ( nCampos > 16 )
-      MsgOOHGError( _OOHG_Messages( 8, 2 ), "" )
+      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 2 ), "" )
    endif
 
    // Título de la ventana.-------------------------------------------------------
@@ -415,7 +416,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
    @ 310, 535 label  lblLabel1 ;
               of     wndABM ;
-              value  _OOHG_Messages( 6, 1 ) ;
+              value  _OOHG_Messages( MT_ABM_LBL, 1 ) ;
               width  85 ;
               height 20 ;
               font   "ms sans serif" ;
@@ -429,7 +430,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               size   8
    @ 350, 535 label  lblLabel2 ;
               of     wndABM ;
-              value  _OOHG_Messages( 6, 2 ) ;
+              value  _OOHG_Messages( MT_ABM_LBL, 2 ) ;
               width  85 ;
               height 20 ;
               font   "ms sans serif" ;
@@ -458,7 +459,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
    // Definición de los botones.--------------------------------------------------
    @ 400, 535 button btnCerrar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 1 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 1 ) ;
               action  ABMEventos( ABM_EVENTO_SALIR ) ;
               width   85 ;
               height  30 ;
@@ -466,7 +467,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               size    8
    @ 20, 535 button btnNuevo ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 2 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 2 ) ;
               action  ABMEventos( ABM_EVENTO_NUEVO ) ;
               width   85 ;
               height  30 ;
@@ -475,7 +476,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 65, 535 button btnEditar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 3 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 3 ) ;
               action  ABMEventos( ABM_EVENTO_EDITAR ) ;
               width   85 ;
               height  30 ;
@@ -484,7 +485,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 110, 535 button btnBorrar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 4 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 4 ) ;
               action  ABMEventos( ABM_EVENTO_BORRAR ) ;
               width   85 ;
               height  30 ;
@@ -493,7 +494,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 155, 535 button btnBuscar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 5 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 5 ) ;
               action  ABMEventos( ABM_EVENTO_BUSCAR ) ;
               width   85 ;
               height  30 ;
@@ -502,7 +503,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 200, 535 button btnIr ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 6 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 6 ) ;
               action  ABMEventos( ABM_EVENTO_IR ) ;
               width   85 ;
               height  30 ;
@@ -511,7 +512,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 245, 535 button btnListado ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 7 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 7 ) ;
               action  ABMEventos( ABM_EVENTO_LISTADO ) ;
               width   85 ;
               height  30 ;
@@ -520,7 +521,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 260, 20 button btnPrimero ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 8 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 8 ) ;
               action  ABMEventos( ABM_EVENTO_PRIMERO ) ;
               width   70 ;
               height  30 ;
@@ -529,7 +530,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 260, 100 button btnAnterior ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 9 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 9 ) ;
               action  ABMEventos( ABM_EVENTO_ANTERIOR ) ;
               width   70 ;
               height  30 ;
@@ -538,7 +539,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 260, 180 button btnSiguiente ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 10 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 10 ) ;
               action  ABMEventos( ABM_EVENTO_SIGUIENTE ) ;
               width   70 ;
               height  30 ;
@@ -547,7 +548,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 260, 260 button btnUltimo ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 11 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 11 ) ;
               action  ABMEventos( ABM_EVENTO_ULTIMO ) ;
               width   70 ;
               height  30 ;
@@ -556,7 +557,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               notabstop
    @ 260, 355 button btnGuardar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 12 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 12 ) ;
               action  ABMEventos( ABM_EVENTO_GUARDAR ) ;
               width   70 ;
               height  30 ;
@@ -564,7 +565,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
               size    8
    @ 260, 435 button btnCancelar ;
               of      wndABM ;
-              caption _OOHG_Messages( 7, 13 ) ;
+              caption _OOHG_Messages( MT_ABM_BTN, 13 ) ;
               action  ABMEventos( ABM_EVENTO_CANCELAR ) ;
               width   70 ;
               height  30 ;
@@ -753,7 +754,7 @@ static function ABMRefresh( nEstado )
 
       // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( 8, 3 ), "" )
+      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 3 ), "" )
    end case
 
    return ( nil )
@@ -788,7 +789,7 @@ static function ABMEventos( nEvento )
    // Pulsación del botón NUEVO.------------------------------------------
    case nEvento == ABM_EVENTO_NUEVO
       _lEditar := .f.
-      cModo := _OOHG_Messages( 6, 3 )
+      cModo := _OOHG_Messages( MT_ABM_LBL, 3 )
       wndABM:Title := wndABM:Title + cModo
 
       // Pasa a modo de edición.
@@ -816,7 +817,7 @@ static function ABMEventos( nEvento )
    // Pulsación del botón EDITAR.-----------------------------------------
    case nEvento == ABM_EVENTO_EDITAR
       _lEditar := .t.
-      cModo := _OOHG_Messages( 6, 4 )
+      cModo := _OOHG_Messages( MT_ABM_LBL, 4 )
       wndABM:Title := wndABM:Title + cModo
 
       // Pasa a modo de edicion.
@@ -834,7 +835,7 @@ static function ABMEventos( nEvento )
    case nEvento == ABM_EVENTO_BORRAR
 
       // Borra el registro si se acepta.
-      if MsgOKCancel( _OOHG_Messages( 5, 1 ), "" )
+      if MsgOKCancel( _OOHG_Messages( MT_ABM_USR, 1 ), "" )
          if (_cArea)->( rlock() )
             (_cArea)->( dbDelete() )
             (_cArea)->( dbCommit() )
@@ -847,7 +848,7 @@ static function ABMEventos( nEvento )
                (_cArea)->( dbGoBottom() )
             endif
          else
-            Msgstop( _OOHG_Messages( 11, 41 ), '' )
+            Msgstop( _OOHG_Messages( MT_EXT_USR, 41 ), '' )
          endif
       endif
 
@@ -859,7 +860,7 @@ static function ABMEventos( nEvento )
    case nEvento == ABM_EVENTO_BUSCAR
       if !HB_IsBlock( _bBuscar )
          if Empty( (_cArea)->( ordSetFocus() ) )
-            msgExclamation( _OOHG_Messages( 5, 2 ), "" )
+            msgExclamation( _OOHG_Messages( MT_ABM_USR, 2 ), "" )
          else
             ABMBuscar()
          endif
@@ -870,7 +871,7 @@ static function ABMEventos( nEvento )
 
    // Pulsación del botón IR AL REGISTRO.---------------------------------
    case nEvento == ABM_EVENTO_IR
-      cRegistro := InputBox( _OOHG_Messages( 6, 5 ), "" )
+      cRegistro := InputBox( _OOHG_Messages( MT_ABM_LBL, 5 ), "" )
       if !Empty( cRegistro )
          nRegistro := Val( cRegistro )
          if ( nRegistro != 0 ) .and. ( nRegistro <= (_cArea)->( RecCount() ) )
@@ -939,7 +940,7 @@ static function ABMEventos( nEvento )
 
          else
 
-            MsgStop( _OOHG_Messages( 5, 7 ), "" )
+            MsgStop( _OOHG_Messages( MT_ABM_USR, 7 ), "" )
 
          endif
 
@@ -970,7 +971,7 @@ static function ABMEventos( nEvento )
 
       // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( 8, 4 ), "" )
+      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 4 ), "" )
 
    endcase
 
@@ -1006,14 +1007,14 @@ static function ABMBuscar()
    cCampo := Upper( (_cArea)->( ordSetFocus() ) )
    nTipoCampo := aScan( aCampo, cCampo )
    if nTipoCampo == 0
-      msgExclamation( _OOHG_Messages( 5, 3 ), "" )
+      msgExclamation( _OOHG_Messages( MT_ABM_USR, 3 ), "" )
       return ( nil )
    endif
    cTipoCampo := aTipoCampo[nTipoCampo]
 
    // Comprueba si el tipo se puede buscar.---------------------------------------
    if ( cTipoCampo == "N" ) .or. ( cTipoCampo == "L" ) .or. ( cTipoCampo == "M" )
-      MsgExclamation( _OOHG_Messages( 5, 4 ), "" )
+      MsgExclamation( _OOHG_Messages( MT_ABM_USR, 4 ), "" )
       return ( nil )
    endif
 
@@ -1022,7 +1023,7 @@ static function ABMBuscar()
              at 0, 0 ;
              width  200 ;
              height 160 ;
-             title _OOHG_Messages( 6, 6 ) ;
+             title _OOHG_Messages( MT_ABM_LBL, 6 ) ;
              modal ;
              nosysmenu ;
              font "Serif" ;
@@ -1043,7 +1044,7 @@ static function ABMBuscar()
    // Botones.
    @ 80, 20 button btnGuardar ;
         of      wndABMBuscar ;
-        caption "&" + _OOHG_Messages( 7, 5 ) ;
+        caption "&" + _OOHG_Messages( MT_ABM_BTN, 5 ) ;
         action  {|| ABMBusqueda() } ;
         width   70 ;
         height  30 ;
@@ -1051,7 +1052,7 @@ static function ABMBuscar()
         size    8
    @ 80, 100 button btnCancelar ;
         of      wndABMBuscar ;
-        caption "&" + _OOHG_Messages( 7, 13 ) ;
+        caption "&" + _OOHG_Messages( MT_ABM_BTN, 13 ) ;
         action  {|| wndABMBuscar.Release } ;
         width   70 ;
         height  30 ;
@@ -1061,7 +1062,7 @@ static function ABMBuscar()
    // Controles de edición.
    do case
    case cTipoCampo == "C"
-      cModo := _OOHG_Messages( 6, 7 )
+      cModo := _OOHG_Messages( MT_ABM_LBL, 7 )
       wndABMBuscar.lblEtiqueta1.Value := cModo
       @ 45, 20 textbox txtBuscar ;
       of wndABMBuscar ;
@@ -1072,7 +1073,7 @@ static function ABMBuscar()
       size 9 ;
       maxlength _aEstructura[nTipoCampo,3]
    case cTipoCampo == "D"
-      cModo := _OOHG_Messages( 6, 8 )
+      cModo := _OOHG_Messages( MT_ABM_LBL, 8 )
       wndABMBuscar.lblEtiqueta1.Value := cModo
       @ 45, 20 datepicker txtBuscar ;
                 of  wndABMBuscar ;
@@ -1106,7 +1107,7 @@ static function ABMBusqueda()
    if (_cArea)->( dbSeek( wndABMBuscar.txtBuscar.Value ) )
       nRegistro := (_cArea)->( RecNo() )
    else
-      msgExclamation( _OOHG_Messages( 5, 5 ), "" )
+      msgExclamation( _OOHG_Messages( MT_ABM_USR, 5 ), "" )
       (_cArea)->(dbGoTo( nRegistro ) )
    endif
 
@@ -1157,7 +1158,7 @@ static function ABMListado()
         at 0, 0 ;
         width  420 ;
         height 295 ;
-        title _OOHG_Messages( 6, 10 ) ;
+        title _OOHG_Messages( MT_ABM_LBL, 10 ) ;
         modal ;
         nosysmenu ;
         font "Serif" ;
@@ -1173,28 +1174,28 @@ static function ABMListado()
    // Label.
    @ 20, 20 label lblLabel1 ;
         of wndABMListado ;
-        value _OOHG_Messages( 6, 11 ) ;
+        value _OOHG_Messages( MT_ABM_LBL, 11 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
    @ 20, 250 label lblLabel2 ;
         of     wndABMListado ;
-        value  _OOHG_Messages( 6, 12 ) ;
+        value  _OOHG_Messages( MT_ABM_LBL, 12 ) ;
         width  140 ;
         height 21 ;
         font   "ms sans serif" ;
         size   8
    @ 160, 20 label lblLabel3 ;
         of wndABMListado ;
-        value _OOHG_Messages( 6, 13 ) ;
+        value _OOHG_Messages( MT_ABM_LBL, 13 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
         size 8
    @ 160, 250 label lblLabel4 ;
         of wndABMListado ;
-        value _OOHG_Messages( 6, 14 ) ;
+        value _OOHG_Messages( MT_ABM_LBL, 14 ) ;
         width 140 ;
         height 21 ;
         font "ms sans serif" ;
@@ -1240,7 +1241,7 @@ static function ABMListado()
    // Botones.
    @ 45, 170 button btnMas ;
         of      wndABMListado ;
-        caption _OOHG_Messages( 7, 14 ) ;
+        caption _OOHG_Messages( MT_ABM_BTN, 14 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MAS ) } ;
         width   70 ;
         height  30 ;
@@ -1248,7 +1249,7 @@ static function ABMListado()
         size    8
    @ 85, 170 button btnMenos ;
         of      wndABMListado ;
-        caption _OOHG_Messages( 7, 15 ) ;
+        caption _OOHG_Messages( MT_ABM_BTN, 15 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_MENOS ) } ;
         width   70 ;
         height  30 ;
@@ -1256,7 +1257,7 @@ static function ABMListado()
         size    8
    @ 225, 240 button btnImprimir ;
         of      wndABMListado ;
-        caption _OOHG_Messages( 7, 16 ) ;
+        caption _OOHG_Messages( MT_ABM_BTN, 16 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_IMPRIMIR ) } ;
         width   70 ;
         height  30 ;
@@ -1265,7 +1266,7 @@ static function ABMListado()
         notabstop
    @ 225, 330 button btnCerrar ;
         of      wndABMListado ;
-        caption _OOHG_Messages( 7, 17 ) ;
+        caption _OOHG_Messages( MT_ABM_BTN, 17 ) ;
         action  {|| ABMListadoEvento( ABM_LISTADO_CERRAR ) } ;
         width   70 ;
         height  30 ;
@@ -1371,7 +1372,7 @@ static function ABMListadoEvento( nEvento )
       if nTotal > 164
 
          // No cabe en la hoja.
-         MsgExclamation( _OOHG_Messages( 5, 6 ), "" )
+         MsgExclamation( _OOHG_Messages( MT_ABM_USR, 6 ), "" )
       else
          if nTotal > 109
 
@@ -1386,7 +1387,7 @@ static function ABMListadoEvento( nEvento )
 
         // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( 8, 5 ), "" )
+      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 5 ), "" )
    endcase
 
    return ( nil )
@@ -1454,21 +1455,21 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
       // Cabecera.-----------------------------------------------------------
       if lCabecera
          oprint:beginpage()
-         oprint:printdata(5,1,_OOHG_Messages(6,15) + _cTitulo,"times new roman",14,.T.) ///
-         oprint:printline(6,1,6,140)
-         oprint:printdata(7,1,_OOHG_messages(6,16) ,"times new roman",10,.T.) ///
-         oprint:printdata(7,30,date(),"times new roman",10,.F.) ///
-         oprint:printdata(8,1, _OOHG_messages(6,17) ,"times new roman",10,.T.) ///
-         oprint:printdata(8,30, alltrim(str(nprimero)),"times new roman",10,.F.) ///
-         oprint:printdata(8,40,_OOHG_messages(6,18) ,"times new roman",10,.T.) ///
-         oprint:printdata(8,60, alltrim(str(nultimo)),"times new roman",10,.F.) ///
-         oprint:printdata(9,1,_OOHG_messages(6,19) ,"times new roman",10,.T.) ///
-         oprint:printdata(9,30, ordname(),"times new roman",10,.F.) ///
+         oprint:printdata( 5, 1, _OOHG_Messages( MT_ABM_LBL, 15 ) + _cTitulo, "times new roman", 14, .T. )
+         oprint:printline( 6, 1, 6, 140 )
+         oprint:printdata( 7, 1, _OOHG_Messages( MT_ABM_LBL, 16 ), "times new roman", 10, .T. )
+         oprint:printdata( 7, 30, Date(), "times new roman", 10, .F. )
+         oprint:printdata( 8, 1, _OOHG_Messages( MT_ABM_LBL, 17 ), "times new roman", 10, .T.)
+         oprint:printdata( 8, 30, AllTrim( Str( nprimero ) ), "times new roman", 10, .F. )
+         oprint:printdata( 8, 40, _OOHG_Messages( MT_ABM_LBL, 18 ), "times new roman", 10, .T.)
+         oprint:printdata( 8, 60,  AllTrim( Str( nultimo ) ), "times new roman", 10, .F. )
+         oprint:printdata( 9, 1, _OOHG_Messages( MT_ABM_LBL, 19 ), "times new roman", 10, .T. )
+         oprint:printdata( 9, 30, ordName(), "times new roman", 10, .F. )
          nColumna := 1
          for nItem := 1 to Len( _aNumeroCampo )
             nIndice := _aNumeroCampo[nItem]
-            oprint:printdata(11,ncolumna,UPPER(_acampos[nindice]),,9,.T.) ///
-            nColumna += _aAnchoCampo[nItem] +2
+            oprint:printdata( 11, ncolumna, Upper( _acampos[nindice] ), NIL, 9, .T. )
+            nColumna += _aAnchoCampo[nItem] + 2
          next
          lCabecera := .f.
       endif
@@ -1480,7 +1481,7 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
          do case
          case _aEstructura[nIndice,2] == "L"
 
-            cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
+            cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( MT_ABM_LBL, 20 ), _OOHG_Messages( MT_ABM_LBL, 21 ) )
             oprint:printdata(nfila,ncolumna,ctexto, ,,)
             nColumna += _aAnchoCampo[nItem] +2
          case _aEstructura[nIndice,2] == "N"
@@ -1505,9 +1506,8 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
                nPaginas++
             endif
 
-
-            oprint:printline(45,10,45,140)
-            oprint:printdata(46,1,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
+            oprint:printline( 45, 10, 45, 140 )
+            oprint:printdata( 46, 1, _OOHG_Messages( MT_ABM_LBL, 22 ) + AllTrim( Str( nPagina ) ), "times new roman", 10, .F. )
             lCabecera := .t.
             nPagina++
             nFila := 13
@@ -1521,10 +1521,8 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
                nPaginas++
             endif
 
-            oprint:printline(55,1,55,140)
-
-
-            oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )  ,"times new roman",10,.F.) ///
+            oprint:printline( 55, 1, 55, 140 )
+            oprint:printdata( 56, 70, _OOHG_Messages( MT_ABM_LBL, 22 ) + AllTrim( Str( nPagina ) ), "times new roman", 10, .F. )
             lCabecera := .t.
             nPagina++
             nFila := 13
@@ -1543,7 +1541,7 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
             nIndice := _aNumeroCampo[nItem]
             do case
             case _aEstructura[nIndice,2] == "L"
-               cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( 6, 20 ), _OOHG_Messages( 6, 21 ) )
+               cTexto := iif( (_cArea)->( FieldGet( nIndice ) ), _OOHG_Messages( MT_ABM_LBL, 20 ), _OOHG_Messages( MT_ABM_LBL, 21 ) )
                oprint:printdata(nfila,ncolumna, ctexto, ,,.F.)
                nColumna += _aAnchoCampo[nItem]  +2
             case _aEstructura[nIndice,2] == "N"
@@ -1570,8 +1568,8 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
          if .not. Mod( nLineas, 32 ) == 0
             nPaginas++
          endif
-         oprint:printline(45,1,45,140)
-         oprint:printdata(46,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
+         oprint:printline( 45, 1, 45, 140 )
+         oprint:printdata( 46, 70, _OOHG_Messages( MT_ABM_LBL, 22 ) + AllTrim( Str( nPagina ) ), "times new roman", 10, .F. )
       endif
    else
       // Vertical
@@ -1581,7 +1579,7 @@ static function ABMListadoImprimir( lOrientacion, nPrimero, nUltimo )
             nPaginas++
          endif
          oprint:printline(55,1,55,140)
-         oprint:printdata(56,70,_OOHG_messages(6,22) + AllTrim( Str( nPagina ) )   ,"times new roman" ,10,.F.)
+         oprint:printdata( 56, 70, _OOHG_Messages( MT_ABM_LBL, 22 ) + AllTrim( Str( nPagina ) ), "times new roman", 10, .F. )
       endif
    endif
    Empty( nPaginas )

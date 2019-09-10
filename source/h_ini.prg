@@ -61,9 +61,10 @@
  */
 
 
-#include 'oohg.ch'
-#include 'common.ch'
-#include 'fileio.ch'
+#include "common.ch"
+#include "fileio.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 #define DOUBLE_QUOTATION_MARK  '"'
 #define DQM( x )               ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
@@ -85,7 +86,7 @@ FUNCTION BeginIni( name, cIniFile )
    ENDIF
 
    IF FError() != 0
-      MsgStop( _OOHG_Messages( 1, 21 ) + DQM( cIniFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( 1, 9 ) )
+      MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cIniFile ) + ". [" + LTrim( Str( FError() ) ) + "]", _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN ""
    ELSE
       _OOHG_ActiveIniFile := cIniFile

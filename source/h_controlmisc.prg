@@ -61,10 +61,11 @@
  */
 
 
-#include "oohg.ch"
-#include "hbclass.ch"
 #include "common.ch"
+#include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
@@ -253,7 +254,7 @@ FUNCTION InputWindow( Title, aLabels, aValues, aFormats, row, col, aButOKCancelC
    LOCAL oInputWindow, aResult, nWidth, ControlCol, nSep
 
    IF ! HB_IsArray( aButOKCancelCaptions ) .OR. Len( aButOKCancelCaptions ) < 2
-      aButOKCancelCaptions := { _OOHG_Messages( 1, 6 ), _OOHG_Messages( 1, 7 ) }
+      aButOKCancelCaptions := { _OOHG_Messages( MT_MISCELL, 6 ), _OOHG_Messages( MT_MISCELL, 7 ) }
    ENDIF
 
    IF ! HB_ISNUMERIC( nLabelWidth ) .OR. nLabelWidth <= 10
@@ -1462,7 +1463,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
    ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
-      MsgOOHGError( _OOHG_Messages( 3, 4 ) + ::Name + _OOHG_Messages( 3, 5 ) + ::Parent:Name + _OOHG_Messages( 3, 6 ) )
+      MsgOOHGError( _OOHG_Messages( MT_BRW_ERR, 4 ) + ::Name + _OOHG_Messages( MT_BRW_ERR, 5 ) + ::Parent:Name + _OOHG_Messages( MT_BRW_ERR, 6 ) )
    EndIf
 
    // Right-to-left

@@ -61,8 +61,9 @@
  */
 
 
-#include "oohg.ch"
 #include "common.ch"
+#include "oohg.ch"
+#include "i_init.ch"
 
 Memvar _ActiveScrSaverName
 Memvar _ScrSaverInstall
@@ -152,7 +153,7 @@ Function _ActivateScrSaver( aForm, cParam )
       IF _ScrSaverConfig # NIL
          Eval(_ScrSaverConfig)
       ELSE
-         MsgInfo( _OOHG_Messages( 1, 20 ), _OOHG_Messages( 12, 33 ) )
+         MsgInfo( _OOHG_Messages( MT_MISCELL, 20 ), _OOHG_Messages( MT_PRINTER, 33 ) )
       ENDIF
 
    CASE cParam = "/a" .or. cParam = "-a"
@@ -184,13 +185,13 @@ Function _ActivateScrSaver( aForm, cParam )
             END INI
          ENDIF
 
-         MsgInfo( cFileNoPath( cFileDes ) + _OOHG_Messages( 1, 16 ), _OOHG_Messages( 12, 33 ) )
+         MsgInfo( cFileNoPath( cFileDes ) + _OOHG_Messages( MT_MISCELL, 16 ), _OOHG_Messages( MT_PRINTER, 33 ) )
 
          IF _ScrSaverShow
             SendMessage( GetFormHandle(_ActiveScrSaverName), WM_SYSCOMMAND, SC_SCREENSAVE )
          ENDIF
       ELSE
-         MsgStop( cFileNoPath( cFileDes ) + _OOHG_Messages( 1, 16 ), _OOHG_Messages( 1, 9 ) )
+         MsgStop( cFileNoPath( cFileDes ) + _OOHG_Messages( MT_MISCELL, 16 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       ENDIF
 
    ENDCASE
