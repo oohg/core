@@ -1108,7 +1108,6 @@ METHOD CheckInteractiveClose() CLASS TForm
    */
    DO CASE
    CASE ::InteractiveClose == 0 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 0 )
-_OOHG_CallDump( {::Name, ::InteractiveClose, _OOHG_InteractiveClose } )
       MsgStop( _OOHG_Messages( 1, 3 ) )
       lRet := .F.
    CASE ::InteractiveClose == 2 .OR. ( ::InteractiveClose == -1 .AND. _OOHG_InteractiveClose == 2 )
