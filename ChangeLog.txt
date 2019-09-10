@@ -12,6 +12,35 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-09 22:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     + AScan with 5 parameters.
+   * core\include\i_pseudofunc.ch
+     + SetInteractiveClose.
+   * core\include\i_var.ch
+     + _OOHG_InteractiveClose and _OOHG_KeepAppOnMainRelease.
+   * core\include\i_window.ch
+     + INTERACTIVECLOSE [ ON | OFF | QUERY | QUERY MAIN ] clause.
+   * core\source\h_application.prg
+     + Support for global vars _OOHG_InteractiveClose and
+       _OOHG_KeepAppOnMainRelease.
+     * _OOHG_Main can now be set to NIL if MAIN is released
+       and _OOHG_KeepAppOnMainRelease is .T.
+   * core\source\h_form.prg
+     - Static var _OOHG_InteractiveClose.
+     - Function SetInteractiveClose.
+     + DATA InteractiveClose to TForm CLASS.
+       Use it to establish a specific value on per form basis.
+       On form's close this data will be checked first, if
+       it's value is -1 (default value) then the global
+       value of _OOHG_InteractiveClose will be used.
+     - WM_DESTROY handler.
+     * The destruction of the windows is now done by the
+       default Windows procedure.
+     ! Method Release was wrongly checking interactive close
+       which prevented the programmatic release of the form.
+     ! DEFINE WINDOW registration failed error.
+
 2019-09-08 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
      + ToolTip release at METHOD Events_Destroy.
