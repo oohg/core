@@ -61,9 +61,10 @@
  */
 
 
-#include "oohg.ch"
 #include "hbclass.ch"
+#include "oohg.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 EXTERN EVAL
 
@@ -1788,11 +1789,11 @@ FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeo
       ENDIF
 
       @ 67 + mo, 120 BUTTON _Ok ;
-         CAPTION _OOHG_Messages( 1, 6 ) ;
+         CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ;
          ACTION ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) )
 
       @ 67 + mo, 230 BUTTON _Cancel ;
-         CAPTION _OOHG_Messages( 1, 7 ) ;
+         CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ;
          ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
 
       IF nTimeout > 0
