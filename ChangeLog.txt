@@ -12,6 +12,12 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-12 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_internal.prg
+     ! ON CLICK event is not working.
+     ! TAB freezes app if internal has no controls.
+     * Some format.
+
 2019-09-10 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_report.prg
      ! Missing READONLY property at DATA Type.
