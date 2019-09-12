@@ -95,7 +95,7 @@ CLASS TInternal FROM TControl
 
 METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
                backcolor, tooltip, gotfocus, lostfocus, ;
-               Transparent, BORDER, CLIENTEDGE, icon, ;
+               Transparent, border, clientedge, icon, ;
                Virtualheight, VirtualWidth, ;
                MouseDragProcedure, MouseMoveProcedure, ;
                NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
@@ -118,12 +118,11 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
 
    ::SetForm( ControlName, ParentForm,,,, backcolor,, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, NoTabStop ) + ;
-             if( ValType( BORDER ) == "L"    .AND. BORDER,     WS_BORDER, 0 )  + ;
-             SS_NOTIFY
+   nStyle := ::InitStyle( NIL, NIL, Invisible, NoTabStop ) + ;
+             iif( ValType( border ) == "L" .AND. border, WS_BORDER, 0 )
 
    nStyleEx := WS_EX_CONTROLPARENT
-   nStyleEx += iif( ValType( CLIENTEDGE ) == "L" .AND. CLIENTEDGE, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += iif( ValType( clientedge ) == "L" .AND. clientedge, WS_EX_CLIENTEDGE, 0 )
    nStyleEx += iif( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    IF ( nError := _OOHG_TInternal_Register() ) # 0
@@ -328,7 +327,7 @@ HB_FUNC( _OOHG_TINTERNAL_REGISTER )          /* FUNCTION _OOHG_TInternal_Registe
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITINTERNAL )
 {
-   int Style = hb_parni( 6 ) | WS_CHILD;
+   int Style = hb_parni( 6 ) | WS_CHILD | SS_NOTIFY;
    int StyleEx = hb_parni( 7 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TINTERNAL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
@@ -350,17 +349,16 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
 
    switch( message )
    {
-      case WM_MOUSEWHEEL:
-         if( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 )
+      case WM_GETDLGCODE:
          {
-            _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( SB_LINEUP );
-            hb_vmSend( 1 );
+            hb_retni( DLGC_WANTTAB );
          }
-         else
+         break;
+
+      case WM_MOUSEWHEEL:
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( SB_LINEDOWN );
+            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
             hb_vmSend( 1 );
          }
          hb_retni( 1 );
@@ -375,6 +373,12 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
             hBrush = oSelf->BrushHandle ? oSelf->BrushHandle : ( HBRUSH ) ( COLOR_BTNFACE + 1 );
             FillRect( ( HDC ) wParam, &rect, hBrush );
             hb_retni( 1 );
+         }
+         break;
+
+      case WM_LBUTTONUP:
+         {
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
          }
          break;
 
