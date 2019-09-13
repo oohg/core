@@ -61,13 +61,15 @@
  */
 
 
-#include 'hbclass.ch'
-#include 'oohg.ch'
-#include 'i_windefs.ch'
-#include 'miniprint.ch'
-#define NO_HBPRN_DECLARATION
-#include 'winprint.ch'
 #include "fileio.ch"
+#include "hbclass.ch"
+#include "oohg.ch"
+#include "i_windefs.ch"
+#include "i_init.ch"
+#include "miniprint.ch"
+
+#define NO_HBPRN_DECLARATION
+#include "winprint.ch"
 
 MEMVAR _OOHG_PrintLibrary
 MEMVAR _OOHG_PRINTER_DocName
@@ -133,7 +135,7 @@ FUNCTION TPrint( cLibX )
    RETURN oPrint
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TPRINTBASE
+CLASS TPrintBase
 
    DATA aBarColor                 INIT {1, 1, 1}             READONLY    // brush color for barcodes
    DATA aColor                    INIT {0, 0, 0}             READONLY    // brush color
@@ -266,8 +268,7 @@ CLASS TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetIndentation( lIndentAll ) CLASS TPRINTBASE
-
+METHOD SetIndentation( lIndentAll ) CLASS TPrintBase
    IF HB_ISLOGICAL( lIndentAll )
       ::lIndentAll := lIndentAll
    ENDIF
@@ -275,7 +276,7 @@ METHOD SetIndentation( lIndentAll ) CLASS TPRINTBASE
    RETURN ::lIndentAll
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetFontType( nFontType ) CLASS TPRINTBASE
+METHOD SetFontType( nFontType ) CLASS TPrintBase
 
    IF HB_ISNUMERIC( nFontType )
       IF nFontType == 0
@@ -288,7 +289,7 @@ METHOD SetFontType( nFontType ) CLASS TPRINTBASE
    RETURN ::nFontType
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetSeparateSheets( lSeparateSheets ) CLASS TPRINTBASE
+METHOD SetSeparateSheets( lSeparateSheets ) CLASS TPrintBase
 
    IF HB_ISLOGICAL( lSeparateSheets )
       ::lSeparateSheets := lSeparateSheets
@@ -297,7 +298,7 @@ METHOD SetSeparateSheets( lSeparateSheets ) CLASS TPRINTBASE
    RETURN ::lSeparateSheets
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetShowErrors( lShow ) CLASS TPRINTBASE
+METHOD SetShowErrors( lShow ) CLASS TPrintBase
 
    IF HB_ISLOGICAL( lShow )
       ::lShowErrors := lShow
@@ -306,12 +307,12 @@ METHOD SetShowErrors( lShow ) CLASS TPRINTBASE
    RETURN ::lShowErrors
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetPreviewSize( nSize ) CLASS TPRINTBASE
+METHOD SetPreviewSize( nSize ) CLASS TPrintBase
 
    RETURN ::SetPreviewSizeX( nSize )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetProp( lMode ) CLASS TPRINTBASE
+METHOD SetProp( lMode ) CLASS TPrintBase
 
    IF HB_ISLOGICAL( lMode )
       ::lProp := lMode
@@ -320,7 +321,7 @@ METHOD SetProp( lMode ) CLASS TPRINTBASE
    RETURN ::lProp
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetCpl( nCpl ) CLASS TPRINTBASE
+METHOD SetCpl( nCpl ) CLASS TPrintBase
 
    IF HB_ISNUMERIC( nCpl )
       DO CASE
@@ -344,7 +345,7 @@ METHOD SetCpl( nCpl ) CLASS TPRINTBASE
    RETURN ::nFontSize
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Release() CLASS TPRINTBASE
+METHOD Release() CLASS TPrintBase
 
    IF ::nStage > 0
       ::ReleaseX()
@@ -358,7 +359,7 @@ METHOD Release() CLASS TPRINTBASE
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Init( uParent ) CLASS TPRINTBASE
+METHOD Init( uParent ) CLASS TPrintBase
 
    LOCAL lOk
 
@@ -373,7 +374,7 @@ METHOD Init( uParent ) CLASS TPRINTBASE
       ENDIF
    ELSE
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 1 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 1 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    ENDIF
@@ -381,11 +382,11 @@ METHOD Init( uParent ) CLASS TPRINTBASE
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPRINTBASE
+METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPrintBase
 
    IF ::lPrError
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 49 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 49 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ENDIF
@@ -402,24 +403,24 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
    RETURN ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD IsDocOpen() CLASS TPRINTBASE
+METHOD IsDocOpen() CLASS TPrintBase
 
    RETURN ::IsDocOpenX()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
+METHOD BeginDoc( cDocm ) CLASS TPrintBase
 
    LOCAL oLabel, cTitle, lOk
 
    IF ::lPrError
       IF ::lShowErrors
-         MsgStop(  "BeginDoc: " + _OOHG_Messages( 12, 49 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "BeginDoc: " + _OOHG_Messages( MT_PRINTER, 49 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ELSEIF ::nStage > 2
       IF ::IsDocOpen()   // Preview is open
          IF ::lShowErrors
-            MsgStop(  "BeginDoc: " + _OOHG_Messages( 12, 46 ), _OOHG_Messages( 12, 12 ) )
+            MsgStop(  "BeginDoc: " + _OOHG_Messages( MT_PRINTER, 46 ), _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          RETURN .F.
       ELSE
@@ -427,17 +428,17 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
       ENDIF
    ELSEIF ::nStage > 1   // Another BeginDoc is active
       IF ::lShowErrors
-         MsgStop(  "BeginDoc: " + _OOHG_Messages( 12, 47 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "BeginDoc: " + _OOHG_Messages( MT_PRINTER, 47 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ELSEIF ::nStage < 1    // TPrint object is not initialized
       IF ::lShowErrors
-         MsgStop(  "BeginDoc: " + _OOHG_Messages( 12, 48 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "BeginDoc: " + _OOHG_Messages( MT_PRINTER, 48 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ENDIF
 
-   cTitle := _OOHG_Messages( 12, 2 )
+   cTitle := _OOHG_Messages( MT_PRINTER, 2 )
 
    IF HB_ISSTRING( cDocm ) .AND. ! Empty( cDocm )
       ::Cargo := cDocm
@@ -500,7 +501,7 @@ METHOD BeginDoc( cDocm ) CLASS TPRINTBASE
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetLMargin( nLMar ) CLASS TPRINTBASE
+METHOD SetLMargin( nLMar ) CLASS TPrintBase
 
    IF HB_ISNUMERIC( nLMar ) .AND. nLMar >= 0
       ::nLMargin := nLMar
@@ -509,7 +510,7 @@ METHOD SetLMargin( nLMar ) CLASS TPRINTBASE
    RETURN ::nLMargin
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetTMargin( nTMar ) CLASS TPRINTBASE
+METHOD SetTMargin( nTMar ) CLASS TPrintBase
 
    IF HB_ISNUMERIC( nTMar ) .AND. nTMar >= 0
       ::nTMargin := nTMar
@@ -518,19 +519,19 @@ METHOD SetTMargin( nTMar ) CLASS TPRINTBASE
    RETURN ::nTMargin
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPRINTBASE
+METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPrintBase
 
    LOCAL lOk
 
    IF ::lPrError
       IF ::lShowErrors
-         MsgStop(  "EndDoc: " + _OOHG_Messages( 12, 49 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "EndDoc: " + _OOHG_Messages( MT_PRINTER, 49 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ELSEIF ::nStage > 2
       IF ::IsDocOpen()   // Preview is open
          IF ::lShowErrors
-            MsgStop( "EndDoc: " + _OOHG_Messages( 12, 46 ), _OOHG_Messages( 12, 12 ) )
+            MsgStop( "EndDoc: " + _OOHG_Messages( MT_PRINTER, 46 ), _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          RETURN .F.
       ELSE
@@ -538,12 +539,12 @@ METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPRINTBASE
       ENDIF
    ELSEIF ::nStage < 1    // TPrint object is not initialized
       IF ::lShowErrors
-         MsgStop(  "EndDoc: " + _OOHG_Messages( 12, 48 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "EndDoc: " + _OOHG_Messages( MT_PRINTER, 48 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ELSEIF ::nStage < 2   // BeginDoc is missing
       IF ::lShowErrors
-         MsgStop(  "EndDoc: " + _OOHG_Messages( 12, 50 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop(  "EndDoc: " + _OOHG_Messages( MT_PRINTER, 50 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN .F.
    ENDIF
@@ -565,7 +566,7 @@ METHOD EndDoc( lSaveTemp, lWait, lSize ) CLASS TPRINTBASE
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetColor( atColor ) CLASS TPRINTBASE
+METHOD SetColor( atColor ) CLASS TPrintBase
 
    IF ArrayIsValidColor( atColor )
       ::aColor := atColor
@@ -575,7 +576,7 @@ METHOD SetColor( atColor ) CLASS TPRINTBASE
    RETURN ::aColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetBarColor( atColor ) CLASS TPRINTBASE
+METHOD SetBarColor( atColor ) CLASS TPrintBase
 
    IF ArrayIsValidColor( atColor )
       ::aBarColor := atColor
@@ -584,7 +585,7 @@ METHOD SetBarColor( atColor ) CLASS TPRINTBASE
    RETURN ::aBarColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPRINTBASE
+METHOD SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPrintBase
 
    ASSIGN cFont   VALUE cFont   TYPE "C" DEFAULT ::cFontName
    ASSIGN nSize   VALUE nSize   TYPE "N" DEFAULT ::nFontSize
@@ -611,7 +612,7 @@ METHOD SetFont( cFont, nSize, aColor, lBold, lItalic, nAngle, lUnder, lStrike, n
    RETURN { ::cFontName, ::nFontSize, ::aFontColor, ::lFontBold, ::lFontItalic, ::nFontAngle, ::lFontUnderline, ::lFontStrikeout, ::nFontWidth }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPage( cName ) CLASS TPRINTBASE
+METHOD BeginPage( cName ) CLASS TPrintBase
 
    IF ! Empty( cName )
       IF AScan( ::aPageNames, cName ) > 0
@@ -628,7 +629,7 @@ METHOD BeginPage( cName ) CLASS TPRINTBASE
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPage() CLASS TPRINTBASE
+METHOD EndPage() CLASS TPrintBase
 
    ::EndPageX()
    ::cPageName := ""
@@ -636,12 +637,12 @@ METHOD EndPage() CLASS TPRINTBASE
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetDefPrinter() CLASS TPRINTBASE
+METHOD GetDefPrinter() CLASS TPrintBase
 
    RETURN ::GetDefPrinterX()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetUnits( cUnitsX, nUnitsLinX ) CLASS TPRINTBASE
+METHOD SetUnits( cUnitsX, nUnitsLinX ) CLASS TPrintBase
 
    IF HB_ISSTRING( cUnitsX )
       IF Upper( cUnitsX ) == "MM"
@@ -657,7 +658,7 @@ METHOD SetUnits( cUnitsX, nUnitsLinX ) CLASS TPRINTBASE
    RETURN { ::cUnits, ::nUnitsLin }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPRINTBASE
+METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPrintBase
 
    LOCAL cText, cSpace, uAux, cType
 
@@ -739,7 +740,7 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight, lMode ) CLASS TPRINTBASE
+METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight, lMode ) CLASS TPrintBase
 
    LOCAL nSize := 10
 
@@ -800,7 +801,7 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
@@ -810,7 +811,7 @@ METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBAS
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
@@ -820,21 +821,21 @@ METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBA
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Code128( cCode, cMode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Code3_9( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth, lMode ) CLASS TPRINTBASE
+METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth, lMode ) CLASS TPrintBase
 
    ASSIGN lMode VALUE lMode TYPE "L" DEFAULT .T.
 
@@ -843,7 +844,7 @@ METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth, lMode ) CLASS T
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
@@ -853,35 +854,35 @@ METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBAS
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Sup5( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Sup5( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Sup5( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Codabar( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Ind25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPRINTBASE
+METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
    ::Go_Code( _Mat25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
+METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
 
    LOCAL n
 
@@ -913,7 +914,7 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPRINTBASE
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTra, lNoChk, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize ) CLASS TPRINTBASE
+METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTra, lNoChk, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize ) CLASS TPrintBase
 
    LOCAL nAttrib, aPictSize, lSet, hBitmap
 
@@ -986,7 +987,7 @@ METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransp
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPRINTBASE
+METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPrintBase
 
    ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
    ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
@@ -1015,7 +1016,7 @@ METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPRIN
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPRINTBASE
+METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPrintBase
 
    ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
@@ -1046,7 +1047,7 @@ METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPRI
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPRINTBASE
+METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPrintBase
 
    ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
@@ -1078,7 +1079,7 @@ METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColo
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPRINTBASE
+METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPrintBase
 
    ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
    ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
@@ -1110,14 +1111,14 @@ METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, a
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintMode( cFile ) CLASS TPRINTBASE
+METHOD PrintMode( cFile ) CLASS TPrintBase
 
    ::PrintModeX( cFile )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetDosPort( cPort ) CLASS TPRINTBASE
+METHOD SetDosPort( cPort ) CLASS TPrintBase
 
    LOCAL nPos, cAux, lFound, i
 
@@ -1146,13 +1147,13 @@ METHOD SetDosPort( cPort ) CLASS TPRINTBASE
    RETURN ::cPort
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetRawPrinter( cPrinter ) CLASS TPRINTBASE
+METHOD SetRawPrinter( cPrinter ) CLASS TPrintBase
 
    IF HB_ISSTRING( cPrinter )
       IF Empty( cPrinter )
          ::cPrinter := GetDefaultPrinter()
       ELSE
-         ::aPrinters := ASort( aPrinters() )
+         ::aPrinters := ASort( _HMG_PRINTER_aPrinters() )
          IF AScan( ::aPrinters, cPrinter ) > 0
             ::cPrinter := cPrinter
          ELSE
@@ -1165,7 +1166,7 @@ METHOD SetRawPrinter( cPrinter ) CLASS TPRINTBASE
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TMINIPRINT FROM TPRINTBASE
+CLASS TMiniPrint FROM TPrintBase
 
    DATA Type                      INIT "MINIPRINT"           READONLY
 
@@ -1191,7 +1192,7 @@ CLASS TMINIPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxCol() CLASS TMINIPRINT
+METHOD MaxCol() CLASS TMiniPrint
 
    LOCAL nCol
 
@@ -1206,7 +1207,7 @@ METHOD MaxCol() CLASS TMINIPRINT
    RETURN nCol
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxRow() CLASS TMINIPRINT
+METHOD MaxRow() CLASS TMiniPrint
 
    LOCAL nRow
 
@@ -1221,7 +1222,7 @@ METHOD MaxRow() CLASS TMINIPRINT
    RETURN nRow
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetPreviewSizeX( nSize ) CLASS TMINIPRINT
+METHOD SetPreviewSizeX( nSize ) CLASS TMiniPrint
 
    IF _HMG_PRINTER_Preview
       IF nSize == NIL .OR. nSize < -9.99 .OR. nSize > 99.99
@@ -1234,14 +1235,14 @@ METHOD SetPreviewSizeX( nSize ) CLASS TMINIPRINT
    RETURN ::nPreviewSize
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS TMINIPRINT
+METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS TMiniPrint
 
    @ y, x PRINT FILL TO y1, x1 COLOR aColor
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TMINIPRINT
+METHOD InitX() CLASS TMiniPrint
 
    IF ! __mvExist( "_HMG_PRINTER_aPrinterProperties" )
       PUBLIC _HMG_PRINTER_aPrinterProperties
@@ -1274,21 +1275,21 @@ METHOD InitX() CLASS TMINIPRINT
       PUBLIC _HMG_PRINTER_TimeStamp
    ENDIF
 
-   ::aPrinters := aPrinters()
+   ::aPrinters := _HMG_PRINTER_aPrinters()
    ::cPrintLibrary := "MINIPRINT"
    ::lPrError := .F.
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TMINIPRINT
+METHOD BeginDocX() CLASS TMiniPrint
 
    START PRINTDOC NAME ::Cargo
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
+METHOD EndDocX( lWait, lSize ) CLASS TMiniPrint
 
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .T.
@@ -1321,7 +1322,7 @@ METHOD EndDocX( lWait, lSize ) CLASS TMINIPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD IsDocOpenX() CLASS TMINIPRINT
+METHOD IsDocOpenX() CLASS TMiniPrint
 
    IF ::lDocIsOpen
       IF ! IsWindowDefined( "_OOHG_AUXIL" )
@@ -1332,21 +1333,21 @@ METHOD IsDocOpenX() CLASS TMINIPRINT
    RETURN ::lDocIsOpen
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS TMINIPRINT
+METHOD BeginPageX() CLASS TMiniPrint
 
    START PRINTPAGE
 
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TMINIPRINT
+METHOD EndPageX() CLASS TMiniPrint
 
    END PRINTPAGE
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS TMINIPRINT
+METHOD ReleaseX() CLASS TMiniPrint
 
    IF ! ::IsDocOpen()
       RELEASE _HMG_PRINTER_aPrinterProperties
@@ -1364,7 +1365,7 @@ METHOD ReleaseX() CLASS TMINIPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TMINIPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TMiniPrint
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( nLen )
@@ -1723,7 +1724,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TMINIPRINT
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TMiniPrint
 
    HB_SYMBOL_UNUSED( aResol )
    HB_SYMBOL_UNUSED( aSize )
@@ -1737,7 +1738,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TMIN
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TMINIPRINT
+METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TMiniPrint
 
    LOCAL nVDispl := 1
 
@@ -1750,7 +1751,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TMI
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TMINIPRINT
+METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TMiniPrint
 
    LOCAL nVDispl := 1
 
@@ -1767,7 +1768,7 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TMINIPRINT
+METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TMiniPrint
 
    LOCAL nVDispl := 1  // nVDispl := 1.009
 
@@ -1784,7 +1785,7 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TMINIPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TMiniPrint
 
    LOCAL nOrientation, lSucess, nCollate, nColor
 
@@ -1825,7 +1826,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF cPrinterX == NIL
       IF lSelect
-         ::cPrinter := GetPrinter()
+         ::cPrinter := _HMG_PRINTER_GetPrinter()
          IF Empty( ::cPrinter )
             ::lPrError := .T.
             RETURN .F.
@@ -2136,13 +2137,13 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    RETURN lSucess
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetDefPrinterX() CLASS TMINIPRINT
+METHOD GetDefPrinterX() CLASS TMiniPrint
 
    RETURN GetDefaultPrinter()
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS THBPRINTER FROM TPRINTBASE
+CLASS THBPrinter FROM TPrintBase
 
    DATA oHBPrn                    INIT NIL                   READONLY
    DATA Type                      INIT "HBPRINTER"           READONLY
@@ -2171,7 +2172,7 @@ CLASS THBPRINTER FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxCol() CLASS THBPRINTER
+METHOD MaxCol() CLASS THBPrinter
 
    LOCAL nCol
 
@@ -2190,7 +2191,7 @@ METHOD MaxCol() CLASS THBPRINTER
    RETURN nCol
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxRow() CLASS THBPRINTER
+METHOD MaxRow() CLASS THBPrinter
 
    LOCAL nRow
 
@@ -2209,7 +2210,7 @@ METHOD MaxRow() CLASS THBPRINTER
    RETURN nRow
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THBPRINTER
+METHOD InitX() CLASS THBPrinter
 
    INIT PRINTSYS
    GET PRINTERS TO ::aPrinters
@@ -2223,7 +2224,7 @@ METHOD InitX() CLASS THBPRINTER
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS THBPRINTER
+METHOD BeginDocX() CLASS THBPrinter
 
    START DOC NAME ::Cargo
    CHANGE FONT "F0" NAME ::cFontName SIZE ::nFontSize
@@ -2234,7 +2235,7 @@ METHOD BeginDocX() CLASS THBPRINTER
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD IsDocOpenX() CLASS THBPRINTER
+METHOD IsDocOpenX() CLASS THBPrinter
 
    IF ::lDocIsOpen
       IF HB_ISOBJECT( ::oHBPrn )
@@ -2247,7 +2248,7 @@ METHOD IsDocOpenX() CLASS THBPRINTER
    RETURN ::lDocIsOpen
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
+METHOD EndDocX( lWait, lSize ) CLASS THBPrinter
 
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT ::ImPreview
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .F.
@@ -2280,28 +2281,28 @@ METHOD EndDocX( lWait, lSize ) CLASS THBPRINTER
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS THBPRINTER
+METHOD BeginPageX() CLASS THBPrinter
 
    START PAGE
 
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS THBPRINTER
+METHOD EndPageX() CLASS THBPrinter
 
    END PAGE
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS THBPRINTER
+METHOD ReleaseX() CLASS THBPrinter
 
    RELEASE PRINTSYS
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS THBPRINTER
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS THBPrinter
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( nLen )
@@ -2393,7 +2394,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS THBPRINTER
+METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS THBPrinter
 
    CHANGE BRUSH "B0" COLOR aColor STYLE BS_SOLID
    @ y, x, y1, x1 FILLRECT BRUSH "B0"
@@ -2412,21 +2413,28 @@ METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTrans
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS THBPRINTER
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS THBPrinter
 
    HB_SYMBOL_UNUSED( aResol )
-   HB_SYMBOL_UNUSED( aSize )
 
    IF ::cUnits == "MM"
+      IF HB_ISLOGICAL( aSize ) .AND. aSize
+         @ nLin, nCol PICTURE cImage IMAGESIZE
+      ELSE
       @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol )
+      ENDIF
    ELSE
+      IF HB_ISLOGICAL( aSize ) .AND. aSize
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage IMAGESIZE
+      ELSE
       @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol - 3 ) * ::nmHor + ::nhFij * 2
+   ENDIF
    ENDIF
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS THBPRINTER
+METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS THBPrinter
 
    LOCAL nVDispl := 1
 
@@ -2440,7 +2448,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS THB
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPRINTER
+METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPrinter
 
    LOCAL nVDispl := 1
 
@@ -2455,7 +2463,7 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPRINTER
+METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPrinter
 
    LOCAL nVDispl := 1
 
@@ -2470,7 +2478,7 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS THBPRINTER
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS THBPrinter
 
    IF lSelect
       IF lPreview
@@ -2573,7 +2581,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetDefPrinterX() CLASS THBPRINTER
+METHOD GetDefPrinterX() CLASS THBPrinter
 
    LOCAL cDefPrinter
 
@@ -2582,14 +2590,14 @@ METHOD GetDefPrinterX() CLASS THBPRINTER
    RETURN cDefPrinter
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetColorX() CLASS THBPRINTER
+METHOD SetColorX() CLASS THBPrinter
 
    CHANGE PEN "P0" WIDTH ::nwPen COLOR ::aColor STYLE PS_SOLID
 
    RETURN ::aColor
 
 /*---------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetPreviewSizeX( nSize ) CLASS THBPRINTER
+METHOD SetPreviewSizeX( nSize ) CLASS THBPrinter
 
    IF nSize == NIL .OR. nSize < 1 .OR. nSize > 5
       nSize := 2
@@ -2601,7 +2609,7 @@ METHOD SetPreviewSizeX( nSize ) CLASS THBPRINTER
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TDOSPRINT FROM TPRINTBASE
+CLASS TDosPrint FROM TPrintBase
 
    DATA cBusca                    INIT ""                    READONLY
    DATA cString                   INIT ""                    READONLY
@@ -2631,7 +2639,7 @@ CLASS TDOSPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintModeX( cFile ) CLASS TDOSPRINT
+METHOD PrintModeX( cFile ) CLASS TDosPrint
 
    LOCAL cBat, nHdl, lOk := .T.
 
@@ -2639,7 +2647,7 @@ METHOD PrintModeX( cFile ) CLASS TDOSPRINT
       cBat := 'b' + AllTrim( Str( hb_Random( 999999 ), 6 ) ) + '.bat'
       nHdl := FCreate( cBat )
       FWrite( nHdl, 'copy "' + cFile + '" ' + ::cPort + Chr( 13 ) + Chr( 10 ) )
-      FWrite( nHdl, "rem " + _OOHG_Messages( 12, 3 ) + Chr( 13 ) + Chr( 10 ) )
+      FWrite( nHdl, "rem " + _OOHG_Messages( MT_PRINTER, 3 ) + Chr( 13 ) + Chr( 10 ) )
       FClose( nHdl )
       hb_idleSleep( 1 )
       WaitRun( cBat, 0 )
@@ -2650,7 +2658,7 @@ METHOD PrintModeX( cFile ) CLASS TDOSPRINT
             COPY FILE ( cFile ) TO ( ::cDocument )
          RECOVER
             IF ::lShowErrors
-               MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+               MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
             ENDIF
             lOk := .F.
          END SEQUENCE
@@ -2660,7 +2668,7 @@ METHOD PrintModeX( cFile ) CLASS TDOSPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TDOSPRINT
+METHOD InitX() CLASS TDosPrint
 
    ::cPrintLibrary := "DOSPRINT"
    ::lPrError := .F.
@@ -2668,7 +2676,7 @@ METHOD InitX() CLASS TDOSPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TDOSPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TDosPrint
 
    LOCAL oWin
 
@@ -2691,7 +2699,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       cPrinterX := Upper( cPrinterX )
       IF ! cPrinterX $ "PRN LPT1: LPT2: LPT3: LPT4: LPT5: LPT6:"
          IF ::lShowError
-            MsgStop( _OOHG_Messages( 12, 13 ), _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 13 ), _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          ::lPrError := .T.
          RETURN .F.
@@ -2711,15 +2719,15 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          AT 0, 0 ;
          WIDTH 345 ;
          HEIGHT GetTitleHeight() + 100 ;
-         TITLE _OOHG_Messages( 12, 14 ) ;
+         TITLE _OOHG_Messages( MT_PRINTER, 14 ) ;
          MODAL ;
          NOSIZE
 
          @ 15, 10 COMBOBOX combo_1 ITEMS ::aPorts VALUE 1 WIDTH 320
 
-         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPort := SubStr( oWin:combo_1:Item( oWin:combo_1:Value ), 1, AT(",", oWin:combo_1:Item( oWin:combo_1:Value ))-1 ), oWin:Release() )
+         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( MT_PRINTER, 15 ) ACTION ( ::cPort := SubStr( oWin:combo_1:Item( oWin:combo_1:Value ), 1, AT(",", oWin:combo_1:Item( oWin:combo_1:Value ))-1 ), oWin:Release() )
 
-         @ 53,175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::cPort := "PRN", ::lPrError := .T., oWin:Release() )
+         @ 53,175 BUTTON cancel CAPTION _OOHG_Messages( MT_PRINTER, 16 ) ACTION ( ::cPort := "PRN", ::lPrError := .T., oWin:Release() )
       END WINDOW
 
       oWin:Center()
@@ -2750,7 +2758,7 @@ STATIC FUNCTION aLocalPorts()
    RETURN aResults
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TDOSPRINT
+METHOD BeginDocX() CLASS TDosPrint
 
    ::cDocument := ParseName( ::Cargo, "dos" )
    SET PRINTER TO ( ::cTempFile )
@@ -2794,7 +2802,7 @@ FUNCTION ParseName( cName, cExt, lInvSlash )
    RETURN cLongName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TDOSPRINT
+METHOD EndDocX() CLASS TDosPrint
 
    LOCAL nHandle, wr, nx, ny
 
@@ -2812,7 +2820,7 @@ METHOD EndDocX() CLASS TDOSPRINT
       DEFINE WINDOW 0 OBJ ::oWinPreview ;
          AT 0, 0 ;
          WIDTH nx HEIGHT ny - 70 - 40 ;
-         TITLE _OOHG_Messages( 12, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
+         TITLE _OOHG_Messages( MT_PRINTER, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
          MODAL
 
          @ 42, 0 RICHEDITBOX edit_p ;
@@ -2825,12 +2833,12 @@ METHOD EndDocX() CLASS TDOSPRINT
             BACKCOLOR WHITE
 
          DEFINE TOOLBAR toolbr BUTTONSIZE 80, 20
-            BUTTON but_4 CAPTION _OOHG_Messages( 12, 18 )    ACTION ::oWinPreview:Release()                      TOOLTIP _OOHG_Messages( 12, 19 )
-            BUTTON but_1 CAPTION _OOHG_Messages( 12, 20 )    ACTION ::Zoom( "+" )                                TOOLTIP _OOHG_Messages( 12, 21 )
-            BUTTON but_2 CAPTION _OOHG_Messages( 12, 22 )    ACTION ::Zoom( "-" )                                TOOLTIP _OOHG_Messages( 12, 23 )
-            BUTTON but_3 CAPTION _OOHG_Messages( 12, 24, 1 ) ACTION ::PrintMode( ::cTempFile )                   TOOLTIP _OOHG_Messages( 12, 25, 1 ) + ::cPrintLibrary
-            BUTTON but_5 CAPTION _OOHG_Messages( 12, 26 )    ACTION ::SearchString( ::oWinPreview:edit_p:Value ) TOOLTIP _OOHG_Messages( 12, 27 )
-            BUTTON but_6 CAPTION _OOHG_Messages( 12, 28 )    ACTION ::NextSearch()                               TOOLTIP _OOHG_Messages( 12, 29 )
+            BUTTON but_4 CAPTION _OOHG_Messages( MT_PRINTER, 18 )    ACTION ::oWinPreview:Release()                      TOOLTIP _OOHG_Messages( MT_PRINTER, 19 )
+            BUTTON but_1 CAPTION _OOHG_Messages( MT_PRINTER, 20 )    ACTION ::Zoom( "+" )                                TOOLTIP _OOHG_Messages( MT_PRINTER, 21 )
+            BUTTON but_2 CAPTION _OOHG_Messages( MT_PRINTER, 22 )    ACTION ::Zoom( "-" )                                TOOLTIP _OOHG_Messages( MT_PRINTER, 23 )
+            BUTTON but_3 CAPTION _OOHG_Messages( MT_PRINTER, 24, 1 ) ACTION ::PrintMode( ::cTempFile )                   TOOLTIP _OOHG_Messages( MT_PRINTER, 25, 1 ) + ::cPrintLibrary
+            BUTTON but_5 CAPTION _OOHG_Messages( MT_PRINTER, 26 )    ACTION ::SearchString( ::oWinPreview:edit_p:Value ) TOOLTIP _OOHG_Messages( MT_PRINTER, 27 )
+            BUTTON but_6 CAPTION _OOHG_Messages( MT_PRINTER, 28 )    ACTION ::NextSearch()                               TOOLTIP _OOHG_Messages( MT_PRINTER, 29 )
          END TOOLBAR
       END WINDOW
 
@@ -2848,21 +2856,21 @@ METHOD EndDocX() CLASS TDOSPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS TDOSPRINT
+METHOD BeginPageX() CLASS TDosPrint
 
    @ 0, 0 SAY ""
 
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TDOSPRINT
+METHOD EndPageX() CLASS TDosPrint
 
    EJECT
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TDOSPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TDosPrint
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( cFont )
@@ -2886,7 +2894,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TDOSPRINT
+METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TDosPrint
 
    HB_SYMBOL_UNUSED( atColor )
    HB_SYMBOL_UNUSED( ntwPen )
@@ -2898,21 +2906,21 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TDOSPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD CondenDosX() CLASS TDOSPRINT
+METHOD CondenDosX() CLASS TDosPrint
 
    @ PRow(), PCol() SAY Chr( 15 )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD NormalDosX() CLASS TDOSPRINT
+METHOD NormalDosX() CLASS TDosPrint
 
    @ PRow(), PCol() SAY Chr( 18 )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Zoom( cOp ) CLASS TDOSPRINT
+METHOD Zoom( cOp ) CLASS TDosPrint
 
    IF cOp == "+" .AND. ::oWinPreview:edit_p:FontSize <= 25
       ::oWinPreview:edit_p:FontSize := ::oWinPreview:edit_p:FontSize + 1
@@ -2925,14 +2933,14 @@ METHOD Zoom( cOp ) CLASS TDOSPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SearchString( cTarget) CLASS TDOSPRINT
+METHOD SearchString( cTarget) CLASS TDosPrint
 
    ::oWinPreview:but_6:Enabled := .F.
    ::oWinPreview:edit_p:CaretPos := 1
    ::nOccur := 0
    ::cBusca := cTarget
    ::cString := ""
-   ::cString := InputBox( _OOHG_Messages( 12, 30 ), _OOHG_Messages( 12, 31 ) )
+   ::cString := InputBox( _OOHG_Messages( MT_PRINTER, 30 ), _OOHG_Messages( MT_PRINTER, 31 ) )
    IF Empty( ::cString )
       RETURN .F.
    ENDIF
@@ -2942,7 +2950,7 @@ METHOD SearchString( cTarget) CLASS TDOSPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD NextSearch() CLASS TDOSPRINT
+METHOD NextSearch() CLASS TDosPrint
 
    LOCAL cString, nCaretPos
 
@@ -2956,7 +2964,7 @@ METHOD NextSearch() CLASS TDOSPRINT
       ::oWinPreview:edit_p:Refresh()
    ELSE
       ::oWinPreview:but_6:Enabled := .F.
-      MsgInfo( _OOHG_Messages( 12, 32 ), _OOHG_Messages( 12, 33 ) )
+      MsgInfo( _OOHG_Messages( MT_PRINTER, 32 ), _OOHG_Messages( MT_PRINTER, 33 ) )
    ENDIF
 
    RETURN .T.
@@ -2982,7 +2990,7 @@ STATIC FUNCTION AtPlus( cSearch, cAll, nStart )
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TTXTPRINT FROM TDOSPRINT
+CLASS TTxtPrint FROM TDosPrint
 
    DATA cBusca                    INIT ""                    READONLY
    DATA cString                   INIT ""                    READONLY
@@ -3003,7 +3011,7 @@ CLASS TTXTPRINT FROM TDOSPRINT
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TTXTPRINT
+METHOD BeginDocX() CLASS TTxtPrint
 
    ::cDocument := ParseName( ::Cargo, "txt" )
    SET PRINTER TO ( ::cTempFile )
@@ -3012,7 +3020,7 @@ METHOD BeginDocX() CLASS TTXTPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TTXTPRINT
+METHOD EndDocX() CLASS TTxtPrint
 
    LOCAL nHandle, wr, nx, ny
 
@@ -3030,7 +3038,7 @@ METHOD EndDocX() CLASS TTXTPRINT
       DEFINE WINDOW 0 OBJ ::oWinPreview ;
          AT 0, 0 ;
          WIDTH nx HEIGHT ny - 70 - 40 ;
-         TITLE _OOHG_Messages( 12, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
+         TITLE _OOHG_Messages( MT_PRINTER, 17 ) + ::cTempFile + " " + ::cPrintLibrary ;
          MODAL
 
          @ 42, 0 RICHEDITBOX edit_p ;
@@ -3043,12 +3051,12 @@ METHOD EndDocX() CLASS TTXTPRINT
             BACKCOLOR WHITE
 
          DEFINE TOOLBAR toolbr BUTTONSIZE 80, 20
-            BUTTON but_4 CAPTION _OOHG_Messages( 12, 18 )    ACTION ::oWinPreview:Release()                      TOOLTIP _OOHG_Messages( 12, 19 )
-            BUTTON but_1 CAPTION _OOHG_Messages( 12, 20 )    ACTION ::Zoom( "+" )                                TOOLTIP _OOHG_Messages( 12, 21 )
-            BUTTON but_2 CAPTION _OOHG_Messages( 12, 22 )    ACTION ::Zoom( "-" )                                TOOLTIP _OOHG_Messages( 12, 23 )
-            BUTTON but_3 CAPTION _OOHG_Messages( 12, 24, 2 ) ACTION ::PrintMode( ::cTempFile )                   TOOLTIP _OOHG_Messages( 12, 25, 2 ) + ::cPrintLibrary
-            BUTTON but_5 CAPTION _OOHG_Messages( 12, 26 )    ACTION ::SearchString( ::oWinPreview:edit_p:Value ) TOOLTIP _OOHG_Messages( 12, 27 )
-            BUTTON but_6 CAPTION _OOHG_Messages( 12, 28 )    ACTION ::NextSearch()                               TOOLTIP _OOHG_Messages( 12, 29 )
+            BUTTON but_4 CAPTION _OOHG_Messages( MT_PRINTER, 18 )    ACTION ::oWinPreview:Release()                      TOOLTIP _OOHG_Messages( MT_PRINTER, 19 )
+            BUTTON but_1 CAPTION _OOHG_Messages( MT_PRINTER, 20 )    ACTION ::Zoom( "+" )                                TOOLTIP _OOHG_Messages( MT_PRINTER, 21 )
+            BUTTON but_2 CAPTION _OOHG_Messages( MT_PRINTER, 22 )    ACTION ::Zoom( "-" )                                TOOLTIP _OOHG_Messages( MT_PRINTER, 23 )
+            BUTTON but_3 CAPTION _OOHG_Messages( MT_PRINTER, 24, 2 ) ACTION ::PrintMode( ::cTempFile )                   TOOLTIP _OOHG_Messages( MT_PRINTER, 25, 2 ) + ::cPrintLibrary
+            BUTTON but_5 CAPTION _OOHG_Messages( MT_PRINTER, 26 )    ACTION ::SearchString( ::oWinPreview:edit_p:Value ) TOOLTIP _OOHG_Messages( MT_PRINTER, 27 )
+            BUTTON but_6 CAPTION _OOHG_Messages( MT_PRINTER, 28 )    ACTION ::NextSearch()                               TOOLTIP _OOHG_Messages( MT_PRINTER, 29 )
          END TOOLBAR
       END WINDOW
 
@@ -3066,7 +3074,7 @@ METHOD EndDocX() CLASS TTXTPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TTXTPRINT
+METHOD InitX() CLASS TTxtPrint
 
    ::cPrintLibrary := "TXTPRINT"
    ::lPrError := .F.
@@ -3074,7 +3082,7 @@ METHOD InitX() CLASS TTXTPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintModeX( cFile ) CLASS TTXTPRINT
+METHOD PrintModeX( cFile ) CLASS TTxtPrint
 
    LOCAL lOk := .T.
 
@@ -3083,7 +3091,7 @@ METHOD PrintModeX( cFile ) CLASS TTXTPRINT
          COPY FILE ( cFile ) TO ( ::cDocument )
       RECOVER
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       END SEQUENCE
@@ -3092,7 +3100,7 @@ METHOD PrintModeX( cFile ) CLASS TTXTPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TTXTPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TTxtPrint
 
    HB_SYMBOL_UNUSED( lSelect )
    HB_SYMBOL_UNUSED( lLandscape )
@@ -3121,7 +3129,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TRAWPRINT FROM TDOSPRINT
+CLASS TRawPrint FROM TDosPrint
 
    DATA Type                      INIT "RAWPRINT"            READONLY
 
@@ -3133,7 +3141,7 @@ CLASS TRAWPRINT FROM TDOSPRINT
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TRAWPRINT
+METHOD BeginDocX() CLASS TRawPrint
 
    ::Super:BeginDocX()
    ::cDocument := ParseName( ::Cargo, "raw" )
@@ -3141,7 +3149,7 @@ METHOD BeginDocX() CLASS TRAWPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintModeX( cFile ) CLASS TRAWPRINT
+METHOD PrintModeX( cFile ) CLASS TRawPrint
 
    LOCAL nResult, cMsg, aData, lOk := .T.
 
@@ -3151,7 +3159,7 @@ METHOD PrintModeX( cFile ) CLASS TRAWPRINT
             COPY FILE ( cFile ) TO ( ::cDocument )
          RECOVER
             IF ::lShowErrors
-               MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+               MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
             ENDIF
             lOk := .F.
          END SEQUENCE
@@ -3159,7 +3167,7 @@ METHOD PrintModeX( cFile ) CLASS TRAWPRINT
 
       IF Empty( ::cPrinter )
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 11 ), _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 11 ), _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ELSE
@@ -3167,15 +3175,15 @@ METHOD PrintModeX( cFile ) CLASS TRAWPRINT
          hb_idleSleep( 1 )
          IF nResult # 1
             IF ::lShowErrors
-               aData := { {  1, cFile + _OOHG_Messages( 12, 4 ) }, ;
-                          { -1, _OOHG_Messages( 12, 5 ) }, ;
-                          { -2, _OOHG_Messages( 12, 6 ) }, ;
-                          { -3, _OOHG_Messages( 12, 7 ) }, ;
-                          { -4, _OOHG_Messages( 12, 8 ) }, ;
-                          { -5, _OOHG_Messages( 12, 9 ) }, ;
-                          { -6, cFile + _OOHG_Messages( 12, 10 ) } }
+               aData := { {  1, cFile + _OOHG_Messages( MT_PRINTER, 4 ) }, ;
+                          { -1, _OOHG_Messages( MT_PRINTER, 5 ) }, ;
+                          { -2, _OOHG_Messages( MT_PRINTER, 6 ) }, ;
+                          { -3, _OOHG_Messages( MT_PRINTER, 7 ) }, ;
+                          { -4, _OOHG_Messages( MT_PRINTER, 8 ) }, ;
+                          { -5, _OOHG_Messages( MT_PRINTER, 9 ) }, ;
+                          { -6, cFile + _OOHG_Messages( MT_PRINTER, 10 ) } }
                cMsg := aData[ AScan( aData, { | x | x[ 1 ] == nResult } ), 2 ]
-               MsgStop( cMsg, _OOHG_Messages( 12, 12 ) )
+               MsgStop( cMsg, _OOHG_Messages( MT_PRINTER, 12 ) )
             ENDIF
             lOk := .F.
          ENDIF
@@ -3187,7 +3195,7 @@ METHOD PrintModeX( cFile ) CLASS TRAWPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TRAWPRINT
+METHOD InitX() CLASS TRawPrint
 
    ::cPrintLibrary := "RAWPRINT"
    ::lPrError := .F.
@@ -3195,7 +3203,7 @@ METHOD InitX() CLASS TRAWPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRAWPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRawPrint
 
    LOCAL oWin
 
@@ -3222,20 +3230,20 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF lSelect
       ::cPrinter := ""
-      ::aPrinters := ASort( aPrinters() )
+      ::aPrinters := ASort( _HMG_PRINTER_aPrinters() )
 
       DEFINE WINDOW 0 OBJ oWin  ;
          AT 0, 0 ;
          WIDTH 345 ;
          HEIGHT GetTitleHeight() + 100 ;
-         TITLE _OOHG_Messages( 12, 14 ) ;
+         TITLE _OOHG_Messages( MT_PRINTER, 14 ) ;
          MODAL ;
          NOSIZE
 
          @ 15, 10 COMBOBOX combo_1 ITEMS ::aPrinters VALUE AScan( ::aPrinters, GetDefaultPrinter() ) WIDTH 320
 
-         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( 12, 15 ) ACTION ( ::cPrinter := oWin:combo_1:Item( oWin:combo_1:Value ), oWin:Release() )
-         @ 53, 175 BUTTON cancel CAPTION _OOHG_Messages( 12, 16 ) ACTION ( ::lPrError := .T., oWin:Release() )
+         @ 53, 65 BUTTON ok CAPTION _OOHG_Messages( MT_PRINTER, 15 ) ACTION ( ::cPrinter := oWin:combo_1:Item( oWin:combo_1:Value ), oWin:Release() )
+         @ 53, 175 BUTTON cancel CAPTION _OOHG_Messages( MT_PRINTER, 16 ) ACTION ( ::lPrError := .T., oWin:Release() )
       END WINDOW
 
       oWin:Center()
@@ -3253,7 +3261,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TEXCELPRINT FROM TPRINTBASE
+CLASS TExcelPrint FROM TPrintBase
 // Based upon a contribution of Jose Miguel josemisu@yahoo.com.ar
 
    DATA oExcel                    INIT NIL                   READONLY
@@ -3282,7 +3290,7 @@ CLASS TEXCELPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TEXCELPRINT
+METHOD InitX() CLASS TExcelPrint
 
    ::cPrintLibrary := "EXCELPRINT"
 
@@ -3293,7 +3301,7 @@ METHOD InitX() CLASS TEXCELPRINT
    IF Ole2TxtError() != 'S_OK'
    #endif
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 34 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 34 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       ::lPrError := .T.
    ELSE
@@ -3305,7 +3313,7 @@ METHOD InitX() CLASS TEXCELPRINT
    RETURN ( ! ::lPrError )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TEXCELPRINT
+METHOD BeginDocX() CLASS TExcelPrint
 
    LOCAL nBefore
 
@@ -3319,7 +3327,7 @@ METHOD BeginDocX() CLASS TEXCELPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS TEXCELPRINT
+METHOD BeginPageX() CLASS TExcelPrint
 
    ::oHoja := ::oBook:ActiveSheet()
    IF ::lSeparateSheets
@@ -3331,7 +3339,7 @@ METHOD BeginPageX() CLASS TEXCELPRINT
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TEXCELPRINT
+METHOD EndDocX() CLASS TExcelPrint
 
    LOCAL nCol, bErrorBlock, lOk := .T.
 
@@ -3352,7 +3360,7 @@ METHOD EndDocX() CLASS TEXCELPRINT
       hb_idleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    END SEQUENCE
@@ -3364,7 +3372,7 @@ METHOD EndDocX() CLASS TEXCELPRINT
    IF lOk .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
       ENDIF
       lOk := .F.
@@ -3373,7 +3381,7 @@ METHOD EndDocX() CLASS TEXCELPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS TEXCELPRINT
+METHOD ReleaseX() CLASS TExcelPrint
 
    LOCAL bErrorBlock := ErrorBlock( { | x | Break( x ) } )
 
@@ -3393,7 +3401,7 @@ METHOD ReleaseX() CLASS TEXCELPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TEXCELPRINT
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TExcelPrint
 
    LOCAL cLin, cRange
 
@@ -3428,7 +3436,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TEXC
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TEXCELPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TExcelPrint
 
    /*
    TODO: Add an aCargo array of {property, value} to apply to the cell
@@ -3492,7 +3500,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TEXCELPRINT
+METHOD EndPageX() CLASS TExcelPrint
 
    LOCAL nCol
 
@@ -3526,7 +3534,7 @@ METHOD EndPageX() CLASS TEXCELPRINT
 #define TXT_LEN    12
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TSPREADSHEETPRINT FROM TPRINTBASE
+CLASS TSpreadsheetPrint FROM TPrintBase
 
    DATA aDoc                      INIT {}                    READONLY
    DATA nLinRel                   INIT 0                     READONLY
@@ -3550,7 +3558,7 @@ CLASS TSPREADSHEETPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TSPREADSHEETPRINT
+METHOD InitX() CLASS TSpreadsheetPrint
 
    ::cPrintLibrary := "SPREADSHEETPRINT"
    ::lPrError := .F.
@@ -3570,7 +3578,7 @@ METHOD AddPage()
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TSPREADSHEETPRINT
+METHOD BeginDocX() CLASS TSpreadsheetPrint
 
    LOCAL cBof := Chr( 9 ) + Chr( 0 ) + Chr( 4 ) + Chr( 0 ) + Chr( 2 ) + Chr( 0 ) + Chr( 10 ) + Chr( 0 )
 
@@ -3582,7 +3590,7 @@ METHOD BeginDocX() CLASS TSPREADSHEETPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TSPREADSHEETPRINT
+METHOD EndDocX() CLASS TSpreadsheetPrint
 
    LOCAL i, anHeader, nLen, nI, cEof, lOk := .T.
 
@@ -3632,7 +3640,7 @@ METHOD EndDocX() CLASS TSPREADSHEETPRINT
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 35 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk  := .F.
       ENDIF
@@ -3642,14 +3650,14 @@ METHOD EndDocX() CLASS TSPREADSHEETPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS TSPREADSHEETPRINT
+METHOD ReleaseX() CLASS TSpreadsheetPrint
 
    Release( ::nXls )           // Do not wait for garbage collector
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TSPREADSHEETPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TSpreadsheetPrint
 
    LOCAL cLineI, cLineF
 
@@ -3675,7 +3683,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TSPREADSHEETPRINT
+METHOD EndPageX() CLASS TSpreadsheetPrint
 
    ::nLinRel := ::nLinRel + ::nLpp
    ::AddPage()
@@ -3685,7 +3693,7 @@ METHOD EndPageX() CLASS TSPREADSHEETPRINT
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION THtmlPrint
-// CLASS THTMLPRINT
+// CLASS THtmlPrint
 
    LOCAL oBase, lError
 
@@ -3713,7 +3721,7 @@ FUNCTION THtmlPrint
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
+CLASS THtmlPrintFromExcel FROM TExcelPrint
 
    DATA Type                      INIT "HTMLPRINTFROMEXCEL"  READONLY
 
@@ -3724,7 +3732,7 @@ CLASS THTMLPRINTFROMEXCEL FROM TEXCELPRINT
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS THTMLPRINTFROMEXCEL
+METHOD BeginDocX() CLASS THtmlPrintFromExcel
 
    ::Super:BeginDocX()
    ::cDocument := ParseName( ::Cargo, "html" )
@@ -3732,7 +3740,7 @@ METHOD BeginDocX() CLASS THTMLPRINTFROMEXCEL
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS THTMLPRINTFROMEXCEL
+METHOD EndDocX() CLASS THtmlPrintFromExcel
 
    LOCAL nCol, bErrorBlock, lOk := .T.
 
@@ -3753,7 +3761,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMEXCEL
       hb_idleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    END SEQUENCE
@@ -3765,7 +3773,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMEXCEL
    IF lOk .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ENDIF
@@ -3774,7 +3782,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMEXCEL
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THTMLPRINTFROMEXCEL
+METHOD InitX() CLASS THtmlPrintFromExcel
 
    ::Super:InitX()
    ::cPrintLibrary := "HTMLPRINTFROMEXCEL"
@@ -3784,7 +3792,7 @@ METHOD InitX() CLASS THTMLPRINTFROMEXCEL
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
+CLASS THtmlPrintFromCalc FROM TCalcPrint
 
    DATA Type                      INIT "HTMLPRINTFROMCALC"   READONLY
 
@@ -3795,7 +3803,7 @@ CLASS THTMLPRINTFROMCALC FROM TCALCPRINT
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS THTMLPRINTFROMCALC
+METHOD BeginDocX() CLASS THtmlPrintFromCalc
 
    ::Super:BeginDocX()
    ::cDocument := ParseName( ::Cargo, "html" )
@@ -3803,7 +3811,7 @@ METHOD BeginDocX() CLASS THTMLPRINTFROMCALC
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS THTMLPRINTFROMCALC
+METHOD EndDocX() CLASS THtmlPrintFromCalc
 
    LOCAL bErrorBlock, oPropertyValue, lOk := .T.
 
@@ -3828,7 +3836,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMCALC
       hb_idleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    END SEQUENCE
@@ -3840,7 +3848,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMCALC
    IF lOk .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 37 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ENDIF
@@ -3849,7 +3857,7 @@ METHOD EndDocX() CLASS THTMLPRINTFROMCALC
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THTMLPRINTFROMCALC
+METHOD InitX() CLASS THtmlPrintFromCalc
 
    ::Super:InitX()
    ::cPrintLibrary := "HTMLPRINTFROMCALC"
@@ -3862,11 +3870,11 @@ METHOD InitX() CLASS THTMLPRINTFROMCALC
 #define RTF_COLOR_TABLE 3
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TRTFPRINT FROM TPRINTBASE
+CLASS TRtfPrint FROM TPrintBase
 
    DATA aPrintRtf                 INIT {}                    READONLY    // Document lines
    DATA nPrintRtf                 INIT 0                     READONLY    // Last font size used
-   DATA nFontSize                 INIT 10                    READONLY    // In TPRINTBASE is 12
+   DATA nFontSize                 INIT 10                    READONLY    // In TPrintBase is 12
    DATA nMarginLef                INIT 10                    READONLY    // in mm
    DATA nMarginSup                INIT 15                    READONLY    // in mm
    DATA nMarginRig                INIT 10                    READONLY    // in mm
@@ -3892,7 +3900,7 @@ CLASS TRTFPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TRTFPRINT
+METHOD InitX() CLASS TRtfPrint
 
    ::cPrintLibrary := "RTFPRINT"
    ::lPrError := .F.
@@ -3900,7 +3908,7 @@ METHOD InitX() CLASS TRTFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetPageMargins( nMarginLef, nMarginSup, nMarginRig, nMarginInf) CLASS TRTFPRINT
+METHOD SetPageMargins( nMarginLef, nMarginSup, nMarginRig, nMarginInf) CLASS TRtfPrint
 
    IF nMarginLef # NIL
       ::nMarginLef := nMarginLef
@@ -3918,7 +3926,7 @@ METHOD SetPageMargins( nMarginLef, nMarginSup, nMarginRig, nMarginInf) CLASS TRT
    RETURN { ::nMarginLef, ::nMarginSup, ::nMarginRig, ::nMarginInf }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TRTFPRINT
+METHOD BeginDocX() CLASS TRtfPrint
 
    LOCAL cMarginSup := LTrim( Str( Round( ::nMarginSup * 56.7, 0 ) ) )          // mm to twips
    LOCAL cMarginInf := LTrim( Str( Round( ::nMarginInf * 56.7, 0 ) ) )
@@ -4005,7 +4013,7 @@ METHOD BeginDocX() CLASS TRTFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TRTFPRINT
+METHOD EndDocX() CLASS TRtfPrint
 
    LOCAL i, bErrorBlock, lOk := .T.
 
@@ -4028,14 +4036,14 @@ METHOD EndDocX() CLASS TRTFPRINT
       IF ::ImPreview
          IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1 ) <= 32
             IF ::lShowErrors
-               MsgStop( _OOHG_Messages( 12, 38 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+               MsgStop( _OOHG_Messages( MT_PRINTER, 38 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
             ENDIF
             lOk := .F.
          ENDIF
       ENDIF
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    END SEQUENCE
@@ -4046,7 +4054,7 @@ METHOD EndDocX() CLASS TRTFPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TRTFPRINT
+METHOD EndPageX() CLASS TRtfPrint
 
    LOCAL nLin, i1, i2
 
@@ -4145,7 +4153,7 @@ METHOD EndPageX() CLASS TRTFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TRTFPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TRtfPrint
 
    LOCAL nFontTableStart, i, j, aFonts, cFontNumber, cNext, nParLevel, cFontName
    LOCAL nNextFont := 201, aFontTable := { {"0",   "TIMES NEW ROMAN" }, ;
@@ -4326,7 +4334,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TRTFPRINT
+METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TRtfPrint
 
    HB_SYMBOL_UNUSED( ntwPen )
 
@@ -4337,7 +4345,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TRTFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRTFPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRtfPrint
 
    HB_SYMBOL_UNUSED( lSelect )
    /*
@@ -4366,7 +4374,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TCSVPRINT FROM TPRINTBASE
+CLASS TCsvPrint FROM TPrintBase
 
    DATA aPrintCsv                 INIT {}                    READONLY
    DATA Type                      INIT "CSVPRINT"            READONLY
@@ -4385,14 +4393,14 @@ CLASS TCSVPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TCSVPRINT
+METHOD BeginDocX() CLASS TCsvPrint
 
    ::cDocument := ParseName( ::Cargo, "csv" )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TCSVPRINT
+METHOD InitX() CLASS TCsvPrint
 
    ::cPrintLibrary := "CSVPRINT"
    ::lPrError := .F.
@@ -4400,7 +4408,7 @@ METHOD InitX() CLASS TCSVPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TCSVPRINT
+METHOD EndDocX() CLASS TCsvPrint
 
    LOCAL i, lOk := .T.
 
@@ -4417,7 +4425,7 @@ METHOD EndDocX() CLASS TCSVPRINT
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1 ) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 39 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 39 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ENDIF
@@ -4427,7 +4435,7 @@ METHOD EndDocX() CLASS TCSVPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TCSVPRINT
+METHOD EndPageX() CLASS TCsvPrint
 
    LOCAL nLin, i
 
@@ -4452,7 +4460,7 @@ METHOD EndPageX() CLASS TCSVPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCSVPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCsvPrint
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( cFont )
@@ -4480,7 +4488,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TPDFPRINT FROM TPRINTBASE
+CLASS TPdfPrint FROM TPrintBase
 
    DATA aPaper                    INIT {}                    READONLY // paper types supported by pdf class
    DATA cPageOrient               INIT "P"                   READONLY // P = portrait, L = Landscape
@@ -4506,7 +4514,7 @@ CLASS TPDFPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxCol CLASS TPDFPRINT
+METHOD MaxCol CLASS TPdfPrint
 
    LOCAL nRet
 
@@ -4519,7 +4527,7 @@ METHOD MaxCol CLASS TPDFPRINT
    RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MaxRow CLASS TPDFPRINT
+METHOD MaxRow CLASS TPdfPrint
 
    LOCAL nRet
 
@@ -4532,7 +4540,7 @@ METHOD MaxRow CLASS TPDFPRINT
    RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TPDFPRINT
+METHOD InitX() CLASS TPdfPrint
 
    // These are the only paper types supported
    AAdd( ::aPaper, { DMPAPER_LETTER,      "LETTER"    } )
@@ -4556,7 +4564,7 @@ METHOD InitX() CLASS TPDFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX () CLASS TPDFPRINT
+METHOD BeginDocX () CLASS TPdfPrint
 
    ::cDocument := ParseName( ::Cargo, "pdf" )
    ::oPdf := TPDF():Init( ::cDocument )
@@ -4564,7 +4572,7 @@ METHOD BeginDocX () CLASS TPDFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TPDFPRINT
+METHOD EndDocX() CLASS TPdfPrint
 
    LOCAL lOk := .T.
 
@@ -4572,7 +4580,7 @@ METHOD EndDocX() CLASS TPDFPRINT
    IF ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 40 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 40 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ENDIF
@@ -4581,14 +4589,14 @@ METHOD EndDocX() CLASS TPDFPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS TPDFPRINT
+METHOD BeginPageX() CLASS TPdfPrint
 
    ::oPdf:NewPage( ::cPageSize, ::cPageOrient, , ::cFontName, ::nFontType, ::nFontSize )
 
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPDFPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TPdfPrint
 
    LOCAL nType, cColor, cRealText, nSpaces
 
@@ -4659,7 +4667,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPDFPRINT
+METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPdfPrint
 
    LOCAL cColor
 
@@ -4674,7 +4682,7 @@ METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPDFPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPDFPRINT
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPdfPrint
 
    LOCAL nVDispl := 0.980
    LOCAL nHDispl := 1.300
@@ -4707,7 +4715,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPDF
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPDFPRINT
+METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPdfPrint
 
    LOCAL ctColor
 
@@ -4729,7 +4737,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPD
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPDFPRINT
+METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPdfPrint
 
    LOCAL ctColor, crColor
 
@@ -4755,7 +4763,7 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPDFPRINT
+METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPdfPrint
 
    // We can't have a rounded rectangle so we make a rectangular one
    ::PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor )
@@ -4763,14 +4771,14 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS TPDFPRINT
+METHOD ReleaseX() CLASS TPdfPrint
 
    ::oPdf := NIL
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPDFPRINT
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPdfPrint
 
    LOCAL nPos
 
@@ -4808,7 +4816,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-CLASS TCALCPRINT FROM TPRINTBASE
+CLASS TCalcPrint FROM TPrintBase
 // CALC contributed by Jose Miguel, adapted by CVC
 
    DATA oCell                     INIT NIL                   READONLY
@@ -4842,7 +4850,7 @@ CLASS TCALCPRINT FROM TPRINTBASE
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TCALCPRINT
+METHOD InitX() CLASS TCalcPrint
 
    LOCAL bErrorBlock := ErrorBlock( { | x | Break( x ) } )
 
@@ -4863,7 +4871,7 @@ METHOD InitX() CLASS TCALCPRINT
       ::lPrError := .F.
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 44 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 44 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       ::lPrError := .T.
    END SEQUENCE
@@ -4872,7 +4880,7 @@ METHOD InitX() CLASS TCALCPRINT
    RETURN ( ! ::lPrError )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ReleaseX() CLASS TCALCPRINT
+METHOD ReleaseX() CLASS TCalcPrint
 
    LOCAL bErrorBlock := ErrorBlock( { | x | Break( x ) } )
 
@@ -4886,7 +4894,7 @@ METHOD ReleaseX() CLASS TCALCPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX() CLASS TCALCPRINT
+METHOD BeginDocX() CLASS TCalcPrint
 
    LOCAL oPropertyValue, oSheet
 
@@ -4907,7 +4915,7 @@ METHOD BeginDocX() CLASS TCALCPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginPageX() CLASS TCALCPRINT
+METHOD BeginPageX() CLASS TCalcPrint
 
    ::oSheet := ::oDocument:GetCurrentController:GetActiveSheet()
    IF ::lSeparateSheets
@@ -4919,7 +4927,7 @@ METHOD BeginPageX() CLASS TCALCPRINT
    RETURN ::cPageName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndDocX() CLASS TCALCPRINT
+METHOD EndDocX() CLASS TCalcPrint
 
    LOCAL bErrorBlock, lOk := .T.
 
@@ -4941,7 +4949,7 @@ METHOD EndDocX() CLASS TCALCPRINT
       hb_idleSleep( 1 )
    RECOVER
       IF ::lShowErrors
-         MsgStop( _OOHG_Messages( 12, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 45 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       lOk := .F.
    END SEQUENCE
@@ -4953,7 +4961,7 @@ METHOD EndDocX() CLASS TCALCPRINT
    IF lOk .AND. ::ImPreview
       IF ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler " + ::cDocument, , 1) <= 32
          IF ::lShowErrors
-            MsgStop( _OOHG_Messages( 12, 41 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( 12, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 41 ) + Chr( 13 ) + Chr( 13 ) + _OOHG_Messages( MT_PRINTER, 36 ) + Chr( 13 ) + ::cDocument, _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          lOk := .F.
       ENDIF
@@ -4962,7 +4970,7 @@ METHOD EndDocX() CLASS TCALCPRINT
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPageX() CLASS TCALCPRINT
+METHOD EndPageX() CLASS TCalcPrint
 
    LOCAL nLin, i, nCol, aColor, oPage, oGraph, aAnchor := {}, cName
 
@@ -5064,7 +5072,7 @@ METHOD EndPageX() CLASS TCALCPRINT
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCALCPRINT
+METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, cText, lItalic, nAngle, lUnder, lStrike, nWidth ) CLASS TCalcPrint
 
    HB_SYMBOL_UNUSED( uData )
    HB_SYMBOL_UNUSED( nLen )
@@ -5081,7 +5089,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TCALCPRINT
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TCalcPrint
 
    LOCAL cURL, oGraph, oPage, cName, cFullName, oSize, aImgSize, oTable, oShape, nW, nH, lUseResol
 
@@ -5224,7 +5232,7 @@ FUNCTION _Codabar( cCode, lShowErrors )
       NEXT
    ELSE
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
    ENDIF
 
@@ -5348,7 +5356,7 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5357,7 +5365,7 @@ FUNCTION _Code128( cCode, cMode, lShowErrors )
          cMode := Upper( cMode )
       ELSE
          IF lShowErrors
-            MsgStop( _OOHG_Messages( 12, 43 ), _OOHG_Messages( 12, 12 ) )
+            MsgStop( _OOHG_Messages( MT_PRINTER, 43 ), _OOHG_Messages( MT_PRINTER, 12 ) )
          ENDIF
          RETURN ""
       ENDIF
@@ -5493,7 +5501,7 @@ FUNCTION _Code3_9( cCode, lCheck, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5532,7 +5540,7 @@ FUNCTION _Ean13( cCode, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5694,7 +5702,7 @@ FUNCTION _Sup5( cCode, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5741,7 +5749,7 @@ FUNCTION _Int25( cCode, lMode, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5799,7 +5807,7 @@ FUNCTION _Mat25( cCode, lCheck, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5843,7 +5851,7 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
    ASSIGN lShowErrors VALUE lShowErrors TYPE "L" DEFAULT .T.
    IF ValType( cCode ) != 'C'
       IF lShowErrors
-         MsgStop( _OOHG_Messages( 12, 42 ), _OOHG_Messages( 12, 12 ) )
+         MsgStop( _OOHG_Messages( MT_PRINTER, 42 ), _OOHG_Messages( MT_PRINTER, 12 ) )
       ENDIF
       RETURN ""
    ENDIF
@@ -5878,17 +5886,11 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ArrayIsValidColor( aColor )
 
-   LOCAL uRet
-
-   IF HB_ISARRAY( aColor )
-      uRet := HB_ISNUMERIC( aColor[1] ) .AND. aColor[1] >= 0 .AND. aColor[1] <= 255 .AND. ;
+   RETURN HB_ISARRAY( aColor ) .AND. ;
+          HB_ISNUMERIC( aColor[1] ) .AND. aColor[1] >= 0 .AND. aColor[1] <= 255 .AND. ;
               HB_ISNUMERIC( aColor[2] ) .AND. aColor[2] >= 0 .AND. aColor[2] <= 255 .AND. ;
               HB_ISNUMERIC( aColor[3] ) .AND. aColor[3] >= 0 .AND. aColor[3] <= 255
-   ELSE
-      uRet := .F.
-   ENDIF
 
-   RETURN uRet
 
 
 #pragma BEGINDUMP
@@ -5930,7 +5932,7 @@ FUNCTION ArrayIsValidColor( aColor )
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETPRINTERSINFO )
+HB_FUNC( GETPRINTERSINFO )          /* FUNCTION GetPrintersInfo() -> cBuffer */
 {
    DWORD dwSize = 0;
    DWORD dwPrinters = 0;
@@ -5990,7 +5992,7 @@ HB_FUNC( GETPRINTERSINFO )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( PIXELSPERINCHX )
+HB_FUNC( PIXELSPERINCHX )          /* FUNCTION PixelsPerInchX() -> nPPI */
 {
    HDC hDC;
    int iDPI;
@@ -6008,7 +6010,7 @@ HB_FUNC( PIXELSPERINCHX )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( PIXELSPERINCHY )
+HB_FUNC( PIXELSPERINCHY )          /* FUNCTION PixelsPerInchY() -> nPPI */
 {
    HDC hDC;
    int iDPI;
