@@ -329,7 +329,7 @@ MEMVAR HBPRN
       [ BACKGROUND <color> ] ;
    => ;
       hbprn:DrawImagelist( <cimglist>, <nicon>, <row>, <col>, <row2>, <col2>, ;
-            _ILD_MASK, <color> )
+            ILD_MASK, <color> )
 
 #xcommand DEFINE BRUSH <cbrush> ;
       [ STYLE <style> ] ;
@@ -828,7 +828,9 @@ POLYFILL() MODES
 ---------------------------------------------------------------------------*/
 
 #define POLYFILL_ALTERNATE                    1
+#define ALTERNATE                             1
 #define POLYFILL_WINDING                      2
+#define WINDING                               2
 #define POLYFILL_LAST                         2
 
 /*---------------------------------------------------------------------------
