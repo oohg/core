@@ -1826,3 +1826,11 @@ HB_FUNC( FREELIBRARIES )
    _UxTheme_DeInit();
    InitDeinitGdiPlus( FALSE );
 }
+
+HB_FUNC( GETTASKBARHEIGHT )
+{
+   RECT rect;
+
+   GetWindowRect( FindWindow( "Shell_TrayWnd", NULL ), &rect );
+   hb_retni( ( INT ) rect.bottom - rect.top );
+}
