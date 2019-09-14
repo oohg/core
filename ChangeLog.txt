@@ -12,6 +12,34 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-13 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     * Some format.
+     ! RTE (access violation) at function InvertRect.
+     * Now only constructor method returns Self, others that
+       previously return Self now return NIL. INCOMPATIBLE
+     * Function RR_DrawPicture now returns .T./.F. upon
+       success/failure.
+     ! Resource leak at function RR_GetPixelColor.
+
+2019-09-13 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     * Some format and comments.
+     * Table parameter of function _OOHG_Messages replaced by
+       its corresponding define for readability.
+     * Some function calls were replaced by the corresponding
+       pseudofunctions for readability.
+     + Support for IMAGESIZE to THBPrinter:PrintImageX.
+
+2019-09-13 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Function GetTaskBarHeight.
+
+2019-09-13 17:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+     ! Missing ALTERNATE and WINDING defines.
+     ! Wrong constant at DRAW IMAGELIST command.
+
 2019-09-12 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_internal.prg
      ! ON CLICK event is not working.
