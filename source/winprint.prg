@@ -1507,6 +1507,28 @@ METHOD Picture( row, col, torow, tocol, cpicture, extrow, extcol, lImageSize ) C
    LOCAL lp1 := ::Convert( { row, col } ), lp2, lp3
 
    IF torow == NIL
+      torow := ::MaxRow   // height
+   ENDIF
+   IF tocol == NIL
+      tocol := ::MaxCol   // width
+   ENDIF
+   lp2 := ::Convert( { torow, tocol }, 1 )
+   IF extrow == NIL
+      extrow := 0   // height of the 'extension': to replicate the image
+   ENDIF
+   IF extcol == NIL
+      extcol := 0   // width of the 'extension': to replicate the image
+   ENDIF
+   lp3 := ::Convert( { extrow, extcol } )
+
+   RETURN RR_DrawPicture( cpicture, lp1, lp2, lp3, lImageSize, ::hData )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Bitmap( row, col, torow, tocol, hbitmap, extrow, extcol, lImageSize ) CLASS HBPrinter
+
+   LOCAL lp1 := ::Convert( { row, col } ), lp2, lp3
+
+   IF torow == NIL
       torow := ::MaxRow
    ENDIF
    IF tocol == NIL
@@ -1521,68 +1543,10 @@ METHOD Picture( row, col, torow, tocol, cpicture, extrow, extcol, lImageSize ) C
    ENDIF
    lp3 := ::Convert( { extrow, extcol } )
 
-   RETURN RR_DrawPicture( cpicture, lp1, lp2, lp3, lImageSize, ::hData )
+   RETURN RR_DrawBitmap( hbitmap, lp1, lp2, lp3, lImageSize, ::hData )
 
-METHOD Bitmap( hBitmap, nRow, nCol, nToRow, nToCol, nMode, lClrOnClr, lTransparent, uColor, lImageSize ) CLASS HBPrinter
-
-   LOCAL aP1, aP2, nColor
-
-   IF ! HB_ISNUMERIC( nRow )
-      nRow := 0
-   ENDIF
-   IF ! HB_ISNUMERIC( nCol )
-      nCol := 0
-   ENDIF
-   aP1 := ::Convert( { nRow, nCol } )
-   IF ! HB_ISNUMERIC( nToRow )
-      nToRow := ::maxrow
-   ENDIF
-   IF ! HB_ISNUMERIC( nToCol )
-      nToCol := ::maxcol
-   ENDIF
-   aP2 := ::Convert( { nToRow, nToCol }, 1 )
-   DO CASE
-   CASE ! HB_ISNUMERIC( nMode )
-      nMode := 0
-   CASE nMode == 0
-      // SCALE
-   CASE nMode == 1
-      // STRETCH
-   CASE nMode == 3
-      // COPY
-   OTHERWISE
-      nMode := 0
-   ENDCASE
-   IF ! HB_ISLOGICAL( lClrOnClr )
-      lClrOnClr := .F.
-   ENDIF
-   IF ! HB_ISLOGICAL( lTransparent )
-      lTransparent := .F.
-   ENDIF
-   IF HB_ISNUMERIC( uColor )
-      nColor := uColor
-   ELSEIF ArrayIsValidColor( uColor )
-      nColor := ArrayRGB_TO_COLORREF( uColor )
-   ELSE
-      nColor := RR_GETPIXELCOLOR( hBitmap, 0, 0 )
-   ENDIF
-   IF ! HB_ISLOGICAL( lImageSize )
-      lImageSize := .F.
-   ENDIF
-   IF lImageSize
-      nMode := 3
-   ENDIF
-
-   RETURN RR_DRAWBITMAP( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData, lImageSize  )
-
-STATIC FUNCTION ArrayIsValidColor( aColor )
-
-   RETURN HB_ISARRAY( aColor ) .AND. ;
-          HB_ISNUMERIC( aColor[1] ) .AND. aColor[1] >= 0 .AND. aColor[1] <= 255 .AND. ;
-          HB_ISNUMERIC( aColor[2] ) .AND. aColor[2] >= 0 .AND. aColor[2] <= 255 .AND. ;
-          HB_ISNUMERIC( aColor[3] ) .AND. aColor[3] >= 0 .AND. aColor[3] <= 255
-
-FUNCTION RR_STR2FILE( ctxt, cfile )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION RR_Str2File( ctxt, cfile )
 
    LOCAL hand, lrec
 
@@ -3994,6 +3958,7 @@ HB_FUNC( RR_DRAWPICTURE )          /* RR_DrawPicture( cpicture, lp1, lp2, lp3, l
    INT lw, lh;
    BOOL bImageSize = hb_parl( 5 );
    LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+   BOOL bRet = TRUE;
 
    if( ! hb_parclen( 1 ) )
    {
@@ -4059,8 +4024,7 @@ HB_FUNC( RR_DRAWPICTURE )          /* RR_DrawPicture( cpicture, lp1, lp2, lp3, l
          SetRect( &lrect, x, y, dc + x, dr +y );
          if( ipic->lpVtbl->Render( ipic, lpData->hDC, x, y, dc, dr, 0, lheight, lwidth, -lheight, &lrect ) != S_OK )
          {
-            hb_retl( FALSE );
-            return;
+            bRet = FALSE;
          }
          y += dr;
       }
@@ -4070,7 +4034,7 @@ HB_FUNC( RR_DRAWPICTURE )          /* RR_DrawPicture( cpicture, lp1, lp2, lp3, l
    ipic->lpVtbl->Release( ipic );
    SelectClipRgn( lpData->hDC, lpData->hrgn );
    DeleteObject( hrgn1 );
-   hb_retl( TRUE );
+   hb_retl( bRet );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -4711,83 +4675,107 @@ HB_FUNC( RR_GETPIXELCOLOR )          /* FUNCTION _OOHG_GetPixelColor( hBitmap, r
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWBITMAP )    // ( hBitmap, aP1, aP2, nMode, lClrOnClr, lTransparent, nColor, ::hData, lImageSize  )
+HB_FUNC( RR_DRAWBITMAP )          /* FUNCTION RR_DrawBitMap( hBitmap, lp1, lp2, lp3, lImageSize, hData ) -> lSuccess */
 {
-   HBITMAP hBitmap = (HBITMAP) HWNDparam( 1 );
-   INT rF = HB_PARNI( 2, 1 );
-   INT cF = HB_PARNI( 2, 2 );
-   INT rT = HB_PARNI( 3, 1 );
-   INT cT = HB_PARNI( 3, 2 );
-   INT Mode = hb_parni( 4 );
-   BOOL ClrOnClr = hb_parl( 5 );
-   BOOL Transparent = hb_parl( 6 );
-   COLORREF color_transp = (COLORREF) hb_parnl( 7 );
-   LPHBPRINTERDATA lpData = (HBPRINTERDATA *) HB_PARNL( 8 );
-   BOOL ImgSize = hb_parl( 9 );
-   HDC memDC;
-   HBITMAP hOld;
-   BITMAP bm;
-   POINT Point;
-   INT Width;
-   INT Height;
+   HBITMAP hBitmap = ( HBITMAP ) HWNDparam( 1 );
+   INT r = HB_PARNI( 2, 1 );
+   INT c = HB_PARNI( 2, 2 );
+   INT dr = HB_PARNI( 3, 1 );
+   INT dc = HB_PARNI( 3, 2 );
+   INT tor = HB_PARNI( 4, 1 );
+   INT toc = HB_PARNI( 4, 2 );
+   BOOL bImageSize = hb_parl( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+   INT x, y, xe, ye;
+   LONG lwidth = 0;
+   LONG lheight = 0;
+   RECT lrect;
+   HRGN hrgn1;
+   POINT lpp;
+   INT lw, lh;
+   PICTDESC picd;
+   IPicture * iPicture;
+   IPicture ** iPictureRef = &iPicture;
+   BOOL bRet = TRUE;
 
-   memset( &bm, 0, sizeof( bm ) );
-   GetObject( hBitmap, sizeof( bm ), &bm );
-
-   if( ImgSize )
+   if( ! hBitmap )
    {
-      Width = bm.bmWidth;
-      Height = bm.bmHeight;
+      hb_retl( FALSE );
+      return;
+   }
+   picd.cbSizeofstruct = sizeof( PICTDESC );
+   picd.picType = PICTYPE_BITMAP;
+   picd.bmp.hbitmap = hBitmap;
+   if( OleCreatePictureIndirect( &picd, &IID_IPicture, FALSE, ( LPVOID * ) iPictureRef ) != S_OK )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+   iPicture->lpVtbl->get_Width( iPicture, &lwidth );
+   iPicture->lpVtbl->get_Height( iPicture, &lheight );
+   lw = MulDiv( lwidth, lpData->devcaps[ 5 ], 2540 );
+   lh = MulDiv( lheight, lpData->devcaps[ 4 ], 2540 );
+
+   if( dc == 0 )
+   {
+      dc = ( INT ) ( ( FLOAT ) dr * lw / lh );
+   }
+   if( dr == 0 )
+   {
+      dr = ( INT ) ( ( FLOAT ) dc * lh / lw );
+   }
+   if( bImageSize )
+   {
+      dr = lh;
+      dc = lw;
+   }
+   if( tor <= 0 )
+   {
+      tor = dr;
+   }
+   if( toc <= 0 )
+   {
+      toc = dc;
+   }
+   if( bImageSize )
+   {
+      tor = lh;
+      toc = lw;
+   }
+   x = c;
+   y = r;
+   xe = c + toc - 1;
+   ye = r + tor - 1;
+
+   GetViewportOrgEx( lpData->hDC, &lpp );
+   hrgn1 = CreateRectRgn( c + lpp.x, r + lpp.y, xe + lpp.x, ye + lpp.y );
+   if( lpData->hrgn == NULL )
+   {
+      SelectClipRgn( lpData->hDC, hrgn1 );
    }
    else
    {
-      Width = rT - rF;
-      Height = cT - cF;
+      ExtSelectClipRgn( lpData->hDC, hrgn1, RGN_AND );
    }
-
-   memDC = CreateCompatibleDC( lpData->hDC );
-   hOld = SelectObject( memDC, hBitmap );
-
-   switch( Mode )
+   while( x < xe )
    {
-      case 0:   // SCALE
-         if( (INT) ( bm.bmWidth * Height / bm.bmHeight ) <= Width )
-            Width = (INT) ( bm.bmWidth * Height / bm.bmHeight );
-         else
-            Height = (INT) ( bm.bmHeight * Width / bm.bmWidth );
-         break;
-
-      case 1:   // STRETCH
-          break;
-
-      case 3:   /// COPY
-          Width = bm.bmWidth = min( Width,  bm.bmWidth );
-          Height = bm.bmHeight = min( Height, bm.bmHeight );
-          break;
+      while( y < ye )
+      {
+         SetRect( &lrect, x, y, dc + x, dr + y );
+         if( iPicture->lpVtbl->Render( iPicture, lpData->hDC, x, y, dc, dr, 0, lheight, lwidth, -lheight, &lrect ) != S_OK )
+         {
+            bRet = FALSE;
+         }
+         y += dr;
+}
+      y = r;
+      x += dc;
    }
 
-   GetBrushOrgEx( lpData->hDC, &Point );
-   if( ClrOnClr )
-   {
-      SetStretchBltMode( lpData->hDC, COLORONCOLOR );
-   }
-   else
-   {
-      SetStretchBltMode( lpData->hDC, HALFTONE );
-   }
-   SetBrushOrgEx( lpData->hDC, Point.x, Point.y, NULL );
-
-   if( Transparent )
-   {
-      TransparentBlt( lpData->hDC, cF, rF, Width, Height, memDC, 0, 0, bm.bmWidth, bm.bmHeight, color_transp );
-   }
-   else
-   {
-      StretchBlt( lpData->hDC, cF, rF, Width, Height, memDC, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY );
-   }
-
-   SelectObject( memDC, hOld );
-   DeleteDC( memDC );
+   iPicture->lpVtbl->Release( iPicture );
+   SelectClipRgn( lpData->hDC, lpData->hrgn );
+   DeleteObject( hrgn1 );
+   hb_retl( bRet );
 }
 
 #pragma ENDDUMP
