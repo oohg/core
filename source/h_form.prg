@@ -2702,7 +2702,7 @@ PROCEDURE _OOHG_Init_C_Vars()
 
 /*
  * This procedure initializes C static variables that point to the arrays.
- * These pointers will facilitate the access from C-level functions to
+ * These pointers facilitate the access from C-level functions to
  * objects defined at PRG-level.
  *
  * DO NOT CALL this procedure directly !!!!
