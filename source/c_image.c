@@ -374,6 +374,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 {
    HANDLE hImage;
    HBRUSH hBrush;
+   HINSTANCE hinstance = GetModuleHandle( NULL );
 
    // Validate cImage parameter
    if( ! cImage || ! *cImage )
@@ -393,18 +394,18 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
    }
 
    // Try to load BITMAP from EXE
-   hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
+   hImage = LoadImage( hinstance, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
    if( ! hImage )
    {
       // Try to load BITMAP from FILE
       hImage = LoadImage( NULL, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
-  }
+   }
    if( ! hImage )
    {
       if( bIgnoreBkClr )
       {
          // Try to load ICON from EXE
-         hImage = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+         hImage = LoadImage( hinstance, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
          if( ! hImage )
          {
             // Try to load ICON from FILE
@@ -416,7 +417,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
          HICON hIcon;
 
          // Try to load ICON from EXE
-         hIcon = LoadImage( GetModuleHandle( NULL ), cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+         hIcon = LoadImage( hinstance, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
          if( ! hIcon )
          {
             // Try to load ICON from FILE
@@ -498,48 +499,48 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       LPVOID lpVoid;
       DWORD nSize;
 
-      hSource = FindResource( GetModuleHandle( NULL ), cImage, "BMP" );
+      hSource = FindResource( hinstance, cImage, "BMP" );
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "BITMAP" );
+         hSource = FindResource( hinstance, cImage, "BITMAP" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "GIF" );
+         hSource = FindResource( hinstance, cImage, "GIF" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "JPG" );
+         hSource = FindResource( hinstance, cImage, "JPG" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "JPEG" );
+         hSource = FindResource( hinstance, cImage, "JPEG" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "ICO" );
+         hSource = FindResource( hinstance, cImage, "ICO" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "ICON" );
+         hSource = FindResource( hinstance, cImage, "ICON" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "PNG" );
+         hSource = FindResource( hinstance, cImage, "PNG" );
       }
       if( ! hSource )
       {
-         hSource = FindResource( GetModuleHandle( NULL ), cImage, "TIFF" );
+         hSource = FindResource( hinstance, cImage, "TIFF" );
       }
       if( hSource )
       {
-         hGlobalres = LoadResource( GetModuleHandle( NULL ), hSource );
+         hGlobalres = LoadResource( hinstance, hSource );
          if( hGlobalres )
          {
             lpVoid = LockResource( hGlobalres );
             if( lpVoid )
             {
-               nSize = SizeofResource( GetModuleHandle( NULL ), hSource );
+               nSize = SizeofResource( hinstance, hSource );
                hGlobal = GlobalAlloc( GPTR, nSize );
                if( hGlobal )
                {
