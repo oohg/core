@@ -72,7 +72,6 @@
 #include "winprint.ch"
 
 MEMVAR _OOHG_PrintLibrary
-MEMVAR _OOHG_PRINTER_DocName
 MEMVAR _HMG_PRINTER_aPrinterProperties
 MEMVAR _HMG_PRINTER_Collate
 MEMVAR _HMG_PRINTER_Copies
@@ -955,16 +954,30 @@ METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTr
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize ) CLASS TPRINTBASE
+METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLASS TPrintBase
 
    IF ! ValidHandler( hBitmap )
       RETURN .F.
    ENDIF
 
-   ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
-   ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
-   ASSIGN nLinF  VALUE nLinF  TYPE "N" DEFAULT 4
-   ASSIGN nColF  VALUE nColF  TYPE "N" DEFAULT 4
+   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1
+   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1
+   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4
+   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4
+
+   IF ! HB_ISARRAY( aExt )
+      aExt := { nLinF, nColF }
+   ELSE
+      IF Len( aExt ) < 2
+         aExt := ASize( aExt, 2 )
+      ENDIF
+      IF ! HB_ISNUMERIC( aExt[ 1 ] ) .OR. aExt[ 1 ] < nLinF
+         aExt[ 1 ] := nLinF
+      ENDIF
+      IF ! HB_ISNUMERIC( aExt[ 2 ] ) .OR. aExt[ 2 ] < nColF
+         aExt[ 2 ] := nColF
+      ENDIF
+   ENDIF
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -982,12 +995,12 @@ METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransp
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintBitmapX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, hBitmap, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize )
+   ::PrintBitmapX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, hBitmap, aResol, aSize, aExt )
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPrintBase
+METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TPrintBase
 
    ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
    ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
@@ -1011,7 +1024,7 @@ METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPrin
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintImageX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, cImage, aResol, aSize )
+   ::PrintImageX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, cImage, aResol, aSize, aExt )
 
    RETURN .T.
 
@@ -1724,15 +1737,28 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TMiniPrint
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TMiniPrint
 
    HB_SYMBOL_UNUSED( aResol )
-   HB_SYMBOL_UNUSED( aSize )
+   HB_SYMBOL_UNUSED( aExt )
 
-   IF ::cUnits == "MM"
-      @ nLin, nCol PRINT IMAGE cImage WIDTH ( nColF - nCol ) HEIGHT ( nLinF - nLin ) STRETCH
+   ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
+
+   IF aSize
+      IF ::cUnits == "MM"
+         @ nLin, nCol PRINT IMAGE cImage IMAGESIZE
+      ELSE
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT IMAGE cImage IMAGESIZE
+      ENDIF
    ELSE
-      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT IMAGE cImage WIDTH ( ( nColF - nCol - 1 ) * ::nmHor + ::nhFij ) HEIGHT ( ( nLinF + 0.5 - nLin ) * ::nmVer + ::nvFij ) STRETCH
+      IF ::cUnits == "MM"
+         @ nLin, nCol PRINT IMAGE cImage WIDTH ( nColF - nCol ) HEIGHT ( nLinF - nLin ) STRETCH
+      ELSE
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT IMAGE cImage ;
+            WIDTH ( ( nColF - nCol - 1 ) * ::nmHor + ::nhFij ) ;
+            HEIGHT ( ( nLinF + 0.5 - nLin ) * ::nmVer + ::nvFij ) ;
+            STRETCH
+      ENDIF
    ENDIF
 
    RETURN .T.
@@ -2402,33 +2428,65 @@ METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS THBPrinter
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTransparent, uColor, lImgSize ) CLASS THBPRINTER
+METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLASS THBPrinter
+
+   HB_SYMBOL_UNUSED( aResol )
+
+   // Coordinates of the rectangle for the first copy of the image.
+   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1   // Start row
+   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1   // Start col
+   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4   // End row
+   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4   // End col
+   ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
+
+   // Coordinates of the lower right corner of the extension rectangle.
+   // It will be filled with as many additional copies of the image as they fit.
+   ASSIGN aExt  VALUE aExt  TYPE "A" DEFAULT { nLinF, nColF }
 
    IF ::cUnits == "MM"
-      ::oHBPrn:Bitmap( hBitmap, nLin, nCol, nLinF, nColF, nMode, lClrOnClr, lTransparent, uColor, lImgSize )
+      IF aSize
+         @ nLin, nCol BITMAP hBitmap IMAGESIZE
+      ELSE
+         @ nLin, nCol BITMAP hBitmap SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND ( aExt[ 1 ] - nLinF ), ( aExt[ 2 ] - nColF )
+      ENDIF
    ELSE
-      ::oHBPrn:Bitmap( hBitmap, nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer + ::nvFij, nColF * ::nmHor + ::nhFij * 2, nMode, lClrOnClr, lTransparent, uColor, lImgSize )
+      IF aSize
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 BITMAP hBitmap IMAGESIZE
+      ELSE
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 BITMAP hBitmap ;
+            SIZE ( nLinF - nLin ) * ::nmVer, ( nColF - nCol ) * ::nmHor ;
+            EXTEND ( aExt[ 1 ] - nLinF ) * ::nmVer, ( aExt[ 2 ] - nColF ) * ::nmHor
+      ENDIF
    ENDIF
 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS THBPrinter
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS THBPrinter
 
    HB_SYMBOL_UNUSED( aResol )
 
+   ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
+
    IF ::cUnits == "MM"
-      IF HB_ISLOGICAL( aSize ) .AND. aSize
+      IF aSize
          @ nLin, nCol PICTURE cImage IMAGESIZE
-      ELSE
-      @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol )
+      ELSEIF aExt == NIL
+         @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol )
+      ELSE 
+         @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND aExt[ 1 ], aExt[ 2 ]
       ENDIF
    ELSE
-      IF HB_ISLOGICAL( aSize ) .AND. aSize
+      IF aSize
          @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage IMAGESIZE
+      ELSEIF aExt == NIL
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage ;
+            SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol ) * ::nmHor + ::nhFij * 2
       ELSE
-      @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol - 3 ) * ::nmHor + ::nhFij * 2
-   ENDIF
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage ;
+            SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol ) * ::nmHor + ::nhFij * 2 ;
+            EXTEND aExt[ 1 ], aExt[ 2 ]
+      ENDIF
    ENDIF
 
    RETURN .T.
@@ -3401,13 +3459,13 @@ METHOD ReleaseX() CLASS TExcelPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TExcelPrint
-
-   LOCAL cLin, cRange
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TExcelPrint
 
    HB_SYMBOL_UNUSED( nLinF )
+   HB_SYMBOL_UNUSED( nColF )
    HB_SYMBOL_UNUSED( aResol )
    HB_SYMBOL_UNUSED( aSize )
+   HB_SYMBOL_UNUSED( aExt )
 
    IF nLin < 1
       nLin := 1
@@ -3421,13 +3479,11 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TExc
       nCol := Round( nCol / ::nUnitsLin, 0 )
    ENDIF
    /*
-   TODO: Add support for images in the resource file (copy them to a temp file)
+   TODO: Add support for images in the resource file
+   TODO: Add support for image scaling (now is printed at imagesize)
    */
 
-   nColF := nLin
-   cLin := AllTrim( Str( nLin ) )
-   cRange := "A" + cLin
-   ::oHoja:Range( cRange ):Select()
+   ::oHoja:Range( "A" + AllTrim( Str( nLin ) ) ):Select()
    IF At( '\', cImage ) == 0
       cImage := GetCurrentFolder() + '\' + cImage
    ENDIF
@@ -4682,14 +4738,14 @@ METHOD PrintBarcodeX( nLin, nCol, nLinF, nColF, atColor ) CLASS TPdfPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPdfPrint
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TPdfPrint
 
    LOCAL nVDispl := 0.980
    LOCAL nHDispl := 1.300
    LOCAL nWidth, nHeight
 
    HB_SYMBOL_UNUSED( aResol )
-   HB_SYMBOL_UNUSED( aSize )
+   HB_SYMBOL_UNUSED( aExt )
 
    IF HB_ISSTRING( cImage )
       cImage := Upper( cImage )
@@ -4701,15 +4757,21 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TPdf
      RETURN .F.
    ENDIF
 
-   nHeight := nLinF - nLin   // when nHeight is zero, the image is printed at its real height and resolution
-   nWidth  := nColF - nCol   // when nWidth is zero, the image is printed at its real width and resolution
+   IF HB_ISLOGICAL( aSize ) .AND. aSize
+      nHeight := 0
+      nWidth  := 0
+   ELSE
+      nHeight := nLinF - nLin   // when nHeight is zero, the image is printed at its real height and resolution
+      nWidth  := nColF - nCol   // when nWidth is zero, the image is printed at its real width and resolution
+   ENDIF
 
    // TODO: Add support for images in the resource file (copy them to a temp file or use a hidden image control)
 
    IF ::cUnits == "MM"
       ::oPdf:Image( cImage, nLin, nCol, "M", nHeight, nWidth )
    ELSE
-      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", nHeight * ::nmVer * nVDispl + ::nvFij, nWidth * ::nmHor + ::nhFij * nHDispl )
+      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", ;
+         nHeight * ::nmVer * nVDispl + ::nvFij, nWidth * ::nmHor + ::nhFij * nHDispl )
    ENDIF
 
    RETURN .T.
@@ -5089,23 +5151,37 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TCalcPrint
+METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TCalcPrint
 
-   LOCAL cURL, oGraph, oPage, cName, cFullName, oSize, aImgSize, oTable, oShape, nW, nH, lUseResol
+   LOCAL cURL, oGraph, oPage, cName, cFullName, oSize, aImgSize, oTable, oShape, nW, nH, lUseResol, i
 
-   HB_SYMBOL_UNUSED( nColF )
-   HB_SYMBOL_UNUSED( nLinF )
+   HB_SYMBOL_UNUSED( aExt )
 
    IF nLin < 1
       nLin := 1
    ENDIF
+   IF nLinF < 1
+      nLinF := 1
+   ENDIF
+   IF nLinF < nLin
+      nLinF := nLin
+   ENDIF
    IF nCol < 1
       nCol := 1
    ENDIF
+   IF nColF < 1
+      nColF := 1
+   ENDIF
+   IF nColF < nCol
+      nColF := nCol
+   ENDIF
    nLin++
+   nLinF++
    IF ::nUnitsLin > 1
       nLin := Round( nLin / ::nUnitsLin, 0 )
       nCol := Round( nCol / ::nUnitsLin, 0 )
+      nLinF := Round( nLinF / ::nUnitsLin, 0 )
+      nColF := Round( nColF / ::nUnitsLin, 0 )
    ENDIF
 
    IF At( '\', cImage ) == 0
@@ -5131,6 +5207,22 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize ) CLASS TCal
             lUseResol := .T.
             nW := ::nHorzResol
             nH := ::nVertResol
+         ELSEIF HB_ISLOGICAL( aSize )
+            IF aSize
+               lUseResol := .T.
+               nW := ::nHorzResol
+               nH := ::nVertResol
+            ELSE
+               lUseResol := .F.
+               nW := 0
+               FOR i := nCol TO nColF
+                  nW += ::oSheet:Columns:GetByIndex( i - 1 ):Width
+               NEXT i
+               nH := 0
+               FOR i := nLin TO nLinF
+                  nH += ::oSheet:Rows:GetByIndex( i - 1 ):Height
+               NEXT i
+            ENDIF
          ELSEIF HB_ISARRAY( aSize )
             lUseResol := .F.
             nW := aSize[1]
