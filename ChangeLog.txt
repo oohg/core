@@ -13,6 +13,147 @@
  */
 
 2019-09-13 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+   * core\include\miniprint_dyns.hbx
+     * Updated.
+
+2019-09-17 20:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     - MEMVAR _OOHG_PRINTER_DocName.
+     * The parameters of Method PrintBitMap of class TPrintBase
+       and Method PrintBitMapX of class THBPrinter were modified
+       to follow the recent changes at HBPrinter.
+       INCOMPATIBLE
+       ; If you need to apply one of the older options please use
+       one of the OOHG drawing functions (e.g. _OOHG_DrawBitMap).
+     + Parameter aExt to Method PrintImage of class TPrintBase and
+       Methods PrintImageX of classes TMiniPrint and THBPrinter.
+       It allows to specify an extension rectangle in which the
+       image will be replicated. Defaults to no extension.
+     * Method PrintImage of class TPrintBase, Method PrintImageX
+       of class TMiniPrint and Method PrintImageX of class
+       THBPrinter will print the image at its full size if aSize
+       parameter is set to .T.
+       Defaults to .F.
+     * Method PrintImageX of class TMiniPrint now uses
+       PRINT IMAGE IMAGESIZE command.
+     * Method PrintImageX of class THBPrinter now uses
+       PICTURE IMAGESIZE command.
+     + Parameter aExt to Methods PrintImageX of classes
+       TExcelPrint, TPdfPrint and TCalcPrint.
+       It does nothing.
+     % Method PrintImageX of class TExcelPrint.
+     * Method PrintImageX of class TPdfPrint will print the image
+       at its full size if aSize parameter is set to .T.
+       Defaults to .F.
+     * Method PrintImageX of class TCalcPrint will print the image
+       at its full size if aResol parameter is set to NIL and
+       aSize parameter is set to .T., if aSize is set to .F then
+       the image size will be determine by the comined height and
+       width of the printing rectangle.
+     * Some comments.
+
+2019-09-17 20:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.ch
+     * The BITMAP commands were modified to follow the class's
+       philosophy.
+       INCOMPATIBLE.
+
+   * core\source\winprint.prg
+     * The parameters of Method Bitmap and Function RR_DrawBitmap
+       were modified to follow the class's philosophy.
+       INCOMPATIBLE.
+     - Function ArrayIsValidColor.
+     * Some comments.
+     ! Resource leak at function RR_DrawPicture.
+
+2019-09-17 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     - _HMG_PRINTER_* pseudofunctions.
+
+   * core\include\miniprint.ch
+     + PRINT IMAGE IMAGESIZE command.
+     + PRINT BITMAP commands.
+     * _OOHG_PRINTER_DocName replaced by _HMG_PRINTER_GetJobName().
+     * Some format.
+     ! PRINT FILL command had wrong clauses.
+     - Duplicated PRINT RECTANGLE command.
+     ! PRINT ARC command had wrong clausses.
+     ! PRINT PIE command had wrong clausses.
+
+   * core\source\miniprint.prg
+     * Some format and comments.
+     ! Function _HMG_PRINTER_H_Ellipse was calling the wrong
+       C-level function.
+     * Parameters nWidth and nHeigt of _HMG_PRINTER_C_IMAGE now
+       default to image's width and height when 0.
+     + Procedure _HMG_PRINTER_H_Bitmap to print a bitmap from
+       its handle.
+     * PROCEDURE _HMG_PRINTER_InitUserMessages now sets the
+       default job name.
+     + _HMG_PRINTER_UserMessages item to hold the error messages
+       thrown by _HMG_PRINTER_SetPrinterProperties().
+     * Function GetPrintableAreaWidth renamed as
+       _HMG_PRINTER_GetPrintableAreaWidth.
+     + Function GetPrintableAreaWidth. It calls
+       _HMG_PRINTER_GetPrintableAreaWidth. Note that is marked
+       as deprecated and it will be deleted at a future release.
+     * Function GetPrintableAreaHeight renamed as
+       _HMG_PRINTER_GetPrintableAreaHeight.
+     + Function GetPrintableAreaHeight. It calls
+       _HMG_PRINTER_GetPrintableAreaHeight. Note that is marked
+       as deprecated and it will be deleted at a future release.
+     * Function GetPrintableAreaHorizontalOffset renamed as
+       _HMG_PRINTER_GetPrintableAreaHorizontalOffset.
+     + Function GetPrintableAreaHorizontalOffset. It calls
+       _HMG_PRINTER_GetPrintableAreaHorizontalOffset. Note that is
+       marked as deprecated and it will be deleted at a future
+       release.
+     * Function GetPrintableAreaVerticalOffset renamed as
+       _HMG_PRINTER_GetPrintableAreaVerticalOffset. 
+     + Function GetPrintableAreaVerticalOffset. It calls
+       _HMG_PRINTER_GetPrintableAreaVerticalOffset. Note that is
+       marked as deprecated and it will be deleted at a future
+       release.
+     * Function GetPrinter renamed as _HMG_PRINTER_GetPrinter.
+     + Function GetPrinter. It calls _HMG_PRINTER_GetPrinter.
+       Note that is marked as deprecated and it will be deleted
+       at a future release.
+     * C-level function aPrinters renamed as
+       _HMG_PRINTER_C_aPrinters.
+     + Function aPrinters. It calls _HMG_PRINTER_aPrinters.
+       Note that is marked as deprecated and it will be deleted
+       at a future release.
+     + Function _HMG_PRINTER_aPrinters. It calls
+       _HMG_PRINTER_C_aPrinters.
+     + Function _HMG_PRINTER_GetJobName.
+       Returns _OOHG_PRINTER_DocName.
+     * Function _HMG_PRINTER_TextAlign now returns the previous
+       alignment.
+     + Function _HMG_PRINTER_SetPrinterProperties at PRG level.
+     + Static function _HMG_PRINTER_ErrMsg.
+     * Use hb_parclen() instead of strlen( hb_parc() ).
+     + Angle support at function _HMG_PRINTER_C_Multiline_Print.
+     * C-level function _HMG_PRINTER_SetPrinterProperties
+       renamed to _HMG_PRINTER_C_SetPrinterProperties.
+     ! Scale parameter setting is not working at function
+       _HMG_PRINTER_C_SetPrinterProperties.
+     * _HMG_PRINTER_C_SetPrinterProperties now returns all the
+       printer's properties.
+     + Additional image types to function _HMG_PRINTER_C_Image.
+     * Function _HMG_PRINTER_C_Image now return .T./.F. on
+       success/failure.
+     + Function _HMG_PRINTER_C_Bitmap.
+
+2019-09-17 16:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     * Comment.
+
+2019-09-17 16:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+     % Module handle usage.
+
+2019-09-13 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\winprint.prg
      * Some format.
      ! RTE (access violation) at function InvertRect.
@@ -558,19 +699,10 @@
        hBitmap      - a handle to the image. You can get the handle
                       from an Image control or from any of the
                       OOHG's functions that return an HBITMAP object.
-       nMode        - what to do if the bitmap's size is different
-                      from the canvas size: 0 for SCALE, 1 for
-                      STRETCH and 3 for COPY.
-       lClrOnClr    - bitmap stretching mode: .T. for COLORONCOLOR
-                      or .F. for HALFTONE.
-       lTranspBlt   - painting method: .T. for painting with
-                      TransparentBlt function and .F. for painting
-                      with StretchBlt and SRCCOPY parameter.
-       uColor       - color that will be treated as transparent by
-                      the TransparentBlt function: color number or
-                      RGE array.
        lImgSize     - image size: .T. means ignore nLinF, nColF and
                       print using image size, .F. means honor them.
+       nLinE, nColE - line and column of the bottom-right corner.
+xxx
    * core\source\winprint.prg
      ! ASSIGN sentences are not compiled when NO_GUI is defined.
      + Bitmap method of HBPRINTER class.
