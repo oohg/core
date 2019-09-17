@@ -12,7 +12,7 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2019-09-13 23:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-09-17 20:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
    * core\include\miniprint_dyns.hbx
      * Updated.
