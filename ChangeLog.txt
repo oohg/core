@@ -12,6 +12,10 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-18 19:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! Method PrintResource of class TPrintBase.
+
 2019-09-18 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_image.c
      + Parameter lColor to Function _OOHG_BitmapFromFile.
@@ -91,7 +95,13 @@
 
 2019-09-17 20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_pseudofunc.ch
-     - _HMG_PRINTER_* pseudofunctions.
+     - Pseudofunctions:
+          _HMG_PRINTER_GetPrintableAreaWidth,
+          _HMG_PRINTER_GetPrintableAreaHeight,
+          _HMG_PRINTER_GetPrintableAreaHorizontalOffset,
+          _HMG_PRINTER_GetPrintableAreaVerticalOffset,
+          _HMG_PRINTER_GetPrinter and
+          _HMG_PRINTER_aPrinters.
 
    * core\include\miniprint.ch
      + PRINT IMAGE IMAGESIZE command.
@@ -672,31 +682,8 @@
    * core\source\c_image.c
      * _OOHG_BITMAPFROMFILE function can now work without an object.
    * core\source\h_print.prg
-     + PrintResource method.
-     ; This method uses the same logic than the Picture method of
-       the TImage class.
-     ; Use oPrint:PrintResource( ... ) to print an image from the
-       resource file. Parameters:
-       nLin, nCol   - line and column of the upper-left corner.
-       nLinF, nColF - line and column of the bottom-right corner.
-       cResource    - a resource identifier.
-       lNoDIB       - See lNoDIBSection data of TImage class.
-       lNo3DC       - See lNo3DColors data of TImage class.
-       lNoTra       - See lNoTransparent data of TImage class.
-       lNoChk       - See lNoCheckDepth data of TImage class.
-       nMode        - what to do if the bitmap's size is different
-                      from the canvas size: 0 for SCALE, 1 for
-                      STRETCH and 3 for COPY.
-       lClrOnClr    - bitmap stretching mode: .T. for COLORONCOLOR
-                      or .F. for HALFTONE.
-       lTranspBlt   - painting method: .T. for painting with
-                      TransparentBlt function and .F. for painting
-                      with StretchBlt and SRCCOPY parameter.
-       uColor       - color that will be treated as transparent by
-                      the TransparentBlt function: color number or
-                      RGE array.
-       lImgSize     - image size: .T. means ignore nLinF, nColF and
-                      print using image size, .F. means honor them.
+     + Method PrintResource to class TPrintBase.
+       Use it to print an image from the resource file.
 
 2019-07-31 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.prg
@@ -712,19 +699,10 @@
      * Some format.
      * Copy method does not honor its parameter.
    * core\source\h_print.prg
-     + PrintBitmap and PrintBitmapX methods to TPRINTBASE class.
-     + PrintBitmapX method to THBPRINTER class.
-     ; Use oPrint:PrintBitmap( ... ) to print an image using it's
-       handle. Parameters:
-       nLin, nCol   - line and column of the upper-left corner.
-       nLinF, nColF - line and column of the bottom-right corner.
-       hBitmap      - a handle to the image. You can get the handle
-                      from an Image control or from any of the
-                      OOHG's functions that return an HBITMAP object.
-       lImgSize     - image size: .T. means ignore nLinF, nColF and
-                      print using image size, .F. means honor them.
-       nLinE, nColE - line and column of the bottom-right corner.
-xxx
+     + Methods PrintBitmap and PrintBitmapX to class TPRINTBASE .
+     + Method PrintBitmapX to class THBPRINTER.
+     ; Use oPrint:PrintBitmap( ... ) to print an image using
+       it's handle.
    * core\source\winprint.prg
      ! ASSIGN sentences are not compiled when NO_GUI is defined.
      + Bitmap method of HBPRINTER class.
