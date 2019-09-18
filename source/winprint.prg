@@ -144,6 +144,7 @@ CLASS HBPrinter
    DATA oWinPrOpt               INIT NIL
    DATA oWinPagePreview         INIT NIL
    DATA oWinThumbs              INIT NIL
+   DATA NotifyOnSave            INIT .F.
    DATA NoButtonSave            INIT .F.
    DATA NoButtonOptions         INIT .F.
    DATA BeforePrint             INIT {|| .T. }
@@ -408,7 +409,7 @@ METHOD SaveMetaFiles( number ) CLASS HBPrinter
    IF ::PreviewMode
       IF ::InMemory
          IF number == NIL
-            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str(xi ) ) + ".emf" ) } )
+            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str( xi ) ) + ".emf" ) } )
          ELSE
             RR_Str2File( ::MetaFiles[ number, 1 ], "page" + AllTrim( Str( number ) ) + ".emf" )
          ENDIF
@@ -421,6 +422,9 @@ METHOD SaveMetaFiles( number ) CLASS HBPrinter
                COPY File ( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( n, 4 ) ) + ".emf" )
             END
          ENDIF
+      ENDIF
+      IF ::NotifyOnSave
+         MsgInfo( ::aOpisy[ 32 ], "" )
       ENDIF
    ENDIF
 
@@ -1807,7 +1811,6 @@ METHOD PrevPrint( n1 ) CLASS HBPrinter
                   ELSE
                      RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
                   END
-
                   ::EndPage()
                ENDIF
             NEXT i
@@ -1834,38 +1837,6 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
-   ::aOpisy := { "Preview", ;
-      "&Cancel", ;
-      "&Print", ;
-      "&Save", ;
-      "&First", ;
-      "P&revious", ;
-      "&Next", ;
-      "&Last", ;
-      "Zoom In", ;
-      "Zoom Out", ;
-      "&Options", ;
-      "Go To Page:", ;
-      "Page preview ", ;
-      "Thumbnails preview", ;
-      "Page", ;
-      "Print only current page", ;
-      "Pages:", ;
-      "No more zoom !", ;
-      "Print options", ;
-      "Print from", ;
-      "to", ;
-      "Copies", ;
-      "Print Range", ;
-      "All from range", ;
-      "Odd only", ;
-      "Even only", ;
-      "All but odd first", ;
-      "All but even first", ;
-      "Printing ....", ;
-      "Waiting for paper change...", ;
-      "Press OK to continue!" }
-
    ::iLoscstron := Len( ::MetaFiles )
    ::nGroup := -1
    ::Page := 1
@@ -1883,38 +1854,6 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
    cLang := Upper( AllTrim( cLang ) )
 
    DO CASE
-   CASE cLang == "EN"
-      ::aOpisy := { "Preview", ;
-         "&Cancel", ;
-         "&Print", ;
-         "&Save", ;
-         "&First", ;
-         "P&revious", ;
-         "&Next", ;
-         "&Last", ;
-         "Zoom In", ;
-         "Zoom Out", ;
-         "&Options", ;
-         "Go to Page:", ;
-         "Page preview ", ;
-         "Thumbnails preview", ;
-         "Page", ;
-         "Print only actual page", ;
-         "Pages:", ;
-         "No more zoom !", ;
-         "Print options", ;
-         "Print from", ;
-         "to", ;
-         "Copies", ;
-         "Print Range", ;
-         "All from range", ;
-         "Odd only", ;
-         "Even only", ;
-         "All but odd first", ;
-         "All but even first", ;
-         "Printing ....", ;
-         "Waiting for paper change...", ;
-         "Press OK to continue." }
    CASE cLang == "ES"
       ::aOpisy := { "Vista Previa", ;
          "&Salir", ;
@@ -1944,9 +1883,10 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Solo pares", ;
          "Todo (impares primero)", ;
          "Todo (pares primero)", ;
-         "Imprimiendo ....", ;
+         "Imprimiendo...", ;
          "Esperando cambio de papel...", ;
-         "Haga clic en OK para continuar." }
+         "Haga clic en OK para continuar.", ;
+         "¡Listo!" }
    CASE cLang == "IT"
       ::aOpisy := { "Anteprima", ;
          "&Cancella", ;
@@ -1978,7 +1918,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Tutte iniziando pari", ;
          "Stampa in corso ....", ;
          "Attendere cambio carta...", ;
-         "Premere OK per continuare." }
+         "Premere OK per continuare.", ;
+         "Fatto !" }
    CASE cLang == "PLWIN"
       ::aOpisy := { "Podgl¹d", ;
          "&Rezygnuj", ;
@@ -2010,7 +1951,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Najpierw parzyste", ;
          "Drukowanie ....", ;
          "Czekam na zmiane papieru...", ;
-         "Nacisnij OK, aby kontynuowac." }
+         "Nacisnij OK, aby kontynuowac.", ;
+         "Gotowy !" }
    CASE cLang == "PT"
       ::aOpisy := { "Inspeção Prévia", ;
          "&Cancelar", ;
@@ -2042,7 +1984,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Todas Pares primero", ;
          "Imprimindo ....", ;
          "Esperando por papel...", ;
-         "Pressione OK para continuar." }
+         "Pressione OK para continuar.", ;
+         "Feito!" }
    CASE cLang == "DEWIN"
       ::aOpisy := { "Vorschau", ;
          "&Abbruch", ;
@@ -2074,7 +2017,8 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Alles gerade Seiten zuerst", ;
          "Druckt ....", ;
          "Bitte Papier nachlegen...", ;
-         "Drücken Sie OK, um fortzufahren." }
+         "Drücken Sie OK, um fortzufahren.", ;
+         "Getan!" }
    CASE cLang == 'FR'
       ::aOpisy := { "Prévisualisation", ;
          "&Abandonner", ;
@@ -2106,7 +2050,41 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Tout mais pair d'abord", ;
          "Impression ....", ;
          "Attente de changement de papier...", ;
-         "Appuyez sur OK pour continuer." }
+         "Appuyez sur OK pour continuer.", ;
+         "Terminé !" }
+   OTHERWISE   // default to "EN"
+      ::aOpisy := { "Preview", ;
+         "&Cancel", ;
+         "&Print", ;
+         "&Save", ;
+         "&First", ;
+         "P&revious", ;
+         "&Next", ;
+         "&Last", ;
+         "Zoom In", ;
+         "Zoom Out", ;
+         "&Options", ;
+         "Go To Page:", ;
+         "Page preview ", ;
+         "Thumbnails preview", ;
+         "Page", ;
+         "Print current page only", ;
+         "Pages:", ;
+         "No more zoom!", ;
+         "Print options", ;
+         "Print from", ;
+         "to", ;
+         "Copies", ;
+         "Print Range", ;
+         "All from range", ;
+         "Odd only", ;
+         "Even only", ;
+         "All but odd first", ;
+         "All but even first", ;
+         "Printing...", ;
+         "Waiting for paper change...", ;
+         "Press OK to continue.", ;
+         "Done!" }
    ENDCASE
 
    IF ::nWhatToPrint < 2
