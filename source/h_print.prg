@@ -913,11 +913,11 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTra, lNoChk, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize ) CLASS TPrintBase
+METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, aResol, aSize, aExt, lNoDIB, lNo3DC, lNoTra, lNoChk ) CLASS TPrintBase
 
    LOCAL nAttrib, aPictSize, lSet, hBitmap
 
-   // This is the same code used by the Picture method of TImage class
+   // This is the same code used by method Picture of class TImage.
    IF ValType( cResource ) $ "CM"
       ASSIGN lNoDIB VALUE lNoDIB TYPE "L" DEFAULT .F.
       ASSIGN lNo3DC VALUE lNo3DC TYPE "L" DEFAULT .F.
@@ -947,7 +947,7 @@ METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, lNoDIB, lNo3DC, lNoTr
       ENDIF
       hBitmap := _OOHG_BitmapFromFile( NIL, cResource, nAttrib, .F. )
 
-      ::PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, nMode, lClrOnClr, lTranspBlt, uColor, lImgSize )
+      ::PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt )
       DeleteObject( hBitmap )
    ENDIF
 
