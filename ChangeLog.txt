@@ -12,6 +12,15 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-18 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+     + Parameter lColor to Function _OOHG_BitmapFromFile.
+       It allows to specify a color as the backcolor.
+
+2019-09-18 18:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     + Method PrintBitmapX of class TMINIPRINT.
+
 2019-09-18 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\miniprint.prg
      ! Image from file printing is not working.
