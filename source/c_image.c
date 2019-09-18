@@ -582,7 +582,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf, cFile, iAttributes, lAutoSize, lIgnoreBkColor ) -> hBitmap */
+HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf, cFile, iAttributes, lAutoSize, lIgnoreBkColor, lColor ) -> hBitmap */
 {
    POCTRL oSelf;
    HWND hWnd;
@@ -598,13 +598,27 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf
          oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
          hWnd = oSelf->hWnd;
          bAutoSize = hb_parl( 4 );
-         lBackColor = oSelf->lBackColor;
+         if( hb_param( 6, HB_IT_NUMERIC ) )
+         {
+            lBackColor = hb_parnl( 6 );
+         }
+         else
+         {
+            lBackColor = oSelf->lBackColor;
+         }
       }
       else
       {
          hWnd = NULL;
          bAutoSize = FALSE;
-         lBackColor = -1;
+         if( hb_param( 6, HB_IT_NUMERIC ) )
+         {
+            lBackColor = hb_parnl( 6 );
+         }
+         else
+         {
+            lBackColor = -1;
+         }
       }
       if( bAutoSize )
       {
