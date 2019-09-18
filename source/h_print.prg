@@ -1193,6 +1193,7 @@ CLASS TMiniPrint FROM TPrintBase
    METHOD MaxCol
    METHOD MaxRow
    METHOD PrintBarcodeX
+   METHOD PrintBitmapX
    METHOD PrintDataX
    METHOD PrintImageX
    METHOD PrintLineX
@@ -1731,6 +1732,40 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
                ENDIF
             ENDIF
          ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN .T.
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLASS TMiniPrint
+
+   HB_SYMBOL_UNUSED( aResol )
+   HB_SYMBOL_UNUSED( aExt )
+
+   // Coordinates of the rectangle for the first copy of the image.
+   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1   // Start row
+   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1   // Start col
+   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4   // End row
+   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4   // End col
+   ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
+
+   // Coordinates of the lower right corner of the extension rectangle.
+   // It will be filled with as many additional copies of the image as they fit.
+   ASSIGN aExt  VALUE aExt  TYPE "A" DEFAULT { nLinF, nColF }
+
+   IF ::cUnits == "MM"
+      IF aSize
+         @ nLin, nCol PRINT BITMAP hBitmap IMAGESIZE
+      ELSE
+         @ nLin, nCol PRINT BITMAP hBitmap WIDTH ( nColF - nCol ) HEIGHT ( nLinF - nLin )
+      ENDIF
+   ELSE
+      IF aSize
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT BITMAP hBitmap IMAGESIZE
+      ELSE
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT BITMAP hBitmap ;
+            WIDTH ( nColF - nCol ) * ::nmHor HEIGHT ( nLinF - nLin ) * ::nmVer
       ENDIF
    ENDIF
 
