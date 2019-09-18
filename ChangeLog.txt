@@ -12,6 +12,19 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-18 18:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     ! Image from file printing is not working.
+     ! Image from hbitmap printing is not working.
+
+2019-09-18 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     + DATA NotifyOnSave to class HBPrinter. Defaults to .F.
+       When .T. a "Done!" message will be displayed after
+       saving the page to a file.
+     % Messages definition.
+     * "EN" is now the default language.
+
 2019-09-17 20:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
    * core\include\miniprint_dyns.hbx

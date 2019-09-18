@@ -3977,7 +3977,7 @@ HB_FUNC( _HMG_PRINTER_GETPRINTABLEAREALOGPIXELSY )          /* _HMG_PRINTER_GetP
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFile, nRow, nCol, nHeight, nWidth, lStretch ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFile, nRow, nCol, nHeight, nWidth, lStretch ) -> lSuccess */
 {
    HRGN hrgn;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
@@ -4119,20 +4119,20 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFil
       iPicture->lpVtbl->get_Width( iPicture, ( OLE_XSIZE_HIMETRIC * ) &lWidth );     // PIXELS_X = lWidth *  GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 2540
       iPicture->lpVtbl->get_Height( iPicture, ( OLE_YSIZE_HIMETRIC * ) &lHeight );   // PIXELS_Y = lHeight * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 2540
 
-      odr = hb_parni( 5 );   // Height
-      odc = hb_parni( 6 );   // Width
-
-      dc = ( odc * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 );
-      dr = ( odr * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 );
-
+      odr = hb_parni( 5 );
       if( odr == 0 )
       {
          odr = lHeight;
       }
+      odc = hb_parni( 6 );
+
       if( odc == 0 )
       {
          odc = lWidth;
       }
+
+      dc = ( odc * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 );
+      dr = ( odr * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 );
 
       if( ! hb_parl( 7 ) )             // Scale
       {
@@ -4164,7 +4164,7 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFil
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hBitmap, nRow, nCol, nHeight, nWidth, lStretch ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hBitmap, nRow, nCol, nHeight, nWidth, lStretch ) -> lSuccess */
 {
    HRGN hrgn;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
@@ -4202,20 +4202,20 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
    iPicture->lpVtbl->get_Width( iPicture, ( OLE_XSIZE_HIMETRIC * ) &lWidth );     // PIXELS_X = lWidth *  GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 2540
    iPicture->lpVtbl->get_Height( iPicture, ( OLE_YSIZE_HIMETRIC * ) &lHeight );   // PIXELS_Y = lHeight * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 2540
 
-   odr = hb_parni( 5 );   // Height
-   odc = hb_parni( 6 );   // Width
-
-   dc = ( odc * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 );
-   dr = ( odr * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 );
-
+   odr = hb_parni( 5 );
    if( odr == 0 )
    {
       odr = lHeight;
    }
+   odc = hb_parni( 6 );  
+
    if( odc == 0 )
    {
       odc = lWidth;
    }
+
+   dc = ( odc * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 );
+   dr = ( odr * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 );
 
    if( ! hb_parl( 7 ) )             // Scale
    {
