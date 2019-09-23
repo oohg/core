@@ -126,6 +126,7 @@ CLASS TWindow
    DATA lInternal                 INIT .T.
    DATA lProcMsgsOnVisible        INIT .T.
    DATA lRedraw                   INIT .T.
+   DATA lReleased                 INIT .F.
    DATA lReleasing                INIT .F.
    DATA lRtl                      INIT .F.
    DATA lVisible                  INIT .T.

@@ -198,6 +198,7 @@ CLASS TForm FROM TWindow
    METHOD Flash
    METHOD Activate
    METHOD Release
+   METHOD ReleaseAttached
    METHOD RefreshData
    METHOD Center()                BLOCK { | Self | C_Center( ::hWnd ) }
    METHOD Restore()               BLOCK { | Self | Restore( ::hWnd ) }
@@ -1145,40 +1146,10 @@ METHOD Events_Destroy() CLASS TForm
    ENDIF
    ::lDestroyed := .T.
 
-   // Avoid problems with detached references
-   ::OnRelease          := NIL
-   ::OnInit             := NIL
-   ::OnMove             := NIL
-   ::OnSize             := NIL
-   ::OnPaint            := NIL
-   ::OnScrollUp         := NIL
-   ::OnScrollDown       := NIL
-   ::OnScrollLeft       := NIL
-   ::OnScrollRight      := NIL
-   ::OnHScrollBox       := NIL
-   ::OnVScrollBox       := NIL
-   ::OnInteractiveClose := NIL
-   ::OnMaximize         := NIL
-   ::OnMinimize         := NIL
-   ::OnRestore          := NIL
-
-   ::ReleaseAttached()
-
-   // Any data must be destroyed... regardless FORM is active or not.
-   IF ! Empty( ::NotifyIcon )
-      ::NotifyIconObject:Release()
+   IF ! ::lReleased
+      ::ReleaseAttached()
+      ::lReleased := .T.
    ENDIF
-   IF ::oMenu != NIL
-      ::oMenu:Release()
-      ::oMenu := NIL
-   ENDIF
-   IF HB_ISOBJECT( ::oToolTip )
-      ::oToolTip:Release()
-   ENDIF
-   ::oToolTip := NIL
-   ::oWndClient := NIL
-
-   DeleteObject( ::hBackImage )
 
    // Update Form Index Variable
    IF ! Empty( ::Name )
@@ -1246,6 +1217,43 @@ METHOD Events_Destroy() CLASS TForm
     */
 
    RETURN NIL
+
+METHOD ReleaseAttached CLASS TForm
+
+   // Avoid problems with detached references
+   ::OnRelease          := NIL
+   ::OnInit             := NIL
+   ::OnMove             := NIL
+   ::OnSize             := NIL
+   ::OnPaint            := NIL
+   ::OnScrollUp         := NIL
+   ::OnScrollDown       := NIL
+   ::OnScrollLeft       := NIL
+   ::OnScrollRight      := NIL
+   ::OnHScrollBox       := NIL
+   ::OnVScrollBox       := NIL
+   ::OnInteractiveClose := NIL
+   ::OnMaximize         := NIL
+   ::OnMinimize         := NIL
+   ::OnRestore          := NIL
+
+   // Any data must be destroyed... regardless FORM is active or not.
+   IF ! Empty( ::NotifyIcon )
+      ::NotifyIconObject:Release()
+   ENDIF
+   IF ::oMenu != NIL
+      ::oMenu:Release()
+      ::oMenu := NIL
+   ENDIF
+   IF HB_ISOBJECT( ::oToolTip )
+      ::oToolTip:Release()
+   ENDIF
+   ::oToolTip := NIL
+   ::oWndClient := NIL
+
+   DeleteObject( ::hBackImage )
+
+   RETURN ::Super:ReleaseAttached()
 
 METHOD Events_VScroll( wParam ) CLASS TForm
 
@@ -1758,11 +1766,36 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
          ENDIF
          // Destroy other windows
          ReleaseAllWindows()
+         // Processing will never reach this point
       ELSE
          // Destroy window
          _ReleaseWindowList( { Self } )
          ::OnHideFocusManagement()
       ENDIF
+
+      DestroyWindow( ::hWnd )
+
+      RETURN 0
+
+      /*
+       * This function must return 0 after processing WM_CLOSE so the
+       * OS can do it's default processing. This processing ends with
+       * (a) posting a WM_DESTROY message to the queue (will be
+       * processed by this same function), immediately followed by
+       * (b) sending a WM_NCDESTROY message to the form's WindowProc,
+       * (there's no need to process it because all child control are
+       * already released).
+       */
+
+   case nMsg == WM_DESTROY
+
+      /*
+       * This will be executed for all windows except MAIN
+       * but only if ReleaseAllWindows() is not executed
+       */
+      ::Events_Destroy()
+
+      RETURN 0
 
    otherwise
 
@@ -2868,52 +2901,58 @@ FUNCTION _ReleaseWindowList( aWindows )
       FOR i := 1 TO nLen
          oWnd := aWindows[ i ]
 
-         oWnd:lReleasing := .T.
+         IF ! oWnd:lReleased
+            oWnd:lReleasing := .T.
 
-         IF oWnd:Active
-            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            IF oWnd:Active
+               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            ENDIF
+
+            // Disable form's doevent
+            oWnd:lDisableDoEvent := .T.
+
+            // Prepare all controls to be destroyed
+            oWnd:PreRelease()
+
+            // Release child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
+
+            HideWindow( oWnd:hWnd )
+
+            oWnd:ReleaseAttached()
+
+            oWnd:lReleased := .T.
          ENDIF
-
-         // Disable form's doevent
-         oWnd:lDisableDoEvent := .T.
-
-         // Prepare all controls to be destroyed
-         oWnd:PreRelease()
-
-         // Release child windows
-         _ReleaseWindowList( oWnd:aChildPopUp )
-         oWnd:aChildPopUp := {}
-
-         HideWindow( oWnd:hWnd )
-
-         // Release attached controls et al.
-         oWnd:Events_Destroy()
       NEXT i
    ELSE
       // Reverse order: release first the latest defined forms
       FOR i := nLen TO 1 STEP -1
          oWnd := aWindows[ i ]
 
-         oWnd:lReleasing := .T.
+         IF ! oWnd:lReleased
+            oWnd:lReleasing := .T.
 
-         // Release child windows
-         _ReleaseWindowList( oWnd:aChildPopUp )
-         oWnd:aChildPopUp := {}
+            // Release child windows
+            _ReleaseWindowList( oWnd:aChildPopUp )
+            oWnd:aChildPopUp := {}
 
-         IF oWnd:Active
-            oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            IF oWnd:Active
+               oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
+            ENDIF
+
+            // Disable form's doevent
+            oWnd:lDisableDoEvent := .T.
+
+            // Prepare all controls to be destroyed
+            oWnd:PreRelease()
+
+            HideWindow( oWnd:hWnd )
+
+            oWnd:ReleaseAttached()
+
+            oWnd:lReleased := .T.
          ENDIF
-
-         // Disable form's doevent
-         oWnd:lDisableDoEvent := .T.
-
-         // Prepare all controls to be destroyed
-         oWnd:PreRelease()
-
-         HideWindow( oWnd:hWnd )
-
-         // Release attached controls et al.
-         oWnd:Events_Destroy()
       NEXT i
    ENDIF
 
