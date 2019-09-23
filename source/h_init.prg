@@ -73,6 +73,7 @@
 #endif
 
 STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
+STATIC _OOHG_Language := NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 INIT PROCEDURE _OOHG_Init()
@@ -90,20 +91,20 @@ PROCEDURE InitMessages( cLang )
    App.MutexLock
 
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
-      // [x]Harbour's default language
       cLang := Set( _SET_LANGUAGE )
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
       cLang := Left( cLang, nAt - 1 )
    ENDIF
    cLang := Upper( AllTrim( cLang ) )
+   _OOHG_Language := cLang
 
    aLang := _OOHG_MacroCall( "ooHG_Messages_" + cLang + "()" )
-   aLangDefault := ooHG_Messages_EN()
-
    IF ValType( aLang ) != "A"
       aLang := {}
    ENDIF
+
+   aLangDefault := ooHG_Messages_EN()
 
    _OOHG_Messages[ MT_MISCELL ] := InitMessagesMerge( aLang, aLangDefault, MT_MISCELL )
    _OOHG_Messages[ MT_BRW_BTN ] := InitMessagesMerge( aLang, aLangDefault, MT_BRW_BTN )
@@ -118,9 +119,16 @@ PROCEDURE InitMessages( cLang )
    _OOHG_Messages[ MT_EXT_USR ] := InitMessagesMerge( aLang, aLangDefault, MT_EXT_USR )
    _OOHG_Messages[ MT_PRINTER ] := InitMessagesMerge( aLang, aLangDefault, MT_PRINTER )
 
+   _OOHG_SetErrorMsgs( _OOHG_Messages( MT_MISCELL, 9 ), _OOHG_Messages( MT_MISCELL, 10 ) )
+
    App.MutexUnlock
 
    RETURN
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_GetLanguage()
+
+   RETURN _OOHG_Language
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_Messages( nTable, nItem, nSubItem )
@@ -631,7 +639,7 @@ FUNCTION ooHG_Messages_FR // French
                          "OpenOffice Calc n'est pas disponible.", ;
                          " installé avec succès.", ;
                          " pas installé.", ;
-                         "Erreur lors de la création de l'objet TReg32 ", ; 
+                         "Erreur lors de la création de l'objet TReg32 ", ;
                          "Cet économiseur d'écran n'a pas d'options configurables.", ;
                          "Impossible d'ouvrir le fichier ", ;                                                                       // 21
                          "Pas assez d'espace pour les légendes !!!", ;                                                              // 22
