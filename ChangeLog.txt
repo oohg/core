@@ -12,6 +12,30 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-09-22 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-09-22 22:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     + Function _OOHG_GetLanguage to return last language set.
+     + Function InitMessages now sets the messages used by
+       h_error.prg
+   * core\source\h_error.prg
+     + Function _OOHG_SetErrorMsgs to allow the setting of the
+       messages used by the module.
+     ! Recursive error that happened when trying to access a
+       message from h_init.prg using function _OOHG_Messages.
+
+2019-09-22 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + DATA lReleased.
+   * core\source\h_form.prg
+     ! After closing a TGridControl's input window the focus is
+       not returned to its parent.
+     + METHOD ReleaseAttached.
+     * Method Events_Destroy moved to WM_DESTROY handler.
+
 2019-09-18 19:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      ! Method PrintResource of class TPrintBase.
