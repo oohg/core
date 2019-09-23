@@ -1629,7 +1629,7 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
 
 #ifndef NO_GUI
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
-      cLang := _OOHG_GetLanguage
+      cLang := _OOHG_GetLanguage()
    ENDIF
 #endif
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
