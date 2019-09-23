@@ -60,6 +60,8 @@
  * If you do not wish that, delete this exception notice.
  */
 
+#ifndef __HBPRN__
+ #define __HBPRN__
 
 #ifndef NO_HBPRN_DECLARATION
 MEMVAR HBPRN
@@ -814,6 +816,7 @@ POLYFILL() MODES
 TEXT ALIGNMENT OPTIONS
 ---------------------------------------------------------------------------*/
 
+#ifndef __MINIPRINT__
 #define TA_NOUPDATECP                         0
 #define TA_UPDATECP                           1
 #define TA_LEFT                               0
@@ -824,6 +827,7 @@ TEXT ALIGNMENT OPTIONS
 #define TA_BASELINE                           24
 #define TA_RTLREADING                         256
 #define TA_MASK                               ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
+#endif
 
 /*---------------------------------------------------------------------------
 SCROLL BAR CONSTANTS
@@ -872,7 +876,6 @@ CHARSET CONSTANTS
 ---------------------------------------------------------------------------*/
 
 #ifndef __OOHG_I_FONT__
-
 #define ANSI_CHARSET                          0
 #define DEFAULT_CHARSET                       1
 #define SYMBOL_CHARSET                        2
@@ -893,7 +896,6 @@ CHARSET CONSTANTS
 #define RUSSIAN_CHARSET                       204
 #define MAC_CHARSET                           77
 #define BALTIC_CHARSET                        186
-
 #endif
 
 /*---------------------------------------------------------------------------
@@ -933,7 +935,6 @@ PREDEFINED VALUES FOR SETDEVMODE() PAPERSIZE
 ---------------------------------------------------------------------------*/
 
 #ifndef DMPAPER_FIRST
-
 #define DMPAPER_FIRST                         DMPAPER_LETTER
 #define DMPAPER_LETTER                        1   // US Letter 8 1/2 x 11 in
 #define DMPAPER_LETTERSMALL                   2   // US Letter Small 8 1/2 x 11 in
@@ -1055,5 +1056,6 @@ PREDEFINED VALUES FOR SETDEVMODE() PAPERSIZE
 #define DMPAPER_PENV_10_ROTATED               118 // PRC Envelope #10 Rotated 458 x 324 mm
 #define DMPAPER_LAST                          DMPAPER_PENV_10_ROTATED
 #define DMPAPER_USER                          256
+#endif
 
 #endif
