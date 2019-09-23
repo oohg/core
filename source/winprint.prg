@@ -226,9 +226,9 @@ CLASS HBPrinter
    METHOD Line
    METHOD LineTo
    METHOD End
-   METHOD SaveMetaFiles
    METHOD GetTextExtent
    METHOD ReportData
+   METHOD InitMessages
 #ifndef NO_GUI
    METHOD Preview
    METHOD PrevAdjust
@@ -237,12 +237,13 @@ CLASS HBPrinter
    METHOD PrevShow
    METHOD PrevThumb
    METHOD PrintOption
+   METHOD SaveMetaFiles
 #endif
 
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD New() CLASS HBPrinter
+METHOD New( cLang ) CLASS HBPrinter
 
    LOCAL aPrnPort
 
@@ -259,6 +260,7 @@ METHOD New() CLASS HBPrinter
    ENDIF
    ::TimeStamp := TToS( DateTime() )
    ::BaseDoc := RR_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
+   ::InitMessages( cLang )
 
    RETURN Self
 
@@ -383,7 +385,7 @@ METHOD StartPage() CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Endpage() CLASS HBPrinter
+METHOD EndPage() CLASS HBPrinter
 
    IF ::PreviewMode
       IF ::InMemory
@@ -399,38 +401,6 @@ METHOD Endpage() CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SaveMetaFiles( number ) CLASS HBPrinter
-
-   LOCAL n, l
-
-   IF Empty( number )
-      number := NIL
-   ENDIF
-   IF ::PreviewMode
-      IF ::InMemory
-         IF number == NIL
-            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str( xi ) ) + ".emf" ) } )
-         ELSE
-            RR_Str2File( ::MetaFiles[ number, 1 ], "page" + AllTrim( Str( number ) ) + ".emf" )
-         ENDIF
-      ELSE
-         IF number <> NIL
-            COPY File ( ::BaseDoc + AllTrim( StrZero( number, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( number, 4 ) ) + ".emf" )
-         ELSE
-            l := ::CurPage - 1
-            FOR n := 1 TO l
-               COPY File ( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( n, 4 ) ) + ".emf" )
-            END
-         ENDIF
-      ENDIF
-      IF ::NotifyOnSave
-         MsgInfo( ::aOpisy[ 32 ], "" )
-      ENDIF
-   ENDIF
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
 
    IF ! HB_ISLOGICAL( lWait )
@@ -440,7 +410,9 @@ METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
+#ifndef NO_GUI
    ::Preview( cParent, lWait, lSize )
+#endif
    IF ! ::PreviewMode
       IF lWait
          MsgInfo( ::aOpisy[ 31 ], "" )
@@ -1650,206 +1622,21 @@ METHOD ReportData( l_x1, l_x2, l_x3, l_x4, l_x5, l_x6 ) CLASS HBPrinter
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD InitMessages( cLang ) CLASS HBPrinter
+
+   LOCAL nAt
+
 #ifndef NO_GUI
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevThumb( nclick ) CLASS HBPrinter
-
-   LOCAL i, spage
-
-   IF ::iLoscstron == 1
-      RETURN NIL
+   IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
+      cLang := _OOHG_GetLanguage
    ENDIF
-   IF nclick <> NIL
-      ::Page := ::nGroup * 15 + nclick
-      ::PrevShow()
-      ::oWinPreview:combo_1:value := ::Page
-      RETURN NIL
+#endif
+   IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
+      cLang := Set( _SET_LANGUAGE )
    ENDIF
-   IF Int( ( ::Page - 1 ) / 15 ) <> ::nGroup
-      ::nGroup := Int( ( ::Page - 1 ) / 15 )
-   ELSE
-      RETURN NIL
-   ENDIF
-   spage := ::nGroup * 15
-
-   FOR i := 1 TO 15
-      IF i + spage > ::iLoscstron
-         HideWindow( ::AtH[ i, 5 ] )
-      ELSE
-         IF ::MetaFiles[ i + spage, 2 ] >= ::MetaFiles[ i + spage, 3 ]
-            ::AtH[ i, 3 ] := ::dy - 5
-            ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ i + spage, 3 ] / ::MetaFiles[ i + spage, 2 ] - 5
-         ELSE
-            ::AtH[ i, 4 ] := ::dx - 5
-            ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ i + spage, 2 ] / ::MetaFiles[ i + spage, 3 ] - 5
-         ENDIF
-         IF ::InMemory
-            RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i + spage ], AllTrim( Str( i + spage ) ), i, ::hData )
-         ELSE
-            RR_PlayFThumb( ::AtH[ i ], ::MetaFiles[ i + spage, 1 ], AllTrim( Str( i + spage ) ), i, ::hData )
-         ENDIF
-         CShowControl( ::AtH[ i, 5 ] )
-      ENDIF
-   NEXT
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevShow() CLASS HBPrinter
-
-   LOCAL spos, hImage
-
-   IF ::Thumbnails
-      ::PrevThumb()
-   ENDIF
-
-   spos := { GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ], GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ( ::aZoom[ 3 ] ) }
-
-   IF ::MetaFiles[ ::Page, 2 ] >= ::MetaFiles[ ::Page, 3 ]
-      ::aZoom[ 3 ] := ( ::aHS[ 5, 3 ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ 5, 3 ] * ::MetaFiles[ ::Page, 3 ] / ::MetaFiles[ ::Page, 2 ] ) * ::Scale - 60
-   ELSE
-      ::aZoom[ 3 ] := ( ::aHS[ 5, 4 ] * ::MetaFiles[ ::Page, 2 ] / ::MetaFiles[ ::Page, 3 ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ 5, 4 ] ) * ::Scale - 60
-   ENDIF
-   ::oWinPreview:StatusBar:Item( 1, ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) )
-
-   IF ::aZoom[ 3 ] < 30
-      ::Scale := ::Scale * 1.25
-      ::PrevShow()
-      MsgStop( ::aOpisy[ 18 ], "" )
-   ENDIF
-   HideWindow( ::aHS[ 6, 7 ] )
-   ::oWinPagePreview:i1:SizePos(,, ::aZoom[ 4 ], ::aZoom[ 3 ] )
-   ::oWinPagePreview:VirtualHeight := ::aZoom[ 3 ] + 20
-   ::oWinPagePreview:VirtualWidth := ::aZoom[ 4 ] + 20
-
-   IF ::InMemory
-      hImage := RR_PreviewPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page ], ::aZoom )
-   ELSE
-      hImage := RR_PreviewFPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page, 1 ], ::aZoom )
-   ENDIF
-   if ! ValidHandler( hImage )
-      ::Scale := ::Scale / 1.25
-      ::PrevShow()
-      MsgStop( ::aOpisy[ 18 ], ::aOpisy[ 1 ] )
-   ELSE
-      ::oWinPagePreview:i1:hbitmap := hImage
-   ENDIF
-   RR_ScrollWindow( ::aHS[ 5, 7 ], -spos[ 1 ] * ::aZoom[ 4 ], -spos[ 2 ] * ::aZoom[ 3 ] )
-   CShowControl( ::aHS[ 6, 7 ] )
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevPrint( n1 ) CLASS HBPrinter
-
-   LOCAL i, ilkop, toprint := .T.
-
-   IF ! Eval( ::BeforePrint )
-      RETURN NIL
-   ENDIF
-
-   ::PreviewMode := .F.
-   ::PrintingEMF := .T.
-   RR_LaLaBye( 1, ::hData )
-   IF n1 <> NIL
-      ::StartDoc()
-      ::SetPage( ::MetaFiles[ n1, 6 ], ::MetaFiles[ n1, 7 ] )
-      ::StartPage()
-      IF ::InMemory
-         RR_PlayEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
-      ELSE
-         RR_PlayFEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
-      END
-      ::EndPage()
-      ::EndDoc()
-   ELSE
-      FOR ilkop = 1 TO ::nCopies
-         IF ! Eval( ::BeforePrintCopy, ilkop )
-            RR_LaLaBye( 0, ::hData )
-            ::PrintingEMF := .F.
-            ::PreviewMode := .T.
-            RETURN NIL
-         ENDIF
-         ::StartDoc()
-         FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
-            DO CASE
-            CASE ::PrintOpt == 1 ; toprint := .T.
-            CASE ::PrintOpt == 2 .OR. ::PrintOpt == 4 ; toprint := !( i % 2 == 0 )
-            CASE ::PrintOpt == 3 .OR. ::PrintOpt == 5 ; toprint := ( i % 2 == 0 )
-            ENDCASE
-            IF toprint
-               toprint := .F.
-               ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
-               ::StartPage()
-               IF ::InMemory
-                  RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
-               ELSE
-                  RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
-               END
-
-               ::EndPage()
-            ENDIF
-         NEXT i
-         ::EndDoc()
-
-         IF ::PrintOpt == 4 .OR. ::PrintOpt == 5
-            MsgBox( ::aOpisy[ 30 ], ::aOpisy[ 29 ] )
-            ::StartDoc()
-            FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
-               DO CASE
-               CASE ::PrintOpt == 4 ; toprint := ( i % 2 == 0 )
-               CASE ::PrintOpt == 5 ; toprint := !( i % 2 == 0 )
-               ENDCASE
-               IF toprint
-                  toprint := .F.
-                  ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
-                  ::StartPage()
-                  IF ::InMemory
-                     RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
-                  ELSE
-                     RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
-                  END
-                  ::EndPage()
-               ENDIF
-            NEXT i
-            ::EndDoc()
-         ENDIF
-      NEXT ilkop
-   ENDIF
-   RR_LaLaBye( 0, ::hData )
-   ::PrintingEMF := .F.
-   ::PreviewMode := .T.
-   Eval( ::AfterPrint )
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
-
-   LOCAL i, pi, cLang, cName
-
-   IF ! HB_ISLOGICAL( lWait )
-      lWait := .T.
-   ENDIF
-   IF ! HB_ISLOGICAL( lSize )
-      lSize := ! lWait
-   ENDIF
-
-   ::iLoscstron := Len( ::MetaFiles )
-   ::nGroup := -1
-   ::Page := 1
-   ::AtH := {}
-   ::aHS := {}
-   ::aZoom := { 0, 0, 0, 0 }
-   ::Scale := ::PreviewScale
-   ::nPages := {}
-
-   /* [x]Harbour's default language */
-   cLang := Set( _SET_LANGUAGE )
-   IF ( i := At( ".", cLang ) ) > 0
-      cLang := Left( cLang, i - 1 )
+   IF ( nAt := At( ".", cLang ) ) > 0
+      cLang := Left( cLang, nAt - 1 )
    ENDIF
    cLang := Upper( AllTrim( cLang ) )
 
@@ -2086,6 +1873,238 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          "Press OK to continue.", ;
          "Done!" }
    ENDCASE
+
+   RETURN NIL
+
+#ifndef NO_GUI
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SaveMetaFiles( number ) CLASS HBPrinter
+
+   LOCAL n, l
+
+   IF ::PreviewMode
+      IF ! HB_ISNUMERIC( number ) .OR. number < 1 .OR. number >= ::CurPage
+         number := NIL
+      ENDIF
+
+      IF ::InMemory
+         IF number == NIL
+            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str( xi ) ) + ".emf" ) } )
+         ELSE
+            RR_Str2File( ::MetaFiles[ number, 1 ], "page" + AllTrim( Str( number ) ) + ".emf" )
+         ENDIF
+      ELSE
+         IF number == NIL
+            l := ::CurPage - 1
+            FOR n := 1 TO l
+               COPY FILE ( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( n, 4 ) ) + ".emf" )
+            END
+         ELSE
+            COPY FILE ( ::BaseDoc + AllTrim( StrZero( number, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( number, 4 ) ) + ".emf" )
+         ENDIF
+      ENDIF
+
+      IF ::NotifyOnSave
+         MsgInfo( ::aOpisy[ 32 ], "" )
+      ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrevThumb( nclick ) CLASS HBPrinter
+
+   LOCAL i, spage
+
+   IF ::iLoscstron == 1
+      RETURN NIL
+   ENDIF
+   IF nclick <> NIL
+      ::Page := ::nGroup * 15 + nclick
+      ::PrevShow()
+      ::oWinPreview:combo_1:value := ::Page
+      RETURN NIL
+   ENDIF
+   IF Int( ( ::Page - 1 ) / 15 ) <> ::nGroup
+      ::nGroup := Int( ( ::Page - 1 ) / 15 )
+   ELSE
+      RETURN NIL
+   ENDIF
+   spage := ::nGroup * 15
+
+   FOR i := 1 TO 15
+      IF i + spage > ::iLoscstron
+         HideWindow( ::AtH[ i, 5 ] )
+      ELSE
+         IF ::MetaFiles[ i + spage, 2 ] >= ::MetaFiles[ i + spage, 3 ]
+            ::AtH[ i, 3 ] := ::dy - 5
+            ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ i + spage, 3 ] / ::MetaFiles[ i + spage, 2 ] - 5
+         ELSE
+            ::AtH[ i, 4 ] := ::dx - 5
+            ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ i + spage, 2 ] / ::MetaFiles[ i + spage, 3 ] - 5
+         ENDIF
+         IF ::InMemory
+            RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i + spage ], AllTrim( Str( i + spage ) ), i, ::hData )
+         ELSE
+            RR_PlayFThumb( ::AtH[ i ], ::MetaFiles[ i + spage, 1 ], AllTrim( Str( i + spage ) ), i, ::hData )
+         ENDIF
+         CShowControl( ::AtH[ i, 5 ] )
+      ENDIF
+   NEXT
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrevShow() CLASS HBPrinter
+
+   LOCAL spos, hImage
+
+   IF ::Thumbnails
+      ::PrevThumb()
+   ENDIF
+
+   spos := { GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ], GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ( ::aZoom[ 3 ] ) }
+
+   IF ::MetaFiles[ ::Page, 2 ] >= ::MetaFiles[ ::Page, 3 ]
+      ::aZoom[ 3 ] := ( ::aHS[ 5, 3 ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ 5, 3 ] * ::MetaFiles[ ::Page, 3 ] / ::MetaFiles[ ::Page, 2 ] ) * ::Scale - 60
+   ELSE
+      ::aZoom[ 3 ] := ( ::aHS[ 5, 4 ] * ::MetaFiles[ ::Page, 2 ] / ::MetaFiles[ ::Page, 3 ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ 5, 4 ] ) * ::Scale - 60
+   ENDIF
+   ::oWinPreview:StatusBar:Item( 1, ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) )
+
+   IF ::aZoom[ 3 ] < 30
+      ::Scale := ::Scale * 1.25
+      ::PrevShow()
+      MsgStop( ::aOpisy[ 18 ], "" )
+   ENDIF
+   HideWindow( ::aHS[ 6, 7 ] )
+   ::oWinPagePreview:i1:SizePos(,, ::aZoom[ 4 ], ::aZoom[ 3 ] )
+   ::oWinPagePreview:VirtualHeight := ::aZoom[ 3 ] + 20
+   ::oWinPagePreview:VirtualWidth := ::aZoom[ 4 ] + 20
+
+   IF ::InMemory
+      hImage := RR_PreviewPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page ], ::aZoom )
+   ELSE
+      hImage := RR_PreviewFPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page, 1 ], ::aZoom )
+   ENDIF
+   if ! ValidHandler( hImage )
+      ::Scale := ::Scale / 1.25
+      ::PrevShow()
+      MsgStop( ::aOpisy[ 18 ], ::aOpisy[ 1 ] )
+   ELSE
+      ::oWinPagePreview:i1:hbitmap := hImage
+   ENDIF
+   RR_ScrollWindow( ::aHS[ 5, 7 ], -spos[ 1 ] * ::aZoom[ 4 ], -spos[ 2 ] * ::aZoom[ 3 ] )
+   CShowControl( ::aHS[ 6, 7 ] )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD PrevPrint( n1 ) CLASS HBPrinter
+
+   LOCAL i, ilkop, toprint := .T.
+
+   IF ! Eval( ::BeforePrint )
+      RETURN NIL
+   ENDIF
+
+   ::PreviewMode := .F.
+   ::PrintingEMF := .T.
+   RR_LaLaBye( 1, ::hData )
+   IF n1 <> NIL
+      ::StartDoc()
+      ::SetPage( ::MetaFiles[ n1, 6 ], ::MetaFiles[ n1, 7 ] )
+      ::StartPage()
+      IF ::InMemory
+         RR_PlayEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
+      ELSE
+         RR_PlayFEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
+      END
+      ::EndPage()
+      ::EndDoc()
+   ELSE
+      FOR ilkop = 1 TO ::nCopies
+         IF ! Eval( ::BeforePrintCopy, ilkop )
+            RR_LaLaBye( 0, ::hData )
+            ::PrintingEMF := .F.
+            ::PreviewMode := .T.
+            RETURN NIL
+         ENDIF
+         ::StartDoc()
+         FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
+            DO CASE
+            CASE ::PrintOpt == 1 ; toprint := .T.
+            CASE ::PrintOpt == 2 .OR. ::PrintOpt == 4 ; toprint := !( i % 2 == 0 )
+            CASE ::PrintOpt == 3 .OR. ::PrintOpt == 5 ; toprint := ( i % 2 == 0 )
+            ENDCASE
+            IF toprint
+               toprint := .F.
+               ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
+               ::StartPage()
+               IF ::InMemory
+                  RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+               ELSE
+                  RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+               END
+
+               ::EndPage()
+            ENDIF
+         NEXT i
+         ::EndDoc()
+
+         IF ::PrintOpt == 4 .OR. ::PrintOpt == 5
+            MsgBox( ::aOpisy[ 30 ], ::aOpisy[ 29 ] )
+            ::StartDoc()
+            FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
+               DO CASE
+               CASE ::PrintOpt == 4 ; toprint := ( i % 2 == 0 )
+               CASE ::PrintOpt == 5 ; toprint := !( i % 2 == 0 )
+               ENDCASE
+               IF toprint
+                  toprint := .F.
+                  ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
+                  ::StartPage()
+                  IF ::InMemory
+                     RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+                  ELSE
+                     RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+                  END
+                  ::EndPage()
+               ENDIF
+            NEXT i
+            ::EndDoc()
+         ENDIF
+      NEXT ilkop
+   ENDIF
+   RR_LaLaBye( 0, ::hData )
+   ::PrintingEMF := .F.
+   ::PreviewMode := .T.
+   Eval( ::AfterPrint )
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
+
+   LOCAL i, pi, cName
+
+   IF ! HB_ISLOGICAL( lWait )
+      lWait := .T.
+   ENDIF
+   IF ! HB_ISLOGICAL( lSize )
+      lSize := ! lWait
+   ENDIF
+
+   ::iLoscstron := Len( ::MetaFiles )
+   ::nGroup := -1
+   ::Page := 1
+   ::AtH := {}
+   ::aHS := {}
+   ::aZoom := { 0, 0, 0, 0 }
+   ::Scale := ::PreviewScale
+   ::nPages := {}
 
    IF ::nWhatToPrint < 2
       ::nToPage := ::iLoscstron
