@@ -184,7 +184,7 @@ static void * GdiPlusHandle = NULL;
 static ULONG  GdiPlusToken  = 0;
 static BOOL GDIP_InitOK = FALSE;
 static int _OOHG_GdiPlus = 2;
-
+static unsigned char * MimeTypeOld = NULL;
 
 static GDIPLUS_STARTUP_INPUT       GdiPlusStartupInput;
 static GDIPLUSSTARTUP              GdiPlusStartup;
@@ -295,10 +295,20 @@ BOOL InitDeinitGdiPlus( BOOL OnOff )
    if( ! OnOff )
    {
       if( ( GdiPlusShutdown != NULL ) && ( GdiPlusToken != 0 ) )
+      {
          GdiPlusShutdown( GdiPlusToken );
+      }
 
       if( GdiPlusHandle != NULL )
+      {
          FreeLibrary( GdiPlusHandle );
+      }
+
+      if( MimeTypeOld != NULL )
+      {
+         LocalFree( MimeTypeOld );
+         MimeTypeOld = NULL;
+      }
 
       GDIP_InitOK   = FALSE;
       GdiPlusToken  = 0;
@@ -483,7 +493,7 @@ HB_FUNC( GPLUSGETENCODERS )
    IMAGE_CODEC_INFO * pImageCodecInfo;
    PHB_ITEM pResult = hb_itemArrayNew( 0 );
    PHB_ITEM pItem;
-   char *   RecvMimeType;
+   char * RecvMimeType;
 
    GdipGetImageEncodersSize( &num, &size );
    if( size == 0 )
@@ -554,6 +564,63 @@ HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
+{
+   UINT num  = 0;
+   UINT size = 0;
+   IMAGE_CODEC_INFO * ImageCodecInfo;
+   UINT   CodecIndex;
+   char * RecvMimeType;
+   BOOL   OkSearchCodec = FALSE;
+
+   hb_xmemset( Clsid, 0, sizeof( CLSID ) );
+
+   if( ( MimeType == NULL ) || ( Clsid == NULL ) || ( GdiPlusHandle == NULL ) )
+      return FALSE;
+
+   if( GdipGetImageEncodersSize( &num, &size ) )
+      return FALSE;
+
+   if( ( ImageCodecInfo = hb_xalloc( size ) ) == NULL )
+      return FALSE;
+
+   hb_xmemset( ImageCodecInfo, 0, sizeof( IMAGE_CODEC_INFO ) );
+
+   if( GdipGetImageEncoders( num, size, ImageCodecInfo ) || ( ImageCodecInfo == NULL ) )
+   {
+      hb_xfree( ImageCodecInfo );
+
+      return FALSE;
+   }
+
+   if( ( RecvMimeType = LocalAlloc( LPTR, size ) ) == NULL )
+   {
+      hb_xfree( ImageCodecInfo );
+
+      return FALSE;
+   }
+
+   for( CodecIndex = 0; CodecIndex < num; ++CodecIndex )
+   {
+      WideCharToMultiByte( CP_ACP, 0, ImageCodecInfo[ CodecIndex ].MimeType, -1, RecvMimeType, size, NULL, NULL );
+
+      if( strcmp( MimeType, RecvMimeType ) == 0 )
+      {
+         OkSearchCodec = TRUE;
+         break;
+      }
+   }
+
+   if( OkSearchCodec )
+      CopyMemory( Clsid, &ImageCodecInfo[ CodecIndex ].Clsid, sizeof( CLSID ) );
+
+   hb_xfree( ImageCodecInfo );
+   LocalFree( RecvMimeType );
+
+   return OkSearchCodec ? TRUE : FALSE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT Height, const char * MimeType, ULONG JpgQuality, ULONG ColorDepth )
 {
    void *       GBitmap;
@@ -566,6 +633,45 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
    if( ( HBitmap == NULL ) || ( FileName == NULL ) || ( MimeType == NULL ) || ( GdiPlusHandle == NULL ) )
    {
       return FALSE;
+   }
+
+   if ( MimeTypeOld == NULL )
+   {
+      if( ! GetEnCodecClsid( MimeType, &Clsid ) )
+      {
+         // Wrong MimeType
+         return FALSE;
+      }
+
+      MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
+      if( MimeTypeOld == NULL )
+      {
+         // LocalAlloc Error
+         return FALSE;
+      }
+
+      strcpy( ( char * ) MimeTypeOld, MimeType );
+   }
+   else
+   {
+      if( strcmp( ( char * ) MimeTypeOld, MimeType ) != 0 )
+      {
+         LocalFree( MimeTypeOld );
+
+         if( ! GetEnCodecClsid( MimeType, &Clsid ) )
+         {
+            // Wrong MimeType
+            return FALSE;
+         }
+
+         MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
+         if( MimeTypeOld == NULL )
+         {
+            // LocalAlloc Error
+            return FALSE;
+         }
+         strcpy( ( char * ) MimeTypeOld, MimeType );
+      }
    }
 
    GBitmap = 0;
@@ -719,63 +825,6 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
    LocalFree( WFileName );
 
    return TRUE;
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
-{
-   UINT num  = 0;
-   UINT size = 0;
-   IMAGE_CODEC_INFO * ImageCodecInfo;
-   UINT   CodecIndex;
-   char * RecvMimeType;
-   BOOL   OkSearchCodec = FALSE;
-
-   hb_xmemset( Clsid, 0, sizeof( CLSID ) );
-
-   if( ( MimeType == NULL ) || ( Clsid == NULL ) || ( GdiPlusHandle == NULL ) )
-      return FALSE;
-
-   if( GdipGetImageEncodersSize( &num, &size ) )
-      return FALSE;
-
-   if( ( ImageCodecInfo = hb_xalloc( size ) ) == NULL )
-      return FALSE;
-
-   hb_xmemset( ImageCodecInfo, 0, sizeof( IMAGE_CODEC_INFO ) );
-
-   if( GdipGetImageEncoders( num, size, ImageCodecInfo ) || ( ImageCodecInfo == NULL ) )
-   {
-      hb_xfree( ImageCodecInfo );
-
-      return FALSE;
-   }
-
-   if( ( RecvMimeType = LocalAlloc( LPTR, size ) ) == NULL )
-   {
-      hb_xfree( ImageCodecInfo );
-
-      return FALSE;
-   }
-
-   for( CodecIndex = 0; CodecIndex < num; ++CodecIndex )
-   {
-      WideCharToMultiByte( CP_ACP, 0, ImageCodecInfo[ CodecIndex ].MimeType, -1, RecvMimeType, size, NULL, NULL );
-
-      if( strcmp( MimeType, RecvMimeType ) == 0 )
-      {
-         OkSearchCodec = TRUE;
-         break;
-      }
-   }
-
-   if( OkSearchCodec )
-      CopyMemory( Clsid, &ImageCodecInfo[ CodecIndex ].Clsid, sizeof( CLSID ) );
-
-   hb_xfree( ImageCodecInfo );
-   LocalFree( RecvMimeType );
-
-   return OkSearchCodec ? TRUE : FALSE;
 }
 
 /*
