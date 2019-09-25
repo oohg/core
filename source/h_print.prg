@@ -4778,6 +4778,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
    LOCAL nVDispl := 0.980
    LOCAL nHDispl := 1.300
    LOCAL nWidth, nHeight
+   LOCAL nH, nW
 
    HB_SYMBOL_UNUSED( aResol )
    HB_SYMBOL_UNUSED( aExt )
@@ -4793,20 +4794,26 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
    ENDIF
 
    IF HB_ISLOGICAL( aSize ) .AND. aSize
-      nHeight := 0
-      nWidth  := 0
+      nH := 0
+      nW := 0
    ELSE
       nHeight := nLinF - nLin   // when nHeight is zero, the image is printed at its real height and resolution
       nWidth  := nColF - nCol   // when nWidth is zero, the image is printed at its real width and resolution
+      IF ::cUnits == "MM"
+         nH := nHeight
+         nW := nWidth
+      ELSE
+         nH := nHeight * ::nmVer * nVDispl + ::nvFij
+         nW := nWidth * ::nmHor + ::nhFij * nHDispl
+      ENDIF
    ENDIF
 
    // TODO: Add support for images in the resource file (copy them to a temp file or use a hidden image control)
 
    IF ::cUnits == "MM"
-      ::oPdf:Image( cImage, nLin, nCol, "M", nHeight, nWidth )
+      ::oPdf:Image( cImage, nLin, nCol, "M", nH, nW )
    ELSE
-      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", ;
-         nHeight * ::nmVer * nVDispl + ::nvFij, nWidth * ::nmHor + ::nhFij * nHDispl )
+      ::oPdf:Image( cImage, nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * nHDispl, "M", nH, nW )
    ENDIF
 
    RETURN .T.
