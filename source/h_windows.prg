@@ -382,7 +382,7 @@ METHOD RefreshData() CLASS TWindow
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
+METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLASS TWindow
 
    LOCAL myobject, cWork, cExt
 
@@ -422,7 +422,7 @@ METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
       IF ! :lPrError
          :BeginDoc( "ooHG printing" )
          :BeginPage()
-         :PrintImage( y, x, y1, x1, cwork )
+         :PrintImage( y, x, y1, x1, cwork, NIL, lImageSize )
          :Endpage()
          :EndDoc()
       ENDIF
