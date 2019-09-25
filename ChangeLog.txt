@@ -12,7 +12,37 @@
  *    '-' Removed: ...           ';' Comment
  */
 
-2019-09-22 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-09-25 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! Method PrintImageX of class TPdfPrint does not work
+       properly when aSize parameter is .T. (imagesize) and
+       units are set to ROWCOL.
+
+2019-09-25 20:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + Parameter lImageSize to method Print of class TWindow.
+
+2019-09-25 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_gdiplus.c
+     ! Can't generate JPG image from handle.
+
+2019-09-23 18:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! Ambiguous reference '_OOHG_GETLANGUAGE'.
+
+2019-09-23 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     + Method InitMessages.
+     + Method SaveMetafiles moved to #ifndef NO_GUI section.
+     * Messages are now initilized at method New instead of
+       Preview so they can be used with NO_GUI.
+     * Method New now accepts a language code as parameter.
+
+2019-09-23 17:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+     + ifndef to compiler error caused by duplicated defines.
+
+2019-09-22 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
 
@@ -134,8 +164,8 @@
      * Some format.
      ! PRINT FILL command had wrong clauses.
      - Duplicated PRINT RECTANGLE command.
-     ! PRINT ARC command had wrong clausses.
-     ! PRINT PIE command had wrong clausses.
+     ! PRINT ARC command had wrong clauses.
+     ! PRINT PIE command had wrong clauses.
 
    * core\source\miniprint.prg
      * Some format and comments.
