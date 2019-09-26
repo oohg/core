@@ -521,6 +521,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
 {
    HWND hWnd = HWNDparam( 1 );
    HBRUSH hBrush, color;
+   POCTRL oSelf;
 
    if( _OOHG_SearchFormHandleInArray( hWnd ) )
    {
@@ -531,7 +532,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
          hb_vmPush( hb_param( 2, HB_IT_ANY ) );
          hb_vmSend( 1 );
 
-         POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+         oSelf = _OOHG_GetControlInfo( pSelf );
          HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
       }
    }

@@ -93,6 +93,7 @@
 #define HB_STORNL3( n, x, y )     hb_stornll( n, x, y )
 #define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
 #define HB_STORVNL( n, x, y )     hb_stornll( n, x, y )
+#define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
 
 #else /*  __XHARBOUR__ */
 /* For HARBOUR and 64 bits WIN */
@@ -116,6 +117,7 @@
 #define HB_STORNL3( n, x, y )     hb_storvnll( n, x, y )
 #define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
 #define HB_STORVNL( n, x, y )     hb_storvnll( n, x, y )
+#define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
 
 #endif /*  __XHARBOUR__ */
 
@@ -148,6 +150,7 @@
 #define HB_STORNL3( n, x, y )     hb_stornl( n, x, y )
 #define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
 #define HB_STORVNL( n, x, y )     hb_stornl( n, x, y )
+#define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
 
 #else /* __XHARBOUR__ */
 /* For HARBOUR and 32 bits WIN */
@@ -171,6 +174,7 @@
 #define HB_STORNL3( n, x, y )     hb_storvnl( n, x, y )
 #define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
 #define HB_STORVNL( n, x, y )     hb_storvnl( n, x, y )
+#define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
 
 #endif /*  __XHARBOUR__ */
 

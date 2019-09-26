@@ -317,12 +317,12 @@ HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue *
             switch( hb_parni( 1 ) )
             {
                case 0:  HB_RETNL( mstex.dwMemoryLoad     / ( 1024 * 1024 ) ); break;
-               case 1:  HB_RETNL( mstex.ullTotalPhys     / ( 1024 * 1024 ) ); break;
-               case 2:  HB_RETNL( mstex.ullAvailPhys     / ( 1024 * 1024 ) ); break;
-               case 3:  HB_RETNL( mstex.ullTotalPageFile / ( 1024 * 1024 ) ); break;
-               case 4:  HB_RETNL( mstex.ullAvailPageFile / ( 1024 * 1024 ) ); break;
-               case 5:  HB_RETNL( mstex.ullTotalVirtual  / ( 1024 * 1024 ) ); break;
-               case 6:  HB_RETNL( mstex.ullAvailVirtual  / ( 1024 * 1024 ) ); break;
+               case 1:  hb_retnll( mstex.ullTotalPhys     / ( 1024 * 1024 ) ); break;
+               case 2:  hb_retnll( mstex.ullAvailPhys     / ( 1024 * 1024 ) ); break;
+               case 3:  hb_retnll( mstex.ullTotalPageFile / ( 1024 * 1024 ) ); break;
+               case 4:  hb_retnll( mstex.ullAvailPageFile / ( 1024 * 1024 ) ); break;
+               case 5:  hb_retnll( mstex.ullTotalVirtual  / ( 1024 * 1024 ) ); break;
+               case 6:  hb_retnll( mstex.ullAvailVirtual  / ( 1024 * 1024 ) ); break;
                default: HB_RETNL( 0 );
             }
          }
@@ -330,12 +330,12 @@ HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue *
          {
             hb_reta( 7 );
             HB_STORNL3( mstex.dwMemoryLoad     / ( 1024 * 1024 ), -1, 1 );
-            HB_STORNL3( mstex.ullTotalPhys     / ( 1024 * 1024 ), -1, 2 );
-            HB_STORNL3( mstex.ullAvailPhys     / ( 1024 * 1024 ), -1, 3 );
-            HB_STORNL3( mstex.ullTotalPageFile / ( 1024 * 1024 ), -1, 4 );
-            HB_STORNL3( mstex.ullAvailPageFile / ( 1024 * 1024 ), -1, 5 );
-            HB_STORNL3( mstex.ullTotalVirtual  / ( 1024 * 1024 ), -1, 6 );
-            HB_STORNL3( mstex.ullAvailVirtual  / ( 1024 * 1024 ), -1, 7 );
+            HB_STORVNLL( mstex.ullTotalPhys     / ( 1024 * 1024 ), -1, 2 );
+            HB_STORVNLL( mstex.ullAvailPhys     / ( 1024 * 1024 ), -1, 3 );
+            HB_STORVNLL( mstex.ullTotalPageFile / ( 1024 * 1024 ), -1, 4 );
+            HB_STORVNLL( mstex.ullAvailPageFile / ( 1024 * 1024 ), -1, 5 );
+            HB_STORVNLL( mstex.ullTotalVirtual  / ( 1024 * 1024 ), -1, 6 );
+            HB_STORVNLL( mstex.ullAvailVirtual  / ( 1024 * 1024 ), -1, 7 );
          }
       }
       else
@@ -1347,6 +1347,11 @@ int GetUserObjects( DWORD nProcessId )
    return user;
 }
 
+#if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
+BOOL GetProcessHandleCount( HANDLE hProcess, PDWORD pdwHandleCount );
+#define PROCESS_QUERY_LIMITED_INFORMATION (0x1000)
+#endif
+
 int GetKernelObjects( DWORD nProcessId )
 {
    HANDLE hProcess;
@@ -1544,7 +1549,7 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLOR
       else
       {
          SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
-         bRet = ( pfnSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
+         bRet = ( pSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
