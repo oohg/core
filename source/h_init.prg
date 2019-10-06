@@ -79,6 +79,7 @@ STATIC _OOHG_Language := NIL
 INIT PROCEDURE _OOHG_Init()
 
    TApplication():New()
+   InitMessages_C_Side( _OOHG_Messages )
    InitMessages()
 
    RETURN
@@ -209,7 +210,9 @@ FUNCTION ooHG_Messages_EN // English (default)
                          "File is already encrypted!", ;                                                                            // 25
                          "File is not encrypted!", ;                                                                                // 26
                          "Password is not valid!", ;                                                                                // 27
-                         "The names of the new file and the old file must be different!" }                                          // 28
+                         "The names of the new file and the old file must be different!", ;                                         // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    //MT_BRW_BTN
@@ -476,7 +479,9 @@ FUNCTION ooHG_Messages_HR852 // Croatian
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -653,7 +658,9 @@ FUNCTION ooHG_Messages_FR // French
                          "Le fichier est déjà crypté !!!", ;                                                                        // 25
                          "Le fichier n'est pas crypté !!!", ;                                                                       // 26
                          "Le mot de passe est invalide !!!", ;                                                                      // 27
-                         "Les noms du nouveau fichier et de l'ancien fichier doivent être différents !!!" }                         // 28
+                         "Les noms du nouveau fichier et de l'ancien fichier doivent être différents !!!", ;                        // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Ajout", ;
@@ -865,7 +872,9 @@ FUNCTION ooHG_Messages_DEWIN // German
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := {}
@@ -1059,7 +1068,9 @@ FUNCTION ooHG_Messages_IT // Italian
                          "Il file è già crittografato !!!", ;                                                                       // 25
                          "Il file non è crittografato !!!", ;                                                                       // 26
                          "La password non è valida !!!", ;                                                                          // 27
-                         "I nomi del nuovo file e del vecchio file devono essere diversi !!!" }                                     // 28
+                         "I nomi del nuovo file e del vecchio file devono essere diversi !!!", ;                                    // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Aggiungere", ;
@@ -1281,7 +1292,9 @@ FUNCTION ooHG_Messages_PLWIN // Polish
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -1488,7 +1501,9 @@ FUNCTION ooHG_Messages_PT // Portuguese
                          "O arquivo já está criptografado !!!", ;                                                                   // 25
                          "O arquivo não está criptografado !!!", ;                                                                  // 26
                          "Senha é inválida !!!", ;                                                                                  // 27
-                         "Os nomes do novo arquivo e do arquivo antigo devem ser diferentes !!!" }                                  // 28
+                         "Os nomes do novo arquivo e do arquivo antigo devem ser diferentes !!!", ;                                 // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Incluir", ;
@@ -1705,7 +1720,9 @@ FUNCTION ooHG_Messages_RUWIN // Russian
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Äîáàâèòü", ;
@@ -1836,7 +1853,9 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "¡El archivo ya está encriptado!", ;                                                                       // 25
                          "¡El archivo no está encriptado!", ;                                                                       // 26
                          "¡La contraseña es inválida!", ;                                                                           // 27
-                         "¡Los nombres del nuevo archivo y el antiguo deben ser diferentes!" }                                      // 28
+                         "¡Los nombres del nuevo archivo y el antiguo deben ser diferentes!", ;                                     // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
@@ -2091,7 +2110,9 @@ FUNCTION ooHG_Messages_FI // Finnish
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Lisää", ;
@@ -2298,7 +2319,9 @@ FUNCTION ooHG_Messages_NL // Dutch
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Toevoegen", ;
@@ -2520,7 +2543,9 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Dodaj", ;
@@ -2727,7 +2752,9 @@ FUNCTION ooHG_Messages_TR
                          "File is already encrypted !!!", ;                                                                         // 25
                          "File is not encrypted !!!", ;                                                                             // 26
                          "Password is invalid !!!", ;                                                                               // 27
-                         "The names of the new file and the old file must be different !!!" }                                       // 28
+                         "The names of the new file and the old file must be different !!!", ;                                      // 28
+                         "Player creation failed!", ;                                                                               // 29
+                         "AnimateBox creation failed!" }                                                                            // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Yeni Giriþ", ;
@@ -2942,3 +2969,70 @@ FUNCTION ooHG_Messages_TR
                          "TPrint belgesi açik degil!!" }
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include <windows.h>
+#include <windowsx.h>
+#include <commctrl.h>
+#include "oohg.h"
+/*
+#include "hbvm.h"
+#include "hbstack.h"
+*/
+
+static PHB_ITEM _OOHG_Messages;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITMESSAGES_C_SIDE )          /* FUNCTION InitMessages_C_Side() -> NIL */
+{
+   static BOOL init = FALSE;
+
+   if( ! init )
+   {
+      WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+      _OOHG_Messages = hb_itemNew( NULL );
+      hb_itemCopy( _OOHG_Messages, hb_param( 1, HB_IT_ARRAY ) );
+
+      ReleaseMutex( _OOHG_GlobalMutex() );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+char * _OOHG_Msg( UINT iTable, UINT iItem, UINT iSubItem )
+{
+   char * pMsg = NULL;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   if( iTable >= 1 &&
+       iTable <= hb_arrayLen( _OOHG_Messages ) )
+   {
+      if( iItem >= 1 &&
+          iItem <= hb_arrayLen( hb_arrayGetItemPtr( _OOHG_Messages, iTable ) ) )
+      {
+         if( HB_IS_ARRAY( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) ) )
+         {
+            if( iSubItem >= 1 && 
+                iSubItem <= hb_arrayLen( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) ) )
+            {
+               pMsg = ( char * ) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ), iSubItem ) );
+            }
+         }
+         else
+         {
+            pMsg = ( char * ) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) );
+         }
+      }
+   }
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return pMsg;
+}
+
+#pragma ENDDUMP
