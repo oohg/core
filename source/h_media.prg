@@ -64,6 +64,7 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 #include "i_windefs.ch"
+#include "i_init.ch"
 
 CLASS TPlayer FROM TControl
 
@@ -124,6 +125,9 @@ METHOD Define( ControlName, ParentForm, file, col, row, w, h, noasw, noasm, ;
              IF( HB_IsLogical( shp ) .AND. shp, MCIWNDF_SHOWPOS,  0 )
 
    hh := InitPlayer ( ::ContainerhWnd, file, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
+   IF ! ValidHandler( hh )
+      MsgExclamation( _OOHG_Messages( MT_MISCELL, 29 ), _OOHG_Messages( MT_MISCELL, 9 ) )
+   ENDIF
 
    ::Register( hh, ControlName, HelpId )
 
@@ -207,6 +211,9 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, lAutoplay, 
              If( HB_IsLogical( lTransparent ) .AND. lTransparent, ACS_TRANSPARENT, 0 )
 
    hh := InitAnimate( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
+   IF ! ValidHandler( hh )
+      MsgExclamation( _OOHG_Messages( MT_MISCELL, 30 ), _OOHG_Messages( MT_MISCELL, 9 ) )
+   ENDIF
 
    ::Register( hh, ControlName, nHelpId, , cToolTip )
 
@@ -240,18 +247,13 @@ HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
 
 HB_FUNC( INITANIMATE )
 {
-   HWND hwnd;
+   HWND hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
 
-   hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
-
-   if( ! hwnd )
+   if( hwnd )
    {
-      MessageBox(0, "AnimateBox Creation Failed!", "Error!",
-      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-      return;
+      MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
    }
 
-   MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
    HWNDret( hwnd );
 }
 
@@ -287,18 +289,13 @@ HB_FUNC( DESTROYANIMATE )
 
 HB_FUNC( INITPLAYER )
 {
-   HWND hwnd;
+   HWND hwnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
 
-   hwnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
-
-   if( ! hwnd )
+   if( hwnd )
    {
-      MessageBox(0, "Player Creation Failed!", "Error!",
-      MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
-      return;
+      MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
    }
 
-   MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
    HWNDret( hwnd );
 }
 
