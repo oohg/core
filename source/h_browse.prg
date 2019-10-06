@@ -497,7 +497,7 @@ METHOD Update( nRow, lComplete ) CLASS TOBrowse
       For x := 1 To Len( _BrowseRecMap )
          ::DbGoTo( _BrowseRecMap[ x ] )
 
-         aEval( aFields, { |b,i| aTemp[ i ] := Eval( b ) } )
+         aEval( aFields, { |b,i| aTemp[ i ] := _OOHG_Eval( b ) } )
 
          If lColor
             ( cWorkArea )->( ::SetItemColor( x, , , aTemp ) )
@@ -587,7 +587,7 @@ METHOD UpDateColors() CLASS TOBrowse
 
    For x := 1 To nLen
       ::DbGoTo( ::aRecMap[ x ] )
-      aEval( aFields, { |b,i| aTemp[ i ] := Eval( b ) } )
+      aEval( aFields, { |b,i| aTemp[ i ] := _OOHG_Eval( b ) } )
       ( cWorkArea )->( ::SetItemColor( x, , , aTemp ) )
    Next x
 
@@ -1850,9 +1850,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
 
       Do While ! ::Eof()
          If ::FixBlocks()
-           uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+           uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          Else
-           uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+           uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
          EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
@@ -1869,9 +1869,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          ::TopBottom( GO_TOP )
          Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != nRow
             If ::FixBlocks()
-              uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+              uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             Else
-              uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+              uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
             EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
@@ -2117,7 +2117,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
       Case nvKey == VK_DELETE
          If ::AllowDelete .AND. ! ::Eof()
             If HB_IsBlock( ::bDelWhen )
-               lGo := Eval( ::bDelWhen )
+               lGo := _OOHG_Eval( ::bDelWhen )
             Else
                lGo := .T.
             EndIf
@@ -2609,9 +2609,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
 
       Do While ! ::Eof()
          If ::FixBlocks()
-           uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+           uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          Else
-           uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+           uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
          EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
@@ -2628,9 +2628,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
          ::TopBottom( GO_TOP )
          Do While ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != nRow
             If ::FixBlocks()
-              uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+              uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             Else
-              uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+              uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
             EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
@@ -2890,7 +2890,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
       Case nvKey == VK_DELETE
          If ::AllowDelete .AND. ! ::Eof()
             If HB_IsBlock( ::bDelWhen )
-               lGo := Eval( ::bDelWhen )
+               lGo := _OOHG_Eval( ::bDelWhen )
             Else
                lGo := .t.
             EndIf
