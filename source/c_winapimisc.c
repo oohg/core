@@ -1839,3 +1839,14 @@ HB_FUNC( GETTASKBARHEIGHT )
    GetWindowRect( FindWindow( "Shell_TrayWnd", NULL ), &rect );
    hb_retni( ( INT ) rect.bottom - rect.top );
 }
+
+HB_FUNC( LOADSTRING )
+{
+   LPBYTE cBuffer;
+
+   cBuffer = GlobalAlloc( GPTR, 255 );
+   LoadString( GetModuleHandle( NULL ), hb_parni( 1 ), ( LPSTR ) cBuffer, 254 );
+
+   hb_retc( ( char * ) cBuffer );
+   GlobalFree( cBuffer );
+}

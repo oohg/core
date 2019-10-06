@@ -71,6 +71,22 @@ MEMVAR HBPRN
 #define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
 #endif
 
+#xcommand SET CLOSEPREVIEW ON ;
+   => ;
+      hbprn:ClsPreview := .T.
+
+#xcommand SET CLOSEPREVIEW OFF ;
+   => ;
+      hbprn:ClsPreview := .F.
+
+#xcommand GET CLOSEPREVIEW TO <status> ;
+   => ;
+      <status> := hbprn:ClsPreview
+
+#xcommand GET ESCAPE STATUS TO <status> ;
+   => ;
+      <status> := hbprn:lEscaped
+
 #xcommand SET CHANGES GLOBAL ;
    => ;
       hbprn:lGlobalChanges := .T.
@@ -99,9 +115,9 @@ MEMVAR HBPRN
    => ;
       hbprn:SetDevMode( DM_COLLATE, DMCOLLATE_FALSE )
 
-#xcommand SET COPIES TO <nCopies> ;
+#xcommand SET COPIES [ TO ] <nCopies> ;
    => ;
-      hbprn:SetDevMode( DM_COPIES, <nCopies> )
+      hbprn:SetDevMode( DM_COPIES, iif( HB_ISNUMERIC( <nCopies> ), <nCopies>, 1 ) )
 
 #xcommand SET SCALE TO <nScale> ;
    => ;
@@ -123,9 +139,9 @@ MEMVAR HBPRN
    => ;
       hbprn:SetDevMode( DM_COLOR, <c> )
 
-#xcommand INIT PRINTSYS ;
+#xcommand INIT PRINTSYS [ LANGUAGE <cLang> ] ;
    => ;
-      hbprn := HBPrinter():New()
+      hbprn := HBPrinter():New( <cLang> )
 
 #xcommand START DOC [ NAME <docname> ] ;
    => ;
@@ -187,11 +203,11 @@ MEMVAR HBPRN
    => ;
       hbprn:DxColors( <clr> )
 
-#xcommand SELECT BY DIALOG [ <p: PREVIEW> ] ;
+#xcommand SELECT [ PRINTER ] BY DIALOG [ <p: PREVIEW> ] ;
    => ;
       hbprn:SelectPrinter( "", <.p.> )
 
-#xcommand SELECT DEFAULT [ <p: PREVIEW> ] ;
+#xcommand SELECT [ PRINTER ] DEFAULT [ <p: PREVIEW> ] ;
    => ;
       hbprn:SelectPrinter( NIL, <.p.> )
 
@@ -211,6 +227,14 @@ MEMVAR HBPRN
    => ;
       hbprn:PreviewRect := { <row>, <col>, <row2>, <col2> }
 
+#xcommand SET PREVIEW RECT <arr> ;
+   => ;
+      hbprn:PreviewRect := <arr>
+
+#xcommand SET PREVIEW RECT MAXIMIZED ;
+   => ;
+      hbprn:PreviewRect := { 0, 0, -1, -1 }
+
 #xcommand SET PREVIEW SCALE <scale> ;
    => ;
       hbprn:PreviewScale := <scale>
@@ -229,6 +253,14 @@ MEMVAR HBPRN
 #xcommand SET ORIENTATION LANDSCAPE ;
    => ;
       hbprn:SetDevMode( DM_ORIENTATION, DMORIENT_LANDSCAPE )
+
+#xcommand SET USER PAPERSIZE WIDTH <width> HEIGHT <height> ;
+   => ;
+      hbprn:SetUserMode( DMPAPER_USER, <width>, <height> )
+
+#xcommand SET USER PAPERSIZE HEIGHT <height> WIDTH <width> ;
+   => ;
+      hbprn:SetUserMode( DMPAPER_USER, <width>, <height> )
 
 #xcommand SET PAPERSIZE <psize> ;
    => ;
@@ -644,6 +676,9 @@ MEMVAR HBPRN
 #xcommand GET TEXT EXTENT <txt> [ FONT <cfont> ] TO <asize> ;
    => ;
       hbprn:GetTextExtent( <txt>, <asize>, <cfont> )
+
+#xcommand GET TEXT EXTENT IN MM <txt> [FONT <cfont>] TO <asize> ;
+           => hbprn:GetTextExtent_MM( <txt>, <asize>, <cfont> )
 
 #xcommand @ <row>, <col> BITMAP <hBitmap> SIZE <row2>, <col2> ;
       [ EXTEND <row3>, <col3> ] ;

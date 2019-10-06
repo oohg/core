@@ -91,75 +91,78 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS HBPrinter
 
-   DATA hDC                     INIT 0
-   DATA hDCRef                  INIT 0
-   DATA PrinterName             INIT ""
-   DATA nFromPage               INIT 1
-   DATA nToPage                 INIT 0
-   DATA CurPage                 INIT 1
-   DATA nCopies                 INIT 1
-   DATA nWhatToPrint            INIT 0
-   DATA PrintOpt                INIT 1
-   DATA PrinterDefault          INIT ""
-   DATA Error                   INIT 0
-   DATA PaperNames              INIT {}
-   DATA BinNames                INIT {}
-   DATA DocName                 INIT "HBPRINTER"
-   DATA TextColor               INIT 0
-   DATA BkColor                 INIT 0xFFFFFF
-   DATA BkMode                  INIT BKMODE_TRANSPARENT
-   DATA PolyFillMode            INIT 1
-   DATA Cargo                   INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-   DATA Fonts                   INIT { {}, {}, 0, {} }
-   DATA Brushes                 INIT { {}, {} }
-   DATA Pens                    INIT { {}, {} }
-   DATA Regions                 INIT { {}, {} }
-   DATA ImageLists              INIT { {}, {} }
-   DATA Units                   INIT 0
-   DATA DevCaps                 INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
-   DATA MaxRow                  INIT 0
-   DATA MaxCol                  INIT 0
-   DATA MetaFiles               INIT {}
-   DATA PreviewMode             INIT .F.
-   DATA Thumbnails              INIT .F.
-   DATA ViewportOrg             INIT { 0, 0 }
-   DATA PreviewRect             INIT { 0, 0, 0, 0 }
-   DATA PrintingEMF             INIT .F.
-   DATA Printing                INIT .F.
-   DATA PreviewScale            INIT 1
-   DATA Printers                INIT {}
-   DATA Ports                   INIT {}
-   DATA iLoscstron              INIT 0
-   DATA nGroup                  INIT -1
-   DATA Page                    INIT 1
-   DATA AtH                     INIT {}
-   DATA dx                      INIT 0
-   DATA dy                      INIT 0
-   DATA aHS                     INIT {}
-   DATA aZoom                   INIT { 0, 0, 0, 0 }
-   DATA Scale                   INIT 1
-   DATA nPages                  INIT {}
-   DATA aOpisy                  INIT {}
-   DATA oWinPreview             INIT NIL
-   DATA oWinPrOpt               INIT NIL
-   DATA oWinPagePreview         INIT NIL
-   DATA oWinThumbs              INIT NIL
-   DATA NotifyOnSave            INIT .F.
-   DATA NoButtonSave            INIT .F.
-   DATA NoButtonOptions         INIT .F.
-   DATA BeforePrint             INIT {|| .T. }
-   DATA AfterPrint              INIT {|| NIL }
-   DATA BeforePrintCopy         INIT {|| .T. }
-   DATA InMemory                INIT .F.
-   DATA TimeStamp               INIT ""
-   DATA BaseDoc                 INIT ""
-   DATA lGlobalChanges          INIT .T.
-   DATA lAbsoluteCoords         INIT .F.
-   DATA hData                   INIT 0
+   DATA AfterPrint                INIT {|| NIL }
+   DATA aHS                       INIT {}
+   DATA aOpisy                    INIT {}
+   DATA AtH                       INIT {}
+   DATA aZoom                     INIT { 0, 0, 0, 0 }
+   DATA BaseDoc                   INIT ""
+   DATA BeforePrint               INIT {|| .T. }
+   DATA BeforePrintCopy           INIT {|| .T. }
+   DATA BinNames                  INIT {}
+   DATA BkColor                   INIT 0xFFFFFF
+   DATA BkMode                    INIT BKMODE_TRANSPARENT
+   DATA Brushes                   INIT { {}, {} }
+   DATA Cargo                     INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+   DATA ClsPreview                INIT .T.
+   DATA CurPage                   INIT 1 PROTECTED
+   DATA DevCaps                   INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
+   DATA DocName                   INIT "HBPRINTER"
+   DATA dx                        INIT 0
+   DATA dy                        INIT 0
+   DATA Error                     INIT 0 READONLY
+   DATA Fonts                     INIT { {}, {}, 0, {} }
+   DATA hData                     INIT 0
+   DATA hDC                       INIT 0
+   DATA hDCRef                    INIT 0 PROTECTED
+   DATA IloscStron                INIT 0              // 'Ilosc Stron' means 'Number of Pages' in polish
+   DATA ImageLists                INIT { {}, {} }
+   DATA InMemory                  INIT .F.
+   DATA lAbsoluteCoords           INIT .F.
+   DATA lEscaped                  INIT .F.
+   DATA lGlobalChanges            INIT .T.
+   DATA MaxCol                    INIT 0
+   DATA MaxRow                    INIT 0
+   DATA MetaFiles                 INIT {} PROTECTED
+   DATA nCopies                   INIT 1
+   DATA nFromPage                 INIT 1
+   DATA nGroup                    INIT -1
+   DATA NoButtonOptions           INIT .F.
+   DATA NoButtonSave              INIT .F.
+   DATA NotifyOnSave              INIT .F.
+   DATA nPages                    INIT {}
+   DATA nToPage                   INIT 0
+   DATA nWhatToPrint              INIT 0
+   DATA oWinPagePreview           INIT NIL
+   DATA oWinPreview               INIT NIL
+   DATA oWinThumbs                INIT NIL
+   DATA Page                      INIT 1
+   DATA PaperNames                INIT {}
+   DATA Pens                      INIT { {}, {} }
+   DATA PolyFillMode              INIT POLYFILL_ALTERNATE
+   DATA Ports                     INIT {}
+   DATA PreviewMode               INIT .F.
+   DATA PreviewRect               INIT { 0, 0, 0, 0 }
+   DATA PreviewScale              INIT 1
+   DATA PrinterDefault            INIT ""
+   DATA PrinterName               INIT ""
+   DATA Printers                  INIT {}
+   DATA Printing                  INIT .F.
+   DATA PrintingEMF               INIT .F. PROTECTED
+   DATA PrintOpt                  INIT 1 PROTECTED
+   DATA Regions                   INIT { {}, {} }
+   DATA Scale                     INIT 1
+   DATA TextColor                 INIT 0
+   DATA Thumbnails                INIT .F.
+   DATA TimeStamp                 INIT ""
+   DATA Units                     INIT 0
+   DATA Version                   INIT 2.45 READONLY
+   DATA ViewportOrg               INIT { 0, 0 }
 
    METHOD New
    METHOD SelectPrinter
    METHOD SetDevMode
+   METHOD SetUserMode
    METHOD StartDoc
    METHOD SetPage
    METHOD StartPage
@@ -227,8 +230,11 @@ CLASS HBPrinter
    METHOD LineTo
    METHOD End
    METHOD GetTextExtent
+   METHOD GetTextExtent_MM
    METHOD ReportData
    METHOD InitMessages
+   METHOD BasePageName            INLINE ::BaseDoc
+   METHOD GetVersion              INLINE ::Version
 #ifndef NO_GUI
    METHOD Preview
    METHOD PrevAdjust
@@ -238,6 +244,7 @@ CLASS HBPrinter
    METHOD PrevThumb
    METHOD PrintOption
    METHOD SaveMetaFiles
+   METHOD CleanOnPrevClose
 #endif
 
    ENDCLASS
@@ -259,7 +266,7 @@ METHOD New( cLang ) CLASS HBPrinter
       ::Error := 1
    ENDIF
    ::TimeStamp := TToS( DateTime() )
-   ::BaseDoc := RR_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
+   ::BaseDoc := RR_GetTempFolder() + ::TimeStamp + "_HBPrinter_preview_"
    ::InitMessages( cLang )
 
    RETURN Self
@@ -267,7 +274,7 @@ METHOD New( cLang ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
 
-   LOCAL txtp := "", txtb := "", t := { 0, 0, 1, .T. }
+   LOCAL txtp := "", txtb := "", t := { 0, 0, 1, 0 }
 
    IF cPrinter == NIL
       ::hDCRef := RR_GetDC( ::PrinterDefault, ::hData )
@@ -329,6 +336,15 @@ METHOD SetDevMode( what, newvalue ) CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetUserMode( what, value, value2 ) CLASS HBPrinter
+
+   ::hDCRef := RR_SetUserMode( what, value, value2, ::hData )
+   RR_GetDeviceCaps( ::DevCaps, ::Fonts[ 3 ] )
+   ::SetUnits( ::Units )
+
+RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD StartDoc( cDocName ) CLASS HBPrinter
 
    ::Printing := .T.
@@ -365,8 +381,8 @@ METHOD StartPage() CLASS HBPrinter
       IF ::InMemory
          ::hDC := RR_CreatEMFile( ::hData )
       ELSE
-         ::hDC := RR_CreateFile( ::BaseDoc + AllTrim( StrZero( ::CurPage, 4 ) ) + '.emf', ::hData )
-         ::CurPage := ::CurPage + 1
+         ::hDC := RR_CreateFile( ::BaseDoc + AllTrim( Str( ::CurPage ) ) + '.emf', ::hData )
+         ::CurPage ++
       ENDIF
    ELSE
       RR_StartPage( ::hData )
@@ -392,7 +408,7 @@ METHOD EndPage() CLASS HBPrinter
          AAdd( ::MetaFiles, { RR_ClosEMFile( ::hData ), ::DevCaps[ 1 ], ::DevCaps[ 2 ], ::DevCaps[ 3 ], ::DevCaps[ 4 ], ::DevCaps[ 15 ], ::DevCaps[ 17 ] } )
       ELSE
          RR_CloseFile( ::hData )
-         AAdd( ::MetaFiles, { ::BaseDoc + StrZero( ::CurPage - 1, 4 ) + '.emf', ::DevCaps[ 1 ], ::DevCaps[ 2 ], ::DevCaps[ 3 ], ::DevCaps[ 4 ], ::DevCaps[ 15 ], ::DevCaps[ 17 ] } )
+         AAdd( ::MetaFiles, { ::BaseDoc + AllTrim( Str( ::CurPage - 1 ) ) + '.emf', ::DevCaps[ 1 ], ::DevCaps[ 2 ], ::DevCaps[ 3 ], ::DevCaps[ 4 ], ::DevCaps[ 15 ], ::DevCaps[ 17 ] } )
       END
    ELSE
       RR_EndPage( ::hData )
@@ -1100,6 +1116,17 @@ METHOD GetTextExtent( ctext, apoint, deffont ) CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GetTextExtent_MM( ctext, apoint, deffont ) CLASS HBPrinter
+
+   LOCAL lhf := ::GetObjByName( deffont, "F" )
+
+   ::Error = RR_GetTextExtent( ctext, apoint, lhf, ::hData )
+   apoint[ 1 ] := 25.4 * apoint[ 1 ] / ::DevCaps[ 5 ]
+   apoint[ 2 ] := 25.4 * apoint[ 2 ] / ::DevCaps[ 6 ]
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetObjByName( defname, what, retpos ) CLASS HBPrinter
 
    LOCAL lfound, lret := 0, aref, ahref
@@ -1247,16 +1274,15 @@ METHOD GetViewPortOrg() CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD End() CLASS HBPrinter
 
-   LOCAL n, l
+   LOCAL n
 
    IF ::PreviewMode
-      ::MetaFiles := {}
       IF ! ::InMemory
-         l := ::CurPage - 1
-         FOR n := 1 TO l
-            FErase( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' )
+         FOR n := 1 TO Len( ::MetaFiles )
+            FErase( ::BaseDoc + AllTrim( Str( n ) ) + '.emf' )
          NEXT
       ENDIF
+      ::MetaFiles := {}
    ENDIF
    IF ::hDCRef # 0
       RR_ResetPrinter( ::hData )
@@ -1271,10 +1297,6 @@ METHOD End() CLASS HBPrinter
    ::hData := NIL
    IF HB_ISOBJECT( ::oWinPreview )
       ::PrevClose()
-   ENDIF
-   IF HB_ISOBJECT( ::oWinPrOpt )
-      ::oWinPrOpt:Release()
-      ::oWinPrOpt := NIL
    ENDIF
    ::BeforePrint := NIL
    ::AfterPrint := NIL
@@ -1625,7 +1647,7 @@ METHOD ReportData( l_x1, l_x2, l_x3, l_x4, l_x5, l_x6 ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitMessages( cLang ) CLASS HBPrinter
 
-   LOCAL nAt
+   LOCAL nAt, i, cData
 
 #ifndef NO_GUI
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
@@ -1641,266 +1663,794 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
    cLang := Upper( AllTrim( cLang ) )
 
    DO CASE
-   CASE cLang == "ES"
-      ::aOpisy := { "Vista Previa", ;
-         "&Salir", ;
-         "&Imprimir", ;
-         "&Guardar", ;
-         "&Primera", ;
-         "&Anterior", ;
-         "&Siguiente", ;
-         "&Última", ;
-         "Zoom +", ;
-         "Zoom -", ;
-         "&Opciones", ;
-         "Ir a Página:", ;
-         "Página ", ;
-         "Miniaturas", ;
-         "Página", ;
-         "Imprimir página actual", ;
-         "Páginas:", ;
-         "Zoom Máximo/Mínimo", ;
-         "Opciones de Impresión", ;
-         "Imprimir de", ;
-         "a", ;
-         "Copias", ;
-         "Imprimir rango", ;
-         "Todo a partir de", ;
-         "Solo impares", ;
-         "Solo pares", ;
-         "Todo (impares primero)", ;
-         "Todo (pares primero)", ;
-         "Imprimiendo...", ;
-         "Esperando cambio de papel...", ;
-         "Haga clic en OK para continuar.", ;
-         "¡Listo!" }
-   CASE cLang == "IT"
-      ::aOpisy := { "Anteprima", ;
-         "&Cancella", ;
-         "S&tampa", ;
-         "&Salva", ;
-         "&Primo", ;
-         "&Indietro", ;
-         "&Avanti", ;
-         "&Ultimo", ;
-         "Zoom In", ;
-         "Zoom Out", ;
-         "&Opzioni", ;
-         "Pagina:", ;
-         "Pagina anteprima ", ;
-         "Miniatura Anteprima", ;
-         "Pagina", ;
-         "Stampa solo pagina attuale", ;
-         "Pagine:", ;
-         "Limite zoom !", ;
-         "Opzioni Stampa", ;
-         "Stampa da", ;
-         "a", ;
-         "Copie", ;
-         "Range Stampa", ;
-         "Tutte", ;
-         "Solo dispari", ;
-         "Solo pari", ;
-         "Tutte iniziando dispari", ;
-         "Tutte iniziando pari", ;
-         "Stampa in corso ....", ;
-         "Attendere cambio carta...", ;
-         "Premere OK per continuare.", ;
-         "Fatto !" }
-   CASE cLang == "PLWIN"
-      ::aOpisy := { "Podgl¹d", ;
-         "&Rezygnuj", ;
-         "&Drukuj", ;
-         "Zapisz", ;
-         "Pierwsza", ;
-         "Poprzednia", ;
-         "Nastêpna", ;
-         "Ostatnia", ;
-         "Powiêksz", ;
-         "Pomniejsz", ;
-         "Opc&je", ;
-         "IdŸ do strony:", ;
-         "Podgl¹d strony", ;
-         "Podgl¹d miniaturek", ;
-         "Strona", ;
-         "Drukuj aktualn¹ stronê", ;
-         "Stron:", ;
-         "Nie mozna wiêcej !", ;
-         "Opcje drukowania", ;
-         "Drukuj od", ;
-         "do", ;
-         "Kopii", ;
-         "Zakres", ;
-         "Wszystkie z zakresu", ;
-         "Tylko nieparzyste", ;
-         "Tylko parzyste", ;
-         "Najpierw nieparzyste", ;
-         "Najpierw parzyste", ;
-         "Drukowanie ....", ;
-         "Czekam na zmiane papieru...", ;
-         "Nacisnij OK, aby kontynuowac.", ;
-         "Gotowy !" }
-   CASE cLang == "PT"
-      ::aOpisy := { "Inspeção Prévia", ;
-         "&Cancelar", ;
-         "&Imprimir", ;
-         "&Salvar", ;
-         "&Primera", ;
-         "&Anterior", ;
-         "Próximo", ;
-         "&Último", ;
-         "Zoom +", ;
-         "Zoom -", ;
-         "&Opções", ;
-         "Pag.:", ;
-         "Página ", ;
-         "Miniaturas", ;
-         "Pag.", ;
-         "Imprimir somente a pag. atual", ;
-         "Páginas:", ;
-         "Zoom Máximo/Minimo", ;
-         "Opções de Impressão", ;
-         "Imprimir de", ;
-         "Esta", ;
-         "Cópias", ;
-         "Imprimir rango", ;
-         "Tudo a partir desta", ;
-         "Só Ímpares", ;
-         "Só Pares", ;
-         "Todas as Ímpares Primeiro", ;
-         "Todas Pares primero", ;
-         "Imprimindo ....", ;
-         "Esperando por papel...", ;
-         "Pressione OK para continuar.", ;
-         "Feito!" }
-   CASE cLang == "DEWIN"
-      ::aOpisy := { "Vorschau", ;
-         "&Abbruch", ;
-         "&Drucken", ;
-         "&Speichern", ;
-         "&Erste", ;
-         "&Vorige", ;
-         "&Nächste", ;
-         "&Letzte", ;
-         "Ver&größern", ;
-         "Ver&kleinern", ;
-         "&Optionen", ;
-         "Seite:", ;
-         "Seitenvorschau", ;
-         "Überblick", ;
-         "Seite", ;
-         "Aktuelle Seite drucken", ;
-         "Seiten:", ;
-         "Maximum erreicht!", ;
-         "Druckeroptionen", ;
-         "Drucke von", ;
-         "bis", ;
-         "Anzahl", ;
-         "Bereich", ;
-         "Alle Seiten", ;
-         "Ungerade Seiten", ;
-         "Gerade Seiten", ;
-         "Alles ungerade Seiten zuerst", ;
-         "Alles gerade Seiten zuerst", ;
-         "Druckt ....", ;
-         "Bitte Papier nachlegen...", ;
-         "Drücken Sie OK, um fortzufahren.", ;
-         "Getan!" }
-   CASE cLang == 'FR'
-      ::aOpisy := { "Prévisualisation", ;
-         "&Abandonner", ;
-         "&Imprimer", ;
-         "&Sauver", ;
-         "&Premier", ;
-         "P&récédent", ;
-         "&Suivant", ;
-         "&Dernier", ;
-         "Zoom +", ;
-         "Zoom -", ;
-         "&Options", ;
-         "Aller à la page:", ;
-         "Aperçu de la page", ;
-         "Aperçu affichettes", ;
-         "Page", ;
-         "Imprimer la page en cours", ;
-         "Pages:", ;
-         "Plus de zoom !", ;
-         "Options d'impression", ;
-         "Imprimer de", ;
-         "à", ;
-         "Copies", ;
-         "Intervalle d'impression", ;
-         "Tout dans l'intervalle", ;
-         "Impair seulement", ;
-         "Pair seulement", ;
-         "Tout mais impair d'abord", ;
-         "Tout mais pair d'abord", ;
-         "Impression ....", ;
-         "Attente de changement de papier...", ;
-         "Appuyez sur OK pour continuer.", ;
-         "Terminé !" }
-   OTHERWISE   // default to "EN"
-      ::aOpisy := { "Preview", ;
-         "&Cancel", ;
-         "&Print", ;
-         "&Save", ;
-         "&First", ;
-         "P&revious", ;
-         "&Next", ;
-         "&Last", ;
-         "Zoom In", ;
-         "Zoom Out", ;
-         "&Options", ;
-         "Go To Page:", ;
-         "Page preview ", ;
-         "Thumbnails preview", ;
-         "Page", ;
-         "Print current page only", ;
-         "Pages:", ;
-         "No more zoom!", ;
-         "Print options", ;
-         "Print from", ;
-         "to", ;
-         "Copies", ;
-         "Print Range", ;
-         "All from range", ;
-         "Odd only", ;
-         "Even only", ;
-         "All but odd first", ;
-         "All but even first", ;
-         "Printing...", ;
-         "Waiting for paper change...", ;
-         "Press OK to continue.", ;
-         "Done!" }
+   CASE cLang == "FR"                                 // French
+      ::aOpisy := { "Prévisualisation", ;             // 01
+         "&Abandonner", ;                             // 02
+         "&Imprimer", ;                               // 03
+         "&Enregistrer", ;                            // 04
+         "&Premier", ;                                // 05
+         "P&récédent", ;                              // 06
+         "&Suivant", ;                                // 07
+         "&Dernier", ;                                // 08
+         "Zoom +", ;                                  // 09
+         "Zoom -", ;                                  // 10
+         "&Options", ;                                // 11
+         "Aller à la page:", ;                        // 12
+         "Aperçu de la page", ;                       // 13
+         "Aperçu affichettes", ;                      // 14
+         "Page", ;                                    // 15
+         "Imprimer la page en cours", ;               // 16
+         "Pages:", ;                                  // 17
+         "Plus de zoom !", ;                          // 18
+         "Options d'impression", ;                    // 19
+         "Imprimer de", ;                             // 20
+         "à", ;                                       // 21
+         "Copies", ;                                  // 22
+         "Classement", ;                              // 23
+         "Tout dans l'intervalle", ;                  // 24
+         "Impair seulement", ;                        // 25
+         "Pair seulement", ;                          // 26
+         "Tout mais impair d'abord", ;                // 27
+         "Tout mais pair d'abord", ;                  // 28
+         "Impression ....", ;                         // 29
+         "Attente de changement de papier...", ;      // 30
+         "Appuyez sur OK pour continuer.", ;          // 31
+         "Terminé !", ;                               // 32
+         "Enregistrer sous...", ;                     // 33
+         "Enregistrer tout", ;                        // 34
+         "Fichiers EMF", ;                            // 35
+         "Tous les fichiers" }                        // 36
+   CASE cLang == "DEWIN" .OR. ;
+        cLang == "DE"                                 // German
+      ::aOpisy := { "Vorschau", ;                     // 01
+         "&Abbruch", ;                                // 02
+         "&Drucken", ;                                // 03
+         "&Speichern", ;                              // 04
+         "&Erste", ;                                  // 05
+         "&Vorige", ;                                 // 06
+         "&Nächste", ;                                // 07
+         "&Letzte", ;                                 // 08
+         "Ver&größern", ;                             // 09
+         "Ver&kleinern", ;                            // 10
+         "&Optionen", ;                               // 11
+         "Seite:", ;                                  // 12
+         "Seitenvorschau", ;                          // 13
+         "Überblick", ;                               // 14
+         "Seite", ;                                   // 15
+         "Aktuelle Seite drucken", ;                  // 16
+         "Seiten:", ;                                 // 17
+         "Maximum erreicht!", ;                       // 18
+         "Druckeroptionen", ;                         // 19
+         "Drucke von", ;                              // 20
+         "bis", ;                                     // 21
+         "Anzahl", ;                                  // 22
+         "Bereich", ;                                 // 23
+         "Alle Seiten", ;                             // 24
+         "Ungerade Seiten", ;                         // 25
+         "Gerade Seiten", ;                           // 26
+         "Alles ungerade Seiten zuerst", ;            // 27
+         "Alles gerade Seiten zuerst", ;              // 28
+         "Druckt ....", ;                             // 29
+         "Bitte Papier nachlegen...", ;               // 30
+         "Drücken Sie OK, um fortzufahren.", ;        // 31
+         "Getan!", ;                                  // 32
+         "Speichern als...", ;                        // 33
+         "Speichern alle", ;                          // 34
+         "EMF files", ;                               // 35
+         "Alle Dateien" }                             // 36
+   CASE cLang == "IT"                                 // Italian
+      ::aOpisy := { "Anteprima", ;                    // 01
+         "&Cancella", ;                               // 02
+         "S&tampa", ;                                 // 03
+         "&Salva", ;                                  // 04
+         "&Primo", ;                                  // 05
+         "&Indietro", ;                               // 06
+         "&Avanti", ;                                 // 07
+         "&Ultimo", ;                                 // 08
+         "Zoom In", ;                                 // 09
+         "Zoom Out", ;                                // 10
+         "&Opzioni", ;                                // 11
+         "Pagina:", ;                                 // 12
+         "Pagina anteprima ", ;                       // 13
+         "Miniatura Anteprima", ;                     // 14
+         "Pagina", ;                                  // 15
+         "Stampa solo pagina attuale", ;              // 16
+         "Pagine:", ;                                 // 17
+         "Limite zoom !", ;                           // 18
+         "Opzioni Stampa", ;                          // 19
+         "Stampa da", ;                               // 20
+         "a", ;                                       // 21
+         "Copie", ;                                   // 22
+         "Confronto", ;                               // 23
+         "Tutte", ;                                   // 24
+         "Solo dispari", ;                            // 25
+         "Solo pari", ;                               // 26
+         "Tutte iniziando dispari", ;                 // 27
+         "Tutte iniziando pari", ;                    // 28
+         "Stampa in corso ....", ;                    // 29
+         "Attendere cambio carta...", ;               // 30
+         "Premere OK per continuare.", ;              // 31
+         "Fatto !", ;                                 // 32
+         "Salva come...", ;                           // 33
+         "Salva tutto", ;                             // 34
+         "File EMF", ;                                // 35
+         "Tutti i file" }                             // 36
+   CASE cLang == "PLWIN" .OR. ;
+        cLang == "PL852" .OR. ;
+        cLang == "PLISO" .OR. ;
+        cLang == "PLMAZ"                              // Polish
+      ::aOpisy := { "Podgl¹d", ;                      // 01
+         "&Rezygnuj", ;                               // 02
+         "&Drukuj", ;                                 // 03
+         "Zapisz", ;                                  // 04
+         "Pierwsza", ;                                // 05
+         "Poprzednia", ;                              // 06
+         "Nastêpna", ;                                // 07
+         "Ostatnia", ;                                // 08
+         "Powiêksz", ;                                // 09
+         "Pomniejsz", ;                               // 10
+         "Opc&je", ;                                  // 11
+         "IdŸ do strony:", ;                          // 12
+         "Podgl¹d strony", ;                          // 13
+         "Podgl¹d miniaturek", ;                      // 14
+         "Strona", ;                                  // 15
+         "Drukuj aktualn¹ stronê", ;                  // 16
+         "Stron:", ;                                  // 17
+         "Nie mozna wiêcej !", ;                      // 18
+         "Opcje drukowania", ;                        // 19
+         "Drukuj od", ;                               // 20
+         "do", ;                                      // 21
+         "Kopii", ;                                   // 22
+         "Zakres", ;                                  // 23
+         "Wszystkie z zakresu", ;                     // 24
+         "Tylko nieparzyste", ;                       // 25
+         "Tylko parzyste", ;                          // 26
+         "Najpierw nieparzyste", ;                    // 27
+         "Najpierw parzyste", ;                       // 28
+         "Drukowanie...", ;                           // 29
+         "Czekam na zmiane papieru...", ;             // 30
+         "Nacisnij OK, aby kontynuowac.", ;           // 31
+         "Gotowy !", ;                                // 32
+         "Zapisz jako...", ;                          // 33
+         "Zapisz wszystko", ;                         // 34
+         "Pliki EMF", ;                               // 35
+         "Wszystkie pliki" }                          // 36
+   CASE cLang == "PT"                                 // Portuguese
+      ::aOpisy := { "Inspeção Prévia", ;              // 01
+         "&Cancelar", ;                               // 02
+         "&Imprimir", ;                               // 03
+         "&Salvar", ;                                 // 04
+         "&Primera", ;                                // 05
+         "&Anterior", ;                               // 06
+         "Próximo", ;                                 // 07
+         "&Último", ;                                 // 08
+         "Zoom +", ;                                  // 09
+         "Zoom -", ;                                  // 10
+         "&Opções", ;                                 // 11
+         "Pag.:", ;                                   // 12
+         "Página ", ;                                 // 13
+         "Miniaturas", ;                              // 14
+         "Pag.", ;                                    // 15
+         "Imprimir somente a pag. atual", ;           // 16
+         "Páginas:", ;                                // 17
+         "Zoom Máximo/Minimo", ;                      // 18
+         "Opções de Impressão", ;                     // 19
+         "Imprimir de", ;                             // 20
+         "para", ;                                    // 21
+         "Cópias", ;                                  // 22
+         "Agrupamento", ;                             // 23
+         "Tudo a partir desta", ;                     // 24
+         "Só Ímpares", ;                              // 25
+         "Só Pares", ;                                // 26
+         "Todas as Ímpares Primeiro", ;               // 27
+         "Todas Pares primero", ;                     // 28
+         "Imprimindo ....", ;                         // 29
+         "Esperando por papel...", ;                  // 30
+         "Pressione OK para continuar.", ;            // 31
+         "Feito!", ;                                  // 32
+         "Salvar como...", ;                          // 33
+         "Salvar tudo", ;                             // 34
+         "Arquivos EMF", ;                            // 35
+         "Todos os arquivos" }                        // 36
+   CASE cLang == "RUKOI8" .OR. ;
+        cLang == "RU866"  .OR. ;
+        cLang == "RUWIN"                              // Russian
+      ::aOpisy := { 'Ïðîñìîòð', ;                     // 01
+         'Âûõîä', ;                                   // 02
+         'Ïå÷àòü', ;                                  // 03
+         'Ñîõðàíèòü', ;                               // 04
+         'Íà÷àëî', ;                                  // 05
+         'Íàçàä', ;                                   // 06
+         'Âïåðåä', ;                                  // 07
+         'Êîíåö', ;                                   // 08
+         'Óâåëè÷èòü', ;                               // 09
+         'Óìåíüøèòü', ;                               // 10
+         'Îïöèè', ;                                   // 11
+         'Ñòðàíèöà:', ;                               // 12
+         'Ïðîñìîòð ñòðàíèöû ', ;                      // 13
+         'Ìèíèàòþðû', ;                               // 14
+         'Ñòðàíèöà', ;                                // 15
+         'Ïå÷àòàòü òåêóùóþ', ;                        // 16
+         'Ñòðàíèö:', ;                                // 17
+         'Äîñòèãíóò ïðåäåë ìàñøòàáèðîâàíèÿ!', ;       // 18
+         'Ïàðàìåòðû ïå÷àòè', ;                        // 19
+         'Ñòðàíèöû ñ', ;                              // 20
+         'ïî', ;                                      // 21
+         'Êîïèé', ;                                   // 22
+         'Íàïå÷àòàòü', ;                              // 23
+         'Âñå ñòðàíèöû', ;                            // 24
+         'Íå÷¸òíûå', ;                                // 25
+         '×¸òíûå', ;                                  // 26
+         'Âñå, íî âíà÷àëå íå÷¸òíûå', ;                // 27
+         'Âñå, íî âíà÷àëå ÷¸òíûå', ;                  // 28
+         'Ïå÷àòü ....', ;                             // 29
+         'Âñòàâüòå áóìàãó...', ;                      // 30
+         "Press OK to continue.", ;                   // 31
+         "Done!", ;                                   // 32
+         'Ñîõðàíèòü êàê...', ;                        // 33
+         'Ñîõðàíèòü âñå', ;                           // 34
+         'Ôàéëû EMF', ;                               // 35
+         'Âñå ôàéëû' }                                // 36
+   CASE cLang == "ES" .OR. ;
+        cLang == "ESWIN"                              // Spanish
+      ::aOpisy := { "Vista Previa", ;                 // 01
+         "&Cerrar", ;                                 // 02
+         "&Imprimir", ;                               // 03
+         "&Guardar", ;                                // 04
+         "&Primera", ;                                // 05
+         "&Anterior", ;                               // 06
+         "&Siguiente", ;                              // 07
+         "&Última", ;                                 // 08
+         "Zoom +", ;                                  // 09
+         "Zoom -", ;                                  // 10
+         "&Opciones", ;                               // 11
+         "Ir a Página:", ;                            // 12
+         "Página ", ;                                 // 13
+         "Miniaturas", ;                              // 14
+         "Página", ;                                  // 15
+         "Imprimir página actual", ;                  // 16
+         "Páginas:", ;                                // 17
+         "Zoom Máximo/Mínimo", ;                      // 18
+         "Opciones de Impresión", ;                   // 19
+         "Imprimir de", ;                             // 20
+         "a", ;                                       // 21
+         "Copias", ;                                  // 22
+         "Compaginación", ;                           // 23
+         "Todo, secuencial", ;                        // 24
+         "Solo páginas impares", ;                    // 25
+         "Solo páginas pares", ;                      // 26
+         "Todo, páginas impares primero", ;           // 27
+         "Todo, páginas pares primero", ;             // 28
+         "Imprimiendo...", ;                          // 29
+         "Esperando cambio de papel...", ;            // 30
+         "Haga clic en OK para continuar.", ;         // 31
+         "¡Listo!", ;                                 // 32
+         "Guardar co&mo...", ;                         // 33
+         "Guardar &todo", ;                            // 34
+         "Archivos EMF", ;                            // 35
+         "Todos los archivos" }                       // 36
+   CASE cLang == "UK" .OR. ;
+        cLang == "UA"                                 // Ukranian
+      ::aOpisy := { 'Ïåðåãëÿä', ;                     // 01
+         'Âèõiä', ;                                   // 02
+         'Äðóê', ;                                    // 03
+         'Çáåðåãòè', ;                                // 04
+         'Ïî÷àòîê', ;                                 // 05
+         'Íàçàä', ;                                   // 06
+         'Âïåðåä', ;                                  // 07
+         'Êiíåöü', ;                                  // 08
+         'Çáiëüøèòè', ;                               // 09
+         'Çìåíøèòè', ;                                // 10
+         'Îïöi¿', ;                                   // 11
+         'Ñòîðiíêà:', ;                               // 12
+         'Ïåðåãëÿä ñòîðiíêè ', ;                      // 13
+         'Ìiíiàòþðè', ;                               // 14
+         'Ñòîðiíêà', ;                                // 15
+         'Äðóêóâàòè ïîòî÷íó', ;                       // 16
+         'Ñòîðiíîê:', ;                               // 17
+         'Äîñÿãíóòà ìåæà ìàñøòàáóâàííÿ!', ;           // 18
+         'Ïàðàìåòðè äðóêó', ;                         // 19
+         'Ñòîðiíêè ç', ;                              // 20
+         'ïî', ;                                      // 21
+         'Êîïié', ;                                   // 22
+         'Íàäðóêóâàòè', ;                             // 23
+         'Óñi ñòðiíêè', ;                             // 24
+         'Íåïàðíi', ;                                 // 25
+         'Ïàðíi', ;                                   // 26
+         'Óñi, àëå ñïåðøó íåïàðíi', ;                 // 27
+         'Óñi, àëå ñïåðøó ïàðíi', ;                   // 28
+         'Äðóê ....', ;                               // 29
+         'Çàìiíiòü ïàïið...', ;                       // 30
+         "Press OK to continue.", ;                   // 31
+         "Done!", ;                                   // 32
+         'Çáåðåãòè ÿê...', ;                          // 33
+         'Çáåðåãòè âñå', ;                            // 34
+         'Ôàéëè EMF', ;                               // 35
+         'Óñi ôàéëè' }                                // 36
+   CASE cLang == "FI"                                 // Finnish
+      ::aOpisy := { "Esikatsele", ;                   // 01
+         "&Keskeytä", ;                               // 02
+         "&Tulosta", ;                                // 03
+         "T&allenna", ;                               // 04
+         "&Ensimmäinen", ;                            // 05
+         "E&dellinen", ;                              // 06
+         "&Seuraava", ;                               // 07
+         "&Viimeinen", ;                              // 08
+         "Suurenna", ;                                // 09
+         "Pienennä", ;                                // 10
+         "&Optiot", ;                                 // 11
+         "Mene sivulle:", ;                           // 12
+         "Esikatsele sivu ", ;                        // 13
+         "Esikatsele miniatyyrit", ;                  // 14
+         "Sivu", ;                                    // 15
+         "Tulosta tämä sivu", ;                       // 16
+         "Sivuja:", ;                                 // 17
+         "Ei voi suurentaa !", ;                      // 18
+         "Tulostus optiot", ;                         // 19
+         "Alkaen", ;                                  // 20
+         "->", ;                                      // 21
+         "Kopiot", ;                                  // 22
+         "Tulostus alue", ;                           // 23
+         "Kaikki alueelta", ;                         // 24
+         "Vain parittomat", ;                         // 25
+         "Vain parilleset", ;                         // 26
+         "Kaikki paitsi ensim. pariton", ;            // 27
+         "Kaikki paitsi ensim. parillinen", ;         // 28
+         "Tulostan ....", ;                           // 29
+         "Odotan paperin vaihtoa...", ;               // 30
+         "Jatka painamalla OK.", ;                    // 31
+         "Valmis!", ;                                 // 32
+         "Tallenna nimellä...", ;                     // 33
+         "Tallenna kaikki", ;                         // 34
+         "EMF Tiedostot", ;                           // 35
+         "Kaikki Tiedostot" }                         // 36
+   CASE cLang == "NL"                                 // Dutch
+      ::aOpisy := { 'Afdrukvoorbeeld', ;              // 01
+         'Annuleer', ;                                // 02
+         'Print', ;                                   // 03
+         'Opslaan', ;                                 // 04
+         'Eerste', ;                                  // 05
+         'Vorige', ;                                  // 06
+         'Volgende', ;                                // 07
+         'Laatste', ;                                 // 08
+         'Inzoomen', ;                                // 09
+         'Uitzoomen', ;                               // 10
+         'Opties', ;                                  // 11
+         'Ga naar pagina:', ;                         // 12
+         'Pagina voorbeeld ', ;                       // 13
+         'Thumbnails voorbeeld', ;                    // 14
+         'Pagina', ;                                  // 15
+         'Print alleen huidige pagina', ;             // 16
+         "Pagina's:", ;                               // 17
+         'Geen zoom meer !', ;                        // 18
+         'Print opties', ;                            // 19
+         'Print van', ;                               // 20
+         'tot', ;                                     // 21
+         'Exemplaren', ;                              // 22
+         "Pagina's", ;                                // 23
+         "Alle pagina's", ;                           // 24
+         'Alleen oneven', ;                           // 25
+         'Alleen even', ;                             // 26
+         'Alles maar oneven eerst', ;                 // 27
+         'Alles maar even eerst', ;                   // 28
+         'Printen ....', ;                            // 29
+         'Wacht op papier wissel...', ;               // 30
+         "Druk op OK om door te gaan.", ;             // 31
+         "Gedaan!", ;                                 // 32
+         'Be&waar als...', ;                          // 33
+         'Bewaar &Alles', ;                           // 34
+         'EMF-bestanden', ;                           // 35
+         'Alle bestanden' }                           // 36
+   CASE cLang == "CS"                                 // Czech
+      ::aOpisy := { "Náhled", ;                       // 01
+         "&Storno", ;                                 // 02
+         "&Tisk", ;                                   // 03
+         "&Uložit", ;                                 // 04
+         "&První", ;                                  // 05
+         "P&øedchozí", ;                              // 06
+         "&Další", ;                                  // 07
+         "P&oslední", ;                               // 08
+         "Z&vìtšit", ;                                // 09
+         "&Zmenšit", ;                                // 10
+         "&Možnosti", ;                               // 11
+         "Ukaž stranu:", ;                            // 12
+         "Náhled strany ", ;                          // 13
+         "Náhled více strán", ;                       // 14
+         "Strana", ;                                  // 15
+         "Tisk aktuální strany", ;                    // 16
+         "Strán:", ;                                  // 17
+         "Nemožno dále mìnit velikost!", ;            // 18
+         "Možnosti tisku", ;                          // 19
+         "Tisk od", ;                                 // 20
+         "po", ;                                      // 21
+         "Kópií", ;                                   // 22
+         "Tisk stran", ;                              // 23
+         "Všechny stran", ;                           // 24
+         "Jenom liché", ;                             // 25
+         "Jenom sudé", ;                              // 26
+         "Všechny kromì první liché", ;               // 27
+         "Všechny kromì první sudéj", ;               // 28
+         "Tisknu ...", ;                              // 29
+         "Èekám na papír ...", ;                      // 30
+         "Pokracujte stisknutím tlacítka OK.", ;      // 31
+         "Hotovo!", ;                                 // 32
+         "Uložit &jako...", ;                         // 33
+         "Uložit &všechno", ;                         // 34
+         "EMF soubor", ;                              // 35
+         "Všechny soubory" }                          // 36
+   CASE cLang == "SK"                                 // Slovak
+      ::aOpisy := { "Náh¾ad", ;                       // 01
+         "&Storno", ;                                 // 02
+         "&Tlaè", ;                                   // 03
+         "Uložit", ;                                  // 04
+         "&Prvá", ;                                   // 05
+         "P&redcházajúca", ;                          // 06
+         "&Ïalšia", ;                                 // 07
+         "Po&sledná", ;                               // 08
+         "Zoom +", ;                                  // 09
+         "Zoom -", ;                                  // 10
+         "&Možnosti", ;                               // 11
+         "Ukáž stranu:", ;                            // 12
+         "Náh¾ad strany ", ;                          // 13
+         "Náh¾ad viacerých stránok", ;                // 14
+         "Strana", ;                                  // 15
+         "Tlaè aktuálnej strany", ;                   // 16
+         "Strana:", ;                                 // 17
+         "Už žiadne priblíženie", ;                   // 18
+         "Možnosti tlaèe", ;                          // 19
+         "Tlaè od", ;                                 // 20
+         "po", ;                                      // 21
+         "Kópií", ;                                   // 22
+         "Tlaè strán", ;                              // 23
+         "Všetky strany", ;                           // 24
+         "Len nepárne", ;                             // 25
+         "Len párne", ;                               // 26
+         "Všetko, najskôr nepárne stránky", ;         // 27
+         "Všetko, najskôr párne stránky", ;           // 28
+         "Tlaèím ...", ;                              // 29
+         "Èakám na papier ...", ;                     // 30
+         "Pokracujte stlacením tlacidla OK. ", ;      // 31
+         "Hotový!", ;                                 // 32
+         "Uloži ako...", ;                            // 33
+         "Uloži všetko", ;                            // 34
+         "EMF súbor", ;                               // 35
+         "Všetky súbory" }                            // 36
+   CASE cLang == "SLWIN" .OR. ;
+        cLang == "SLISO" .OR. ;
+        cLang == "SL852" .OR. ;
+        cLang == "SL437"                              // Slovenian
+      ::aOpisy := { 'Predgled', ;                     // 01
+         'Prekini', ;                                 // 02
+         'Natisni', ;                                 // 03
+         'Shrani', ;                                  // 04
+         'Prva', ;                                    // 05
+         'Prejšnja', ;                                // 06
+         'Naslednja', ;                               // 07
+         'Zadnja', ;                                  // 08
+         'Poveèaj', ;                                 // 09
+         'Pomanjšaj', ;                               // 10
+         'Možnosti', ;                                // 11
+         'Skok na stran:', ;                          // 12
+         'Predgled', ;                                // 13
+         'Mini predgled', ;                           // 14
+         'Stran', ;                                   // 15
+         'Samo trenutna stran', ;                     // 16
+         'Strani:', ;                                 // 17
+         'Ni veè poveèave!', ;                        // 18
+         'Možnosti tiskanja', ;                       // 19
+         'Tiskaj od', ;                               // 20
+         'do', ;                                      // 21
+         'Kopij', ;                                   // 22
+         'Tiskanje', ;                                // 23
+         'Vse iz izbora', ;                           // 24
+         'Samo neparne strani', ;                     // 25
+         'Samo parne strani', ;                       // 26
+         'Vse - neparne strani najprej', ;            // 27
+         'Vse - parne strani najprej', ;              // 28
+         'Tiskanje ....', ;                           // 29
+         'Èakanje na zamenjavo papirja...', ;         // 30
+         "Pritisnite OK za nadaljevanje.", ;          // 31
+         "Koncano!", ;                                // 32
+         'Shrani kot...', ;                           // 33
+         'Shrani vse', ;                              // 34
+         'EMF datoteke', ;                            // 35
+         'Vse datoteke' }                             // 36
+   CASE cLang == "HU"                                 // Hungarian
+      ::aOpisy := { "Elõnézet", ;                     // 01
+         "&Mégse", ;                                  // 02
+         "Nyo&mtatás", ;                              // 03
+         "&Mentés", ;                                 // 04
+         "&Elsõ", ;                                   // 05
+         "E&lõzõ", ;                                  // 06
+         "&Következõ", ;                              // 07
+         "&Utolsó", ;                                 // 08
+         "&Nagyítás", ;                               // 09
+         "K&icsinyítés", ;                            // 10
+         "&Opciók", ;                                 // 11
+         "Oldalt mutasd:", ;                          // 12
+         "Oldal elõnézete ", ;                        // 13
+         "Több oldal elõnézete", ;                    // 14
+         "Oldal", ;                                   // 15
+         "Aktuális oldal nyomtatása", ;               // 16
+         "Oldal:", ;                                  // 17
+         "A nagyság tovább nem változtatható!", ;     // 18
+         "Nyomtatási lehetõségek", ;                  // 19
+         "Nyomtatás ettõl", ;                         // 20
+         "eddig", ;                                   // 21
+         "Másolat", ;                                 // 22
+         "Egyeztetés", ;                              // 23
+         "Minden oldalt", ;                           // 24
+         "Csak a páratlan", ;                         // 25
+         "Csak a páros", ;                            // 26
+         "Mindet kivéve az elsõ páratlant", ;         // 27
+         "Mindet kivéve az elsõ párost", ;            // 28
+         "Nyomtatom ...", ;                           // 29
+         "Papírra várok ...", ;                       // 30
+         "A folytatáshoz nyomja meg az OK gombot.", ; // 31  ;
+         "Kész!", ;                                   // 32
+         "Mentés másként ...", ;                      // 33
+         "Mindet mentsd", ;                           // 34
+         "EMF állomány", ;                            // 35
+         "Minden állomány" }                          // 36
+   CASE cLang == "EL"                                 // Greek - Ellinika
+      ::aOpisy := { 'ÐñïâïëÞ', ;                      // 01
+         '&Áêõñï', ;                                  // 02
+         '&Ôýðùóå', ;                                 // 03
+         '&Óþóå', ;                                   // 04
+         '&1ç', ;                                     // 05
+         'Ð&ñïçã/íç', ;                               // 06
+         '&Åðïìåíç', ;                                // 07
+         '&Ôåëåõô/á', ;                               // 08
+         'Zoom +', ;                                  // 09
+         'Zoom -', ;                                  // 10
+         '&Åðéëïãåò', ;                               // 11
+         'Ðçãáéíå óåë:', ;                            // 12
+         'Ðñïâïëç ', ;                                // 13
+         'Ìéêñïãñáößåò', ;                            // 14
+         'Óåë.', ;                                    // 15
+         'Ôõðùóå ìïíï ôçí ðáñïõóá', ;                 // 16
+         'Óåëéäåò:', ;                                // 17
+         'Ï÷é Üëëï zoom !', ;                         // 18
+         'ÅðéëïãÝò', ;                                // 19
+         'Ôýðùóå áðü', ;                              // 20
+         'Ýùò', ;                                     // 21
+         'Áíôßãñáöá', ;                               // 22
+         'Åýñïò åêôýðùóçò', ;                         // 23
+         'Ïëåò áðï', ;                                // 24
+         'Ìüíï ÌïíÝò ', ;                             // 25
+         'Ìüíï ÆõãÝò', ;                              // 26
+         'Ïëåò åêôïò áðï ôçí 1ç ìïíÞ', ;              // 27
+         'Ïëåò åêôïò áðï ôçí 1ç æõãÞ', ;              // 28
+         'Ôõðþíù ....', ;                             // 29
+         'Áíáìïíç ãéá áëëáãç ÷áñôéïõ...', ;           // 30
+         "Press OK to continue.", ;                   // 31
+         "Done!", ;                                   // 32
+         'ÁðïèÞêåõóç ùò..', ;                         // 33
+         'ÁðïèÞêåõóç üëùí', ;                         // 34
+         'Áñ÷åßá EMF', ;                              // 35
+         '¼ëá ôá áñ÷åßá' }                            // 36
+   CASE cLang == "BG"                                 // Bulgarian
+      ::aOpisy := { 'Ïðåãëåä', ;                      // 01
+         'Èçõîä', ;                                   // 02
+         'Ïå÷àò', ;                                   // 03
+         'Ñúõðàíè', ;                                 // 04
+         'Íà÷àëî', ;                                  // 05
+         'Íàçàä', ;                                   // 06
+         'Íàïðåä', ;                                  // 07
+         'Êðàé', ;                                    // 08
+         'Óâåëè÷è', ;                                 // 09
+         'Íàìàëè', ;                                  // 10
+         'Îïöèè', ;                                   // 11
+         'Ñòðàíèöà:', ;                               // 12
+         'Ïðåãëåä íà ñòðàíèöàòà ', ;                  // 13
+         'Ìèíèàòþðè', ;                               // 14
+         'Ñòðàíèöà', ;                                // 15
+         'Ïå÷àòàíå íà òåêóùà', ;                      // 16
+         'Ñòðàíèöè:', ;                               // 17
+         'Äîñòèãíàò e ïðåäåëà íà ìàùàáèðàíå!', ;      // 18
+         'Ïàðàìåòðè çà ïå÷àò', ;                      // 19
+         'Ñòðàíèöè îò', ;                             // 20
+         'äî', ;                                      // 21
+         'Êîïèÿ', ;                                   // 22
+         'Íàïå÷àòàé', ;                               // 23
+         'Âñè÷êè ñòðàíèöè', ;                         // 24
+         'Íå÷åòíèòå', ;                               // 25
+         '×åòíèòå', ;                                 // 26
+         'Âñè÷êè, íî ïúðâî íå÷åòíèòå', ;              // 27
+         'Âñè÷êè, íî ïúðâî ÷åòíèòå', ;                // 28
+         'Ïå÷àò ....', ;                              // 29
+         'Ïîñòàâåòå õàðòèÿ...', ;                     // 30
+         "Press OK to continue.", ;                   // 31
+         "Done!", ;                                   // 32
+         'Ñúõðàíè êàòî...', ;                         // 33
+         'Ñúõðàíè âñè÷êî', ;                          // 34
+         'Ôàéëîâå EMF', ;                             // 35
+         'Âñè÷êè ôàéëîâå' }                           // 36
+   CASE cLang == "HR852"                              // Croatian
+      ::aOpisy := { "Pregled", ;                      // 01
+         "Otkazati", ;                                // 02
+         "Ispis", ;                                   // 03
+         "Uštedjeti", ;                               // 04
+         "Prvo", ;                                    // 05
+         "Prethodni", ;                               // 06
+         "Sljedeci", ;                                // 07
+         "Posljednji", ;                              // 08
+         "Zumirati", ;                                // 09
+         "Umanji", ;                                  // 10
+         "Opcije", ;                                  // 11
+         "Idi na stranicu:", ;                        // 12
+         "Pregled stranice", ;                        // 13
+         "Pregledavanje slicica", ;                   // 14
+         "Stranica", ;                                // 15
+         "Ispis samo trenutne stranice", ;            // 16
+         "Stranice:", ;                               // 17
+         "Nema više zumiranja!", ;                    // 18
+         "Opcije ispisa", ;                           // 19
+         "Ispis iz", ;                                // 20
+         "->", ;                                      // 21
+         "Kopije", ;                                  // 22
+         "Raspon ispisa", ;                           // 23
+         "Sve iz dometa", ;                           // 24
+         "Samo neparno", ;                            // 25
+         "Cak i samo", ;                              // 26
+         "Sve osim neparno prvo", ;                   // 27
+         "Sve, ali cak i prvo", ;                     // 28
+         "Tisak ...", ;                               // 29
+         "Ceka se promjena papira ...", ;             // 30
+         "Pritisnite OK za nastavak.", ;              // 31
+         "Gotovo!", ;                                 // 32
+         "Spremi kao...", ;                           // 33
+         "Spremi sve", ;                              // 34
+         "EMF datoteke", ;                            // 35
+         "Sve datoteke" }                             // 36
+   CASE cLang == "EU"                                 // Basque
+      ::aOpisy := { "Aurrebista", ;                   // 01
+         "Utzi", ;                                    // 02
+         "Inprimatu", ;                               // 03
+         "Gorde", ;                                   // 04
+         "Lehenik", ;                                 // 05
+         "Aurrekoa", ;                                // 06
+         "Hurrengoa", ;                               // 07
+         "Azkena", ;                                  // 08
+         "Zoom In", ;                                 // 09
+         "Zoom handiagotu", ;                         // 10
+         "Aukerak", ;                                 // 11
+         "Joan Orrialdera:", ;                        // 12
+         "Orriaren aurrebista", ;                     // 13
+         "Miniatutako aurrebista", ;                  // 14
+         "Orria", ;                                   // 15
+         "Uneko orria inprimatu bakarrik", ;          // 16
+         "Orrialdeak:", ;                             // 17
+         "Ez gehiago zoom!", ;                        // 18
+         "Inprimatzeko aukerak", ;                    // 19
+         "Inprimatu", ;                               // 20
+         "etik", ;                                    // 21
+         "Kopiak", ;                                  // 22
+         "Inprimatu barrutia", ;                      // 23
+         "Guztiak barrutik", ;                        // 24
+         "Bitxia bakarrik", ;                         // 25
+         "Bakarrik", ;                                // 26
+         "Lehenik eta bakoitiak", ;                   // 27
+         "Guztiak, baina baita lehen ere", ;          // 28
+         "Inprimaketa ...", ;                         // 29
+         "Papera aldatzeko zain ...", ;               // 30
+         "Sakatu OK jarraitzeko.", ;                  // 31
+         "Egina!", ;                                  // 32
+         "Gorde...", ;                                // 33
+         "Gorde guztiak", ;                           // 34
+         "EMF fitxategiak", ;                         // 35
+         "Fitxategi guztiak" }                        // 36
+   CASE cLang == "TR"                                 // Turkish
+      ::aOpisy := { "Önizleme", ;                     // 01
+         "Iptal", ;                                   // 02
+         "Yazdir", ;                                  // 03
+         "Kaydet", ;                                  // 04
+         "Ilk", ;                                     // 05
+         "Önceki", ;                                  // 06
+         "Ileri", ;                                   // 07
+         "Son", ;                                     // 08
+         "Yakinlastir", ;                             // 09
+         "Uzaklastir", ;                              // 10
+         "Seçenekler", ;                              // 11
+         "Sayfaya Git:", ;                            // 12
+         "Sayfa önizlemesi", ;                        // 13
+         "Küçük resimlerin önizlemesi", ;             // 14
+         "Sayfa", ;                                   // 15
+         "Yalnizca geçerli sayfayi yazdir", ;         // 16
+         "Sayfalar:", ;                               // 17
+         "Artik zoom yok!", ;                         // 18
+         "Yazdirma seçenekleri", ;                    // 19
+         "Yazdir", ;                                  // 20
+         "kadar", ;                                   // 21
+         "Kopya", ;                                   // 22
+         "Karsilastirma", ;                           // 23
+         "Tüm araliktan", ;                           // 24
+         "Sadece Garip", ;                            // 25
+         "Sadece", ;                                  // 26
+         "Ilk önce garip olanlarin hepsi", ;          // 27
+         "Ilk önce hepsi bile", ;                     // 28
+         "Yazdiriliyor ...", ;                        // 29
+         "Kagit degisimi bekleniyor ...", ;           // 30
+         "Devam etmek için OK tusuna basin.", ;       // 31
+         "Bitti!", ;                                  // 32
+         "Farkli kaydet ...", ;                       // 33
+         "Tümünü kaydet", ;                           // 34
+         "EMF dosyalari", ;                           // 35
+         "Tüm dosyalar" }                             // 36
+   OTHERWISE
+      ::aOpisy := { "Preview", ;                      // 01
+         "&Cancel", ;                                 // 02
+         "&Print", ;                                  // 03
+         "&Save", ;                                   // 04
+         "&First", ;                                  // 05
+         "P&revious", ;                               // 06
+         "&Next", ;                                   // 07
+         "&Last", ;                                   // 08
+         "Zoom In", ;                                 // 09
+         "Zoom Out", ;                                // 10
+         "&Options", ;                                // 11
+         "Go To Page:", ;                             // 12
+         "Page preview ", ;                           // 13
+         "Thumbnails preview", ;                      // 14
+         "Page", ;                                    // 15
+         "Print current page only", ;                 // 16
+         "Pages:", ;                                  // 17
+         "No more zoom!", ;                           // 18
+         "Print options", ;                           // 19
+         "Print from", ;                              // 20
+         "to", ;                                      // 21
+         "Copies", ;                                  // 22
+         "Collation", ;                               // 23
+         "Everything, sequential", ;                  // 24
+         "Only odd pages", ;                          // 25
+         "Only even pages", ;                         // 26
+         "Everything, odd pages first", ;             // 27
+         "Everything, even pages first", ;            // 28
+         "Printing...", ;                             // 29
+         "Waiting for paper change...", ;             // 30
+         "Press OK to continue.", ;                   // 31
+         "Done!", ;                                   // 32
+         "Save as...", ;                              // 33
+         "Save all", ;                                // 34
+         "EMF files", ;                               // 35
+         "All files" }                                // 36
    ENDCASE
+
+   FOR i := 1 TO 36
+      IF ! Empty( cData := LoadString( i ) )
+         ::aOpisy[ i ] := cData
+      ENDIF
+   NEXT i
 
    RETURN NIL
 
 #ifndef NO_GUI
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SaveMetaFiles( number ) CLASS HBPrinter
+METHOD SaveMetaFiles( number, filename ) CLASS HBPrinter
 
-   LOCAL n, l
+   LOCAL n
 
    IF ::PreviewMode
-      IF ! HB_ISNUMERIC( number ) .OR. number < 1 .OR. number >= ::CurPage
+      IF ! HB_ISNUMERIC( number ) .OR. number < 1 .OR. number > Len( ::MetaFiles )
          number := NIL
+      ENDIF
+      IF Empty( filename )
+         filename := ::DocName + "_page_"
       ENDIF
 
       IF ::InMemory
          IF number == NIL
-            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str( xi ) ) + ".emf" ) } )
+            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], filename + AllTrim( Str( xi ) ) + ".emf" ) } )
          ELSE
-            RR_Str2File( ::MetaFiles[ number, 1 ], "page" + AllTrim( Str( number ) ) + ".emf" )
+            RR_Str2File( ::MetaFiles[ number, 1 ], filename + AllTrim( Str( number ) ) + ".emf" )
          ENDIF
       ELSE
-         IF number == NIL
-            l := ::CurPage - 1
-            FOR n := 1 TO l
-               COPY FILE ( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( n, 4 ) ) + ".emf" )
-            END
+         IF number <> NIL
+            COPY FILE ( ::BaseDoc + AllTrim( Str( number ) ) + '.emf' ) TO ( filename + AllTrim( Str( number ) ) + ".emf" )
          ELSE
-            COPY FILE ( ::BaseDoc + AllTrim( StrZero( number, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( number, 4 ) ) + ".emf" )
+            FOR n := 1 TO Len( ::MetaFiles )
+               COPY FILE ( ::BaseDoc + AllTrim( Str( n ) ) + '.emf' ) TO ( filename + AllTrim( Str( n ) ) + ".emf" )
+            END
          ENDIF
       ENDIF
 
@@ -1916,7 +2466,7 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
 
    LOCAL i, spage
 
-   IF ::iLoscstron == 1
+   IF ::IloscStron == 1
       RETURN NIL
    ENDIF
    IF nclick <> NIL
@@ -1933,7 +2483,7 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
    spage := ::nGroup * 15
 
    FOR i := 1 TO 15
-      IF i + spage > ::iLoscstron
+      IF i + spage > ::IloscStron
          HideWindow( ::AtH[ i, 5 ] )
       ELSE
          IF ::MetaFiles[ i + spage, 2 ] >= ::MetaFiles[ i + spage, 3 ]
@@ -2033,7 +2583,7 @@ METHOD PrevPrint( n1 ) CLASS HBPrinter
             RETURN NIL
          ENDIF
          ::StartDoc()
-         FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
+         FOR i := Max( 1, ::nFromPage ) TO Min( ::IloscStron, ::nToPage )
             DO CASE
             CASE ::PrintOpt == 1 ; toprint := .T.
             CASE ::PrintOpt == 2 .OR. ::PrintOpt == 4 ; toprint := !( i % 2 == 0 )
@@ -2057,7 +2607,7 @@ METHOD PrevPrint( n1 ) CLASS HBPrinter
          IF ::PrintOpt == 4 .OR. ::PrintOpt == 5
             MsgBox( ::aOpisy[ 30 ], ::aOpisy[ 29 ] )
             ::StartDoc()
-            FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
+            FOR i := Max( 1, ::nFromPage ) TO Min( ::IloscStron, ::nToPage )
                DO CASE
                CASE ::PrintOpt == 4 ; toprint := ( i % 2 == 0 )
                CASE ::PrintOpt == 5 ; toprint := !( i % 2 == 0 )
@@ -2097,7 +2647,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
-   ::iLoscstron := Len( ::MetaFiles )
+   ::IloscStron := Len( ::MetaFiles )
    ::nGroup := -1
    ::Page := 1
    ::AtH := {}
@@ -2107,19 +2657,20 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
    ::nPages := {}
 
    IF ::nWhatToPrint < 2
-      ::nToPage := ::iLoscstron
+      ::nToPage := ::IloscStron
+   ELSE
+      ::nToPage := Min( ::IloscStron, ::nToPage )
    ENDIF
 
    IF ! ::PreviewMode
       RETURN NIL
    ENDIF
-   AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, 0 } )
-   RR_GetWindowRect( ::aHS[ 1 ] )
 
-   FOR pi := 1 TO ::iLoscstron
+   FOR pi := 1 TO ::IloscStron
       AAdd( ::nPages, PadL( pi, 4 ) )
    NEXT pi
 
+   AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, 0 } )
    IF ::PreviewRect[ 3 ] > 0 .AND. ::PreviewRect[ 4 ] > 0
       ::aHS[ 1, 1 ] := ::PreviewRect[ 1 ]
       ::aHS[ 1, 2 ] := ::PreviewRect[ 2 ]
@@ -2128,6 +2679,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       ::aHS[ 1, 5 ] := ::PreviewRect[ 3 ] - ::PreviewRect[ 1 ] + 1
       ::aHS[ 1, 6 ] := ::PreviewRect[ 4 ] - ::PreviewRect[ 2 ] + 1
    ELSE
+      RR_GetDesktopArea( ::aHS[ 1 ] )
       ::aHS[ 1, 1 ] += 10
       ::aHS[ 1, 2 ] += 10
       ::aHS[ 1, 3 ] -= 10
@@ -2141,7 +2693,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
             WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] - 45 ;
+            HEIGHT ::aHS[ 1, 5 ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             MODAL ;
@@ -2151,18 +2703,18 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             PARENT ( cParent ) ;
             AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
             WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] - 45 ;
+            HEIGHT ::aHS[ 1, 5 ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             ON SIZE ::PrevAdjust() ;
-            ON RELEASE ::PrevClose()
+            ON RELEASE ::CleanOnPrevClose()
       ENDIF
    ELSE
       IF lWait
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
             WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] - 45 ;
+            HEIGHT ::aHS[ 1, 5 ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             MODAL ;
@@ -2172,54 +2724,64 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             PARENT ( cParent ) ;
             AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
             WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] - 45 ;
+            HEIGHT ::aHS[ 1, 5 ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             NOSIZE ;
-            ON RELEASE ::PrevClose()
+            ON RELEASE ::CleanOnPrevClose()
       ENDIF
    ENDIF
 
 /*
    DEFINE WINDOW 0 OBJ ::oWinPreview ;
 */
-      ::oWinPreview:HotKey( 27, 0, {|| ::oWinPreview:Release() } )
-      ::oWinPreview:HotKey( 107, 0, {|| ::Scale := ::Scale * 1.25, ::PrevShow() } )
-      ::oWinPreview:HotKey( 109, 0, {|| ::Scale := ::Scale / 1.25, ::PrevShow() } )
+      ON KEY ESCAPE      OF ( ::oWinPreview ) ACTION ::PrevClose( .T. )
+      ON KEY ADD         OF ( ::oWinPreview ) ACTION ( ::Scale *= 1.25, ::PrevShow() )
+      ON KEY SUBTRACT    OF ( ::oWinPreview ) ACTION ( ::Scale /= 1.25, ::PrevShow() )
+      ON KEY CONTROL + P OF ( ::oWinPreview ) ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
+      ON KEY PRIOR       OF ( ::oWinPreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+      ON KEY NEXT        OF ( ::oWinPreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
 
       DEFINE STATUSBAR
          STATUSITEM ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) WIDTH 100
          STATUSITEM ::aOpisy[ 16 ] WIDTH 200 ICON 'ZZZ_PRINTICON' ACTION ::PrevPrint( ::Page ) RAISED
-         STATUSITEM ::aOpisy[ 17 ] + " " + AllTrim( Str( ::iLoscstron ) ) WIDTH 100
+         STATUSITEM ::aOpisy[ 17 ] + " " + AllTrim( Str( ::IloscStron ) ) WIDTH 100
       END STATUSBAR
 
       @ 15, ::aHS[ 1, 6 ] - 150 LABEL prl VALUE ::aOpisy[ 12 ] WIDTH 80 HEIGHT 18 SIZE 8 TRANSPARENT
       @ 13, ::aHS[ 1, 6 ] - 77 COMBOBOX combo_1 ITEMS ::nPages VALUE 1 WIDTH 58 SIZE 8 ;
-         ON CHANGE {|| ::Page := ::CurPage := ::oWinPreview:combo_1:value, ::PrevShow(), ::oWinPagePreview:setfocus() }
+         ON CHANGE {|| ::Page := ::oWinPreview:combo_1:value, ::PrevShow(), ::oWinPagePreview:setfocus() }
 
       DEFINE SPLITBOX
-         DEFINE TOOLBAR TB1 BUTTONSIZE 50, 37 SIZE 8 FLAT BREAK
-            BUTTON B1 CAPTION ::aOpisy[ 2 ] PICTURE 'hbprint_close' ACTION ::PrevClose()
-            BUTTON B2 CAPTION ::aOpisy[ 3 ] PICTURE 'hbprint_print' ACTION {|| ::prevprint() }
+         DEFINE TOOLBAR TB1 BUTTONSIZE iif( hb_osisWin10(), 56, 50 ), 37 SIZE 8 FLAT BREAK
+            BUTTON B1 CAPTION ::aOpisy[ 02 ] PICTURE 'hbprint_close' ACTION ::PrevClose( .T. )
+            BUTTON B2 CAPTION ::aOpisy[ 03 ] PICTURE 'hbprint_print' ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
             IF ! ::NoButtonSave
-               BUTTON B3 CAPTION ::aOpisy[ 4 ] PICTURE 'hbprint_save' ACTION {|| ::SaveMetaFiles() }
+               BUTTON B3 CAPTION ::aOpisy[ 04 ] PICTURE 'hbprint_save' WHOLEDROPDOWN SEPARATOR
+               DEFINE DROPDOWN MENU BUTTON B3
+                  ITEM ::aOpisy[ 04 ] ACTION ::SaveMetaFiles( ::Page )
+                  ITEM ::aOpisy[ 33 ] ACTION { |pi| pi := PutFile( { { ::aOpisy[ 35 ], '*.emf' }, { ::aOpisy[ 36 ], '*.*' } }, NIL, GetStartUpFolder(), .T., ::DocName ), iif( Empty( pi ), NIL, ::SaveMetaFiles( ::Page, pi ) ) }
+                  ITEM ::aOpisy[ 34 ] ACTION ::SaveMetaFiles()
+              END MENU
             ENDIF
-            IF ::iLoscstron > 1
-               BUTTON B4 CAPTION ::aOpisy[ 5 ] PICTURE 'hbprint_top' ACTION {|| ::Page := ::CurPage := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
-               BUTTON B5 CAPTION ::aOpisy[ 6 ] PICTURE 'hbprint_back' ACTION {|| ::Page := ::CurPage := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
-               BUTTON B6 CAPTION ::aOpisy[ 7 ] PICTURE 'hbprint_next' ACTION {|| ::Page := ::CurPage := iif( ::Page == ::iLoscstron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
-               BUTTON B7 CAPTION ::aOpisy[ 8 ] PICTURE 'hbprint_end' ACTION {|| ::Page := ::CurPage := ::iLoscstron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+            IF ::IloscStron > 1
+               BUTTON B4 CAPTION ::aOpisy[ 05 ] PICTURE 'hbprint_top' ACTION {|| ::Page := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B5 CAPTION ::aOpisy[ 06 ] PICTURE 'hbprint_back' ACTION {|| ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B6 CAPTION ::aOpisy[ 07 ] PICTURE 'hbprint_next' ACTION {|| ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B7 CAPTION ::aOpisy[ 08 ] PICTURE 'hbprint_end' ACTION {|| ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() } SEPARATOR
             ENDIF
-            BUTTON B8 CAPTION ::aOpisy[ 9 ] PICTURE 'hbprint_zoomin' ACTION {|| ::Scale := ::Scale * 1.25, ::PrevShow() }
-            BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale := ::Scale / 1.25, ::PrevShow() }
+            BUTTON B8 CAPTION ::aOpisy[ 09 ] PICTURE 'hbprint_zoomin' ACTION {|| ::Scale *= 1.25, ::PrevShow() }
             IF ! ::NoButtonOptions
+               BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale /= 1.25, ::PrevShow() } SEPARATOR
                BUTTON B10 CAPTION ::aOpisy[ 11 ] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
+            ELSE
+               BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale /= 1.25, ::PrevShow() }
             ENDIF
          END TOOLBAR
 
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:hWnd } )
          RR_GetClientRect( ::aHS[ 2 ] )
-         AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:Tb1:hWnd } )
+         AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:TB1:hWnd } )
          RR_GetClientRect( ::aHS[ 3 ] )
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:StatusBar:hWnd } )
          RR_GetClientRect( ::aHS[ 4 ] )
@@ -2240,12 +2802,27 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             ::oWinPagePreview:HScrollbar:nLineSkip := 20
             AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:hWnd } )
             RR_GetClientRect( ::aHS[ 5 ] )
-            @ ::aHS[ 5, 2 ] + 10, ::aHS[ 5, 1 ] + 10 IMAGE I1 PICTURE "" WIDTH ::aHS[ 5, 6 ] - 10 HEIGHT ::aHS[ 5, 5 ] - 10
+            @ ::aHS[ 5, 2 ] + 10, ::aHS[ 5, 1 ] + 10 IMAGE i1 PICTURE "" WIDTH ::aHS[ 5, 6 ] - 10 HEIGHT ::aHS[ 5, 5 ] - 10
             AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:i1:hWnd } )
             RR_GetClientRect( ::aHS[ 6 ] )
+
+            ON KEY ESCAPE      OF ( ::oWinPagePreview ) ACTION ::PrevClose( .T. )
+            ON KEY ADD         OF ( ::oWinPagePreview ) ACTION ( ::Scale *= 1.25, ::PrevShow() )
+            ON KEY SUBTRACT    OF ( ::oWinPagePreview ) ACTION ( ::Scale /= 1.25, ::PrevShow() )
+            ON KEY CONTROL + P OF ( ::oWinPagePreview ) ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
+            IF ::IloscStron > 1
+               ON KEY PRIOR    OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY NEXT     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY END      OF ( ::oWinPagePreview ) ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY HOME     OF ( ::oWinPagePreview ) ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY LEFT     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY UP       OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY RIGHT    OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY DOWN     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+            ENDIF
          END WINDOW
 
-         IF ::Thumbnails .AND. ::iLoscstron > 1
+         IF ::Thumbnails .AND. ::IloscStron > 1
             DEFINE WINDOW 0 OBJ ::oWinThumbs ;
                WIDTH ::aHS[ 2, 6 ] - 15 ;
                HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] - 10 ;
@@ -2289,7 +2866,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
                FOR i := 1 TO 15
                   ::AtH[ i, 5 ] := GetControlHandle( "it" + AllTrim( Str( i ) ), cName )
                   RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i ], AllTrim( Str( i ) ), i, ::hData )
-                  IF i >= ::iLoscstron
+                  IF i >= ::IloscStron
                      EXIT
                   ENDIF
                NEXT
@@ -2313,14 +2890,20 @@ METHOD PrevAdjust() CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevClose() CLASS HBPrinter
+METHOD PrevClose( lEsc ) CLASS HBPrinter
 
-   ::oWinPagePreview:Release()
-   IF ::iLoscstron > 1 .AND. ::Thumbnails
-      ::oWinThumbs:Release()
-   ENDIF
+   ::lEscaped := lEsc
    ::oWinPreview:Release()
 
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CleanOnPrevClose() CLASS HBPrinter
+
+   ::oWinPagePreview:Release()
+   IF ::IloscStron > 1 .AND. ::Thumbnails
+      ::oWinThumbs:Release()
+   ENDIF
    ::oWinPagePreview := NIL
    ::oWinThumbs := NIL
    ::oWinPreview := NIL
@@ -2330,42 +2913,49 @@ METHOD PrevClose() CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintOption() CLASS HBPrinter
 
-   LOCAL OKprint := .F.
+   LOCAL nLen := Len( LTrim( Str( ::IloscStron ) ) ), oFrom, oTo, oCopies, oWinPrOpt
 
-   IF ! HB_ISOBJECT( ::oWinPrOpt )
-      DEFINE WINDOW 0 OBJ ::oWinPrOpt ;
-            AT 270, 346 ;
-            WIDTH 298 HEIGHT 134 ;
-            TITLE ::aOpisy[ 19 ] ;
-            ICON 'ZZZ_PRINTICON' ;
-            MODAL ;
-            NOSIZE
+   DEFINE WINDOW 0 OBJ oWinPrOpt ;
+      AT 270, 346 ;
+      WIDTH 390 HEIGHT 150 ;
+      CLIENTAREA ;
+      TITLE ::aOpisy[ 19 ] ;
+      ICON 'ZZZ_PRINTICON' ;
+      MODAL ;
+      NOSIZE
 
-         @ 02, 001 FRAME PrOptFrame WIDTH 291 HEIGHT 105
-         @ 19, 009 LABEL label_11 WIDTH 087 HEIGHT 016 VALUE ::aOpisy[ 20 ] BOLD
-         @ 18, 090 TEXTBOX textFrom WIDTH 033 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
-         @ 19, 134 LABEL label_12 WIDTH 014 HEIGHT 019 VALUE ::aOpisy[ 21 ] BOLD
-         @ 18, 156 TEXTBOX textTo WIDTH 033 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
-         @ 19, 200 LABEL label_18 WIDTH 040 HEIGHT 019 VALUE ::aOpisy[ 22 ] BOLD
-         @ 18, 252 TEXTBOX textCopies WIDTH 030 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
-         @ 55, 009 LABEL label_13 WIDTH 071 HEIGHT 017 VALUE ::aOpisy[ 23 ] BOLD
-         @ 50, 090 COMBOBOX prnCombo WIDTH 195 VALUE ::PrintOpt ITEMS { ::aOpisy[ 24 ], ::aOpisy[ 25 ], ::aOpisy[ 26 ], ::aOpisy[ 27 ], ::aOpisy[ 28 ] }
+      @ 002, 005 FRAME PrOptFrame WIDTH 380 HEIGHT 133
 
-         @ 82, 090 BUTTON button_14 WIDTH 110 HEIGHT 019 CAPTION "OK" ;
-            ACTION {|| ::nFromPage := ::oWinPrOpt:textFrom:Value, ;
-            ::nToPage := ::oWinPrOpt:textTo:Value, ;
-            ::nCopies := Max( ::oWinPrOpt:textCopies:Value, 1 ), ;
-            ::PrintOpt := ::oWinPrOpt:prnCombo:Value, ;
-            ::oWinPrOpt:Release() }
-      END WINDOW
-   ENDIF
-   ::oWinPrOpt:Title := ::aOpisy[ 19 ]
-   ::oWinPrOpt:textCopies:Value := ::nCopies
-   ::oWinPrOpt:textFrom:Value := Max( ::nFromPage, 1 )
-   ::oWinPrOpt:textTo:Value := iif( ::nWhatToPrint < 2, ::iLoscstron, ::nToPage )
-   ::oWinPrOpt:Activate( .F. )
+      @ 020, 010 LABEL label_11 WIDTH 120 HEIGHT 21 VALUE ::aOpisy[ 20 ] BOLD VCENTERALIGN
+      @ 020, 135 TEXTBOX textFrom OBJ oFrom WIDTH 33 HEIGHT 21 NUMERIC MAXLENGTH nLen RIGHTALIGN ;
+         VALUE Max( ::nFromPage, 1 ) VALID oFrom:Value > 0 .AND. oFrom:Value <= oTo:Value
+      @ 020, 173 LABEL label_12 WIDTH 40 HEIGHT 21 VALUE ::aOpisy[ 21 ] BOLD CENTERALIGN VCENTERALIGN
+      @ 020, 218 TEXTBOX textTo OBJ oTo WIDTH 33 HEIGHT 21 NUMERIC MAXLENGTH nLen RIGHTALIGN ;
+         VALUE ::nToPage VALID oTo:Value >= oFrom:Value .AND. oTo:Value <= ::nToPage
 
-   RETURN OKPrint
+      @ 020, 260 LABEL label_18 WIDTH 80 HEIGHT 21 VALUE ::aOpisy[ 22 ] BOLD VCENTERALIGN
+      @ 020, 350 TEXTBOX textCopies OBJ oCopies WIDTH 30 HEIGHT 21 NUMERIC MAXLENGTH 6 RIGHTALIGN ;
+         VALUE ::nCopies VALID oCopies:Value > 0
+      @ 060, 010 LABEL label_13 WIDTH 100 HEIGHT 21 VALUE ::aOpisy[ 23 ] BOLD VCENTERALIGN
+      @ 060, 115 COMBOBOX prnCombo WIDTH 265 VALUE ::PrintOpt ITEMS { ::aOpisy[ 24 ], ::aOpisy[ 25 ], ::aOpisy[ 26 ], ::aOpisy[ 27 ], ::aOpisy[ 28 ] }
+
+      @ 100, 160 BUTTON button_14 WIDTH 95 HEIGHT 24 CAPTION "&OK" ;
+         ACTION {|| ::nFromPage := oWinPrOpt:textFrom:Value, ;
+         ::nToPage := oWinPrOpt:textTo:Value, ;
+         ::nCopies := Max( oWinPrOpt:textCopies:Value, 1 ), ;
+         ::PrintOpt := oWinPrOpt:prnCombo:Value, ;
+         oWinPrOpt:Release() }
+
+      @ 100, 285 BUTTON button_15 CAPTION ::aOpisy[ 02 ] ;
+         ACTION oWinPrOpt:Release() ;
+         WIDTH 95 HEIGHT 24
+
+      ON KEY ESCAPE ACTION oWinPrOpt:Release()
+   END WINDOW
+
+   oWinPrOpt:Activate( .F. )
+
+   RETURN .T.
 #endif /* NO_GUI */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2710,6 +3300,26 @@ HB_FUNC( RR_SETDEVMODE )
       ResetDC( lpData->hDCRef, lpData->pi2->pDevMode );
       HB_RETNL( ( LONG_PTR ) lpData->hDCRef);
    }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_SETUSERMODE )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+   DWORD what = hb_parnl( 1 );
+
+   if( what == ( lpData->pi2->pDevMode->dmFields & what ) )
+   {
+      lpData->pi2->pDevMode->dmFields      = lpData->pi2->pDevMode->dmFields | DM_PAPERSIZE | DM_PAPERWIDTH | DM_PAPERLENGTH;
+      lpData->pi2->pDevMode->dmPaperSize   = DMPAPER_USER;
+      lpData->pi2->pDevMode->dmPaperWidth  = ( SHORT ) hb_parnl( 2 );
+      lpData->pi2->pDevMode->dmPaperLength = ( SHORT ) hb_parnl( 3 );
+   }
+
+   DocumentProperties( NULL, lpData->hPrinter, lpData->PrinterName, lpData->pi2->pDevMode, lpData->pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
+   SetPrinter( lpData->hPrinter, 2, ( LPBYTE ) lpData->pi2, 0 );
+   ResetDC( lpData->hDCRef, lpData->pi2->pDevMode );
+   HB_RETNL( ( LONG_PTR ) lpData->hDCRef);
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -4446,6 +5056,21 @@ HB_FUNC( RR_INVERTRECT )
    rect.right = HB_PARNI( 2, 2 );
    rect.bottom = HB_PARNI( 2, 1 );
    hb_retni( InvertRect( lpData->hDC, &rect ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETDESKTOPAREA )
+{
+   RECT rect;
+
+   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
+
+   HB_STORNI( rect.top, 1, 1 );
+   HB_STORNI( rect.left, 1, 2 );
+   HB_STORNI( rect.bottom, 1, 3 );
+   HB_STORNI( rect.right, 1, 4 );
+   HB_STORNI( rect.bottom - rect.top + 1, 1, 5 );
+   HB_STORNI( rect.right - rect.left + 1, 1, 6 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

@@ -41,7 +41,7 @@ ZZZ_AAAWINDOW           ICON            oohgpath\window.ico
 ZZZ_LED_ON              ICON            oohgpath\led_on.ico
 ZZZ_LED_OFF             ICON            oohgpath\led_off.ico
 
-// HBPRINT PRINT PREVIEW IMAGE BUTTONS
+// HBPRINTER PREVIEW IMAGE BUTTONS
 
 zzz_printicon           ICON            oohgpath\print.ico
 hbprint_end             BITMAP          oohgpath\hbprint_end.bmp
@@ -54,6 +54,89 @@ hbprint_save            BITMAP          oohgpath\hbprint_save.bmp
 hbprint_zoomin          BITMAP          oohgpath\hbprint_zoomin.bmp
 hbprint_zoomout         BITMAP          oohgpath\hbprint_zoomout.bmp
 hbprint_option          BITMAP          oohgpath\hbprint_option.bmp
+
+// HBPRINTER  REPLACE STRINGS
+// define one or more if these items to replace the value for the current language
+// useful if you're not satisfied with the hardwired value
+
+/*
+#define HBPRINTER_PREVIEW      1
+#define HBPRINTER_CANCEL       2
+#define HBPRINTER_PRINT        3
+#define HBPRINTER_SAVE         4
+#define HBPRINTER_FIRST        5
+#define HBPRINTER_PREVIOUS     6
+#define HBPRINTER_NEXT         7
+#define HBPRINTER_LAST         8
+#define HBPRINTER_ZOOMIN       9
+#define HBPRINTER_ZOOMOUT      10
+#define HBPRINTER_OPTIONS      11
+#define HBPRINTER_GOTOPAGE     12
+#define HBPRINTER_PAGEPREVIEW  13
+#define HBPRINTER_THUMBPREVIEW 14
+#define HBPRINTER_PAGE         15
+#define HBPRINTER_PRTCURRENT   16
+#define HBPRINTER_PAGES        17
+#define HBPRINTER_NOMOREZOOM   18
+#define HBPRINTER_PRTOPTIONS   19
+#define HBPRINTER_PRTFROM      20
+#define HBPRINTER_PRTTO        21
+#define HBPRINTER_COPIES       22
+#define HBPRINTER_COLLATION    23
+#define HBPRINTER_EVERYSEQ     24
+#define HBPRINTER_ONLYODD      25
+#define HBPRINTER_ONLYEVEN     26
+#define HBPRINTER_EVERYODD     27
+#define HBPRINTER_EVERYEVEN    28
+#define HBPRINTER_PRINTING     29
+#define HBPRINTER_WAITPAPER    30
+#define HBPRINTER_PRESSOK      31
+#define HBPRINTER_DONE         32
+#define HBPRINTER_SAVEAS       33
+#define HBPRINTER_SAVEALL      34
+#define HBPRINTER_EMFFILES     35
+#define HBPRINTER_ALLFILES     36
+
+STRINGTABLE
+{
+        HBPRINTER_PREVIEW,      "tweaked title"
+        HBPRINTER_CANCEL,       "&Cancel"
+        HBPRINTER_PRINT,        "&Print"
+        HBPRINTER_SAVE,         "&Save"
+        HBPRINTER_FIRST,        "&First"
+        HBPRINTER_PREVIOUS,     "P&revious"
+        HBPRINTER_NEXT,         "&Next"
+        HBPRINTER_LAST,         "&Last"
+        HBPRINTER_ZOOMIN,       "Zoom In"
+        HBPRINTER_ZOOMOUT,      "Zoom Out"
+        HBPRINTER_OPTIONS,      "&Options"
+        HBPRINTER_GOTOPAGE,     "Go To Page"
+        HBPRINTER_PAGEPREVIEW,  "Page preview "
+        HBPRINTER_THUMBPREVIEW, "Thumbnails preview"
+        HBPRINTER_PAGE,         "Page"
+        HBPRINTER_PRTCURRENT,   "Print current page only"
+        HBPRINTER_PAGES,        "Pages:"
+        HBPRINTER_NOMOREZOOM,   "No more zoom!"
+        HBPRINTER_PRTOPTIONS,   "Print options"
+        HBPRINTER_PRTFROM,      "Print from"
+        HBPRINTER_PRTTO,        "to"
+        HBPRINTER_COPIES,       "Copies"
+        HBPRINTER_COLLATION,    "Collation"
+        HBPRINTER_EVERYSEQ,     "Everything, sequential"
+        HBPRINTER_ONLYODD,      "Only odd pages"
+        HBPRINTER_ONLYEVEN,     "Only even pages"
+        HBPRINTER_EVERYODD,     "Everything, odd pages first"
+        HBPRINTER_EVERYEVEN,    "Everything, even pages first"
+        HBPRINTER_PRINTING,     "Printing..."
+        HBPRINTER_WAITPAPER,    "Waiting for paper change..."
+        HBPRINTER_PRESSOK,      "Press OK to continue."
+        HBPRINTER_DONE,         "Done!"
+        HBPRINTER_SAVEAS,       "Save as..."
+        HBPRINTER_SAVEALL,      "Save all"
+        HBPRINTER_EMFFILES,     "EMF files"
+        HBPRINTER_ALLFILES,     "All files"
+}
+*/
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
