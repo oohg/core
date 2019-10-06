@@ -62,6 +62,17 @@
 
 
 /*---------------------------------------------------------------------------
+LOADFILE AND SAVEFILE CONTENT TYPES
+---------------------------------------------------------------------------*/
+
+#define RICHVALUE_ANSI_TEXT     1
+#define RICHVALUE_RTF           2
+#define RICHVALUE_UTF16_TEXT    3
+#define RICHVALUE_UTF8_TEXT     4
+#define RICHVALUE_UTF8_RTF      5
+#define RICHVALUE_UTF7_TEXT     6
+
+/*---------------------------------------------------------------------------
 STANDARD VERSION
 ---------------------------------------------------------------------------*/
 #xcommand @ <row>, <col> RICHEDITBOX <name> ;

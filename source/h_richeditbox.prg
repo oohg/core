@@ -76,7 +76,10 @@ CLASS TEditRich FROM TEdit
    DATA OnSelChange               INIT NIL
    DATA Type                      INIT "RICHEDIT" READONLY
 
+   METHOD AutoURLDetect
    METHOD BackColor               SETGET
+   METHOD CanPaste                BLOCK { |Self| SendMessage( ::hWnd, EM_CANPASTE, 0, 0 ) # 0 }
+   METHOD CanReDo                 BLOCK { |Self| SendMessage( ::hWnd, EM_CANREDO, 0, 0 ) # 0 }
    METHOD Define
    METHOD Events
    METHOD Events_Notify
@@ -85,15 +88,20 @@ CLASS TEditRich FROM TEdit
    METHOD GetLastVisibleLine
    METHOD GetSelFont
    METHOD GetSelText
+   METHOD GetSelType              BLOCK { |Self| TEditRich_SelectionType( ::hWnd ) }
    METHOD HideSelection
    METHOD LoadFile
    METHOD MaxLength               SETGET
+   METHOD ReDo                    BLOCK { |Self| SendMessage( ::hWnd, EM_REDO, 0, 0 ) }
    METHOD Release
    METHOD RichValue               SETGET
    METHOD SaveFile
+   METHOD SetOptions              BLOCK { |Self, nOptions| TEditRich_SetOptions( ::hWnd, nOptions ) }
    METHOD SetSelectionBackColor
    METHOD SetSelectionTextColor
+   METHOD SetSelEx                BLOCK { |Self, nStart, nEnd| TEditRich_SetSelEx( ::hWnd, nStart, nEnd ) }
    METHOD SetSelFont
+   METHOD Value                   SETGET
 
    MESSAGE GetSelectionFont       METHOD GetSelFont
    MESSAGE SetSelBackColor        METHOD SetSelectionBackColor
@@ -293,6 +301,24 @@ METHOD GetLastVisibleLine CLASS TEditRich
    RETURN ::GetLineFromChar( nChar )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AutoURLDetect( lOnOff ) CLASS TEditRich
+
+   IF HB_ISLOGICAL( lOnOff )
+      SendMessage( ::hWnd, EM_AUTOURLDETECT, iif( lOnOff, 1, 0 ), 0 )
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value( cValue ) CLASS TEditRich
+
+   IF ValType( cValue ) $ "CM"
+      TEditRich_SetText( ::hWnd, .F., cValue )
+   ENDIF
+
+   RETURN ::Caption
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -306,6 +332,11 @@ METHOD GetLastVisibleLine CLASS TEditRich
 #ifndef CFM_BACKCOLOR
    #define CFM_BACKCOLOR 0x04000000
 #endif
+
+#ifdef MSFTEDIT_CLASS
+   #undef MSFTEDIT_CLASS
+#endif
+#define MSFTEDIT_CLASS "RICHEDIT50W"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TEditRich_lpfnOldWndProc( WNDPROC lp )
@@ -329,6 +360,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 static HMODULE hDllRichEdit = NULL;
+static char * classname = NULL;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 VOID _RichEdit_DeInit( VOID )
@@ -350,20 +382,32 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
-   Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL;
+   Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_DRAGDROPDONE;
 
    InitCommonControls();
 
    if( hDllRichEdit == NULL )
    {
       WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-      hDllRichEdit = LoadLibrary( "RICHED20.DLL" );
+      hDllRichEdit = LoadLibrary( "MSFTEDIT.DLL" );
+      if( hDllRichEdit != NULL )
+      {
+         classname = MSFTEDIT_CLASS;
+      }
+      else
+      {
+         hDllRichEdit = LoadLibrary( "RICHED20.DLL" );
+         if( hDllRichEdit != NULL )
+         {
+            classname = RICHEDIT_CLASS;
+         }
+      }
       ReleaseMutex( _OOHG_GlobalMutex() );
    }
 
    if ( hDllRichEdit )
    {
-      hCtrl = CreateWindowEx( StyleEx, RICHEDIT_CLASS, (LPSTR) NULL, Style,
+      hCtrl = CreateWindowEx( StyleEx, classname, ( LPSTR ) NULL, Style,
                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
@@ -419,9 +463,9 @@ HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )          /* METHOD FontColor( uColor ) CLA
          memset( &Format, 0, sizeof( Format ) );
          Format.cbSize = sizeof( Format );
          Format.dwMask = CFM_COLOR;
-         Format.crTextColor = ( ( oSelf->lFontColor != -1 ) ? (COLORREF) oSelf->lFontColor : GetSysColor( COLOR_WINDOWTEXT ) );
+         Format.crTextColor = ( ( oSelf->lFontColor != -1 ) ? ( COLORREF ) oSelf->lFontColor : GetSysColor( COLOR_WINDOWTEXT ) );
 
-         SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_ALL, (LPARAM) &Format );
+         SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, ( WPARAM ) SCF_ALL, ( LPARAM ) &Format );
 
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
@@ -438,7 +482,7 @@ struct StreamInfo {
 };
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
 {
    struct StreamInfo *si;
    LONG lMax;
@@ -482,7 +526,7 @@ HB_FUNC( RICHSTREAMIN )          /* FUNCTION RichStreamIn( hWnd, cValue ) -> NIL
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
 {
    struct StreamInfo *si;
 
@@ -569,7 +613,7 @@ HB_FUNC( RICHSTREAMOUT )          /* FUNCTION RichStreamOut( hWnd ) -> NIL */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
@@ -584,7 +628,7 @@ DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG *pcb )
+DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
@@ -829,7 +873,7 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )          /* METHOD SetSelectio
    Format.dwMask = CFM_BACKCOLOR;
    Format.crBackColor = clrColor;
 
-   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
+   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, ( WPARAM ) SCF_SELECTION, ( LPARAM ) &Format );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -838,7 +882,7 @@ HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )          /* METHOD HideSelection( lHid
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   SendMessage( oSelf->hWnd, EM_HIDESELECTION, (WPARAM) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
+   SendMessage( oSelf->hWnd, EM_HIDESELECTION, ( WPARAM ) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -851,15 +895,15 @@ HB_FUNC( RICHEDIT_GETSELTEXT )          /* FUNCTION RichEdit_GetSelText( hWnd ) 
    gtl.flags = GTL_USECRLF | GTL_PRECISE | GTL_NUMCHARS;
    gtl.codepage = CP_ACP;
 
-   gte.cb = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, (WPARAM) &gtl, 0 ) + 1;
+   gte.cb = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, ( WPARAM ) &gtl, 0 ) + 1;
    gte.flags = GT_SELECTION | GT_USECRLF;
    gte.codepage = CP_ACP;
    gte.lpDefaultChar = NULL;
    gte.lpUsedDefChar = NULL;
 
-   cBuffer = (char *) hb_xgrab( gte.cb );
+   cBuffer = ( char * ) hb_xgrab( gte.cb );
 
-   SendMessage( HWNDparam( 1 ), EM_GETSELTEXT, 0, (LPARAM) cBuffer );
+   SendMessage( HWNDparam( 1 ), EM_GETSELTEXT, 0, ( LPARAM ) cBuffer );
 
    hb_retc( cBuffer );
    hb_xfree( cBuffer );
@@ -875,7 +919,7 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )          /* METHOD GetCharFromPos( nR
    pnt.x = hb_parni( 2 );
    pnt.y = hb_parni( 1 );
 
-   hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, (LPARAM) &pnt ) );        // zero-based index
+   hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, ( LPARAM ) &pnt ) );        // zero-based index
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -901,7 +945,7 @@ HB_FUNC( GETFONTRTF )          /* FUNCTION GetFontRTF( hWnd, nSel ) -> { cFontNa
       SelText = SCF_DEFAULT;
    }
 
-   SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+   SendMessage( hWnd, EM_GETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
 
    PointSize = cF.yHeight / 20;
 
@@ -937,7 +981,7 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
    HWND        hWnd = HWNDparam( 1 );
 
    cF.cbSize = sizeof( CHARFORMAT );
-   Mask = SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+   Mask = SendMessage( hWnd, EM_GETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
 
    if( hb_parni( 10 ) > 0 )
    {
@@ -983,12 +1027,12 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
 
    cF.crTextColor = hb_parnl( 7 );
 
-   if( strlen( hb_parc( 3 ) ) )
+   if( hb_parclen( 3 ) > 0 )
    {
       lstrcpy( cF.szFaceName, hb_parc( 3 ) );
    }
 
-   lResult = SendMessage( hWnd, EM_SETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
+   lResult = SendMessage( hWnd, EM_SETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
 
    if( lResult )
    {
@@ -998,6 +1042,82 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
    {
       hb_retl( FALSE );
    }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC ( TEDITRICH_SETTEXT )         /* FUNCTION TEditRich_SetText( hWnd, lReplace, cText ) -> NIL */
+{
+   SETTEXTEX ST;
+
+   ST.flags = ( hb_parl( 2 ) ? ST_SELECTION : ST_DEFAULT );
+   ST.codepage = CP_ACP;
+   SendMessage ( HWNDparam( 1 ), EM_SETTEXTEX, ( WPARAM ) &ST, ( LPARAM ) hb_parc( 3 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TEDITRICH_SETOPTIONS )         /* FUNCTION TEditRich_SetOptions( hWnd, nNew ) ->  nOld */
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), EM_SETOPTIONS, ( WPARAM ) ECOOP_SET, ( LPARAM ) hb_parnl( 2 ) ) );   // See ECO_* defines
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TEDITRICH_SETSELEX )         /* FUNCTION TEditRich_SetSelEx( hWnd, nStart, nEnd ) -> NIL */
+{
+   CHARRANGE cRange;
+   cRange.cpMin = 0;
+   cRange.cpMax = 0;
+
+   if( hb_parnl( 2 ) )
+   {
+      cRange.cpMin = hb_parnl( 2 );
+   }
+
+   if( hb_parnl( 3 ) )
+   {
+      cRange.cpMax = hb_parnl( 3 );
+   }
+
+   SendMessage( HWNDparam( 1 ), EM_EXSETSEL, 0, ( LPARAM ) &cRange );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TEDITRICH_SELECTIONTYPE )          /* FUNCTION TEditRich_SelectionType( hWnd ) -> nType */
+{
+   LRESULT lResult;
+   int nMode = 0;
+
+   lResult = SendMessage( HWNDparam( 1 ), EM_SELECTIONTYPE, 0, 0 );
+
+   switch( lResult )
+   {
+      case SEL_EMPTY:       nMode = 1; break;
+      case SEL_TEXT:        nMode = 2; break;
+      case SEL_OBJECT:      nMode = 3; break;
+      case SEL_MULTICHAR:   nMode = 4; break;
+      case SEL_MULTIOBJECT: nMode = 5; break;
+      default:
+      {
+         nMode = 0;
+         if( lResult & SEL_TEXT )
+         {
+            nMode = nMode + 10;
+         }
+         if( lResult & SEL_OBJECT )
+         {
+            nMode = nMode + 100;
+         }
+         if( lResult & SEL_MULTICHAR )
+         {
+            nMode = nMode + 1000;
+         }
+         if( lResult & SEL_MULTIOBJECT )
+         {
+            nMode = nMode + 10000;
+         }
+      }
+   }
+
+   hb_retni( nMode );
 }
 
 #pragma ENDDUMP

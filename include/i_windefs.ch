@@ -139,6 +139,8 @@ WINDOWS MESSAGES
 #define WM_MOVING                     534
 #define WM_ENTERSIZEMOVE              561
 #define WM_EXITSIZEMOVE               562
+#define WM_CUT                        768
+#define WM_COPY                       769
 #define WM_PASTE                      770
 #define WM_CLEAR                      771
 #define WM_UNDO                       772
@@ -298,7 +300,7 @@ FLASH WINDOW FLAGS
 #define FLASHW_TIMERNOFG              0x0000000C
 
 /*---------------------------------------------------------------------------
-EDIT CONTROL
+EDIT AND RICHEDIT CONTROLS
 ---------------------------------------------------------------------------*/
 
 #define ES_LEFT                       0     // 0x0000
@@ -325,6 +327,7 @@ EDIT CONTROL
 #define EM_SETSEL                     177
 #define EM_GETSEL                     176
 #define EM_LIMITTEXT                  197
+#define EM_CANUNDO                    198
 #define EM_UNDO                       199
 #define EM_SETPASSWORDCHAR            204
 #define EM_SETREADONLY                207
@@ -333,8 +336,12 @@ EDIT CONTROL
 #define EM_SETBKGNDCOLOR              1091
 #define EM_GETFIRSTVISIBLELINE        206
 #define EM_LINESCROLL                 182
+#define EM_CANPASTE                   1074
 #define EM_EXLIMITTEXT                ( WM_USER + 53 )
 #define EM_EXLINEFROMCHAR             ( WM_USER + 54 )
+#define EM_REDO                       1108
+#define EM_CANREDO                    1109
+#define EM_AUTOURLDETECT              1115
 #define EN_MSGFILTER                  1792
 #define EN_SETFOCUS                   256
 #define EN_KILLFOCUS                  512
@@ -343,6 +350,16 @@ EDIT CONTROL
 #define EN_SELCHANGE                  0x0702
 #define EN_HSCROLL                    1537
 #define EN_VSCROLL                    1538
+
+#define ECO_AUTOWORDSELECTION         0x00000001
+#define ECO_AUTOVSCROLL               0x00000040
+#define ECO_AUTOHSCROLL               0x00000080
+#define ECO_NOHIDESEL                 0x00000100
+#define ECO_READONLY                  0x00000800
+#define ECO_WANTRETURN                0x00001000
+#define ECO_SAVESEL                   0x00008000
+#define ECO_SELECTIONBAR              0x01000000
+#define ECO_VERTICAL                  0x00400000   
 
 /*---------------------------------------------------------------------------
 REBAR CONTROL
@@ -413,6 +430,9 @@ BUTTON CONTROL
 LISTVIEW CONTROL
 ---------------------------------------------------------------------------*/
 
+#define LVKF_ALT                      0x0001
+#define LVKF_CONTROL                  0x0002
+#define LVKF_SHIFT                    0x0004
 #define LVM_FIRST                     0x1000
 #define LVM_GETBKCOLOR                ( LVM_FIRST + 0 )
 #define LVM_SETBKCOLOR                ( LVM_FIRST + 1 )
@@ -526,7 +546,7 @@ TREEVIEW CONTROL
 #define TVS_NOSCROLL                  8192
 #define TVS_NONEVENHEIGHT             16384
 #define TVS_NOHSCROLL                 32768
-#define TVN_ITEMEXPANDINGA	          ( - 405 )
+#define TVN_ITEMEXPANDINGA           ( - 405 )
 #define TVN_ITEMEXPANDING             TVN_ITEMEXPANDINGA
 #define TVN_SELCHANGINGA              ( -401 )
 #define TVN_SELCHANGING               TVN_SELCHANGINGA
@@ -660,8 +680,13 @@ SCROLLBAR CONTROL
 WM_LBUTTONDOWN PARAMETERS
 ---------------------------------------------------------------------------*/
 
-#define MK_LBUTTON                    1
-#define MK_CONTROL                    8
+#define MK_CONTROL                    0x0008
+#define MK_LBUTTON                    0x0001
+#define MK_MBUTTON                    0x0010
+#define MK_RBUTTON                    0x0002
+#define MK_SHIFT                      0x0004
+#define MK_XBUTTON1                   0x0020
+#define MK_XBUTTON2                   0x0040
 
 /*---------------------------------------------------------------------------
 WM_SYSCOMMAND PARAMETERS
