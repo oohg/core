@@ -574,9 +574,9 @@ METHOD RefreshRow( nRow ) CLASS TXBrowse
       EndIf
       aItem := ARRAY( LEN( ::aFields ) )
       If ::FixBlocks()
-         aEval( aItem, { |x,i| aItem[ i ] := EVAL( ::aColumnBlocks[ i ], cWorkArea ), x } )
+         aEval( aItem, { |x,i| aItem[ i ] := _OOHG_Eval( ::aColumnBlocks[ i ], cWorkArea ), x } )
       Else
-         aEval( aItem, { |x,i| aItem[ i ] := EVAL( ::ColumnBlock( i ), cWorkArea ), x } )
+         aEval( aItem, { |x,i| aItem[ i ] := _OOHG_Eval( ::ColumnBlock( i ), cWorkArea ), x } )
       EndIf
       aEval( aItem, { |x,i| If( ValType( x ) $ "CM", aItem[ i ] := TRIM( x ),  ) } )
 
@@ -621,13 +621,13 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
             If ValType( cWorkArea ) $ "CM"
                If HB_IsBlock( cValue[1] )
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( _OOHG_Eval( cValue[1], wa ) ), ( cWorkArea ) -> ( _OOHG_Eval( cValue[2], wa ) ) } ) }
                   Else
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( _OOHG_Eval( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } ) }
                   EndIf
                Else
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } ) }
+                     bRet := { |wa| oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( _OOHG_Eval( cValue[2], wa ) ) } ) }
                   Else
                      bRet := { || oEditControl:GridValue( { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } ) }
                   EndIf
@@ -635,13 +635,13 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
             Else
                If HB_IsBlock( cValue[1] )
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( EVAL( cValue[1], wa ),  EVAL( cValue[2], wa ) ) }
+                     bRet := { |wa| oEditControl:GridValue( _OOHG_Eval( cValue[1], wa ),  _OOHG_Eval( cValue[2], wa ) ) }
                   Else
-                     bRet := { |wa| oEditControl:GridValue(  EVAL( cValue[1], wa ),  &( cValue[2] ) ) }
+                     bRet := { |wa| oEditControl:GridValue(  _OOHG_Eval( cValue[1], wa ),  &( cValue[2] ) ) }
                   EndIf
                Else
                   If HB_IsBlock( cValue[2] )
-                     bRet := { |wa| oEditControl:GridValue( &( cValue[1] ),  EVAL( cValue[2], wa ) ) }
+                     bRet := { |wa| oEditControl:GridValue( &( cValue[1] ),  _OOHG_Eval( cValue[2], wa ) ) }
                   Else
                      bRet := { || oEditControl:GridValue(  &( cValue[1] ),  &( cValue[2] ) ) }
                   EndIf
@@ -649,13 +649,13 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
             EndIf
          ElseIf ValType( cWorkArea ) $ "CM"
             If ValType( cValue ) == "B"
-               bRet := { |wa| oEditControl:GridValue( ( cWorkArea ) -> ( EVAL( cValue, wa ) ) ) }
+               bRet := { |wa| oEditControl:GridValue( ( cWorkArea ) -> ( _OOHG_Eval( cValue, wa ) ) ) }
             Else
                bRet := { || oEditControl:GridValue( ( cWorkArea ) -> ( &( cValue ) ) ) }
             EndIf
          Else
             If ValType( cValue ) == "B"
-               bRet := { |wa| oEditControl:GridValue( EVAL( cValue, wa ) ) }
+               bRet := { |wa| oEditControl:GridValue( _OOHG_Eval( cValue, wa ) ) }
             Else
                bRet := { || oEditControl:GridValue( &( cValue ) ) }
             EndIf
@@ -666,13 +666,13 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
             // Picture
             If ValType( cWorkArea ) $ "CM"
                If ValType( cValue ) == "B"
-                  bRet := { |wa| Trim( Transform( ( cWorkArea ) -> ( EVAL( cValue, wa ) ), uPicture ) ) }
+                  bRet := { |wa| Trim( Transform( ( cWorkArea ) -> ( _OOHG_Eval( cValue, wa ) ), uPicture ) ) }
                Else
                   bRet := { || Trim( Transform( ( cWorkArea ) -> ( &( cValue ) ), uPicture ) ) }
                EndIf
             Else
                If ValType( cValue ) == "B"
-                  bRet := { |wa| Trim( Transform( EVAL( cValue, wa ), uPicture ) ) }
+                  bRet := { |wa| Trim( Transform( _OOHG_Eval( cValue, wa ), uPicture ) ) }
                Else
                   bRet := { || Trim( Transform( &( cValue ), uPicture ) ) }
                EndIf
@@ -683,14 +683,14 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
             // Convert
             If ValType( cWorkArea ) $ "CM"
                If ValType( cValue ) == "B"
-                  bRet := { |wa| TXBrowse_UpDate_PerType( ( cWorkArea ) -> ( EVAL( cValue, wa ) ) ) }
+                  bRet := { |wa| TXBrowse_UpDate_PerType( ( cWorkArea ) -> ( _OOHG_Eval( cValue, wa ) ) ) }
                Else
                   // bRet := { || TXBrowse_UpDate_PerType( ( cWorkArea ) -> ( &( cValue ) ) ) }
                   bRet := &( " { || TXBrowse_UpDate_PerType( " + cWorkArea + " -> ( " + cValue + " ) ) } " )
                EndIf
             Else
                If ValType( cValue ) == "B"
-                  bRet := { |wa| TXBrowse_UpDate_PerType( EVAL( cValue, wa ) ) }
+                  bRet := { |wa| TXBrowse_UpDate_PerType( _OOHG_Eval( cValue, wa ) ) }
                Else
                   // bRet := { || TXBrowse_UpDate_PerType( &( cValue ) ) }
                   bRet := &( " { || TXBrowse_UpDate_PerType( " + cValue + " ) } " )
@@ -705,19 +705,19 @@ METHOD ColumnBlock( nCol, lDirect ) CLASS TXBrowse
          If ValType( cValue ) == "A"
             If HB_IsBlock( cValue[1] )
                If HB_IsBlock( cValue[2] )
-                  bRet := { |wa| { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } }
+                  bRet := { |wa| { ( cWorkArea ) -> ( _OOHG_Eval( cValue[1], wa ) ), ( cWorkArea ) -> ( _OOHG_Eval( cValue[2], wa ) ) } }
                Else
-                  bRet := { |wa| { ( cWorkArea ) -> ( EVAL( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } }
+                  bRet := { |wa| { ( cWorkArea ) -> ( _OOHG_Eval( cValue[1], wa ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } }
                EndIf
             Else
                If HB_IsBlock( cValue[2] )
-                  bRet := { |wa| { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( EVAL( cValue[2], wa ) ) } }
+                  bRet := { |wa| { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( _OOHG_Eval( cValue[2], wa ) ) } }
                Else
                   bRet := { || { ( cWorkArea ) -> ( &( cValue[1] ) ), ( cWorkArea ) -> ( &( cValue[2] ) ) } }
                EndIf
             EndIf
          ElseIf ValType( cValue ) == "B"
-            bRet := { |wa| ( cWorkArea ) -> ( EVAL( cValue, wa ) ) }
+            bRet := { |wa| ( cWorkArea ) -> ( _OOHG_Eval( cValue, wa ) ) }
          Else
             // bRet := { || ( cWorkArea ) -> ( &( cValue ) ) }
             bRet := &( " { || " + cWorkArea + " -> ( " + cValue + " ) } " )
@@ -958,7 +958,7 @@ METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    Do While ! ::Eof()
       For i := nColFrom To nColTo
          If HB_IsBlock( ::aFields[ aColumnOrder[ i ] ] )
-            uValue := ( cWorkArea ) -> ( Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
+            uValue := ( cWorkArea ) -> ( _OOHG_Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
          Else
             uValue := ( cWorkArea ) -> ( &( ::aFields[ aColumnOrder[ i ] ] ) )
          EndIf
@@ -1072,7 +1072,7 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    Do While ! ::Eof()
       For i := nColFrom To nColTo
          If HB_IsBlock( ::aFields[ aColumnOrder[ i ] ] )
-            uValue := ( cWorkArea ) -> ( Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
+            uValue := ( cWorkArea ) -> ( _OOHG_Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
          Else
             uValue := ( cWorkArea ) -> ( &( ::aFields[ aColumnOrder[ i ] ] ) )
          EndIf
@@ -1169,9 +1169,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 
       Do While ! ::Eof()
          If ::FixBlocks()
-            uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+            uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          Else
-            uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+            uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
          EndIf
          If ValType( uGridValue ) == "A"      // TGridControlImageData
             uGridValue := uGridValue[ 1 ]
@@ -1189,9 +1189,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 
          Do While ! ::Eof()
             If ::FixBlocks()
-               uGridValue := Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
+               uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             Else
-               uGridValue := Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
+               uGridValue := _OOHG_Eval( ::ColumnBlock( ::SearchCol ), cWorkArea )
             EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
@@ -1271,6 +1271,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
    Local nvKey, lGo, uValue, nNotify := GetNotifyCode( lParam ), aCellData
 
    If nNotify == NM_CLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -1279,7 +1282,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, Nil }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else
@@ -1290,12 +1293,25 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  If uValue > 0
-                     aCellData := { uValue, 0 }
-                  Else
-                     aCellData := ListView_ItemActivate( lParam )
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
                   ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -1318,6 +1334,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
       Return 1
 
    ElseIf nNotify == NM_RCLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -1326,7 +1345,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, _GetGridCellData( Self, ListView_ItemActivate( lParam ) ) }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else
@@ -1335,7 +1354,29 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+            EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+                  ::DoEventMouseCoords( ::OnRClick, "RCLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
+                  ::NestedClick := .F.
+         EndIf
             EndIf
          EndIf
 
@@ -1353,7 +1394,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
 
          // fire context menu
          If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Cargo := aCellData
             ::ContextMenu:Activate()
          EndIf
       EndIf
@@ -1362,8 +1403,10 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
       Return 1
 
    ElseIf nNotify == LVN_BEGINDRAG
+      aCellData := _GetGridCellData( Self, ListView_ListView( lParam ), NIL )
+
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, 0, Nil }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, 0, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else
@@ -1434,7 +1477,7 @@ METHOD DbSkip( nRows ) CLASS TXBrowse
    nSign := If( ::lDescending, -1, 1 )
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    If ValType( ::skipBlock ) == "B"
-      nCount := EVAL( ::skipBlock, nRows * nSign, ::WorkArea ) * nSign
+      nCount := _OOHG_Eval( ::skipBlock, nRows * nSign, ::WorkArea ) * nSign
    Else
       nCount := ::oWorkArea:Skipper( nRows * nSign ) * nSign
    EndIf
@@ -1575,13 +1618,13 @@ METHOD TopBottom( nDir ) CLASS TXBrowse
    EndIf
    If nDir == GO_BOTTOM
       If ValType( ::goBottomBlock ) == "B"
-         EVAL( ::goBottomBlock, ::WorkArea )
+         _OOHG_Eval( ::goBottomBlock, ::WorkArea )
       Else
          ::oWorkArea:GoBottom()
       EndIf
    Else
       If ValType( ::goTopBlock ) == "B"
-         EVAL( ::goTopBlock, ::WorkArea )
+         _OOHG_Eval( ::goTopBlock, ::WorkArea )
       Else
          ::oWorkArea:GoTop()
       EndIf
@@ -2349,9 +2392,9 @@ METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField, lAppen
    If ValType( uOldValue ) == "U"
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
       If ! lAppend .OR. ::aDefaultValues[ nCol ] == NIL
-         uOldValue := EVAL( ::ColumnBlock( nCol, .T. ), ::WorkArea )
+         uOldValue := _OOHG_Eval( ::ColumnBlock( nCol, .T. ), ::WorkArea )
       ElseIf HB_IsBlock( ::aDefaultValues[ nCol ] )
-         uOldValue := EVAL( ::aDefaultValues[ nCol ], nCol )
+         uOldValue := _OOHG_Eval( ::aDefaultValues[ nCol ], nCol )
       Else
          uOldValue := ::aDefaultValues[ nCol ]
       EndIf
@@ -2885,7 +2928,7 @@ METHOD Value( xValue ) CLASS TVirtualField
       ::hValues[ xRecordId ] := xValue
    ElseIf ! xRecordId $ ::hValues
       If HB_IsBlock( ::xDefault )
-         ::hValues[ xRecordId ] := EVAL( ::xDefault )
+         ::hValues[ xRecordId ] := _OOHG_Eval( ::xDefault )
       Else
          ::hValues[ xRecordId ] := ::xDefault
       EndIf
@@ -2898,7 +2941,7 @@ METHOD RecordId() CLASS TVirtualField
    LOCAL xId
 
    If     HB_IsBlock( ::bRecordId )
-      xId := EVAL( ::bRecordId )
+      xId := _OOHG_Eval( ::bRecordId )
    ElseIf HB_IsObject( ::xArea )
       xId := ::xArea:RecNo()
    ElseIf HB_IsString( ::xArea )
@@ -3740,9 +3783,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
          Do While ! ::Eof()
             If ::FixBlocks()
-               uGridValue := Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
+               uGridValue := _OOHG_Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
             Else
-               uGridValue := Eval( ::ColumnBlock( nSearchCol ), cWorkArea )
+               uGridValue := _OOHG_Eval( ::ColumnBlock( nSearchCol ), cWorkArea )
             EndIf
             If ValType( uGridValue ) == "A"      // TGridControlImageData
                uGridValue := uGridValue[ 1 ]
@@ -3760,9 +3803,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
             Do While ! ::Eof()
                If ::FixBlocks()
-                  uGridValue := Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
+                  uGridValue := _OOHG_Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
                Else
-                  uGridValue := Eval( ::ColumnBlock( nSearchCol ), cWorkArea )
+                  uGridValue := _OOHG_Eval( ::ColumnBlock( nSearchCol ), cWorkArea )
                EndIf
                If ValType( uGridValue ) == "A"      // TGridControlImageData
                   uGridValue := uGridValue[ 1 ]
@@ -3879,7 +3922,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
       aPos := Get_XY_LPARAM( lParam )
       aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
 
-      aCellData := _GetGridCellData( Self, aPos )
+      aCellData := _GetGridCellData( Self, aPos, wParam ) 
+      // aCellData[ 3 ] -> MK_CONTROL, MK_SHIFT
       _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
       _OOHG_ThisItemColIndex   := aCellData[ 2 ]
       _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -3890,22 +3934,22 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
       If ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
          If HB_IsBlock( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          EndIf
       ElseIf ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
          // Cell is readonly
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          EndIf
       ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
          // Not a valid WHEN
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          EndIf
       ElseIf aScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
          // Cell is in a hidden column
          If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          EndIf
       ElseIf ::FullMove
          ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -3978,6 +4022,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
    Local nNotify := GetNotifyCode( lParam ), aCellData, nvKey, lGo, uValue
 
    If nNotify == NM_CLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -3986,8 +4033,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, Nil }
+         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else
@@ -3998,12 +4044,25 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  If uValue > 0
-                     aCellData := { uValue, 0 }
-                  Else
-                     aCellData := ListView_ItemActivate( lParam )
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
                   ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -4015,7 +4074,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
          Else
             // select item
             If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-               aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
                ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
             Else
                ::CurrentRow := ::nRowPos
@@ -4028,6 +4086,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
       Return 1
 
    ElseIf nNotify == NM_RCLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -4036,7 +4097,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
@@ -4046,7 +4106,29 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+            EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+                  ::DoEventMouseCoords( ::OnRClick, "RCLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
+                  ::NestedClick := .F.
+         EndIf
             EndIf
          EndIf
 
@@ -4056,7 +4138,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
          Else
             // select item
             If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-               aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
                ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
             Else
                ::CurrentRow := ::nRowPos
@@ -4066,7 +4147,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
 
          // Fire context menu
          If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Cargo := aCellData
             ::ContextMenu:Activate()
          EndIf
       EndIf
@@ -4075,9 +4156,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
       Return 1
 
    ElseIf nNotify == LVN_BEGINDRAG
+      aCellData := _GetGridCellData( Self, ListView_ListView( lParam ), NIL )
       If ::bPosition == -2 .OR. ::bPosition == 9
-         aCellData := _GetGridCellData( Self, ListView_ListView( lParam ) )
-         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, Nil }
+         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
          If ::nRowPos > 0
             ListView_SetCursel( ::hWnd, ::nRowPos )
          Else
@@ -4085,7 +4166,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
          EndIf
       Else
          If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-            aCellData := _GetGridCellData( Self, ListView_ListView( lParam ) )
             ::MoveTo( { aCellData[ 1 ], aCellData[ 2 ] }, { ::nRowPos, ::nColPos } )
          Else
             ::CurrentRow := ::nRowPos
