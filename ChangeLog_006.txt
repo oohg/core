@@ -348,9 +348,9 @@
     - Events_NCDestroy because it's unnecessary.
   * core\source\h_form.prg
     - Events_NCDestroy because it's unnecessary.
-    * The code for app exiting in case the window initialization
-      fails was moved to PRG level to generate an entry at the
-      errors log and enable a more ordered exit.
+    * The code to end the app when the initialization of the window
+      fails was moved to the PRG level to generate an entry in the
+      error log and allow a more orderly exit.
     + Public control's memvars are now released at form's
       release after setting them to zero.
     - Debugging code.
