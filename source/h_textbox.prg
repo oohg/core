@@ -101,9 +101,13 @@ CLASS TText FROM TLabel
 
    METHOD AddControl
    METHOD AdjustResize( nDivh, nDivw ) BLOCK { |Self, nDivh, nDivw| ::Super:AdjustResize( nDivh, nDivw, .T. ) }
+   METHOD CanUnDo                      BLOCK { |Self| SendMessage( ::hWnd, EM_CANUNDO, 0, 0 ) # 0 }
    METHOD CaretPos                     SETGET
+   METHOD Clear                        BLOCK { |Self| SendMessage( ::hWnd, WM_COPY, 0, 0 ) }
    METHOD ControlArea                  SETGET
    METHOD ControlPosition              SETGET
+   METHOD Copy                         BLOCK { |Self| SendMessage( ::hWnd, WM_CLEAR, 0, 0 ) }
+   METHOD Cut                          BLOCK { |Self| SendMessage( ::hWnd, WM_CUT, 0, 0 ) }
    METHOD Define
    METHOD Define2
    METHOD DefineAction
@@ -128,6 +132,7 @@ CLASS TText FROM TLabel
    METHOD InsertStatus                 SETGET
    METHOD MaxLength                    SETGET
    METHOD PasswordChar                 SETGET
+   METHOD Paste                        BLOCK { |Self| SendMessage( ::hWnd, WM_PASTE, 0, 0 ) }
    METHOD ReadOnly                     SETGET
    METHOD RedefinePasswordStyle
    METHOD Refresh                      BLOCK { |Self| ::RefreshData() }
@@ -137,8 +142,10 @@ CLASS TText FROM TLabel
    METHOD ReleaseAction2
    METHOD ScrollCaret                  BLOCK { |Self| SendMessage( ::hWnd, EM_SCROLLCARET, 0, 0 ) }
    METHOD SetFocus
+   METHOD SetRect
    METHOD SetSelection
    METHOD SizePos
+   METHOD UnDo                         BLOCK { |Self| SendMessage( ::hWnd, EM_UNDO, 0, 0 ) }
    METHOD Value                        SETGET
    METHOD Visible                      SETGET
 
@@ -977,6 +984,21 @@ HB_FUNC_STATIC( TTEXT_GETRECT )          /* METHOD GetRect() CLASS TText -> { nT
    HB_STORNI( ( INT ) rect.left, -1, 2 );
    HB_STORNI( ( INT ) rect.bottom, -1, 3 );
    HB_STORNI( ( INT ) rect.right, -1, 4 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTEXT_SETRECT )          /* METHOD SetRect() CLASS TText -> { nTop, nLeft, nBottom, nRight } */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rect;
+
+   rect.top = hb_parni( 2 );
+   rect.left = hb_parni( 3 );
+   rect.bottom = hb_parni( 4 );
+   rect.right = hb_parni( 5 );
+
+   SendMessage( oSelf->hWnd, EM_SETRECT, ( WPARAM ) 1, ( LPARAM ) &rect );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
