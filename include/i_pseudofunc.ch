@@ -61,6 +61,10 @@
  */
 
 
+#xtranslate hb_osIsWin10() ;
+   => ;
+      '10' $ WindowsVersion() \[ 1 ]
+
 #translate IsControlDefined( <ControlName>, <FormName> ) ;
    => ;
       _IsControlDefined( <(ControlName)>, <(FormName)> )
