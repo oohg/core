@@ -1813,9 +1813,7 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
       If HB_IsLogical( lValid ) .AND. ! lValid
          lRet := .F.
          cValidMessage := aEditControls[ nItem ]:cValidMessage
-         If HB_IsBlock( cValidMessage )
-            cValidMessage := Eval( cValidMessage, _OOHG_ThisItemCellValue )
-         EndIf
+         cValidMessage := _OOHG_Eval( cValidMessage, _OOHG_ThisItemCellValue )
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
             MsgExclamation( cValidMessage )                                        // TODO: Add title
          Else
@@ -2570,7 +2568,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
    If ValType( uOldValue ) == "U"
       uValue := ::Cell( nRow, nCol )
    ElseIf HB_IsBlock( ::bEditCellValue )
-      uValue := Eval( ::bEditCellValue, nCol, nRow, uOldValue )
+      uValue := _OOHG_Eval( ::bEditCellValue, nCol, nRow, uOldValue )
    Else
       uValue := uOldValue
    EndIf
@@ -2843,7 +2841,9 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
          aPos := Get_XY_LPARAM( lParam )
          aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
 
-         aCellData := _GetGridCellData( Self, aPos )
+         aCellData := _GetGridCellData( Self, aPos, wParam )
+         // aCellData[ 3 ] -> MK_CONTROL, MK_SHIFT
+
          _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
          _OOHG_ThisItemColIndex   := aCellData[ 2 ]
          _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -2854,23 +2854,23 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
 
          If ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
             If HB_IsBlock( ::OnDblClick )
-               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
             EndIf
          ElseIf ::FullMove
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
                // Cell is readonly
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
                // WHEN returned .F.
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
             ElseIf AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
                // Hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
             Else
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -2879,7 +2879,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
             If ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
                // Cell is readonly
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
             ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
                // WHEN returned .F.
@@ -2889,7 +2889,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
             ElseIf AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
               // Hidden column
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+                  ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
             Else
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
@@ -3092,7 +3092,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       EndIf
 
       If HB_IsBlock( ::bBeforeColMove )
-         lGo := Eval( ::bBeforeColMove, nColumn )
+         lGo := _OOHG_Eval( ::bBeforeColMove, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
             Return 1
@@ -3103,7 +3103,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       // The user has finished dragging a column
       If HB_IsBlock( ::bAfterColMove )
          // HDITEM_iOrder() Returns the destination position in the header
-         lGo := Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
+         lGo := _OOHG_Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action so the column remains in it's original place
             Return 1
@@ -3124,7 +3124,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       EndIf
 
       If HB_IsBlock( ::bBeforeColSize )
-         lGo := Eval( ::bBeforeColSize, nColumn )
+         lGo := _OOHG_Eval( ::bBeforeColSize, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent the action
             Return 1
@@ -3168,7 +3168,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       // The user has finished dragging a column divider but the new width is not set yet
       If HB_IsBlock( ::bAfterColSize )
          // HDITEM_cxy() gets the user's selected width from lParam
-         nNewWidth := Eval( ::bAfterColSize, nColumn, HDITEM_cxy( lParam ) )
+         nNewWidth := _OOHG_Eval( ::bAfterColSize, nColumn, HDITEM_cxy( lParam ) )
          If HB_IsNumeric( nNewWidth ) .and. nNewWidth >= 0
             // Set_HDITEM_cxy() sets the Returned width into lParam
             Set_HDITEM_cxy( lParam, nNewWidth )
@@ -3189,7 +3189,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       EndIf
 
       If HB_IsBlock( ::bBeforeAutofit )
-         lGo := Eval( ::bBeforeAutofit, nColumn )
+         lGo := _OOHG_Eval( ::bBeforeAutofit, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent column autofit
             Return 1
@@ -3263,7 +3263,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
    ElseIf nNotify == NM_RCLICK
       If HB_IsBlock( ::bHeadRClick )
          nColumn := Header_HitTest( SendMessage( ::hWnd, LVM_GETHEADER, 0, 0 ) )
-         Eval( ::bHeadRClick, nColumn, Self )
+         _OOHG_Eval( ::bHeadRClick, nColumn, Self )
       EndIf
       // Prevent propagation to ::Events_Notify()
       Return 1
@@ -3335,7 +3335,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
          uValue := ::FirstSelectedItem
          If uValue > 0
             If ValType( ::bDelWhen ) == "B"
-               lGo := _OOHG_EVAL( ::bDelWhen )
+               lGo := _OOHG_Eval( ::bDelWhen )
             Else
                lGo := .t.
             EndIf
@@ -3409,6 +3409,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       RedrawWindow( ::hWnd )
 
    ElseIf nNotify == NM_CLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -3417,7 +3420,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, Nil }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, aCellData }
          If ::nEditRow > 0
             ListView_SetCursel( ::hWnd, ::nEditRow )
          Else
@@ -3428,12 +3431,25 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  If uValue > 0
-                     aCellData := { uValue, 0 }
-                  Else
-                     aCellData := ListView_ItemActivate( lParam )
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
                   ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -3444,7 +3460,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          ElseIf uValue < 0
             // select item
-            ::SetControlValue( ListView_ItemActivate( lParam )[ 1 ] )
+            ::SetControlValue( aCellData[ 1 ] )
          EndIf
       EndIf
 
@@ -3452,6 +3468,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       Return 1
 
    ElseIf nNotify == NM_RCLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -3460,7 +3479,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, _GetGridCellData( Self, ListView_ItemActivate( lParam ) ) }
+         ::nDelayedClick := { ::FirstSelectedItem, 0, uValue, aCellData }
          If ::nEditRow > 0
             ListView_SetCursel( ::hWnd, ::nEditRow )
          Else
@@ -3469,7 +3488,29 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+            EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+                  ::DoEventMouseCoords( ::OnRClick, "RCLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
+                  ::NestedClick := .F.
+         EndIf
             EndIf
          EndIf
 
@@ -3483,7 +3524,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 
          // fire context menu
          If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Cargo := aCellData
             ::ContextMenu:Activate()
          EndIf
       EndIf
@@ -5533,7 +5574,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
          aPos := Get_XY_LPARAM( lParam )
          aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
 
-         aCellData := _GetGridCellData( Self, aPos )
+         aCellData := _GetGridCellData( Self, aPos, wParam )
+         // aCellData[ 3 ] -> MK_CONTROL, MK_SHIFT
+
          _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
          _OOHG_ThisItemColIndex   := aCellData[ 2 ]
          _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -5544,21 +5587,21 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
 
          If ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
             If HB_IsBlock( ::OnDblClick )
-               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
             EndIf
          ElseIf ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
             // Cell is readonly
-            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
          ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
             // WHEN returned .F.
-            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
          ElseIf AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
             // Cell is in a hidden column
-            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+            If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
          Else
@@ -5834,6 +5877,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
       EndIf
 
    ElseIf nNotify == NM_CLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -5842,8 +5888,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
-         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, Nil }
+         ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
          If ::nEditRow > 0
             ListView_SetCursel( ::hWnd, ::nEditRow )
          Else
@@ -5854,12 +5899,25 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             If ! ::lCheckBoxes .OR. ::ClickOnCheckbox .OR. uValue <= 0
                If ! ::NestedClick
                   ::NestedClick := ! _OOHG_NestedSameEvent()
-                  If uValue > 0
-                     aCellData := { uValue, 0 }
-                  Else
-                     aCellData := ListView_ItemActivate( lParam )
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
                   ::DoEventMouseCoords( ::OnClick, "CLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
                   ::NestedClick := .F.
                EndIf
             EndIf
@@ -5870,7 +5928,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select cell
-            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
             ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
          EndIf
       EndIf
@@ -5879,6 +5936,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
       Return 1
 
    ElseIf nNotify == NM_RCLICK
+      aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+      // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -5887,7 +5947,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
       EndIf
 
       If ::bPosition == -2 .OR. ::bPosition == 9
-         aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
          ::nDelayedClick := { aCellData[ 1 ], aCellData[ 2 ], uValue, aCellData }
          If ::nEditRow > 0
             ListView_SetCursel( ::hWnd, ::nEditRow )
@@ -5897,7 +5956,29 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
       Else
          If HB_IsBlock( ::OnRClick )
             If ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0
-               ::DoEventMouseCoords( ::OnRClick, "RCLICK" )
+               If ! ::NestedClick
+                  ::NestedClick := ! _OOHG_NestedSameEvent()
+// TODO: check and remove
+                  If uValue > 0 .AND. uValue # aCellData[ 1 ]
+                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+            EndIf
+// end TODO:
+                  _PushEventInfo()
+                  _OOHG_ThisForm           := ::Parent
+                  _OOHG_ThisType           := 'C'
+                  _OOHG_ThisControl        := Self
+                  _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
+                  _OOHG_ThisItemColIndex   := aCellData[ 2 ]
+                  _OOHG_ThisItemCellRow    := aCellData[ 3 ]
+                  _OOHG_ThisItemCellCol    := aCellData[ 4 ]
+                  _OOHG_ThisItemCellWidth  := aCellData[ 5 ]
+                  _OOHG_ThisItemCellHeight := aCellData[ 6 ]
+                  _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+                  ::DoEventMouseCoords( ::OnRClick, "RCLICK", aCellData )
+                  _ClearThisCellInfo()
+                  _PopEventInfo()
+                  ::NestedClick := .F.
+         EndIf
             EndIf
          EndIf
 
@@ -5906,13 +5987,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
             ::CheckItem( uValue, ! ::CheckItem( uValue ) )
          Else
             // select cell
-            aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
             ::Value := { aCellData[ 1 ], aCellData[ 2 ] }
          EndIf
 
          // fire context menu
          If ::ContextMenu != Nil .AND. ( ! ::lCheckBoxes .OR. ::RClickOnCheckbox .OR. uValue <= 0 )
-            ::ContextMenu:Cargo := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
+            ::ContextMenu:Cargo := aCellData
             ::ContextMenu:Activate()
          EndIf
       EndIf
@@ -5945,7 +6025,7 @@ METHOD DoChange() CLASS TGridByCell
 
    Return Self
 
-FUNCTION _GetGridCellData( Self, aPos )
+FUNCTION _GetGridCellData( Self, aPos, uExtra )
 
    Local ThisItemRowIndex
    Local ThisItemColIndex
@@ -5999,6 +6079,11 @@ FUNCTION _GetGridCellData( Self, aPos )
    ThisItemCellHeight := r[ 4 ]
 
    aCellData := { ThisItemRowIndex, ThisItemColIndex, ThisItemCellRow, ThisItemCellCol, ThisItemCellWidth, ThisItemCellHeight }
+   IF Len( aPos ) < 3
+      AAdd( aCellData, uExtra )
+   ELSE
+      AAdd( aCellData, aPos[ 3 ] )
+   ENDIF
 
    Return aCellData
 
@@ -8570,9 +8655,10 @@ HB_FUNC( LISTVIEW_ITEMACTIVATE )
 {
    LPNMITEMACTIVATE pData = ( NMITEMACTIVATE * ) HB_PARNL( 1 );
 
-   hb_reta( 2 );
+   hb_reta( 3 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
    HB_STORNI( pData->iSubItem + 1, -1, 2 );
+   HB_STORNI( pData->uKeyFlags, -1, 3 );
 }
 
 HB_FUNC( LISTVIEW_LISTVIEW )
