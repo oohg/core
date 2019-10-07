@@ -74,6 +74,7 @@ CLASS TEditRich FROM TEdit
    DATA nHeight                   INIT 240
    DATA nWidth                    INIT 120
    DATA OnSelChange               INIT NIL
+   DATA Version                   INIT 41
    DATA Type                      INIT "RICHEDIT" READONLY
 
    METHOD AutoURLDetect
@@ -116,14 +117,18 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uValue, c
                lReadonly, lBreak, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, ;
                lUnderline, lStrikeout, cField, uBackColor, lRtl, lDisabled, ;
                bSelChange, uFontColor, lNoHideSel, nOnFocusPos, lNoVScroll, ;
-               lNoHScroll, cFile, nType, bOnHScroll, bOnVScroll, nInsType ) CLASS TEditRich
+               lNoHScroll, cFile, nType, bOnHScroll, bOnVScroll, nInsType, nVersion ) CLASS TEditRich
 
    LOCAL nControlHandle, nStyle
 
-   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
-   ASSIGN ::nHeight VALUE nHeight TYPE "N"
-   ASSIGN ::nRow    VALUE nRow    TYPE "N"
-   ASSIGN ::nCol    VALUE nCol    TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth   TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight  TYPE "N"
+   ASSIGN ::nRow    VALUE nRow     TYPE "N"
+   ASSIGN ::nCol    VALUE nCol     TYPE "N"
+
+   IF HB_ISNUMERIC( nVersion ) .AND. ( nVersion == 41 .OR. nVersion == 30 )
+      ::Version := nVersion
+   ENDIF
 
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
@@ -132,9 +137,33 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uValue, c
              iif( HB_ISLOGICAL( lNoHideSel ) .AND. lNoHideSel, ES_NOHIDESEL, 0 ) + ;
              iif( HB_ISLOGICAL( lNoVScroll ) .AND. lNoVScroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
              iif( HB_ISLOGICAL( lNoHScroll ) .AND. lNoHScroll, 0, WS_HSCROLL )
+/*
+ES_AUTOHSCROLL
+Automatically scrolls text to the right by 10 characters when the user types a character at the end of the line. When the user presses the ENTER key, the control scrolls all text back to position zero.
+ES_CENTER
+Centers text in a single-line or multiline edit control.
+ES_LEFT
+Left aligns text.
+ES_NUMBER
+Allows only digits to be entered into the edit control.
+ES_PASSWORD
+Displays an asterisk (*) for each character typed into the edit control. This style is valid only for single-line edit controls.
+ES_RIGHT
+Right aligns text in a single-line or multiline edit control.
+ES_DISABLENOSCROLL
+Disables scroll bars instead of hiding them when they are not needed.
+ES_NOOLEDRAGDROP
+Disables support for drag-drop of OLE objects.
+ES_SAVESEL
+Preserves the selection when the control loses the focus. By default, the entire contents of the control are selected when it regains the focus.
+ES_SELECTIONBAR
+Adds space to the left margin where the cursor changes to a right-up arrow, allowing the user to select full lines of text.
+ES_SUNKEN
+Displays the control with a sunken border style so that the rich edit control appears recessed into its parent window.
+*/
 
-   ::SetSplitBoxInfo( lBreak, )
-   nControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nMaxLength, ::lRtl )
+   ::SetSplitBoxInfo( lBreak )
+   nControlHandle := InitRichEditBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nMaxLength, ::lRtl, ::Version )
 
    ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
@@ -359,53 +388,102 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
    return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TEditRich_lpfnOldWndProc( 0 ) );
 }
 
-static HMODULE hDllRichEdit = NULL;
-static char * classname = NULL;
+static HMODULE hDllRichEdit30 = NULL;
+static HMODULE hDllRichEdit41 = NULL;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 VOID _RichEdit_DeInit( VOID )
 {
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if( hDllRichEdit )
+   if( hDllRichEdit41 )
    {
-      FreeLibrary( hDllRichEdit );
-      hDllRichEdit = NULL;
+      FreeLibrary( hDllRichEdit41 );
+      hDllRichEdit41 = NULL;
+   }
+   if( hDllRichEdit30 )
+   {
+      FreeLibrary( hDllRichEdit30 );
+      hDllRichEdit30 = NULL;
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLength, lRtl ) -> hWnd */
+HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLength, lRtl, nVersion ) -> hWnd */
 {
    HWND hCtrl;
    INT Style, StyleEx, Mask;
+   char * classname = NULL;
+   BOOL bIs41;
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
    Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_DRAGDROPDONE;
-
+/*
+ENM_DROPFILES
+ENM_KEYEVENTS
+ENM_LINK
+ENM_MOUSEEVENTS
+*/
    InitCommonControls();
 
-   if( hDllRichEdit == NULL )
+   if( hb_parni( 10 ) == 30 )
    {
-      WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-      hDllRichEdit = LoadLibrary( "MSFTEDIT.DLL" );
-      if( hDllRichEdit != NULL )
+      if( hDllRichEdit30 != NULL )
       {
-         classname = MSFTEDIT_CLASS;
+         classname = RICHEDIT_CLASS;
+         bIs41 = FALSE;
       }
       else
       {
-         hDllRichEdit = LoadLibrary( "RICHED20.DLL" );
-         if( hDllRichEdit != NULL )
+         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+         hDllRichEdit30 = LoadLibrary( "RICHED20.DLL" );
+         if( hDllRichEdit30 != NULL )
          {
             classname = RICHEDIT_CLASS;
+            bIs41 = FALSE;
          }
+         ReleaseMutex( _OOHG_GlobalMutex() );
       }
-      ReleaseMutex( _OOHG_GlobalMutex() );
+   }
+   else
+   {
+      if( hDllRichEdit41 != NULL )
+      {
+         classname = MSFTEDIT_CLASS;
+         bIs41 = TRUE;
+      }
+      else
+      {
+         WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+         hDllRichEdit41 = LoadLibrary( "MSFTEDIT.DLL" );
+         if( hDllRichEdit41 != NULL )
+         {
+            classname = MSFTEDIT_CLASS;
+            bIs41 = TRUE;
+         }
+         else
+         {
+            if( hDllRichEdit30 != NULL )
+            {
+               classname = RICHEDIT_CLASS;
+               bIs41 = FALSE;
+            }
+            else
+            {
+               hDllRichEdit30 = LoadLibrary( "RICHED20.DLL" );
+               if( hDllRichEdit30 != NULL )
+               {
+                  classname = RICHEDIT_CLASS;
+                  bIs41 = FALSE;
+               }
+            }
+         }
+         ReleaseMutex( _OOHG_GlobalMutex() );
+      }
    }
 
-   if ( hDllRichEdit )
+   if ( classname != NULL )
    {
       hCtrl = CreateWindowEx( StyleEx, classname, ( LPSTR ) NULL, Style,
                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
@@ -419,6 +497,15 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
       }
 
       SendMessage( hCtrl, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
+
+      if( bIs41 )
+      {
+         HB_STORNI( 41, 1, 10 );
+      }
+      else
+      {
+         HB_STORNI( 30, 1, 10 );
+      }
 
       HWNDret( hCtrl );
    }

@@ -114,6 +114,7 @@ STANDARD VERSION
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ INSERTTYPE <nInsType> ] ;
+      [ VERSION <nVer> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <value>, ;
@@ -123,7 +124,7 @@ STANDARD VERSION
             <(field)>, <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, ;
             <fontcolor>, <.nohidesel.>, <focusedpos>, <.novscroll.>, ;
             <.nohscroll.>, <file>, iif( <.plain.>, 1, <type> ), <{hscroll}>, ;
-            <{vscroll}>, <nInsType> )
+            <{vscroll}>, <nInsType>, <nVer> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -168,6 +169,7 @@ SPLITBOX VERSION
       [ <dummy06: ONVSCROLL, ON VSCROLL> <vscroll> ] ;
       [ <dummy07: ONHSCROLL, ON HSCROLL> <hscroll> ] ;
       [ INSERTTYPE <nInsType> ] ;
+      [ VERSION <nVer> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEditRich(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <h>, <value>, <f>, <s>, ;
@@ -176,4 +178,5 @@ SPLITBOX VERSION
             <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, <(field)>, ;
             <backcolor>, <.rtl.>, <.disabled.>, <{selchange}>, <fontcolor>, ;
             <.nohidesel.>, <focusedpos>, <.novscroll.>, <.nohscroll.>, <file>, ;
-            iif( <.plain.>, 1, <type> ), <{hscroll}>, <{vscroll}>, <nInsType> )
+            iif( <.plain.>, 1, <type> ), <{hscroll}>, <{vscroll}>, <nInsType>, ;
+            <nVer> )
