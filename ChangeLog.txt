@@ -12,6 +12,28 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-07 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! Function _OOHG_NESTEDSAMEEVENT is not setting the flag
+       to .T. thus preventing nested clicks on toolbar buttons.
+
+2019-10-07 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     * Function ShowLastError now return the error code.
+     * Function _OOHG_DOMESSAGELOOP now checks the return value of
+       GetMessage() and if it's -1 shows a message and ends the app.
+
+2019-10-07 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_richeditbox.ch
+     + Clause VERSION <number> where number is 30 for older versions
+       of the control (class RICHEDIT_CLASS from RICHEDIT20.dll) or
+       41 for newer versions (class MSFTEDIT_CLASS from Msftedit.dll).
+       Defaults to 41 if present or to 30 if not.
+   * core\source\h_richeditbox.prg
+     + DATA Version.
+     + New parameter to method Define and function InitRichEditBox.
+     + Logic handle both versions at function InitRichEditBox.
+
 2019-10-06 21:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      - No longer needed memvar declarations at module level.
