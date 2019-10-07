@@ -72,16 +72,6 @@
 #include "winprint.ch"
 
 MEMVAR _OOHG_PrintLibrary
-MEMVAR _HMG_PRINTER_aPrinterProperties
-MEMVAR _HMG_PRINTER_Collate
-MEMVAR _HMG_PRINTER_Copies
-MEMVAR _HMG_PRINTER_Error
-MEMVAR _HMG_PRINTER_hDC
-MEMVAR _HMG_PRINTER_hDC_Bak
-MEMVAR _HMG_PRINTER_Name
-MEMVAR _HMG_PRINTER_PageCount
-MEMVAR _HMG_PRINTER_Preview
-MEMVAR _HMG_PRINTER_TimeStamp
 
 #define hbprn ::oHBPrn
 #define TEMP_FILE_NAME ( GetTempDir() + "T" + AllTrim( Str( Int( hb_Random( 999999 ) ), 8 ) ) + ".prn" )
@@ -159,10 +149,10 @@ CLASS TPrintBase
    DATA lFontItalic               INIT .F.                   READONLY
    DATA lFontStrikeout            INIT .F.                   READONLY
    DATA lFontUnderline            INIT .F.                   READONLY
-   DATA lIgnorePropertyError      INIT .T.                   READONLY
+   DATA lIgnorePropertyError      INIT .T.                   
    DATA lIndentAll                INIT .F.                   READONLY    // Indent RicheEdit lines
    DATA lLandscape                INIT .F.                   READONLY    // Page orientation
-   DATA lNoErrMsg                 INIT .T.                   READONLY
+   DATA lNoErrMsg                 INIT .T.
    DATA lPrError                  INIT .F.                   READONLY
    DATA lProp                     INIT .F.                   READONLY
    DATA lSaveTemp                 INIT .F.                   READONLY
@@ -358,7 +348,7 @@ METHOD Release() CLASS TPrintBase
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Init( uParent ) CLASS TPrintBase
+METHOD Init( uParent, cLang ) CLASS TPrintBase
 
    LOCAL lOk
 
@@ -368,7 +358,7 @@ METHOD Init( uParent ) CLASS TPrintBase
       ELSE
          ::oParent := uParent
       ENDIF
-      IF ( lOk := ::InitX() )
+      IF ( lOk := ::InitX( cLang ) )
          ::nStage := 1
       ENDIF
    ELSE
@@ -381,7 +371,7 @@ METHOD Init( uParent ) CLASS TPrintBase
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPrintBase
+METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TPrintBase
 
    IF ::lPrError
       IF ::lShowErrors
@@ -392,14 +382,12 @@ METHOD SelPrinter( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, lHide, 
 
    ASSIGN lSelect    VALUE lSelect    TYPE "L" DEFAULT .T.
    ASSIGN lPreview   VALUE lPreview   TYPE "L" DEFAULT ::ImPreview
-   ASSIGN lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
    ASSIGN lHide      VALUE lHide      TYPE "L" DEFAULT .F.
 
    ::ImPreview := lPreview
-   ::lLandscape := lLandscape
    ::lWinHide := lHide
 
-   RETURN ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth )
+   RETURN ::SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD IsDocOpen() CLASS TPrintBase
@@ -1208,14 +1196,20 @@ CLASS TMiniPrint FROM TPrintBase
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MaxCol() CLASS TMiniPrint
 
-   LOCAL nCol
+   LOCAL hdcPrint, nCol
 
-   IF _HMG_PRINTER_hDC == 0
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   IF hdcPrint == 0
       nCol := 0
    ELSEIF ::cUnits == "MM"
       nCol := _HMG_PRINTER_GETPAGEWIDTH() - 1
    ELSE
-      nCol := _HMG_PRINTER_GETMAXCOL( _HMG_PRINTER_hDC, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+      nCol := _HMG_PRINTER_GETMAXCOL( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
    ENDIF
 
    RETURN nCol
@@ -1223,14 +1217,20 @@ METHOD MaxCol() CLASS TMiniPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MaxRow() CLASS TMiniPrint
 
-   LOCAL nRow
+   LOCAL hdcPrint, nRow
 
-   IF _HMG_PRINTER_hDC == 0
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   IF hdcPrint == 0
       nRow := 0
    ELSEIF ::cUnits == "MM"
       nRow := _HMG_PRINTER_GETPAGEHEIGHT() - 1
    ELSE
-      nRow := _HMG_PRINTER_GETMAXROW( _HMG_PRINTER_hDC, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+      nRow := _HMG_PRINTER_GETMAXROW( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
    ENDIF
 
    RETURN nRow
@@ -1256,39 +1256,9 @@ METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS TMiniPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TMiniPrint
+METHOD InitX( cLang ) CLASS TMiniPrint
 
-   IF ! __mvExist( "_HMG_PRINTER_aPrinterProperties" )
-      PUBLIC _HMG_PRINTER_aPrinterProperties
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_Collate" )
-      PUBLIC _HMG_PRINTER_Collate
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_Copies" )
-      PUBLIC _HMG_PRINTER_Copies
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_Error" )
-      PUBLIC _HMG_PRINTER_Error
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_hDC" )
-      PUBLIC _HMG_PRINTER_hDC
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_hDC_Bak" )
-      PUBLIC _HMG_PRINTER_hDC_Bak
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_Name" )
-      PUBLIC _HMG_PRINTER_Name
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_PageCount" )
-      PUBLIC _HMG_PRINTER_PageCount
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_Preview" )
-      PUBLIC _HMG_PRINTER_Preview
-   ENDIF
-   IF ! __mvExist( "_HMG_PRINTER_TimeStamp" )
-      PUBLIC _HMG_PRINTER_TimeStamp
-   ENDIF
-
+   _HMG_PRINTER_InitUserMessages( cLang )
    ::aPrinters := _HMG_PRINTER_aPrinters()
    ::cPrintLibrary := "MINIPRINT"
    ::lPrError := .F.
@@ -1339,7 +1309,7 @@ METHOD EndDocX( lWait, lSize ) CLASS TMiniPrint
 METHOD IsDocOpenX() CLASS TMiniPrint
 
    IF ::lDocIsOpen
-      IF ! IsWindowDefined( "_OOHG_AUXIL" )
+      IF ! IsWindowDefined( "_HMG_PRINTER_AUXIL" )
          ::lDocIsOpen := .F.
       ENDIF
    ENDIF
@@ -1846,9 +1816,9 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TMiniPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TMiniPrint
 
-   LOCAL nOrientation, lSucess, nCollate, nColor
+   LOCAL nOrientation, lSuccess, nCollate, nColor
 
    ASSIGN nPaperSize   VALUE nPaperSize   TYPE "N" DEFAULT -999
    ASSIGN nRes         VALUE nRes         TYPE "N" DEFAULT -999
@@ -1859,10 +1829,14 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    ASSIGN nPaperLength VALUE nPaperLength TYPE "N" DEFAULT -999
    ASSIGN nPaperWidth  VALUE nPaperWidth  TYPE "N" DEFAULT -999
 
-   IF lLandscape
-      nOrientation := PRINTER_ORIENT_LANDSCAPE
+   IF HB_ISLOGICAL( lLandscape )
+      IF lLandscape
+         nOrientation := PRINTER_ORIENT_LANDSCAPE
+      ELSE
+         nOrientation := PRINTER_ORIENT_PORTRAIT
+      ENDIF
    ELSE
-      nOrientation := PRINTER_ORIENT_PORTRAIT
+      nOrientation := -999
    ENDIF
 
    IF HB_ISLOGICAL( lCollate )
@@ -1887,7 +1861,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF cPrinterX == NIL
       IF lSelect
-         ::cPrinter := _HMG_PRINTER_GetPrinter()
+         ::cPrinter := _HMG_PRINTER_GetPrinter( cLang )
          IF Empty( ::cPrinter )
             ::lPrError := .T.
             RETURN .F.
@@ -1896,7 +1870,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          IF ::lIgnorePropertyError
             IF ::lNoErrMsg
                IF lPreview
-                  SELECT PRINTER ::cPrinter TO lSucess ;
+                  SELECT PRINTER ::cPrinter TO lSuccess ;
                      ORIENTATION nOrientation ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -1912,7 +1886,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                      IGNOREERRORS ;
                      NOERRORMSGS
                ELSE
-                  SELECT PRINTER ::cPrinter TO lSucess ;
+                  SELECT PRINTER ::cPrinter TO lSuccess ;
                      ORIENTATION nOrientation ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -1929,7 +1903,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                ENDIF
             ELSE
                IF lPreview
-                  SELECT PRINTER ::cPrinter TO lSucess ;
+                  SELECT PRINTER ::cPrinter TO lSuccess ;
                      ORIENTATION nOrientation ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -1944,7 +1918,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                      PREVIEW ;
                      IGNOREERRORS
                ELSE
-                  SELECT PRINTER ::cPrinter TO lSucess ;
+                  SELECT PRINTER ::cPrinter TO lSuccess ;
                      ORIENTATION nOrientation ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -1961,7 +1935,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
             ENDIF
          ELSE
             IF lPreview
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -1975,7 +1949,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                   PAPERWIDTH nPaperWidth ;
                   PREVIEW
             ELSE
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -1994,7 +1968,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          IF ::lIgnorePropertyError
             IF ::lNoErrMsg
                IF lPreview
-                  SELECT PRINTER DEFAULT TO lSucess ;
+                  SELECT PRINTER DEFAULT TO lSuccess ;
                      ORIENTATION nOrientation  ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -2010,7 +1984,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                      IGNOREERRORS ;
                      NOERRORMSGS
                ELSE
-                  SELECT PRINTER DEFAULT TO lSucess  ;
+                  SELECT PRINTER DEFAULT TO lSuccess  ;
                      ORIENTATION nOrientation  ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -2027,7 +2001,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                ENDIF
             ELSE
                IF lPreview
-                  SELECT PRINTER DEFAULT TO lSucess ;
+                  SELECT PRINTER DEFAULT TO lSuccess ;
                      ORIENTATION nOrientation  ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -2042,7 +2016,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                      PREVIEW ;
                      IGNOREERRORS
                ELSE
-                  SELECT PRINTER DEFAULT TO lSucess  ;
+                  SELECT PRINTER DEFAULT TO lSuccess  ;
                      ORIENTATION nOrientation  ;
                      PAPERSIZE nPaperSize ;
                      QUALITY nRes ;
@@ -2059,7 +2033,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
             ENDIF
          ELSE
             IF lPreview
-               SELECT PRINTER DEFAULT TO lSucess ;
+               SELECT PRINTER DEFAULT TO lSuccess ;
                   ORIENTATION nOrientation  ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2073,7 +2047,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                   PAPERWIDTH nPaperWidth ;
                   PREVIEW
             ELSE
-               SELECT PRINTER DEFAULT TO lSucess  ;
+               SELECT PRINTER DEFAULT TO lSuccess  ;
                   ORIENTATION nOrientation  ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2098,7 +2072,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       IF ::lIgnorePropertyError
          IF ::lNoErrMsg
             IF lPreview
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2114,7 +2088,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                   IGNOREERRORS ;
                   NOERRORMSGS
             ELSE
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2131,7 +2105,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
             ENDIF
          ELSE
             IF lPreview
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2146,7 +2120,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                   PREVIEW ;
                   IGNOREERRORS
             ELSE
-               SELECT PRINTER ::cPrinter TO lSucess ;
+               SELECT PRINTER ::cPrinter TO lSuccess ;
                   ORIENTATION nOrientation ;
                   PAPERSIZE nPaperSize ;
                   QUALITY nRes ;
@@ -2163,7 +2137,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
          ENDIF
       ELSE
          IF lPreview
-            SELECT PRINTER ::cPrinter TO lSucess ;
+            SELECT PRINTER ::cPrinter TO lSuccess ;
                ORIENTATION nOrientation ;
                PAPERSIZE nPaperSize ;
                QUALITY nRes ;
@@ -2177,7 +2151,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
                PAPERWIDTH nPaperWidth ;
                PREVIEW
          ELSE
-            SELECT PRINTER ::cPrinter TO lSucess ;
+            SELECT PRINTER ::cPrinter TO lSuccess ;
                ORIENTATION nOrientation ;
                PAPERSIZE nPaperSize ;
                QUALITY nRes ;
@@ -2193,9 +2167,13 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
       ENDIF
    ENDIF
 
-   ::lPrError := ! lSucess
+   ::lPrError := ! lSuccess
 
-   RETURN lSucess
+   IF lSuccess .AND. HB_ISNUMERIC( _HMG_PRINTER_aPrinterProperties[ 6 ] )
+      ::lLandscape := ( _HMG_PRINTER_aPrinterProperties[ 6 ] == PRINTER_ORIENT_LANDSCAPE )
+   ENDIF
+
+   RETURN lSuccess
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetDefPrinterX() CLASS TMiniPrint
@@ -2271,9 +2249,13 @@ METHOD MaxRow() CLASS THBPrinter
    RETURN nRow
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THBPrinter
+METHOD InitX( cLang ) CLASS THBPrinter
 
-   INIT PRINTSYS
+   IF cLang == NIL
+      INIT PRINTSYS
+   ELSE
+      INIT PRINTSYS LANGUAGE cLang
+   ENDIF
    GET PRINTERS TO ::aPrinters
    GET PORTS TO ::aPorts
    SET UNITS MM
@@ -2571,7 +2553,9 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS THBPrinter
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS THBPrinter
+
+   HB_SYMBOL_UNUSED( cLang )
 
    IF lSelect
       IF lPreview
@@ -2610,11 +2594,14 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    DEFINE PEN "P0" WIDTH ::nwPen COLOR ::aColor STYLE PS_SOLID
    SELECT PEN "P0"
 
-   IF lLandscape
-      SET PAGE ORIENTATION DMORIENT_LANDSCAPE FONT "F0"
-   ELSE
-      SET PAGE ORIENTATION DMORIENT_PORTRAIT  FONT "F0"
+   IF lLandscape # NIL
+      IF lLandscape
+         SET PAGE ORIENTATION DMORIENT_LANDSCAPE FONT "F0"
+      ELSE
+         SET PAGE ORIENTATION DMORIENT_PORTRAIT  FONT "F0"
+      ENDIF
    ENDIF
+   ::lLandscape := ( ::oHBPrn:DevCaps[ 15 ] == PRINTER_ORIENT_LANDSCAPE )
 
    IF nPaperSize # NIL
       SET PAGE PAPERSIZE nPaperSize
@@ -2667,6 +2654,10 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
 
    IF nPaperWidth # NIL
       SET PAPERWIDTH TO nPaperWidth
+   ENDIF
+
+   IF cLang # NIL
+      ::oHBPrn:InitMessages( cLang )
    ENDIF
 
    ::lPrError := .F.
@@ -2761,7 +2752,9 @@ METHOD PrintModeX( cFile ) CLASS TDosPrint
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TDosPrint
+METHOD InitX( cLang ) CLASS TDosPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "DOSPRINT"
    ::lPrError := .F.
@@ -2769,7 +2762,7 @@ METHOD InitX() CLASS TDosPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TDosPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TDosPrint
 
    LOCAL oWin
 
@@ -2785,6 +2778,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nScale )
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrinter := "CMD.EXE"
 
@@ -3167,7 +3161,9 @@ METHOD EndDocX() CLASS TTxtPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TTxtPrint
+METHOD InitX( cLang ) CLASS TTxtPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "TXTPRINT"
    ::lPrError := .F.
@@ -3193,7 +3189,7 @@ METHOD PrintModeX( cFile ) CLASS TTxtPrint
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TTxtPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TTxtPrint
 
    HB_SYMBOL_UNUSED( lSelect )
    HB_SYMBOL_UNUSED( lLandscape )
@@ -3208,6 +3204,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nScale )
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
+   HB_SYMBOL_UNUSED( cLang )
 
    ASSIGN lPreview VALUE lPreview TYPE "L" DEFAULT .T.
    ::ImPreview := lPreview
@@ -3288,7 +3285,9 @@ METHOD PrintModeX( cFile ) CLASS TRawPrint
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TRawPrint
+METHOD InitX( cLang ) CLASS TRawPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "RAWPRINT"
    ::lPrError := .F.
@@ -3296,7 +3295,7 @@ METHOD InitX() CLASS TRawPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRawPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TRawPrint
 
    LOCAL oWin
 
@@ -3312,6 +3311,7 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nScale )
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
+   HB_SYMBOL_UNUSED( cLang )
 
    ::ImPreview := .F.
 
@@ -3383,7 +3383,9 @@ CLASS TExcelPrint FROM TPrintBase
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TExcelPrint
+METHOD InitX( cLang ) CLASS TExcelPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "EXCELPRINT"
 
@@ -3649,7 +3651,9 @@ CLASS TSpreadsheetPrint FROM TPrintBase
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TSpreadsheetPrint
+METHOD InitX( cLang ) CLASS TSpreadsheetPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "SPREADSHEETPRINT"
    ::lPrError := .F.
@@ -3873,9 +3877,9 @@ METHOD EndDocX() CLASS THtmlPrintFromExcel
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THtmlPrintFromExcel
+METHOD InitX( cLang ) CLASS THtmlPrintFromExcel
 
-   ::Super:InitX()
+   ::Super:InitX( cLang )
    ::cPrintLibrary := "HTMLPRINTFROMEXCEL"
    ::lPrError := .F.
 
@@ -3948,9 +3952,9 @@ METHOD EndDocX() CLASS THtmlPrintFromCalc
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS THtmlPrintFromCalc
+METHOD InitX( cLang ) CLASS THtmlPrintFromCalc
 
-   ::Super:InitX()
+   ::Super:InitX( cLang )
    ::cPrintLibrary := "HTMLPRINTFROMCALC"
    ::lPrError := .F.
 
@@ -3991,7 +3995,9 @@ CLASS TRtfPrint FROM TPrintBase
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TRtfPrint
+METHOD InitX( cLang ) CLASS TRtfPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "RTFPRINT"
    ::lPrError := .F.
@@ -4436,7 +4442,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen ) CLASS TRtfPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TRtfPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TRtfPrint
 
    HB_SYMBOL_UNUSED( lSelect )
    /*
@@ -4457,8 +4463,10 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nScale )
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
+   HB_SYMBOL_UNUSED( cLang )
 
-   ::lLandscape := lLandscape
+   ASSIGN ::lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
+
    ::cPrinter := "RTF"
 
    RETURN .T.
@@ -4491,7 +4499,9 @@ METHOD BeginDocX() CLASS TCsvPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TCsvPrint
+METHOD InitX( cLang ) CLASS TCsvPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "CSVPRINT"
    ::lPrError := .F.
@@ -4582,7 +4592,6 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 CLASS TPdfPrint FROM TPrintBase
 
    DATA aPaper                    INIT {}                    READONLY // paper types supported by pdf class
-   DATA cPageOrient               INIT "P"                   READONLY // P = portrait, L = Landscape
    DATA cPageSize                 INIT ""                    READONLY // page size
    DATA oPDF                      INIT NIL                   READONLY // reference to the TPDF object
    DATA Type                      INIT "PDFPRINT"            READONLY
@@ -4631,7 +4640,9 @@ METHOD MaxRow CLASS TPdfPrint
    RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TPdfPrint
+METHOD InitX( cLang ) CLASS TPdfPrint
+
+   HB_SYMBOL_UNUSED( cLang )
 
    // These are the only paper types supported
    AAdd( ::aPaper, { DMPAPER_LETTER,      "LETTER"    } )
@@ -4655,7 +4666,7 @@ METHOD InitX() CLASS TPdfPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD BeginDocX () CLASS TPdfPrint
+METHOD BeginDocX() CLASS TPdfPrint
 
    ::cDocument := ParseName( ::Cargo, "pdf" )
    ::oPdf := TPDF():Init( ::cDocument )
@@ -4682,7 +4693,7 @@ METHOD EndDocX() CLASS TPdfPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BeginPageX() CLASS TPdfPrint
 
-   ::oPdf:NewPage( ::cPageSize, ::cPageOrient, , ::cFontName, ::nFontType, ::nFontSize )
+   ::oPdf:NewPage( ::cPageSize, iif( ::lLandscape, "L", "P" ), NIL, ::cFontName, ::nFontType, ::nFontSize )
 
    RETURN ::cPageName
 
@@ -4882,7 +4893,7 @@ METHOD ReleaseX() CLASS TPdfPrint
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth ) CLASS TPdfPrint
+METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS TPdfPrint
 
    LOCAL nPos
 
@@ -4901,13 +4912,12 @@ METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, 
    HB_SYMBOL_UNUSED( nScale )
    HB_SYMBOL_UNUSED( nPaperLength )
    HB_SYMBOL_UNUSED( nPaperWidth )
+   HB_SYMBOL_UNUSED( cLang )
 
-   ASSIGN lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
-   ASSIGN nPaperSize VALUE nPaperSize TYPE "N" DEFAULT 0
+   ASSIGN ::lLandscape VALUE lLandscape TYPE "L" DEFAULT .F.
+   ASSIGN nPaperSize   VALUE nPaperSize TYPE "N" DEFAULT 0
 
-   ::cPageOrient := iif( lLandscape, "L", "P" )
    nPos := AScan( ::aPaper, { | x | x[ 1 ] == nPaperSize } )
-
    If nPos > 0
       ::cPageSize := ::aPaper[ nPos ][ 2 ]
    ELSE
@@ -4954,9 +4964,11 @@ CLASS TCalcPrint FROM TPrintBase
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InitX() CLASS TCalcPrint
+METHOD InitX( cLang ) CLASS TCalcPrint
 
    LOCAL bErrorBlock := ErrorBlock( { | x | Break( x ) } )
+
+   HB_SYMBOL_UNUSED( cLang )
 
    ::cPrintLibrary := "CALCPRINT"
 
