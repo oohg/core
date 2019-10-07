@@ -61,6 +61,49 @@
  */
 
 
+#ifndef __MINIPRINT__
+#define __MINIPRINT__
+
+MEMVAR _HMG_MiniPrint
+
+#define _HMG_PRINTER_LastVar 29
+
+#xtranslate _HMG_PRINTER_Name               => _HMG_MiniPrint\[01\]
+#xtranslate _HMG_PRINTER_aPrinterProperties => _HMG_MiniPrint\[02\]
+#xtranslate _HMG_PRINTER_BasePageName       => _HMG_MiniPrint\[03\]
+#xtranslate _HMG_PRINTER_CurrentPageNumber  => _HMG_MiniPrint\[04\]
+#xtranslate _HMG_PRINTER_SizeFactor         => _HMG_MiniPrint\[05\]
+#xtranslate _HMG_PRINTER_Dx                 => _HMG_MiniPrint\[06\]
+#xtranslate _HMG_PRINTER_Dy                 => _HMG_MiniPrint\[07\]
+#xtranslate _HMG_PRINTER_Dz                 => _HMG_MiniPrint\[08\]
+#xtranslate _HMG_PRINTER_ScrollStep         => _HMG_MiniPrint\[09\]
+#xtranslate _HMG_PRINTER_ZoomClick_xOffset  => _HMG_MiniPrint\[10\]
+#xtranslate _HMG_PRINTER_ThumbUpdate        => _HMG_MiniPrint\[11\]
+#xtranslate _HMG_PRINTER_ThumbScroll        => _HMG_MiniPrint\[12\]
+#xtranslate _HMG_PRINTER_PrevPageNumber     => _HMG_MiniPrint\[13\]
+#xtranslate _HMG_PRINTER_Copies             => _HMG_MiniPrint\[14\]
+#xtranslate _HMG_PRINTER_Collate            => _HMG_MiniPrint\[15\]
+#xtranslate _HMG_PRINTER_Delta_Zoom         => _HMG_MiniPrint\[16\]   // Unused
+#xtranslate _HMG_PRINTER_TimeStamp          => _HMG_MiniPrint\[17\]
+#xtranslate _HMG_PRINTER_PageCount          => _HMG_MiniPrint\[18\]
+#xtranslate _HMG_PRINTER_hDC                => _HMG_MiniPrint\[19\]
+#xtranslate _HMG_PRINTER_hDC_Bak            => _HMG_MiniPrint\[20\]
+#xtranslate _HMG_PRINTER_JobName            => _HMG_MiniPrint\[21\]
+#xtranslate _HMG_PRINTER_UserMessages       => _HMG_MiniPrint\[22\]
+#xtranslate _HMG_PRINTER_Preview            => _HMG_MiniPrint\[23\]
+#xtranslate _HMG_PRINTER_UserCopies         => _HMG_MiniPrint\[24\]
+#xtranslate _HMG_PRINTER_UserCollate        => _HMG_MiniPrint\[25\]
+#xtranslate _HMG_PRINTER_JobId              => _HMG_MiniPrint\[26\]
+#xtranslate _HMG_PRINTER_JobData            => _HMG_MiniPrint\[27\]
+#xtranslate _HMG_PRINTER_Language           => _HMG_MiniPrint\[28\]
+#xtranslate _HMG_PRINTER_Error              => _HMG_MiniPrint\[29\]
+
+#xtranslate OpenPrinterGetJobData()         => { _HMG_PRINTER_JobId, _HMG_PRINTER_Name }
+#xtranslate OpenPrinterGetDC()              => _HMG_PRINTER_aPrinterProperties\[1\]
+#xtranslate OpenPrinterGetPageDC()          => _HMG_PRINTER_hDC
+#xtranslate OpenPrinterGetPageWidth()       => _HMG_PRINTER_GETPAGEWIDTH( OpenPrinterGetDC() )
+#xtranslate OpenPrinterGetPageHeight()      => _HMG_PRINTER_GETPAGEHEIGHT( OpenPrinterGetDC() )
+
 #xcommand SELECT PRINTER <cPrinter> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
       [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
@@ -77,7 +120,9 @@
       [ <lSilent: NOERRORMSGS> ] ;
       [ <lIgnore: IGNOREERRORS> ] ;
       [ <lGlobal: GLOBAL> ] ;
+      [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
             iif( <.lOrientation.>, <nOrientation>, -999 ), ;
@@ -99,9 +144,11 @@
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
+      _HMG_PRINTER_UserCopies := <.lCopies.> ;;
+      _HMG_PRINTER_UserCollate := <.lCollate.> ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
-      _HMG_PRINTER_Name := <cPrinter>
+      _HMG_PRINTER_Name := <cPrinter> ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
 #xcommand SELECT PRINTER <cPrinter> TO <lSuccess> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
@@ -119,7 +166,9 @@
       [ <lSilent: NOERRORMSGS> ] ;
       [ <lIgnore: IGNOREERRORS> ] ;
       [ <lGlobal: GLOBAL> ] ;
+      [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             <cPrinter>, ;
             iif( <.lOrientation.>, <nOrientation>, -999 ), ;
@@ -142,9 +191,11 @@
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := iif( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
+      _HMG_PRINTER_UserCopies := <.lCopies.> ;;
+      _HMG_PRINTER_UserCollate := <.lCollate.> ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
-      _HMG_PRINTER_Name := <cPrinter>
+      _HMG_PRINTER_Name := <cPrinter> ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
 #xcommand SELECT PRINTER DEFAULT ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
@@ -162,7 +213,9 @@
       [ <lSilent: NOERRORMSGS> ] ;
       [ <lIgnore: IGNOREERRORS> ] ;
       [ <lGlobal: GLOBAL> ] ;
+      [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             _HMG_PRINTER_Name, ;
@@ -185,8 +238,10 @@
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
+      _HMG_PRINTER_UserCopies := <.lCopies.> ;;
+      _HMG_PRINTER_UserCollate := <.lCollate.> ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
 #xcommand SELECT PRINTER DEFAULT TO <lSuccess> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
@@ -204,7 +259,9 @@
       [ <lSilent: NOERRORMSGS> ] ;
       [ <lIgnore: IGNOREERRORS> ] ;
       [ <lGlobal: GLOBAL> ] ;
+      [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_Name := GetDefaultPrinter() ;;
       _HMG_PRINTER_aPrinterProperties := _HMG_PRINTER_SetPrinterProperties( ;
             _HMG_PRINTER_Name, ;
@@ -228,11 +285,14 @@
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := iif( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
+      _HMG_PRINTER_UserCopies := <.lCopies.> ;;
+      _HMG_PRINTER_UserCollate := <.lCollate.> ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
-#xcommand SELECT PRINTER DIALOG [ <lPreview: PREVIEW> ] ;
+#xcommand SELECT PRINTER DIALOG [ <lPreview: PREVIEW> ] [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_aPrinterProperties = _HMG_PRINTER_PrintDialog() ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Name := _HMG_PRINTER_aPrinterProperties\[2\] ;;
@@ -240,11 +300,12 @@
       _HMG_PRINTER_Collate := _HMG_PRINTER_aPrinterProperties\[4\] ;;
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
-      _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 )
+      _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
-#xcommand SELECT PRINTER DIALOG TO <lSuccess> [ <lPreview: PREVIEW> ] ;
+#xcommand SELECT PRINTER DIALOG TO <lSuccess> [ <lPreview: PREVIEW> ] [ LANGUAGE <cLang> ] ;
    => ;
+      _HMG_PRINTER_InitUserMessages( <cLang> ) ;;
       _HMG_PRINTER_aPrinterProperties = _HMG_PRINTER_PrintDialog() ;;
       _HMG_PRINTER_hDC := _HMG_PRINTER_aPrinterProperties\[1\] ;;
       _HMG_PRINTER_Name := _HMG_PRINTER_aPrinterProperties\[2\] ;;
@@ -253,16 +314,25 @@
       _HMG_PRINTER_Error := _HMG_PRINTER_aPrinterProperties\[5\] ;;
       <lSuccess> := iif( _HMG_PRINTER_hDC <> 0, .T., .F. ) ;;
       _HMG_PRINTER_Preview := <.lPreview.> ;;
-      _HMG_PRINTER_InitUserMessages() ;;
-      _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 )
+      _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
+      _HMG_PRINTER_hDC_Bak := 0
 
-#xcommand START PRINTDOC [ NAME <cname> ] ;
+#xcommand START PRINTDOC [ NAME <cname> ] [ LANGUAGE <cLang> ] ;
    => ;
       _HMG_PRINTER_SetJobName( <cname> ) ;;
       iif( _HMG_PRINTER_Preview, ;
-           ( _HMG_PRINTER_PageCount := 0, ;
-             _HMG_PRINTER_hDC_Bak := _HMG_PRINTER_hDC ), ;
-           _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC, _HMG_PRINTER_GetJobName() ) )
+           ( _HMG_PRINTER_PageCount := 0, _HMG_PRINTER_hDC_Bak := _HMG_PRINTER_hDC ), ;
+           _HMG_PRINTER_JobId := _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC, _HMG_PRINTER_GetJobName() ) ) ;;
+      _HMG_PRINTER_Jobdata := ""
+
+#xcommand START PRINTDOC [ NAME <cname> ] STOREJOBDATA <aJobData> [ LANGUAGE <cLang> ] ;
+   => ;
+      _HMG_PRINTER_SetJobName( <cname> ) ;;
+      iif( _HMG_PRINTER_Preview, ;
+           ( _HMG_PRINTER_PageCount := 0, _HMG_PRINTER_hDC_Bak := _HMG_PRINTER_hDC ), ;
+           _HMG_PRINTER_JobId := _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC, _HMG_PRINTER_GetJobName() ) ) ;;
+      _HMG_PRINTER_Jobdata := <"aJobData"> ;;
+      <aJobData> := OpenPrinterGetJobData()
 
 #xcommand START PRINTPAGE ;
    => ;
@@ -272,9 +342,9 @@
                 ( GetTempFolder() + ;
                   '\' + ;
                   _HMG_PRINTER_TimeStamp + ;
-                  "_HMG_print_preview_" + ;
+                  "_hmg_print_preview_" + ;
                   StrZero( ++ _HMG_PRINTER_PageCount, 6, 0 ) + ;
-                  ".Emf" ) ) ), ;
+                  ".emf" ) ) ), ;
            _HMG_PRINTER_StartPage( _HMG_PRINTER_hDC ) )
 
 #xcommand END PRINTPAGE ;
@@ -286,12 +356,22 @@
 #xcommand END PRINTDOC [ <nowait: NOWAIT> ] [ <nosize: NOSIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
    => ;
       iif( _HMG_PRINTER_Preview, ;
-           _HMG_PRINTER_ShowPreview( <(parent)>, ! <.nowait.>, ! <.nosize.> ), ;
+           ( _HMG_PRINTER_ShowPreview( <(parent)>, ! <.nowait.>, ! <.nosize.> ), ;
+                _HMG_PRINTER_hDC := _HMG_PRINTER_hDC_Bak, ;
+                _HMG_PRINTER_hDC_Bak := 0 ), ;
            _HMG_PRINTER_EndDoc( _HMG_PRINTER_hDC ) )
 
 #xcommand ABORT PRINTDOC ;
    => ;
-      _HMG_PRINTER_AbortDoc( _HMG_PRINTER_hDC )
+      iif( _HMG_PRINTER_Preview, ;
+           ( _HMG_PRINTER_EndPage_Preview( _HMG_PRINTER_hDC ), ;
+                _HMG_PRINTER_hDC := _HMG_PRINTER_hDC_Bak, ;
+                _HMG_PRINTER_hDC_Bak := 0 ), ;
+           _HMG_PRINTER_AbortDoc( _HMG_PRINTER_hDC ) )
+
+#xcommand SET PRINT CHARSET <charset> ;
+   => ;
+      _HMG_PRINTER_SetCharset( <charset> )
 
 #xcommand @ <nRow>, <nCol> PRINT [ DATA ] <cText> ;
       [ <lFont: FONT> <cFontName> ] ;
@@ -303,13 +383,13 @@
       [ <lColor: COLOR> <aColor> ] ;
       [ <lAngle: ANGLE> <nAngle> ] ;
       [ <lWidth: WIDTH> <nWidth> ] ;
+      [ <cAlign : CENTER, LEFT, RIGHT> ] ;
    => ;
       _HMG_PRINTER_H_Print( _HMG_PRINTER_hDC, <nRow>, <nCol>, <cFontName>, <nFontSize>, <aColor>\[1\], ;
          <aColor>\[2\], <aColor>\[3\], <cText>, <.lBold.>, <.lItalic.>, <.lUnderline.>, <.lStrikeout.>, ;
-         <.lColor.>, <.lFont.>, <.lSize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth> )
+         <.lColor.>, <.lFont.>, <.lSize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth>, <"cAlign"> )
 
-#xcommand @ <nRow>, <nCol> PRINT [ DATA ] <cText> ;
-      TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT [ DATA ] <cText> TO <nToRow>, <nToCol> ;
       [ <lFont: FONT> <cFontName> ] ;
       [ <lSize: SIZE> <nFontSize> ] ;
       [ <lBold: BOLD> ] ;
@@ -319,92 +399,139 @@
       [ <lColor: COLOR> <aColor> ] ;
       [ <lAngle: ANGLE> <nAngle> ] ;
       [ <lWidth: WIDTH> <nWidth> ] ;
+      [ <cAlign : CENTER, LEFT, RIGHT> ] ;
    => ;
-      _HMG_PRINTER_H_MultiLine_Print( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <cFontName>, <nFontSize>, ;
+      _HMG_PRINTER_H_MultiLine_Print( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <cFontName>, <nFontSize>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <cText>, <.lBold.>, <.lItalic.>, <.lUnderline.>, ;
-         <.lStrikeout.>, <.lColor.>, <.lFont.>, <.lSize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth> )
+         <.lStrikeout.>, <.lColor.>, <.lFont.>, <.lSize.>, <.lAngle.>, <nAngle>, <.lWidth.>, <nWidth>, <"cAlign"> )
 
 #xcommand @ <nRow>, <nCol> PRINT IMAGE <cFile> ;
       WIDTH <nWidth> ;
       HEIGHT <nHeight> ;
       [ <lStretch: STRETCH> ] ;
+      [ TRANSPARENT ] ;
    => ;
       _HMG_PRINTER_H_Image( _HMG_PRINTER_hDC, <cFile>, <nRow>, <nCol>, <nHeight>, <nWidth>, <.lStretch.> )
 
 #xcommand @ <nRow>, <nCol> PRINT IMAGE <cFile> ;
       IMAGESIZE ;
       [ <lStretch: STRETCH> ] ;
+      [ TRANSPARENT ] ;
    => ;
       _HMG_PRINTER_H_Image( _HMG_PRINTER_hDC, <cFile>, <nRow>, <nCol>, 0, 0, <.lStretch.> )
 
-#xcommand @ <nRow>, <nCol> PRINT LINE TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT LINE TO <nToRow>, <nToCol> ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
       [ <lStyle: STYLE> <nStyle> ] ;
    => ;
-      _HMG_PRINTER_H_Line( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nWidth>, ;
+      _HMG_PRINTER_H_Line( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nWidth>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle> )
 
-#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT LINE TO <nToRow>, <nToCol> DOTTED ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
-      [ <lStyle: STYLE> <nStyle> ] ;
-      [ <lBrushStyle: BRUSHSTYLE> <nBrushStyle> ] ;
-      [ <lBrushColor: BRUSHCOLOR> <aBrushColor> ] ;
    => ;
-      _HMG_PRINTER_H_Rectangle( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nWidth>, ;
-         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle>, ;
-         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor> )
+      _HMG_PRINTER_H_Line( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nWidth>, ;
+         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, .T., PS_DASH )
 
-#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <ToRow>, <ToCol> ;
+// for compatibility with Extended
+#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> FILLED NOBORDER ;
+      [ PENWIDTH <nWidth> ] ;
+      [ COLOR <aColor> ] ;
+   => ;
+      @ <nRow>, <nCol> PRINT FILL TO <nToRow>, <nToCol> ;
+         [ PENWIDTH <nWidth> ] ;
+         [ COLOR <aColor> ]
+
+// for compatibility with Extended
+#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> FILLED ;
+      [ PENWIDTH <nWidth> ] ;
+      [ COLOR <aColor> ] ;
+   => ;
+      @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> ;
+         [ PENWIDTH <nWidth> ] ;
+         [ BRUSHCOLOR <aColor> ] ;
+         NOPEN
+
+#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
       [ <lStyle: STYLE> <nStyle> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrushStyle> ] ;
       [ <lBrushColor: BRUSHCOLOR> <aBrushColor> ] ;
+      [ <lNoPen: NOPEN> ] ;
+      [ <lNoBrush: NOBRUSH> ] ;
+   => ;
+      _HMG_PRINTER_H_Rectangle( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nWidth>, ;
+         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle>, ;
+         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor>, <.lNoPen.>, <.lNoBrush.> )
+
+// for compatibility with Extended
+#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> ;
+      [ PENWIDTH <nWidth> ] ;
+      [ COLOR <aColor> ] ;
+      FILLED ;
       ROUNDED ;
    => ;
-      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nWidth>, ;
-         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle>, ;
-         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor> )
+      @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> ;
+         BRUSHCOLOR <aColor> NOPEN ROUNDED
 
-#xcommand @ <nRow>, <nCol> PRINT FILL TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT RECTANGLE TO <nToRow>, <nToCol> ;
+      [ <lWidth: PENWIDTH> <nWidth> ] ;
+      [ <lColor: COLOR> <aColor> ] ;
+      [ <lStyle: STYLE> <nStyle> ] ;
+      [ <lBrushStyle: BRUSHSTYLE> <nBrushStyle> ] ;
+      [ <lBrushColor: BRUSHCOLOR> <aBrushColor> ] ;
+      [ <lNoPen: NOPEN> ] ;
+      [ <lNoBrush: NOBRUSH> ] ;
+      ROUNDED ;
+   => ;
+      _HMG_PRINTER_H_RoundRectangle( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nWidth>, ;
+         <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle>, ;
+         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor>, <.lNoPen.>, <.lNoBrush.> )
+
+#xcommand @ <nRow>, <nCol> PRINT FILL TO <nToRow>, <nToCol> ;
       [ <lColor: COLOR> <aColor> ] ;
    => ;
-      _HMG_PRINTER_H_Fill( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, ;
+      _HMG_PRINTER_H_Fill( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lColor.> )
 
-#xcommand @ <nRow>, <nCol> PRINT ELLIPSE TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT ELLIPSE TO <nToRow>, <nToCol> ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
       [ <lStyle: STYLE> <nStyle> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrushStyle> ] ;
       [ <lBrushColor: BRUSHCOLOR> <aBrushColor> ] ;
+      [ <lNoPen: NOPEN> ] ;
+      [ <lNoBrush: NOBRUSH> ] ;
    => ;
-      _HMG_PRINTER_H_Ellipse( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nWidth>, ;
+      _HMG_PRINTER_H_Ellipse( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nWidth>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lColor.>, <.lStyle.>, <nStyle>, ;
-         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor> )
+         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor>, <.lNoPen.>, <.lNoBrush.> )
 
-#xcommand @ <nRow>, <nCol> PRINT ARC TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT ARC TO <nToRow>, <nToCol> ;
       LIMITS <nRow1>, <nCol1>, <nRow2>, <nCol2> ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
       [ <lStyle: STYLE> <nStyle> ] ;
    => ;
-      _HMG_PRINTER_H_Arc( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nRow1>, <nCol1>, <nRow2>, <nCol2>, ;
+      _HMG_PRINTER_H_Arc( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nRow1>, <nCol1>, <nRow2>, <nCol2>, ;
          <nWidth>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <.lStyle.>, <nStyle> )
 
-#xcommand @ <nRow>, <nCol> PRINT PIE TO <ToRow>, <ToCol> ;
+#xcommand @ <nRow>, <nCol> PRINT PIE TO <nToRow>, <nToCol> ;
       LIMITS <nRow1>, <nCol1>, <nRow2>, <nCol2> ;
       [ <lWidth: PENWIDTH> <nWidth> ] ;
       [ <lColor: COLOR> <aColor> ] ;
       [ <lStyle: STYLE> <nStyle> ] ;
       [ <lBrushStyle: BRUSHSTYLE> <nBrushStyle> ] ;
       [ <lBrushColor: BRUSHCOLOR> <aBrushColor> ] ;
+      [ <lNoPen: NOPEN> ] ;
+      [ <lNoBrush: NOBRUSH> ] ;
    => ;
-      _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <nRow>, <nCol>, <ToRow>, <ToCol>, <nRow1>, <nCol1>, <nRow2>, <nCol2>, ;
+      _HMG_PRINTER_H_Pie( _HMG_PRINTER_hDC, <nRow>, <nCol>, <nToRow>, <nToCol>, <nRow1>, <nCol1>, <nRow2>, <nCol2>, ;
          <nWidth>, <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <.lWidth.>, <.lColor.>, <lStyle>, <nStyle>, ;
-         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor> )
+         <.lBrushStyle.>, <nBrushStyle>, <.lBrushColor.>, <aBrushColor>, <.lNoPen.>, <.lNoBrush.> )
 
 #xcommand @ <nRow>, <nCol> PRINT BITMAP <hBitmap> ;
       WIDTH <nWidth> ;
@@ -604,6 +731,19 @@ PRINTER CONFIGURATION CONSTANTS
 #define PEN_ALTERNATE                               8
 #define PEN_STYLE_MASK                              0x0000000F
 
+/* brush styles */
+#define BR_SOLID                                    0
+#define BR_NULL                                     1
+#define BR_HOLLOW                                   BR_NULL
+#define BR_HATCHED                                  2
+#define BR_PATTERN                                  3
+#define BR_INDEXED                                  4
+#define BR_DIBPATTERN                               5
+#define BR_DIBPATTERNPT                             6
+#define BR_PATTERN8X8                               7
+#define BR_DIBPATTERN8X8                            8
+#define BR_MONOPATTERN                              9
+
 /* hatch styles for brush */
 #define BR_HORIZONTAL                               0       /* ----- */
 #define BR_VERTICAL                                 1       /* ||||| */
@@ -634,3 +774,46 @@ PRINTER CONFIGURATION CONSTANTS
 #define ERR_SET_DOCUMENT_SETTINGS                   0x00040000
 #define ERR_CREATING_DC                             0x00080000
 #define ERR_PRINTDLG                                0x00100000
+
+/* printer status codes for _HMG_PRINTER_C_GETSTATUS */
+#define WIN_PRINTER_STATUS_PAUSED                   0x00000001
+#define WIN_PRINTER_STATUS_ERROR                    0x00000002
+#define WIN_PRINTER_STATUS_PENDING_DELETION         0x00000004
+#define WIN_PRINTER_STATUS_PAPER_JAM                0x00000008
+#define WIN_PRINTER_STATUS_PAPER_OUT                0x00000010
+#define WIN_PRINTER_STATUS_MANUAL_FEED              0x00000020
+#define WIN_PRINTER_STATUS_PAPER_PROBLEM            0x00000040
+#define WIN_PRINTER_STATUS_OFFLINE                  0x00000080
+#define WIN_PRINTER_STATUS_IO_ACTIVE                0x00000100
+#define WIN_PRINTER_STATUS_BUSY                     0x00000200
+#define WIN_PRINTER_STATUS_PRINTING                 0x00000400
+#define WIN_PRINTER_STATUS_OUTPUT_BIN_FULL          0x00000800
+#define WIN_PRINTER_STATUS_NOT_AVAILABLE            0x00001000
+#define WIN_PRINTER_STATUS_WAITING                  0x00002000
+#define WIN_PRINTER_STATUS_PROCESSING               0x00004000
+#define WIN_PRINTER_STATUS_INITIALIZING             0x00008000
+#define WIN_PRINTER_STATUS_WARMING_UP               0x00010000
+#define WIN_PRINTER_STATUS_TONER_LOW                0x00020000
+#define WIN_PRINTER_STATUS_NO_TONER                 0x00040000
+#define WIN_PRINTER_STATUS_PAGE_PUNT                0x00080000
+#define WIN_PRINTER_STATUS_USER_INTERVENTION        0x00100000
+#define WIN_PRINTER_STATUS_OUT_OF_MEMORY            0x00200000
+#define WIN_PRINTER_STATUS_DOOR_OPEN                0x00400000
+#define WIN_PRINTER_STATUS_SERVER_UNKNOWN           0x00800000
+#define WIN_PRINTER_STATUS_POWER_SAVE               0x01000000
+
+/* text alignment */
+#ifndef __HBPRN__
+#define TA_NOUPDATECP                               0
+#define TA_UPDATECP                                 1
+#define TA_LEFT                                     0
+#define TA_RIGHT                                    2
+#define TA_CENTER                                   6
+#define TA_TOP                                      0
+#define TA_BOTTOM                                   8
+#define TA_BASELINE                                 24
+#define TA_RTLREADING                               256
+#define TA_MASK                                     ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
+#endif
+
+#endif

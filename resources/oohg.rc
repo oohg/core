@@ -55,7 +55,7 @@ hbprint_zoomin          BITMAP          oohgpath\hbprint_zoomin.bmp
 hbprint_zoomout         BITMAP          oohgpath\hbprint_zoomout.bmp
 hbprint_option          BITMAP          oohgpath\hbprint_option.bmp
 
-// HBPRINTER  REPLACE STRINGS
+// HBPRINTER REPLACE STRINGS
 // define one or more if these items to replace the value for the current language
 // useful if you're not satisfied with the hardwired value
 
@@ -99,7 +99,7 @@ hbprint_option          BITMAP          oohgpath\hbprint_option.bmp
 
 STRINGTABLE
 {
-        HBPRINTER_PREVIEW,      "tweaked title"
+        HBPRINTER_PREVIEW,      "Preview"
         HBPRINTER_CANCEL,       "&Cancel"
         HBPRINTER_PRINT,        "&Print"
         HBPRINTER_SAVE,         "&Save"
@@ -151,6 +151,87 @@ HP_CLOSE                BITMAP          oohgpath\hp_close.bmp
 HP_SAVE                 BITMAP          oohgpath\hp_save.bmp
 HP_THUMBNAIL            BITMAP          oohgpath\hp_thumbnail.bmp
 HP_GLASS                CURSOR          oohgpath\hp_glass.cur
+
+// MINIPRINT REPLACE STRINGS
+// define one or more if these items to replace the value for the current language
+// useful if you're not satisfied with the hardwired value
+
+/*
+#define MINIPRINT_PAGE     101
+#define MINIPRINT_PREVIEW  102
+#define MINIPRINT_FIRST    103
+#define MINIPRINT_PREVIOUS 104
+#define MINIPRINT_NEXT     105
+#define MINIPRINT_LAST     106
+#define MINIPRINT_GOTOPAGE 107
+#define MINIPRINT_ZOOM     108
+#define MINIPRINT_PRINT    109
+#define MINIPRINT_PAGENUM  110
+#define MINIPRINT_OK       111
+#define MINIPRINT_CANCEL   112
+#define MINIPRINT_SELECT   113
+#define MINIPRINT_COLLATE  114
+#define MINIPRINT_RANGE    115
+#define MINIPRINT_ALL      116
+#define MINIPRINT_PAGES    117
+#define MINIPRINT_FROM     118
+#define MINIPRINT_TO       119
+#define MINIPRINT_COPIES   120
+#define MINIPRINT_RANGEALL 121
+#define MINIPRINT_ONLYODDS 122
+#define MINIPRINT_ONLYEVEN 123
+#define MINIPRINT_YES      124
+#define MINIPRINT_NO       125
+#define MINIPRINT_CLOSE    126
+#define MINIPRINT_SAVE     127
+#define MINIPRINT_THUMBS   128
+#define MINIPRINT_WAITHMBS 129
+#define MINIPRINT_WARNING  130
+#define MINIPRINT_SELFLDR  131
+#define MINIPRINT_NOPRINT  132
+#define MINIPRINT_CLOSING  133
+#define MINIPRINT_DRVERROR 134
+#define MINIPRINT_ERRCODE  135
+
+STRINGTABLE
+{
+        MINIPRINT_PAGE,      'Page'
+        MINIPRINT_PREVIEW,   'Print Preview'
+        MINIPRINT_FIRST,     'First Page [HOME]'
+        MINIPRINT_PREVIOUS,  'Previous Page [PGUP]'
+        MINIPRINT_NEXT,      'Next Page [PGDN]'
+        MINIPRINT_LAST,      'Last Page [END]'
+        MINIPRINT_GOTOPAGE,  'Go To Page'
+        MINIPRINT_ZOOM,      'Zoom'
+        MINIPRINT_PRINT,     'Print'
+        MINIPRINT_PAGENUM,   'Page Number'
+        MINIPRINT_OK,        'Ok'
+        MINIPRINT_CANCEL,    'Cancel'
+        MINIPRINT_SELECT,    'Select Printer'
+        MINIPRINT_COLLATE,   'Collate Copies'
+        MINIPRINT_RANGE,     'Print Range'
+        MINIPRINT_ALL,       'All'
+        MINIPRINT_PAGES,     'Pages'
+        MINIPRINT_FROM,      'From'
+        MINIPRINT_TO,        'To'
+        MINIPRINT_COPIES,    'Copies'
+        MINIPRINT_RANGEALL,  'All Range'
+        MINIPRINT_ONLYODDS,  'Odd Pages Only'
+        MINIPRINT_ONLYEVEN,  'Even Pages Only'
+        MINIPRINT_YES,       'Yes'
+        MINIPRINT_NO,        'No'
+        MINIPRINT_CLOSE,     'Close'
+        MINIPRINT_SAVE,      'Save'
+        MINIPRINT_THUMBS,    'Thumbnails'
+        MINIPRINT_WAITHMBS,  'Generating Thumbnails... Please Wait...'
+        MINIPRINT_WARNING,   'Warning'
+        MINIPRINT_SELFLDR,   'Select a Folder'
+        MINIPRINT_NOPRINT,   'No printer is installed in this system.'
+        MINIPRINT_CLOSING,   'Closing preview... Please Wait...'
+        MINIPRINT_DRVERROR,  'Error'
+        MINIPRINT_ERRCODE,   'Printer configuration failed with code: '
+}
+*/
 
 // IMAGES FOR TGRIDCONTROL BUTTONS
 

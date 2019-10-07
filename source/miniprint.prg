@@ -77,50 +77,20 @@
 DECLARE WINDOW _HMG_PRINTER_PPNAV
 DECLARE WINDOW _HMG_PRINTER_SHOWPREVIEW
 
-MEMVAR _HMG_PRINTER_TimeStamp
-MEMVAR _HMG_PRINTER_hDC_Bak
-MEMVAR _HMG_PRINTER_PageCount
-MEMVAR _HMG_PRINTER_Copies
-MEMVAR _HMG_PRINTER_Collate
-MEMVAR _HMG_PRINTER_hDC
-MEMVAR _HMG_PRINTER_BasePageName
-MEMVAR _HMG_PRINTER_CurrentPageNumber
-MEMVAR _HMG_PRINTER_SizeFactor
-MEMVAR _HMG_PRINTER_Dx
-MEMVAR _HMG_PRINTER_Dy
-MEMVAR _HMG_PRINTER_Dz
-MEMVAR _HMG_PRINTER_ScrollStep
-MEMVAR _HMG_PRINTER_ZoomClick_xOffset
-MEMVAR _HMG_PRINTER_ThumbUpdate
-MEMVAR _HMG_PRINTER_ThumbScroll
-MEMVAR _HMG_PRINTER_PrevPageNumber
-MEMVAR _HMG_PRINTER_UserMessages
-MEMVAR _OOHG_PRINTER_DocName
-MEMVAR _OOHG_Auxil_Page
-MEMVAR _OOHG_Auxil_Zoom
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
-   LOCAL tHeight
-   LOCAL tFactor
-   LOCAL tvHeight
-   LOCAL icb
-   LOCAL oSep
+   LOCAL tHeight, tFactor, tvHeight, icb, oSep
 
-   PUBLIC _HMG_PRINTER_BasePageName := GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_"
-   PUBLIC _HMG_PRINTER_CurrentPageNumber := 1
-   PUBLIC _HMG_PRINTER_SizeFactor
-   PUBLIC _HMG_PRINTER_Dx := 0
-   PUBLIC _HMG_PRINTER_Dy := 0
-   _HMG_PRINTER_PreviewZoom()                          // PUBLIC _HMG_PRINTER_Dz := 0
-   PUBLIC _HMG_PRINTER_ScrollStep := 10
-   PUBLIC _HMG_PRINTER_ZoomClick_xOffset := 0
-   PUBLIC _HMG_PRINTER_ThumbUpdate := .T.
-   PUBLIC _HMG_PRINTER_ThumbScroll
-   PUBLIC _HMG_PRINTER_PrevPageNumber := 0
-   PUBLIC _OOHG_Auxil_Page
-   PUBLIC _OOHG_Auxil_Zoom
+   _HMG_PRINTER_BasePageName := GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_"
+   _HMG_PRINTER_CurrentPageNumber := 1
+   _HMG_PRINTER_Dx := 0
+   _HMG_PRINTER_Dy := 0
+   _HMG_PRINTER_Dz := 0
+   _HMG_PRINTER_ScrollStep := 10
+   _HMG_PRINTER_ZoomClick_xOffset := 0
+   _HMG_PRINTER_ThumbUpdate := .T.
+   _HMG_PRINTER_PrevPageNumber := 0
 
    IF _HMG_PRINTER_hDC_Bak == 0
       RETURN
@@ -141,7 +111,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
    IF lSize
       IF lWait
-         DEFINE WINDOW _OOHG_AUXIL ;
+         DEFINE WINDOW _HMG_PRINTER_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']' ;
             CHILD ;
             AT 0, 0 ;
@@ -151,7 +121,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
             ON RELEASE _HMG_PRINTER_PreviewClose() ;
             ON PAINT _HMG_PRINTER_SHOWPREVIEW.SetFocus()
       ELSE
-         DEFINE WINDOW _OOHG_AUXIL ;
+         DEFINE WINDOW _HMG_PRINTER_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']' ;
             PARENT ( cParent ) ;
             AT 0, 0 ;
@@ -163,7 +133,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
       ENDIF
    ELSE
       IF lWait
-         DEFINE WINDOW _OOHG_AUXIL ;
+         DEFINE WINDOW _HMG_PRINTER_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']' ;
             CHILD ;
             AT 0, 0 ;
@@ -174,7 +144,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
             ON PAINT _HMG_PRINTER_SHOWPREVIEW.SetFocus() ;
             NOSIZE
       ELSE
-         DEFINE WINDOW _OOHG_AUXIL ;
+         DEFINE WINDOW _HMG_PRINTER_AUXIL ;
             TITLE _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/'+ AllTrim( Str(_HMG_PRINTER_PageCount ) ) + ']' ;
             PARENT ( cParent ) ;
             AT 0, 0 ;
@@ -224,19 +194,12 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
             TOOLTIP _HMG_PRINTER_UserMessages[ 28 ] + ' [Ctrl+T]' ;
             ON CHANGE _HMG_PRINTER_ProcessThumbnails()
 
-/*       @ 2, 156 BUTTON GoToPage ;
-            WIDTH 30 ;
-            HEIGHT 30 ;
-            PICTURE "HP_GOPAGE" ;
-            TOOLTIP _HMG_PRINTER_UserMessages[ 07 ] + ' [Ctrl+G]' ;
-            ACTION _HMG_PRINTER_Go_To_Page() */
-
          @ 2, 156 CHECKBUTTON b5 ;
             WIDTH 30 ;
             HEIGHT 30 ;
             PICTURE "HP_ZOOM" ;
             TOOLTIP _HMG_PRINTER_UserMessages[ 08 ] + ' [*]' ;
-            ON CHANGE _HMG_PRINTER_MouseZoom()   
+            ON CHANGE _HMG_PRINTER_MouseZoom()
 
          @ 2, 186 BUTTON b12 ;
             WIDTH 30 ;
@@ -261,15 +224,15 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
          @ 15, 291 LABEL lbl_1 VALUE _HMG_PRINTER_UserMessages[ 07 ] AUTOSIZE
 
-         @ 8, 400 TEXTBOX pagina OBJ _OOHG_Auxil_Page PICTURE '999999' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_CurrentPageNumber IMAGE "HP_GOPAGE" ;
-            ACTION ( _OOHG_Auxil_Page:Value := iif( _OOHG_Auxil_Page:Value < 1, 1, _OOHG_Auxil_Page:Value ), ;
-                     _OOHG_Auxil_Page:Value := iif( _OOHG_Auxil_Page:Value > _HMG_PRINTER_PageCount, _HMG_PRINTER_PageCount, _OOHG_Auxil_Page:Value ), ;
-                     _HMG_PRINTER_CurrentPageNumber := _OOHG_Auxil_Page:Value, _HMG_PRINTER_SHOWPREVIEW.Show() )
+         @ 8, 400 TEXTBOX page PICTURE '999999' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_CurrentPageNumber IMAGE "HP_GOPAGE" ;
+            ACTION ( _HMG_PRINTER_PPNAV.page.Value := iif( _HMG_PRINTER_PPNAV.page.Value < 1, 1, _HMG_PRINTER_PPNAV.page.Value ), ;
+                     _HMG_PRINTER_PPNAV.page.Value := iif( _HMG_PRINTER_PPNAV.page.Value > _HMG_PRINTER_PageCount, _HMG_PRINTER_PageCount, _HMG_PRINTER_PPNAV.page.Value ), ;
+                     _HMG_PRINTER_CurrentPageNumber := _HMG_PRINTER_PPNAV.page.Value, _HMG_PRINTER_SHOWPREVIEW.Show() )
 
          @ 15, 500 LABEL lbl_2 VALUE 'Zoom' AUTOSIZE
 
-         @ 8, 550 TEXTBOX zoom OBJ _OOHG_Auxil_Zoom PICTURE '99.99' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_Dz / 200 IMAGE "HP_ZOOM" ;
-            ACTION ( _HMG_PRINTER_Dz := _OOHG_Auxil_Zoom:Value * 200, ;
+         @ 8, 550 TEXTBOX zoom PICTURE '99.99' NUMERIC WIDTH 75 VALUE _HMG_PRINTER_Dz / 200 IMAGE "HP_ZOOM" ;
+            ACTION ( _HMG_PRINTER_Dz := _HMG_PRINTER_PPNAV.zoom.Value * 200, ;
                      _HMG_PRINTER_SHOWPREVIEW.Show() )
       END WINDOW
 
@@ -298,7 +261,6 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
          ON KEY NEXT         ACTION ( _HMG_PRINTER_CurrentPageNumber++, _HMG_PRINTER_PreviewRefresh() )
          ON KEY END          ACTION ( _HMG_PRINTER_CurrentPageNumber := _HMG_PRINTER_PageCount, _HMG_PRINTER_PreviewRefresh() )
          ON KEY CONTROL+P    ACTION _HMG_PRINTER_PrintPages()
-         //ON KEY CONTROL+G    ACTION _HMG_PRINTER_Go_To_Page()
          ON KEY ESCAPE       ACTION _HMG_PRINTER_PreviewClose()
          ON KEY MULTIPLY     ACTION ( iif( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ), _HMG_PRINTER_Zoom() )
          ON KEY CONTROL+C    ACTION _HMG_PRINTER_PreviewClose()
@@ -527,15 +489,13 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
    CENTER WINDOW _HMG_PRINTER_SHOWPREVIEW
 
-   CENTER WINDOW _OOHG_AUXIL
+   CENTER WINDOW _HMG_PRINTER_AUXIL
 
    IF lWait
-      ACTIVATE WINDOW _OOHG_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT
+      ACTIVATE WINDOW _HMG_PRINTER_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT
    ELSE
-      ACTIVATE WINDOW _OOHG_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT NOWAIT
+      ACTIVATE WINDOW _HMG_PRINTER_AUXIL, _HMG_PRINTER_PRINTPAGES, _HMG_PRINTER_WAIT NOWAIT
    ENDIF
-
-   _HMG_PRINTER_hDC := _HMG_PRINTER_hDC_Bak
 
    SetInteractiveClose( icb )
 
@@ -544,13 +504,11 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _HMG_PRINTER_CreateThumbNails()
 
-   LOCAL tFactor
-   LOCAL tWidth
-   LOCAL tHeight
-   LOCAL ttHandle
-   LOCAL i
-   LOCAL cMacroTemp
-   LOCAL cAction
+   LOCAL tFactor, tWidth, tHeight, ttHandle, i, cMacroTemp
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      RETURN
+   ENDIF
 
    IF _IsControlDefined( 'Image1', '_HMG_PRINTER_SHOWTHUMBNAILS' )
       RETURN
@@ -574,13 +532,15 @@ PROCEDURE _HMG_PRINTER_CreateThumbNails()
    FOR i := 1 TO _HMG_PRINTER_PageCount
       cMacroTemp := 'Image' + AllTrim( Str( i ) )
 
-      cAction := "( _HMG_PRINTER_CurrentPageNumber := " + AllTrim( Str( i ) ) + ", _HMG_PRINTER_ThumbUpdate := .F., _HMG_PRINTER_PreviewRefresh(), _HMG_PRINTER_ThumbUpdate := .T. )"
-
-      TImage():Define( cMacroTemp, '_HMG_PRINTER_SHOWTHUMBNAILS', 10, ;
+      TImage():Define( cMacroTemp, ;
+                       '_HMG_PRINTER_SHOWTHUMBNAILS', ;
+                       10, ;
                        ( i * ( tHeight + 10 ) ) - tHeight, ;
                        _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf", ;
-                       tWidth, tHeight, { || &cAction }, NIL, ;
-                       .F., .F., .T., .F. )
+                       tWidth, ;
+                       tHeight, ;
+                       { || ( _HMG_PRINTER_CurrentPageNumber := i, _HMG_PRINTER_ThumbUpdate := .F., _HMG_PRINTER_PreviewRefresh(), _HMG_PRINTER_ThumbUpdate := .T. ) }, ;
+                       NIL, .F., .F., .T., .F. )
 
       SetToolTip( GetControlHandle( cMacroTemp, '_HMG_PRINTER_SHOWTHUMBNAILS' ), _HMG_PRINTER_UserMessages[ 01 ] + ' ' + AllTrim( Str( i ) ) + ' [Click]', ttHandle )
    NEXT i
@@ -614,7 +574,7 @@ PROCEDURE _HMG_PRINTER_SavePages()
 
    LOCAL c, i, f, t, d, x, a
 
-   x := GetFolder( _HMG_PRINTER_UserMessages[ 101 ] )
+   x := GetFolder( _HMG_PRINTER_UserMessages[ 31 ] )
 
    IF Empty( x )
       RETURN
@@ -670,14 +630,14 @@ PROCEDURE _HMG_PRINTER_VScrollBoxProcess()
 PROCEDURE _HMG_PRINTER_PreviewClose()
 
    IF IsWindowDefined( "_HMG_PRINTER_WAIT" )
-      _HMG_PRINTER_WAIT.label_1.Value := _HMG_PRINTER_UserMessages[ 103 ]
+      _HMG_PRINTER_WAIT.label_1.Value := _HMG_PRINTER_UserMessages[ 33 ]
       ShowWindow( GetFormHandle( "_HMG_PRINTER_WAIT" ) )
    ENDIF
 
    _HMG_PRINTER_CleanPreview()
 
-   IF IsWindowDefined( "_OOHG_AUXIL" )
-     _OOHG_AUXIL.Release
+   IF IsWindowDefined( "_HMG_PRINTER_AUXIL" )
+     _HMG_PRINTER_AUXIL.Release
    ENDIF
 
    IF IsWindowDefined( "_HMG_PRINTER_PRINTPAGES" )
@@ -705,9 +665,8 @@ PROCEDURE _HMG_PRINTER_PreviewRefresh()
    LOCAL nRow
    LOCAL nScrollMax
 
-   IF ! __mvExist( '_HMG_PRINTER_CurrentPageNumber' )
-      __mvPublic( '_HMG_PRINTER_CurrentPageNumber' )
-      _HMG_PRINTER_CurrentPageNumber := 1
+   IF _HMG_PRINTER_hDC_Bak == 0
+      RETURN
    ENDIF
 
    IF _IsControlDefined( 'Image' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ), '_HMG_PRINTER_SHOWTHUMBNAILS' ) .AND. _HMG_PRINTER_ThumbUpdate == .T. .AND. _HMG_PRINTER_ThumbScroll == .T.
@@ -739,22 +698,22 @@ PROCEDURE _HMG_PRINTER_PreviewRefresh()
    ENDIF
 
    IF _HMG_PRINTER_CurrentPageNumber < 1
-      _HMG_PRINTER_CurrentPageNumber := 1
+      _HMG_PRINTER_PPNAV.page.Value := _HMG_PRINTER_CurrentPageNumber := 1
       PlayBeep()
       RETURN
    ENDIF
 
    IF _HMG_PRINTER_CurrentPageNumber > _HMG_PRINTER_PageCount
-      _HMG_PRINTER_CurrentPageNumber := _HMG_PRINTER_PageCount
+      _HMG_PRINTER_PPNAV.page.Value := _HMG_PRINTER_CurrentPageNumber := _HMG_PRINTER_PageCount
       PlayBeep()
       RETURN
    ENDIF
 
    _HMG_PRINTER_ShowPage( _HMG_PRINTER_BasePageName + StrZero( _HMG_PRINTER_CurrentPageNumber, 6 ) + ".emf", GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_SizeFactor * 10000, _HMG_PRINTER_Dz, _HMG_PRINTER_Dx, _HMG_PRINTER_Dy )
 
-   _OOHG_AUXIL.Title := _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/' + AllTrim( Str( _HMG_PRINTER_PageCount ) ) + ']'
+   _HMG_PRINTER_AUXIL.Title := _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/' + AllTrim( Str( _HMG_PRINTER_PageCount ) ) + ']'
 
-   _OOHG_Auxil_Page:Value := _HMG_PRINTER_CurrentPageNumber
+   _HMG_PRINTER_PPNAV.page.Value := _HMG_PRINTER_CurrentPageNumber
 
    RETURN
 
@@ -804,7 +763,7 @@ PROCEDURE _HMG_PRINTER_PrintPages()
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_PrintPagesDo()
+PROCEDURE _HMG_PRINTER_PrintPagesDo( cLang )
 
    LOCAL i
    LOCAL PageFrom
@@ -813,6 +772,10 @@ PROCEDURE _HMG_PRINTER_PrintPagesDo()
    LOCAL OddOnly := .F.
    LOCAL EvenOnly := .F.
    LOCAL nCopies
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      RETURN
+   ENDIF
 
    IF _HMG_PRINTER_PrintPages.Radio_1.Value == 1
       PageFrom := 1
@@ -830,7 +793,8 @@ PROCEDURE _HMG_PRINTER_PrintPagesDo()
    // See comment in function _HMG_PRINTER_PrintPages()
    nCopies := iif( _HMG_PRINTER_Copies > 1, 1, _HMG_PRINTER_PrintPages.Spinner_3.Value )
 
-   _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_GetJobName() )
+   _HMG_PRINTER_InitUserMessages( cLang )
+   _HMG_PRINTER_JobId := _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_GetJobName() )
 
    IF _HMG_PRINTER_PrintPages.CheckBox_1.Value  // Collate
       FOR p := 1 TO nCopies
@@ -885,6 +849,10 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
    LOCAL Height := GetDesktopRealHeight()
    LOCAL Q := 0
    LOCAL DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      RETURN
+   ENDIF
 
    IF _HMG_PRINTER_Dz # 0
       _HMG_PRINTER_Dz := 0
@@ -966,7 +934,7 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
       ENDIF
    ENDIF
 
-   _OOHG_Auxil_Zoom:Value := _HMG_PRINTER_Dz / 200
+   _HMG_PRINTER_PPNAV.zoom.Value := _HMG_PRINTER_Dz / 200
 
    _HMG_PRINTER_PreviewRefresh()
 
@@ -974,6 +942,10 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _HMG_PRINTER_Zoom()
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      RETURN
+   ENDIF
 
    IF _HMG_PRINTER_Dz # 0
       _HMG_PRINTER_Dz := 0
@@ -997,7 +969,7 @@ PROCEDURE _HMG_PRINTER_Zoom()
       ENDIF
    ENDIF
 
-   _OOHG_Auxil_Zoom:Value := _HMG_PRINTER_Dz / 200
+   _HMG_PRINTER_PPNAV.zoom.Value := _HMG_PRINTER_Dz / 200
 
    _HMG_PRINTER_PreviewRefresh()
 
@@ -1052,16 +1024,16 @@ PROCEDURE _HMG_PRINTER_ScrollDown()
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _HMG_PRINTER_GetPrinter()
+FUNCTION _HMG_PRINTER_GetPrinter( cLang )
 
    LOCAL RetVal := '', nValue
    LOCAL aPrinters := ASort( _HMG_PRINTER_aPrinters() )
    LOCAL cDefault := GetDefaultPrinter()
 
-   _HMG_PRINTER_InitUserMessages()
+   _HMG_PRINTER_InitUserMessages( cLang )
 
    IF Len( aPrinters ) == 0
-      MsgExclamation( _HMG_PRINTER_UserMessages[ 102 ], _HMG_PRINTER_UserMessages[ 100 ] )
+      MsgExclamation( _HMG_PRINTER_UserMessages[ 32 ], _HMG_PRINTER_UserMessages[ 30 ] )
       RETURN cDefault
    ENDIF
 
@@ -1089,7 +1061,9 @@ FUNCTION _HMG_PRINTER_GetPrinter()
    RETURN RetVal
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, lAngle, nAngle, lWidth, nWidth )
+PROCEDURE _HMG_PRINTER_H_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, lAngle, nAngle, lWidth, nWidth, cAlign )
+
+   LOCAL cOld, lRestore := .F.
 
    DEFAULT lAngle TO .F.
    DEFAULT nAngle TO 0
@@ -1119,12 +1093,31 @@ PROCEDURE _HMG_PRINTER_H_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nG
       nAngle := nAngle * 10
    ENDIF
 
+   IF ValType( cAlign ) $ "CM"
+      IF Upper( cAlign ) == "CENTER"
+         cOld := _HMG_PRINTER_SetTextAlign( nHdc, TA_CENTER )
+         lRestore := .T.
+      ELSEIF Upper( cAlign )== "RIGHT"
+         cOld := _HMG_PRINTER_SetTextAlign( nHdc, TA_RIGHT )
+         lRestore := .T.
+      ELSEIF Upper( cAlign )== "LEFT"
+         cOld := _HMG_PRINTER_SetTextAlign( nHdc, TA_LEFT )
+         lRestore := .T.
+      ENDIF
+   ENDIF
+
    _HMG_PRINTER_C_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, lAngle, nAngle, lWidth, nWidth )
+
+   IF lRestore
+      _HMG_PRINTER_SetTextAlign( nHdc, cOld )
+   ENDIF
 
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_MultiLine_Print( nHdc, nRow, nCol, nToRow, nToCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, lAngle, nAngle, lWidth, nWidth )
+PROCEDURE _HMG_PRINTER_H_MultiLine_Print( nHdc, nRow, nCol, nToRow, nToCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, lAngle, nAngle, lWidth, nWidth, cAlign )
+
+   LOCAL nAlign
 
    DEFAULT lAngle TO .F.
    DEFAULT nAngle TO 0
@@ -1156,7 +1149,17 @@ PROCEDURE _HMG_PRINTER_H_MultiLine_Print( nHdc, nRow, nCol, nToRow, nToCol, cFon
       nAngle := nAngle * 10
    ENDIF
 
-   _HMG_PRINTER_C_MultiLine_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, nToRow, nToCol, lAngle, nAngle, lWidth, nWidth )
+   IF ValType( cAlign ) $ "CM"
+      IF Upper( cAlign ) == "CENTER"
+         nAlign := TA_CENTER
+      ELSEIF Upper( cAlign )== "RIGHT"
+         nAlign := TA_RIGHT
+      ELSEIF Upper( cAlign )== "LEFT"
+         nAlign := TA_LEFT
+      ENDIF
+   ENDIF
+
+   _HMG_PRINTER_C_MultiLine_Print( nHdc, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, nToRow, nToCol, lAngle, nAngle, lWidth, nWidth, nAlign )
 
    RETURN
 
@@ -1184,7 +1187,14 @@ PROCEDURE _HMG_PRINTER_H_Line( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, n
    nToRow := Int( nToRow * 10000 / 254 )
    nToCol := Int( nToCol * 10000 / 254 )
 
-   IF ValType( nWidth ) != 'U'
+   ASSIGN lStyle VALUE lStyle TYPE "L" DEFAULT .F.
+
+   IF lStyle .AND. nStyle == PEN_DASH
+      IF ! HB_ISNUMERIC( nWidth ) .OR. nWidth < 1
+         nWidth := 3
+      ENDIF
+      lwidth := .T.
+   ELSEIF HB_ISNUMERIC( nWidth ) .AND. nWidth > 0
       nWidth := Int( nWidth * 10000 / 254 )
    ENDIF
 
@@ -1193,7 +1203,7 @@ PROCEDURE _HMG_PRINTER_H_Line( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, n
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_Rectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor)
+PROCEDURE _HMG_PRINTER_H_Rectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor, lNoPen, lNoBrush )
 
    nRow := Int( nRow * 10000 / 254 )
    nCol := Int( nCol * 10000 / 254 )
@@ -1208,13 +1218,13 @@ PROCEDURE _HMG_PRINTER_H_Rectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nR
       nWidth := Int( nWidth * 10000 / 254 )
    ENDIF
 
-   _HMG_PRINTER_C_Rectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, ;
-      lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ] )
+   _HMG_PRINTER_C_Rectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, ;
+      lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ], lNoPen, lNoBrush )
 
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_RoundRectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor )
+PROCEDURE _HMG_PRINTER_H_RoundRectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor, lNoPen, lNoBrush )
 
    nRow := Int( nRow * 10000 / 254 )
    nCol := Int( nCol * 10000 / 254 )
@@ -1229,8 +1239,8 @@ PROCEDURE _HMG_PRINTER_H_RoundRectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidt
       nWidth := Int( nWidth * 10000 / 254 )
    ENDIF
 
-   _HMG_PRINTER_C_RoundRectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, ;
-      lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ] )
+   _HMG_PRINTER_C_RoundRectangle( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, ;
+      lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ], lNoPen, lNoBrush )
 
    RETURN
 
@@ -1247,7 +1257,7 @@ PROCEDURE _HMG_PRINTER_H_Fill( nHdc, nRow, nCol, nToRow, nToCol, nRed, nGreen, n
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_Ellipse( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor )
+PROCEDURE _HMG_PRINTER_H_Ellipse( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor, lNoPen, lNoBrush )
 
    nRow := Int( nRow * 10000 / 254 )
    nCol := Int( nCol * 10000 / 254 )
@@ -1262,8 +1272,8 @@ PROCEDURE _HMG_PRINTER_H_Ellipse( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed
       nWidth := Int( nWidth * 10000 / 254 )
    ENDIF
 
-   _HMG_PRINTER_C_Ellipse( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, ;
-      lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ] )
+   _HMG_PRINTER_C_Ellipse( nHdc, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, ;
+      lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ], lNoPen, lNoBrush )
 
    RETURN
 
@@ -1288,7 +1298,7 @@ PROCEDURE _HMG_PRINTER_H_Arc( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nR
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_H_Pie( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor )
+PROCEDURE _HMG_PRINTER_H_Pie( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor, lNoPen, lNoBrush )
 
    nRow := Int( nRow * 10000 / 254 )
    nCol := Int( nCol * 10000 / 254 )
@@ -1307,8 +1317,8 @@ PROCEDURE _HMG_PRINTER_H_Pie( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nR
       nWidth := Int( nWidth * 10000 / 254 )
    ENDIF
 
-   _HMG_PRINTER_C_Pie( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, ;
-      lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ] )
+   _HMG_PRINTER_C_Pie( nHdc, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, ;
+      lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, aBrushColor[ 1 ], aBrushColor[ 2 ], aBrushColor[ 3 ], lNoPen, lNoBrush )
 
    RETURN
 
@@ -1329,144 +1339,97 @@ PROCEDURE _HMG_PRINTER_H_Bitmap( nHdc, hBitmap, nRow, nCol, nHeight, nWidth, lSt
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _HMG_PRINTER_InitUserMessages()
+PROCEDURE _HMG_PRINTER_InitUserMessages( cLang )
 
-   LOCAL cLang, nAt
+   LOCAL nAt, i, cData
 
-   IF ! __mvExist( '_HMG_PRINTER_UserMessages' )
-      __mvPublic( '_HMG_PRINTER_UserMessages' )
+   IF ! __mvExist( '_HMG_MiniPrint' )
+      __mvPublic( '_HMG_MiniPrint' )
+      _HMG_MiniPrint := Array( _HMG_PRINTER_LastVar )
+
+      _HMG_PRINTER_Name               := ""
+      _HMG_PRINTER_aPrinterProperties := NIL
+      _HMG_PRINTER_BasePageName       := ""
+      _HMG_PRINTER_CurrentPageNumber  := 0
+      _HMG_PRINTER_SizeFactor         := ""
+      _HMG_PRINTER_Dx                 := 0
+      _HMG_PRINTER_Dy                 := 0
+      _HMG_PRINTER_Dz                 := 0
+      _HMG_PRINTER_ScrollStep         := 0
+      _HMG_PRINTER_ZoomClick_xOffset  := 0
+      _HMG_PRINTER_ThumbUpdate        := .F.
+      _HMG_PRINTER_ThumbScroll        := .F.
+      _HMG_PRINTER_PrevPageNumber     := 0
+      _HMG_PRINTER_Copies             := 0
+      _HMG_PRINTER_Collate            := 1
+      _HMG_PRINTER_Delta_Zoom         := 0
+      _HMG_PRINTER_TimeStamp          := ""
+      _HMG_PRINTER_PageCount          := 0
+      _HMG_PRINTER_hDC                := 0
+      _HMG_PRINTER_hDC_Bak            := 0
+      _HMG_PRINTER_JobName            := "OOHG printing system"
+      _HMG_PRINTER_Preview            := .F.
+      _HMG_PRINTER_UserCopies         := .F.
+      _HMG_PRINTER_UserCollate        := .F.
+      _HMG_PRINTER_JobId              := 0
+      _HMG_PRINTER_JobData            := ""
+      _HMG_PRINTER_Error              := .T.
    ENDIF
-   _HMG_PRINTER_UserMessages := Array( 103 )
-
-   _HMG_PRINTER_SetJobName( "OOHG printing system" )
 
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
-      // [x]Harbour's default language
-      cLang := Set( _SET_LANGUAGE )
+      IF _HMG_PRINTER_Language == NIL
+         cLang := Set( _SET_LANGUAGE )
+      ELSE
+         cLang := _HMG_PRINTER_Language
+      ENDIF
    ENDIF
    IF ( nAt := At( ".", cLang ) ) > 0
       cLang := Left( cLang, nAt - 1 )
    ENDIF
    cLang := Upper( AllTrim( cLang ) )
 
+   _HMG_PRINTER_UserMessages := Array( 35 )
+
    DO CASE
-
-   CASE cLang == "HR852"   // CROATIAN
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
+   // CZECH
+   CASE cLang == "CS" .OR. cLang == "CSWIN"
+      _HMG_PRINTER_UserMessages[ 01 ] := 'Strana'
+      _HMG_PRINTER_UserMessages[ 02 ] := 'Náhled'
+      _HMG_PRINTER_UserMessages[ 03 ] := 'První strana[ HOME]'
+      _HMG_PRINTER_UserMessages[ 04 ] := 'Pøedchozí strana[ PGUP]'
+      _HMG_PRINTER_UserMessages[ 05 ] := 'Další strana[ PGDN]'
+      _HMG_PRINTER_UserMessages[ 06 ] := 'Poslední strana[ END]'
+      _HMG_PRINTER_UserMessages[ 07 ] := 'Jdi na stranu'
+      _HMG_PRINTER_UserMessages[ 08 ] := 'Lupa'
+      _HMG_PRINTER_UserMessages[ 09 ] := 'Tisk'
+      _HMG_PRINTER_UserMessages[ 10 ] := 'Èíslo strany'
       _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
+      _HMG_PRINTER_UserMessages[ 12 ] := 'Storno'
+      _HMG_PRINTER_UserMessages[ 13 ] := 'Vyber tiskárnu'
+      _HMG_PRINTER_UserMessages[ 14 ] := 'Tøídìní'
+      _HMG_PRINTER_UserMessages[ 15 ] := 'Rozsah tisku'
+      _HMG_PRINTER_UserMessages[ 16 ] := 'vše'
+      _HMG_PRINTER_UserMessages[ 17 ] := 'strany'
+      _HMG_PRINTER_UserMessages[ 18 ] := 'od'
+      _HMG_PRINTER_UserMessages[ 19 ] := 'do'
+      _HMG_PRINTER_UserMessages[ 20 ] := 'kopií'
+      _HMG_PRINTER_UserMessages[ 21 ] := 'všechny strany'
+      _HMG_PRINTER_UserMessages[ 22 ] := 'liché strany'
+      _HMG_PRINTER_UserMessages[ 23 ] := 'sudé strany'
+      _HMG_PRINTER_UserMessages[ 24 ] := 'Ano'
       _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC', ;
-                                           'ERR_UNKNOWN' }
-
-   CASE cLang == "EU"   // BASQUE
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
-      _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
-      _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "FR"   // FRENCH
+      _HMG_PRINTER_UserMessages[ 26 ] := 'Zavøi'
+      _HMG_PRINTER_UserMessages[ 27 ] := 'Ulož'
+      _HMG_PRINTER_UserMessages[ 28 ] := 'Miniatury'
+      _HMG_PRINTER_UserMessages[ 29 ] := 'Generuji miniatury... Èekejte, prosím...'
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Warning'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Select a Folder'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'No printer is installed in this system.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Closing preview... Please Wait...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Chyba'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Konfigurace tiskárny s kódem selhala: '
+   // FRENCH
+   CASE cLang == "FR"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
       _HMG_PRINTER_UserMessages[ 02 ] := "Aperçu avant impression"
       _HMG_PRINTER_UserMessages[ 03 ] := 'Première page [HOME]'
@@ -1494,36 +1457,16 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 25 ] := 'Non'
       _HMG_PRINTER_UserMessages[ 26 ] := 'Fermer'
       _HMG_PRINTER_UserMessages[ 27 ] := 'Sauver'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'affichettes'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Svp attente, étant les miniatures sont générées...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Attention'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Sélectionner un dossier'
-      _HMG_PRINTER_UserMessages[ 102 ] := "Aucune imprimeur n'est installé dans ce système."
-      _HMG_PRINTER_UserMessages[ 103 ] := "Svp attente, l'aperçu se ferme..."
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Erreur', ;
-                                           "La configuration de l'imprimante a échoué avec le code: ", ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "DEWIN" .OR. cLang == "DE"   // GERMAN
+      _HMG_PRINTER_UserMessages[ 28 ] := 'Affichettes'
+      _HMG_PRINTER_UserMessages[ 29 ] := 'Veuillez patienter pendant que les vignettes sont générées ...'
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Attention'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Sélectionner un dossier'
+      _HMG_PRINTER_UserMessages[ 32 ] := "Aucune imprimeur n'est installé dans ce système."
+      _HMG_PRINTER_UserMessages[ 33 ] := "Svp attente, l'aperçu se ferme..."
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Erreur'
+      _HMG_PRINTER_UserMessages[ 35 ] := "La configuration de l'imprimante a échoué avec le code: "
+   // GERMAN
+   CASE cLang == "DEWIN" .OR. cLang == "DE"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Seite'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Druckvorschau'
       _HMG_PRINTER_UserMessages[ 03 ] := 'Erste Seite [HOME]'
@@ -1553,34 +1496,14 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Speichern'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Seitenminiaturen'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Bitte warten, während die Seitenminiaturen erstellt werden...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warnung'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Wählen Sie einen Ordner'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'Es sind keine Drucker im System installiert.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Bitte warten, während die Druckvorschau Schließens...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Fehler', ;
-                                           'Druckerkonfiguration mit Code fehlgeschlagen: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "IT"   // ITALIAN
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Warnung'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Wählen Sie einen Ordner'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'Es sind keine Drucker im System installiert.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Bitte warten, während die Druckvorschau Schließens...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Fehler'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Druckerkonfiguration mit Code fehlgeschlagen: '
+   // ITALIAN
+   CASE cLang == "IT"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Pagina'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Anteprima di stampa'
       _HMG_PRINTER_UserMessages[ 03 ] := 'Prima Pagina [HOME]'
@@ -1610,34 +1533,14 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Salva'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Miniatura'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Generando Miniatura...  Prego Attesa...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Avvertimento'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Selezionare una cartella'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'Nessuna stampatore è installata in questo sistema.'
-      _HMG_PRINTER_UserMessages[ 103 ] := "Chiudendo l'anteprima... Prego Attesa..."
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Errore', ;
-                                           'Configurazione della stampante non riuscita con codice: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "PLWIN" .OR. cLang == "PL852" .OR. cLang == "PLISO" .OR. cLang == "PLMAZ"   // POLISH
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Avvertimento'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Selezionare una cartella'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'Nessuna stampatore è installata in questo sistema.'
+      _HMG_PRINTER_UserMessages[ 33 ] := "Chiudendo l'anteprima... Prego Attesa..."
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Errore'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Configurazione della stampante non riuscita con codice: '
+   // POLISH
+   CASE cLang == "PL" .OR. cLang == "PLWIN" .OR. cLang == "PL852" .OR. cLang == "PLISO" .OR. cLang == "PLMAZ"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Strona'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Podgl¹d wydruku'
       _HMG_PRINTER_UserMessages[ 03 ] := 'Pierwsza strona [HOME]'
@@ -1667,34 +1570,14 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Zapisz'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Generujê Thumbnails... Proszê czekaæ...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Ostrzezenie'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Wybierz folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'Zadna drukarka nie jest zainstalowana w tym systemie.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Zamykanie podgladu... Prosze czekac...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Blad', ;
-                                           'Konfiguracja drukarki nie powiodla sie z kodem: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "PT"   // PORTUGUESE
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Ostrzezenie'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Wybierz folder'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'Zadna drukarka nie jest zainstalowana w tym systemie.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Zamykanie podgladu... Prosze czekac...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Blad'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Konfiguracja drukarki nie powiodla sie z kodem: '
+   // PORTUGUESE
+   CASE cLang == "PT"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Página'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Inspecção prévia De Cópia'
       _HMG_PRINTER_UserMessages[ 03 ] := 'Primeira Página [HOME]'
@@ -1702,7 +1585,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 05 ] := 'Página Seguinte [PGDN]'
       _HMG_PRINTER_UserMessages[ 06 ] := 'Última Página [END]'
       _HMG_PRINTER_UserMessages[ 07 ] := 'Vá Paginar'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'amplie'
+      _HMG_PRINTER_UserMessages[ 08 ] := 'Amplie'
       _HMG_PRINTER_UserMessages[ 09 ] := 'Cópia'
       _HMG_PRINTER_UserMessages[ 10 ] := 'Página'
       _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
@@ -1724,91 +1607,51 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Salvar'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Miniaturas'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Gerando Miniaturas...  Por favor Espera...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Aviso'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Selecione uma pasta'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'Nenhuma impressora está instalado neste sistema.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Encerrando a visualização... Aguarde...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Erro', ;
-                                           'A configuração da impressora falhou com o código: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8"   // RUSSIAN
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Aviso'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Selecione uma pasta'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'Nenhuma impressora está instalado neste sistema.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Encerrando a visualização... Aguarde...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Erro'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'A configuração da impressora falhou com o código: '
+   // RUSSIAN
+   CASE cLang == "RU" .OR. cLang == "RUWIN"  .OR. cLang == "RU866" .OR. cLang == "RUKOI8"
+      _HMG_PRINTER_UserMessages[ 01 ] := 'Ñòðàíèöà'
+      _HMG_PRINTER_UserMessages[ 02 ] := 'Ïðåäâàðèòåëüíûé ïðîñìîòð'
+      _HMG_PRINTER_UserMessages[ 03 ] := 'Ïåðâàÿ [HOME]'
+      _HMG_PRINTER_UserMessages[ 04 ] := 'Ïðåäûäóùàÿ [PGUP]'
+      _HMG_PRINTER_UserMessages[ 05 ] := 'Ñëåäóþùàÿ [PGDN]'
+      _HMG_PRINTER_UserMessages[ 06 ] := 'Ïîñëåäíÿÿ [END]'
+      _HMG_PRINTER_UserMessages[ 07 ] := 'Ïåðåéòè ê'
+      _HMG_PRINTER_UserMessages[ 08 ] := 'Ìàñøòàá'
+      _HMG_PRINTER_UserMessages[ 09 ] := 'Ïå÷àòü'
+      _HMG_PRINTER_UserMessages[ 10 ] := 'Ñòðàíèöà ¹'
       _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
-      _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "ES"  .OR. cLang == "ESWIN"   // SPANISH
+      _HMG_PRINTER_UserMessages[ 12 ] := 'Îòìåíà'
+      _HMG_PRINTER_UserMessages[ 13 ] := 'Âûáîð ïðèíòåðà'
+      _HMG_PRINTER_UserMessages[ 14 ] := 'Ñîðòèðîâêà êîïèé'
+      _HMG_PRINTER_UserMessages[ 15 ] := 'Èíòåðâàë ïå÷àòè'
+      _HMG_PRINTER_UserMessages[ 16 ] := 'Âñå'
+      _HMG_PRINTER_UserMessages[ 17 ] := 'Ñòðàíèöû'
+      _HMG_PRINTER_UserMessages[ 18 ] := 'Îò'
+      _HMG_PRINTER_UserMessages[ 19 ] := 'Äî'
+      _HMG_PRINTER_UserMessages[ 20 ] := 'Êîïèé'
+      _HMG_PRINTER_UserMessages[ 21 ] := 'Âåñü èíòåðâàë'
+      _HMG_PRINTER_UserMessages[ 22 ] := 'Íå÷åòíûå òîëüêî'
+      _HMG_PRINTER_UserMessages[ 23 ] := '×åòíûå òîëüêî'
+      _HMG_PRINTER_UserMessages[ 24 ] := 'Äà'
+      _HMG_PRINTER_UserMessages[ 25 ] := 'Íåò'
+      _HMG_PRINTER_UserMessages[ 26 ] := 'Çàêðûòü'
+      _HMG_PRINTER_UserMessages[ 27 ] := 'Ñîõðàíèòü'
+      _HMG_PRINTER_UserMessages[ 28 ] := 'Ìèíèàòþðû'
+      _HMG_PRINTER_UserMessages[ 29 ] := 'Æäèòå, ãåíåðèðóþ ìèíèàòþðû...'
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Ïðåäóïðåæäåíèå'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Select a Folder'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'No printer is installed in this system.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Closing preview... Please Wait...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Îøèáêà'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Printer configuration failed with code: '
+   // SPANISH
+   CASE cLang == "ES"  .OR. cLang == "ESWIN"
       _HMG_PRINTER_UserMessages[ 01 ] := 'Página'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Vista Previa'
       _HMG_PRINTER_UserMessages[ 03 ] := 'Inicio [INICIO]'
@@ -1838,34 +1681,73 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Guardar'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Miniaturas'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Generando Miniaturas... Espere Por Favor...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Advertencia'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Seleccione Una Carpeta'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No hay impresora instalada en este sistema.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Cerrando vista previa... Espere Por Favor...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'La configuración de la impresora falló con el código: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "FI"   // FINNISH ( language not supported by hb_langSelect() )
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Advertencia'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Seleccione Una Carpeta'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'No hay impresora instalada en este sistema.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Cerrando vista previa... Espere Por Favor...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Error'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'La configuración de la impresora falló con el código: '
+   // FINNISH
+   CASE cLang == "FI"
+      _HMG_PRINTER_UserMessages[ 01 ] := 'Sivu'
+      _HMG_PRINTER_UserMessages[ 02 ] := 'Tulostuksen esikatselu'
+      _HMG_PRINTER_UserMessages[ 03 ] := 'Ensimmäinen sivu [HOME]'
+      _HMG_PRINTER_UserMessages[ 04 ] := 'Edellinen sivu [PGUP]'
+      _HMG_PRINTER_UserMessages[ 05 ] := 'Seuraava sivu [PGDN]'
+      _HMG_PRINTER_UserMessages[ 06 ] := 'Viimeinen sivu [END]'
+      _HMG_PRINTER_UserMessages[ 07 ] := 'Mene sivulle'
+      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoomaus'
+      _HMG_PRINTER_UserMessages[ 09 ] := 'Tulosta'
+      _HMG_PRINTER_UserMessages[ 10 ] := 'Sivunumero'
+      _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
+      _HMG_PRINTER_UserMessages[ 12 ] := 'Peruuttaa'
+      _HMG_PRINTER_UserMessages[ 13 ] := 'Valitse tulostin'
+      _HMG_PRINTER_UserMessages[ 14 ] := 'Lajittele kopiot'
+      _HMG_PRINTER_UserMessages[ 15 ] := 'Tulostusalue'
+      _HMG_PRINTER_UserMessages[ 16 ] := 'Kaikki'
+      _HMG_PRINTER_UserMessages[ 17 ] := 'sivut'
+      _HMG_PRINTER_UserMessages[ 18 ] := 'osoitteesta'
+      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
+      _HMG_PRINTER_UserMessages[ 20 ] := 'kopiot'
+      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
+      _HMG_PRINTER_UserMessages[ 22 ] := 'Vain parittomat sivut'
+      _HMG_PRINTER_UserMessages[ 23 ] := 'Vain parilliset sivut'
+      _HMG_PRINTER_UserMessages[ 24 ] := 'Joo'
+      _HMG_PRINTER_UserMessages[ 25 ] := 'Ei'
+      _HMG_PRINTER_UserMessages[ 26 ] := 'Kiinni'
+      _HMG_PRINTER_UserMessages[ 27 ] := 'Tallentaa'
+      _HMG_PRINTER_UserMessages[ 28 ] := 'esikatselukuvat'
+      _HMG_PRINTER_UserMessages[ 29 ] := 'Luodaan pikkukuvia ... Odota ...'
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Varoitus'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Valitse kansio'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'Tähän järjestelmään ei ole asennettu tulostinta.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Sulje esikatselu ... odota ...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Virhe'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Tulostimen määritykset epäonnistuivat koodilla:'
+/* TODO:
+   // DUTCH
+   CASE cLang == "NL"
+   // SLOVENIAN
+   CASE cLang == "SL" .OR. CASE cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "SL646" .OR. cLang == "SL437"
+   // BULGARIAN
+   CASE cLang == "BG" .OR. cLang == "BGWIN"
+   // GREEK
+   CASE cLang == "EL" .OR. cLang == "ELWIN"
+   // BASQUE
+   CASE cLang == "EU"
+   // CROATIAN
+   CASE cLang == "HR" .OR. cLang == "HR852"
+   // HUNGARIAN
+   CASE cLang == "HU" .OR. cLang == "HUWIN"
+   // SLOVAK
+   CASE cLang == "SK" .OR. cLang == "SKWIN"
+   // TURKISH
+   CASE cLang == "TR" .OR. cLang == "TRWIN"
+   // UKRANIAN
+   CASE cLang == "UK" .OR. cLang == "UAWIN"
+*/
+   // DEFAULT TO ENGLISH
+   OTHERWISE
       _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
       _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
       _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
@@ -1895,225 +1777,61 @@ PROCEDURE _HMG_PRINTER_InitUserMessages()
       _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
       _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
       _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "NL"   // DUTCH ( language not supported by hb_langSelect() )
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
-      _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
-      _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   CASE cLang == "SLWIN" .OR. cLang == "SLISO" .OR. cLang == "SL852" .OR. cLang == "" .OR. cLang == "SL437"   // SLOVENIAN
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
-      _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
-      _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
-   OTHERWISE   // DEFAULT TO ENGLISH
-      _HMG_PRINTER_UserMessages[ 01 ] := 'Page'
-      _HMG_PRINTER_UserMessages[ 02 ] := 'Print Preview'
-      _HMG_PRINTER_UserMessages[ 03 ] := 'First Page [HOME]'
-      _HMG_PRINTER_UserMessages[ 04 ] := 'Previous Page [PGUP]'
-      _HMG_PRINTER_UserMessages[ 05 ] := 'Next Page [PGDN]'
-      _HMG_PRINTER_UserMessages[ 06 ] := 'Last Page [END]'
-      _HMG_PRINTER_UserMessages[ 07 ] := 'Go To Page'
-      _HMG_PRINTER_UserMessages[ 08 ] := 'Zoom'
-      _HMG_PRINTER_UserMessages[ 09 ] := 'Print'
-      _HMG_PRINTER_UserMessages[ 10 ] := 'Page Number'
-      _HMG_PRINTER_UserMessages[ 11 ] := 'Ok'
-      _HMG_PRINTER_UserMessages[ 12 ] := 'Cancel'
-      _HMG_PRINTER_UserMessages[ 13 ] := 'Select Printer'
-      _HMG_PRINTER_UserMessages[ 14 ] := 'Collate Copies'
-      _HMG_PRINTER_UserMessages[ 15 ] := 'Print Range'
-      _HMG_PRINTER_UserMessages[ 16 ] := 'All'
-      _HMG_PRINTER_UserMessages[ 17 ] := 'Pages'
-      _HMG_PRINTER_UserMessages[ 18 ] := 'From'
-      _HMG_PRINTER_UserMessages[ 19 ] := 'To'
-      _HMG_PRINTER_UserMessages[ 20 ] := 'Copies'
-      _HMG_PRINTER_UserMessages[ 21 ] := 'All Range'
-      _HMG_PRINTER_UserMessages[ 22 ] := 'Odd Pages Only'
-      _HMG_PRINTER_UserMessages[ 23 ] := 'Even Pages Only'
-      _HMG_PRINTER_UserMessages[ 24 ] := 'Yes'
-      _HMG_PRINTER_UserMessages[ 25 ] := 'No'
-      _HMG_PRINTER_UserMessages[ 26 ] := 'Close'
-      _HMG_PRINTER_UserMessages[ 27 ] := 'Save'
-      _HMG_PRINTER_UserMessages[ 28 ] := 'Thumbnails'
-      _HMG_PRINTER_UserMessages[ 29 ] := 'Generating Thumbnails... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 100 ] := 'Warning'
-      _HMG_PRINTER_UserMessages[ 101 ] := 'Select a Folder'
-      _HMG_PRINTER_UserMessages[ 102 ] := 'No printer is installed in this system.'
-      _HMG_PRINTER_UserMessages[ 103 ] := 'Closing preview... Please Wait...'
-      _HMG_PRINTER_UserMessages[ 99 ] := { 'Error', ;
-                                           'Printer configuration failed with code: ', ;
-                                           'ERR_OPEN_PRINTER', ;
-                                           'ERR_GET_PRINTER_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_PRINTER_BUFFER', ;
-                                           'ERR_GET_PRINTER_SETTINGS', ;
-                                           'ERR_GET_DOCUMENT_BUFFER_SIZE', ;
-                                           'ERR_ALLOCATE_DOCUMENT_BUFFER', ;
-                                           'ERR_GET_DOCUMENT_SETTINGS', ;
-                                           'ERR_ORIENTATION_NOT_SUPPORTED', ;
-                                           'ERR_PAPERSIZE_NOT_SUPPORTED', ;
-                                           'ERR_PAPERLENGTH_NOT_SUPPORTED', ;
-                                           'ERR_PAPERWIDTH_NOT_SUPPORTED', ;
-                                           'ERR_COPIES_NOT_SUPPORTED', ;
-                                           'ERR_DEFAULTSOURCE_NOT_SUPPORTED', ;
-                                           'ERR_QUALITY_NOT_SUPPORTED', ;
-                                           'ERR_COLOR_NOT_SUPPORTED', ;
-                                           'ERR_DUPLEX_NOT_SUPPORTED', ;
-                                           'ERR_COLLATE_NOT_SUPPORTED', ;
-                                           'ERR_SCALE_NOT_SUPPORTED', ;
-                                           'ERR_SET_DOCUMENT_SETTINGS', ;
-                                           'ERR_CREATING_DC' }
-
+      _HMG_PRINTER_UserMessages[ 30 ] := 'Warning'
+      _HMG_PRINTER_UserMessages[ 31 ] := 'Select a Folder'
+      _HMG_PRINTER_UserMessages[ 32 ] := 'No printer is installed in this system.'
+      _HMG_PRINTER_UserMessages[ 33 ] := 'Closing preview... Please Wait...'
+      _HMG_PRINTER_UserMessages[ 34 ] := 'Error'
+      _HMG_PRINTER_UserMessages[ 35 ] := 'Printer configuration failed with code: '
    ENDCASE
+
+   FOR i := 1 TO 35
+      IF ! Empty( cData := LoadString( 100 + i ) )
+         _HMG_PRINTER_UserMessages[ i ] := cData
+      ENDIF
+   NEXT i
 
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaWidth()
 
-   RETURN _HMG_PRINTER_GetPrinterWidth( _HMG_PRINTER_hDC )
+   LOCAL hdcPrint
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   RETURN _HMG_PRINTER_GetPrinterWidth( hdcPrint )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaHeight()
 
-   RETURN _HMG_PRINTER_GetPrinterHeight( _HMG_PRINTER_hDC )
+   LOCAL hdcPrint
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   RETURN _HMG_PRINTER_GetPrinterHeight( hdcPrint )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
 
-   LOCAL nPhOfX, nLgPxX
+   LOCAL hdcPrint, nPhOfX, nLgPxX
 
-   nPhOfX := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetX( _HMG_PRINTER_hDC )
-   nLgPxX := _HMG_PRINTER_GetPrintableAreaLogPixelsX( _HMG_PRINTER_hDC )
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   nPhOfX := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetX( hdcPrint )
+   nLgPxX := _HMG_PRINTER_GetPrintableAreaLogPixelsX( hdcPrint )
 
    IF nLgPxX == 0
       RETURN 0
@@ -2124,10 +1842,16 @@ FUNCTION _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaVerticalOffset()
 
-   LOCAL nPhOfY, nLgPxY
+   LOCAL hdcPrint, nPhOfY, nLgPxY
 
-   nPhOfY := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetY( _HMG_PRINTER_hDC )
-   nLgPxY := _HMG_PRINTER_GetPrintableAreaLogPixelsY( _HMG_PRINTER_hDC )
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   nPhOfY := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetY( hdcPrint )
+   nLgPxY := _HMG_PRINTER_GetPrintableAreaLogPixelsY( hdcPrint )
 
    IF nLgPxY == 0
       RETURN 0
@@ -2138,15 +1862,11 @@ FUNCTION _HMG_PRINTER_GetPrintableAreaVerticalOffset()
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetJobName()
 
-   IF ! __mvExist( '_OOHG_PRINTER_DocName' )
-      __mvPublic( '_OOHG_PRINTER_DocName' )
+   IF ! ValType( _HMG_PRINTER_JobName ) $ "CM" .OR. Empty( _HMG_PRINTER_JobName )
+      _HMG_PRINTER_JobName := "OOHG printing system"
    ENDIF
 
-   IF ! ValType( _OOHG_PRINTER_DocName ) $ "CM"
-      _OOHG_PRINTER_DocName := "OOHG printing system"
-   ENDIF
-
-   RETURN _OOHG_PRINTER_DocName
+   RETURN _HMG_PRINTER_JobName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_SetJobName( cName )
@@ -2154,35 +1874,53 @@ FUNCTION _HMG_PRINTER_SetJobName( cName )
    _HMG_PRINTER_GetJobName()
 
    IF ValType( cName ) $ 'CM'
-      _OOHG_PRINTER_DocName := cName
+      _HMG_PRINTER_JobName := cName
    ENDIF
 
-   RETURN _OOHG_PRINTER_DocName
+   RETURN _HMG_PRINTER_JobName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_TextAlign( nAlign )
 
-   RETURN _HMG_PRINTER_SetTextAlign( _HMG_PRINTER_hDC, nAlign )
+   LOCAL hdcPrint
+
+   IF _HMG_PRINTER_hDC_Bak == 0
+      hdcPrint := _HMG_PRINTER_hDC
+   ELSE
+      hdcPrint := _HMG_PRINTER_hDC_Bak
+   ENDIF
+
+   RETURN _HMG_PRINTER_SetTextAlign( hdcPrint, nAlign )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_PreviewZoom( nSize )
 
    IF PCount() > 1
-      IF ! __mvExist( '_HMG_PRINTER_Dz' )
-         __mvPublic( '_HMG_PRINTER_Dz' )
-      ENDIF
       _HMG_PRINTER_Dz := nSize * 200
-      IF HB_ISOBJECT( _OOHG_Auxil_Zoom )
-         _OOHG_Auxil_Zoom:Value := _HMG_PRINTER_Dz / 200
-      ENDIF
-   ELSE
-      IF ! __mvExist( '_HMG_PRINTER_Dz' )
-         __mvPublic( '_HMG_PRINTER_Dz' )
-         _HMG_PRINTER_Dz := 0
+      IF IsControlDefined( zoom, _HMG_PRINTER_PPNAV )
+         _HMG_PRINTER_PPNAV.zoom.Value := _HMG_PRINTER_Dz / 200
       ENDIF
    ENDIF
 
    RETURN ( _HMG_PRINTER_Dz / 200 )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _HMG_PRINTER_GetJobInfo( aJobData )
+
+   IF ValType( aJobData ) == "U"
+      aJobData := OpenPrinterGetJobData()   // { _hmg_printer_JobId, _hmg_printer_name }
+   ENDIF
+
+RETURN _HMG_PRINTER_C_GetJobInfo( aJobData[ 2 ], aJobData[ 1 ] )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _HMG_PRINTER_GetStatus( cPrinter )
+
+   IF ! ValType( cPrinter ) $ "CM" .OR. Empty( cPrinter )
+      cPrinter := _HMG_PRINTER_Name
+   ENDIF
+
+   RETURN _HMG_PRINTER_C_GetStatus( cPrinter )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, lSilent, lIgnore, lGlobal )
@@ -2190,11 +1928,12 @@ FUNCTION _HMG_PRINTER_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, 
    LOCAL aResult
 
    aResult := _HMG_PRINTER_C_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, .F., lIgnore, lGlobal )
+   ASize( aResult, 14 )
 /*
  * { hdcPrint, cPrinter, nCopies, nCollate, nError, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nDefaultSource, nQuality, nColor, nDuplex, nScale }
  */
    IF aResult[ 5 ] # 0 .AND. ! lSilent
-      MsgExclamation( _HMG_PRINTER_ErrMsg( aResult[ 5 ] ), _HMG_PRINTER_UserMessages[ 99, 1 ] )
+      MsgExclamation( _HMG_PRINTER_ErrMsg( aResult[ 5 ] ), _HMG_PRINTER_UserMessages[ 34 ] )
    ENDIF
 
    RETURN aResult
@@ -2202,51 +1941,51 @@ FUNCTION _HMG_PRINTER_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION _HMG_PRINTER_ErrMsg( nMsg )
 
-   LOCAL cMsg := _HMG_PRINTER_UserMessages[ 99, 2 ]
+   LOCAL cMsg := _HMG_PRINTER_UserMessages[ 35 ]
 
    DO CASE
    CASE NumAnd( nMsg, ERR_OPEN_PRINTER ) == ERR_OPEN_PRINTER
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 3 ]
+      cMsg += 'ERR_OPEN_PRINTER'
    CASE NumAnd( nMsg, ERR_GET_PRINTER_BUFFER_SIZE ) == ERR_GET_PRINTER_BUFFER_SIZE
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 4 ]
+      cMsg += 'ERR_GET_PRINTER_BUFFER_SIZE'
    CASE NumAnd( nMsg, ERR_ALLOCATE_PRINTER_BUFFER ) == ERR_ALLOCATE_PRINTER_BUFFER
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 5 ]
+      cMsg += 'ERR_ALLOCATE_PRINTER_BUFFER'
    CASE NumAnd( nMsg, ERR_GET_PRINTER_SETTINGS ) == ERR_GET_PRINTER_SETTINGS
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 6 ]
+      cMsg += 'ERR_GET_PRINTER_SETTINGS'
    CASE NumAnd( nMsg, ERR_GET_DOCUMENT_BUFFER_SIZE ) == ERR_GET_DOCUMENT_BUFFER_SIZE
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 7 ]
+      cMsg += 'ERR_GET_DOCUMENT_BUFFER_SIZE'
    CASE NumAnd( nMsg, ERR_ALLOCATE_DOCUMENT_BUFFER ) == ERR_ALLOCATE_DOCUMENT_BUFFER
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 8 ]
+      cMsg += 'ERR_ALLOCATE_DOCUMENT_BUFFER'
    CASE NumAnd( nMsg, ERR_GET_DOCUMENT_SETTINGS ) == ERR_GET_DOCUMENT_SETTINGS
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 9 ]
+      cMsg += 'ERR_GET_DOCUMENT_SETTINGS'
    CASE NumAnd( nMsg, ERR_ORIENTATION_NOT_SUPPORTED ) == ERR_ORIENTATION_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 10 ]
+      cMsg += 'ERR_ORIENTATION_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_PAPERSIZE_NOT_SUPPORTED ) == ERR_PAPERSIZE_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 11 ]
+      cMsg += 'ERR_PAPERSIZE_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_PAPERLENGTH_NOT_SUPPORTED ) == ERR_PAPERLENGTH_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 12 ]
+      cMsg += 'ERR_PAPERLENGTH_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_PAPERWIDTH_NOT_SUPPORTED ) == ERR_PAPERWIDTH_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 13 ]
+      cMsg += 'ERR_PAPERWIDTH_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_COPIES_NOT_SUPPORTED ) == ERR_COPIES_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 14 ]
+      cMsg += 'ERR_COPIES_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_DEFAULTSOURCE_NOT_SUPPORTED ) == ERR_DEFAULTSOURCE_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 15 ]
+      cMsg += 'ERR_DEFAULTSOURCE_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_QUALITY_NOT_SUPPORTED ) == ERR_QUALITY_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 16 ]
+      cMsg += 'ERR_QUALITY_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_COLOR_NOT_SUPPORTED ) == ERR_COLOR_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 17 ]
+      cMsg += 'ERR_COLOR_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_DUPLEX_NOT_SUPPORTED ) == ERR_DUPLEX_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 18 ]
+      cMsg += 'ERR_DUPLEX_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_COLLATE_NOT_SUPPORTED ) == ERR_COLLATE_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 19 ]
+      cMsg += 'ERR_COLLATE_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_SCALE_NOT_SUPPORTED ) == ERR_SCALE_NOT_SUPPORTED
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 20 ]
+      cMsg += 'ERR_SCALE_NOT_SUPPORTED'
    CASE NumAnd( nMsg, ERR_SET_DOCUMENT_SETTINGS ) == ERR_SET_DOCUMENT_SETTINGS
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 21 ]
+      cMsg += 'ERR_SET_DOCUMENT_SETTINGS'
    CASE NumAnd( nMsg, ERR_CREATING_DC ) == ERR_CREATING_DC
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 22 ]
+      cMsg += 'ERR_CREATING_DC'
    OTHERWISE
-      cMsg += _HMG_PRINTER_UserMessages[ 99, 23 ]
+      cMsg += 'ERR_UNKNOWN'
    ENDCASE
 
    RETURN cMsg
@@ -2329,11 +2068,27 @@ FUNCTION aPrinters()
 #define ERR_SCALE_NOT_SUPPORTED                     0x00020000
 #define ERR_SET_DOCUMENT_SETTINGS                   0x00040000
 #define ERR_CREATING_DC                             0x00080000
-// error codes returned by _HMG_PRINTER_PRINTDIALOG
+// error code returned by _HMG_PRINTER_PRINTDIALOG
 #define ERR_PRINTDLG                                0x00100000
+// error code returned by _HMG_PRINTER_C_GETSTATUS
+#define ERR_PRINTER_STATUS_NOT_AVAILABLE            0x00001000
+
+static DWORD s_charset = DEFAULT_CHARSET;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_SETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdcPrint, nAlign ) -> nOldAlign */
+HB_FUNC( _HMG_PRINTER_SETCHARSET )          /* _HMG_PRINTER_SetCharset( nCharSet ) -> nAlign */
+{
+   s_charset = ( DWORD ) hb_parnl( 1 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _HMG_PRINTER_GETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdc ) -> nAlign */
+{
+   hb_retni( GetTextAlign( ( HDC ) HB_PARNL( 1 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _HMG_PRINTER_SETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdc, nAlign ) -> nOldAlign */
 {
    hb_retni( SetTextAlign( ( HDC ) HB_PARNL( 1 ), hb_parni( 2 ) ) );
 }
@@ -2348,9 +2103,9 @@ HB_FUNC( _HMG_PRINTER_ABORTDOC )          /* _HMG_PRINTER_AbortDoc( hdcPrint ) -
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_STARTDOC )          /* _HMG_PRINTER_StartDoc( hdcPrint ) -> NIL */
 {
-   DOCINFO docInfo;
-
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   DOCINFO docInfo;
+   INT iRet = 0;
 
    if( hdcPrint != 0 )
    {
@@ -2358,19 +2113,28 @@ HB_FUNC( _HMG_PRINTER_STARTDOC )          /* _HMG_PRINTER_StartDoc( hdcPrint ) -
       docInfo.cbSize = sizeof( docInfo );
       docInfo.lpszDocName = hb_parc( 2 );
 
-      StartDoc( hdcPrint, &docInfo );
+      iRet = StartDoc( hdcPrint, &docInfo );
+      if ( iRet < 0 )
+      {
+         iRet = 0;
+      }
    }
+
+   hb_retni( iRet );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_STARTPAGE )          /* _HMG_PRINTER_StartPage( hdcPrint ) -> NIL */
 {
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   INT iRet = 0;
 
    if( hdcPrint != 0 )
    {
-      StartPage( hdcPrint );
+      iRet = StartPage( hdcPrint );
    }
+
+   hb_retl( iRet > 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2396,7 +2160,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
 
    if( hdcPrint != 0 )
    {
-      // Bold
+      // lBold
       if( hb_parl( 10 ) )
       {
          fnWeight = FW_BOLD;
@@ -2406,7 +2170,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          fnWeight = FW_NORMAL;
       }
 
-      // Italic
+      // lItalic
       if( hb_parl( 11 ) )
       {
          fdwItalic = TRUE;
@@ -2416,7 +2180,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          fdwItalic = FALSE;
       }
 
-      // UnderLine
+      // lUnderLine
       if( hb_parl( 12 ) )
       {
          fdwUnderline = TRUE;
@@ -2426,7 +2190,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          fdwUnderline = FALSE;
       }
 
-      // StrikeOut
+      // lStrikeOut
       if( hb_parl( 13 ) )
       {
          fdwStrikeOut = TRUE;
@@ -2436,7 +2200,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          fdwStrikeOut = FALSE;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 14 ) )
       {
          r = hb_parni( 6 );
@@ -2450,7 +2214,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          b = 0;
       }
 
-      // Angle
+      // lAngle
       if( hb_parl( 17 ) )
       {
          nAngle = hb_parnl( 18 );
@@ -2460,7 +2224,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          nAngle = 0;
       }
 
-      // Width
+      // lWidth
       if( hb_parl( 19 ) )
       {
          nWidth = hb_parnl( 20 );
@@ -2470,7 +2234,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          nWidth = 0;
       }
 
-      // Fontname
+      // lFontname
       if( hb_parl( 15 ) )
       {
          strcpy( FontName, hb_parc( 4 ) );
@@ -2480,7 +2244,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
          strcpy( FontName, "Arial" );
       }
 
-      // FontSize
+      // lFontSize
       if( hb_parl( 16 ) )
       {
          FontSize = hb_parni( 5 );
@@ -2500,7 +2264,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
                           fdwItalic,
                           fdwUnderline,
                           fdwStrikeOut,
-                          DEFAULT_CHARSET,
+                          s_charset,
                           OUT_TT_PRECIS,
                           CLIP_DEFAULT_PRECIS,
                           DEFAULT_QUALITY,
@@ -2524,7 +2288,7 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_Print( hdcPrint, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, nToRow, nToCol, lAngle, nAngle, lWidth, nWidth ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_Print( hdcPrint, nRow, nCol, cFontName, nFontSize, nRed, nGreen, nBlue, cText, lBold, lItalic, lUnderline, lStrikeOut, lColor, lFontName, lFontSize, nToRow, nToCol, lAngle, nAngle, lWidth, nWidth, nAlign ) -> NIL */
 {
    HGDIOBJ hgdiobj;
    char FontName[ 32 ];
@@ -2541,15 +2305,16 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
    INT y = hb_parni( 2 );
    LONG nAngle;
    LONG nWidth ;
-   INT tox = hb_parni( 18 );
    INT toy = hb_parni( 17 );
+   INT tox = hb_parni( 18 );
    HFONT hfont;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
    INT FontHeight;
+   UINT uFormat = 0;
 
    if( hdcPrint != 0 )
    {
-      // Bold
+      // lBold
       if( hb_parl( 10 ) )
       {
          fnWeight = FW_BOLD;
@@ -2559,7 +2324,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          fnWeight = FW_NORMAL;
       }
 
-      // Italic
+      // lItalic
       if( hb_parl( 11 ) )
       {
          fdwItalic = TRUE;
@@ -2569,7 +2334,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          fdwItalic = FALSE;
       }
 
-      // UnderLine
+      // lUnderLine
       if( hb_parl( 12 ) )
       {
          fdwUnderline = TRUE;
@@ -2579,7 +2344,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          fdwUnderline = FALSE;
       }
 
-      // StrikeOut
+      // lStrikeOut
       if( hb_parl( 13 ) )
       {
          fdwStrikeOut = TRUE;
@@ -2589,7 +2354,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          fdwStrikeOut = FALSE;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 14 ) )
       {
          r = hb_parni( 6 );
@@ -2603,7 +2368,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          b = 0;
       }
 
-      // Angle
+      // lAngle
       if( hb_parl( 19 ) )
       {
          nAngle = hb_parnl( 20 );
@@ -2613,7 +2378,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          nAngle = 0;
       }
 
-      // Width
+      // lWidth
       if( hb_parl( 21 ) )
       {
          nWidth = hb_parnl( 22 );
@@ -2623,7 +2388,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          nWidth = 0;
       }
 
-      // Fontname
+      // lFontname
       if( hb_parl( 15 ) )
       {
          strcpy( FontName, hb_parc( 4 ) );
@@ -2633,7 +2398,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
          strcpy( FontName, "Arial" );
       }
 
-      // FontSize
+      // lFontSize
       if( hb_parl( 16 ) )
       {
          FontSize = hb_parni( 5 );
@@ -2653,12 +2418,19 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
                           fdwItalic,
                           fdwUnderline,
                           fdwStrikeOut,
-                          DEFAULT_CHARSET,
+                          s_charset,
                           OUT_TT_PRECIS,
                           CLIP_DEFAULT_PRECIS,
                           DEFAULT_QUALITY,
                           FF_DONTCARE,
                           FontName );
+
+      if( hb_parni( 23 ) == 0 )
+         uFormat = DT_END_ELLIPSIS | DT_NOPREFIX | DT_WORDBREAK | DT_LEFT;
+      else if( hb_parni( 23 ) == 2 )
+         uFormat = DT_END_ELLIPSIS | DT_NOPREFIX | DT_WORDBREAK | DT_RIGHT;
+      else if( hb_parni( 23 ) == 6 )
+         uFormat = DT_END_ELLIPSIS | DT_NOPREFIX | DT_WORDBREAK | DT_CENTER;
 
       hgdiobj = SelectObject( hdcPrint, hfont );
 
@@ -2674,7 +2446,7 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
                 hb_parc( 9 ),
                 hb_parclen( 9 ),
                 &rect,
-                DT_NOPREFIX | DT_MODIFYSTRING | DT_WORDBREAK | DT_END_ELLIPSIS );
+                uFormat );
 
       SelectObject( hdcPrint, hgdiobj );
       DeleteObject( hfont );
@@ -2685,22 +2457,28 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
 HB_FUNC( _HMG_PRINTER_ENDPAGE )          /* _HMG_PRINTER_EndPage( hdcPrint ) -> NIL */
 {
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   INT iRet = 0;
 
    if( hdcPrint != 0 )
    {
-      EndPage( hdcPrint );
+      iRet = EndPage( hdcPrint );
    }
+
+   hb_retl( iRet > 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_ENDDOC )          /* _HMG_PRINTER_EndDoc( hdcPrint ) -> NIL */
 {
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   INT iRet = 0;
 
    if( hdcPrint != 0 )
    {
-      EndDoc( hdcPrint );
+      iRet = EndDoc( hdcPrint );
    }
+
+   hb_retl( iRet > 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2746,6 +2524,15 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )          /* _HMG_PRINTER_PrintDialog() -> { 
       HB_STORNI( pDevMode->dmCopies, -1, 3 );
       HB_STORNI( pDevMode->dmCollate, -1, 4 );
       HB_STORNI( 0, -1, 5 );
+      HB_STORNI( pDevMode->dmOrientation, -1, 6 );
+      HB_STORNI( pDevMode->dmPaperSize, -1, 7 );
+      HB_STORNI( pDevMode->dmPaperLength, -1, 8 );
+      HB_STORNI( pDevMode->dmPaperWidth, -1, 9 );
+      HB_STORNI( pDevMode->dmDefaultSource, -1, 10 );
+      HB_STORNI( pDevMode->dmPrintQuality, -1, 11 );
+      HB_STORNI( pDevMode->dmColor, -1, 12 );
+      HB_STORNI( pDevMode->dmDuplex, -1, 13 );
+      HB_STORNI( pDevMode->dmScale, -1, 14 );
 
       GlobalUnlock( pd.hDevMode );
    }
@@ -2757,6 +2544,15 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )          /* _HMG_PRINTER_PrintDialog() -> { 
       HB_STORNI( 0, -1, 3 );
       HB_STORNI( 0, -1, 4 );
       HB_STORNI( ERR_PRINTDLG, -1, 5 );
+      HB_STORNI( 0, -1, 6 );
+      HB_STORNI( 0, -1, 7 );
+      HB_STORNI( 0, -1, 8 );
+      HB_STORNI( 0, -1, 9 );
+      HB_STORNI( 0, -1, 10 );
+      HB_STORNI( 0, -1, 11 );
+      HB_STORNI( 0, -1, 12 );
+      HB_STORNI( 0, -1, 13 );
+      HB_STORNI( 0, -1, 14 );
    }
 }
 
@@ -2839,7 +2635,7 @@ HB_FUNC( _HMG_PRINTER_C_APRINTERS )          /* _HMG_PRINTER_C_aPrinters() -> { 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
    INT r;
    INT g;
@@ -2853,17 +2649,20 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
    INT br;
    INT bg;
    INT bb;
-   INT nBr;
-   LONG nBh;
+   INT nBstyle;
+   LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj, hgdiobj2;
+   HGDIOBJ hgdiobj1, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
    HBRUSH hbr;
+   RECT rect;
+   BOOL bNoPen = hb_parl( 20 );
+   BOOL bNoBrush = hb_parl( 21 );
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -2873,7 +2672,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
          width = 1 * 10000 / 254;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -2887,7 +2686,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
          b = 0;
       }
 
-      // Style
+      // lStyle
       if( hb_parl( 12 ) )
       {
          nStyle = hb_parni( 13 );
@@ -2897,26 +2696,27 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
          nStyle = ( int ) PS_SOLID;
       }
 
-      // BrushStyle
+      // lBrushStyle
       if( hb_parl( 14 ) )
       {
-         nBh = hb_parni( 15 );
-         nBr = 2;
+         nBstyle = BS_HATCHED;
+         nBhatch = hb_parni( 15 );   // nBrushStyle
       }
       else
       {
-         if( hb_parl( 16 ) )
+         // lBrushColor
+         if( hb_parl( 16 ) )   
          {
-            nBr = 0;
+            nBstyle = BS_SOLID;
          }
          else
          {
-            nBr = 1;
+            nBstyle = BS_NULL;
          }
-         nBh = 0 ;
+         nBhatch = 0 ;
       }
 
-      // BrushColor
+      // lBrushColor
       if( hb_parl( 16 ) )
       {
          br = hb_parni( 17 );
@@ -2930,30 +2730,45 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
          bb = 0;
       }
 
-      pbr.lbStyle = nBr;
+      pbr.lbStyle = nBstyle;
       pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
-      pbr.lbHatch = nBh;
+      pbr.lbHatch = nBhatch;
 
-      hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
-      hbr = CreateBrushIndirect( &pbr );
-      hgdiobj = SelectObject( hdcPrint, hpen );
-      hgdiobj2 = SelectObject( hdcPrint, hbr );
+      if( ! bNoBrush )
+      {
+         hbr = CreateBrushIndirect( &pbr );
+         hgdiobj1 = SelectObject( hdcPrint, hbr );
+      }
 
-      Rectangle( hdcPrint,
-                 ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
-                 ( y   * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ),
-                 ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
-                 ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      if( ! bNoPen )
+      {
+         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
+         hgdiobj2 = SelectObject( hdcPrint, hpen );
+      }
 
-      SelectObject( hdcPrint, hgdiobj );
-      SelectObject( hdcPrint, hgdiobj2 );
-      DeleteObject( hpen );
-      DeleteObject( hbr );
+      rect.left   = ( x * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX );
+      rect.top    = ( y * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY );
+      rect.right  = ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX );
+      rect.bottom = ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY );
+
+      Rectangle( hdcPrint, rect.left, rect.top, rect.right, rect.bottom );
+
+      if( ! bNoBrush )
+      {
+         SelectObject( hdcPrint, hgdiobj1 );
+         DeleteObject( hbr );
+      }
+
+      if( ! bNoPen )
+      {
+         SelectObject( hdcPrint, hgdiobj2 );
+         DeleteObject( hpen );
+      }
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
    INT r;
    INT g;
@@ -2968,17 +2783,19 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
    INT br;
    INT bg;
    INT bb;
-   INT nBr;
-   LONG nBh;
+   INT nBstyle;
+   LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj, hgdiobj2;
+   HGDIOBJ hgdiobj1, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
    HBRUSH hbr;
+   BOOL bNoPen = hb_parl( 20 );
+   BOOL bNoBrush = hb_parl( 21 );
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -2988,7 +2805,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
          width = 1 * 10000 / 254;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3002,6 +2819,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
          b = 0;
       }
 
+      // lStyle
       if( hb_parl( 12 ) )
       {
          nStyle = hb_parni( 13 );
@@ -3011,24 +2829,27 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
          nStyle = ( int ) PS_SOLID;
       }
 
+      // lBrushStyle
       if( hb_parl( 14 ) )
       {
-         nBh = hb_parni( 15 );
-         nBr = 2;
+         nBstyle = BS_HATCHED;
+         nBhatch = hb_parni( 15 );   // nBrushStyle
       }
       else
       {
+         // lBrushColor
          if( hb_parl( 16 ) )
          {
-            nBr = 0;
+            nBstyle = BS_SOLID;
          }
          else
          {
-            nBr = 1;
+            nBstyle = BS_NULL;
          }
-         nBh = 0 ;
+         nBhatch = 0 ;
       }
 
+      // lBrushColor
       if( hb_parl( 16 ) )
       {
          br = hb_parni( 17 );
@@ -3042,14 +2863,21 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
          bb = 0;
       }
 
-      pbr.lbStyle = nBr;
+      pbr.lbStyle = nBstyle;
       pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
-      pbr.lbHatch = nBh;
+      pbr.lbHatch = nBhatch;
 
-      hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
-      hbr = CreateBrushIndirect( &pbr );
-      hgdiobj = SelectObject( hdcPrint, hpen );
-      hgdiobj2 = SelectObject( hdcPrint, hbr );
+      if( ! bNoBrush )
+      {
+         hbr = CreateBrushIndirect( &pbr );
+         hgdiobj1 = SelectObject( hdcPrint, hbr );
+      }
+
+      if( ! bNoPen )
+      {
+         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
+         hgdiobj2 = SelectObject( hdcPrint, hpen );
+      }
 
       w = ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - ( x * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 );
       h = ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - ( y * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 );
@@ -3064,10 +2892,17 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
                  p,
                  p );
 
-      SelectObject( hdcPrint, hgdiobj );
-      SelectObject( hdcPrint, hgdiobj2 );
-      DeleteObject( hpen );
-      DeleteObject( hbr );
+      if( ! bNoBrush )
+      {
+         SelectObject( hdcPrint, hgdiobj1 );
+         DeleteObject( hbr );
+      }
+
+      if( ! bNoPen )
+      {
+         SelectObject( hdcPrint, hgdiobj2 );
+         DeleteObject( hpen );
+      }
    }
 }
 
@@ -3088,7 +2923,7 @@ HB_FUNC( _HMG_PRINTER_C_FILL )          /* _HMG_PRINTER_C_Fill( hdcPrint, nRow, 
 
    if( hdcPrint != 0 )
    {
-      // Color
+      // lColor
       if( hb_parl( 9 ) )
       {
          r = hb_parni( 6 );
@@ -3135,7 +2970,7 @@ HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, n
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -3145,7 +2980,7 @@ HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, n
          width = 1 * 10000 / 254;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3159,6 +2994,7 @@ HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, n
          b = 0;
       }
 
+      // lStyle
       if( hb_parl( 12 ) )
       {
          nStyle = hb_parni( 13 );
@@ -3187,7 +3023,7 @@ HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, n
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, lSilent, lIgnore, lGlobal ) -> { hdcPrint, cPrinter, nCopies, nCollate, nError } */
+HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, lSilent, lIgnore, lGlobal ) -> { hdcPrint, cPrinter, nCopies, nCollate, nError, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nDefaultSource, nQuality, nColor, nDuplex, nScale } */
 {
    HANDLE hPrinter = NULL;
    DWORD dwNeeded = 0;
@@ -3199,13 +3035,13 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    BOOL bGlobal = hb_parl( 15 );
    LONG lFlag;
    HDC hdcPrint;
-   INT fields = 0;
    INT error = 0;
 
-   // Get the current settings from the printer's driver
+   // Get the current settings of the printer's driver
+
    bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
 
-   if( !bFlag || ( hPrinter == NULL ) )
+   if( ! bFlag || ( hPrinter == NULL ) )
    {
       if( bVerbose )
       {
@@ -3277,9 +3113,12 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       return;
    }
 
-   if(pi2->pDevMode == NULL)
+   // If this condition is true the printer is unusable until the driver is reinstalled successfully
+
+   if( pi2->pDevMode == NULL)
    {
       dwNeeded = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), NULL, NULL, 0 );
+
       if( dwNeeded <= 0 )
       {
          GlobalFree( pi2 );
@@ -3298,6 +3137,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
 
       pDevMode = ( DEVMODE * ) GlobalAlloc( GPTR, dwNeeded );
+
       if( pDevMode == NULL )
       {
          GlobalFree( pi2 );
@@ -3316,6 +3156,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
 
       lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pDevMode, NULL, DM_OUT_BUFFER );
+
       if( lFlag != IDOK || pDevMode == NULL )
       {
          GlobalFree( pDevMode );
@@ -3337,12 +3178,11 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    }
 
    // Set new values if the driver supports changing the properties
-   // Orientation
+
    if( hb_parni( 2 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_ORIENTATION )
       {
-         fields = fields | DM_ORIENTATION;
          pi2->pDevMode->dmOrientation = ( short ) hb_parni( 2 );
       }
       else
@@ -3371,12 +3211,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // PaperSize
    if( hb_parni( 3 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_PAPERSIZE )
       {
-         fields = fields | DM_PAPERSIZE;
          pi2->pDevMode->dmPaperSize = ( short ) hb_parni( 3 );
       }
       else
@@ -3405,12 +3243,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // PaperLenght
    if( hb_parni( 4 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_PAPERLENGTH )
       {
-         fields = fields | DM_PAPERLENGTH;
          pi2->pDevMode->dmPaperLength = ( short ) ( hb_parni( 4 ) * 10 );
       }
       else
@@ -3439,12 +3275,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // PaperWidth
    if( hb_parni( 5 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_PAPERWIDTH )
       {
-         fields = fields | DM_PAPERWIDTH ;
          pi2->pDevMode->dmPaperWidth = ( short ) ( hb_parni( 5 ) * 10 );
       }
       else
@@ -3473,12 +3307,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Copies
    if( hb_parni( 6 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_COPIES )
       {
-         fields = fields | DM_COPIES;
          pi2->pDevMode->dmCopies = ( short ) hb_parni( 6 );
       }
       else
@@ -3507,12 +3339,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Default Source
    if( hb_parni( 7 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_DEFAULTSOURCE )
       {
-         fields = fields | DM_DEFAULTSOURCE;
          pi2->pDevMode->dmDefaultSource = ( short ) hb_parni( 7 );
       }
       else
@@ -3541,12 +3371,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Print Quality
    if( hb_parni( 8 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_PRINTQUALITY )
       {
-         fields = fields | DM_PRINTQUALITY;
          pi2->pDevMode->dmPrintQuality = ( short ) hb_parni( 8 );
       }
       else
@@ -3575,12 +3403,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Print Color
    if( hb_parni( 9 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_COLOR )
       {
-         fields = fields | DM_COLOR;
          pi2->pDevMode->dmColor = ( short ) hb_parni( 9 );
       }
       else
@@ -3609,12 +3435,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Print Duplex
    if( hb_parni( 10 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_DUPLEX )
       {
-         fields = fields | DM_DUPLEX;
          pi2->pDevMode->dmDuplex = ( short ) hb_parni( 10 );
       }
       else
@@ -3643,12 +3467,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Print Collate
    if( hb_parni( 11 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_COLLATE )
       {
-         fields = fields | DM_COLLATE;
          pi2->pDevMode->dmCollate = ( short ) hb_parni( 11 );
       }
       else
@@ -3677,12 +3499,10 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Scale
    if( hb_parni( 12 ) != -999 )
    {
       if( pi2->pDevMode->dmFields & DM_SCALE )
       {
-         fields = fields | DM_SCALE;
          pi2->pDevMode->dmScale = ( short ) hb_parni( 12 );
       }
       else
@@ -3711,11 +3531,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
       }
    }
 
-   // Update driver, specifying exactly what we are attempting to change
-   pi2->pDevMode->dmFields = fields;
-
-   // Do not attempt to set security descriptor
-   pi2->pSecurityDescriptor = NULL;
+   // Change the driver's configuration
 
    lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
 
@@ -3738,13 +3554,15 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    }
 
    // Make changes global
+
    if( bGlobal )
    {
       SetPrinter( hPrinter, 2, ( LPBYTE ) pi2, 0 );
    }
 
    // Create a DC to handle the print job
-   hdcPrint = CreateDC( NULL, TEXT( hb_parc( 1 ) ), NULL, pi2->pDevMode );
+
+   hdcPrint = CreateDC( NULL, hb_parc( 1 ), NULL, pi2->pDevMode );
 
    if( hdcPrint == NULL )
    {
@@ -3786,27 +3604,134 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )          /* _HMG_PRINTER_StartPage_Preview( hdcPrint, cName ) -> hDC */
+HB_FUNC( _HMG_PRINTER_C_GETJOBINFO )          /* FUNCTION _HMG_PRINTER_C_GetJobInfo( cPrinterName, nJobID ) -> { nJobID, cPrinterName, cMachineName, cUserName, cDocument, cDataType, cStatus, nStatus, nPriorityLevel, nPositionPrintQueue, nTotalPages, nPagesPrinted, cLocalDate, cLocalTime } */
+{
+   HANDLE hPrinter = NULL;
+   DWORD dwNeeded = 0;
+   BOOL bFlag;
+   JOB_INFO_1 * pj1;
+   DWORD nJobID = ( DWORD ) hb_parni( 2 );
+   char cDateTime[ 256 ];
+   SYSTEMTIME LocalSystemTime;
+
+   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
+
+   if( bFlag || hPrinter != NULL )
+   {
+      SetLastError( 0 );
+
+      bFlag = GetJob( hPrinter, nJobID, 1, NULL, 0, &dwNeeded );
+
+      if( ( bFlag || ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) ) && ( dwNeeded != 0 ) )
+      {
+         pj1 = ( JOB_INFO_1 * ) GlobalAlloc( GPTR, dwNeeded );
+
+         if( GetJob( hPrinter, nJobID, 1, ( LPBYTE ) pj1, dwNeeded, &dwNeeded ) )
+         {
+            hb_reta( 14 );
+            HB_STORNI( pj1->JobId, -1, 1 );
+            HB_STORC( pj1->pPrinterName, -1, 2 );
+            HB_STORC( pj1->pMachineName, -1, 3 );
+            HB_STORC( pj1->pUserName, -1, 4 );
+            HB_STORC( pj1->pDocument, -1, 5 );
+            HB_STORC( pj1->pDatatype, -1, 6 );
+            HB_STORC( pj1->pStatus, -1, 7 );
+            HB_STORNI( pj1->Status, -1, 8 );
+            HB_STORNI( pj1->Priority, -1, 9 );
+            HB_STORNI( pj1->Position, -1, 10 );
+            HB_STORNI( pj1->TotalPages, -1, 11 );
+            HB_STORNI( pj1->PagesPrinted, -1, 12 );
+
+            SystemTimeToTzSpecificLocalTime( NULL, &pj1->Submitted, &LocalSystemTime );
+
+            wsprintf( cDateTime, "%02d/%02d/%02d", LocalSystemTime.wYear, LocalSystemTime.wMonth, LocalSystemTime.wDay );
+            HB_STORC( cDateTime, -1, 13 );
+
+            wsprintf( cDateTime, "%02d:%02d:%02d", LocalSystemTime.wHour, LocalSystemTime.wMinute, LocalSystemTime.wSecond );
+            HB_STORC( cDateTime, -1, 14 );
+         }
+         else
+         {
+            hb_reta( 0 );
+         }
+
+         GlobalFree( pj1 );
+      }
+      else
+      {
+         hb_reta( 0 );
+      }
+
+      ClosePrinter( hPrinter );
+   }
+   else
+   {
+      hb_reta( 0 );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _HMG_PRINTER_C_GETSTATUS )          /* _HMG_PRINTER_C_GetStatus( cPrinter ) -> nStatus */
+{
+   HANDLE hPrinter = NULL;
+   DWORD dwNeeded = 0;
+   BOOL bFlag;
+   PRINTER_INFO_6 * pi6;
+
+   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
+
+   if( bFlag || hPrinter != NULL )
+   {
+      SetLastError( 0 );
+
+      bFlag = GetPrinter( hPrinter, 2, 0, 0, &dwNeeded );
+
+      if( ( bFlag || ( GetLastError() == ERROR_INSUFFICIENT_BUFFER ) ) && ( dwNeeded != 0 ) )
+      {
+         pi6 = ( PRINTER_INFO_6 * ) GlobalAlloc( GPTR, dwNeeded );
+
+         if( pi6 != NULL )
+         {
+            bFlag = GetPrinter( hPrinter, 6, ( LPBYTE ) pi6, dwNeeded, &dwNeeded );
+
+            if( bFlag )
+            {
+               hb_retnl( pi6->dwStatus );
+               return;
+            }
+
+            GlobalFree( pi6 );
+         }
+      }
+
+      ClosePrinter( hPrinter );
+   }
+
+   hb_retnl( ERR_PRINTER_STATUS_NOT_AVAILABLE );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )          /* _HMG_PRINTER_StartPage_Preview( hdcPrint, cName ) -> hdcEmf */
 {
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HDC tmpDC;
+   HDC hdcEmf;
    RECT emfrect;
 
    SetRect( &emfrect, 0, 0, GetDeviceCaps( hdcPrint, HORZSIZE ) * 100, GetDeviceCaps( hdcPrint, VERTSIZE) * 100 );
 
-   tmpDC = CreateEnhMetaFile( hdcPrint, hb_parc( 2 ), &emfrect, "" );
+   hdcEmf = CreateEnhMetaFile( hdcPrint, hb_parc( 2 ), &emfrect, "" );
 
-   hb_retnl( ( LONG ) tmpDC );
+   HB_RETNL( ( LONG_PTR ) hdcEmf );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_ENDPAGE_PREVIEW )          /* _HMG_PRINTER_EndPage_Preview( hdcPrint ) -> NIL */
+HB_FUNC( _HMG_PRINTER_ENDPAGE_PREVIEW )          /* _HMG_PRINTER_EndPage_Preview( hdcEmf ) -> NIL */
 {
    DeleteEnhMetaFile( CloseEnhMetaFile( ( HDC ) HB_PARNL ( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_SHOWPAGE )          /* _HMG_PRINTER_ShowPage( cEmf, hwnd, hdcPrint, nFactor, nDz, nDx, nDy ) -> NIL */
+HB_FUNC( _HMG_PRINTER_SHOWPAGE )          /* _HMG_PRINTER_ShowPage( cEmf, hWnd, hdcPrint, nFactor, nDz, nDx, nDy ) -> NIL */
 {
    HENHMETAFILE hemf;
    HWND hWnd = HWNDparam( 2 );
@@ -4246,7 +4171,7 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
    INT r;
    INT g;
@@ -4260,17 +4185,19 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
    INT br;
    INT bg;
    INT bb;
-   INT nBr;
-   LONG nBh;
+   INT nBstyle;
+   LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj, hgdiobj2;
+   HGDIOBJ hgdiobj1, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
    HBRUSH hbr;
+   BOOL bNoPen = hb_parl( 20 );
+   BOOL bNoBrush = hb_parl( 21 );
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -4280,7 +4207,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
          width = 1 * 10000 / 254;
       }
 
-      // Color
+      // lColor
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -4294,6 +4221,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
          b = 0;
       }
 
+      // lStyle
       if( hb_parl( 12 ) )
       {
          nStyle = hb_parni( 13 );
@@ -4303,24 +4231,27 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
          nStyle = ( int ) PS_SOLID;
       }
 
+      // lBrushStyle
       if( hb_parl( 14 ) )
       {
-         nBh = hb_parni( 15 );
-         nBr = 2;
+         nBstyle = BS_HATCHED;
+         nBhatch = hb_parni( 15 );   // nBrushStyle
       }
       else
       {
+         // lBrushColor
          if( hb_parl( 16 ) )
          {
-            nBr = 0;
+            nBstyle = BS_SOLID;
          }
          else
          {
-            nBr = 1;
+            nBstyle = BS_NULL;
          }
-         nBh = 0 ;
+         nBhatch = 0 ;
       }
 
+      // lBrushColor
       if( hb_parl( 16 ) )
       {
          br = hb_parni( 17 );
@@ -4334,14 +4265,21 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
          bb = 0;
       }
 
-      pbr.lbStyle = nBr;
+      pbr.lbStyle = nBstyle;
       pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
-      pbr.lbHatch = nBh;
+      pbr.lbHatch = nBhatch;
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
-      hbr = CreateBrushIndirect( &pbr );
-      hgdiobj = SelectObject( hdcPrint, hpen );
-      hgdiobj2 = SelectObject( hdcPrint, hbr );
+      if( ! bNoBrush )
+      {
+         hbr = CreateBrushIndirect( &pbr );
+         hgdiobj1 = SelectObject( hdcPrint, hbr );
+      }
+
+      if( ! bNoPen )
+      {
+         hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+         hgdiobj2 = SelectObject( hdcPrint, hpen );
+      }
 
       Ellipse( hdcPrint,
                ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
@@ -4349,11 +4287,17 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
                ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
                ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
 
-      SelectObject( hdcPrint, hgdiobj );
-      SelectObject( hdcPrint, hgdiobj2 );
+      if( ! bNoBrush )
+      {
+         SelectObject( hdcPrint, hgdiobj1 );
+         DeleteObject( hbr );
+      }
 
-      DeleteObject( hpen );
-      DeleteObject( hbr );
+      if( ! bNoPen )
+      {
+         SelectObject( hdcPrint, hgdiobj2 );
+         DeleteObject( hpen );
+      }
    }
 }
 
@@ -4379,13 +4323,13 @@ HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nC
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      // lColor
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -4399,10 +4343,10 @@ HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nC
          b = 0;
       }
 
-      // Style
+      // lStyle
       if( hb_parl( 16 ) )
       {
-         nStyle = hb_parni( 17 );
+         nStyle = hb_parni( 17 );   // nStyle
       }
       else
       {
@@ -4429,7 +4373,7 @@ HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nC
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB ) -> NIL */
+HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
    INT r;
    INT g;
@@ -4447,23 +4391,25 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
    INT br;
    INT bg;
    INT bb;
-   INT nBr;
-   LONG nBh;
+   INT nBstyle;
+   LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj, hgdiobj2;
+   HGDIOBJ hgdiobj1, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
    HBRUSH hbr;
+   BOOL bNoPen = hb_parl( 24 );
+   BOOL bNoBrush = hb_parl( 25 );
 
    if( hdcPrint != 0 )
    {
-      // Width
+      // lWidth
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      // lColor
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -4477,36 +4423,37 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
          b = 0;
       }
 
-      // Style
+      // lStyle
       if( hb_parl( 16 ) )
       {
-         nStyle = hb_parni( 17 );
+         nStyle = hb_parni( 17 );   // nStyle
       }
       else
       {
          nStyle = ( int ) PS_SOLID;
       }
 
-      // BrushStyle
+      // lBrushStyle
       if( hb_parl( 18 ) )
       {
-         nBh = hb_parni( 19 );
-         nBr = 2;
+         nBstyle = BS_HATCHED;
+         nBhatch = hb_parni( 19 );   // nBrushStyle
       }
       else
       {
+         // lBrushColor
          if( hb_parl( 20 ) )
          {
-            nBr = 0;
+            nBstyle = BS_SOLID;
          }
          else
          {
-            nBr = 1;
+            nBstyle = BS_NULL;
          }
-         nBh = 0 ;
+         nBhatch = 0 ;
       }
 
-      // BrushColor
+      // lBrushColor
       if( hb_parl( 20 ) )
       {
          br = hb_parni( 21 );
@@ -4520,14 +4467,21 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
          bb = 0;
       }
 
-      pbr.lbStyle = nBr;
+      pbr.lbStyle = nBstyle;
       pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
-      pbr.lbHatch = nBh;
+      pbr.lbHatch = nBhatch;
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
-      hbr = CreateBrushIndirect( &pbr );
-      hgdiobj = SelectObject( hdcPrint, hpen );
-      hgdiobj2 = SelectObject( hdcPrint, hbr );
+      if( ! bNoBrush )
+      {
+         hbr = CreateBrushIndirect( &pbr );
+         hgdiobj1 = SelectObject( hdcPrint, hbr );
+      }
+
+      if( ! bNoPen )
+      {
+         hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+         hgdiobj2 = SelectObject( hdcPrint, hpen );
+      }
 
       Pie( hdcPrint,
            ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
@@ -4539,11 +4493,17 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
            ( x2  * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ),
            ( y2  * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
 
-      SelectObject( hdcPrint, hgdiobj );
-      SelectObject( hdcPrint, hgdiobj2 );
+      if( ! bNoBrush )
+      {
+         SelectObject( hdcPrint, hgdiobj1 );
+         DeleteObject( hbr );
+      }
 
-      DeleteObject( hpen );
-      DeleteObject( hbr );
+      if( ! bNoPen )
+      {
+         SelectObject( hdcPrint, hgdiobj2 );
+         DeleteObject( hpen );
+      }
    }
 }
 
@@ -4642,7 +4602,7 @@ HB_FUNC( _HMG_PRINTER_GETMAXCOL )          /* _HMG_PRINTER_GetMaxCol( hdcPrint, 
                        fdwItalic,
                        fdwUnderline,
                        fdwStrikeOut,
-                       DEFAULT_CHARSET,
+                       s_charset,
                        OUT_TT_PRECIS,
                        CLIP_DEFAULT_PRECIS,
                        DEFAULT_QUALITY,
@@ -4755,7 +4715,7 @@ HB_FUNC( _HMG_PRINTER_GETMAXROW )          /* _HMG_PRINTER_GetMaxRow( hdcPrint, 
                        fdwItalic,
                        fdwUnderline,
                        fdwStrikeOut,
-                       DEFAULT_CHARSET,
+                       s_charset,
                        OUT_TT_PRECIS,
                        CLIP_DEFAULT_PRECIS,
                        DEFAULT_QUALITY,
