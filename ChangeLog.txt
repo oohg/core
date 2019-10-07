@@ -12,6 +12,211 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-06 21:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     - No longer needed memvar declarations at module level.
+     * DATA lIgnorePropertyError is no longer READONLY.
+     * DATA lNoErrMsg is no longer READONLY.
+     + Language parameter to methods Init and SelPrinter of
+       class TPrint. This parameter is only supported by methods
+       InitX and SelPrinterX of subclasses TMiniPrint and THBPrinter.
+     * Landscape orientation is no longer forced to .F. for clasess
+       TMiniPrint and THBPrinter. If this parameter is omitted then
+       the printer's current value will be used.
+     ! Methods MaxRow, MaxCol and IsDocOpenX of class TMiniPrint.
+     * Public vars at method InitX of class TMiniPrint were replaced
+       by a call to function _HMG_PRINTER_InitUserMessages.
+     ! Typo in var name.
+     ! Value of DATA lLandscape of class TPrint.
+     - DATA cPageOrient of class TPdfPrint.
+
+2019-10-06 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\miniprint_dyns.hbx
+     * Updated.
+   * core\resources\oohg.rc
+     + Comment explaining how to override MiniPrint hardwired messages.
+       This is intended to be a quick fix for bad messages.
+       If you find one, please open an issue.
+   * core\include\miniprint.ch
+     + ifndef to avoid compiler error caused by duplicated defines.
+     + Translates for _HMG_PRINTER_* variables.
+     + Support for language setting to SELECT PRINTER commands.
+     + Alignment options to PRINT DATA command.
+     + Some commands and options to support some HMG Extended features.
+     + Defines for brush styles, text alignment, and printer
+       status codes.
+   * core\source\miniprint.prg
+     * _HMG_PRINTER_* public vars were replaced by _HMG_MiniPrint array.
+     * Prefix _OOHG of var and form names replace by _HMG_PRINTER.
+     + Support for language setting to function _HMG_PRINTER_GetPrinter.
+     + Support for alignment to functions _HMG_PRINTER_H_Print,
+       _HMG_PRINTER_H_MultiLine_Print and _HMG_PRINTER_C_MULTILINE_PRINT.
+     + Support for NOPEN and NOBRUSH to functions _HMG_PRINTER_H_Pie,
+       _HMG_PRINTER_H_Ellipse, _HMG_PRINTER_H_Rectangle,
+       _HMG_PRINTER_C_RECTANGLE, _HMG_PRINTER_C_ROUNDRECTANGLE,
+       _HMG_PRINTER_H_RoundRectangle, _HMG_PRINTER_C_ELLIPSE and
+       _HMG_PRINTER_C_PIE.
+     + Error messages to language arrays.
+     + Function _HMG_PRINTER_InitUserMessages now has the ability to
+       load the strings from the resource file. This strings will
+       override the default ones. See oohg.rc
+     + Functions _HMG_PRINTER_GetJobInfo and _HMG_PRINTER_C_GETJOBINFO.
+     + Function _HMG_PRINTER_GetStatus and _HMG_PRINTER_C_GETSTATUS.
+     * Functions _HMG_PRINTER_SetPrinterProperties,
+       _HMG_PRINTER_C_SETPRINTERPROPERTIES and _HMG_PRINTER_PRINTDIALOG
+       now return a 14-item array, enabling access to all the printer
+       driver properties.
+     + Function _HMG_PRINTER_SETCHARSET.
+     + Function _HMG_PRINTER_GETTEXTALIGN.
+     + Function _HMG_PRINTER_STARTDOC now returns the print job
+       identifier (numeric) on success or 0 on failure.
+     + Charset support.
+     ! Function _HMG_PRINTER_C_SETPRINTERPROPERTIES fails to change
+       more than one printer driver's property at a time.
+     ! Return value of function _HMG_PRINTER_STARTPAGE_PREVIEW.
+     * Functions _HMG_PRINTER_ENDDOC, _HMG_PRINTER_STARTPAGE and
+       _HMG_PRINTER_ENDPAGE now return .T./.F. on success/failure.
+   ; Now OOHG supports the same features as HMG Extended.
+
+2019-10-06 12:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-10-06 12:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\hbprinter_dyns.hbx
+     * Updated.
+   * core\resources\oohg.rc
+     + Comment explaining how to override HBPrinter hardwired messages.
+       This is intended to be a quick fix for bad messages.
+       If you find one, please open an issue.
+   * core\source\c_winapimsc.c
+     + Function LoadString.
+   * core\include\winprint.ch
+     + SET CLOSEPREVIEW ON|OFF commands.
+     + GET CLOSEPREVIEW TO command.
+     + GET ESCAPE STATUS TO command.
+     + Parameter validation to SET COPIES command.
+     + Optional PRINTER clause to SELECT commands.
+     + Optional LANGUAGE clause to INIT PRINTSYS command.
+     + SET PREVIEW RECT commands.
+     + SET USER PAPERSIZE commands.
+     + GET TEXT EXTENT IN MM command.
+     + ifndef to avoid compiler error caused by duplicated defines.
+   * core\source\winprint.prg
+     + DATA ClsPreview.
+     * DATA CurPage is now PROTECTED.
+     * DATA Error is now READONLY.
+     * DATA hDCRef is now PROTECTED.
+     * DATA MetaFiles is now PROTECTED.
+     * DATA PrintingEMF is now PROTECTED.
+     * DATA PrintOpt is now PROTECTED.
+     + DATA lEscaped.
+     + DATA Version.
+     + METHOD BasePageName.
+     + METHOD CleanOnPrevClose.
+     + METHOD GetTextExtent_MM.
+     + METHOD SetUserMode.
+     + METHOD Version.
+     * Some format.
+     ! Base folder for docs.
+     ! Variable initialization at method SelectPrinter.
+     ! Deletion of metafiles at method End.
+     - Unneeded code at method End.
+     * Number of pages is no longer limited to 9999.
+     + New messages.
+     * Preview window's size now takes into account the system
+       taskbar.
+     + NEXT, PRIOR and CTRL+P keys to preview window.
+     * Button Save has now a dropdown menu that allows to
+       save as and to save current page.
+     + Function RR_SETUSERMODE.
+     + Function RR_GETDESKTOPAREA.
+     * Method SaveMetaFiles moved to #ifndef NO_GUI section.
+     + Parameter filename to method SaveMetaFiles.
+     * The design of the Print Options window to allow more
+       room for labels.
+     + Method InitMessages now has the ability to load the
+       strings from the resource file. This strings will
+       override the default ones. See oohg.rc
+   ; Now OOHG supports the same features as HMG Extended.
+
+2019-10-06 12:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + Defines for richeditbox control.
+     + Defines for mouse related flags.
+   * core\include\i_richeditbox.ch
+     + Defines for methods LoadFile and SaveFile.
+   * core\source\h_richeditbox.prg
+     + Methods AutoURLDetect, CanPaste, CanReDo, GetSelType,
+       ReDo, SetOptions, SetSelEx and Value.
+     + Support for MS Rich Edit version 4.1
+     ! Wrong parameter declaration of functions EditStreamCallbackIn,
+       EditStreamCallbackOut, EditStreamCallbackFileIn and
+       EditStreamCallbackFileOut.
+     + Functions TEDITRICH_SETTEXT, TEDITRICH_SETOPTIONS,
+       TEDITRICH_SETSELEX and TEDITRICH_SELECTIONTYPE.
+   ; Now OOHG supports the same features as HMG Extended (note that
+     UNICODE is still missing).
+
+2019-10-06 12:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_textbox.prg
+     + Methods CanUnDo, Clear, Copy, Cut, Paste, SetRect and UnDo.
+     + Function TTEXT_SETRECT.
+
+2019-10-06 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     + Some messages.
+     + Functions InitMessages_C_Side and _OOHG_Msg to allow access
+       to message arrays from C-side functions.
+     ; Added for future use.
+
+2019-10-06 12:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_media.prg
+    * The code to end the app when the initialization of the controls
+      fails was moved to the PRG level to generate an entry in the
+      error log and allow a more orderly exit.
+
+2019-10-06 12:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * Eval() calls replaced by _OOHG_Eval().
+     * Cell data is set before firing Click, RClick and DblClick events.
+     + Third parameter to function _GetGridCellData.
+     + Third parameter to function LISTVIEW_ITEMACTIVATE.
+
+2019-10-06 12:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     * Eval() calls replaced by _OOHG_Eval().
+     * Cell data is set before firing Click, RClick, DblClick and
+       BeginDrag events.
+
+2019-10-06 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     * Eval() calls replaced by _OOHG_Eval().
+
+2019-10-06 12:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     + hb_osIsWin10.
+
+2019-10-06 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_lang.ch
+     + SET CODEPAGE command.
+     + Some languages.
+   ; Now OOHG supports the same features as HMG Extended.
+
+2019-10-06 12:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_006.txt
+    * Comment.
+
+2019-09-26 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\oohg.h
+     + HB_STORVNLL define.
+   * core\source\c_winapimsc.c
+     ! BCC compiler error.
+     ! Functions SetLayeredWindowAttributes is using wrong variable.
+     ! Function MemoryStatus return values.
+   * core\source\c_winapimsc.c
+     ! BCC compiler error.
+
 2019-09-25 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      ! Method PrintImageX of class TPdfPrint does not work
@@ -40,7 +245,7 @@
 
 2019-09-23 17:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\winprint.ch
-     + ifndef to compiler error caused by duplicated defines.
+     + ifndef to avoid compiler error caused by duplicated defines.
 
 2019-09-22 22:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
