@@ -259,10 +259,22 @@ HB_FUNC( _DOMESSAGELOOP )
    }
 }
 
+DWORD ShowLastError( CHAR * caption )
+{
+   LPVOID lpMsgBuf;
+   DWORD dwError = GetLastError();
+   FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
+                  MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPTSTR ) &lpMsgBuf, 0, NULL );
+   MessageBox( NULL, ( LPCSTR ) lpMsgBuf, caption, MB_OK | MB_ICONEXCLAMATION );
+   LocalFree( lpMsgBuf );
+   return dwError;
+}
+
 HB_FUNC( _OOHG_DOMESSAGELOOP )
 {
    MSG Msg;
    int iSwitch;
+   int iStatus;
 
    if( HB_ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
    {
@@ -272,13 +284,22 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
    iSwitch = 1;
    while( iSwitch )
    {
-      if( GetMessage( &Msg, NULL, 0, 0 ) )
+      iStatus = GetMessage( &Msg, NULL, 0, 0 );
+
+      if( iStatus == -1 )  // error
       {
-         _OOHG_ProcessMessage( &Msg );
+         ExitProcess( ShowLastError( TEXT( "_OOHG_DOMESSAGELOOP" ) ) );
       }
       else
       {
-         iSwitch = 0;
+         if( iStatus )
+         {
+            _OOHG_ProcessMessage( &Msg );
+         }
+         else
+         {
+            iSwitch = 0;
+         }
       }
    }
 }
@@ -1467,14 +1488,4 @@ HB_FUNC( FLASHWINDOWEX )   // hWnd, dwFlags, uCount, dwTimeout
    FlashWinInfo.dwTimeout = (DWORD) hb_parnl( 4 );
 
    hb_retl( FlashWindowEx( &FlashWinInfo ) );
-}
-
-VOID ShowLastError( CHAR * caption )
-{
-   LPVOID lpMsgBuf;
-   DWORD dwError = GetLastError();
-   FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, dwError,
-                  MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), ( LPTSTR ) &lpMsgBuf, 0, NULL );
-   MessageBox( NULL, ( LPCSTR ) lpMsgBuf, caption, MB_OK | MB_ICONEXCLAMATION );
-   LocalFree( lpMsgBuf );
 }
