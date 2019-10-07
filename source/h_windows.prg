@@ -3069,7 +3069,7 @@ HB_FUNC( _OOHG_NESTEDSAMEEVENT )          /* FUNCTION _OOHG_NestedSameEvent( lOn
    BOOL bRet;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if( ( hb_pcount() > 1 ) && ( HB_ISLOG( 1 ) ) )
+   if( ( hb_pcount() > 0 ) && ( HB_ISLOG( 1 ) ) )
    {
       _OOHG_NestedSameEvent = hb_parl( 1 );
    }
