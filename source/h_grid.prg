@@ -1060,7 +1060,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
          EndIf
 
          If ::bPosition == 9                     // MOUSE EXIT
-            // Edition window lost focus, resume clic processing and process delayed click
+            // Edition window lost focus, resume click processing and process delayed click
             ::bPosition := 0
             If ::nDelayedClick[ 1 ] > 0
                // A click message was delayed
@@ -2653,7 +2653,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       EndIf
 
       ::nEditRow := nRow
-      ::nDelayedClick := { 0, 0, 0, .F. }
+      ::nDelayedClick := { 0, 0, 0, NIL }
       ::bPosition := -2
       _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
       lRet := EditControl:CreateWindow( uValue, r[ 1 ], r[ 2 ], r[ 3 ], r[ 4 ], ::FontName, ::FontSize, ::aEditKeys, Self )
