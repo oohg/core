@@ -12,6 +12,12 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-08 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + Support for clauses added since last update.
+     * ! value -> ! ( value )
+     ! RichEditBox's FILETYPE clause.
+
 2019-10-07 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      ! Function _OOHG_NESTEDSAMEEVENT is not setting the flag
@@ -570,7 +576,7 @@
    * core\include\i_var.ch
      + _OOHG_InteractiveClose and _OOHG_KeepAppOnMainRelease.
    * core\include\i_window.ch
-     + INTERACTIVECLOSE [ ON | OFF | QUERY | QUERY MAIN ] clause.
+     + INTERACTIVECLOSE [ ON | OFF | QUERY ] clause.
    * core\source\h_application.prg
      + Support for global vars _OOHG_InteractiveClose and
        _OOHG_KeepAppOnMainRelease.
