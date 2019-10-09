@@ -93,6 +93,12 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlContextMenu            => _OOHG_ActiveControlInfo \( \) \[  63 \]
+#xtranslate _OOHG_ActiveControlActionTT               => _OOHG_ActiveControlInfo \( \) \[  64 \]
+#xtranslate _OOHG_ActiveControlAction2TT              => _OOHG_ActiveControlInfo \( \) \[  65 \]
+#xtranslate _OOHG_ActiveControlFileType               => _OOHG_ActiveControlInfo \( \) \[  66 \]
+#xtranslate _OOHG_ActiveControlVersion                => _OOHG_ActiveControlInfo \( \) \[  67 \]
+#xtranslate _OOHG_ActiveControlNoDestroy              => _OOHG_ActiveControlInfo \( \) \[  68 \]
 #xtranslate _OOHG_ActiveControlRefresh                => _OOHG_ActiveControlInfo \( \) \[  69 \]
 #xtranslate _OOHG_ActiveControlNoImagelist            => _OOHG_ActiveControlInfo \( \) \[  70 \]
 #xtranslate _OOHG_ActiveControlNoPrintOver            => _OOHG_ActiveControlInfo \( \) \[  71 \]
@@ -432,7 +438,7 @@ AUXILIARY VARIABLES
 
 #xcommand TABSTOP <tabstop> ;
    => ;
-      _OOHG_ActiveControlNoTabStop := ! <tabstop>
+      _OOHG_ActiveControlNoTabStop := ! ( <tabstop> )
 
 #xcommand NOTABSTOP <notabstop> ;
    => ;
@@ -440,7 +446,7 @@ AUXILIARY VARIABLES
 
 #xcommand VISIBLE <visible> ;
    => ;
-      _OOHG_ActiveControlInvisible := ! <visible>
+      _OOHG_ActiveControlInvisible := ! ( <visible> )
 
 #xcommand INVISIBLE <invisible> ;
    => ;
@@ -456,7 +462,7 @@ AUXILIARY VARIABLES
 
 #xcommand ENABLED <enabled> ;
    => ;
-      _OOHG_ActiveControlDisabled := ! <enabled>
+      _OOHG_ActiveControlDisabled := ! ( <enabled> )
 
 #xcommand ITEMSOURCE <itemsource> ;
    => ;
@@ -524,7 +530,7 @@ AUXILIARY VARIABLES
 
 #xcommand VSCROLLBAR <vs> ;
    => ;
-      _OOHG_ActiveControlNoVScroll := ! <vs>
+      _OOHG_ActiveControlNoVScroll := ! ( <vs> )
 
 #xcommand NOHSCROLLBAR <nvs> ;
    => ;
@@ -532,7 +538,7 @@ AUXILIARY VARIABLES
 
 #xcommand HSCROLLBAR <vs> ;
    => ;
-      _OOHG_ActiveControlNoHScroll := ! <vs>
+      _OOHG_ActiveControlNoHScroll := ! ( <vs> )
 
 #xcommand INPLACEEDIT <inplaceedit> ;
    => ;
@@ -1195,7 +1201,10 @@ TEXT BOX
       _OOHG_ActiveControlDefaultYear  := NIL   ;;
       _OOHG_ActiveControlOnTextFilled := NIL   ;;
       _OOHG_ActiveControlInsertType   := NIL   ;;
-      _OOHG_ActiveControlCtrlAtLeft   := .F.
+      _OOHG_ActiveControlCtrlAtLeft   := .F.   ;;
+      _OOHG_ActiveControlContextMenu  := NIL   ;;
+      _OOHG_ActiveControlActionTT     := NIL   ;;
+      _OOHG_ActiveControlAction2TT    := NIL
 
 #xcommand CTRLSATLEFT <atleft> ;
    => ;
@@ -1248,6 +1257,22 @@ TEXT BOX
 #xcommand ACTION2 <action> ;
    => ;
       _OOHG_ActiveControlAction2 := <{action}>
+
+#xcommand ACTION2TT <tooltip> ;
+   => ;
+      _OOHG_ActiveControlAction2TT := <tooltip>
+
+#xcommand ACTIONTT <tooltip> ;
+   => ;
+      _OOHG_ActiveControlActionTT := <tooltip>
+
+#xcommand CONTEXTMENU <cm> ;
+   => ;
+      _OOHG_ActiveControlContextMenu := <cm>
+
+#xcommand NOCONTEXTMENU <ncm> ;
+   => ;
+      _OOHG_ActiveControlContextMenu := ! ( <ncm> )
 
 #xcommand DEFAULTYEAR <year> ;
    => ;
@@ -1314,7 +1339,10 @@ TEXT BOX
             _OOHG_ActiveControlDefaultYear, ;
             _OOHG_ActiveControlOnTextFilled, ;
             _OOHG_ActiveControlInsertType, ;
-            _OOHG_ActiveControlCtrlAtLeft ), NIL, _OOHG_ActiveControlAssignObject )
+            _OOHG_ActiveControlCtrlAtLeft, ;
+            _OOHG_ActiveControlContextMenu, ;
+            _OOHG_ActiveControlActionTT, ;
+            _OOHG_ActiveControlAction2TT ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*---------------------------------------------------------------------------
 MONTH CALENDAR
@@ -1443,7 +1471,8 @@ BUTTON
       _OOHG_ActiveControlImagesize         := .F. ;;
       _OOHG_ActiveControlTransparent       := .F. ;;
       _OOHG_ActiveControlNoFocusRect       := .F. ;;
-      _OOHG_ActiveControlNoImagelist       := .F.
+      _OOHG_ActiveControlNoImagelist       := .F. ;;
+      _OOHG_ActiveControlNoDestroy         := .F.
 
 #xcommand CAPTION <caption> ;
    => ;
@@ -1569,7 +1598,7 @@ BUTTON
 
 #xcommand WINDRAW <windraw> ;
    => ;
-      _OOHG_ActiveControlDrawBy := ! <windraw>
+      _OOHG_ActiveControlDrawBy := ! ( <windraw> )
 
 #xcommand IMAGEMARGIN <margin> ;
    => ;
@@ -1583,6 +1612,10 @@ BUTTON
    => ;
       _OOHG_ActiveControlNoImagelist := <noimglst>
 
+#xcommand NODESTROY <nodestroy> ;
+   => ;
+      _OOHG_ActiveControlNoDestroy := <nodestroy>
+
 #xcommand AUTOFIT <autofit> ;
    => ;
       _OOHG_ActiveControlAutoFit := <autofit>
@@ -1593,7 +1626,7 @@ BUTTON
 
 #xcommand DIBSECTION <dibsection> ;
    => ;
-      _OOHG_ActiveControlNoDIBSection := ! <dibsection>
+      _OOHG_ActiveControlNoDIBSection := ! ( <dibsection> )
 
 #xcommand NOHOTLIGHT <nohotlight> ;
    => ;
@@ -1680,7 +1713,8 @@ BUTTON
             _OOHG_ActiveControlImagesize, ;
             _OOHG_ActiveControlTransparent, ;
             _OOHG_ActiveControlNoFocusRect, ;
-            _OOHG_ActiveControlNoImagelist )
+            _OOHG_ActiveControlNoImagelist, ;
+            _OOHG_ActiveControlNoDestroy )
 
 /*---------------------------------------------------------------------------
 IMAGE
@@ -2410,7 +2444,8 @@ EDIT BOX
             _OOHG_ActiveControlFocusedPos, ;
             _OOHG_ActiveControlHScroll, ;
             _OOHG_ActiveControlVScroll, ;
-            _OOHG_ActiveControlDisabled )
+            _OOHG_ActiveControlDisabled, ;
+            _OOHG_ActiveControlInsertType )
 
 /*---------------------------------------------------------------------------
 RICH EDIT BOX
@@ -2430,10 +2465,11 @@ RICH EDIT BOX
       _OOHG_ActiveControlFocusedPos  := NIL    ;;
       _OOHG_ActiveControlFile        := NIL    ;;
       _OOHG_ActiveControlFormat      := .F.    ;;
-      _OOHG_ActiveControlInsertType  := NIL    ;;
+      _OOHG_ActiveControlFileType    := NIL    ;;
       _OOHG_ActiveControlHScroll     := NIL    ;;
       _OOHG_ActiveControlVScroll     := NIL    ;;
-      _OOHG_ActiveControlInsertType  := NIL
+      _OOHG_ActiveControlInsertType  := NIL    ;;
+      _OOHG_ActiveControlVersion     := NIL
 
 #xcommand NOHIDESEL <nohidesel> ;
    => ;
@@ -2453,7 +2489,11 @@ RICH EDIT BOX
 
 #xcommand FILETYPE <type> ;
    => ;
-      _OOHG_ActiveControlInsertType := <type>
+      _OOHG_ActiveControlFileType := <type>
+
+#xcommand VERSION <ver> ;
+   => ;
+      _OOHG_ActiveControlVersion := <ver>
 
 #xcommand END RICHEDITBOX ;
    => ;
@@ -2492,9 +2532,11 @@ RICH EDIT BOX
             _OOHG_ActiveControlNoVScroll, ;
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlFile, ;
-            iif( _OOHG_ActiveControlFormat, 1, _OOHG_ActiveControlInsertType ), ;
+            iif( _OOHG_ActiveControlFormat, 1, _OOHG_ActiveControlFileType ), ;
             _OOHG_ActiveControlHScroll, ;
-            _OOHG_ActiveControlVScroll )
+            _OOHG_ActiveControlVScroll, ;
+            _OOHG_ActiveControlInsertType, ;
+            _OOHG_ActiveControlVersion )
 
 /*---------------------------------------------------------------------------
 LABEL
@@ -2729,7 +2771,7 @@ GRID
 
 #xcommand DISABLEALTA <alta> ;
    => ;
-      _OOHG_ActiveControlAddress := ! <alta>
+      _OOHG_ActiveControlAddress := ! ( <alta> )
 
 #xcommand NOSHOWALWAYS <show> ;
    => ;
@@ -2741,7 +2783,7 @@ GRID
 
 #xcommand IGNORENONE <ignorenone> ;
    => ;
-      _OOHG_ActiveControlAutoSkip := ! <ignorenone>
+      _OOHG_ActiveControlAutoSkip := ! ( <ignorenone> )
 
 #xcommand ONAPPEND <onappend> ;
    => ;
@@ -2857,11 +2899,11 @@ GRID
 
 #xcommand NOCLICKONCHECKBOX <noclick> ;
    => ;
-      _OOHG_ActiveControlClickOnCheckbox := ! <noclick>
+      _OOHG_ActiveControlClickOnCheckbox := ! ( <noclick> )
 
 #xcommand NORCLICKONCHECKBOX <norclick> ;
    => ;
-      _OOHG_ActiveControlRClickOnCheckbox := ! <norclick>
+      _OOHG_ActiveControlRClickOnCheckbox := ! ( <norclick> )
 
 #xcommand EXTDBLCLICK <extdbl> ;
    => ;
@@ -2889,7 +2931,7 @@ GRID
 
 #xcommand EDITFIRSTVISIBLE <efv> ;
    => ;
-      _OOHG_ActiveControlDisplayEdit := ! <efv>
+      _OOHG_ActiveControlDisplayEdit := ! ( <efv> )
 
 #xcommand EDITCELLVALUE <edtval> ;
    => ;
