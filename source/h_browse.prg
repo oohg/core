@@ -228,7 +228,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lFixedCtrls, bHeadRClick, lExtDbl, lNoModal, lSilent, lAltA, ;
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
-               bbeforeditcell, bEditCellValue, klc, lLabelTip, lNoHSB ) CLASS TOBrowse
+               bbeforeditcell, bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick ) CLASS TOBrowse
 
    LOCAL nWidth2, nCol2, z
 
@@ -322,7 +322,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               lLikeExcel, lButtons, lAllowDelete, cDelMsg, lNoDelMsg, ;
               lAllowAppend, lNoModal, lFixedCtrls, lExtDbl, nValue, lSilent, ;
               lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
-              lLabelTip )
+              lLabelTip, aHeadDblClick )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -394,7 +394,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
-                lLabelTip ) CLASS TOBrowse
+                lLabelTip, aHeadDblClick ) CLASS TOBrowse
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, NIL, ;
               NIL, fontname, fontsize, cTooltip, aHeadClick, nogrid, ;
@@ -408,7 +408,8 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               NIL, NIL, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, NIL, NIL )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, NIL, ;
+              NIL, aHeadDblClick )
 
    If ValType( Value ) == "N"
       ::nRecLastValue := Value
@@ -2329,7 +2330,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
                 lLikeExcel, lButtons, AllowDelete, DelMsg, lNoDelMsg, ;
                 AllowAppend, lNoModal, lFixedCtrls, lExtDbl, Value, lSilent, ;
                 lAltA, lNoShowAlways, lNone, lCBE, lCheckBoxes, lAtFirst, klc, ;
-                lLabelTip, lNoHSB ) CLASS TOBrowseByCell
+                lLabelTip, lNoHSB, aHeadDblClick ) CLASS TOBrowseByCell
 
    Local nAux
 
@@ -2351,7 +2352,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               , , lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, aHeadDblClick )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -2372,12 +2373,12 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TOBrowseByCell
+                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick ) CLASS TOBrowseByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                                    uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReplaceField, lRefresh, uReadOnly, uDefault )
+                                   uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick )
 
    If nColIndex <= ::nColPos
       ::CurrentCol := ::nColPos + 1

@@ -242,7 +242,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
                rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
-               bEditCellValue, klc, lLabelTip, lNoHSB ) CLASS TXBrowse
+               bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick ) CLASS TXBrowse
 
    Local nWidth2, nCol2, z
 
@@ -321,7 +321,8 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               NIL, NIL, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, NIL, NIL )
+              lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, NIL, ;
+              NIL, aHeadDblClick )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -2535,7 +2536,7 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TXBrowse
+                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick ) CLASS TXBrowse
 
    LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
 
@@ -2549,7 +2550,7 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
                               uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                              uReadOnly )
+                              uReadOnly, NIL, uHeadDblClick )
    If nRet # nColIndex
       MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
    EndIf
@@ -2613,7 +2614,7 @@ METHOD DeleteColumn( nColIndex, lRefresh ) CLASS TXBrowse
 METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly ) CLASS TXBrowse
+                  uReplaceField, lRefresh, uReadOnly, uHeadDblClick ) CLASS TXBrowse
 
    LOCAL nRet, nColumns := Len( ::aHeaders )
 
@@ -2652,7 +2653,7 @@ METHOD SetColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    nRet := ::Super:SetColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
                               uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                              uReadOnly )
+                              uReadOnly, NIL, uHeadDblClick )
 
    If ! HB_IsLogical( lRefresh ) .OR. lRefresh
       ::Refresh()
@@ -3116,7 +3117,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB ) CLASS TXBrowseByCell
+                lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, ;
+                lNoVSB, aHeadDblClick ) CLASS TXBrowseByCell
 
    HB_SYMBOL_UNUSED( nStyle )
    HB_SYMBOL_UNUSED( lNone )
@@ -3136,7 +3138,8 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
                     DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                     lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-                    lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
+                    lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
+                    aHeadDblClick )
 
    // By default, search in the current column
    ::SearchCol := -1
@@ -3146,12 +3149,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly, uDefault ) CLASS TXBrowseByCell
+                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick ) CLASS TXBrowseByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                                    uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReplaceField, lRefresh, uReadOnly, uDefault )
+                                   uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick )
 
    If nColIndex <= ::nColPos
       ::CurrentCol := ::nColPos + 1

@@ -71,6 +71,7 @@ CLASS TGrid FROM TControl
    DATA aEditControls             INIT Nil
    DATA aEditKeys                 INIT Nil
    DATA aHeadClick                INIT {}
+   DATA aHeadDblClick             INIT {}
    DATA aHeaderImage              INIT {}
    DATA aHeaderImageAlign         INIT {}
    DATA aHeaders                  INIT {}
@@ -299,7 +300,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGrid
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -313,7 +314,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
+              lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
+              aHeadDblClick )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -337,7 +339,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
-                lNoHSB, lNoVSB ) CLASS TGrid
+                lNoHSB, lNoVSB, aHeadDblClick ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -378,6 +380,16 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
          AFill( ::aHeadClick, aHeadClick )
       EndIf
    EndIf
+
+   IF HB_ISARRAY( aHeadDblClick )
+      ::aHeadDblClick := aHeadDblClick
+      ASize( ::aHeadDblClick, Len( ::aHeaders ) )
+   ELSE
+      ::aHeadDblClick := Array( Len( ::aHeaders ) )
+      IF HB_ISBLOCK( aHeadDblClick )
+         AFill( ::aHeadDblClick, aHeadDblClick )
+      ENDIF
+   ENDIF
 
    If HB_IsLogical( lFixedCols )
       ::AllowMoveColumn := ! lFixedCols
@@ -1867,7 +1879,7 @@ METHOD IsColumnWhen( nCol, nRow ) CLASS TGrid
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly, cColType ) CLASS TGrid
+                  uReadOnly, cColType, uHeadDblClick ) CLASS TGrid
 
    Local nColumns, i
 
@@ -1951,6 +1963,11 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ASize( ::aHeadClick, nColumns )
    AIns( ::aHeadClick, nColIndex )
    ::aHeadClick[ nColIndex ] := uHeadClick
+
+   // Update on head dblclick codeblock
+   ASize( ::aHeadDblClick, nColumns )
+   AIns( ::aHeadDblClick, nColIndex )
+   ::aHeadDblClick[ nColIndex ] := uHeadDblClick
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2114,7 +2131,7 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, aDynamicColor, nWi
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadonly, cColType ) CLASS TGrid
+                  uReadonly, cColType, uHeadDblClick ) CLASS TGrid
 
    Local nColumns, i
 
@@ -2184,6 +2201,10 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update on head click codeblock
    ASize( ::aHeadClick, nColumns )
    ::aHeadClick[ nColIndex ] := uHeadClick
+
+   // Update on head dblclick codeblock
+   ASize( ::aHeadDblClick, nColumns )
+   ::aHeadDblClick[ nColIndex ] := uHeadDblClick
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2323,6 +2344,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
    _OOHG_DeleteArrayItem( ::Picture, nColIndex )
    _OOHG_DeleteArrayItem( ::ColType, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadClick, nColIndex )
+   _OOHG_DeleteArrayItem( ::aHeadDblClick, nColIndex )
    _OOHG_DeleteArrayItem( ::aJust, nColIndex )
    _OOHG_DeleteArrayItem( ::Valid, nColIndex )
    _OOHG_DeleteArrayItem( ::ValidMessages, nColIndex )
@@ -3098,6 +3120,11 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
             Return 1
          EndIf
       EndIf
+
+   ELSEIF nNotify == HDN_ITEMDBLCLICK
+      IF nColumn > 0 .AND. nColumn <= Len( ::aHeadDblClick ) .AND. HB_ISBLOCK( ::aHeadDblClick[ nColumn ] )
+         ::DoEvent( ::aHeadDblClick[ nColumn ], "HEADDBLCLICK", { nColumn } )
+      ENDIF
 
    ElseIf nNotify == HDN_ENDDRAG
       // The user has finished dragging a column
@@ -4453,7 +4480,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGridMulti
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4471,7 +4498,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
+              aHeadDblClick )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4665,7 +4693,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert ) CLASS TGridByCell
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4683,7 +4711,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
-              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB )
+              lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
+              aHeadDblClick )
 
    // Search the current column
    ::SearchCol := -1

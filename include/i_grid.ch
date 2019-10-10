@@ -173,6 +173,7 @@ STANDARD VERSION
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
+      [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -200,7 +201,7 @@ STANDARD VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, <aHeadDblClick> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -307,6 +308,7 @@ SPLITBOX VERSION
       [ <nohsb: NOHSCROLLBAR> ] ;
       [ <novsb: NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
+      [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
             IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -334,7 +336,7 @@ SPLITBOX VERSION
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, <aHeadDblClick> ) )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

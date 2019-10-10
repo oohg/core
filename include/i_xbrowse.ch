@@ -170,6 +170,7 @@
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
+      [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
@@ -200,7 +201,7 @@
             <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
-            <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.> )
+            <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

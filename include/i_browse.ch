@@ -184,6 +184,7 @@ STANDARD VERSION
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
+      [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -218,7 +219,7 @@ STANDARD VERSION
             <.none.>, <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
-            <.ctt.>, <.nohsb.> )
+            <.ctt.>, <.nohsb.>, <aHeadDblClick> )
 
 #command SET BROWSESYNC ON ;
    => ;

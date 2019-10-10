@@ -93,6 +93,8 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlOnBeforeInsert         => _OOHG_ActiveControlInfo \( \) \[  61 \]
+#xtranslate _OOHG_ActiveControlOnHeadDblClick         => _OOHG_ActiveControlInfo \( \) \[  62 \]
 #xtranslate _OOHG_ActiveControlContextMenu            => _OOHG_ActiveControlInfo \( \) \[  63 \]
 #xtranslate _OOHG_ActiveControlActionTT               => _OOHG_ActiveControlInfo \( \) \[  64 \]
 #xtranslate _OOHG_ActiveControlAction2TT              => _OOHG_ActiveControlInfo \( \) \[  65 \]
@@ -2702,7 +2704,6 @@ GRID
       _OOHG_ActiveControlDynamicBackColor := NIL ;;
       _OOHG_ActiveControlDynamicForeColor := NIL ;;
       _OOHG_ActiveControlEditControls     := NIL ;;
-      _OOHG_ActiveControlReadOnly         := NIL ;;
       _OOHG_ActiveControlValid            := NIL ;;
       _OOHG_ActiveControlValidMessages    := NIL ;;
       _OOHG_ActiveControlEditCell         := NIL ;;
@@ -2759,7 +2760,9 @@ GRID
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
       _OOHG_ActiveControlNoHScroll        := .F. ;;
-      _OOHG_ActiveControlNoVScroll        := .F.
+      _OOHG_ActiveControlNoVScroll        := .F. ;;
+      _OOHG_ActiveControlOnBeforeInsert   := NIL ;;
+      _OOHG_ActiveControlOnHeadDblClick   := NIL
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2820,6 +2823,22 @@ GRID
 #xcommand CHECKBOXES <checkboxes> ;
    => ;
       _OOHG_ActiveControlCheckBoxes := <checkboxes>
+
+#xcommand ONBEFOREINSERT <beforeinsert> ;
+   => ;
+      _OOHG_ActiveControlOnBeforeInsert := <{beforeinsert}>
+
+#xcommand ON BEFOREINSERT <beforeinsert> ;
+   => ;
+      _OOHG_ActiveControlOnBeforeInsert := <{beforeinsert}>
+
+#xcommand ONHEADDBLCLICK <aHeadDblClick> ;
+   => ;
+      _OOHG_ActiveControlOnHeadDblClick := <aHeadDblClick>
+
+#xcommand ON HEADDBLCLICK <aHeadDblClick> ;
+   => ;
+      _OOHG_ActiveControlOnHeadDblClick := <aHeadDblClick>
 
 #xcommand ONCHECKCHANGE <checkchange> ;
    => ;
@@ -3037,7 +3056,9 @@ GRID
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
             _OOHG_ActiveControlNoHScroll, ;
-            _OOHG_ActiveControlNoVScroll )
+            _OOHG_ActiveControlNoVScroll, ;
+            _OOHG_ActiveControlOnBeforeInsert, ;
+            _OOHG_ActiveControlOnHeadDblClick )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -3131,7 +3152,8 @@ BROWSE
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
-      _OOHG_ActiveControlNoHScroll        := .F.
+      _OOHG_ActiveControlNoHScroll        := .F. ;;
+      _OOHG_ActiveControlOnHeadDblClick   := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3328,7 +3350,8 @@ BROWSE
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
-            _OOHG_ActiveControlNoHScroll )
+            _OOHG_ActiveControlNoHScroll, ;
+            _OOHG_ActiveControlOnHeadDblClick )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3416,7 +3439,8 @@ XBROWSE
       _OOHG_ActiveControlEditCellValue    := NIL ;;
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
-      _OOHG_ActiveControlNoHScroll        := .F.
+      _OOHG_ActiveControlNoHScroll        := .F. ;;
+      _OOHG_ActiveControlOnHeadDblClick   := NIL
 
 #xcommand END XBROWSE ;
    => ;
@@ -3521,7 +3545,8 @@ XBROWSE
             _OOHG_ActiveControlEditCellValue, ;
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
-            _OOHG_ActiveControlNoHScroll )
+            _OOHG_ActiveControlNoHScroll, ;
+            _OOHG_ActiveControlOnHeadDblClick )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

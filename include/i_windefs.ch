@@ -897,6 +897,7 @@ HEADER CONTROL
 #define HDN_ENDDRAG                   ( HDN_FIRST - 11 )
 #define HDN_ITEMCHANGING              ( HDN_FIRST - 20 )
 #define HDN_ITEMCHANGED               ( HDN_FIRST - 21 )
+#define HDN_ITEMDBLCLICK              ( HDN_FIRST - 23 )
 #define HDN_DIVIDERDBLCLICK           ( HDN_FIRST - 25 )
 #define HDN_BEGINTRACK                ( HDN_FIRST - 26 )
 #define HDN_ENDTRACK                  ( HDN_FIRST - 27 )
