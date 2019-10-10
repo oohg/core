@@ -12,6 +12,23 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-10 20:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Comment.
+
+2019-10-10 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + HDN_ITEMDBLCLICK.
+   * core\include\i_altsyntax.ch
+   * core\include\i_grid.ch
+   * core\include\i_browse.ch
+   * core\include\i_xbrowse.ch
+     + Clause ON HEADDBLCLICK.
+   * core\source\h_grid.prg
+   * core\source\h_browse.prg
+   * core\source\h_xbrowse.prg
+     + Support for ON HEADDBLCLICK event.
+
 2019-10-09 17:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! ::nDelayedClick initialization.
