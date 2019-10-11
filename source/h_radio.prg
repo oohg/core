@@ -216,18 +216,19 @@ METHOD Background( oBkGrnd ) CLASS TRadioGroup
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GroupHeight() CLASS TRadioGroup
 
-   LOCAL nRet, oFirst, oLast
+   LOCAL i, nRet := 0, nStart := 0, nEnd := 0, nHeight := 0
 
-   IF ::lHorizontal
-      nRet := ::Height
-   ELSE
-      IF Len( ::aOptions ) > 0
-         oFirst := ::aOptions[ 1 ]
-         oLast  := ATail( ::aOptions )
-         nRet   := oLast:Row + oLast:Height - oFirst:Row
-      ELSE
-         nRet := 0
-      ENDIF
+   IF Len( ::aOptions ) > 0
+      FOR i := 1 TO Len( ::aOptions )
+         nStart := Min( nStart, ::aOptions[ i ]:Row )
+      NEXT i
+      FOR i := 1 TO Len( ::aOptions )
+         IF ::aOptions[ i ]:Row > nEnd
+            nEnd := ::aOptions[ i ]:Row
+            nHeight := ::aOptions[ i ]:Height
+         ENDIF
+      NEXT i
+      nRet := nEnd + nHeight - nStart
    ENDIF
 
    RETURN nRet
@@ -235,18 +236,19 @@ METHOD GroupHeight() CLASS TRadioGroup
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GroupWidth() CLASS TRadioGroup
 
-   LOCAL nRet, oFirst, oLast
+   LOCAL i, nRet := 0, nStart := 0, nEnd := 0, nWidth := 0
 
-   IF ::lHorizontal
-      IF Len( ::aOptions ) > 0
-         oFirst := ::aOptions[ 1 ]
-         oLast  := ATail( ::aOptions )
-         nRet   := oLast:Col + oLast:Width - oFirst:Col
-      ELSE
-         nRet := 0
-      ENDIF
-   ELSE
-      nRet := ::Width
+   IF Len( ::aOptions ) > 0
+      FOR i := 1 TO Len( ::aOptions )
+         nStart := Min( nStart, ::aOptions[ i ]:Col )
+      NEXT i
+      FOR i := 1 TO Len( ::aOptions )
+         IF ::aOptions[ i ]:Col > nEnd
+            nEnd := ::aOptions[ i ]:Col
+            nWidth := ::aOptions[ i ]:Width
+         ENDIF
+      NEXT i
+      nRet := nEnd + nWidth - nStart
    ENDIF
 
    RETURN nRet
