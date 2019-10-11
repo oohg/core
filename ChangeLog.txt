@@ -12,6 +12,13 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-11 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_radio.prg
+     ! Methods GroupHeight and GroupWidth not always return the right
+       height and width when an item was placed manually. Now they
+       return the height and width of the rectangle that encloses all
+       the radiogroup's items.
+
 2019-10-10 20:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      * Comment.
