@@ -12,6 +12,39 @@
  *    '-' Removed: ...           ';' Comment
  */
 
+2019-10-13 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_radio.ch
+     + Clause LIMIT. Sets the maximum number of items per column
+       (for 'vertical' radiogroups) or row (for 'horizontal' ones).
+       This allows to create 'multiline' radiogroups.
+       Setting limit to 0 disables 'multiline' effect.
+     + Clause SHIFT.
+   * core\source\h_radio.prg
+     + Data nLimit.
+     + Data nShift.
+     + Method Limit.
+     + Method Shift.
+     + Method RePaint.
+     ; Note that methods Limit, Shift, Spacing and RePaint redraw
+       the entire control thus discarding any manually change made
+       to an item's row, col, width and height properties.
+     * Method InsertItem now accepts parameters nCol, nRow, nWidth
+       and nHeight to enable customized items without redrawing
+       the whole control.
+     * Method DeleteItem now accepts lRePaint to force the control
+       repaint after deleting an item.
+     ! Control is not painted properly after window's resize when
+       AUTOADJUST is ON.
+   ; Notes on properties:
+     HEIGHT is the height of each individual item.
+     WIDTH is the width of each individual item.
+     For a 'vertical' radiogroup:
+     - SPACING is the vertical distance between two adjacent rows.
+     - SHIFT is the horizontal distance between two adjacent columns.
+     For a 'horizontal' radiogroup:
+     - SPACING is the horizontal distance between two adjacent columns.
+     - SHIFT is the horizontal distance between two adjacent rows.
+
 2019-10-11 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_radio.prg
      ! Methods GroupHeight and GroupWidth not always return the right
