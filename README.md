@@ -6,7 +6,7 @@ To download ooHG binaries please visit
 http://sourceforge.net/projects/oohg/files/
 
 To ask for help, join the users group at
-https://es.groups.yahoo.com/neo/groups/oohg/info?showJoinPopup=true
+https://groups.google.com/forum/#!forum/oohg
 
 To contribute, please fork and submit pull requests at
 https://oohg.github.io
@@ -30,7 +30,7 @@ Pierpaolo Martinello
 Johan
 Daniel Piperno
 Ricardo Sassy
-Hüseyin Aydin
+HÃ¼seyin Aydin
 Marcelo Torres
 Sergio Castellari
 Esteban Ojeda
@@ -40,6 +40,6 @@ Roberto Iturriaga
 Cayetano Gomez
 Lucho Miranda
 Ron Pinkas
-José M. C. Quintas
+JosÃ© M. C. Quintas
 Jacek Pospischil
 ```
