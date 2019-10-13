@@ -77,6 +77,8 @@ CLASS TRadioGroup FROM TLabel
    DATA lNoFocusRect               INIT .F.
    DATA lTabStop                   INIT .T.
    DATA nHeight                    INIT 25
+   DATA nLimit                     INIT 0
+   DATA nShift                     INIT 120
    DATA nSpacing                   INIT 25
    DATA nWidth                     INIT 120
    DATA Type                       INIT "RADIOGROUP" READONLY
@@ -97,10 +99,13 @@ CLASS TRadioGroup FROM TLabel
    METHOD ItemEnabled
    METHOD ItemReadOnly
    METHOD ItemToolTip
+   METHOD Limit                    SETGET
    METHOD ReadOnly                 SETGET
+   METHOD RePaint
    METHOD RowMargin                BLOCK { |Self| - ::Row }
    METHOD SetFocus
    METHOD SetFont
+   METHOD Shift                    SETGET
    METHOD SizePos
    METHOD Spacing                  SETGET
    METHOD TabStop                  SETGET
@@ -114,7 +119,7 @@ CLASS TRadioGroup FROM TLabel
 METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontName, nFontSize, uToolTip, bChange, ;
                nWidth, nSpacing, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, lUnderline, lStrikeout, uBackColor, ;
                uFontColor, lTransparent, lAutoSize, lHorizontal, lDisabled, lRtl, nHeight, lDrawBy, oBkGrnd, lLeft, ;
-               uReadonly, lNoFocusRect ) CLASS TRadioGroup
+               uReadonly, lNoFocusRect, nLimit, nShift ) CLASS TRadioGroup
 
    LOCAL oTabPage, i, oItem
 
@@ -130,6 +135,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    ASSIGN ::oBkGrnd      VALUE oBkGrnd          TYPE "O"
    ASSIGN aOptions       VALUE aOptions         TYPE "A" DEFAULT {}
    ASSIGN lDisabled      VALUE lDisabled        TYPE "L" DEFAULT .F.
+   ASSIGN ::nLimit       VALUE nLimit           TYPE "N"
 
    IF HB_ISLOGICAL( lDrawBy )
       ::lLibDraw := lDrawBy
@@ -143,6 +149,14 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
       ::nSpacing := ::nWidth
    ELSE
      ::nSpacing := ::nHeight
+   ENDIF
+
+   IF HB_ISNUMERIC( nShift )
+      ::nShift := nShift
+   ELSEIF ::lHorizontal
+      ::nShift := ::nHeight
+   ELSE
+     ::nShift := ::nWidth
    ENDIF
 
    IF HB_ISLOGICAL( lNoTabStop )
@@ -167,21 +181,13 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
       ::xOldValue := 0
    ENDIF
 
-   nCol := ::Col
-   nRow := ::Row
-
-   ::aOptions := {}
    FOR i := 1 TO Len( aOptions )
-      oItem := TRadioItem():Define( NIL, Self, nCol, nRow, NIL, NIL, aOptions[ i ], .F., ( i == 1 ), NIL, ;
-                  NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
-                  NIL, NIL, NIL, .T., NIL, NIL, NIL, NIL, NIL, NIL )
+      oItem := TRadioItem():Define( NIL, Self, NIL, NIL, NIL, NIL, aOptions[ i ], .F., ( i == 1 ), NIL, NIL, ;
+                  NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
+                  .T., .T., NIL, NIL, NIL, NIL, NIL, NIL )
       AAdd( ::aOptions, oItem )
-      IF ::lHorizontal
-         nCol += ::nSpacing
-      ELSE
-         nRow += ::nSpacing
-      ENDIF
    NEXT
+   ::RePaint()
 
    ::ReadOnly := uReadonly
    ::ToolTip  := uToolTip
@@ -196,6 +202,8 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ASSIGN ::OnChange VALUE bChange TYPE "B"
+
+   ::Visible := ::Visible
 
    RETURN Self
 
@@ -216,10 +224,11 @@ METHOD Background( oBkGrnd ) CLASS TRadioGroup
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GroupHeight() CLASS TRadioGroup
 
-   LOCAL i, nRet := 0, nStart := 0, nEnd := 0, nHeight := 0
+   LOCAL nStart, i, nEnd := 0, nHeight := 0, nRet := 0
 
    IF Len( ::aOptions ) > 0
-      FOR i := 1 TO Len( ::aOptions )
+      nStart := ::aOptions[ 1 ]:Row
+      FOR i := 2 TO Len( ::aOptions )
          nStart := Min( nStart, ::aOptions[ i ]:Row )
       NEXT i
       FOR i := 1 TO Len( ::aOptions )
@@ -236,10 +245,11 @@ METHOD GroupHeight() CLASS TRadioGroup
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GroupWidth() CLASS TRadioGroup
 
-   LOCAL i, nRet := 0, nStart := 0, nEnd := 0, nWidth := 0
+   LOCAL nStart, i, nEnd := 0, nWidth := 0, nRet := 0
 
    IF Len( ::aOptions ) > 0
-      FOR i := 1 TO Len( ::aOptions )
+      nStart := ::aOptions[ 1 ]:Col
+      FOR i := 2 TO Len( ::aOptions )
          nStart := Min( nStart, ::aOptions[ i ]:Col )
       NEXT i
       FOR i := 1 TO Len( ::aOptions )
@@ -308,7 +318,7 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TRadioGroup
    uRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
    nDeltaRow := ::Row - nDeltaRow
    nDeltaCol := ::Col - nDeltaCol
-   AEval( ::aControls, { |o| o:Visible := .F., o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, nWidth, nHeight ), o:Visible := .T. } )
+   AEval( ::aControls, { |o| o:SizePos( o:Row + nDeltaRow, o:Col + nDeltaCol, nWidth, nHeight ) } )
 
    RETURN uRet
 
@@ -393,11 +403,7 @@ METHOD Visible( lVisible ) CLASS TRadioGroup
 
    IF HB_ISLOGICAL( lVisible )
       ::Super:Visible := lVisible
-      IF lVisible
-         AEval( ::aControls, { |o| o:Visible := o:Visible } )
-      ELSE
-         AEval( ::aControls, { |o| o:ForceHide() } )
-      ENDIF
+      AEval( ::aControls, { |o| o:Visible := lVisible } )
    ENDIF
 
    RETURN ::lVisible
@@ -415,9 +421,9 @@ METHOD AddItem( cCaption, nImage, uToolTip ) CLASS TRadioGroup
    */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, oBkGrnd, lLeft, lDisabled ) CLASS TRadioGroup
+METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, oBkGrnd, lLeft, lDisabled, nCol, nRow, nWidth, nHeight ) CLASS TRadioGroup
 
-   LOCAL i, oItem, nCol, nRow, nValue, hWnd
+   LOCAL nValue, oItem, hWnd
 
    HB_SYMBOL_UNUSED( nImage )
 
@@ -428,43 +434,22 @@ METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, oBkGrnd, lLeft, lDisab
       nPosition := Len( ::aOptions ) + 1
    ENDIF
 
+   oItem := TRadioItem():Define( NIL, Self, nCol, nRow, nWidth, nHeight, cCaption, .F., ( nPosition == 1 ), NIL, NIL, ;
+               NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, uToolTip, NIL, ;
+               .T., .T., lDisabled, NIL, oBkGrnd, lLeft, NIL, NIL )
+
    AAdd( ::aOptions, NIL )
    AIns( ::aOptions, nPosition )
-   i := Len( ::aOptions )
-   DO WHILE i > nPosition
-      IF ::lHorizontal
-         ::aOptions[ i ]:Col += ::nSpacing
-      ELSE
-         ::aOptions[ i ]:Row += ::nSpacing
-      ENDIF
-      i --
-   ENDDO
-
-   IF nPosition == 1
-      nCol := ::Col
-      nRow := ::Row
-      IF Len( ::aOptions ) > 1
-         WindowStyleFlag( ::aOptions[ 2 ]:hWnd, WS_GROUP, 0 )
-      ENDIF
-   ELSE
-      nCol := ::aOptions[ nPosition - 1 ]:Col
-      nRow := ::aOptions[ nPosition - 1 ]:Row
-      IF ::lHorizontal
-         nCol += ::nSpacing
-      ELSE
-         nRow += ::nSpacing
-      ENDIF
-   ENDIF
-
-   oItem := TRadioItem():Define( NIL, Self, nCol, nRow, NIL, NIL, cCaption, .F., ( nPosition == 1 ), NIL, ;
-               NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
-               uToolTip, NIL, NIL, .T., lDisabled, NIL, oBkGrnd, lLeft, NIL, NIL )
-
    ::aOptions[ nPosition ] := oItem
+
+   IF nCol == NIL .OR. nRow == NIL
+      ::RePaint()
+   ENDIF
 
    IF nPosition > 1
       SetWindowPos( oItem:hWnd, ::aOptions[ nPosition - 1 ]:hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ELSEIF Len( ::aOptions ) >= 2
+      WindowStyleFlag( ::aOptions[ 2 ]:hWnd, WS_GROUP, 0 )
       hWnd := GetWindow( ::aOptions[ 2 ]:hWnd, GW_HWNDPREV )
       SetWindowPos( oItem:hWnd, hWnd, 0, 0, 0, 0, SWP_NOSIZE + SWP_NOMOVE )
    ENDIF
@@ -473,10 +458,12 @@ METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, oBkGrnd, lLeft, lDisab
       ::Value := ::Value
    ENDIF
 
+   ::Visible := ::Visible
+
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DeleteItem( nItem ) CLASS TRadioGroup
+METHOD DeleteItem( nItem, lRePaint ) CLASS TRadioGroup
 
    LOCAL nValue
 
@@ -488,13 +475,14 @@ METHOD DeleteItem( nItem ) CLASS TRadioGroup
       IF nItem == 1 .AND. Len( ::aOptions ) > 0
          WindowStyleFlag( ::aOptions[ 1 ]:hWnd, WS_GROUP, WS_GROUP )
       ENDIF
+
       IF nValue >= nItem
          ::Value := nValue
       ENDIF
-   ENDIF
 
-   IF nValue >= nItem
-      ::Value := ::Value
+      IF lRePaint
+         ::RePaint()
+      ENDIF
    ENDIF
 
    RETURN NIL
@@ -510,59 +498,100 @@ METHOD AdjustResize( nDivh, nDivw ) CLASS TRadioGroup
    LOCAL nFixedHeightUsed
 
    IF ::lAdjust
-      IF ::lHorizontal
-         ::Spacing := ::nSpacing * nDivw
-      ELSE
-         ::Spacing := ::nSpacing * nDivh
-      ENDIF
-
-      //// nFixedHeightUsed = pixels used by non-scalable elements inside client area
-      IF ::Container == NIL
+      /* nFixedHeightUsed = pixels used by non-scalable elements inside client area */
+      IF ::container == NIL
          nFixedHeightUsed := ::Parent:nFixedHeightUsed
       ELSE
          nFixedHeightUsed := ::Container:nFixedHeightUsed
       ENDIF
 
-      ::Sizepos( ( ::Row - nFixedHeightUsed ) * nDivh + nFixedHeightUsed, ::Col * nDivw )
+      /* Change position without using ::SizePos to avoid changing the items position */
+      ::nRow := ( ::nRow - nFixedHeightUsed ) * nDivh + nFixedHeightUsed
+      ::nCol *= nDivw
 
       IF _OOHG_AdjustWidth
          IF ! ::lFixWidth
-            ::Sizepos( , , ::Width * nDivw, ::Height * nDivh )
+            /* Change width, height, spacing and shift without changing the items */
+            ::nHeight  *= nDivh
+            ::nWidth   *= nDivw
+            ::nSpacing *= iif( ::lHorizontal, nDivh, nDivw )
+            ::nShift   *= iif( ::lHorizontal, nDivw, nDivh )
 
             IF _OOHG_AdjustFont
                IF ! ::lFixFont
-                  ::FontSize := ::FontSize * nDivw
+                  ::nFontSize := ::nFontSize * nDivw
                ENDIF
             ENDIF
          ENDIF
       ENDIF
+
+      AEval( ::aControls, { |o| o:AdjustResize( nDivh, nDivw ) } )
    ENDIF
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD RePaint() CLASS TRadioGroup
+
+   LOCAL nCol, nRow, i, nCount := 0
+
+   nCol := ::Col
+   nRow := ::Row
+
+   FOR i := 1 TO Len( ::aOptions )
+      ::aOptions[ i ]:SizePos( nRow, nCol )
+
+      nCount ++
+      IF ::lHorizontal
+         IF ::nLimit > 0 .AND. nCount == ::nLimit
+            nRow += ::nShift
+            nCol := ::Col
+            nCount := 0
+         ELSE
+            nCol += ::nSpacing
+         ENDIF
+      ELSE
+         IF ::nLimit > 0 .AND. nCount == ::nLimit
+            nCol += ::nShift
+            nRow := ::Row
+            nCount := 0
+         ELSE
+            nRow += ::nSpacing
+         ENDIF
+      ENDIF
+   NEXT i
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Limit( nLimit ) CLASS TRadioGroup
+
+   IF HB_ISNUMERIC( nLimit ) .AND. nLimit >= 0
+      ::nLimit := nLimit
+      ::RePaint()
+   ENDIF
+
+   RETURN ::nLimit
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Spacing( nSpacing ) CLASS TRadioGroup
 
-   LOCAL nCol, nRow, i, oCtrl
-
    IF HB_ISNUMERIC( nSpacing )
-      nCol := ::Col
-      nRow := ::Row
-      FOR i = 1 TO Len( ::aOptions )
-         oCtrl := ::aOptions[ i ]
-         oCtrl:Visible := .F.
-         oCtrl:SizePos( nRow, nCol )
-         oCtrl:Visible := .T.
-         IF ::lHorizontal
-            nCol += nSpacing
-         ELSE
-            nRow += nSpacing
-         ENDIF
-      NEXT
       ::nSpacing := nSpacing
+      ::RePaint()
    ENDIF
 
    RETURN ::nSpacing
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Shift( nShift ) CLASS TRadioGroup
+
+   IF HB_ISNUMERIC( nShift )
+      ::nShift := nShift
+      ::RePaint()
+   ENDIF
+
+   RETURN ::nShift
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ItemEnabled( nItem, lEnabled ) CLASS TRadioGroup
@@ -688,7 +717,6 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, cCaption,
    LOCAL nControlHandle, nStyle, nStyleEx := 0, oTabPage
 
    ASSIGN ::nCol VALUE nCol TYPE "N"
-
    ASSIGN ::nRow VALUE nRow TYPE "N"
 
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, NIL, lRtl )
