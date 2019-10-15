@@ -121,6 +121,7 @@ CLASS HBPrinter
    DATA lAbsoluteCoords           INIT .F.
    DATA lEscaped                  INIT .F.
    DATA lGlobalChanges            INIT .T.
+   DATA lReportError              INIT .F.
    DATA MaxCol                    INIT 0
    DATA MaxRow                    INIT 0
    DATA MetaFiles                 INIT {} PROTECTED
@@ -329,11 +330,22 @@ METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetDevMode( what, newvalue ) CLASS HBPrinter
 
-   ::hDCRef := RR_SetDevMode( what, newvalue, ::lGlobalChanges, ::hData )
+   LOCAL uRet
+
+   STATIC aWhat := { DM_ORIENTATION, DM_PAPERSIZE, DM_SCALE, DM_COPIES, DM_DEFAULTSOURCE, DM_PRINTQUALITY, DM_COLOR, DM_DUPLEX, DM_COLLATE, DM_PAPERLENGTH, DM_PAPERWIDTH }
+
+   uRet := RR_SetDevMode( what, newvalue, ::lGlobalChanges, ::hData )
+   IF uRet == NIL
+      IF ::lReportError
+         MsgInfo( ::aOpisy[ 37 ] + ::aOpisy[ 38 + aScan( aWhat, uRet ) ], "" )
+      ENDIF
+   ELSE
+      ::hDCRef := uRet
+   ENDIF
    RR_GetDeviceCaps( ::DevCaps, ::Fonts[ 3 ], ::hData )
    ::SetUnits( ::Units )
 
-   RETURN NIL
+   RETURN ( uRet # NIL )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetUserMode( what, value, value2 ) CLASS HBPrinter
@@ -1699,7 +1711,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Enregistrer sous...", ;                     // 33
          "Enregistrer tout", ;                        // 34
          "Fichiers EMF", ;                            // 35
-         "Tous les fichiers" }                        // 36
+         "Tous les fichiers", ;                       // 36
+         "Paramètre non supporté:", ;                 // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "DEWIN" .OR. ;
         cLang == "DE"                                 // German
       ::aOpisy := { "Vorschau", ;                     // 01
@@ -1737,7 +1762,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Speichern als...", ;                        // 33
          "Speichern alle", ;                          // 34
          "EMF files", ;                               // 35
-         "Alle Dateien" }                             // 36
+         "Alle Dateien", ;                            // 36
+         "Nicht unterstützte Einstellung:", ;         // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "IT"                                 // Italian
       ::aOpisy := { "Anteprima", ;                    // 01
          "&Cancella", ;                               // 02
@@ -1774,7 +1812,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Salva come...", ;                           // 33
          "Salva tutto", ;                             // 34
          "File EMF", ;                                // 35
-         "Tutti i file" }                             // 36
+         "Tutti i file", ;                            // 36
+         "Impostazione non supportata:", ;            // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "PLWIN" .OR. ;
         cLang == "PL852" .OR. ;
         cLang == "PLISO" .OR. ;
@@ -1814,7 +1865,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Zapisz jako...", ;                          // 33
          "Zapisz wszystko", ;                         // 34
          "Pliki EMF", ;                               // 35
-         "Wszystkie pliki" }                          // 36
+         "Wszystkie pliki", ;                         // 36
+         "Nieobslugiwane ustawienie:" }               // 37
    CASE cLang == "PT"                                 // Portuguese
       ::aOpisy := { "Inspeção Prévia", ;              // 01
          "&Cancelar", ;                               // 02
@@ -1851,7 +1903,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Salvar como...", ;                          // 33
          "Salvar tudo", ;                             // 34
          "Arquivos EMF", ;                            // 35
-         "Todos os arquivos" }                        // 36
+         "Todos os arquivos", ;                       // 36
+         "Configuração não suportada:", ;             // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "RUKOI8" .OR. ;
         cLang == "RU866"  .OR. ;
         cLang == "RUWIN"                              // Russian
@@ -1890,7 +1955,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'Ñîõðàíèòü êàê...', ;                        // 33
          'Ñîõðàíèòü âñå', ;                           // 34
          'Ôàéëû EMF', ;                               // 35
-         'Âñå ôàéëû' }                                // 36
+         'Âñå ôàéëû', ;                               // 36
+         "Unsupported setting:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "ES" .OR. ;
         cLang == "ESWIN"                              // Spanish
       ::aOpisy := { "Vista Previa", ;                 // 01
@@ -1925,10 +2003,23 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Esperando cambio de papel...", ;            // 30
          "Haga clic en OK para continuar.", ;         // 31
          "¡Listo!", ;                                 // 32
-         "Guardar co&mo...", ;                         // 33
-         "Guardar &todo", ;                            // 34
+         "Guardar co&mo...", ;                        // 33
+         "Guardar &todo", ;                           // 34
          "Archivos EMF", ;                            // 35
-         "Todos los archivos" }                       // 36
+         "Todos los archivos", ;                      // 36
+         "Configuración no soportada:", ;             // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "UK" .OR. ;
         cLang == "UA"                                 // Ukranian
       ::aOpisy := { 'Ïåðåãëÿä', ;                     // 01
@@ -1966,7 +2057,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'Çáåðåãòè ÿê...', ;                          // 33
          'Çáåðåãòè âñå', ;                            // 34
          'Ôàéëè EMF', ;                               // 35
-         'Óñi ôàéëè' }                                // 36
+         'Óñi ôàéëè', ;                               // 36
+         "Unsupported setting:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "FI"                                 // Finnish
       ::aOpisy := { "Esikatsele", ;                   // 01
          "&Keskeytä", ;                               // 02
@@ -2003,7 +2107,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Tallenna nimellä...", ;                     // 33
          "Tallenna kaikki", ;                         // 34
          "EMF Tiedostot", ;                           // 35
-         "Kaikki Tiedostot" }                         // 36
+         "Kaikki Tiedostot", ;                        // 36
+         "Asetusta ei tueta:", ;                      // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "NL"                                 // Dutch
       ::aOpisy := { 'Afdrukvoorbeeld', ;              // 01
          'Annuleer', ;                                // 02
@@ -2040,7 +2157,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'Be&waar als...', ;                          // 33
          'Bewaar &Alles', ;                           // 34
          'EMF-bestanden', ;                           // 35
-         'Alle bestanden' }                           // 36
+         'Alle bestanden', ;                          // 36
+         "Niet-ondersteunde instelling:", ;           // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "CS"                                 // Czech
       ::aOpisy := { "Náhled", ;                       // 01
          "&Storno", ;                                 // 02
@@ -2077,7 +2207,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Uložit &jako...", ;                         // 33
          "Uložit &všechno", ;                         // 34
          "EMF soubor", ;                              // 35
-         "Všechny soubory" }                          // 36
+         "Všechny soubory", ;                         // 36
+         "Nepodporované nastavení:", ;                // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "SK"                                 // Slovak
       ::aOpisy := { "Náh¾ad", ;                       // 01
          "&Storno", ;                                 // 02
@@ -2114,7 +2257,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Uloži ako...", ;                            // 33
          "Uloži všetko", ;                            // 34
          "EMF súbor", ;                               // 35
-         "Všetky súbory" }                            // 36
+         "Všetky súbory", ;                           // 36
+         "Nepodporované nastavenie:", ;               // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "SLWIN" .OR. ;
         cLang == "SLISO" .OR. ;
         cLang == "SL852" .OR. ;
@@ -2154,7 +2310,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'Shrani kot...', ;                           // 33
          'Shrani vse', ;                              // 34
          'EMF datoteke', ;                            // 35
-         'Vse datoteke' }                             // 36
+         'Vse datoteke', ;                            // 36
+         "Nepodprta nastavitev:", ;                   // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "HU"                                 // Hungarian
       ::aOpisy := { "Elõnézet", ;                     // 01
          "&Mégse", ;                                  // 02
@@ -2191,7 +2360,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Mentés másként ...", ;                      // 33
          "Mindet mentsd", ;                           // 34
          "EMF állomány", ;                            // 35
-         "Minden állomány" }                          // 36
+         "Minden állomány", ;                         // 36
+         "Nem támogatott beállítás:", ;               // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "EL"                                 // Greek - Ellinika
       ::aOpisy := { 'ÐñïâïëÞ', ;                      // 01
          '&Áêõñï', ;                                  // 02
@@ -2228,7 +2410,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'ÁðïèÞêåõóç ùò..', ;                         // 33
          'ÁðïèÞêåõóç üëùí', ;                         // 34
          'Áñ÷åßá EMF', ;                              // 35
-         '¼ëá ôá áñ÷åßá' }                            // 36
+         '¼ëá ôá áñ÷åßá', ;                           // 36
+         "Unsupported setting:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "BG"                                 // Bulgarian
       ::aOpisy := { 'Ïðåãëåä', ;                      // 01
          'Èçõîä', ;                                   // 02
@@ -2265,7 +2460,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          'Ñúõðàíè êàòî...', ;                         // 33
          'Ñúõðàíè âñè÷êî', ;                          // 34
          'Ôàéëîâå EMF', ;                             // 35
-         'Âñè÷êè ôàéëîâå' }                           // 36
+         'Âñè÷êè ôàéëîâå', ;                          // 36
+         "Unsupported setting:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "HR852"                              // Croatian
       ::aOpisy := { "Pregled", ;                      // 01
          "Otkazati", ;                                // 02
@@ -2302,7 +2510,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Spremi kao...", ;                           // 33
          "Spremi sve", ;                              // 34
          "EMF datoteke", ;                            // 35
-         "Sve datoteke" }                             // 36
+         "Sve datoteke", ;                            // 36
+         "Nepodržana postavka:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "EU"                                 // Basque
       ::aOpisy := { "Aurrebista", ;                   // 01
          "Utzi", ;                                    // 02
@@ -2339,7 +2560,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Gorde...", ;                                // 33
          "Gorde guztiak", ;                           // 34
          "EMF fitxategiak", ;                         // 35
-         "Fitxategi guztiak" }                        // 36
+         "Fitxategi guztiak", ;                       // 36
+         "Ezarpenik gabeko ezarpena:", ;               // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    CASE cLang == "TR"                                 // Turkish
       ::aOpisy := { "Önizleme", ;                     // 01
          "Iptal", ;                                   // 02
@@ -2376,7 +2610,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Farkli kaydet ...", ;                       // 33
          "Tümünü kaydet", ;                           // 34
          "EMF dosyalari", ;                           // 35
-         "Tüm dosyalar" }                             // 36
+         "Tüm dosyalar", ;                            // 36
+         "Desteklenmeyen ayar:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    OTHERWISE
       ::aOpisy := { "Preview", ;                      // 01
          "&Cancel", ;                                 // 02
@@ -2413,7 +2660,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Save as...", ;                              // 33
          "Save all", ;                                // 34
          "EMF files", ;                               // 35
-         "All files" }                                // 36
+         "All files", ;                               // 36
+         "Unsupported setting:", ;                    // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH" }                               // 49
    ENDCASE
 
    FOR i := 1 TO 36
@@ -2513,7 +2773,19 @@ METHOD PrevShow() CLASS HBPrinter
       ::PrevThumb()
    ENDIF
 
-   spos := { GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ], GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ( ::aZoom[ 3 ] ) }
+   spos := Array( 2 )
+
+   IF Empty( ::aZoom[ 4 ] )
+      spos[ 1 ] := 0
+   ELSE
+      spos[ 1 ] := GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ]
+   ENDIF
+
+   IF Empty( ::aZoom[ 3 ] )
+      spos[ 2 ] := 0
+   ELSE
+      spos[ 2 ] := GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ::aZoom[ 3 ]
+   ENDIF
 
    IF ::MetaFiles[ ::Page, 2 ] >= ::MetaFiles[ ::Page, 3 ]
       ::aZoom[ 3 ] := ( ::aHS[ 5, 3 ] ) * ::Scale - 60
