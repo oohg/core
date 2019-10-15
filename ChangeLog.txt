@@ -3,14 +3,23 @@
  */
 /*
  * Use this format for the entry headers:
- *    YYYY-MM-DD HH:MM UTC[-|+]hhmm Name/Username <your_email@address>
+ *   YYYY-MM-DD HH:MM UTC[-|+]hhmm Name/Username <your_email@address>
  * Use this marks for file entries:
  *   '*', '+' or '-' to mean the file was modified, added or deleted.
  * Use this marks for detail entries:
- *    '*' Changed: ...           '!' Fixed: ....
- *    '+' Added: ...             '%' Optimized: ...
- *    '-' Removed: ...           ';' Comment
+ *   '*' Changed: ...           '!' Fixed: ....
+ *   '+' Added: ...             '%' Optimized: ...
+ *   '-' Removed: ...           ';' Comment
  */
+
+2019-10-15 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     + DATA lReportError. Set to .T. to show printer configuration
+       errors. Defaults to .F.
+     * Method SetDevMode now handles printer configuration errors
+       and returns .T./.F. on success/failure.
+     + Some messages to language arrays.
+     ! Division by zero at method PrevShow().
 
 2019-10-13 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_radio.ch
