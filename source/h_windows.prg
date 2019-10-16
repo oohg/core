@@ -1724,7 +1724,7 @@ FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
 
-   LOCAL RetVal, mo, oWin
+   LOCAL RetVal, mo, oWin, ook
 
    ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
    ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
@@ -1749,8 +1749,8 @@ FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeo
       TITLE cDialogCaption ;
       MODAL ;
       NOSIZE ;
-      FONT 'Arial' ;
-      SIZE 10 ;
+      FONT _OOHG_DefaultFontName ;
+      SIZE _OOHG_DefaultFontSize ;
       BACKCOLOR ( GetFormObjectByHandle( GetActiveWindow() ):BackColor )
 
       ON KEY ESCAPE ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
@@ -1789,10 +1789,10 @@ FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeo
          ENDIF
       ENDIF
 
-      @ 67 + mo, 120 BUTTON _Ok ;
+      @ 67 + mo, 120 BUTTON _Ok OBJ oOk ;
          CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ;
          ACTION ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) )
-
+AutoMsgBox( oOk:FontSize )
       @ 67 + mo, 230 BUTTON _Cancel ;
          CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ;
          ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
