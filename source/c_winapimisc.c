@@ -82,6 +82,7 @@
 #include <lmcons.h>
 #include <commctrl.h>
 #include <psapi.h>
+#include <ctype.h>
 #include <time.h>
 #include <tchar.h>
 #include <winreg.h>
@@ -1348,7 +1349,7 @@ int GetUserObjects( DWORD nProcessId )
 }
 
 #if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
-BOOL GetProcessHandleCount( HANDLE hProcess, PDWORD pdwHandleCount );
+WINBASEAPI BOOL WINAPI GetProcessHandleCount( HANDLE hProcess, PDWORD pdwHandleCount );
 #define PROCESS_QUERY_LIMITED_INFORMATION (0x1000)
 #endif
 
@@ -1574,7 +1575,7 @@ void _ComCtl32_DeInit( void )
 
 typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
 
-static CALL_DLLGETVERSION dwProcAddr = NULL;
+static CALL_DLLGETVERSION pDllGetVersion = NULL;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
@@ -1589,15 +1590,15 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
    }
    if( hDllComctl32 != NULL )
    {
-      if( dwProcAddr == NULL )
+      if( pDllGetVersion == NULL )
       {
-         dwProcAddr = ( CALL_DLLGETVERSION ) GetProcAddress( hDllComctl32, "DllGetVersion" );
+         pDllGetVersion = ( CALL_DLLGETVERSION ) GetProcAddress( hDllComctl32, "DllGetVersion" );
       }
-      if( dwProcAddr != NULL )
+      if( pDllGetVersion != NULL )
       {
          memset( &dll, 0, sizeof( dll ) );
          dll.cbSize = sizeof( dll );
-         if( ( dwProcAddr )( &dll ) == S_OK )
+         if( ( pDllGetVersion )( &dll ) == S_OK )
          {
             iResult = dll.dwMajorVersion;
          }
@@ -1793,7 +1794,7 @@ HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
 {
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
-   CALL_ISAPPTHEMED dwProcAddr;
+   CALL_ISAPPTHEMED pIsAppThemed;
    LONG lResult;
    OSVERSIONINFO os;
 
@@ -1804,10 +1805,10 @@ HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
       hInstDLL = _UxTheme_Init();
       if( hInstDLL )
       {
-         dwProcAddr = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
-         if( dwProcAddr )
+         pIsAppThemed = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
+         if( pIsAppThemed )
          {
-            lResult = ( dwProcAddr )();
+            lResult = ( pIsAppThemed )();
             if( lResult )
             {
                bResult = TRUE;
