@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-10-16 20:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Fixed font name and size at function InputBox replaced by
+       _OOHG_DefaultFontName and _OOHG_DefaultFontSize.
+
 2019-10-16 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\bostaurus_dyns.hbx
    * core\include\hbprinter_dyns.hbx
@@ -19,7 +24,11 @@
    * core\include\oohg_dyns.hbx
      * Updated.
 
-2019-10-16 19:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2019-10-16 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     * Some MinGW CLang warnings were pacified.
+
+2019-10-16 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_richeditbox.prg
      * Some MinGW CLang warnings were pacified.
 
