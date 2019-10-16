@@ -414,7 +414,7 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
    HWND hCtrl;
    INT Style, StyleEx, Mask;
    char * classname = NULL;
-   BOOL bIs41;
+   BOOL bIs41 = FALSE;
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 9 ) );
@@ -432,7 +432,6 @@ ENM_MOUSEEVENTS
       if( hDllRichEdit30 != NULL )
       {
          classname = RICHEDIT_CLASS;
-         bIs41 = FALSE;
       }
       else
       {
@@ -441,7 +440,6 @@ ENM_MOUSEEVENTS
          if( hDllRichEdit30 != NULL )
          {
             classname = RICHEDIT_CLASS;
-            bIs41 = FALSE;
          }
          ReleaseMutex( _OOHG_GlobalMutex() );
       }
@@ -467,7 +465,6 @@ ENM_MOUSEEVENTS
             if( hDllRichEdit30 != NULL )
             {
                classname = RICHEDIT_CLASS;
-               bIs41 = FALSE;
             }
             else
             {
@@ -475,7 +472,6 @@ ENM_MOUSEEVENTS
                if( hDllRichEdit30 != NULL )
                {
                   classname = RICHEDIT_CLASS;
-                  bIs41 = FALSE;
                }
             }
          }
