@@ -2652,10 +2652,11 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
    INT nBstyle;
    LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj1, hgdiobj2;
-   HPEN hpen;
+   HGDIOBJ hgdiobj1 = NULL;
+   HGDIOBJ hgdiobj2 = NULL;
+   HPEN hpen = NULL;
    LOGBRUSH pbr;
-   HBRUSH hbr;
+   HBRUSH hbr = NULL;
    RECT rect;
    BOOL bNoPen = hb_parl( 20 );
    BOOL bNoBrush = hb_parl( 21 );
@@ -2786,10 +2787,11 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
    INT nBstyle;
    LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj1, hgdiobj2;
-   HPEN hpen;
+   HGDIOBJ hgdiobj1 = NULL;
+   HGDIOBJ hgdiobj2 = NULL;
+   HPEN hpen = NULL;
    LOGBRUSH pbr;
-   HBRUSH hbr;
+   HBRUSH hbr = NULL;
    BOOL bNoPen = hb_parl( 20 );
    BOOL bNoBrush = hb_parl( 21 );
 
@@ -4188,10 +4190,11 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
    INT nBstyle;
    LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj1, hgdiobj2;
-   HPEN hpen;
+   HGDIOBJ hgdiobj1 = NULL;
+   HGDIOBJ hgdiobj2 = NULL;
+   HPEN hpen = NULL;
    LOGBRUSH pbr;
-   HBRUSH hbr;
+   HBRUSH hbr = NULL;
    BOOL bNoPen = hb_parl( 20 );
    BOOL bNoBrush = hb_parl( 21 );
 
@@ -4394,10 +4397,11 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
    INT nBstyle;
    LONG nBhatch;
    HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   HGDIOBJ hgdiobj1, hgdiobj2;
-   HPEN hpen;
+   HGDIOBJ hgdiobj1 = NULL;
+   HGDIOBJ hgdiobj2 = NULL;
+   HPEN hpen = NULL;
    LOGBRUSH pbr;
-   HBRUSH hbr;
+   HBRUSH hbr = NULL;
    BOOL bNoPen = hb_parl( 24 );
    BOOL bNoBrush = hb_parl( 25 );
 
