@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-10-18 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! Method StartDoc doesn't honor the value of ::DocName.
+
 2019-10-16 20:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      * Fixed font name and size at function InputBox replaced by
