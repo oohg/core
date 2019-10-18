@@ -360,7 +360,9 @@ RETURN Self
 METHOD StartDoc( cDocName ) CLASS HBPrinter
 
    ::Printing := .T.
-   ::DocName := iif( HB_ISCHAR( cDocName ), cDocName, "HBPRINTER" )
+   IF HB_ISCHAR( cDocName )
+      ::DocName := cDocName
+   ENDIF
    IF ! ::PreviewMode
       RR_StartDoc( ::DocName, ::hData )
    ENDIF
