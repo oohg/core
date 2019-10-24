@@ -91,6 +91,8 @@
 #xtranslate App.hWnd                       => TApplication():Define():Handle()
 #xtranslate App.Icon := <arg>              => TApplication():Define():Icon( <arg> )
 #xtranslate App.Icon                       => TApplication():Define():Icon()
+#xtranslate App.LogFile := <arg>           => TApplication():Define():LogFile( <arg> )
+#xtranslate App.LogFile                    => TApplication():Define():LogFile()
 #xtranslate App.MainName                   => TApplication():Define():MainName()
 #xtranslate App.MainObject                 => TApplication():Define():MainObject()
 #xtranslate App.MultipleInstances := <arg> => TApplication():Define():MultipleInstances( <arg> )
@@ -114,8 +116,12 @@
 
 #xtranslate SET DEFAULT ICON TO <cIcon> ;
    => ;
-      _OOHG_Main_Icon := <cIcon>
+      TApplication():Define():Icon( <cIcon> )
 
 #xcommand DO EVENTS ;
    => ;
       ProcessMessages()
+
+#xtranslate SET LOGFILE TO <(name)> ;
+   => ;
+      TApplication():Define():LogFile( <(name)> )

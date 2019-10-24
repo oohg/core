@@ -142,7 +142,8 @@
 #define NDX_OOHG_EXITONMAINRELEASE     56
 #define NDX_OOHG_KEEPAPPONMAINRELEASE  57
 #define NDX_OOHG_INTERACTIVECLOSE      58
-#define NUMBER_OF_APP_WIDE_VARS        58
+#define NDX_OOHG_LOGFILE               59
+#define NUMBER_OF_APP_WIDE_VARS        59
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -265,6 +266,7 @@ CLASS TApplication
    METHOD Value_Pos56             SETGET
    METHOD Value_Pos57             SETGET
    METHOD Value_Pos58             SETGET
+   METHOD Value_Pos59             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -348,6 +350,7 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .T.
       ::aVars[ NDX_OOHG_KEEPAPPONMAINRELEASE ]  := .F.
       ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
+      ::aVars[ NDX_OOHG_LOGFILE ]               := {}
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -2096,6 +2099,41 @@ METHOD Value_Pos58( nValue ) CLASS TApplication
    uRet := ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]
    IF HB_ISNUMERIC( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
       ::aVars[ NDX_OOHG_INTERACTIVECLOSE ] := Int( nValue )
+   ENDIF
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos59( uValue ) CLASS TApplication
+
+   LOCAL uRet, nThreadID, i
+
+   ::MutexLock()
+   nThreadID := GetThreadId()
+   IF PCount() > 0
+      IF uValue == NIL
+         IF ( i := AScan( ::aVars[ NDX_OOHG_LOGFILE ], { |a| a[ 1 ] == nThreadID } ) ) > 0
+            _OOHG_DeleteArrayItem( ::aVars[ NDX_OOHG_LOGFILE ], i )
+         ENDIF
+         uRet := "DumpLog.txt"
+      ELSEIF HB_ISSTRING( uValue )
+         IF ( i := AScan( ::aVars[ NDX_OOHG_LOGFILE ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+            AAdd( ::aVars[ NDX_OOHG_LOGFILE ], { nThreadID, NIL } )
+            i := Len( ::aVars[ NDX_OOHG_LOGFILE ] )
+         ENDIF
+         uRet := ::aVars[ NDX_OOHG_LOGFILE ][ i ][ 2 ] := uValue
+      ELSE
+         IF ( i := AScan( ::aVars[ NDX_OOHG_LOGFILE ], { |a| a[ 1 ] == nThreadID } ) ) == 0
+            uRet := "DumpLog.txt"
+         ELSE
+            uRet := ::aVars[ NDX_OOHG_LOGFILE ][ i ][ 2 ]
+         ENDIF
+      ENDIF
+   ELSEIF ( i := AScan( ::aVars[ NDX_OOHG_LOGFILE ], { |a| a[ 1 ] == nThreadID } ) ) > 0
+      uRet := ::aVars[ NDX_OOHG_LOGFILE ][ i ][ 2 ]
+   ELSE
+      uRet := "DumpLog.txt"
    ENDIF
    ::MutexUnlock()
 
