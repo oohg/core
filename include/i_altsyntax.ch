@@ -1800,7 +1800,7 @@ IMAGE
    => ;
       _OOHG_ActiveControlOnRDblClick := <{dblclick}>
 
-#xcommand ONDMBLCLICK <dblclick> ;
+#xcommand ONMDBLCLICK <dblclick> ;
    => ;
       _OOHG_ActiveControlOnMDblClick := <{dblclick}>
 
