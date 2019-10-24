@@ -315,7 +315,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               strikeout, NIL, NIL, editable, backcolor, ;
               fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
               LVS_SINGLESEL, inplace, editcontrols, readonly, valid, validmessages, ;
-              aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+              aWhenFields, NIL, lNoTabStop, lInvisible, lHasHeaders, ;
               aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
               aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
               lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
@@ -373,6 +373,10 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ENDIF
    IF lNoVSB
       ::VScrollVisible( .F. )
+   ENDIF
+
+   IF HB_ISLOGICAL( lDisabled )
+      ::Enabled := ! lDisabled
    ENDIF
 
    // Must be set after control is initialized
@@ -814,7 +818,7 @@ METHOD VScrollUpdate CLASS TXBrowse
 
    LOCAL aPosition
 
-   IF HB_ISOBJECT( ::VScroll )
+   IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
       IF ::lRecCount
          aPosition := { ::oWorkArea:ordKeyNo(), ::oWorkArea:RecCount() }
       ELSE
@@ -897,12 +901,20 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TXBrowse
 
 METHOD Enabled( lEnabled ) CLASS TXBrowse
 
-   If ValType( lEnabled ) == "L"
-      ::Super:Enabled := lEnabled
-      aEval( ::aControls, { |o| o:Enabled := o:Enabled } )
-   EndIf
+   IF ValType( lEnabled ) == "L"
+      IF HB_ISOBJECT( ::VScroll )
+         ::VScroll:Enabled := lEnabled
+      ENDIF
+      IF HB_ISOBJECT( ::VScrollCopy )
+         ::VScrollCopy:Enabled := lEnabled
+      ENDIF
+      ::VScrollUpdate()
 
-   Return ::Super:Enabled
+      ::Super:Enabled := lEnabled
+      AEval( ::aControls, { |o| o:Enabled := o:Enabled } )
+   ENDIF
+
+   RETURN ::Super:Enabled
 
 METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
 
@@ -1543,9 +1555,11 @@ METHOD Down( lAppend ) CLASS TXBrowse
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
             lRet := ::AppendItem()
-            // Kill scrollbar's events...
-            ::VScroll:Enabled := .F.
-            ::VScroll:Enabled := .T.
+            IF ::VScroll:Enabled
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
+            ENDIF
          EndIf
       EndIf
    EndIf
@@ -1599,9 +1613,11 @@ METHOD PageDown( lAppend ) CLASS TXBrowse
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
             lRet := ::AppendItem()
-            // Kill scrollbar's events...
-            ::VScroll:Enabled := .F.
-            ::VScroll:Enabled := .T.
+            IF ::VScroll:Enabled
+               // Kill scrollbar's events...
+               ::VScroll:Enabled := .F.
+               ::VScroll:Enabled := .T.
+            ENDIF
          EndIf
       ElseIf nSkip != 0
          ::Refresh( , .T. )
@@ -1759,9 +1775,11 @@ METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
          ::SetControlValue( nItem )
       EndIf
       If ! ::lNoVSB
-         // Kill scrollbar's events...
-         ::VScroll:Enabled := .F.
-         ::VScroll:Enabled := .T.
+         IF ::VScroll:Enabled
+            // Kill scrollbar's events...
+            ::VScroll:Enabled := .F.
+            ::VScroll:Enabled := .T.
+         ENDIF
       EndIf
 
       Do While .T.
@@ -3123,6 +3141,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    HB_SYMBOL_UNUSED( nStyle )
    HB_SYMBOL_UNUSED( lNone )
    HB_SYMBOL_UNUSED( lCBE )
+   HB_SYMBOL_UNUSED( lDisabled )
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
 
@@ -3132,7 +3151,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     strikeout, ownerdata, itemcount, editable, backcolor, ;
                     fontcolor, dynamicbackcolor, dynamicforecolor, aPicture, lRtl, ;
                     LVS_SINGLESEL, InPlace, editcontrols, readonly, valid, validmessages, ;
-                    aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
+                    aWhenFields, NIL, lNoTabStop, lInvisible, lHasHeaders, ;
                     aHeaderImage, aHeaderImageAlign, FullMove, aSelectedColors, ;
                     aEditKeys, lCheckBoxes, lDblBffr, lFocusRect, lPLM, ;
                     lFixedCols, lFixedWidths, lLikeExcel, lButtons, AllowDelete, ;
@@ -4392,9 +4411,11 @@ METHOD Right( lAppend ) CLASS TXBrowseByCell
                ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
                If lAppend
                   lRet := ::AppendItem()
-                  // Kill scrollbar's events...
-                  ::VScroll:Enabled := .F.
-                  ::VScroll:Enabled := .T.
+                  IF ::VScroll:Enabled
+                     // Kill scrollbar's events...
+                     ::VScroll:Enabled := .F.
+                     ::VScroll:Enabled := .T.
+                  ENDIF
                EndIf
             EndIf
          EndIf
@@ -4454,9 +4475,11 @@ METHOD Down( lAppend ) CLASS TXBrowseByCell
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
          lRet := ::AppendItem()
-         // Kill scrollbar's events...
-         ::VScroll:Enabled := .F.
-         ::VScroll:Enabled := .T.
+         IF ::VScroll:Enabled
+            // Kill scrollbar's events...
+            ::VScroll:Enabled := .F.
+            ::VScroll:Enabled := .T.
+         ENDIF
       EndIf
    EndIf
 
