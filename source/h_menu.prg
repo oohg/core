@@ -223,8 +223,8 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
 METHOD Enabled( lEnabled ) CLASS TMenu
 
    IF HB_ISLOGICAL( lEnabled )
-      ::lEnabled := lEnabled
-      AEval( ::aControls, { |o| o:Enabled := ::lEnabled } )
+      ::Super:Enabled := lEnabled
+      aEval( ::aControls, { |o| o:Enabled := o:Enabled } )
    ENDIF
 
    RETURN ::lEnabled
@@ -874,12 +874,13 @@ METHOD OwnerDraw( lValue ) CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Enabled( lEnabled ) CLASS TMenuItem
 
-   LOCAL lRet
+   IF HB_ISLOGICAL( lEnabled )
+      ::lEnabled := lEnabled
+      MenuEnabled( ::Container:hWnd, ::Position(), ::ContainerEnabled )
+      ::Container:Refresh()
+   ENDIF
 
-   lRet := MenuEnabled( ::Container:hWnd, ::Position(), lEnabled )
-   ::Container:Refresh()
-
-   RETURN lRet
+   RETURN ::lEnabled
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Checked( lChecked ) CLASS TMenuItem
