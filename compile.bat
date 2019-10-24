@@ -22,6 +22,8 @@ rem
    set LIB_GUI=
    set LIB_HRB=
    set BIN_HRB=
+   set HG_ADDLIBS=
+   set HG_FLAVOR=
 
 :ROOT
 
@@ -144,6 +146,7 @@ rem
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb30.o
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
+   set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -158,7 +161,7 @@ rem
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb32.o
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
-                           
+   set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -173,6 +176,7 @@ rem
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\oohg_hb34.o
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -187,6 +191,7 @@ rem
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=pcrepos hbhpdf libharu
+   set HG_FLAVOR=XHARBOUR
    call "%HG_ROOT%\compile_bcc.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -201,6 +206,7 @@ rem
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
+   set HG_FLAVOR=XHARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
