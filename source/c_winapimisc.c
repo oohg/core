@@ -85,7 +85,6 @@
 #include <ctype.h>
 #include <time.h>
 #include <tchar.h>
-#include <winreg.h>
 #include <shlwapi.h>
 
 #include "hbapi.h"
@@ -1348,10 +1347,7 @@ int GetUserObjects( DWORD nProcessId )
    return user;
 }
 
-#if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
-WINBASEAPI BOOL WINAPI GetProcessHandleCount( HANDLE hProcess, PDWORD pdwHandleCount );
-#define PROCESS_QUERY_LIMITED_INFORMATION (0x1000)
-#endif
+#if ( ( ! defined(__BORLANDC__) ) || (__TURBOC__ > 0x0551) )
 
 int GetKernelObjects( DWORD nProcessId )
 {
@@ -1398,6 +1394,8 @@ HB_FUNC( GETOBJECTCOUNT )          /* GetObjectCount( [ nProcessId ] ) -> { nGDI
    }
 }
 
+#endif
+
 static HMODULE hDllProcess = NULL;
 
 void _ProcessLib_DeInit( void )
@@ -1410,6 +1408,10 @@ void _ProcessLib_DeInit( void )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
+
+#ifndef PROCESS_QUERY_LIMITED_INFORMATION
+#define PROCESS_QUERY_LIMITED_INFORMATION 0x1000
+#endif
 
 typedef BOOL ( WINAPI * Func_EmptyWorkingSet )( HANDLE );
 
