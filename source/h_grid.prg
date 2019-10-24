@@ -440,7 +440,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program terminated." )
    EndIf
 
-   nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop, lDisabled ) + ;
+   nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
              If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
 
@@ -564,6 +564,10 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
    IF lNoVSB
       ::VScrollVisible( .F. )
+   ENDIF
+
+   IF HB_ISLOGICAL( lDisabled )
+      ::Enabled := ! lDisabled
    ENDIF
 
    Return Self
