@@ -68,7 +68,6 @@
 #define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
 #ifndef __XHARBOUR__
-   REQUEST DBFNTX, DBFDBT
    ANNOUNCE HB_GTSYS
 #endif
 
