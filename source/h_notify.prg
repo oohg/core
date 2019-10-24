@@ -82,9 +82,6 @@ CLASS TNotifyIcon FROM TControl
    METHOD ToolTip          SETGET
    METHOD Events_TaskBar
 
-   //   METHOD Enabled
-   //   METHOD Visible
-
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, cPicture, cToolTip, ProcedureName, invisible ) CLASS TNotifyIcon
