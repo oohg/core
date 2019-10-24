@@ -7,7 +7,7 @@ rem
 
    if "%HG_ROOT%"  == "" goto ERROR1
    if "%HG_HRB%"   == "" goto ERROR1
-   if "%HG_CCOMP%" == "" goto ERROR1
+   if "%HG_MINGW%" == "" goto ERROR1
    if "%LIB_GUI%"  == "" goto ERROR1
    if "%LIB_HRB%"  == "" goto ERROR1
    if "%BIN_HRB%"  == "" goto ERROR1
@@ -27,9 +27,6 @@ rem
 
 :MORE_SETS
 
-   rem *** Third party libraries ***
-   rem set THR_LIB=-lsocket -lmysqldll -ldll -lhbmysql -lrddleto -lrddado -lhbusrrdd
-
    rem *** Version dependent libraries ***
    rem This var must be set by compile.bat
    rem For Harbour 3.0 and 3.2
@@ -38,6 +35,9 @@ rem
    rem set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
    rem For xHarbour
    rem set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
+
+   rem *** Third party libraries ***
+   rem set HG_ADDLIBS=%HG_ADDLIBS% -lsocket -lmysqldll -ldll -lhbmysql -lrddleto -lrddado -lhbusrrdd
 
    rem *** Force static linking of this libs ***
    set HG_STATIC_LIBS=-static -static-libgcc
@@ -50,8 +50,9 @@ rem
 
    set HG_FILE=%1
    set HG_COMP_TYPE=STD
+   set HG_DEFINES=
    set HG_EXTRA=
-   set HG_USERC=TRUE
+   set HG_USE_RC=TRUE
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
    set HG_C_LOG=1^>nul
@@ -90,12 +91,13 @@ rem
 :SW_CONSOLE
 
    set HG_COMP_TYPE=CONSOLE
+   set HG_DEFINES=-d_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
 :SW_NORC
 
-   set HG_USERC=FALSE
+   set HG_USE_RC=FALSE
    shift
    goto LOOP_START
 
@@ -141,12 +143,12 @@ rem
 :LOOP_END
 
    set HG_OBJS=%HG_FILE%.o
-   if "%HG_USERC%" == "FALSE" GOTO WITHOUT_HG_RC
+   if "%HG_USE_RC%" == "FALSE" GOTO WITHOUT_HG_RC
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
-   windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
+   windres.exe -i _temp.rc -o _temp.o %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -158,7 +160,7 @@ rem
    if not exist %HG_FILE%.rc goto COMPILE_PRG
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   windres -i _temp.rc -o _temp.o %HG_C_LOG%
+   windres -i _temp.rc -o _temp.o %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -168,13 +170,13 @@ rem
 
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
-   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_PRG_LOG%
+   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_DEFINES% %HG_PRG_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_C
 
-   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_C_LOG%
+   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling %HG_FILE%.c! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -186,58 +188,59 @@ rem
 
 :STD_COMP
 
-   set HG_CFLAGS=-Wall -mwindows
+   set HG_C_FLAGS=-Wall -mwindows
    if not exist %HG_HRB%\%LIB_HRB%\mainwin.o goto LIBS_HARBOUR
    set HG_OBJS=%HG_HRB%\%LIB_HRB%\mainwin.o %HG_OBJS%
    goto LIBS_XHARBOUR
 
 :CONSOLE_COMP
 
-   set HG_CFLAGS=-Wall -mconsole
+   set HG_C_FLAGS=-Wall -mconsole
    if not exist %HG_HRB%\%LIB_HRB%\mainstd.o goto LIBS_HARBOUR
    set HG_OBJS=%HG_HRB%\%LIB_HRB%\mainstd.o %HG_OBJS%
 
 :LIBS_XHARBOUR
 
-   set HG_CLIBS=-lgtgui -lgtwin
-   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=-lgtwin -lgtgui -ldebug
-   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=-lgtwin -lgtgui
-   set HG_CLIBS=%HG_CLIBS% -lcodepage -lcommon -lct -ldbfcdx -ldbffpt -ldbfntx -lhbsix -lhsx
-   set HG_CLIBS=%HG_CLIBS% -llang -lmacro -lpp -lrdd -lrtl -lvmmt %THR_LIB% %HG_ADDLIBS%
-   set HG_CLIBS=%HG_CLIBS% -lfilemem -llibmisc -lhbmzip -lhbodbc -ltip -lhbzebra
-   set HG_CLIBS=%HG_CLIBS% -lhbzip -lzlib -lodbc32 -lpng -lrddsql -lsddodbc -lsevenzip
+   set HG_C_LIBS=-lgtgui -lgtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=-lgtwin -lgtgui -ldebug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=-lgtwin -lgtgui
+   set HG_C_LIBS=%HG_C_LIBS% -lcodepage -lcommon -lct -ldbfcdx -ldbffpt -ldbfntx -lhbsix -lhsx
+   set HG_C_LIBS=%HG_C_LIBS% -llang -lmacro -lpp -lrdd -lrtl -lvmmt %HG_ADDLIBS%
+   set HG_C_LIBS=%HG_C_LIBS% -lfilemem -llibmisc -lhbmzip -lhbodbc -ltip -lhbzebra
+   set HG_C_LIBS=%HG_C_LIBS% -lhbzip -lzlib -lodbc32 -lpng -lrddsql -lsddodbc -lsevenzip
    goto OTHER_LIBS
 
 :LIBS_HARBOUR
 
-   set HG_CLIBS=-lgtgui -lgtwin
-   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=-lgtwin -lgtgui -lhbdebug
-   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=-lgtwin -lgtgui
-   set HG_CLIBS=%HG_CLIBS% -lhbcpage -lhbcommon -lhbct -lrddcdx -lrddfpt -lrddntx -lhbsix -lhbhsx
-   set HG_CLIBS=%HG_CLIBS% -lhblang -lhbmacro -lhbpp -lhbrdd -lhbrtl -lhbvmmt %THR_LIB% %HG_ADDLIBS%
-   set HG_CLIBS=%HG_CLIBS% -lhbmemio -lhbmisc -lhbmzip -lhbodbc -lhbtip -lhbwin -lhbzebra
-   set HG_CLIBS=%HG_CLIBS% -lhbziparc -lhbzlib -lminizip -lodbc32 -lpng -lrddsql -lsddodbc -lxhb
-   set HG_CLIBS=%HG_CLIBS% -lhbcplr -lhbextern -lhbusrrdd -lrddnsx
+   set HG_C_LIBS=-lgtgui -lgtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=-lgtwin -lgtgui -lhbdebug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=-lgtwin -lgtgui
+   set HG_C_LIBS=%HG_C_LIBS% -lhbcpage -lhbcommon -lhbct -lrddcdx -lrddfpt -lrddntx -lhbsix -lhbhsx
+   set HG_C_LIBS=%HG_C_LIBS% -lhblang -lhbmacro -lhbpp -lhbrdd -lhbrtl -lhbvmmt %HG_ADDLIBS%
+   set HG_C_LIBS=%HG_C_LIBS% -lhbmemio -lhbmisc -lhbmzip -lhbodbc -lhbtip -lhbzebra
+   set HG_C_LIBS=%HG_C_LIBS% -lhbziparc -lhbzlib -lminizip -lodbc32 -lrddsql -lsddodbc
+   rem hbhpdf must precede hbwin, png and xhb
+   set HG_C_LIBS=%HG_C_LIBS% -lhbcplr -lhbextern -lhbusrrdd -lrddnsx -lhbwin -lpng -lxhb
 
 :OTHER_LIBS
 
    rem oohg.lib must be linked first to avoid "multiple definition of hb_gtsys" error
-   set HG_CLIBS=-looHG %HG_CLIBS% -lbostaurus -lhbprinter -lminiprint
-   set HG_CLIBS=%HG_CLIBS% -luser32 -lwinspool -lgdi32 -lcomctl32 -lcomdlg32 -lole32 -loleaut32 -luuid
-   set HG_CLIBS=%HG_CLIBS% -lmpr -lwsock32 -lws2_32 -lmapi32 -lwinmm -lvfw32 -lmsimg32 -liphlpapi
+   set HG_C_LIBS=-looHG %HG_C_LIBS% -lbostaurus -lhbprinter -lminiprint
+   set HG_C_LIBS=%HG_C_LIBS% -luser32 -lwinspool -lgdi32 -lcomctl32 -lcomdlg32 -lole32 -loleaut32 -luuid
+   set HG_C_LIBS=%HG_C_LIBS% -lmpr -lwsock32 -lws2_32 -lmapi32 -lwinmm -lvfw32 -lmsimg32 -liphlpapi
 
 :LINK
 
    set HG_SEARCH=-L. -L%HG_MINGW%\lib -L%HG_HRB%\%LIB_HRB% -L%HG_ROOT%\%LIB_GUI%
-   set HG_CLIBS=-Wl,--start-group %HG_CLIBS% -Wl,--end-group
-   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_CFLAGS% %HG_SEARCH% %HG_CLIBS% %HG_STATIC_LIBS% %HG_C_LOG%
+   set HG_C_LIBS=-Wl,--start-group %HG_C_LIBS% -Wl,--end-group
+   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_C_FLAGS% %HG_SEARCH% %HG_C_LIBS% %HG_STATIC_LIBS% %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error linking %HG_FILE%.exe! %HG_PRG_LOG%
 
 :CLEANUP
 
-   set HG_CFLAGS=
-   set HG_CLIBS=
+   set HG_C_FLAGS=
+   set HG_C_LIBS=
    set HG_SEARCH=
    if exist %HG_FILE%.o del %HG_FILE%.o
    if exist %HG_FILE%.c del %HG_FILE%.c
@@ -246,9 +249,10 @@ rem
    set HG_OBJS=
    set HG_C_LOG=
    set HG_PRG_LOG=
-   set HG_USERC=
+   set HG_USE_RC=
    set HG_EXTRA=
    set HG_COMP_TYPE=
+   set HG_DEFINES=
    set "PATH=%HG_PATH%"
    set HG_PATH=
    set HG_STATIC_LIBS=
