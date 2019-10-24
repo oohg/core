@@ -66,7 +66,7 @@
 
 MEMVAR _HMG_MiniPrint
 
-#define _HMG_PRINTER_LastVar 29
+#define _HMG_PRINTER_LastVar 30
 
 #xtranslate _HMG_PRINTER_Name               => _HMG_MiniPrint\[01\]
 #xtranslate _HMG_PRINTER_aPrinterProperties => _HMG_MiniPrint\[02\]
@@ -97,6 +97,7 @@ MEMVAR _HMG_MiniPrint
 #xtranslate _HMG_PRINTER_JobData            => _HMG_MiniPrint\[27\]
 #xtranslate _HMG_PRINTER_Language           => _HMG_MiniPrint\[28\]
 #xtranslate _HMG_PRINTER_Error              => _HMG_MiniPrint\[29\]
+#xtranslate _HMG_PRINTER_NoSaveButton       => _HMG_MiniPrint\[30\]
 
 #xtranslate OpenPrinterGetJobData()         => { _HMG_PRINTER_JobId, _HMG_PRINTER_Name }
 #xtranslate OpenPrinterGetDC()              => _HMG_PRINTER_aPrinterProperties\[1\]

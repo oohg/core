@@ -208,12 +208,14 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
             TOOLTIP _HMG_PRINTER_UserMessages[ 09 ] + ' [Ctrl+P]' ;
             ACTION _HMG_PRINTER_PrintPages()
 
+      IF ! _HMG_PRINTER_NoSaveButton
          @ 2, 216 BUTTON b7 ;
             WIDTH 30 ;
             HEIGHT 30 ;
             PICTURE "HP_SAVE" ;
             TOOLTIP _HMG_PRINTER_UserMessages[ 27 ] + ' [Ctrl+S]' ;
             ACTION _HMG_PRINTER_SavePages()
+      ENDIF
 
          @ 2, 246 BUTTON b6 ;
             WIDTH 30 ;
@@ -265,7 +267,9 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
          ON KEY MULTIPLY     ACTION ( iif( _HMG_PRINTER_PPNAV.b5.Value == .T., _HMG_PRINTER_PPNAV.b5.Value := .F., _HMG_PRINTER_PPNAV.b5.Value := .T. ), _HMG_PRINTER_Zoom() )
          ON KEY CONTROL+C    ACTION _HMG_PRINTER_PreviewClose()
          ON KEY ALT + F4     ACTION _HMG_PRINTER_PreviewClose()
+      IF ! _HMG_PRINTER_NoSaveButton
          ON KEY CONTROL+S    ACTION _HMG_PRINTER_SavePages()
+      ENDIF
          ON KEY CONTROL+T    ACTION _HMG_PRINTER_ThumbnailToggle()
 
          _HMG_PRINTER_SHOWPREVIEW.ClientAdjust := 5
@@ -573,6 +577,10 @@ PROCEDURE _HMG_PRINTER_ProcessThumbnails()
 PROCEDURE _HMG_PRINTER_SavePages()
 
    LOCAL c, i, f, t, d, x, a
+
+   IF _HMG_PRINTER_NoSaveButton
+      RETURN
+   ENDIF
 
    x := GetFolder( _HMG_PRINTER_UserMessages[ 31 ] )
 
@@ -1374,6 +1382,7 @@ PROCEDURE _HMG_PRINTER_InitUserMessages( cLang )
       _HMG_PRINTER_JobId              := 0
       _HMG_PRINTER_JobData            := ""
       _HMG_PRINTER_Error              := .T.
+      _HMG_PRINTER_NoSaveButton       := .F.
    ENDIF
 
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
