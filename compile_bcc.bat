@@ -5,12 +5,12 @@ rem
 
 :COMPILE_BCC
 
-   if "%HG_ROOT%"  == "" goto ERROR1
-   if "%HG_HRB%"   == "" goto ERROR1
-   if "%HG_CCOMP%" == "" goto ERROR1
-   if "%LIB_GUI%"  == "" goto ERROR1
-   if "%LIB_HRB%"  == "" goto ERROR1
-   if "%BIN_HRB%"  == "" goto ERROR1
+   if "%HG_ROOT%" == "" goto ERROR1
+   if "%HG_HRB%"  == "" goto ERROR1
+   if "%HG_BCC%"  == "" goto ERROR1
+   if "%LIB_GUI%" == "" goto ERROR1
+   if "%LIB_HRB%" == "" goto ERROR1
+   if "%BIN_HRB%" == "" goto ERROR1
 
 :CHECK
 
@@ -27,13 +27,21 @@ rem
 
 :PARSE_SWITCHES
 
-   set HG_FILE=%1
+   set HG_C_FLAGS=
+   set HG_C_LIBS=
+   set HG_C_LOG=1^>nul 2^>^&1
    set HG_COMP_TYPE=STD
+   set HG_DEFINES=
    set HG_EXTRA=
+   set HG_FILE=%1
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
-   set HG_C_LOG=1^>nul 2^>^&1
-   set HG_C_FLAGS=
+   set HG_USE_ADS=TRUE
+   set HG_USE_MYSQL=TRUE
+   set HG_USE_ODBC=TRUE
+   set HG_USE_RC=TRUE
+   set HG_USE_ZLIB=TRUE
+   set HG_W_LIBS=
 
 :LOOP_START
    if    "%2" == ""    goto LOOP_END
@@ -75,12 +83,13 @@ rem
 :SW_CONSOLE
 
    set HG_COMP_TYPE=CONSOLE
+   set HG_DEFINES=-d_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
 :SW_NORC
 
-   set HG_USERC=FALSE
+   set HG_USE_RC=FALSE
    shift
    goto LOOP_START
 
@@ -113,7 +122,7 @@ rem
 
    set HG_PRG_LOG=1^>nul 2^>^&1
    set HG_C_LOG=1^>nul 2^>^&1
-   set HG_CFLAGS=-q
+   set HG_C_FLAGS=-q
    shift
    goto LOOP_START
 
@@ -143,11 +152,11 @@ rem
 
 :LOOP_END
 
-   if "%HG_USERC%" == "FALSE" goto WITHOUT_HG_RC
+   if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc                _temp.rc %HG_C_LOG%
-   %HG_BCC%\bin\brc32.exe -r -i%HG_ROOT%\resources _temp.rc %HG_C_LOG%
+   %HG_BCC%\bin\brc32.exe -r -i%HG_ROOT%\resources _temp.rc %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
    goto COMPILE_PRG
 
@@ -156,44 +165,46 @@ rem
    if not exist %HG_FILE%.rc goto COMPILE_PRG
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   %HG_BCC%\bin\brc32.exe -r _temp.rc %HG_C_LOG%
+   %HG_BCC%\bin\brc32.exe -r _temp.rc %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_PRG
 
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
-   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_PRG_LOG%
+   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_DEFINES% %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_C
 
-   %HG_BCC%\bin\bcc32 -c -O2 -tW -tWM -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %HG_FILE%.c %HG_C_LOG%
+   %HG_BCC%\bin\bcc32 -c -O2 -tW -tWM -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %HG_FILE%.c %HG_DEFINES% %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
+   if "%HG_FLAVOR%" == "HARBOUR" goto LIBS_HARBOUR
 
 :LIBS_XHARBOUR
 
-   set HG_CLIBS=gtgui gtwin
-   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=gtwin gtgui debug
-   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=gtwin gtgui
-   set HG_CLIBS=%HG_CLIBS% codepage common ct dbfcdx dbfdbt dbffpt dbfntx hbsix hsx lang
-   set HG_CLIBS=%HG_CLIBS% libmisc macro pp rdd rtl tip vmmt %THR_LIB% %HG_ADDLIBS%
-   set HG_CLIBS=%HG_CLIBS% hbzebra hbhpdf libharu png zlib
+   set HG_C_LIBS=gtgui gtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=gtwin gtgui debug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=gtwin gtgui
+   set HG_C_LIBS=%HG_C_LIBS% codepage common ct dbfcdx dbfdbt dbffpt dbfntx hbsix hsx lang
+   set HG_C_LIBS=%HG_C_LIBS% libmisc macro pp rdd rtl tip vmmt %HG_ADDLIBS%
+   set HG_C_LIBS=%HG_C_LIBS% hbzebra hbhpdf libharu png zlib
    goto LIBS_WINDOWS
 
 :LIBS_HARBOUR
 
-   set HG_CLIBS=gtgui gtwin
-   if "%HG_COMP_TYPE%" == "DEBUG" set HG_CLIBS=gtwin gtgui hbdebug
-   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_CLIBS=gtwin gtgui
-   set HG_CLIBS=%HG_CLIBS% hbcpage hbcommon hbct rddcdx rddfpt rddntx hbsix hbhsx
-   set HG_CLIBS=%HG_CLIBS% hblang hbmacro hbpp hbrdd hbrtl hbvmmt %THR_LIB% %HG_ADDLIBS%
-   set HG_CLIBS=%HG_CLIBS% hbmemio hbmisc hbmzip hbnulrdd hbtip hbwin hbzebra
-   set HG_CLIBS=%HG_CLIBS% hbziparc hbzlib minizip png rddsql sddodbc xhb hbhpdf
+   set HG_C_LIBS=gtgui gtwin
+   if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=gtwin gtgui hbdebug
+   if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=gtwin gtgui
+   set HG_C_LIBS=%HG_C_LIBS% hbcpage hbcommon hbct rddcdx rddfpt rddntx hbsix hbhsx
+   set HG_C_LIBS=%HG_C_LIBS% hblang hbmacro hbpp hbrdd hbrtl hbvmmt %HG_ADDLIBS%
+   rem hbhpdf must precede hbwin png xhb
+   set HG_C_LIBS=%HG_C_LIBS% hbmemio hbmisc hbmzip hbnulrdd hbtip hbhpdf hbzebra
+   set HG_C_LIBS=%HG_C_LIBS% hbziparc hbzlib minizip hbwin png rddsql sddodbc xhb
 
 :LIBS_WINDOWS
 
-   set HG_WLIBS=cw32mt import32 user32 winspool gdi32 comctl32 comdlg32 ole32 oleaut32 uuid mpr wsock32 ws2_32 mapi32 winmm vfw32 msimg32 iphlpapi shell32
+   set HG_W_LIBS=cw32mt import32 user32 winspool gdi32 comctl32 comdlg32 shell32 ole32 oleaut32 uuid mpr wsock32 ws2_32 mapi32 winmm vfw32 msimg32 iphlpapi
 
 :BUILD_RESPONSE_FILE:
 
@@ -205,7 +216,7 @@ rem
    echo %HG_ROOT%\%LIB_GUI%\bostaurus.lib + >> b32.bc
    echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
    echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
-   for %%a in ( %HG_CLIBS% ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
+   for %%a in ( %HG_C_LIBS% ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
    if "%HG_USE_ODBC%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
    if "%HG_USE_ODBC%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
    if "%HG_USE_ZLIB%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
@@ -214,15 +225,15 @@ rem
    if "%HG_USE_ADS%"   == "TRUE" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
    if "%HG_USE_MYSQL%" == "TRUE" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
    if "%HG_USE_MYSQL%" == "TRUE" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
-   for %%a in ( %HG_WLIBS% ) do echo %%a.lib + >> b32.bc
+   for %%a in ( %HG_W_LIBS% ) do echo %%a.lib + >> b32.bc
    echo , , + >> b32.bc
    if exist _temp.res echo _temp.res >> b32.bc
 
 :LINK
 
-   if not "%HG_COMP_TYPE%" == "DEBUG" set HG_CFLAGS=-Gn -Tpe -aa %HG_CFLAGS%
-   if     "%HG_COMP_TYPE%" == "DEBUG" set HG_CFLAGS=-Gn -Tpe -ap %HG_CFLAGS%
-   %HG_BCC%\bin\ilink32.exe %HG_CFLAGS% -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %HG_C_LOG%
+   if not "%HG_COMP_TYPE%" == "DEBUG" set HG_C_FLAGS=-Gn -Tpe -aa %HG_C_FLAGS%
+   if     "%HG_COMP_TYPE%" == "DEBUG" set HG_C_FLAGS=-Gn -Tpe -ap %HG_C_FLAGS%
+   %HG_BCC%\bin\ilink32.exe %HG_C_FLAGS% -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %HG_DEFINES% %HG_C_LOG%
 
 :CLEANUP
 
@@ -232,18 +243,19 @@ rem
    if exist %HG_FILE%.tds del %HG_FILE%.tds
    if exist %HG_FILE%.c   del %HG_FILE%.c
    for %%a in ( _temp.* ) do del %%a
-   set HG_WLIBS=
-   set HG_CLIBS=
-   set HG_USE_ODBC=
-   set HG_USE_ZLIB=
+   set HG_C_FLAGS=
+   set HG_C_LIBS=
+   set HG_C_LOG=
+   set HG_COMP_TYPE=
+   set HG_DEFINES=
+   set HG_EXTRA=
+   set HG_PRG_LOG=
    set HG_USE_ADS=
    set HG_USE_MYSQL=
-   set HG_C_LOG=
-   set HG_PRG_LOG=
-   set HG_USERC=
-   set HG_EXTRA=
-   set HG_COMP_TYPE=
-   set HG_CFLAGS=
+   set HG_USE_ODBC=
+   set HG_USE_RC=
+   set HG_USE_ZLIB=
+   set HG_W_LIBS=
 
    rem *** Run ***
    if errorlevel 1 set HG_NO_RUN=TRUE
