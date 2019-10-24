@@ -12,6 +12,105 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-10-24 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_browse.prg
+     * On init the disabled style is deferred until the control
+       is populated.
+     * Return Self changed to NIL for non constructor methods.
+     * Some format.
+     ! Vertical scrollbar remains operative after disabling
+       the control.
+
+2019-10-24 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     * On init the disabled style is deferred until the control
+       is populated.
+     ! Vertical scrollbar remains operative after disabling
+       the control.
+     * Method Enabled of class TOBrowse now disables the
+       vertical scrollbar.
+
+2019-10-24 18:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     * On init the disabled style is deferred until the control
+       is populated.
+
+2019-10-24 18:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\oohg.hbc
+     * Lib xhb was moved to last position in link order.
+
+2019-10-24 18:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     * HG_CCOMP replaced by HG_BCC.
+     ! Missing init values of some envvars.
+     + Define for _OOHG_CONSOLEMODE_ when /C switch is used.
+       This define is passed to every exe in the tool chain.
+     * Some local envvars were renamed.
+     * Lib xhb was moved to last position in link order.
+     ! Harbour based builds.
+
+2019-10-24 18:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_MINGW.BAT
+     * HG_CCOMP replaced by HG_MING.
+     + Define for _OOHG_CONSOLEMODE_ when /C switch is used.
+       This define is passed to every exe in the tool chain.
+     * Removed support for THR_LIB envvar.
+       Use HG_ADDLIBS instead.
+       INCOMPATIBLE.
+     * Some local envvars were renamed.
+     * Lib xhb was moved to last position in link order.
+
+2019-10-24 18:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile.bat
+     ! Missing init values of some envvars.
+     + HG_FLAVOR envvar.
+
+2019-10-24 18:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimsc.c
+     * Some BCC 5.8.2 warnings were pacified.
+     - Unneeded code.
+
+2019-10-24 18:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     - Duplicated statement.
+
+2019-10-24 18:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_menu.prg
+     ! Method Enabled of class TMenu.
+     ! Method Enabled of class TMenuItem.
+
+2019-10-24 18:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_notify.prg
+     - Some comments.
+
+2019-10-24 18:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     ! Clause ONMDBLCLICK.
+
+2019-10-24 18:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + Parameter lCurrent to function _OOHG_CallDump.
+       When it's .T. only the last called function will be dumped.
+       Defaults to .F.
+     * The name of the log is now configurable.
+     - Debug code left behind in the previous commit.
+
+2019-10-24 18:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     + Support for _OOHG_LogFile var.
+     + SET LOGFILE TO.
+
+2019-10-24 18:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+   * core\include\miniprint.ch
+     + The possibility to hide the Save button.
+
+2019-10-24 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     + The possibility to choose a folder for saving to.
+
 2019-10-18 18:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\winprint.prg
      ! Method StartDoc doesn't honor the value of ::DocName.
