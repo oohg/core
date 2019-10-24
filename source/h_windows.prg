@@ -1724,7 +1724,7 @@ FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeoutValue, lMultiLine, nMaxLength )
 
-   LOCAL RetVal, mo, oWin, ook
+   LOCAL RetVal, mo, oWin
 
    ASSIGN cInputPrompt   VALUE cInputPrompt   TYPE "C" DEFAULT ""
    ASSIGN cDialogCaption VALUE cDialogCaption TYPE "C" DEFAULT ""
@@ -1789,10 +1789,9 @@ FUNCTION InputBox( cInputPrompt, cDialogCaption, cDefaultValue, nTimeout, cTimeo
          ENDIF
       ENDIF
 
-      @ 67 + mo, 120 BUTTON _Ok OBJ oOk ;
+      @ 67 + mo, 120 BUTTON _Ok ;
          CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ;
          ACTION ( _OOHG_DialogCancelled := .F., RetVal := oWin:_TextBox:Value, iif( oWin:Active, oWin:Release(), NIL ) )
-AutoMsgBox( oOk:FontSize )
       @ 67 + mo, 230 BUTTON _Cancel ;
          CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ;
          ACTION ( _OOHG_DialogCancelled := .T., iif( oWin:Active, oWin:Release(), NIL ) )
@@ -2012,17 +2011,22 @@ FUNCTION _OOHG_SetKey( aKeys, nKey, nFlags, bAction, nId )
    RETURN uRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE _OOHG_CallDump( uTitle, cOutput )
+PROCEDURE _OOHG_CallDump( uTitle, cOutput, lCurrent )
 
    LOCAL nLevel, cText, oLog
 
-   cText := ""
-   nLevel := 1
-   DO WHILE ! Empty( ProcName( nLevel ) )
-      IF nLevel > 1
-         cText += Chr( 13 ) + Chr( 10 )
-      ENDIF
-      cText += ProcName( nLevel ) + ;
+   ASSIGN lCurrent VALUE lCurrent TYPE "L" DEFAULT .F.
+
+   cText := ProcName( 1 ) + ;
+            " (" + ;
+            AllTrim( Str( ProcLine( 1 ) ) ) + ;
+            ")" + ;
+            iif( Empty( ProcFile( 1 ) ), "", " in " + ProcFile( 1 ) )
+
+   nLevel := 2
+   DO WHILE ! Empty( ProcName( nLevel ) ) .AND. ! lCurrent
+      cText += CRLF + ;
+               ProcName( nLevel ) + ;
                " (" + ;
                AllTrim( Str( ProcLine( nLevel ) ) ) + ;
                ")" + ;
@@ -2034,7 +2038,7 @@ PROCEDURE _OOHG_CallDump( uTitle, cOutput )
    cOutPut := Left( cOutPut, 1 )
    IF cOutput $ "FB"        // To File or Both
       oLog := OOHG_TErrorTxt():New()
-      oLog:FileName := "DumpLog.txt"
+      oLog:FileName := _OOHG_LogFile
       oLog:Write( AutoType( uTitle ) )
       oLog:Write( "" )
       oLog:Write( cText )
