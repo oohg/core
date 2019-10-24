@@ -1726,7 +1726,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Sélectionnez un dossier" }                  // 50
    CASE cLang == "DEWIN" .OR. ;
         cLang == "DE"                                 // German
       ::aOpisy := { "Vorschau", ;                     // 01
@@ -1777,7 +1778,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Wählen Sie einen Ordner" }                  // 50
    CASE cLang == "IT"                                 // Italian
       ::aOpisy := { "Anteprima", ;                    // 01
          "&Cancella", ;                               // 02
@@ -1827,7 +1829,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Seleziona una cartella" }                   // 50
    CASE cLang == "PLWIN" .OR. ;
         cLang == "PL852" .OR. ;
         cLang == "PLISO" .OR. ;
@@ -1868,7 +1871,20 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "Zapisz wszystko", ;                         // 34
          "Pliki EMF", ;                               // 35
          "Wszystkie pliki", ;                         // 36
-         "Nieobslugiwane ustawienie:" }               // 37
+         "Nieobslugiwane ustawienie:", ;              // 37
+         "UNKNOWN", ;                                 // 38
+         "ORIENTATION", ;                             // 39
+         "PAPERSIZE", ;                               // 40
+         "SCALE", ;                                   // 41
+         "COPIES", ;                                  // 42
+         "DEFAULTSOURCE", ;                           // 43
+         "PRINTQUALITY", ;                            // 44
+         "COLOR", ;                                   // 45
+         "DUPLEX", ;                                  // 46
+         "COLLATE", ;                                 // 47
+         "PAPERLENGTH", ;                             // 48
+         "PAPERWIDTH", ;                              // 49
+         "Wybierz folder" }                           // 50
    CASE cLang == "PT"                                 // Portuguese
       ::aOpisy := { "Inspeção Prévia", ;              // 01
          "&Cancelar", ;                               // 02
@@ -1918,7 +1934,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Selecione uma pasta" }                      // 50
    CASE cLang == "RUKOI8" .OR. ;
         cLang == "RU866"  .OR. ;
         cLang == "RUWIN"                              // Russian
@@ -1970,7 +1987,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Select a folder" }                          // 50
    CASE cLang == "ES" .OR. ;
         cLang == "ESWIN"                              // Spanish
       ::aOpisy := { "Vista Previa", ;                 // 01
@@ -2021,7 +2039,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Seleccione una carpeta" }                   // 50
    CASE cLang == "UK" .OR. ;
         cLang == "UA"                                 // Ukranian
       ::aOpisy := { 'Ïåðåãëÿä', ;                     // 01
@@ -2072,7 +2091,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Select a folder" }                          // 50
    CASE cLang == "FI"                                 // Finnish
       ::aOpisy := { "Esikatsele", ;                   // 01
          "&Keskeytä", ;                               // 02
@@ -2122,7 +2142,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Valitse kansio" }                           // 50
    CASE cLang == "NL"                                 // Dutch
       ::aOpisy := { 'Afdrukvoorbeeld', ;              // 01
          'Annuleer', ;                                // 02
@@ -2172,7 +2193,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Selecteer een map" }                        // 50
    CASE cLang == "CS"                                 // Czech
       ::aOpisy := { "Náhled", ;                       // 01
          "&Storno", ;                                 // 02
@@ -2222,7 +2244,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Vyberte složku" }                           // 50
    CASE cLang == "SK"                                 // Slovak
       ::aOpisy := { "Náh¾ad", ;                       // 01
          "&Storno", ;                                 // 02
@@ -2272,7 +2295,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Vyberte priecinok" }                        // 50
    CASE cLang == "SLWIN" .OR. ;
         cLang == "SLISO" .OR. ;
         cLang == "SL852" .OR. ;
@@ -2325,7 +2349,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Izberite mapo" }                            // 50
    CASE cLang == "HU"                                 // Hungarian
       ::aOpisy := { "Elõnézet", ;                     // 01
          "&Mégse", ;                                  // 02
@@ -2375,7 +2400,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Válasszon mappát" }                         // 50
    CASE cLang == "EL"                                 // Greek - Ellinika
       ::aOpisy := { 'ÐñïâïëÞ', ;                      // 01
          '&Áêõñï', ;                                  // 02
@@ -2425,7 +2451,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Select a folder" }                          // 50
    CASE cLang == "BG"                                 // Bulgarian
       ::aOpisy := { 'Ïðåãëåä', ;                      // 01
          'Èçõîä', ;                                   // 02
@@ -2475,7 +2502,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Select a folder" }                          // 50
    CASE cLang == "HR852"                              // Croatian
       ::aOpisy := { "Pregled", ;                      // 01
          "Otkazati", ;                                // 02
@@ -2525,7 +2553,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Odaberite mapu" }                           // 50
    CASE cLang == "EU"                                 // Basque
       ::aOpisy := { "Aurrebista", ;                   // 01
          "Utzi", ;                                    // 02
@@ -2575,7 +2604,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Hautatu karpeta" }                          // 50
    CASE cLang == "TR"                                 // Turkish
       ::aOpisy := { "Önizleme", ;                     // 01
          "Iptal", ;                                   // 02
@@ -2625,7 +2655,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Bir klasör seçin" }                         // 50
    OTHERWISE
       ::aOpisy := { "Preview", ;                      // 01
          "&Cancel", ;                                 // 02
@@ -2675,7 +2706,8 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
          "DUPLEX", ;                                  // 46
          "COLLATE", ;                                 // 47
          "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH" }                               // 49
+         "PAPERWIDTH", ;                              // 49
+         "Select a folder" }                          // 50
    ENDCASE
 
    FOR i := 1 TO 36
@@ -2697,7 +2729,17 @@ METHOD SaveMetaFiles( number, filename ) CLASS HBPrinter
          number := NIL
       ENDIF
       IF Empty( filename )
-         filename := ::DocName + "_page_"
+         IF Empty( filename := GetFolder( ::aOpisy[ 50 ] ) )
+            RETURN NIL
+         ENDIF
+         IF Right( filename, 1 ) != "\"
+            filename += "\"
+         ENDIF
+         IF Left( ::DocName, 1 ) != "\"
+            filename += ::DocName + "_page_"
+         ELSE
+            filename += SubStr( ::DocName, 2 ) + "_page_"
+         ENDIF
       ENDIF
 
       IF ::InMemory
