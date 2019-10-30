@@ -84,13 +84,14 @@
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <notabstop: NOTABSTOP> ] ;
+      [ TOOLBARSIZE <tbsize> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, ;
             <{action}>, <f>, <s>, <tooltip>, <.flat.>, <.bottom.>, ;
             <.righttext.>, <.break.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <.border.>, <.rtl.>, <.notabstop.>, <.vertical.>, ;
-            <.own.> )
+            <.own.>, <tbsize> )
 
 #xcommand END TOOLBAR [ <nobreak: NOBREAK> ] ;
    => ;

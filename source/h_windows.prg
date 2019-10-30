@@ -264,7 +264,7 @@ CLASS TWindow
    METHOD SetKey                                                              // Application-controlled hotkeys
    METHOD SetRedraw
    METHOD SetSplitBox             BLOCK { || .F. }                            // Specific hack
-   METHOD SetSplitBoxInfo         BLOCK { |Self, a, b, c, d| iif( ::Container != NIL, ::Container:SetSplitBox( a, b, c, d ), .F. ) }   // Specific hack
+   METHOD SetSplitBoxInfo         BLOCK { |Self, a, b, c, d, e| iif( ::Container != NIL, ::Container:SetSplitBox( a, b, c, d, e ), .F. ) }
    METHOD Show                    BLOCK { |Self| ::Visible := .T. }
    METHOD StartInfo
    METHOD Style                   SETGET

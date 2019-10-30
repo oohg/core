@@ -125,7 +125,7 @@ CLASS TToolBar FROM TControl
 METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
                fontname, fontsize, tooltip, flat, bottom, righttext, break, ;
                bold, italic, underline, strikeout, border, lRtl, lNoTabStop, ;
-               lVertical, lOwnToolTip ) CLASS TToolBar
+               lVertical, lOwnToolTip, idealsize ) CLASS TToolBar
 
    Local ControlHandle, id, lSplitActive, nStyle, oCtrl
 
@@ -156,7 +156,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
 
    Id := _GetId()
 
-   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth, Nil, .T. )
+   lSplitActive := ::SetSplitBoxInfo( Break, caption, ::nButtonWidth, NIL, idealsize )
    nStyle := ::InitStyle( Nil, Nil, Nil, lNoTabStop, Nil )
    ControlHandle := InitToolBar( ::ContainerhWnd, Caption, id, ::ContainerCol, ::ContainerRow, ::nButtonWidth, ::nButtonHeight, "", 0, flat, ! ::lTop, righttext, lSplitActive, border, ::lRtl, nStyle, ::lVertical )
 
@@ -212,7 +212,7 @@ FUNCTION _EndToolBar( lBreak )
 
       w := GetWindowWidth( ::hWnd )
 
-      SetSplitBoxItem( ::hWnd, ::Container:hWnd, w, Nil, Nil, MinWidth, MinHeight, ::Container:lInverted )
+      SetSplitBoxItem( ::hWnd, ::Container:hWnd, w, Nil, Nil, MinWidth, MinHeight, ::Container:lInverted, ::Container:nIdealSize )
 
       ASSIGN lBreak VALUE lBreak TYPE "L" DEFAULT .T.
 

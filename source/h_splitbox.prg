@@ -65,150 +65,158 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TSplitBox FROM TControl
 
-   DATA Type                   INIT "SPLITBOX" READONLY
-   DATA lForceBreak            INIT .T.
-   DATA cGripperText           INIT ""
-   DATA lInverted              INIT .F.
-   DATA nMinWidth              INIT nil
-   DATA nMinHeight             INIT nil
+   DATA cGripperText              INIT ""
+   DATA lForceBreak               INIT .T.
+   DATA lInverted                 INIT .F.
+   DATA nIdealSize                INIT NIL
+   DATA nMinHeight                INIT NIL
+   DATA nMinWidth                 INIT NIL
+   DATA Type                      INIT "SPLITBOX" READONLY
 
-   METHOD Define
-   METHOD SizePos              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD Refresh              BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD Events_Size          BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) }
-   METHOD RefreshData          BLOCK { |Self| SizeRebar( ::hWnd ) , RedrawWindow( ::hWnd ) , ::Super:RefreshData() }
    METHOD AddControl
-   METHOD SetSplitBox
-   METHOD ClientHeightUsed     BLOCK { |Self| GetWindowHeight( ::hWnd )  }
    METHOD BandGripperOFF
    METHOD BandGripperON
    METHOD BandHasGripper
+   METHOD ClientHeightUsed        BLOCK { |Self| GetWindowHeight( ::hWnd )  }
+   METHOD Define
+   METHOD Events_Size             BLOCK { |Self| SizeRebar( ::hWnd ), RedrawWindow( ::hWnd ) }
    METHOD HideBand
-   METHOD ShowBand
    METHOD IsBandVisible
+   METHOD Refresh                 BLOCK { |Self| SizeRebar( ::hWnd ), RedrawWindow( ::hWnd ) }
+   METHOD RefreshData             BLOCK { |Self| SizeRebar( ::hWnd ), RedrawWindow( ::hWnd ), ::Super:RefreshData() }
+   METHOD SetSplitBox
+   METHOD ShowBand
+   METHOD SizePos                 BLOCK { |Self| SizeRebar( ::hWnd ), RedrawWindow( ::hWnd ) }
 
    ENDCLASS
 
-METHOD Define( ParentForm, bottom, inverted, lRtl, noattached ) CLASS TSplitBox
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( uParentForm, lBottom, lInverted, lRtl, lNoAttached ) CLASS TSplitBox
 
-   Local ControlHandle, nStyle
+   LOCAL nControlHandle, nStyle
 
-   ::SetForm( , ParentForm,,,,,, lRtl )
+   ::SetForm( NIL, uParentForm, NIL, NIL, NIL, NIL, NIL, lRtl )
 
-   If ::Container != nil .AND. ! ValidHandler( ::ContainerhWndValue )
-      MsgOOHGError( "SPLITBOX can't be defined inside Tab control. Program terminated." )
-   EndIf
+   IF ::Container != NIL .AND. ! ValidHandler( ::ContainerhWndValue )
+      MsgOOHGError( "SPLITBOX can't be defined inside TAB control. Program terminated." )
+   ENDIF
 
-   ASSIGN ::lInverted VALUE inverted   TYPE "L"
-   ASSIGN bottom      VALUE bottom     TYPE "L"
+   ASSIGN ::lInverted VALUE lInverted TYPE "L"
+   ASSIGN lBottom     VALUE lBottom   TYPE "L"
 
-   nStyle := ::InitStyle( ,,, .T. )
-   If ::lInverted
-      If bottom
+   nStyle := ::InitStyle( NIL, NIL, NIL, .T. )
+   IF ::lInverted
+      IF lBottom
          nStyle += CCS_RIGHT
-      Else
+      ELSE
          nStyle += CCS_LEFT
-      EndIf
-   Else
-      If bottom
+      ENDIF
+   ELSE
+      IF lBottom
          nStyle += CCS_BOTTOM
-      Else
+      ELSE
          nStyle += CCS_TOP
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   ControlHandle := InitSplitBox( ::ContainerhWnd, nStyle, ::lRtl )
+   nControlHandle := InitSplitBox( ::ContainerhWnd, nStyle, ::lRtl )
 
-   If VALTYPE( noattached ) == "L" .AND. noattached
+   IF ValType( lNoAttached ) == "L" .AND. lNoAttached
       ::Style := ::Style + CCS_NOPARENTALIGN
-   EndIf
+   ENDIF
 
-   ::Register( ControlHandle )
+   ::Register( nControlHandle )
    ::SizePos()
 
    ::ContainerhWndValue := ::hWnd
 
    _OOHG_AddFrame( Self )
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AddControl( oControl ) CLASS TSplitBox
 
-   AddSplitBoxItem( oControl:hWnd, ::hWnd, GetWindowWidth( oControl:hWnd ), ::lForceBreak, ::cGripperText, ::nMinWidth, ::nMinHeight, ::lInverted )
+   AddSplitBoxItem( oControl:hWnd, ::hWnd, GetWindowWidth( oControl:hWnd ), ::lForceBreak, ::cGripperText, ::nMinWidth, ::nMinHeight, ::lInverted, ::nIdealSize )
    ::lForceBreak  := .F.
-   ::cGripperText := nil
-   ::nMinWidth    := nil
+   ::cGripperText := NIL
+   ::nMinWidth    := NIL
+   ::nMinHeight   := NIL
+   ::nIdealSize   := NIL
 
-   Return ::Super:AddControl( oControl )
+   RETURN ::Super:AddControl( oControl )
 
-METHOD SetSplitBox( Break, GripperText, nMinWidth, nMinHeight ) CLASS TSplitBox
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetSplitBox( Break, GripperText, nMinWidth, nMinHeight, nIdealSize ) CLASS TSplitBox
 
    ::lForceBreak := ::lForceBreak .OR. ( ValType( Break ) == "L" .AND. Break )
-   If ValType( GripperText ) $ "CM"
-      ::cGripperText := GripperText
-   EndIf
-   If ValType( nMinWidth ) == "N"
-      ::nMinWidth := nMinWidth
-   EndIf
-   If ValType( nMinHeight ) == "N"
-      ::nMinHeight := nMinHeight
-   EndIf
+   ASSIGN ::cGripperText VALUE GripperText TYPE "CM"
+   ASSIGN ::nMinWidth    VALUE nMinWidth   TYPE "N"
+   ASSIGN ::nMinHeight   VALUE nMinHeight  TYPE "N"
+   ASSIGN ::nIdealSize   VALUE nIdealSize  TYPE "N"
 
-   Return .T.
+   RETURN .T.
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BandGripperOFF( nBandId ) CLASS TSplitBox
 
    SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .F. )
    SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .T. )
 
-   Return Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BandGripperON( nBandId ) CLASS TSplitBox
 
    SetBandStyle( ::hWnd, nBandId, RBBS_NOGRIPPER, .F. )
    SetBandStyle( ::hWnd, nBandId, RBBS_GRIPPERALWAYS, .T. )
 
-   Return Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BandHasGripper( nBandId ) CLASS TSplitBox
 
-   Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_NOGRIPPER )
+   RETURN ! BandHasStyleSet( ::hWnd, nBandId, RBBS_NOGRIPPER )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD HideBand( nBandId ) CLASS TSplitBox
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .T. )
 
-   Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
+   RETURN ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .T. )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ShowBand( nBandId ) CLASS TSplitBox
 
    SetBandStyle( ::hWnd, nBandId, RBBS_HIDDEN, .F. )
 
-   Return ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
+   RETURN ( BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN ) == .F. )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD IsBandVisible( nBandId ) CLASS TSplitBox
 
-   Return ! BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN )
+   RETURN ! BandHasStyleSet( ::hWnd, nBandId, RBBS_HIDDEN )
 
-Function _EndSplitBox()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _EndSplitBox()
 
-   Return _OOHG_DeleteFrame( "SPLITBOX" )
+   RETURN _OOHG_DeleteFrame( "SPLITBOX" )
 
-Function _ForceBreak( ParentForm )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _ForceBreak( ParentForm )
 
-   Local oControl
+   LOCAL oControl
 
    oControl := TControl()
-   oControl:SetForm( , ParentForm )
+   oControl:SetForm( NIL, ParentForm )
    oControl:SetSplitBoxInfo( .T. )
 
-   Return nil
+   RETURN NIL
 
-
-EXTERN SetSplitBoxItem
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #ifndef _WIN32_IE
@@ -290,14 +298,15 @@ HB_FUNC( INITSPLITBOX )          /* FUNCTION IniTSplitBox( hWnd, nStyle, lRtl ) 
    HWNDret( hCtrl );
 }
 
-HB_FUNC( ADDSPLITBOXITEM )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBarhWnd, CtrlWidth, lForceBreak, cGripperText, nMinWidth, nMinHeight, lInverted, nIdealSize ) -> NIL */
 {
    REBARBANDINFO rbBand;
-   RECT          rc;
+   RECT rc;
    int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
-   int iID = SendMessage( HWNDparam( 2 ), RB_GETBANDCOUNT, 0 , 0 ) + 1;
+   int iID = SendMessage( HWNDparam( 2 ), RB_GETBANDCOUNT, 0, 0 ) + 1;
 
-   if( hb_parl( 4 ) )
+   if( hb_parl( 4 ) )   // lForceBreak
    {
       Style = Style | RBBS_BREAK ;
    }
@@ -308,28 +317,41 @@ HB_FUNC( ADDSPLITBOXITEM )
       refuses to work ( sizeof(REBARBANDINFO) becomes 100 ).
    */
 
-   GetWindowRect( HWNDparam( 1 ) , &rc );
+   GetWindowRect( HWNDparam( 1 ), &rc );
 
    memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
-   rbBand.cbSize     = sizeof(REBARBANDINFO);
+
+   rbBand.cbSize     = sizeof( REBARBANDINFO );
    rbBand.fMask      = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_ID;
+   if( hb_parni( 9 ) )   // nIdealSize
+   {
+      rbBand.fMask = rbBand.fMask | RBBIM_IDEALSIZE;
+   }
    rbBand.fStyle     = Style ;
    rbBand.hbmBack    = 0;
    rbBand.wID        = iID;
    rbBand.lpText     = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
    rbBand.hwndChild  = HWNDparam( 1 );
 
-   if ( !hb_parl( 8 ) )
+   if ( ! hb_parl( 8 ) )   // ! lInverted
    {
-      // Not Horizontal
-      rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;       //0 ; JP 61
-      rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ; // JP 61
+      rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+      rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
       rbBand.cx         = hb_parni( 3 ) ;
+      if( hb_parni( 9 ) )   // nIdealSize
+      {
+         rbBand.cxIdeal    = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+         rbBand.cxMinChild = hb_parni( 9 );
+      }
+      else
+      {
+         rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+      }
    }
    else
    {
-      // Horizontal
-      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )
+      // Horizontal or Vertical
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   // nMinWidth == 0 .AND. nMinHeight == 0
       {
          // Not ToolBar
          rbBand.cxMinChild = 0 ;
@@ -339,25 +361,34 @@ HB_FUNC( ADDSPLITBOXITEM )
       else
       {
          // ToolBar
-         rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-         rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
-         rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
+         rbBand.cyMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;
+         rbBand.cx         = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
+         if( hb_parni( 9 ) )   // nIdealSize
+         {
+            rbBand.cxIdeal    = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
+            rbBand.cxMinChild = hb_parni( 9 );
+         }
+         else
+         {
+            rbBand.cxMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
+         }
       }
    }
 
    SendMessage( HWNDparam( 2 ), RB_INSERTBAND, ( WPARAM ) -1, ( LPARAM ) &rbBand );
 }
 
-HB_FUNC( SETSPLITBOXITEM )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETSPLITBOXITEM )          /* FUNCTION SetSplitBoxItem( CtrlhWnd, ReBarhWnd, CtrlWidth, lForceBreak, cGripperText, nMinWidth, nMinHeight, lInverted, nIdealSize ) -> NIL */
 {
    REBARBANDINFO rbBand;
-   RECT          rc;
+   RECT rc;
    int iCount;
 
    memset( &rbBand, 0, sizeof( REBARBANDINFO ) );
-           rbBand.cbSize = sizeof(REBARBANDINFO);
-   iCount = SendMessage( HWNDparam( 2 ) , RB_GETBANDCOUNT, 0 , 0 ) - 1;
-   SendMessage( HWNDparam( 2 ) , RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
+   rbBand.cbSize = sizeof(REBARBANDINFO);
+   iCount = SendMessage( HWNDparam( 2 ), RB_GETBANDCOUNT, 0, 0 ) - 1;
+   SendMessage( HWNDparam( 2 ), RB_GETBANDINFO, iCount, (LPARAM) &rbBand );
 
    if( HB_ISLOG( 4 ) )
    {
@@ -379,23 +410,35 @@ HB_FUNC( SETSPLITBOXITEM )
       rbBand.lpText = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
    }
 
+   if( HB_ISNUM( 9 ) && ( hb_parni( 9 ) > 0 ) )   // nIdealSize
+   {
+      rbBand.fMask = rbBand.fMask | RBBIM_IDEALSIZE;
+   }
+
+   rbBand.fMask |= RBBIM_CHILDSIZE | RBBIM_SIZE ;
+
    GetWindowRect( HWNDparam( 1 ), &rc );
 
-   rbBand.fMask  |= RBBIM_CHILDSIZE | RBBIM_SIZE ;
-
-   // rbBand.hwndChild  = HWNDparam( 1 );
-
-   if( ! hb_parl( 8 ) )
+   if ( ! hb_parl( 8 ) )   // ! lInverted
    {
-      // Not Horizontal
-      rbBand.cxMinChild = hb_parni(6) ? hb_parni(6) : 0 ;       //0 ; JP 61
-      rbBand.cyMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-      rbBand.cx         = hb_parni(3) ;
+      rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+      rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
+      rbBand.cx         = hb_parni( 3 ) ;
+
+      if( hb_parni( 9 ) )   // nIdealSize
+      {
+         rbBand.cxIdeal    = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+         rbBand.cxMinChild = hb_parni( 9 );
+      }
+      else
+      {
+         rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
+      }
    }
    else
    {
-      // Horizontal
-      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )
+      // Horizontal or Vertical
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   // nMinWidth == 0 .AND. nMinHeight == 0
       {
          // Not ToolBar
          rbBand.cxMinChild = 0 ;
@@ -405,15 +448,24 @@ HB_FUNC( SETSPLITBOXITEM )
       else
       {
          // ToolBar
-         rbBand.cxMinChild = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ; // JP 61
-         rbBand.cyMinChild = hb_parni(6) ? hb_parni(6) : 0 ;
-         rbBand.cx         = hb_parni(7) ? hb_parni(7) : rc.bottom - rc.top ;
+         rbBand.cyMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;
+         rbBand.cx         = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
+         if( hb_parni( 9 ) )   // nIdealSize
+         {
+            rbBand.cxIdeal    = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
+            rbBand.cxMinChild = hb_parni( 9 );
+         }
+         else
+         {
+            rbBand.cxMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
+         }
       }
    }
 
    SendMessage( HWNDparam( 2 ), RB_SETBANDINFO, iCount, (LPARAM) &rbBand );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL GetBandStyle( HWND hWnd, int nBandIndex, int nStyle )
 {
    REBARBANDINFO rbBand;
@@ -427,6 +479,7 @@ BOOL GetBandStyle( HWND hWnd, int nBandIndex, int nStyle )
    return( rbBand.fStyle & nStyle );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 void SetBandStyle( HWND hWnd, int nBandId, int nStyle, BOOL nSet )
 {
    REBARBANDINFO rbBand;
@@ -461,6 +514,7 @@ void SetBandStyle( HWND hWnd, int nBandId, int nStyle, BOOL nSet )
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETBANDSTYLE )
 {
    /*
@@ -471,6 +525,7 @@ HB_FUNC( SETBANDSTYLE )
    SetBandStyle( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( BANDHASSTYLESET )
 {
    /*
@@ -488,6 +543,7 @@ HB_FUNC( BANDHASSTYLESET )
    hb_retl( GetBandStyle( HWNDparam( 1 ), nBandIndex, hb_parni( 3 ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SIZEREBAR )
 {
    int nCount = SendMessage( HWNDparam( 1 ), RB_GETBANDCOUNT, 0, 0 );
