@@ -139,9 +139,9 @@ MEMVAR HBPRN
    => ;
       hbprn:SetDevMode( DM_COLOR, <c> )
 
-#xcommand INIT PRINTSYS [ LANGUAGE <cLang> ] ;
+#xcommand INIT PRINTSYS [ LANGUAGE <cLang> ] [ FOLDER <cFolder> ] ;
    => ;
-      hbprn := HBPrinter():New( <cLang> )
+      hbprn := HBPrinter():New( <cLang>, <cFolder> )
 
 #xcommand START DOC [ NAME <docname> ] ;
    => ;

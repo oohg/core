@@ -82,11 +82,81 @@
 #endif
 
 #ifndef __OOHG__
-#define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#define ArrayRGB_TO_COLORREF( aRGB ) RGB( aRGB[1], aRGB[2], aRGB[3] )
 #endif
 
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
+
+// For ::aTH
+#define TH_ROW                1
+#define TH_COL                2
+#define TH_HEIGHT             3
+#define TH_WIDTH              4
+#define TH_HWND               5
+
+// For ::aHS
+#define PREVIEW_RECT          1
+#define PREVIEW_RECT_TOP      1, 1
+#define PREVIEW_RECT_LEFT     1, 2
+#define PREVIEW_RECT_BOTTOM   1, 3
+#define PREVIEW_RECT_RIGHT    1, 4
+#define PREVIEW_RECT_HEIGHT   1, 5
+#define PREVIEW_RECT_WIDTH    1, 6
+
+#define PREVIEW_FORM          2
+#define PREVIEW_FORM_TOP      2, 1
+#define PREVIEW_FORM_LEFT     2, 2
+#define PREVIEW_FORM_BOTTOM   2, 3
+#define PREVIEW_FORM_RIGHT    2, 4
+#define PREVIEW_FORM_HEIGHT   2, 5
+#define PREVIEW_FORM_WIDTH    2, 6
+#define PREVIEW_FORM_HWND     2, 7
+
+#define PREVIEW_TB            3
+#define PREVIEW_TB_TOP        3, 1
+#define PREVIEW_TB_LEFT       3, 2
+#define PREVIEW_TB_BOTTOM     3, 3
+#define PREVIEW_TB_RIGHT      3, 4
+#define PREVIEW_TB_HEIGHT     3, 5
+#define PREVIEW_TB_WIDTH      3, 6
+#define PREVIEW_TB_HWND       3, 7
+
+#define PREVIEW_SB            4
+#define PREVIEW_SB_TOP        4, 1
+#define PREVIEW_SB_LEFT       4, 2
+#define PREVIEW_SB_BOTTOM     4, 3
+#define PREVIEW_SB_RIGHT      4, 4
+#define PREVIEW_SB_HEIGHT     4, 5
+#define PREVIEW_SB_WIDTH      4, 6
+#define PREVIEW_SB_HWND       4, 7
+
+#define PREVIEW_PAGE          5
+#define PREVIEW_PAGE_TOP      5, 1
+#define PREVIEW_PAGE_LEFT     5, 2
+#define PREVIEW_PAGE_BOTTOM   5, 3
+#define PREVIEW_PAGE_RIGHT    5, 4
+#define PREVIEW_PAGE_HEIGHT   5, 5
+#define PREVIEW_PAGE_WIDTH    5, 6
+#define PREVIEW_PAGE_HWND     5, 7
+
+#define PREVIEW_IMAGE         6
+#define PREVIEW_IMAGE_TOP     6, 1
+#define PREVIEW_IMAGE_LEFT    6, 2
+#define PREVIEW_IMAGE_BOTTOM  6, 3
+#define PREVIEW_IMAGE_RIGHT   6, 4
+#define PREVIEW_IMAGE_HEIGHT  6, 5
+#define PREVIEW_IMAGE_WIDTH   6, 6
+#define PREVIEW_IMAGE_HWND    6, 7
+
+#define PREVIEW_THUMBS        7
+#define PREVIEW_THUMBS_TOP    7, 1
+#define PREVIEW_THUMBS_LEFT   7, 2
+#define PREVIEW_THUMBS_BOTTOM 7, 3
+#define PREVIEW_THUMBS_RIGHT  7, 4
+#define PREVIEW_THUMBS_HEIGHT 7, 5
+#define PREVIEW_THUMBS_WIDTH  7, 6
+#define PREVIEW_THUMBS_HWND   7, 7
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS HBPrinter
@@ -94,7 +164,7 @@ CLASS HBPrinter
    DATA AfterPrint                INIT {|| NIL }
    DATA aHS                       INIT {}
    DATA aOpisy                    INIT {}
-   DATA AtH                       INIT {}
+   DATA aTH                       INIT {}
    DATA aZoom                     INIT { 0, 0, 0, 0 }
    DATA BaseDoc                   INIT ""
    DATA BeforePrint               INIT {|| .T. }
@@ -160,6 +230,8 @@ CLASS HBPrinter
    DATA Version                   INIT 2.45 READONLY
    DATA ViewportOrg               INIT { 0, 0 }
 
+   DESTRUCTOR Destroy
+
    METHOD New
    METHOD SelectPrinter
    METHOD SetDevMode
@@ -170,11 +242,11 @@ CLASS HBPrinter
    METHOD EndPage
    METHOD EndDoc
    METHOD SetTextColor
-   METHOD GetTextColor          INLINE ::TextColor
+   METHOD GetTextColor            INLINE ::TextColor
    METHOD SetBkColor
-   METHOD GetBkColor            INLINE ::BkColor
+   METHOD GetBkColor              INLINE ::BkColor
    METHOD SetBkMode
-   METHOD GetBkMode             INLINE ::BkMode
+   METHOD GetBkMode               INLINE ::BkMode
    METHOD DefineImageList
    METHOD DrawImageList
    METHOD DefineBrush
@@ -190,7 +262,7 @@ CLASS HBPrinter
    METHOD DrawText
    METHOD TextOut
    METHOD Say
-   METHOD SetCharset( charset ) INLINE RR_SetCharset( charset, ::hData, Self )
+   METHOD SetCharset( charset )   INLINE RR_SetCharset( charset, ::hData, Self )
    METHOD Rectangle
    METHOD RoundRect
    METHOD FillRect
@@ -214,7 +286,7 @@ CLASS HBPrinter
    METHOD SelectClipRgn
    METHOD DeleteClipRgn
    METHOD SetPolyFillMode
-   METHOD GetPolyFillMode       INLINE ::PolyFillMode
+   METHOD GetPolyFillMode         INLINE ::PolyFillMode
    METHOD SetViewPortOrg
    METHOD GetViewPortOrg
    METHOD DxColors
@@ -238,7 +310,6 @@ CLASS HBPrinter
    METHOD GetVersion              INLINE ::Version
 #ifndef NO_GUI
    METHOD Preview
-   METHOD PrevAdjust
    METHOD PrevClose
    METHOD PrevPrint
    METHOD PrevShow
@@ -251,7 +322,7 @@ CLASS HBPrinter
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD New( cLang ) CLASS HBPrinter
+METHOD New( cLang, cFolder ) CLASS HBPrinter
 
    LOCAL aPrnPort
 
@@ -266,8 +337,18 @@ METHOD New( cLang ) CLASS HBPrinter
    ELSE
       ::Error := 1
    ENDIF
+   IF Empty( cFolder )
+      cFolder := RR_GetTempFolder()
+   ELSE
+      IF ! Right( cFolder, 1 ) == "\"
+         cFolder += "\"
+      ENDIF
+      IF ! File( cFolder + "NUL" )
+         cFolder := RR_GetTempFolder()
+      ENDIF
+   ENDIF
    ::TimeStamp := TToS( DateTime() )
-   ::BaseDoc := RR_GetTempFolder() + ::TimeStamp + "_HBPrinter_preview_"
+   ::BaseDoc := cFolder + ::TimeStamp + "_HBPrinter_preview_"
    ::InitMessages( cLang )
 
    RETURN Self
@@ -1286,6 +1367,13 @@ METHOD GetViewPortOrg() CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Destroy() CLASS HBPrinter
+
+   ::End()
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD End() CLASS HBPrinter
 
    LOCAL n
@@ -1298,17 +1386,20 @@ METHOD End() CLASS HBPrinter
       ENDIF
       ::MetaFiles := {}
    ENDIF
-   IF ::hDCRef # 0
-      RR_ResetPrinter( ::hData )
-      RR_DeleteDC( ::hDCRef, ::hData )
-   ENDIF
    RR_DeleteObjects( ::Fonts[ 1 ] )
    RR_DeleteObjects( ::Brushes[ 1 ] )
    RR_DeleteObjects( ::Pens[ 1 ] )
    RR_DeleteObjects( ::Regions[ 1 ] )
    RR_DeleteImageLists( ::ImageLists[ 1 ] )
-   RR_Finish( ::hData )
-   ::hData := NIL
+   IF ::hData # 0
+      IF ::hDCRef # 0
+         RR_DeleteDC( ::hDCRef, ::hData )
+        ::hDCRef := 0
+      ENDIF
+      RR_ResetPrinter( ::hData )
+      RR_Finish( ::hData )
+      ::hData := 0
+   ENDIF
    IF HB_ISOBJECT( ::oWinPreview )
       ::PrevClose()
    ENDIF
@@ -2770,7 +2861,7 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
 
    LOCAL i, spage
 
-   IF ::IloscStron == 1
+   IF ::IloscStron < 2
       RETURN NIL
    ENDIF
    IF nclick <> NIL
@@ -2788,23 +2879,24 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
 
    FOR i := 1 TO 15
       IF i + spage > ::IloscStron
-         HideWindow( ::AtH[ i, 5 ] )
+         HideWindow( ::aTH[ i, TH_HWND ] )
       ELSE
          IF ::MetaFiles[ i + spage, 2 ] >= ::MetaFiles[ i + spage, 3 ]
-            ::AtH[ i, 3 ] := ::dy - 5
-            ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ i + spage, 3 ] / ::MetaFiles[ i + spage, 2 ] - 5
+            ::aTH[ i, TH_HEIGHT ] := ::dy - 5
+            ::aTH[ i, TH_WIDTH ] := ::dx * ::MetaFiles[ i + spage, 3 ] / ::MetaFiles[ i + spage, 2 ] - 5
          ELSE
-            ::AtH[ i, 4 ] := ::dx - 5
-            ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ i + spage, 2 ] / ::MetaFiles[ i + spage, 3 ] - 5
+            ::aTH[ i, TH_WIDTH ] := ::dx - 5
+            ::aTH[ i, TH_HEIGHT ] := ::dy * ::MetaFiles[ i + spage, 2 ] / ::MetaFiles[ i + spage, 3 ] - 5
          ENDIF
          IF ::InMemory
-            RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i + spage ], AllTrim( Str( i + spage ) ), i, ::hData )
+            RR_PlayThumb( ::aTH[ i ], ::MetaFiles[ i + spage ], AllTrim( Str( i + spage ) ), i, ::hData )
          ELSE
-            RR_PlayFThumb( ::AtH[ i ], ::MetaFiles[ i + spage, 1 ], AllTrim( Str( i + spage ) ), i, ::hData )
+            RR_PlayFThumb( ::aTH[ i ], ::MetaFiles[ i + spage, 1 ], AllTrim( Str( i + spage ) ), i, ::hData )
          ENDIF
-         CShowControl( ::AtH[ i, 5 ] )
+         CShowControl( ::aTH[ i, TH_HWND ] )
       ENDIF
    NEXT
+   ::oWinThumbs:Redraw()
 
    RETURN NIL
 
@@ -2822,21 +2914,21 @@ METHOD PrevShow() CLASS HBPrinter
    IF Empty( ::aZoom[ 4 ] )
       spos[ 1 ] := 0
    ELSE
-      spos[ 1 ] := GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ]
+      spos[ 1 ] := GetScrollpos( ::aHS[ PREVIEW_PAGE_HWND ], SB_HORZ ) / ::aZoom[ 4 ]
    ENDIF
 
    IF Empty( ::aZoom[ 3 ] )
       spos[ 2 ] := 0
    ELSE
-      spos[ 2 ] := GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ::aZoom[ 3 ]
+      spos[ 2 ] := GetScrollpos( ::aHS[ PREVIEW_PAGE_HWND ], SB_VERT ) / ::aZoom[ 3 ]
    ENDIF
 
    IF ::MetaFiles[ ::Page, 2 ] >= ::MetaFiles[ ::Page, 3 ]
-      ::aZoom[ 3 ] := ( ::aHS[ 5, 3 ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ 5, 3 ] * ::MetaFiles[ ::Page, 3 ] / ::MetaFiles[ ::Page, 2 ] ) * ::Scale - 60
+      ::aZoom[ 3 ] := ( ::aHS[ PREVIEW_PAGE_BOTTOM ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ PREVIEW_PAGE_BOTTOM ] * ::MetaFiles[ ::Page, 3 ] / ::MetaFiles[ ::Page, 2 ] ) * ::Scale - 60
    ELSE
-      ::aZoom[ 3 ] := ( ::aHS[ 5, 4 ] * ::MetaFiles[ ::Page, 2 ] / ::MetaFiles[ ::Page, 3 ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ 5, 4 ] ) * ::Scale - 60
+      ::aZoom[ 3 ] := ( ::aHS[ PREVIEW_PAGE_RIGHT ] * ::MetaFiles[ ::Page, 2 ] / ::MetaFiles[ ::Page, 3 ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ PREVIEW_PAGE_RIGHT ] ) * ::Scale - 60
    ENDIF
    ::oWinPreview:StatusBar:Item( 1, ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) )
 
@@ -2845,15 +2937,15 @@ METHOD PrevShow() CLASS HBPrinter
       ::PrevShow()
       MsgStop( ::aOpisy[ 18 ], "" )
    ENDIF
-   HideWindow( ::aHS[ 6, 7 ] )
-   ::oWinPagePreview:i1:SizePos(,, ::aZoom[ 4 ], ::aZoom[ 3 ] )
+   HideWindow( ::aHS[ PREVIEW_IMAGE_HWND ] )
+   ::oWinPagePreview:i1:SizePos( NIL, NIL, ::aZoom[ 4 ], ::aZoom[ 3 ] )
    ::oWinPagePreview:VirtualHeight := ::aZoom[ 3 ] + 20
    ::oWinPagePreview:VirtualWidth := ::aZoom[ 4 ] + 20
 
    IF ::InMemory
-      hImage := RR_PreviewPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page ], ::aZoom )
+      hImage := RR_PreviewPlay( ::aHS[ PREVIEW_IMAGE_HWND ], ::MetaFiles[ ::Page ], ::aZoom )
    ELSE
-      hImage := RR_PreviewFPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page, 1 ], ::aZoom )
+      hImage := RR_PreviewFPlay( ::aHS[ PREVIEW_IMAGE_HWND ], ::MetaFiles[ ::Page, 1 ], ::aZoom )
    ENDIF
    if ! ValidHandler( hImage )
       ::Scale := ::Scale / 1.25
@@ -2862,8 +2954,8 @@ METHOD PrevShow() CLASS HBPrinter
    ELSE
       ::oWinPagePreview:i1:hbitmap := hImage
    ENDIF
-   RR_ScrollWindow( ::aHS[ 5, 7 ], -spos[ 1 ] * ::aZoom[ 4 ], -spos[ 2 ] * ::aZoom[ 3 ] )
-   CShowControl( ::aHS[ 6, 7 ] )
+   RR_ScrollWindow( ::aHS[ PREVIEW_PAGE_HWND ], -spos[ 1 ] * ::aZoom[ 4 ], -spos[ 2 ] * ::aZoom[ 3 ] )
+   CShowControl( ::aHS[ PREVIEW_IMAGE_HWND ] )
 
    RETURN NIL
 
@@ -2954,7 +3046,11 @@ METHOD PrevPrint( n1 ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
 
-   LOCAL i, pi, cName
+   LOCAL i, cName, oSplit, oPages
+
+   IF ! ::PreviewMode
+      RETURN NIL
+   ENDIF
 
    IF ! HB_ISLOGICAL( lWait )
       lWait := .T.
@@ -2966,7 +3062,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
    ::IloscStron := Len( ::MetaFiles )
    ::nGroup := -1
    ::Page := 1
-   ::AtH := {}
+   ::aTH := {}
    ::aHS := {}
    ::aZoom := { 0, 0, 0, 0 }
    ::Scale := ::PreviewScale
@@ -2978,59 +3074,47 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       ::nToPage := Min( ::IloscStron, ::nToPage )
    ENDIF
 
-   IF ! ::PreviewMode
-      RETURN NIL
-   ENDIF
-
-   FOR pi := 1 TO ::IloscStron
-      AAdd( ::nPages, PadL( pi, 4 ) )
-   NEXT pi
-
    AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, 0 } )
    IF ::PreviewRect[ 3 ] > 0 .AND. ::PreviewRect[ 4 ] > 0
-      ::aHS[ 1, 1 ] := ::PreviewRect[ 1 ]
-      ::aHS[ 1, 2 ] := ::PreviewRect[ 2 ]
-      ::aHS[ 1, 3 ] := ::PreviewRect[ 3 ]
-      ::aHS[ 1, 4 ] := ::PreviewRect[ 4 ]
-      ::aHS[ 1, 5 ] := ::PreviewRect[ 3 ] - ::PreviewRect[ 1 ] + 1
-      ::aHS[ 1, 6 ] := ::PreviewRect[ 4 ] - ::PreviewRect[ 2 ] + 1
+      ::aHS[ PREVIEW_RECT_TOP ]    := ::PreviewRect[ 1 ]
+      ::aHS[ PREVIEW_RECT_LEFT ]   := ::PreviewRect[ 2 ]
+      ::aHS[ PREVIEW_RECT_BOTTOM ] := ::PreviewRect[ 3 ]
+      ::aHS[ PREVIEW_RECT_RIGHT ]  := ::PreviewRect[ 4 ]
    ELSE
-      RR_GetDesktopArea( ::aHS[ 1 ] )
-      ::aHS[ 1, 1 ] += 10
-      ::aHS[ 1, 2 ] += 10
-      ::aHS[ 1, 3 ] -= 10
-      ::aHS[ 1, 4 ] -= 10
-      ::aHS[ 1, 5 ] := ::aHS[ 1, 3 ] - ::aHS[ 1, 1 ] + 1
-      ::aHS[ 1, 6 ] := ::aHS[ 1, 4 ] - ::aHS[ 1, 2 ] + 1
+      RR_GetDesktopArea( ::aHS[ PREVIEW_RECT ] )
+      ::aHS[ PREVIEW_RECT_TOP ] += 10
+      ::aHS[ PREVIEW_RECT_LEFT ] += 10
+      ::aHS[ PREVIEW_RECT_BOTTOM ] -= 10
+      ::aHS[ PREVIEW_RECT_RIGHT ] -= 10
    ENDIF
+   ::aHS[ PREVIEW_RECT_HEIGHT ] := ::aHS[ PREVIEW_RECT_BOTTOM ] - ::aHS[ PREVIEW_RECT_TOP ] + 1
+   ::aHS[ PREVIEW_RECT_WIDTH ] := ::aHS[ PREVIEW_RECT_RIGHT ] - ::aHS[ PREVIEW_RECT_LEFT ] + 1
 
    IF lSize
       IF lWait
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
-            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
-            WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] ;
+            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
+            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
+            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            MODAL ;
-            ON SIZE ::PrevAdjust()
+            MODAL
       ELSE
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             PARENT ( cParent ) ;
-            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
-            WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] ;
+            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
+            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
+            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            ON SIZE ::PrevAdjust() ;
             ON RELEASE ::CleanOnPrevClose()
       ENDIF
    ELSE
       IF lWait
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
-            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
-            WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] ;
+            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
+            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
+            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             MODAL ;
@@ -3038,9 +3122,9 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       ELSE
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             PARENT ( cParent ) ;
-            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
-            WIDTH ::aHS[ 1, 6 ] ;
-            HEIGHT ::aHS[ 1, 5 ] ;
+            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
+            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
+            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             NOSIZE ;
@@ -3064,11 +3148,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
          STATUSITEM ::aOpisy[ 17 ] + " " + AllTrim( Str( ::IloscStron ) ) WIDTH 100
       END STATUSBAR
 
-      @ 15, ::aHS[ 1, 6 ] - 150 LABEL prl VALUE ::aOpisy[ 12 ] WIDTH 80 HEIGHT 18 SIZE 8 TRANSPARENT
-      @ 13, ::aHS[ 1, 6 ] - 77 COMBOBOX combo_1 ITEMS ::nPages VALUE 1 WIDTH 58 SIZE 8 ;
-         ON CHANGE {|| ::Page := ::oWinPreview:combo_1:value, ::PrevShow(), ::oWinPagePreview:setfocus() }
-
-      DEFINE SPLITBOX
+      DEFINE SPLITBOX OBJ oSplit
          DEFINE TOOLBAR TB1 BUTTONSIZE iif( hb_osisWin10(), 56, 50 ), 37 SIZE 8 FLAT BREAK
             BUTTON B1 CAPTION ::aOpisy[ 02 ] PICTURE 'hbprint_close' ACTION ::PrevClose( .T. )
             BUTTON B2 CAPTION ::aOpisy[ 03 ] PICTURE 'hbprint_print' ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
@@ -3076,7 +3156,7 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
                BUTTON B3 CAPTION ::aOpisy[ 04 ] PICTURE 'hbprint_save' WHOLEDROPDOWN SEPARATOR
                DEFINE DROPDOWN MENU BUTTON B3
                   ITEM ::aOpisy[ 04 ] ACTION ::SaveMetaFiles( ::Page )
-                  ITEM ::aOpisy[ 33 ] ACTION { |pi| pi := PutFile( { { ::aOpisy[ 35 ], '*.emf' }, { ::aOpisy[ 36 ], '*.*' } }, NIL, GetStartUpFolder(), .T., ::DocName ), iif( Empty( pi ), NIL, ::SaveMetaFiles( ::Page, pi ) ) }
+                  ITEM ::aOpisy[ 33 ] ACTION { |fn| fn := PutFile( { { ::aOpisy[ 35 ], '*.emf' }, { ::aOpisy[ 36 ], '*.*' } }, NIL, GetStartUpFolder(), .T., ::DocName ), iif( Empty( fn ), NIL, ::SaveMetaFiles( ::Page, fn ) ) }
                   ITEM ::aOpisy[ 34 ] ACTION ::SaveMetaFiles()
               END MENU
             ENDIF
@@ -3093,20 +3173,41 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             ELSE
                BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale /= 1.25, ::PrevShow() }
             ENDIF
-         END TOOLBAR
+         END TOOLBAR NOBREAK
+
+         FOR i := 1 TO ::IloscStron
+            AAdd( ::nPages, LTrim( Str( i ) ) )
+         NEXT i
+
+         COMBOBOX combo_1 OBJ oPages ;
+            WIDTH 60 ITEMS ::nPages VALUE 1 GRIPPERTEXT ::aOpisy[ 12 ] DISPLAYEDIT ;
+            ON ENTER {|| oPages:Value := oPages:ItemValue( oPages:DisplayValue ) } ;
+            ON CHANGE {|| ::Page := oPages:Value, ::PrevShow(), ::oWinPagePreview:SetFocus() }
+         oPages:AutoSize := .T.
+         oPages:AutoSize := .F.
+         oPages:lFixWidth := .T.
+         oSplit:BandGripperOFF( 2 )
+
+         DEFINE WINDOW 0 SPLITCHILD NOSYSMENU NOCAPTION WIDTH 10 HEIGHT 10
+         END WINDOW
+         oSplit:BandGripperOFF( 3 )
+
+         FORCEBREAK
 
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:hWnd } )
-         RR_GetClientRect( ::aHS[ 2 ] )
+         RR_GetClientRect( ::aHS[ PREVIEW_FORM ] )
+
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:TB1:hWnd } )
-         RR_GetClientRect( ::aHS[ 3 ] )
+         RR_GetClientRect( ::aHS[ PREVIEW_TB ] )
+
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:StatusBar:hWnd } )
-         RR_GetClientRect( ::aHS[ 4 ] )
+         RR_GetClientRect( ::aHS[ PREVIEW_SB ] )
 
          DEFINE WINDOW 0 OBJ ::oWinPagePreview ;
-            WIDTH ::aHS[ 2, 6 ] - 15 ;
-            HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] - 10 ;
-            VIRTUAL WIDTH ::aHS[ 2, 6 ] - 5 ;
-            VIRTUAL HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] ;
+            WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 15 ;
+            HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] - 10 ;
+            VIRTUAL WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 5 ;
+            VIRTUAL HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] ;
             TITLE ::aOpisy[ 13 ] ;
             SPLITCHILD ;
             GRIPPERTEXT "P" ;
@@ -3116,72 +3217,80 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
 
             ::oWinPagePreview:VScrollbar:nLineSkip := 20
             ::oWinPagePreview:HScrollbar:nLineSkip := 20
-            AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:hWnd } )
-            RR_GetClientRect( ::aHS[ 5 ] )
-            @ ::aHS[ 5, 2 ] + 10, ::aHS[ 5, 1 ] + 10 IMAGE i1 PICTURE "" WIDTH ::aHS[ 5, 6 ] - 10 HEIGHT ::aHS[ 5, 5 ] - 10
-            AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:i1:hWnd } )
-            RR_GetClientRect( ::aHS[ 6 ] )
 
-            ON KEY ESCAPE      OF ( ::oWinPagePreview ) ACTION ::PrevClose( .T. )
-            ON KEY ADD         OF ( ::oWinPagePreview ) ACTION ( ::Scale *= 1.25, ::PrevShow() )
-            ON KEY SUBTRACT    OF ( ::oWinPagePreview ) ACTION ( ::Scale /= 1.25, ::PrevShow() )
-            ON KEY CONTROL + P OF ( ::oWinPagePreview ) ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
+            AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:hWnd } )
+            RR_GetClientRect( ::aHS[ PREVIEW_PAGE ] )
+
+            @ ::aHS[ PREVIEW_PAGE_TOP ] + 10, ::aHS[ PREVIEW_PAGE_LEFT ] + 10 IMAGE i1 ;
+               PICTURE "" ;
+               WIDTH ::aHS[ PREVIEW_PAGE_WIDTH ] - 10 ;
+               HEIGHT ::aHS[ PREVIEW_PAGE_HEIGHT ] - 10
+
+            AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:i1:hWnd } )
+            RR_GetClientRect( ::aHS[ PREVIEW_IMAGE ] )
+
+            ON KEY ESCAPE      ACTION ::PrevClose( .T. )
+            ON KEY ADD         ACTION ( ::Scale *= 1.25, ::PrevShow() )
+            ON KEY SUBTRACT    ACTION ( ::Scale /= 1.25, ::PrevShow() )
+            ON KEY CONTROL + P ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
             IF ::IloscStron > 1
-               ON KEY PRIOR    OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY NEXT     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY END      OF ( ::oWinPagePreview ) ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY HOME     OF ( ::oWinPagePreview ) ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY LEFT     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY UP       OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY RIGHT    OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY DOWN     OF ( ::oWinPagePreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY PRIOR    ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY NEXT     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY END      ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY HOME     ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY LEFT     ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY UP       ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY RIGHT    ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY DOWN     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
             ENDIF
          END WINDOW
 
          IF ::Thumbnails .AND. ::IloscStron > 1
             DEFINE WINDOW 0 OBJ ::oWinThumbs ;
-               WIDTH ::aHS[ 2, 6 ] - 15 ;
-               HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] - 10 ;
+               WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 15 ;
+               HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] - 10 ;
                TITLE ::aOpisy[ 14 ] ;
                SPLITCHILD ;
                GRIPPERTEXT "T"
 
                AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinThumbs:hWnd } )
-               RR_GetClientRect( ::aHS[ 7 ] )
-               ::dx := ( ::aHS[ 5, 6 ] - 20 ) / 5 - 5
-               ::dy := ::aHS[ 5, 5 ] / 3 - 5
+               RR_GetClientRect( ::aHS[ PREVIEW_THUMBS ] )
+
+               ::dx := ( ::aHS[ PREVIEW_PAGE_WIDTH ] - 20 ) / 5 - 5
+               ::dy := ::aHS[ PREVIEW_PAGE_HEIGHT ] / 3 - 5
                FOR i := 1 TO 15
-                  AAdd( ::AtH, { 0, 0, 0, 0, 0 } )
+                  AAdd( ::aTH, { 0, 0, 0, 0, 0 } )
                   IF ::MetaFiles[ 1, 2 ] >= ::MetaFiles[ 1, 3 ]
-                     ::AtH[ i, 3 ] := ::dy - 5
-                     ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ 1, 3 ] / ::MetaFiles[ 1, 2 ] - 5
+                     ::aTH[ i, TH_HEIGHT ] := ::dy - 5
+                     ::aTH[ i, TH_WIDTH ] := ::dx * ::MetaFiles[ 1, 3 ] / ::MetaFiles[ 1, 2 ] - 5
                   ELSE
-                     ::AtH[ i, 4 ] := ::dx - 5
-                     ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ 1, 2 ] / ::MetaFiles[ 1, 3 ] - 5
+                     ::aTH[ i, TH_WIDTH ] := ::dx - 5
+                     ::aTH[ i, TH_HEIGHT ] := ::dy * ::MetaFiles[ 1, 2 ] / ::MetaFiles[ 1, 3 ] - 5
                   ENDIF
-                  ::AtH[ i, 1 ] := Int( ( i - 1 ) / 5 ) * ::dy + 5
-                  ::AtH[ i, 2 ] := ( ( i - 1 ) % 5 ) * ::dx + 5
+                  ::aTH[ i, TH_ROW ] := Int( ( i - 1 ) / 5 ) * ::dy + 5
+                  ::aTH[ i, TH_COL ] := ( ( i - 1 ) % 5 ) * ::dx + 5
                NEXT
-               @ ::AtH[ 1, 1 ], ::AtH[ 1, 2 ] IMAGE it1 PICTURE "" ACTION {|| ::PrevThumb( 1 ) } WIDTH ::AtH[ 1, 4 ] HEIGHT ::AtH[ 1, 3 ]
-               @ ::AtH[ 2, 1 ], ::AtH[ 2, 2 ] IMAGE it2 PICTURE "" ACTION {|| ::PrevThumb( 2 ) } WIDTH ::AtH[ 2, 4 ] HEIGHT ::AtH[ 2, 3 ]
-               @ ::AtH[ 3, 1 ], ::AtH[ 3, 2 ] IMAGE it3 PICTURE "" ACTION {|| ::PrevThumb( 3 ) } WIDTH ::AtH[ 3, 4 ] HEIGHT ::AtH[ 3, 3 ]
-               @ ::AtH[ 4, 1 ], ::AtH[ 4, 2 ] IMAGE it4 PICTURE "" ACTION {|| ::PrevThumb( 4 ) } WIDTH ::AtH[ 4, 4 ] HEIGHT ::AtH[ 4, 3 ]
-               @ ::AtH[ 5, 1 ], ::AtH[ 5, 2 ] IMAGE it5 PICTURE "" ACTION {|| ::PrevThumb( 5 ) } WIDTH ::AtH[ 5, 4 ] HEIGHT ::AtH[ 5, 3 ]
-               @ ::AtH[ 6, 1 ], ::AtH[ 6, 2 ] IMAGE it6 PICTURE "" ACTION {|| ::PrevThumb( 6 ) } WIDTH ::AtH[ 6, 4 ] HEIGHT ::AtH[ 6, 3 ]
-               @ ::AtH[ 7, 1 ], ::AtH[ 7, 2 ] IMAGE it7 PICTURE "" ACTION {|| ::PrevThumb( 7 ) } WIDTH ::AtH[ 7, 4 ] HEIGHT ::AtH[ 7, 3 ]
-               @ ::AtH[ 8, 1 ], ::AtH[ 8, 2 ] IMAGE it8 PICTURE "" ACTION {|| ::PrevThumb( 8 ) } WIDTH ::AtH[ 8, 4 ] HEIGHT ::AtH[ 8, 3 ]
-               @ ::AtH[ 9, 1 ], ::AtH[ 9, 2 ] IMAGE it9 PICTURE "" ACTION {|| ::PrevThumb( 9 ) } WIDTH ::AtH[ 9, 4 ] HEIGHT ::AtH[ 9, 3 ]
-               @ ::AtH[ 10, 1 ], ::AtH[ 10, 2 ] IMAGE it10 PICTURE "" ACTION {|| ::PrevThumb( 10 ) } WIDTH ::AtH[ 10, 4 ] HEIGHT ::AtH[ 10, 3 ]
-               @ ::AtH[ 11, 1 ], ::AtH[ 11, 2 ] IMAGE it11 PICTURE "" ACTION {|| ::PrevThumb( 11 ) } WIDTH ::AtH[ 11, 4 ] HEIGHT ::AtH[ 11, 3 ]
-               @ ::AtH[ 12, 1 ], ::AtH[ 12, 2 ] IMAGE it12 PICTURE "" ACTION {|| ::PrevThumb( 12 ) } WIDTH ::AtH[ 12, 4 ] HEIGHT ::AtH[ 12, 3 ]
-               @ ::AtH[ 13, 1 ], ::AtH[ 13, 2 ] IMAGE it13 PICTURE "" ACTION {|| ::PrevThumb( 13 ) } WIDTH ::AtH[ 13, 4 ] HEIGHT ::AtH[ 13, 3 ]
-               @ ::AtH[ 14, 1 ], ::AtH[ 14, 2 ] IMAGE it14 PICTURE "" ACTION {|| ::PrevThumb( 14 ) } WIDTH ::AtH[ 14, 4 ] HEIGHT ::AtH[ 14, 3 ]
-               @ ::AtH[ 15, 1 ], ::AtH[ 15, 2 ] IMAGE it15 PICTURE "" ACTION {|| ::PrevThumb( 15 ) } WIDTH ::AtH[ 15, 4 ] HEIGHT ::AtH[ 15, 3 ]
+
+               @ ::aTH[  1, TH_ROW ], ::aTH[  1, TH_COL ] IMAGE it1  PICTURE "" ACTION {|| ::PrevThumb(  1 ) } WIDTH ::aTH[  1, TH_WIDTH ] HEIGHT ::aTH[  1, TH_HEIGHT ]
+               @ ::aTH[  2, TH_ROW ], ::aTH[  2, TH_COL ] IMAGE it2  PICTURE "" ACTION {|| ::PrevThumb(  2 ) } WIDTH ::aTH[  2, TH_WIDTH ] HEIGHT ::aTH[  2, TH_HEIGHT ]
+               @ ::aTH[  3, TH_ROW ], ::aTH[  3, TH_COL ] IMAGE it3  PICTURE "" ACTION {|| ::PrevThumb(  3 ) } WIDTH ::aTH[  3, TH_WIDTH ] HEIGHT ::aTH[  3, TH_HEIGHT ]
+               @ ::aTH[  4, TH_ROW ], ::aTH[  4, TH_COL ] IMAGE it4  PICTURE "" ACTION {|| ::PrevThumb(  4 ) } WIDTH ::aTH[  4, TH_WIDTH ] HEIGHT ::aTH[  4, TH_HEIGHT ]
+               @ ::aTH[  5, TH_ROW ], ::aTH[  5, TH_COL ] IMAGE it5  PICTURE "" ACTION {|| ::PrevThumb(  5 ) } WIDTH ::aTH[  5, TH_WIDTH ] HEIGHT ::aTH[  5, TH_HEIGHT ]
+               @ ::aTH[  6, TH_ROW ], ::aTH[  6, TH_COL ] IMAGE it6  PICTURE "" ACTION {|| ::PrevThumb(  6 ) } WIDTH ::aTH[  6, TH_WIDTH ] HEIGHT ::aTH[  6, TH_HEIGHT ]
+               @ ::aTH[  7, TH_ROW ], ::aTH[  7, TH_COL ] IMAGE it7  PICTURE "" ACTION {|| ::PrevThumb(  7 ) } WIDTH ::aTH[  7, TH_WIDTH ] HEIGHT ::aTH[  7, TH_HEIGHT ]
+               @ ::aTH[  8, TH_ROW ], ::aTH[  8, TH_COL ] IMAGE it8  PICTURE "" ACTION {|| ::PrevThumb(  8 ) } WIDTH ::aTH[  8, TH_WIDTH ] HEIGHT ::aTH[  8, TH_HEIGHT ]
+               @ ::aTH[  9, TH_ROW ], ::aTH[  9, TH_COL ] IMAGE it9  PICTURE "" ACTION {|| ::PrevThumb(  9 ) } WIDTH ::aTH[  9, TH_WIDTH ] HEIGHT ::aTH[  9, TH_HEIGHT ]
+               @ ::aTH[ 10, TH_ROW ], ::aTH[ 10, TH_COL ] IMAGE it10 PICTURE "" ACTION {|| ::PrevThumb( 10 ) } WIDTH ::aTH[ 10, TH_WIDTH ] HEIGHT ::aTH[ 10, TH_HEIGHT ]
+               @ ::aTH[ 11, TH_ROW ], ::aTH[ 11, TH_COL ] IMAGE it11 PICTURE "" ACTION {|| ::PrevThumb( 11 ) } WIDTH ::aTH[ 11, TH_WIDTH ] HEIGHT ::aTH[ 11, TH_HEIGHT ]
+               @ ::aTH[ 12, TH_ROW ], ::aTH[ 12, TH_COL ] IMAGE it12 PICTURE "" ACTION {|| ::PrevThumb( 12 ) } WIDTH ::aTH[ 12, TH_WIDTH ] HEIGHT ::aTH[ 12, TH_HEIGHT ]
+               @ ::aTH[ 13, TH_ROW ], ::aTH[ 13, TH_COL ] IMAGE it13 PICTURE "" ACTION {|| ::PrevThumb( 13 ) } WIDTH ::aTH[ 13, TH_WIDTH ] HEIGHT ::aTH[ 13, TH_HEIGHT ]
+               @ ::aTH[ 14, TH_ROW ], ::aTH[ 14, TH_COL ] IMAGE it14 PICTURE "" ACTION {|| ::PrevThumb( 14 ) } WIDTH ::aTH[ 14, TH_WIDTH ] HEIGHT ::aTH[ 14, TH_HEIGHT ]
+               @ ::aTH[ 15, TH_ROW ], ::aTH[ 15, TH_COL ] IMAGE it15 PICTURE "" ACTION {|| ::PrevThumb( 15 ) } WIDTH ::aTH[ 15, TH_WIDTH ] HEIGHT ::aTH[ 15, TH_HEIGHT ]
 
                cName := ::oWinThumbs:Name
                FOR i := 1 TO 15
-                  ::AtH[ i, 5 ] := GetControlHandle( "it" + AllTrim( Str( i ) ), cName )
-                  RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i ], AllTrim( Str( i ) ), i, ::hData )
+                  ::aTH[ i, TH_HWND ] := GetControlHandle( "it" + AllTrim( Str( i ) ), cName )
+                  RR_PlayThumb( ::aTH[ i ], ::MetaFiles[ i ], AllTrim( Str( i ) ), i, ::hData )
                   IF i >= ::IloscStron
                      EXIT
                   ENDIF
@@ -3194,14 +3303,6 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
    ::PrevShow()
    ::oWinPagePreview:i1:SetFocus()
    ::oWinPreview:Activate( ! lWait )
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevAdjust() CLASS HBPrinter
-
-   ::oWinPreview:prl:col := ::oWinPreview:width - 150
-   ::oWinPreview:combo_1:col := ::oWinPreview:width - 77
 
    RETURN NIL
 
