@@ -1844,6 +1844,7 @@ CLASS TEditCombo FROM TControl STATIC
 
    METHOD Define
    METHOD Events
+   METHOD Events_Enter            BLOCK { |Self| ::Parent:Events_Enter() }
    METHOD MaxLength               SETGET
    METHOD Release
 
