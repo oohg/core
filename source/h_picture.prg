@@ -142,7 +142,7 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, 
       nStyleEx += WS_EX_TRANSPARENT
    ENDIF
 
-   IF ( nError := _OOHG_TPicture_Register() ) # 0
+   IF ( nError := _OOHG_PictureControl_Register() ) # 0
       MsgOOHGError( "PICTURE: Windows class registration failed with error " + hb_ntos( nError ) + ". Program terminated.")
    ENDIF
 
@@ -420,7 +420,7 @@ METHOD Copy( lAsDIB ) CLASS TPicture
 */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TPicture_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_PictureControl_lpfnOldWndProc( WNDPROC lp )
 {
    static WNDPROC lpfnOldWndProc = 0;
 
@@ -437,11 +437,11 @@ static WNDPROC _OOHG_TPicture_lpfnOldWndProc( WNDPROC lp )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TPicture_lpfnOldWndProc( 0 ) );
+   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_PictureControl_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static LRESULT CALLBACK _OOHG_TPicture_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+static LRESULT CALLBACK _OOHG_PictureControl_WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
    return DefWindowProc( hWnd, message, wParam, lParam );
 }
@@ -449,11 +449,11 @@ static LRESULT CALLBACK _OOHG_TPicture_WndProc( HWND hWnd, UINT message, WPARAM 
 static BOOL bRegistered = FALSE;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_TPICTURE_UNREGISTER )          /* FUNCTION _OOHG_TPicture_UnRegister() -> lRegisteredStatus */
+HB_FUNC( _OOHG_PICTURECONTROL_UNREGISTER )          /* FUNCTION _OOHG_PictureControl_UnRegister() -> lRegisteredStatus */
 {
    if( bRegistered )
    {
-      if( UnregisterClass( "_OOHG_TPICTURE", GetModuleHandle( NULL ) ) )
+      if( UnregisterClass( "_OOHG_PICTURECONTROL", GetModuleHandle( NULL ) ) )
       {
          bRegistered = FALSE;
       }
@@ -463,15 +463,15 @@ HB_FUNC( _OOHG_TPICTURE_UNREGISTER )          /* FUNCTION _OOHG_TPicture_UnRegis
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_TPICTURE_REGISTER )          /* FUNCTION _OOHG_TPicture_Register() -> nError */
+HB_FUNC( _OOHG_PICTURECONTROL_REGISTER )          /* FUNCTION _OOHG_PictureControl_Register() -> nError */
 {
    if( ! bRegistered )
    {
       WNDCLASS WndClass;
       memset( &WndClass, 0, sizeof( WndClass ) );
       WndClass.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC | CS_DBLCLKS;
-      WndClass.lpfnWndProc   = _OOHG_TPicture_WndProc;
-      WndClass.lpszClassName = "_OOHG_TPICTURE";
+      WndClass.lpfnWndProc   = _OOHG_PictureControl_WndProc;
+      WndClass.lpszClassName = "_OOHG_PICTURECONTROL";
       WndClass.hInstance     = GetModuleHandle( NULL );
       WndClass.hbrBackground = ( HBRUSH )( COLOR_BTNFACE + 1 );
 
@@ -495,7 +495,7 @@ HB_FUNC( INITPICTURECONTROL )
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_PICTURECONTROL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TPicture_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_PictureControl_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
