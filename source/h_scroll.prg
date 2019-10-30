@@ -406,7 +406,8 @@ METHOD Events_VScroll( wParam ) CLASS TScrollBar
 
    ENDIF
 
-   RETURN uRet
+   /* Empty means that the message wasn't handled */
+   RETURN iif( Empty( uRet ), 1, 0 )
 
 FUNCTION InitVScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
 
