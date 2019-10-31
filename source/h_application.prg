@@ -167,6 +167,7 @@ CLASS TApplication
    DATA Path                      INIT NIL READONLY
 
    METHOD Define
+   DESTRUCTOR End
 
    METHOD ActiveFrameContainer
    METHOD ActiveFrameGet
@@ -1074,58 +1075,67 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
    RETURN ( lRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD End CLASS TApplication
+
+   ::Release()
+
+   RETURN ( NIL )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TApplication
 
    LOCAL i
 
-   ::MutexLock()
+   IF HB_ISARRAY( ::aVars )
+      ::MutexLock()
 
-   FOR i := 1 TO Len( ::aFonts )
-      DeleteObject( ::aFonts[ i ] )
-   NEXT i
-   ::aFonts := {}
+      FOR i := 1 TO Len( ::aFonts )
+         DeleteObject( ::aFonts[ i ] )
+      NEXT i
+      ::aFonts := {}
 
-   IF HB_ISOBJECT( ::oWinMH )
-      ::oWinMH:Release()
+      IF HB_ISOBJECT( ::oWinMH )
+         ::oWinMH:Release()
+      ENDIF
+      ::oWinMH := NIL
+
+      ::WinClassUnreg()
+
+      FOR i := 1 TO Len( ::aVars )
+         ::aVars[ i ] := NIL
+      NEXT i
+      ::aVars := NIL
+
+      FOR i := 1 TO Len( ::aEventsStack )
+         ::aEventsStack[ i ] := NIL
+      NEXT i
+      ::aEventsStack := {}
+
+      FOR i := 1 TO Len( ::aFramesStack )
+         ::aFramesStack[ i ] := NIL
+      NEXT i
+      ::aFramesStack := {}
+
+      FOR i := 1 TO Len( ::aMenusStack )
+         ::aMenusStack[ i ] := NIL
+      NEXT i
+      ::aMenusStack := {}
+
+      FreeLibraries()
+
+      _OOHG_TInternal_UnRegister()
+      _OOHG_PictureControl_UnRegister()
+      _OOHG_TTextArray_UnRegister()
+
+      ::oAppObj := NIL
+
+      CloseHandle( ::AppMutex )
+      ::AppMutex := NIL
+
+      ::MutexUnlock()
+
+      ::DeleteGlobalMutex()
    ENDIF
-   ::oWinMH := NIL
-
-   ::WinClassUnreg()
-
-   FOR i := 1 TO Len( ::aVars )
-      ::aVars[ i ] := NIL
-   NEXT i
-   ::aVars := NIL
-
-   FOR i := 1 TO Len( ::aEventsStack )
-      ::aEventsStack[ i ] := NIL
-   NEXT i
-   ::aEventsStack := {}
-
-   FOR i := 1 TO Len( ::aFramesStack )
-      ::aFramesStack[ i ] := NIL
-   NEXT i
-   ::aFramesStack := {}
-
-   FOR i := 1 TO Len( ::aMenusStack )
-      ::aMenusStack[ i ] := NIL
-   NEXT i
-   ::aMenusStack := {}
-
-   FreeLibraries()
-
-   _OOHG_TInternal_UnRegister()
-   _OOHG_PictureControl_UnRegister()
-   _OOHG_TTextArray_UnRegister()
-
-   ::oAppObj := NIL
-
-   CloseHandle( ::AppMutex )
-   ::AppMutex := NIL
-
-   ::MutexUnlock()
-
-   ::DeleteGlobalMutex()
 
    RETURN ( NIL )
 
