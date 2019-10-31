@@ -128,6 +128,7 @@ WINDOWS MESSAGES
 #define WM_MBUTTONUP                  520   // 0x0208
 #define WM_MBUTTONDBLCLK              521   // 0x0209
 #define WM_MOUSEWHEEL                 522   // 0x020a
+#define WM_MOUSEHWHEEL                526   // 0x020e
 #define WM_MDIACTIVATE                546
 #define WM_MDITILE                    550
 #define WM_MDICASCADE                 551

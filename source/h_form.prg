@@ -1369,6 +1369,10 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
 
 #pragma BEGINDUMP
 
+#ifndef WM_MOUSEHWHEEL
+#define WM_MOUSEHWHEEL 0x020e
+#endif
+
 // -----------------------------------------------------------------------------
 HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
 // -----------------------------------------------------------------------------
@@ -1504,6 +1508,32 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
                         hb_itemRelease( pMenuItem );
                      }
                   }
+               }
+            }
+         }
+         hb_ret();
+         break;
+
+      case WM_MOUSEHWHEEL:
+         _OOHG_Send( pSelf, s_hWnd );
+         hb_vmSend( 0 );
+         if( ValidHandler( HWNDparam( -1 ) ) )
+         {
+            _OOHG_Send( pSelf, s_RangeWidth );
+            hb_vmSend( 0 );
+            if( hb_parnl( -1 ) > 0 )
+            {
+               if( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 )
+               {
+                  _OOHG_Send( pSelf, s_Events_HScroll );
+                  hb_vmPushLong( SB_LINERIGHT );
+                  hb_vmSend( 1 );
+               }
+               else
+               {
+                  _OOHG_Send( pSelf, s_Events_HScroll );
+                  hb_vmPushLong( SB_LINELEFT );
+                  hb_vmSend( 1 );
                }
             }
          }
@@ -2060,7 +2090,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
 METHOD Release() CLASS TFormMain
 
    ::Super:Release()
-   ReleaseAllWindows()
    // Processing will never reach this point
 
    RETURN NIL
@@ -3378,8 +3407,7 @@ HB_FUNC( UNREGISTERWINDOW )
 
 HB_FUNC( INITDUMMY )
 {
-   CreateWindowEx( 0, "static", "", WS_CHILD, 0, 0, 0, 0,
-                   HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+   HWNDret( CreateWindowEx( 0, "static", "", WS_CHILD, 0, 0, 0, 0, HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL ) );
 }
 
 HB_FUNC( INITWINDOW )

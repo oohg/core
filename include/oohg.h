@@ -478,7 +478,8 @@ INT GetUserObjects( DWORD);
 #define s_Events_InitMenuPopUp  82
 #define s_oMenu                 83
 #define s_Events_TimeOut        84
-#define s_LastSymbol            85
+#define s_RangeWidth            85
+#define s_LastSymbol            86
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */

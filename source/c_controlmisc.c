@@ -166,6 +166,7 @@ static char *s_SymbolNames[] = { "EVENTS_NOTIFY",
                                  "EVENTS_INITMENUPOPUP",
                                  "OMENU",
                                  "EVENTS_TIMEOUT",
+                                 "RANGEWIDTH",
                                  "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
