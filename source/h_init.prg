@@ -78,6 +78,9 @@ STATIC _OOHG_Language := NIL
 INIT PROCEDURE _OOHG_Init()
 
    TApplication():New()
+   _OOHG_ExitOnMainRelease := .F.
+   _OOHG_KeepAppOnMainRelease := .T.
+
    InitMessages_C_Side( _OOHG_Messages )
    InitMessages()
 
