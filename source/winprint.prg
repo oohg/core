@@ -3234,14 +3234,14 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
             ON KEY SUBTRACT    ACTION ( ::Scale /= 1.25, ::PrevShow() )
             ON KEY CONTROL + P ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
             IF ::IloscStron > 1
-               ON KEY PRIOR    ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY NEXT     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY END      ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY HOME     ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY LEFT     ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY UP       ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY RIGHT    ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
-               ON KEY DOWN     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() )
+               ON KEY PRIOR    ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
+               ON KEY NEXT     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
+               ON KEY END      ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page )
+               ON KEY HOME     ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page )
+               ON KEY LEFT     ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
+               ON KEY UP       ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
+               ON KEY RIGHT    ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
+               ON KEY DOWN     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
             ENDIF
          END WINDOW
 
