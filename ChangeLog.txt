@@ -12,6 +12,99 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-10-31 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-10-31 20:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     * _OOHG_ExitOnMainRelease is forced to .F.
+     * _OOHG_KeepAppOnMainRelease is forced to .T.
+     ; These enable the execution of destructors after
+       releasing the main window.
+
+2019-10-31 20:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_windefs.ch
+     + Define for WM_MOUSEHWHEEL.
+   * core\include\oohg.h
+     + Define for s_RangeWidth.
+   * core\source\c_controlmisc.c
+     + RANGEWIDTH to s_SymbolNames.
+   * core\source\h_form.prg
+     + WM_MOUSEHWHEEL to method Events of class TForm.
+     - Unneeded call to ReleaseAllWindows() at method Release
+       of class TFormMain.
+     * Function InitDummy now returns the window's handle.
+
+2019-10-31 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     + Destructor.
+     ! RTE "not an array" at method Release.
+
+2019-10-31 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     - Unneeded code.
+
+2019-10-30 17:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_picture.prg
+     ! Control shows no image.
+     * Function _OOHG_TPicture_Register renamed to
+       _OOHG_PictureControl_Register.
+     * Function _OOHG_TPicture_UnRegister renamed to
+       _OOHG_PictureControl_UnRegister.
+     * Function _OOHG_TPicture_lpfnOldWndProc renamed to
+       _OOHG_PictureControl_lpfnOldWndProc.
+     * Function _OOHG_TPicture_WndProc renamed to
+       _OOHG_PictureControl_WndProc.
+     * Function _OOHG_TPicture_WndProc renamed to
+       _OOHG_PictureControl_WndProc.
+   * core\source\h_application.prg
+     * Call to _OOHG_TPicture_UnRegister replaced by
+       _OOHG_PictureControl_UnRegister.
+
+2019-10-30 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_scroll.prg
+     ! Return value of method Events_VScroll of class TScrollBar.
+
+2019-10-30 17:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+     + Clause FOLDER to INIT PRINTSYS command.
+       It allows to set the folder for temp files.
+   * core\source\winprint.prg
+     * Some format.
+     + Some defines to improve source readability.
+     + Destructor to class HBPrinter.
+     - Method PrevAdjust.
+     + Parameter cFolder to method New of class HBPrinter.
+     ! Method End of class HBPrinter generates a RTE when
+       printer handle or job handle are not defined.
+     ! Thumbnails are not visible after resizing the splitbox
+       panel.
+     * Label "Go To Page" replaced by combobox's grippertext.
+     * Combobox "Go To Page" now allows to enter the number
+       of a page.
+     ! "Go To Page" label and combo disappear after resizing
+       the preview window.
+
+2019-10-30 17:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Method Events_Enter to class TEditCombo.
+     ! Enter key doesn't change the combobox value.
+
+2019-10-30 17:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_toolbar.ch
+   * core\source\h_toolbar.prg
+     + Clause TOOLBARSIZE.
+       ; It allows to set the ideal size.
+   * core\source\h_windows.prg
+     + Parameter idealsize to method SetSplitBoxInfo of class TWindow.
+   * core\source\h_splitbox.prg
+     + Data nIdealSize.
+     * Some format.
+     + Parameter idealsize to functions AddSplitBoxItem and
+       SetSplitBoxItem and to method SetSplitBox.
+     + Reset code to method AddControl.
+
 2019-10-24 18:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_browse.prg
      * On init the disabled style is deferred until the control
