@@ -1198,11 +1198,7 @@ METHOD MaxCol() CLASS TMiniPrint
 
    LOCAL hdcPrint, nCol
 
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
+   hdcPrint := OpenPrinterGetDC()
 
    IF hdcPrint == 0
       nCol := 0
@@ -1219,11 +1215,7 @@ METHOD MaxRow() CLASS TMiniPrint
 
    LOCAL hdcPrint, nRow
 
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
+   hdcPrint := OpenPrinterGetDC()
 
    IF hdcPrint == 0
       nRow := 0
@@ -1334,16 +1326,7 @@ METHOD EndPageX() CLASS TMiniPrint
 METHOD ReleaseX() CLASS TMiniPrint
 
    IF ! ::IsDocOpen()
-      RELEASE _HMG_PRINTER_aPrinterProperties
-      RELEASE _HMG_PRINTER_Collate
-      RELEASE _HMG_PRINTER_Copies
-      RELEASE _HMG_PRINTER_Error
-      RELEASE _HMG_PRINTER_hDC
-      RELEASE _HMG_PRINTER_hDC_Bak
-      RELEASE _HMG_PRINTER_Name
-      RELEASE _HMG_PRINTER_PageCount
-      RELEASE _HMG_PRINTER_Preview
-      RELEASE _HMG_PRINTER_TimeStamp
+      RELEASE _HMG_MiniPrint
    ENDIF
 
    RETURN .T.

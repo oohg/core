@@ -82,6 +82,10 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
    LOCAL tHeight, tFactor, tvHeight, icb, oSep
 
+   IF _HMG_PRINTER_hdcPrint == 0
+      RETURN
+   ENDIF
+
    _HMG_PRINTER_BasePageName := GetTempFolder() + "\" + _HMG_PRINTER_TimeStamp + "_HMG_print_preview_"
    _HMG_PRINTER_CurrentPageNumber := 1
    _HMG_PRINTER_Dx := 0
@@ -92,10 +96,6 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
    _HMG_PRINTER_ThumbUpdate := .T.
    _HMG_PRINTER_PrevPageNumber := 0
 
-   IF _HMG_PRINTER_hDC_Bak == 0
-      RETURN
-   ENDIF
-
    IF _IsWindowDefined( "_HMG_PRINTER_SHOWPREVIEW" )
       RETURN
    ENDIF
@@ -104,7 +104,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
    SET INTERACTIVECLOSE ON
 
-   _HMG_PRINTER_SizeFactor := GetDesktopRealHeight() / _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) * 0.63
+   _HMG_PRINTER_SizeFactor := GetDesktopRealHeight() / _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) * 0.63
 
    ASSIGN lWait VALUE lWait TYPE "L" DEFAULT .T.
    ASSIGN lSize VALUE lSize TYPE "L" DEFAULT .T.
@@ -275,13 +275,13 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
          _HMG_PRINTER_SHOWPREVIEW.ClientAdjust := 5
       END WINDOW
 
-      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hDC_Bak )
+      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint )
          tFactor := 0.44
       ELSE
          tFactor := 0.26
       ENDIF
 
-      tHeight := _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) * tFactor
+      tHeight := _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) * tFactor
 
       tHeight := Int( tHeight )
 
@@ -510,7 +510,7 @@ PROCEDURE _HMG_PRINTER_CreateThumbNails()
 
    LOCAL tFactor, tWidth, tHeight, ttHandle, i, cMacroTemp
 
-   IF _HMG_PRINTER_hDC_Bak == 0
+   IF _HMG_PRINTER_hdcPrint == 0
       RETURN
    ENDIF
 
@@ -520,14 +520,14 @@ PROCEDURE _HMG_PRINTER_CreateThumbNails()
 
    ShowWindow( GetFormHandle( "_HMG_PRINTER_WAIT" ) )
 
-   IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hDC_Bak )
+   IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint )
       tFactor := 0.44
    ELSE
       tFactor := 0.26
    ENDIF
 
-   tWidth  := _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hDC_Bak ) * tFactor
-   tHeight := _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) * tFactor
+   tWidth  := _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint ) * tFactor
+   tHeight := _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) * tFactor
 
    tHeight := Int( tHeight )
 
@@ -673,7 +673,7 @@ PROCEDURE _HMG_PRINTER_PreviewRefresh()
    LOCAL nRow
    LOCAL nScrollMax
 
-   IF _HMG_PRINTER_hDC_Bak == 0
+   IF _HMG_PRINTER_hdcPrint == 0
       RETURN
    ENDIF
 
@@ -717,7 +717,7 @@ PROCEDURE _HMG_PRINTER_PreviewRefresh()
       RETURN
    ENDIF
 
-   _HMG_PRINTER_ShowPage( _HMG_PRINTER_BasePageName + StrZero( _HMG_PRINTER_CurrentPageNumber, 6 ) + ".emf", GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_SizeFactor * 10000, _HMG_PRINTER_Dz, _HMG_PRINTER_Dx, _HMG_PRINTER_Dy )
+   _HMG_PRINTER_ShowPage( _HMG_PRINTER_BasePageName + StrZero( _HMG_PRINTER_CurrentPageNumber, 6 ) + ".emf", GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), _HMG_PRINTER_hdcPrint, _HMG_PRINTER_SizeFactor * 10000, _HMG_PRINTER_Dz, _HMG_PRINTER_Dx, _HMG_PRINTER_Dy )
 
    _HMG_PRINTER_AUXIL.Title := _HMG_PRINTER_UserMessages[ 02 ] + '. ' + _HMG_PRINTER_UserMessages[ 01 ] + ' [' + AllTrim( Str( _HMG_PRINTER_CurrentPageNumber ) ) + '/' + AllTrim( Str( _HMG_PRINTER_PageCount ) ) + ']'
 
@@ -781,7 +781,7 @@ PROCEDURE _HMG_PRINTER_PrintPagesDo( cLang )
    LOCAL EvenOnly := .F.
    LOCAL nCopies
 
-   IF _HMG_PRINTER_hDC_Bak == 0
+   IF _HMG_PRINTER_hdcPrint == 0
       RETURN
    ENDIF
 
@@ -802,21 +802,21 @@ PROCEDURE _HMG_PRINTER_PrintPagesDo( cLang )
    nCopies := iif( _HMG_PRINTER_Copies > 1, 1, _HMG_PRINTER_PrintPages.Spinner_3.Value )
 
    _HMG_PRINTER_InitUserMessages( cLang )
-   _HMG_PRINTER_JobId := _HMG_PRINTER_StartDoc( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_GetJobName() )
+   _HMG_PRINTER_JobId := _HMG_PRINTER_StartDoc( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_GetJobName() )
 
    IF _HMG_PRINTER_PrintPages.CheckBox_1.Value  // Collate
       FOR p := 1 TO nCopies
          FOR i := PageFrom TO PageTo
             IF OddOnly == .T.
                IF i / 2 != Int( i / 2 )
-                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                ENDIF
             ELSEIF EvenOnly == .T.
                IF i / 2 == Int( i / 2 )
-                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                ENDIF
             ELSE
-               _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+               _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             ENDIF
          NEXT i
       NEXT p
@@ -825,20 +825,20 @@ PROCEDURE _HMG_PRINTER_PrintPagesDo( cLang )
          FOR p := 1 TO nCopies
             IF OddOnly == .T.
                IF i / 2 != Int( i / 2 )
-                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                ENDIF
             ELSEIF EvenOnly == .T.
                IF i / 2 == Int( i / 2 )
-                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+                  _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
                ENDIF
             ELSE
-               _HMG_PRINTER_PrintPage( _HMG_PRINTER_hDC_Bak, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
+               _HMG_PRINTER_PrintPage( _HMG_PRINTER_hdcPrint, _HMG_PRINTER_BasePageName + StrZero( i, 6 ) + ".emf" )
             ENDIF
          NEXT p
       NEXT i
    ENDIF
 
-   _HMG_PRINTER_EndDoc( _HMG_PRINTER_hDC_Bak )
+   _HMG_PRINTER_EndDoc( _HMG_PRINTER_hdcPrint )
 
    EnableWindow( GetFormHandle( "_HMG_PRINTER_SHOWPREVIEW" ) )
    EnableWindow( GetFormHandle( "_HMG_PRINTER_SHOWTHUMBNAILS" ) )
@@ -858,7 +858,7 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
    LOCAL Q := 0
    LOCAL DeltaHeight := 35 + GetTitleHeight() + GetBorderHeight() + 10
 
-   IF _HMG_PRINTER_hDC_Bak == 0
+   IF _HMG_PRINTER_hdcPrint == 0
       RETURN
    ENDIF
 
@@ -885,7 +885,7 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
          Q := 4
       ENDIF
 
-      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hDC_Bak )
+      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint )
          // Portrait
          IF Q == 1
             _HMG_PRINTER_Dz := 1000
@@ -951,7 +951,7 @@ PROCEDURE _HMG_PRINTER_MouseZoom()
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _HMG_PRINTER_Zoom()
 
-   IF _HMG_PRINTER_hDC_Bak == 0
+   IF _HMG_PRINTER_hdcPrint == 0
       RETURN
    ENDIF
 
@@ -962,7 +962,7 @@ PROCEDURE _HMG_PRINTER_Zoom()
       SetScrollPos( GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), SB_VERT, 50, .T. )
       SetScrollPos( GetFormHandle( '_HMG_PRINTER_SHOWPREVIEW' ), SB_HORZ, 50, .T. )
    ELSE
-      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hDC_Bak ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hDC_Bak )
+      IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint )
          _HMG_PRINTER_Dz := 1000
          _HMG_PRINTER_Dx := 100
          _HMG_PRINTER_Dy := 400
@@ -1373,8 +1373,8 @@ PROCEDURE _HMG_PRINTER_InitUserMessages( cLang )
       _HMG_PRINTER_Delta_Zoom         := 0
       _HMG_PRINTER_TimeStamp          := ""
       _HMG_PRINTER_PageCount          := 0
-      _HMG_PRINTER_hDC                := 0
-      _HMG_PRINTER_hDC_Bak            := 0
+      _HMG_PRINTER_hdcPrint           := 0
+      _HMG_PRINTER_hdcEMF             := 0
       _HMG_PRINTER_JobName            := "OOHG printing system"
       _HMG_PRINTER_Preview            := .F.
       _HMG_PRINTER_UserCopies         := .F.
@@ -1805,42 +1805,20 @@ PROCEDURE _HMG_PRINTER_InitUserMessages( cLang )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaWidth()
 
-   LOCAL hdcPrint
-
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
-
-   RETURN _HMG_PRINTER_GetPrinterWidth( hdcPrint )
+   RETURN _HMG_PRINTER_GetPrinterWidth( OpenPrinterGetPageDC() )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaHeight()
 
-   LOCAL hdcPrint
-
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
-
-   RETURN _HMG_PRINTER_GetPrinterHeight( hdcPrint )
+   RETURN _HMG_PRINTER_GetPrinterHeight( OpenPrinterGetPageDC() )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
 
-   LOCAL hdcPrint, nPhOfX, nLgPxX
+   LOCAL nPhOfX, nLgPxX
 
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
-
-   nPhOfX := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetX( hdcPrint )
-   nLgPxX := _HMG_PRINTER_GetPrintableAreaLogPixelsX( hdcPrint )
+   nPhOfX := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetX( OpenPrinterGetPageDC() )
+   nLgPxX := _HMG_PRINTER_GetPrintableAreaLogPixelsX( OpenPrinterGetPageDC() )
 
    IF nLgPxX == 0
       RETURN 0
@@ -1851,16 +1829,10 @@ FUNCTION _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_GetPrintableAreaVerticalOffset()
 
-   LOCAL hdcPrint, nPhOfY, nLgPxY
+   LOCAL nPhOfY, nLgPxY
 
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
-
-   nPhOfY := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetY( hdcPrint )
-   nLgPxY := _HMG_PRINTER_GetPrintableAreaLogPixelsY( hdcPrint )
+   nPhOfY := _HMG_PRINTER_GetPrintableAreaPhysicalOffsetY( OpenPrinterGetPageDC() )
+   nLgPxY := _HMG_PRINTER_GetPrintableAreaLogPixelsY( OpenPrinterGetPageDC() )
 
    IF nLgPxY == 0
       RETURN 0
@@ -1891,15 +1863,7 @@ FUNCTION _HMG_PRINTER_SetJobName( cName )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_TextAlign( nAlign )
 
-   LOCAL hdcPrint
-
-   IF _HMG_PRINTER_hDC_Bak == 0
-      hdcPrint := _HMG_PRINTER_hDC
-   ELSE
-      hdcPrint := _HMG_PRINTER_hDC_Bak
-   ENDIF
-
-   RETURN _HMG_PRINTER_SetTextAlign( hdcPrint, nAlign )
+   RETURN _HMG_PRINTER_SetTextAlign( OpenPrinterGetPageDC(), nAlign )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _HMG_PRINTER_PreviewZoom( nSize )
@@ -2091,7 +2055,7 @@ HB_FUNC( _HMG_PRINTER_SETCHARSET )          /* _HMG_PRINTER_SetCharset( nCharSet
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_GETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdc ) -> nAlign */
+HB_FUNC( _HMG_PRINTER_GETTEXTALIGN )          /* _HMG_PRINTER_GetTextAlign( hdc ) -> nAlign */
 {
    hb_retni( GetTextAlign( ( HDC ) HB_PARNL( 1 ) ) );
 }
