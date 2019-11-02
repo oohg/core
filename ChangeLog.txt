@@ -12,6 +12,21 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-01 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+     + App.Release
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+   * core\source\h_form.prg
+   * core\source\h_init.prg
+     - Global var _OOHG_KeepAppOnMainRelease.
+       ; Now OOHG do not release the TApplication object after
+         executing ReleaseAllWindow().
+         To unload the object you must place a call to
+         App.Release after ACTIVATE WINDOW Main. Do not place
+         this call at ON RELEASE or the app will throw an RTE.
+         See samples\form\s015.prg
+
 2019-10-31 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
