@@ -100,6 +100,7 @@
 #xtranslate App.MutexUnlock                => TApplication():Define():MutexUnlock()
 #xtranslate App.Name                       => TApplication():Define():Name
 #xtranslate App.Path                       => TApplication():Define():Path
+#xtranslate App.Release                    => TApplication():Define():Release()
 #xtranslate App.ReleaseFont( <arg> )       => TApplication():Define():ReleaseLogFont( <arg> )
 #xtranslate App.Row := <arg>               => TApplication():Define():Row( <arg> )
 #xtranslate App.Row                        => TApplication():Define():Row()

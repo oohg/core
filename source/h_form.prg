@@ -2914,11 +2914,7 @@ FUNCTION ReleaseAllWindows()
       ExitProcess( _OOHG_ErrorLevel )
       // Processing will never reach this point
    ENDIF
-   IF _OOHG_KeepAppOnMainRelease
-      _OOHG_Main := NIL
-   ELSE
-      TApplication():Define():Release()
-   ENDIF
+   _OOHG_Main := NIL
 
    RETURN NIL
 

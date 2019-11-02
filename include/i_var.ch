@@ -121,9 +121,8 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_UseLibraryDraw         => TApplication():Define():Value_Pos54
 #xtranslate _OOHG_EnableClassUnreg       => TApplication():Define():Value_Pos55
 #xtranslate _OOHG_ExitOnMainRelease      => TApplication():Define():Value_Pos56
-#xtranslate _OOHG_KeepAppOnMainRelease   => TApplication():Define():Value_Pos57
+#xtranslate _OOHG_LogFile                => TApplication():Define():Value_Pos57
 #xtranslate _OOHG_InteractiveClose       => TApplication():Define():Value_Pos58
-#xtranslate _OOHG_LogFile                => TApplication():Define():Value_Pos59
 #xtranslate _OOHG_ActiveFrame            => TApplication():Define():ActiveFrameGet()
 
 /*---------------------------------------------------------------------------

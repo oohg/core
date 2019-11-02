@@ -140,10 +140,9 @@
 #define NDX_OOHG_USELIBRARYDRAW        54
 #define NDX_OOHG_ENABLEUNREGUNUSED     55
 #define NDX_OOHG_EXITONMAINRELEASE     56
-#define NDX_OOHG_KEEPAPPONMAINRELEASE  57
+#define NDX_OOHG_LOGFILE               57
 #define NDX_OOHG_INTERACTIVECLOSE      58
-#define NDX_OOHG_LOGFILE               59
-#define NUMBER_OF_APP_WIDE_VARS        59
+#define NUMBER_OF_APP_WIDE_VARS        58
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
@@ -267,7 +266,6 @@ CLASS TApplication
    METHOD Value_Pos56             SETGET
    METHOD Value_Pos57             SETGET
    METHOD Value_Pos58             SETGET
-   METHOD Value_Pos59             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -348,10 +346,9 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]        := ""
       ::aVars[ NDX_OOHG_USELIBRARYDRAW ]        := .F.
       ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]     := .T.
-      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .T.
-      ::aVars[ NDX_OOHG_KEEPAPPONMAINRELEASE ]  := .F.
-      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
+      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .F.
       ::aVars[ NDX_OOHG_LOGFILE ]               := {}
+      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -1413,7 +1410,7 @@ METHOD Value_Pos11( uValue ) CLASS TApplication
    LOCAL uRet
 
    ::MutexLock()
-   IF HB_ISOBJECT( uValue ) .OR. ( uValue == NIL .AND. ::aVars[ NDX_OOHG_KEEPAPPONMAINRELEASE ] )
+   IF HB_ISOBJECT( uValue ) .OR. uValue == NIL
       ::aVars[ NDX_OOHG_MAIN ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_MAIN ]
@@ -2087,35 +2084,7 @@ METHOD Value_Pos56( lValue ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Value_Pos57( lValue ) CLASS TApplication
-
-   LOCAL uRet
-
-   ::MutexLock()
-   IF HB_ISLOGICAL( lValue )
-      ::aVars[ NDX_OOHG_KEEPAPPONMAINRELEASE ] := lValue
-   ENDIF
-   uRet := ::aVars[ NDX_OOHG_KEEPAPPONMAINRELEASE ]
-   ::MutexUnlock()
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Value_Pos58( nValue ) CLASS TApplication
-
-   LOCAL uRet
-
-   ::MutexLock()
-   uRet := ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]
-   IF HB_ISNUMERIC( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
-      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ] := Int( nValue )
-   ENDIF
-   ::MutexUnlock()
-
-   RETURN ( uRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Value_Pos59( uValue ) CLASS TApplication
+METHOD Value_Pos57( uValue ) CLASS TApplication
 
    LOCAL uRet, nThreadID, i
 
@@ -2144,6 +2113,20 @@ METHOD Value_Pos59( uValue ) CLASS TApplication
       uRet := ::aVars[ NDX_OOHG_LOGFILE ][ i ][ 2 ]
    ELSE
       uRet := "DumpLog.txt"
+   ENDIF
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos58( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   uRet := ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]
+   IF HB_ISNUMERIC( nValue ) .AND. nValue >= 0 .AND. nValue <= 3
+      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ] := Int( nValue )
    ENDIF
    ::MutexUnlock()
 
