@@ -12,6 +12,13 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-02 16:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\miniprint.ch
+   * core\source\h_print.prg
+   * core\source\miniprint.prg
+     ! Page preview disapears after initial load when
+       clause NOWAIT is added to END PRINTDOC.
+
 2019-11-01 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_app.ch
      + App.Release
