@@ -346,15 +346,15 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
 
 #command RELEASE WINDOW ALL ;
    => ;
-      ReleaseAllWindows()
+      ReleaseAllWindows( .T. )
 
 #command RELEASE WINDOW MAIN ;
    => ;
-      ReleaseAllWindows()
+      iif( HB_ISOBJECT( _OOHG_Main ), _OOHG_Main:Release(), ReleaseAllWindows( .T. ) )
 
 #xtranslate EXIT PROGRAM ;
    => ;
-      ReleaseAllWindows()
+      ReleaseAllWindows( .T. )
 
 #command ACTIVATE WINDOW <name, ...> [ <nowait: NOWAIT> ] ;
    => ;
