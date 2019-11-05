@@ -34,7 +34,8 @@ rem
    if /I "%1" == "HM30" goto TEST_HM30
    if /I "%1" == "HM32" goto TEST_HM32
    if /I "%1" == "HM34" goto TEST_HM34
-   if /I "%1" == "XB"   goto TEST_XB
+   if /I "%1" == "XB55" goto TEST_XB
+   if /I "%1" == "XB58" goto TEST_XB
    if /I "%1" == "XM"   goto TEST_XM
 
 :DETECT_HM30
@@ -89,8 +90,10 @@ rem
    echo       MakeLib HM32 [options]
    echo   To build with Harbour 3.4 and MinGW
    echo       MakeLib HM34 [options]
-   echo   To build with xHarbour and BCC
-   echo       MakeLib XB [options]
+   echo   To build with xHarbour and BCC 5.5.1
+   echo       MakeLib XB55 [options]
+   echo   To build with xHarbour and BCC 5.8.2
+   echo       MakeLib XB58 [options]
    echo   To build with xHarbour and MinGW
    echo       MakeLib XM [options]
    echo.
@@ -186,6 +189,7 @@ rem
 
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
    if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
+   if "%HG_BCC%"   == "" if /I "%1" == "XB58" set HG_BCC=c:\Borland\BCC58
    if "%HG_BCC%"   == "" set HG_BCC=c:\Borland\BCC55
    set HG_CCOMP=%HG_BCC%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
