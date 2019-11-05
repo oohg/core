@@ -536,7 +536,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
       IF uParent:lForm
          ::Parent := uParent
          // Checks for an open "control container" structure in the specified parent form
-         ::Container := TApplication():Define():ActiveFrameContainer( ::Parent:hWnd )
+         ::Container := _OOHG_AppObject():ActiveFrameContainer( ::Parent:hWnd )
       ELSE
          ::Container := uParent
          ::Parent := ::Container:Parent
@@ -1673,7 +1673,7 @@ METHOD Polygon( aPoints, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor, nFi
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_AddFrame( oFrame )
 
-   TApplication():Define():ActiveFramePush( oFrame )
+   _OOHG_AppObject():ActiveFramePush( oFrame )
 
    RETURN oFrame
 
@@ -1688,7 +1688,7 @@ FUNCTION _OOHG_DeleteFrame( cType )
    ENDIF
    oCtrl := _OOHG_ActiveFrame
    IF oCtrl:Type == cType
-      TApplication():Define():ActiveFramePop()
+      _OOHG_AppObject():ActiveFramePop()
    ELSE
       // ERROR: No FRAME started
       RETURN .F.
@@ -1902,8 +1902,8 @@ STATIC FUNCTION _OOHG_MacroCall_Error( oError )
 FUNCTION ExitProcess( nExit )
 
    dbCloseAll()
-   IF HB_ISOBJECT( TApplication():Define() )
-      TApplication():Define():Release()
+   IF HB_ISOBJECT( _OOHG_AppObject() )
+      _OOHG_AppObject():Release()
    ENDIF
 
    RETURN _ExitProcess2( nExit )
