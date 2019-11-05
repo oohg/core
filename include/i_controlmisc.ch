@@ -182,11 +182,6 @@ STANDARD CURSORS
    => ;
       _OOHG_ShowContextMenus( .T. )
 
-#xcommand EXIT PROCEDURE <name> ;
-   => ;
-      INIT PROCEDURE <name> ;;
-      MsgOOHGError( "EXIT PROCEDURE statement is not supported in ooHG. Use main window's ON RELEASE event procedure instead. Program terminated." )
-
 #translate SET SAMEENTERDBLCLICK OFF ;
    => ;
       _OOHG_SameEnterDblClick := .F.
