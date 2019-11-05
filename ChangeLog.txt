@@ -12,6 +12,163 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-04 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-11-04 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + Defines and includes common to almost all sources.
+   * core\source\bostaurus.prg
+   * core\source\c_activex.c
+   * core\source\c_controlmisc.c
+   * core\source\c_cursor.c
+   * core\source\c_dialogs.c
+   * core\source\c_font.c
+   * core\source\c_gdiplus.c
+   * core\source\c_graph.c
+   * core\source\c_image.c
+   * core\source\c_media.c
+   * core\source\c_msgbox.c
+   * core\source\c_resource.c
+   * core\source\c_scrsaver.c
+   * core\source\c_winapimisc.c
+   * core\source\c_windows.c
+   * core\source\h_application.prg
+   * core\source\h_button.prg
+   * core\source\h_checkbox.prg
+   * core\source\h_combo.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_datepicker.prg
+   * core\source\h_dll.prg
+   * core\source\h_form.prg
+   * core\source\h_frame.prg
+   * core\source\h_grid.prg
+   * core\source\h_help.prg
+   * core\source\h_hotkey.prg
+   * core\source\h_hotkeybox.prg
+   * core\source\h_image.prg
+   * core\source\h_ini.prg
+   * core\source\h_init.prg
+   * core\source\h_internal.prg
+   * core\source\h_ipaddress.prg
+   * core\source\h_label.prg
+   * core\source\h_listbox.prg
+   * core\source\h_media.prg
+   * core\source\h_menu.prg
+   * core\source\h_monthcal.prg
+   * core\source\h_notify.prg
+   * core\source\h_pdf.prg
+   * core\source\h_picture.prg
+   * core\source\h_progressbar.prg
+   * core\source\h_progressmeter.prg
+   * core\source\h_radio.prg
+   * core\source\h_registry.prg
+   * core\source\h_report.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_scroll.prg
+   * core\source\h_scrollbutton.prg
+   * core\source\h_slider.prg
+   * core\source\h_spinner.prg
+   * core\source\h_splitbox.prg
+   * core\source\h_status.prg
+   * core\source\h_tab.prg
+   * core\source\h_textarray.prg
+   * core\source\h_textbox.prg
+   * core\source\h_timer.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_tooltip.prg
+   * core\source\h_tree.prg
+   * core\source\h_windows.prg
+   * core\source\miniprint.prg
+   * core\source\winprint.prg
+     - Defines and includes that were moved to oohg.h
+
+2019-11-04 21:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * TApplication():Define() replaced by _OOHG_AppObject().
+
+2019-11-04 21:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile.bat
+   * core\source\makelib.bat
+     + Support for BCC 5.8.2
+     * XB flavor splitted into XB55 and XB58 for BCC 5.5.1 and
+       BCC 5.8.2 respectively.
+
+2019-11-04 21:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\makelib_bcc.bat
+     ! Label INFO not found.
+
+2019-11-04 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\resources\CompileRes_mingw.bat
+   * core\resources\CompileRes_bcc.bat
+     + Support for HG_CCOMP envvar.
+
+2019-11-04 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_app.ch
+   * core\include\i_font.ch
+   * core\include\i_pseudofunc.ch
+   * core\include\i_var.ch
+   * core\source\h_error.prg
+   * core\source\h_menu.prg
+   * core\source\h_print.prg
+     * TApplication():Define() replaced by _OOHG_AppObject().
+   * core\source\h_application.prg
+     - ClassVar oAppObj.
+     + Module static var oAppObj.
+     + Function _OOHG_AppObject. Returns oAppObj.
+     ; Previous changes reduced overhead caused by repeatedly
+       creation and destruction of TApplication objects just
+       for accessing the methods of the class.
+     * Destructor End() renamed as Destroy().
+     ! Method End() renamed as Procedure Destroy() to fix
+       xHarbour compile-time error.
+   * core\source\h_init.prg
+     + Exit procedure to release TApplication object.
+
+2019-11-04 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     * Two calls to GetWindowLong replace by GetWindowLongPtr.
+
+2019-11-04 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_controlmisc.ch
+     - Redefinition of EXIT PROCEDURE command.
+     ; Now OOHG supports EXIT PROCEDUREs.
+
+2019-11-04 21:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tab.prg
+     + Method AdjustRect to class TTabRaw.
+
+2019-11-04 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     ! RTE at _OOHG_CallDump() when TApplication object doesn't
+       exists.
+
+2019-11-04 21:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Compilation under BCC 5.8.2
+
+2019-11-04 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.prg
+     + Compatibility function GetWindowLong.
+
+2019-11-04 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! Method Destroy() renamed as Procedure Destroy() to fix
+       xHarbour compile-time error.
+
+2019-11-04 21:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     ! RELEASE WINDOW ALL.
+       ; The old behavior was restored: app is ended
+         using ExitProcess().
+     * RELEASE WINDOW MAIN.
+       ; Releases the Main window if it's defined.
+         If not defaults to RELEASE WINDOW ALL.
+   * core\source\h_form.prg
+     + Parameter lExit to function ReleaseAllWindows.
+       See comment at 2019-11-01 21:22 UTC-0300.
+
 2019-11-02 16:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\miniprint.ch
    * core\source\h_print.prg
@@ -27,12 +184,14 @@
    * core\source\h_form.prg
    * core\source\h_init.prg
      - Global var _OOHG_KeepAppOnMainRelease.
-       ; Now OOHG do not release the TApplication object after
-         executing ReleaseAllWindow().
-         To unload the object you must place a call to
-         App.Release after ACTIVATE WINDOW Main. Do not place
-         this call at ON RELEASE or the app will throw an RTE.
-         See samples\form\s015.prg
+   ; Now OOHG doesn't releases the TApplication object after
+     executing ReleaseAllWindows( lExit ) when lExit is not
+     a logical value or it's .F.
+   ; To unload the object you must place a call to
+     App.Release after ACTIVATE WINDOW "main".
+   ; Note that executing App.Release at other places will
+     throw an RTE.
+     See samples\form\s015.prg
 
 2019-10-31 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
