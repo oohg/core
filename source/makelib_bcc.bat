@@ -101,5 +101,11 @@ rem
 
    if not exist resul.txt goto END
    type resul.txt | more
+   goto END
+
+:INFO
+
+   echo This file must be called from MAKELIB.BAT !!!
+   echo.
 
 :END
