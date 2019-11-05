@@ -1521,7 +1521,7 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uValue ) -> cI
    {
       nItemSel = SendMessage( oSelf->hWnd, CB_GETCURSEL, 0, 0 );
 
-      if( ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
+      if( ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
       {
          SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
          ImageFillParameter( &pStruct, pValue );
@@ -1561,7 +1561,7 @@ HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nIt
    {
       ImageFillParameter( &pStruct, pValue );
       TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-      if( ( GetWindowLong( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
+      if( ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
       {
          SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
       }
