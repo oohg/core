@@ -38,6 +38,8 @@ rem
 :CONTINUE
 
    if not "%HG_MINGW%"=="" goto CHECK
+   if not "%HG_CCOMP%"=="" set HG_MINGW=%HG_CCOMP%
+   if not "%HG_CCOMP%"=="" goto CHECK
 
    if not "%HG_ROOT%"=="" goto SETFROMROOT
 
