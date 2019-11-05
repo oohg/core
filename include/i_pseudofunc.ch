@@ -105,15 +105,15 @@
 
 #xtranslate GetFontHandle( <cFontID> ) ;
    => ;
-      TApplication():Define():GetLogFontHandle( <cFontID> )
+      _OOHG_AppObject():GetLogFontHandle( <cFontID> )
 
 #xtranslate GetFontParam( <hFont> ) ;
    => ;
-      TApplication():Define():GetLogFontParams( <hFont> )
+      _OOHG_AppObject():GetLogFontParams( <hFont> )
 
 #xtranslate GetFontParamByRef( <x,...> ) ;
    => ;
-      TApplication():Define():GetLogFontParamsByRef( <x> )
+      _OOHG_AppObject():GetLogFontParamsByRef( <x> )
 
 #xtranslate GetActiveHelpFile() ;
    => ;
@@ -153,23 +153,23 @@
 
 #xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
    => ;
-      TApplication():Define():MultipleInstances( [ <lMultiple>, <lWarning> ] )
+      _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
 
 #xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
    => ;
-      TApplication():Define():HotKeySet( <nKey>, <nFlags>, <bAction> )
+      _OOHG_AppObject():HotKeySet( <nKey>, <nFlags>, <bAction> )
 
 #xtranslate _PushEventInfo() ;
    => ;
-      TApplication():Define():EventInfoPush()
+      _OOHG_AppObject():EventInfoPush()
 
 #xtranslate _PopEventInfo() ;
    => ;
-      TApplication():Define():EventInfoPop()
+      _OOHG_AppObject():EventInfoPop()
 
 #xtranslate _PushEventList() ;
    => ;
-      TApplication():Define():EventInfoList()
+      _OOHG_AppObject():EventInfoList()
 
 #xtranslate _OOHG_SetbKeyDown( [ <bValue> ] ) ;
    => ;

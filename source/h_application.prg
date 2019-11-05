@@ -144,10 +144,15 @@
 #define NDX_OOHG_INTERACTIVECLOSE      58
 #define NUMBER_OF_APP_WIDE_VARS        58
 
+STATIC oAppObj := NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_AppObject()
+
+   RETURN ( oAppObj )
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TApplication
-
-   CLASSVAR oAppObj               INIT NIL HIDDEN
 
    DATA aClasses                  INIT {}  HIDDEN
    DATA aEventsStack              INIT {}  HIDDEN
@@ -164,9 +169,6 @@ CLASS TApplication
    DATA oWinMH                    INIT NIL READONLY
    DATA oWinMHCount               INIT 0   READONLY
    DATA Path                      INIT NIL READONLY
-
-   METHOD Define
-   DESTRUCTOR End
 
    METHOD ActiveFrameContainer
    METHOD ActiveFrameGet
@@ -279,12 +281,14 @@ CLASS TApplication
    MESSAGE HotKeysGet             METHOD Value_Pos46
    MESSAGE Icon                   METHOD Value_Pos29
 
+   DESTRUCTOR Destroy
+
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD New() CLASS TApplication
 
-   IF ::oAppObj == NIL
+   IF oAppObj == NIL
       IF ! ::CreateGlobalMutex()
          MsgOOHGError( "APPLICATION: Global mutex creation failed. Program terminated." )
       ENDIF
@@ -359,15 +363,10 @@ METHOD New() CLASS TApplication
 
       _GETDDLMESSAGE()
 
-      ::oAppObj := Self
+      oAppObj := Self
    ENDIF
 
    RETURN ( NIL )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define CLASS TApplication
-
-   RETURN ( ::oAppObj )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFrameContainer( hWnd ) CLASS TApplication
@@ -1072,11 +1071,11 @@ METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
    RETURN ( lRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD End CLASS TApplication
+PROCEDURE Destroy() CLASS TApplication
 
    ::Release()
 
-   RETURN ( NIL )
+   RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TApplication
@@ -1124,8 +1123,6 @@ METHOD Release() CLASS TApplication
       _OOHG_PictureControl_UnRegister()
       _OOHG_TTextArray_UnRegister()
 
-      ::oAppObj := NIL
-
       CloseHandle( ::AppMutex )
       ::AppMutex := NIL
 
@@ -1133,6 +1130,8 @@ METHOD Release() CLASS TApplication
 
       ::DeleteGlobalMutex()
    ENDIF
+
+   oAppObj := NIL
 
    RETURN ( NIL )
 

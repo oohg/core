@@ -215,7 +215,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
    ::cStatMsg    := cMsg
    ::cFontId     := cFontId
    ::nTimeout    := nTimeout
-   TApplication():Define():ActiveMenuPush( Self )
+   _OOHG_AppObject():ActiveMenuPush( Self )
 
    RETURN Self
 
@@ -256,7 +256,7 @@ METHOD Activate( nRow, nCol ) CLASS TMenu
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndMenu() CLASS TMenu
 
-   TApplication():Define():ActiveMenuRemove( Self )
+   _OOHG_AppObject():ActiveMenuRemove( Self )
    ::Refresh()
 
    RETURN NIL
@@ -333,7 +333,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
    ::cStatMsg  := cMsg
    ::cFontId   := cFontId
    ::nTimeout  := nTimeout
-   TApplication():Define():ActiveMenuPush( Self )
+   _OOHG_AppObject():ActiveMenuPush( Self )
 
    IF ::Parent:oMenu != NIL
       // MAIN MENU already defined for this window
@@ -428,7 +428,7 @@ METHOD Release() CLASS TMenuDropDown
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndMenu()
 
-   LOCAL oActiveMenu := TApplication():Define():ActiveMenuGet()
+   LOCAL oActiveMenu := _OOHG_AppObject():ActiveMenuGet()
 
    IF oActiveMenu # NIL
      oActiveMenu:EndMenu()
@@ -501,7 +501,7 @@ METHOD DefinePopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -514,7 +514,7 @@ METHOD DefinePopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
-   TApplication():Define():ActiveMenuPush( Self )
+   _OOHG_AppObject():ActiveMenuPush( Self )
 
    ::lIsPopUp := .T.
    nStyle := MF_POPUP
@@ -576,7 +576,7 @@ METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -589,7 +589,7 @@ METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
-   TApplication():Define():ActiveMenuPush( Self )
+   _OOHG_AppObject():ActiveMenuPush( Self )
 
    ::lIsPopUp := .T.
    nStyle := MF_POPUP + MF_BYPOSITION
@@ -652,7 +652,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -728,7 +728,7 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -804,7 +804,7 @@ METHOD DefineSeparator( cName, uParent, lRight ) CLASS TMenuItem
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -836,7 +836,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -1046,7 +1046,7 @@ METHOD Release() CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndPopUp() CLASS TMenuItem
 
-   TApplication():Define():ActiveMenuRemove( Self )
+   _OOHG_AppObject():ActiveMenuRemove( Self )
 
    RETURN NIL
 
@@ -1174,7 +1174,7 @@ METHOD Events_DrawItem( lParam ) CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndMenuPopup()
 
-   LOCAL oActiveMenu := TApplication():Define():ActiveMenuGet()
+   LOCAL oActiveMenu := _OOHG_AppObject():ActiveMenuGet()
 
    IF oActiveMenu # NIL
       oActiveMenu:EndPopUp()
@@ -1224,7 +1224,7 @@ METHOD Define( uParent, cName, cCaption, uAction, nItems, cFile, cSection, uImag
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
-      uParent := TApplication():Define():ActiveMenuGet()
+      uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors

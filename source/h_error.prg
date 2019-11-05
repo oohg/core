@@ -624,7 +624,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    ENDDO
 
    #ifdef __ERROR_EVENTS__
-      aEvents := TApplication():Define():EventInfoList()
+      aEvents := _OOHG_AppObject():EventInfoList()
       ::Write( ::aMessages[11] )
       AEval( aEvents, { | c | ::Write( c ) } )
    #endif
@@ -660,7 +660,7 @@ METHOD PutMsg( cMsg, nPosition, lEvents ) CLASS OOHG_TErrorHtml
    ENDIF
 
    IF HB_ISLOGICAL( lEvents ) .AND. lEvents
-      aEvents := TApplication():Define():EventInfoList()
+      aEvents := _OOHG_AppObject():EventInfoList()
       ::Write( ::aMessages[11] )
       AEval( aEvents, { | c | ::Write( c ) } )
    ENDIF

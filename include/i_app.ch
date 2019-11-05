@@ -61,63 +61,63 @@
  */
 
 
-#xtranslate App.ArgC                       => TApplication():Define():ArgC
-#xtranslate App.Args                       => TApplication():Define():Args
-#xtranslate App.BackColor := <arg>         => TApplication():Define():BackColor( <arg> )
-#xtranslate App.BackColor                  => TApplication():Define():BackColor()
-#xtranslate App.Cargo := <arg>             => TApplication():Define():Cargo( <arg> )
-#xtranslate App.Cargo                      => TApplication():Define():Cargo()
-#xtranslate App.ClientHeight := <arg>      => TApplication():Define():ClientHeight( <arg> )
-#xtranslate App.ClientHeight               => TApplication():Define():ClientHeight()
-#xtranslate App.ClientWidth := <arg>       => TApplication():Define():ClientWidth( <arg> )
-#xtranslate App.ClientWidth                => TApplication():Define():ClientWidth()
-#xtranslate App.Col := <arg>               => TApplication():Define():Col( <arg> )
-#xtranslate App.Col                        => TApplication():Define():Col()
-#xtranslate App.Cursor := <arg>            => TApplication():Define():Cursor( <arg> )
-#xtranslate App.Cursor                     => TApplication():Define():Cursor()
-#xtranslate App.DefineFont( <arg> )        => TApplication():Define():DefineLogFont( <arg> )
+#xtranslate App.ArgC                       => _OOHG_AppObject():ArgC
+#xtranslate App.Args                       => _OOHG_AppObject():Args
+#xtranslate App.BackColor := <arg>         => _OOHG_AppObject():BackColor( <arg> )
+#xtranslate App.BackColor                  => _OOHG_AppObject():BackColor()
+#xtranslate App.Cargo := <arg>             => _OOHG_AppObject():Cargo( <arg> )
+#xtranslate App.Cargo                      => _OOHG_AppObject():Cargo()
+#xtranslate App.ClientHeight := <arg>      => _OOHG_AppObject():ClientHeight( <arg> )
+#xtranslate App.ClientHeight               => _OOHG_AppObject():ClientHeight()
+#xtranslate App.ClientWidth := <arg>       => _OOHG_AppObject():ClientWidth( <arg> )
+#xtranslate App.ClientWidth                => _OOHG_AppObject():ClientWidth()
+#xtranslate App.Col := <arg>               => _OOHG_AppObject():Col( <arg> )
+#xtranslate App.Col                        => _OOHG_AppObject():Col()
+#xtranslate App.Cursor := <arg>            => _OOHG_AppObject():Cursor( <arg> )
+#xtranslate App.Cursor                     => _OOHG_AppObject():Cursor()
+#xtranslate App.DefineFont( <arg> )        => _OOHG_AppObject():DefineLogFont( <arg> )
 #xtranslate App.DoEvents                   => ProcessMessages()
-#xtranslate App.Drive                      => TApplication():Define():Drive
-#xtranslate App.ErrorLevel                 => TApplication():Define():ErrorLevel
-#xtranslate App.ExeName                    => TApplication():Define():ExeName
-#xtranslate App.FileName                   => TApplication():Define():FileName
-#xtranslate App.FormName                   => TApplication():Define():MainName()
-#xtranslate App.FormObject                 => TApplication():Define():MainObject()
-#xtranslate App.Handle                     => TApplication():Define():Handle()
-#xtranslate App.Height := <arg>            => TApplication():Define():Height( <arg> )
-#xtranslate App.Height                     => TApplication():Define():Height()
-#xtranslate App.HelpButton := <arg>        => TApplication():Define():HelpButton( <arg> )
-#xtranslate App.HelpButton                 => TApplication():Define():HelpButton()
-#xtranslate App.hWnd                       => TApplication():Define():Handle()
-#xtranslate App.Icon := <arg>              => TApplication():Define():Icon( <arg> )
-#xtranslate App.Icon                       => TApplication():Define():Icon()
-#xtranslate App.LogFile := <arg>           => TApplication():Define():LogFile( <arg> )
-#xtranslate App.LogFile                    => TApplication():Define():LogFile()
-#xtranslate App.MainName                   => TApplication():Define():MainName()
-#xtranslate App.MainObject                 => TApplication():Define():MainObject()
-#xtranslate App.MultipleInstances := <arg> => TApplication():Define():MultipleInstances( <arg> )
-#xtranslate App.MutexLock                  => TApplication():Define():MutexLock()
-#xtranslate App.MutexUnlock                => TApplication():Define():MutexUnlock()
-#xtranslate App.Name                       => TApplication():Define():Name
-#xtranslate App.Path                       => TApplication():Define():Path
-#xtranslate App.Release                    => TApplication():Define():Release()
-#xtranslate App.ReleaseFont( <arg> )       => TApplication():Define():ReleaseLogFont( <arg> )
-#xtranslate App.Row := <arg>               => TApplication():Define():Row( <arg> )
-#xtranslate App.Row                        => TApplication():Define():Row()
-#xtranslate App.Title := <arg>             => TApplication():Define():Title( <arg> )
-#xtranslate App.Title                      => TApplication():Define():Title()
-#xtranslate App.Topmost := <arg>           => TApplication():Define():Topmost( <arg> )
-#xtranslate App.Topmost                    => TApplication():Define():Topmost()
-#xtranslate App.Width := <arg>             => TApplication():Define():Width( <arg> )
-#xtranslate App.Width                      => TApplication():Define():Width()
-#xtranslate App.WindowStyle := <arg>       => TApplication():Define():WindowStyle( <arg> )
-#xtranslate App.WindowStyle                => TApplication():Define():WindowStyle()
+#xtranslate App.Drive                      => _OOHG_AppObject():Drive
+#xtranslate App.ErrorLevel                 => _OOHG_AppObject():ErrorLevel
+#xtranslate App.ExeName                    => _OOHG_AppObject():ExeName
+#xtranslate App.FileName                   => _OOHG_AppObject():FileName
+#xtranslate App.FormName                   => _OOHG_AppObject():MainName()
+#xtranslate App.FormObject                 => _OOHG_AppObject():MainObject()
+#xtranslate App.Handle                     => _OOHG_AppObject():Handle()
+#xtranslate App.Height := <arg>            => _OOHG_AppObject():Height( <arg> )
+#xtranslate App.Height                     => _OOHG_AppObject():Height()
+#xtranslate App.HelpButton := <arg>        => _OOHG_AppObject():HelpButton( <arg> )
+#xtranslate App.HelpButton                 => _OOHG_AppObject():HelpButton()
+#xtranslate App.hWnd                       => _OOHG_AppObject():Handle()
+#xtranslate App.Icon := <arg>              => _OOHG_AppObject():Icon( <arg> )
+#xtranslate App.Icon                       => _OOHG_AppObject():Icon()
+#xtranslate App.LogFile := <arg>           => _OOHG_AppObject():LogFile( <arg> )
+#xtranslate App.LogFile                    => _OOHG_AppObject():LogFile()
+#xtranslate App.MainName                   => _OOHG_AppObject():MainName()
+#xtranslate App.MainObject                 => _OOHG_AppObject():MainObject()
+#xtranslate App.MultipleInstances := <arg> => _OOHG_AppObject():MultipleInstances( <arg> )
+#xtranslate App.MutexLock                  => _OOHG_AppObject():MutexLock()
+#xtranslate App.MutexUnlock                => _OOHG_AppObject():MutexUnlock()
+#xtranslate App.Name                       => _OOHG_AppObject():Name
+#xtranslate App.Path                       => _OOHG_AppObject():Path
+#xtranslate App.Release                    => _OOHG_AppObject():Release()
+#xtranslate App.ReleaseFont( <arg> )       => _OOHG_AppObject():ReleaseLogFont( <arg> )
+#xtranslate App.Row := <arg>               => _OOHG_AppObject():Row( <arg> )
+#xtranslate App.Row                        => _OOHG_AppObject():Row()
+#xtranslate App.Title := <arg>             => _OOHG_AppObject():Title( <arg> )
+#xtranslate App.Title                      => _OOHG_AppObject():Title()
+#xtranslate App.Topmost := <arg>           => _OOHG_AppObject():Topmost( <arg> )
+#xtranslate App.Topmost                    => _OOHG_AppObject():Topmost()
+#xtranslate App.Width := <arg>             => _OOHG_AppObject():Width( <arg> )
+#xtranslate App.Width                      => _OOHG_AppObject():Width()
+#xtranslate App.WindowStyle := <arg>       => _OOHG_AppObject():WindowStyle( <arg> )
+#xtranslate App.WindowStyle                => _OOHG_AppObject():WindowStyle()
 
 #xtranslate Application.<*x*> => App.<x>
 
 #xtranslate SET DEFAULT ICON TO <cIcon> ;
    => ;
-      TApplication():Define():Icon( <cIcon> )
+      _OOHG_AppObject():Icon( <cIcon> )
 
 #xcommand DO EVENTS ;
    => ;
@@ -125,4 +125,4 @@
 
 #xtranslate SET LOGFILE TO <(name)> ;
    => ;
-      TApplication():Define():LogFile( <(name)> )
+      _OOHG_AppObject():LogFile( <(name)> )

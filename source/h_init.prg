@@ -84,6 +84,15 @@ INIT PROCEDURE _OOHG_Init()
    RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+EXIT PROCEDURE _OOHG_Exit()
+
+   IF HB_ISOBJECT( _OOHG_AppObject() )
+      _OOHG_AppObject():Release()
+   ENDIF
+
+   RETURN
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE InitMessages( cLang )
 
    LOCAL aLang, aLangDefault, nAt

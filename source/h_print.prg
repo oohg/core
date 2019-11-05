@@ -343,7 +343,7 @@ METHOD Release() CLASS TPrintBase
    IF HB_ISOBJECT( ::oWinReport )
       ::oWinReport:Release()
    ENDIF
-   TApplication():Define():WinMHRelease()
+   _OOHG_AppObject():WinMHRelease()
 
    RETURN .T.
 
@@ -440,7 +440,7 @@ METHOD BeginDoc( cDocm ) CLASS TPrintBase
          ::oWinReport:Show()
       ENDIF
    ELSE
-      TApplication():Define():WinMHDefine()
+      _OOHG_AppObject():WinMHDefine()
 
       DEFINE WINDOW 0 OBJ ::oWinReport ;
          PARENT ( ::oParent ) ;
