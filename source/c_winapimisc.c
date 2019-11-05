@@ -590,6 +590,11 @@ HB_FUNC( GETSYSCOLOR )
    hb_retnl( GetSysColor( hb_parni( 1 ) ) );
 }
 
+HB_FUNC( GETWINDOWLONG )
+{
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ) ) );
+}
+
 HB_FUNC( SETWINDOWLONG )
 {
    HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ), HB_PARNL( 3 ) ) );
