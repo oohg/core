@@ -2038,7 +2038,7 @@ PROCEDURE _OOHG_CallDump( uTitle, cOutput, lCurrent )
    cOutPut := Left( cOutPut, 1 )
    IF cOutput $ "FB"        // To File or Both
       oLog := OOHG_TErrorTxt():New()
-      oLog:FileName := _OOHG_LogFile
+      oLog:FileName := iif( HB_ISOBJECT( _OOHG_AppObject() ), _OOHG_LogFile, "DumpLog.txt" )
       oLog:Write( AutoType( uTitle ) )
       oLog:Write( "" )
       oLog:Write( cText )
