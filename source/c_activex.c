@@ -80,13 +80,10 @@
    #define _HB_API_INTERNAL_
 #endif
 
-#include <hbapi.h>
+#include "oohg.h"
 #include <hbvm.h>
 #include <hbstack.h>
 #include <hbapiitm.h>
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
 #include <hbvmopt.h>
 #include <ocidl.h>
 

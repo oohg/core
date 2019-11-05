@@ -154,15 +154,12 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#define s_Super s_TControl
-
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
+
+#define s_Super s_TControl
 
 typedef struct {
    BYTE character;

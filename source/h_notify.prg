@@ -239,21 +239,12 @@ METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
-#include "hbapi.h"
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
 #include "oohg.h"
+#include <windowsx.h>
 
-#define WM_TASKBAR WM_USER+1043
+#ifndef WM_TASKBAR
+   #define WM_TASKBAR ( WM_USER + 1043 )
+#endif
 
 HB_FUNC( LOADTRAYICON )
 {

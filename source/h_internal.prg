@@ -239,23 +239,12 @@ Function _EndInternal()
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
-#define s_Super s_TControl
-
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
+
+#define s_Super s_TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TInternal_lpfnOldWndProc( WNDPROC lp )

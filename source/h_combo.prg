@@ -1198,13 +1198,10 @@ METHOD DeleteAllItems() CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include <hbapi.h>
+#include "oohg.h"
 #include <hbvm.h>
 #include <hbstack.h>
-#include <windows.h>
-#include <commctrl.h>
 #include <windowsx.h>
-#include "oohg.h"
 
 #ifndef CB_GETCOMBOBOXINFO
    #define CB_GETCOMBOBOXINFO 0x0164

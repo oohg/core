@@ -394,24 +394,13 @@ METHOD Copy( lAsDIB ) CLASS TPicture
 
 #pragma BEGINDUMP
 
-#define s_Super s_TControl
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
 #include <windowsx.h>
-#include <commctrl.h>
-#include "oohg.h"
+
+#define s_Super s_TControl
 
 /*
    lAux[ 0 ] = lSetNotify

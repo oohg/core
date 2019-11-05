@@ -505,13 +505,10 @@ METHOD Value( uValue ) CLASS TListMulti
 
 #pragma BEGINDUMP
 
-#include <windows.h>
-#include <commctrl.h>
-#include <hbapi.h>
+#include "oohg.h"
 #include <hbvm.h>
 #include <hbstack.h>
 #include <windowsx.h>
-#include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TListBox_lpfnOldWndProc( WNDPROC lp )

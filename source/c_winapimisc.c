@@ -61,38 +61,18 @@
  */
 
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0501
-#endif
-#if ( _WIN32_IE < 0x0501 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0501
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-#if ( _WIN32_WINNT < 0x0501 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-
+#include "oohg.h"
 #include <shlobj.h>
-#include <windows.h>
 #include <lmcons.h>
-#include <commctrl.h>
 #include <psapi.h>
 #include <ctype.h>
 #include <time.h>
 #include <tchar.h>
 #include <shlwapi.h>
-
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "hbapifs.h"
-#include "oohg.h"
 
 #ifndef IShellFolder2_Release
    #define IShellFolder2_Release(T) (T)->lpVtbl->Release(T)

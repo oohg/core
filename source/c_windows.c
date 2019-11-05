@@ -61,30 +61,6 @@
  */
 
 
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
-#endif
-
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-#if ( _WIN32_IE < 0x0500 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
 /* Handle to a DIB */
 #define HDIB HANDLE
 
@@ -96,17 +72,14 @@
 #define RECTWIDTH( lpRect ) ( (lpRect)->right - (lpRect)->left )
 #define RECTHEIGHT( lpRect ) ( (lpRect)->bottom - (lpRect)->top )
 
+#include "oohg.h"
 #include <shlobj.h>
-#include <windows.h>
 #include "richedit.h"
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include <commctrl.h>
-#include "oohg.h"
 
 
 PHB_ITEM _OOHG_GetExistingObject( HWND hWnd, BOOL bForm, BOOL bForceAny )

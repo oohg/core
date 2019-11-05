@@ -61,10 +61,6 @@
  */
 
 
-#include "hbapi.h"
-#include "windows.h"
-#include "shellapi.h"
-#include <commctrl.h>
 #include "oohg.h"
 
 HB_FUNC( LOADICON )

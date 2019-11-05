@@ -336,25 +336,6 @@ METHOD Title( cTitle ) CLASS TToolTip
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0501
-#endif
-#if ( _WIN32_IE < 0x0501 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0501
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-#if ( _WIN32_WINNT < 0x0501 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "oohg.h"
 
 static LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor

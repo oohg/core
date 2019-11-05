@@ -144,32 +144,13 @@ METHOD Events_TimeOut() CLASS TTimer
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-#if ( _WIN32_IE < 0x0500 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
+#include "oohg.h"
 #include <shlobj.h>
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "winreg.h"
 #include "tchar.h"
-#include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTIMER )          /* FUNCTION InitTimer( hWnd, nId, nInterval ) -> NIL */

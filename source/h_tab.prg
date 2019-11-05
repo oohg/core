@@ -1877,17 +1877,6 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

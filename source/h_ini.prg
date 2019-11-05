@@ -230,19 +230,8 @@ EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISE
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
 #include "oohg.h"
+#include "hbapiitm.h"
 
 HB_FUNC( GETPRIVATEPROFILESTRING )
 {

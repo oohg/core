@@ -2103,30 +2103,11 @@ METHOD Error( xParam ) CLASS TDynamicValues
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef WINVER
-   #define WINVER 0x0501
-#endif
-#if ( WINVER < 0x0501 )
-   #undef WINVER
-   #define WINVER 0x0501
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-#if ( _WIN32_WINNT < 0x0501 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0501
-#endif
-
-#include <windows.h>
-#include <commctrl.h>
+#include "oohg.h"
 #include <olectl.h>
-#include "hbapi.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include "oohg.h"
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )

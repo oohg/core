@@ -199,17 +199,6 @@ METHOD Events_Vscroll ( wParam )   CLASS TSlider
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-
-#include "hbapi.h"
-#include <windows.h>
-#include <commctrl.h>
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

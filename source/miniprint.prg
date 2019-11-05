@@ -2008,17 +2008,14 @@ FUNCTION aPrinters()
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include <windows.h>
+#include "oohg.h"
 #include <stdio.h>
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include <winuser.h>
 #include <wingdi.h>
-#include "commctrl.h"
-#include "olectl.h"
-#include "oohg.h"
+#include <olectl.h>
 
 // error codes returned by _HMG_PRINTER_SETPRINTERPROPERTIES
 #define ERR_OPEN_PRINTER                            0x00000001

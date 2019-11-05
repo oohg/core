@@ -579,14 +579,11 @@ METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
 #include <windowsx.h>
-#include <commctrl.h>
-#include "oohg.h"
 
 #define s_Super s_TControl
 

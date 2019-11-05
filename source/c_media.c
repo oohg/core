@@ -61,13 +61,8 @@
  */
 
 
-#define _WIN32_IE 0x0500
-
-#include <windows.h>
-#include <mmsystem.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "oohg.h"
+#include <mmsystem.h>
 
 HB_FUNC( PLAYBEEP )
 {

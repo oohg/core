@@ -64,20 +64,9 @@
 #ifndef CINTERFACE
    #define CINTERFACE
 #endif
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
-#endif
-#define _WIN32_IE      0x0500
-#define _WIN32_WINNT   0x0400
 
+#include "oohg.h"
 #include <shlobj.h>
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
@@ -86,7 +75,6 @@
 #include <winuser.h>
 #include <wingdi.h>
 #include "olectl.h"
-#include "oohg.h"
 
 static int _OOHG_StretchBltMode = COLORONCOLOR;
 

@@ -158,30 +158,11 @@ METHOD ToolTip( uToolTip ) CLASS TFrame
 
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-#if ( _WIN32_IE < 0x0500 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
 #include <windowsx.h>
-#include <commctrl.h>
-#include "oohg.h"
 
 BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 

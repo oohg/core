@@ -61,13 +61,10 @@
  */
 
 
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include <wingdi.h>
 #include <winuser.h>
-#include "oohg.h"
 
 HB_FUNC( LINEDRAW )
 {

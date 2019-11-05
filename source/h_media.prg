@@ -228,11 +228,8 @@ EXTERN MCIFUNC
 
 #pragma BEGINDUMP
 
-#include <hbapi.h>
-#include <windows.h>
-#include <vfw.h>
-#include <commctrl.h>
 #include "oohg.h"
+#include <vfw.h>
 
 // This fixes a warning over dwICValue
 HB_FUNC( ICGETDEFAULTQUALITY )

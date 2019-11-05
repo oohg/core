@@ -69,9 +69,6 @@ EXTERN PtrStr
 
 #pragma BEGINDUMP
 
-#include "windows.h"
-#include "hbapi.h"
-#include <commctrl.h>
 #include "oohg.h"
 
 #define MAX_PARAMS  9

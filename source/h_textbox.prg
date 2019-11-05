@@ -777,12 +777,9 @@ METHOD GetLineFromChar( nChar ) CLASS TText
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
 
 #define s_Super s_TLabel
 

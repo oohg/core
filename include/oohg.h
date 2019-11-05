@@ -62,121 +62,150 @@
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+#ifndef WINVER
+   #define WINVER                 0x0501   // Win XP
+#endif
+#if ( WINVER < 0x0501 )
+   #undef WINVER
+   #define WINVER                 0x0501
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT           WINVER
+#endif
+#if ( _WIN32_WINNT < WINVER )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT           WINVER
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE              0x0600   // Internet Explorer 6.0 (Win XP)
+#endif
+#if ( _WIN32_IE < 0x0600 )
+   #undef _WIN32_IE
+   #define _WIN32_IE              0x0600
+#endif
+
+#include "hbapi.h"
+#include <windows.h>
+#include <commctrl.h>
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Use this macros instead of Harbour/xHarbour specific functions */
 
 #ifdef _WIN64
-/* For 64 bits WIN */
+   /* For 64 bits WIN */
 
-#define HB_ARRAYGETNL( n, x )     hb_arrayGetNLL( n, x )
-#define HB_ARRAYSETNL( n, x, y )  hb_arraySetNLL( n, x, y )
-#define HB_RETNL( n )             hb_retnll( n )
+   #define HB_ARRAYGETNL( n, x )     hb_arrayGetNLL( n, x )
+   #define HB_ARRAYSETNL( n, x, y )  hb_arraySetNLL( n, x, y )
+   #define HB_RETNL( n )             hb_retnll( n )
 
-#ifdef __XHARBOUR__
-/* For XHARBOUR and 64 bits WIN */
+   #ifdef __XHARBOUR__
+      /* For XHARBOUR and 64 bits WIN */
 
-#define HB_PARC( n, x )           hb_parc( n, x )
-#define HB_PARCLEN( n, x )        hb_parclen( n, x )
-#define HB_PARND( n, x )          hb_parnd( n, x )
-#define HB_PARNI( n, x )          hb_parni( n, x )
-#define HB_PARNL( n )             hb_parnll( n )
-#define HB_PARNL2( n, x )         hb_parnll( n, x )
-#define HB_PARNL3( n, x, y )      hb_parnll( n, x, y )
-#define HB_PARPTR( n )            hb_parptr( n )
-#define HB_PARPTR2( n, x )        hb_parptr( n, x )
-#define HB_PARVNL( n, x )         hb_parnll( n, x )
-#define HB_STORC( n, x, y )       hb_storc( n, x, y )
-#define HB_STORDL( n, x, y )      hb_stordl( n, x, y )
-#define HB_STORL( n, x, y )       hb_storl( n, x, y )
-#define HB_STORND( n, x, y )      hb_stornd( n, x, y )
-#define HB_STORNI( n, x, y )      hb_storni( n, x, y )
-#define HB_STORNL2( n, x )        hb_stornll( n, x )
-#define HB_STORNL3( n, x, y )     hb_stornll( n, x, y )
-#define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
-#define HB_STORVNL( n, x, y )     hb_stornll( n, x, y )
-#define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
+      #define HB_PARC( n, x )           hb_parc( n, x )
+      #define HB_PARCLEN( n, x )        hb_parclen( n, x )
+      #define HB_PARND( n, x )          hb_parnd( n, x )
+      #define HB_PARNI( n, x )          hb_parni( n, x )
+      #define HB_PARNL( n )             hb_parnll( n )
+      #define HB_PARNL2( n, x )         hb_parnll( n, x )
+      #define HB_PARNL3( n, x, y )      hb_parnll( n, x, y )
+      #define HB_PARPTR( n )            hb_parptr( n )
+      #define HB_PARPTR2( n, x )        hb_parptr( n, x )
+      #define HB_PARVNL( n, x )         hb_parnll( n, x )
+      #define HB_STORC( n, x, y )       hb_storc( n, x, y )
+      #define HB_STORDL( n, x, y )      hb_stordl( n, x, y )
+      #define HB_STORL( n, x, y )       hb_storl( n, x, y )
+      #define HB_STORND( n, x, y )      hb_stornd( n, x, y )
+      #define HB_STORNI( n, x, y )      hb_storni( n, x, y )
+      #define HB_STORNL2( n, x )        hb_stornll( n, x )
+      #define HB_STORNL3( n, x, y )     hb_stornll( n, x, y )
+      #define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
+      #define HB_STORVNL( n, x, y )     hb_stornll( n, x, y )
+      #define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
 
-#else /*  __XHARBOUR__ */
-/* For HARBOUR and 64 bits WIN */
+   #else /*  __XHARBOUR__ */
+      /* For HARBOUR and 64 bits WIN */
 
-#define HB_PARC( n, x )           hb_parvc( n, x )
-#define HB_PARCLEN( n, x )        hb_parvclen( n, x )
-#define HB_PARND( n, x )          hb_parvnd( n, x )
-#define HB_PARNI( n, x )          hb_parvni( n, x )
-#define HB_PARNL( n )             hb_parvnll( n )
-#define HB_PARNL2( n, x )         hb_parvnll( n, x )
-#define HB_PARNL3( n, x, y )      hb_parvnll( n, x, y )
-#define HB_PARPTR( n )            hb_parptr( n )
-#define HB_PARPTR2( n, x )        hb_parvptr( n, x )
-#define HB_PARVNL( n, x )         hb_parvnll( n, x )
-#define HB_STORC( n, x, y )       hb_storvc( n, x, y )
-#define HB_STORDL( n, x, y )      hb_storvdl( n, x, y )
-#define HB_STORL( n, x, y )       hb_storvl( n, x, y )
-#define HB_STORND( n, x, y )      hb_storvnd( n, x, y )
-#define HB_STORNI( n, x, y )      hb_storvni( n, x, y )
-#define HB_STORNL2( n, x )        hb_stornll( n, x )
-#define HB_STORNL3( n, x, y )     hb_storvnll( n, x, y )
-#define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
-#define HB_STORVNL( n, x, y )     hb_storvnll( n, x, y )
-#define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
+      #define HB_PARC( n, x )           hb_parvc( n, x )
+      #define HB_PARCLEN( n, x )        hb_parvclen( n, x )
+      #define HB_PARND( n, x )          hb_parvnd( n, x )
+      #define HB_PARNI( n, x )          hb_parvni( n, x )
+      #define HB_PARNL( n )             hb_parvnll( n )
+      #define HB_PARNL2( n, x )         hb_parvnll( n, x )
+      #define HB_PARNL3( n, x, y )      hb_parvnll( n, x, y )
+      #define HB_PARPTR( n )            hb_parptr( n )
+      #define HB_PARPTR2( n, x )        hb_parvptr( n, x )
+      #define HB_PARVNL( n, x )         hb_parvnll( n, x )
+      #define HB_STORC( n, x, y )       hb_storvc( n, x, y )
+      #define HB_STORDL( n, x, y )      hb_storvdl( n, x, y )
+      #define HB_STORL( n, x, y )       hb_storvl( n, x, y )
+      #define HB_STORND( n, x, y )      hb_storvnd( n, x, y )
+      #define HB_STORNI( n, x, y )      hb_storvni( n, x, y )
+      #define HB_STORNL2( n, x )        hb_stornll( n, x )
+      #define HB_STORNL3( n, x, y )     hb_storvnll( n, x, y )
+      #define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
+      #define HB_STORVNL( n, x, y )     hb_storvnll( n, x, y )
+      #define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
 
-#endif /*  __XHARBOUR__ */
+   #endif /*  __XHARBOUR__ */
 
 #else /*  _WIN64 */
-/* For 32 bits WIN */
+   /* For 32 bits WIN */
 
-#define HB_ARRAYGETNL( n, x )     hb_arrayGetNL( n, x )
-#define HB_ARRAYSETNL( n, x, y )  hb_arraySetNL( n, x, y )
-#define HB_RETNL( n )             hb_retnl( n )
+   #define HB_ARRAYGETNL( n, x )     hb_arrayGetNL( n, x )
+   #define HB_ARRAYSETNL( n, x, y )  hb_arraySetNL( n, x, y )
+   #define HB_RETNL( n )             hb_retnl( n )
 
-#ifdef __XHARBOUR__
-/* For XHARBOUR and 32 bits WIN */
+   #ifdef __XHARBOUR__
+      /* For XHARBOUR and 32 bits WIN */
 
-#define HB_PARC( n, x )           hb_parc( n, x )
-#define HB_PARCLEN( n, x )        hb_parclen( n, x )
-#define HB_PARND( n, x )          hb_parnd( n, x )
-#define HB_PARNI( n, x )          hb_parni( n, x )
-#define HB_PARNL( n )             hb_parnl( n )
-#define HB_PARNL2( n, x )         hb_parnl( n, x )
-#define HB_PARNL3( n, x, y )      hb_parnl( n, x, y )
-#define HB_PARPTR( n )            hb_parptr( n )
-#define HB_PARPTR2( n, x )        hb_parptr( n, x )
-#define HB_PARVNL( n, x )         hb_parnl( n, x )
-#define HB_STORC( n, x, y )       hb_storc( n, x, y )
-#define HB_STORDL( n, x, y )      hb_stordl( n, x, y )
-#define HB_STORL( n, x, y )       hb_storl( n, x, y )
-#define HB_STORND( n, x, y )      hb_stornd( n, x, y )
-#define HB_STORNI( n, x, y )      hb_storni( n, x, y )
-#define HB_STORNL2( n, x )        hb_stornl( n, x )
-#define HB_STORNL3( n, x, y )     hb_stornl( n, x, y )
-#define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
-#define HB_STORVNL( n, x, y )     hb_stornl( n, x, y )
-#define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
+      #define HB_PARC( n, x )           hb_parc( n, x )
+      #define HB_PARCLEN( n, x )        hb_parclen( n, x )
+      #define HB_PARND( n, x )          hb_parnd( n, x )
+      #define HB_PARNI( n, x )          hb_parni( n, x )
+      #define HB_PARNL( n )             hb_parnl( n )
+      #define HB_PARNL2( n, x )         hb_parnl( n, x )
+      #define HB_PARNL3( n, x, y )      hb_parnl( n, x, y )
+      #define HB_PARPTR( n )            hb_parptr( n )
+      #define HB_PARPTR2( n, x )        hb_parptr( n, x )
+      #define HB_PARVNL( n, x )         hb_parnl( n, x )
+      #define HB_STORC( n, x, y )       hb_storc( n, x, y )
+      #define HB_STORDL( n, x, y )      hb_stordl( n, x, y )
+      #define HB_STORL( n, x, y )       hb_storl( n, x, y )
+      #define HB_STORND( n, x, y )      hb_stornd( n, x, y )
+      #define HB_STORNI( n, x, y )      hb_storni( n, x, y )
+      #define HB_STORNL2( n, x )        hb_stornl( n, x )
+      #define HB_STORNL3( n, x, y )     hb_stornl( n, x, y )
+      #define HB_STORPTR( n, x, y )     hb_storptr( n, x, y )
+      #define HB_STORVNL( n, x, y )     hb_stornl( n, x, y )
+      #define HB_STORVNLL( n, x, y )    hb_stornll( n, x, y )
 
-#else /* __XHARBOUR__ */
-/* For HARBOUR and 32 bits WIN */
+   #else /* __XHARBOUR__ */
+      /* For HARBOUR and 32 bits WIN */
 
-#define HB_PARC( n, x )           hb_parvc( n, x )
-#define HB_PARCLEN( n, x )        hb_parvclen( n, x )
-#define HB_PARND( n, x )          hb_parvnd( n, x )
-#define HB_PARNI( n, x )          hb_parvni( n, x )
-#define HB_PARNL( n )             hb_parvnl( n )
-#define HB_PARNL2( n, x )         hb_parvnl( n, x )
-#define HB_PARNL3( n, x, y )      hb_parvnl( n, x, y )
-#define HB_PARPTR( n )            hb_parptr( n )
-#define HB_PARPTR2( n, x )        hb_parvptr( n, x )
-#define HB_PARVNL( n, x )         hb_parvnl( n, x )
-#define HB_STORC( n, x, y )       hb_storvc( n, x, y )
-#define HB_STORDL( n, x, y )      hb_storvdl( n, x, y )
-#define HB_STORL( n, x, y )       hb_storvl( n, x, y )
-#define HB_STORND( n, x, y )      hb_storvnd( n, x, y )
-#define HB_STORNI( n, x, y )      hb_storvni( n, x, y )
-#define HB_STORNL2( n, x )        hb_stornl( n, x )
-#define HB_STORNL3( n, x, y )     hb_storvnl( n, x, y )
-#define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
-#define HB_STORVNL( n, x, y )     hb_storvnl( n, x, y )
-#define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
+      #define HB_PARC( n, x )           hb_parvc( n, x )
+      #define HB_PARCLEN( n, x )        hb_parvclen( n, x )
+      #define HB_PARND( n, x )          hb_parvnd( n, x )
+      #define HB_PARNI( n, x )          hb_parvni( n, x )
+      #define HB_PARNL( n )             hb_parvnl( n )
+      #define HB_PARNL2( n, x )         hb_parvnl( n, x )
+      #define HB_PARNL3( n, x, y )      hb_parvnl( n, x, y )
+      #define HB_PARPTR( n )            hb_parptr( n )
+      #define HB_PARPTR2( n, x )        hb_parvptr( n, x )
+      #define HB_PARVNL( n, x )         hb_parvnl( n, x )
+      #define HB_STORC( n, x, y )       hb_storvc( n, x, y )
+      #define HB_STORDL( n, x, y )      hb_storvdl( n, x, y )
+      #define HB_STORL( n, x, y )       hb_storvl( n, x, y )
+      #define HB_STORND( n, x, y )      hb_storvnd( n, x, y )
+      #define HB_STORNI( n, x, y )      hb_storvni( n, x, y )
+      #define HB_STORNL2( n, x )        hb_stornl( n, x )
+      #define HB_STORNL3( n, x, y )     hb_storvnl( n, x, y )
+      #define HB_STORPTR( n, x, y )     hb_storvptr( n, x, y )
+      #define HB_STORVNL( n, x, y )     hb_storvnl( n, x, y )
+      #define HB_STORVNLL( n, x, y )    hb_storvnll( n, x, y )
 
-#endif /*  __XHARBOUR__ */
+   #endif /*  __XHARBOUR__ */
 
 #endif /* _WIN64 */
 
@@ -184,24 +213,24 @@
 /* Handle related macros */
 
 #ifdef OOHG_HWND_POINTER
-/* Use pointers for handles */
+   /* Use pointers for handles */
 
-#define HWNDparam( n )        ( ( HWND ) HB_PARPTR( n ) )
-#define HWNDparam2( n, x )    ( ( HWND ) HB_PARPTR2( n, x ) )
-#define HWNDret( hWnd )       ( hb_retptr( hWnd ) )
-#define HWNDpush( hWnd )      ( hb_vmPushPointer( hWnd ) )
-#define HMENUparam( n )       ( ( HMENU ) HB_PARPTR( n ) )
-#define HMENUret( hMenu )     ( hb_retptr( hMenu ) )
+   #define HWNDparam( n )        ( ( HWND ) HB_PARPTR( n ) )
+   #define HWNDparam2( n, x )    ( ( HWND ) HB_PARPTR2( n, x ) )
+   #define HWNDret( hWnd )       ( hb_retptr( hWnd ) )
+   #define HWNDpush( hWnd )      ( hb_vmPushPointer( hWnd ) )
+   #define HMENUparam( n )       ( ( HMENU ) HB_PARPTR( n ) )
+   #define HMENUret( hMenu )     ( hb_retptr( hMenu ) )
 
 #else /* OOHG_HWND_POINTER */
-/* Use numbers for handles */
+   /* Use numbers for handles */
 
-#define HWNDparam( n )        ( ( HWND ) HB_PARNL( n ) )
-#define HWNDparam2( n, x )    ( ( HWND ) HB_PARNL2( n, x ) )
-#define HWNDret( hWnd )       ( HB_RETNL( ( LONG_PTR ) hWnd ) )
-#define HWNDpush( hWnd )      ( hb_vmPushNumInt( ( LONG_PTR ) hWnd ) )
-#define HMENUparam( n )       ( ( HMENU ) HB_PARNL( n ) )
-#define HMENUret( hMenu )     ( HB_RETNL( ( LONG_PTR ) hMenu ) )
+   #define HWNDparam( n )        ( ( HWND ) HB_PARNL( n ) )
+   #define HWNDparam2( n, x )    ( ( HWND ) HB_PARNL2( n, x ) )
+   #define HWNDret( hWnd )       ( HB_RETNL( ( LONG_PTR ) hWnd ) )
+   #define HWNDpush( hWnd )      ( hb_vmPushNumInt( ( LONG_PTR ) hWnd ) )
+   #define HMENUparam( n )       ( ( HMENU ) HB_PARNL( n ) )
+   #define HMENUret( hMenu )     ( HB_RETNL( ( LONG_PTR ) hMenu ) )
 
 #endif /* OOHG_HWND_POINTER */
 
@@ -512,18 +541,18 @@ INT GetUserObjects( DWORD);
 /*  Support for older C Compilers */
 
 #if defined( _MSC_VER ) || defined( __MINGW32__ )
-/* For newer versions of MS and MINGW compilers */
+   /* For newer versions of MS and MINGW compilers */
 
-#define _OOHG_ITOA   _itoa
-#define _OOHG_ULTOA  _ultoa
-#define _OOHG_LTOA   _ltoa
+   #define _OOHG_ITOA   _itoa
+   #define _OOHG_ULTOA  _ultoa
+   #define _OOHG_LTOA   _ltoa
 
 #else /* _MSC_VER */
-/* For BORLAND and older versions of MINGW compilers */
+   /* For BORLAND and older versions of MINGW compilers */
 
-#define _OOHG_ITOA   itoa
-#define _OOHG_ULTOA  ultoa
-#define _OOHG_LTOA   ltoa
+   #define _OOHG_ITOA   itoa
+   #define _OOHG_ULTOA  ultoa
+   #define _OOHG_LTOA   ltoa
 
 #endif /* _MSC_VER */
 

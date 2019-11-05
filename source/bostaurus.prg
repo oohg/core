@@ -742,35 +742,10 @@ FUNCTION BT_SetImage( cFormName, cControlName, hBitmap, lReleasePreviousBitmap )
 
 #pragma BEGINDUMP
 
-#ifndef WINVER
-   #define WINVER         0x0501   // Win XP
-#endif
-#if ( WINVER < 0x0501 )
-   #undef WINVER
-   #define WINVER 0x0501
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT   WINVER  // ( XP = 0x0501 , Vista = 0x0600 )
-#endif
-#if ( _WIN32_WINNT < WINVER )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT WINVER
-#endif
-
-#ifndef _WIN32_IE
-   #define _WIN32_IE      0x0600   // Internet Explorer 6.0 (Win XP)
-#endif
-#if ( _WIN32_IE < 0x0600 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0600
-#endif
-
 #define COBJMACROS
 
+#include "oohg.h"
 #include <shlobj.h>
-#include <windows.h>
-#include <commctrl.h>
 #include <olectl.h>
 #include <time.h>
 #include <math.h>
@@ -779,7 +754,6 @@ FUNCTION BT_SetImage( cFormName, cControlName, hBitmap, lReleasePreviousBitmap )
 #include <wchar.h>
 #include "hbapi.h"
 #include "hbapiitm.h"
-#include "oohg.h"
 
 #ifndef IShellFolder2_Release
    #define IShellFolder2_Release(T) (T)->lpVtbl->Release(T)

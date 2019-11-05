@@ -2981,16 +2981,9 @@ FUNCTION ooHG_Messages_TR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "hbapi.h"
-#include "hbapiitm.h"
-#include <windows.h>
-#include <windowsx.h>
-#include <commctrl.h>
 #include "oohg.h"
-/*
-#include "hbvm.h"
-#include "hbstack.h"
-*/
+#include "hbapiitm.h"
+#include <windowsx.h>
 
 static PHB_ITEM _OOHG_Messages;
 

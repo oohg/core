@@ -97,9 +97,6 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, lSunken )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "hbapi.h"
-#include <windows.h>
-#include <commctrl.h>
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

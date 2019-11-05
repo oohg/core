@@ -120,11 +120,8 @@ METHOD Value( uValue ) CLASS THotKeyBox
 
 #pragma BEGINDUMP
 
-#include <hbapi.h>
-#include <windows.h>
-#include <commctrl.h>
-#include <hbapiitm.h>
 #include "oohg.h"
+#include <hbapiitm.h>
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_THotKeyBox_lpfnOldWndProc( WNDPROC lp )

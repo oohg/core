@@ -61,15 +61,9 @@
  */
 
 
-#define _WIN32_IE      0x0500
-#define _WIN32_WINNT   0x0400
-#include <shlobj.h>
-
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
 #include "oohg.h"
+#include <shlobj.h>
+#include "hbapiitm.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HFONT PrepareFont( const char * FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation, int Advanced )

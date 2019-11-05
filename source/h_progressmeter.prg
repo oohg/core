@@ -179,15 +179,12 @@ METHOD RangeMax( uValue ) CLASS TProgressMeter
 
 #pragma BEGINDUMP
 
-#define s_Super s_TLabel
-
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
+
+#define s_Super s_TLabel
 
 // lAux[ 0 ] = Percent
 // lAux[ 1 ] = Align

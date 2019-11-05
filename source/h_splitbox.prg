@@ -219,25 +219,6 @@ FUNCTION _ForceBreak( ParentForm )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-#if ( _WIN32_IE < 0x0400 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0400
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
-#include <hbapi.h>
-#include <windows.h>
-#include <commctrl.h>
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

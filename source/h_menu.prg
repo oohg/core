@@ -1461,24 +1461,13 @@ METHOD SeparatorType( nType ) CLASS TMenuItemMRU
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
+#ifndef _INCLUDE_OOHG_MENU_CONSTANTS_
+   #define _INCLUDE_OOHG_MENU_CONSTANTS_ "OOHG menu related constants"
 #endif
 
-#include <windows.h>
-#include <commctrl.h>
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbvm.h"
 #include "hbstack.h"
-
-#ifndef _INCLUDE_OOHG_MENU_CONSTANTS_
-#define _INCLUDE_OOHG_MENU_CONSTANTS_ "OOHG menu related constants"
-#endif
-#include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CREATEMENUITEMDATA )          /* FUNCTION CreateMenuItemData( nId ) -> hStruct */

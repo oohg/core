@@ -339,15 +339,12 @@ METHOD KeyDelete( cSubKey ) CLASS TReg32
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include <windows.h>
-#include <commctrl.h>
+#include "oohg.h"
 #include <winreg.h>
 #include <tchar.h>
-#include "hbapi.h"
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapiitm.h"
-#include "oohg.h"
 
 typedef LONG LSTATUS;
 

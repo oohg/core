@@ -120,14 +120,11 @@ FUNCTION HelpTopic( nTopic , nMet )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include <windows.h>
-#include <commctrl.h>
+#include "oohg.h"
 #if ! defined( __MINGW32__ )
    #include <Htmlhelp.h>
 #endif
-#include "hbapi.h"
 #include "hbapiitm.h"
-#include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( WINHELP )

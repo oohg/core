@@ -85,30 +85,11 @@ STATIC _OOHG_ActiveForm := {}        // Forms under creation         // TODO: th
 
 #pragma BEGINDUMP
 
-#ifndef WINVER
-   #define WINVER 0x0500
-#endif
-#if ( WINVER < 0x0500 )
-   #undef WINVER
-   #define WINVER 0x0500
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-#if ( _WIN32_WINNT < 0x0500 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0500
-#endif
-
-#include <hbapi.h>
+#include "oohg.h"
 #include <hbvm.h>
 #include <hbstack.h>
 #include <hbapiitm.h>
-#include <windows.h>
 #include <windowsx.h>
-#include <commctrl.h>
-#include "oohg.h"
 
 void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 
@@ -393,8 +374,8 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
       ENDIF
    ELSE
       IF _OOHG_EnableClassUnreg
-         TApplication():Define():WinClassUnreg()
-         aRet := TApplication():Define():WinClassReg( icon, FormName, aRGB, nWindowType )
+         _OOHG_AppObject():WinClassUnreg()
+         aRet := _OOHG_AppObject():WinClassReg( icon, FormName, aRGB, nWindowType )
       ELSE
          UnRegisterWindow( FormName )
          aRet := RegisterWindow( icon, FormName, aRGB, nWindowType )   // Len( FormName ) must be < 256
@@ -2827,7 +2808,7 @@ Function _IsWindowDefined( FormName )
 
    Return ( Type( mVar ) == "O" )
 
-FUNCTION _ActivateWindow( aForm, lNoWait )
+FUNCTION _ActivateWindow( aForm, lNoWait, lDebugger )
 
    LOCAL z, aForm2, oWndActive, oWnd, lModal
 
@@ -2837,7 +2818,11 @@ FUNCTION _ActivateWindow( aForm, lNoWait )
    IF ! HB_ISLOGICAL( lNoWait )
       lNoWait := .F.
    ENDIF
-   oWndActive := iif( lNoWait .AND. HB_ISOBJECT( _OOHG_Main ), _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
+   // Validates DEBUGGER flag
+   IF ! HB_ISLOGICAL( lDebugger )
+      lDebugger := .F.
+   ENDIF
+   oWndActive := iif( lNoWait .AND. HB_ISOBJECT( _OOHG_Main ) .AND. ! lDebugger, _OOHG_Main, GetFormObject( aForm2[ 1 ] ) )
 
    // Look for MAIN window and put it in the first place
    IF _OOHG_Main != NIL

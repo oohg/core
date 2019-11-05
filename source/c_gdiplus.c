@@ -65,11 +65,8 @@
  */
 
 
-#include <windows.h>
-#include "hbapi.h"
-#include "hbapiitm.h"
-#include <commctrl.h>
 #include "oohg.h"
+#include "hbapiitm.h"
 
 typedef void ( __stdcall * DEBUGEVENTPROC )( void *, char * );
 

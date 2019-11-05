@@ -71,13 +71,12 @@ STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Th
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
 
 #pragma BEGINDUMP
-#include "hbapi.h"
+
+#include "oohg.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
-#include "oohg.h"
+
 #pragma ENDDUMP
 
 Function _Getvalue( ControlName, ParentForm )

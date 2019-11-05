@@ -350,13 +350,10 @@ METHOD Value( cValue ) CLASS TEditRich
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "hbapi.h"
+#include "oohg.h"
 #include "hbvm.h"
 #include "hbstack.h"
-#include <windows.h>
-#include <commctrl.h>
 #include <richedit.h>
-#include "oohg.h"
 
 #ifndef CFM_BACKCOLOR
    #define CFM_BACKCOLOR 0x04000000
