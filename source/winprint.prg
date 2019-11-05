@@ -1367,11 +1367,11 @@ METHOD GetViewPortOrg() CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Destroy() CLASS HBPrinter
+PROCEDURE Destroy() CLASS HBPrinter
 
    ::End()
 
-   RETURN NIL
+   RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD End() CLASS HBPrinter
