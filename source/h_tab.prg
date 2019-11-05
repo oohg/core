@@ -1361,6 +1361,7 @@ CLASS TTabRaw FROM TControl
    DATA SetImageListCommand       INIT TCM_SETIMAGELIST
    DATA Type                      INIT "TAB" READONLY
 
+   METHOD AdjustRect              BLOCK { |Self, lFlag| TabCtrl_AdjustRect( ::hWnd, lFlag ) }
    METHOD Caption
    METHOD Define
    METHOD DeleteItem
@@ -2027,6 +2028,7 @@ HB_FUNC( TABCTRL_GETITEMRECT )
    RECT rect;
 
    TabCtrl_GetItemRect( HWNDparam( 1 ), hb_parni( 2 ), &rect );
+
    hb_reta( 4 );
    HB_STORNI( rect.left,   -1, 1 );
    HB_STORNI( rect.top,    -1, 2 );
@@ -2074,6 +2076,20 @@ HB_FUNC( TABCTRL_SETMINTABWIDTH )
 HB_FUNC( TABCTRL_SETPADDING )
 {
    TabCtrl_SetPadding( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC ( TABCTRL_ADJUSTRECT )
+{
+   RECT rect = { 0, 0, 0, 0 };
+
+   TabCtrl_AdjustRect( HWNDparam( 1 ), hb_parl( 2 ), &rect );
+
+   hb_reta( 4 );
+   HB_STORNI( rect.left,   -1, 1 );
+   HB_STORNI( rect.top,    -1, 2 );
+   HB_STORNI( rect.right,  -1, 3 );
+   HB_STORNI( rect.bottom, -1, 4 );
 }
 
 #pragma ENDDUMP
