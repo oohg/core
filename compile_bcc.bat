@@ -36,11 +36,11 @@ rem
    set HG_FILE=%1
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
-   set HG_USE_ADS=TRUE
-   set HG_USE_MYSQL=TRUE
-   set HG_USE_ODBC=TRUE
+   set HG_USE_ADS=FALSE
+   set HG_USE_MYSQL=FALSE
+   set HG_USE_ODBC=FALSE
    set HG_USE_RC=TRUE
-   set HG_USE_ZLIB=TRUE
+   set HG_USE_ZLIB=FALSE
    set HG_W_LIBS=
 
 :LOOP_START
@@ -188,7 +188,8 @@ rem
    if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=gtwin gtgui
    set HG_C_LIBS=%HG_C_LIBS% codepage common ct dbfcdx dbfdbt dbffpt dbfntx hbsix hsx lang
    set HG_C_LIBS=%HG_C_LIBS% libmisc macro pp rdd rtl tip vmmt %HG_ADDLIBS%
-   set HG_C_LIBS=%HG_C_LIBS% hbzebra hbhpdf libharu png zlib
+   set HG_C_LIBS=%HG_C_LIBS% hbzebra hbhpdf libharu png
+   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% zlib
    goto LIBS_WINDOWS
 
 :LIBS_HARBOUR
@@ -200,7 +201,8 @@ rem
    set HG_C_LIBS=%HG_C_LIBS% hblang hbmacro hbpp hbrdd hbrtl hbvmmt %HG_ADDLIBS%
    rem hbhpdf must precede hbwin png xhb
    set HG_C_LIBS=%HG_C_LIBS% hbmemio hbmisc hbmzip hbnulrdd hbtip hbhpdf hbzebra
-   set HG_C_LIBS=%HG_C_LIBS% hbziparc hbzlib minizip hbwin png rddsql sddodbc xhb
+   set HG_C_LIBS=%HG_C_LIBS% hbziparc minizip hbwin png rddsql sddodbc xhb
+   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% hbzlib
 
 :LIBS_WINDOWS
 
@@ -217,14 +219,14 @@ rem
    echo %HG_ROOT%\%LIB_GUI%\hbprinter.lib + >> b32.bc
    echo %HG_ROOT%\%LIB_GUI%\miniprint.lib + >> b32.bc
    for %%a in ( %HG_C_LIBS% ) do if exist %HG_HRB%\%LIB_HRB%\%%a.lib echo %HG_HRB%\%LIB_HRB%\%%a.lib + >> b32.bc
-   if "%HG_USE_ODBC%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
-   if "%HG_USE_ODBC%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
-   if "%HG_USE_ZLIB%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
-   if "%HG_USE_ZLIB%"  == "TRUE" echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
-   if "%HG_USE_ADS%"   == "TRUE" echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
-   if "%HG_USE_ADS%"   == "TRUE" echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
-   if "%HG_USE_MYSQL%" == "TRUE" echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
-   if "%HG_USE_MYSQL%" == "TRUE" echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
+   if "%HG_USE_ODBC%"  == "TRUE" if exist %HG_HRB%\%LIB_HRB%\hbodbc.lib echo %HG_HRB%\%LIB_HRB%\hbodbc.lib + >> b32.bc
+   if "%HG_USE_ODBC%"  == "TRUE" if exist %HG_HRB%\%LIB_HRB%\odbc32.lib echo %HG_HRB%\%LIB_HRB%\odbc32.lib + >> b32.bc
+   if "%HG_USE_ZLIB%"  == "TRUE" if exist %HG_HRB%\%LIB_HRB%\zlib1.lib echo %HG_HRB%\%LIB_HRB%\zlib1.lib + >> b32.bc
+   if "%HG_USE_ZLIB%"  == "TRUE" if exist %HG_HRB%\%LIB_HRB%\ziparchive.lib echo %HG_HRB%\%LIB_HRB%\ziparchive.lib + >> b32.bc
+   if "%HG_USE_ADS%"   == "TRUE" if exist %HG_HRB%\%LIB_HRB%\rddads.lib echo %HG_HRB%\%LIB_HRB%\rddads.lib + >> b32.bc
+   if "%HG_USE_ADS%"   == "TRUE" if exist %HG_HRB%\%LIB_HRB%\ace32.lib echo %HG_HRB%\%LIB_HRB%\ace32.lib + >> b32.bc
+   if "%HG_USE_MYSQL%" == "TRUE" if exist %HG_HRB%\%LIB_HRB%\mysql.lib echo %HG_HRB%\%LIB_HRB%\mysql.lib + >> b32.bc
+   if "%HG_USE_MYSQL%" == "TRUE" if exist echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib echo %HG_HRB%\%LIB_HRB%\libmysqldll.lib + >> b32.bc
    for %%a in ( %HG_W_LIBS% ) do echo %%a.lib + >> b32.bc
    echo , , + >> b32.bc
    if exist _temp.res echo _temp.res >> b32.bc
