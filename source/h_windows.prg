@@ -254,17 +254,20 @@ CLASS TWindow
    METHOD Release
    METHOD ReleaseAttached
    METHOD ReleaseDC               INLINE iif( -- ::nPaintCount == 0, iif( ReleaseDC( ::hWnd, ::hDC ), ::hDC := NIL, NIL ), NIL )
+   METHOD RemoveTransparency      BLOCK { |Self| WindowExStyleFlag( ::hWnd, WS_EX_LAYERED, 0 ) }
    METHOD RoundBox
    METHOD RTL                     SETGET
    METHOD SaveAs
    METHOD SaveData
    METHOD SearchParent
+   METHOD SetBackgroundInvisible  BLOCK { |Self, nClr| SetLayeredWindowAttributes( ::hWnd, iif( nClr == NIL, ::BackColorCode, nClr ), 0, LWA_COLORKEY ) }
    METHOD SetFocus
    METHOD SethWnd
    METHOD SetKey                                                              // Application-controlled hotkeys
    METHOD SetRedraw
    METHOD SetSplitBox             BLOCK { || .F. }                            // Specific hack
    METHOD SetSplitBoxInfo         BLOCK { |Self, a, b, c, d, e| iif( ::Container != NIL, ::Container:SetSplitBox( a, b, c, d, e ), .F. ) }
+   METHOD SetTransparency         BLOCK { |Self, nOpacity| SetLayeredWindowAttributes( ::hWnd, 0, nOpacity, LWA_ALPHA ) }
    METHOD Show                    BLOCK { |Self| ::Visible := .T. }
    METHOD StartInfo
    METHOD Style                   SETGET
