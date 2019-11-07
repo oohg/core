@@ -12,6 +12,29 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-04 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_combo.ch
+     + Clause HSCROLL.
+   * core\include\oohg.h
+     + CBS_AUTOHSCROLL.
+   * core\source\h_combobox.prg
+     + Support for clause HSCROLL.
+   ; This enables combo's horizontal text scrolling.
+
+2019-11-04 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     ! Additional libs support.
+
+2019-11-04 19:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Comment.
+
+2019-11-04 19:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     + Method RemoveTransparency.
+     + Method SetBackgroundInvisible.
+     + Method SetTransparency.
+
 2019-11-04 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
