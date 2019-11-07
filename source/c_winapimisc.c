@@ -1498,6 +1498,20 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
    return iRet;
 }
 
+/*
+ * The SetLayeredWindowAttributes function sets the opacity and transparency
+ * color key of a layered window.
+ * Parameters:
+ * - hwnd   Handle to the layered window.
+ * - crKey   Pointer to a COLORREF value that specifies the transparency color
+ *   key to be used.
+ *    (When making a certain color transparent...).
+ * - bAlpha   Alpha value used to describe the opacity of the layered window.
+ *    0 = Invisible, 255 = Fully visible
+ * - dwFlags   Specifies an action to take. This parameter can be LWA_COLORKEY
+ *    (When making a certain color transparent...) or LWA_ALPHA.
+ */
+
 HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
 {
    HWND hWnd = HWNDparam( 1 );
