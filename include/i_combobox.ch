@@ -114,6 +114,7 @@ STANDARD VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
+      [ <hscroll: HSCROLL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <rows>, <value>, ;
@@ -128,7 +129,7 @@ STANDARD VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight> )
+            <optheight>, <.hscroll.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -185,6 +186,7 @@ SPLITBOX VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
+      [ <hscroll: HSCROLL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <rows>, <value>, ;
@@ -199,7 +201,7 @@ SPLITBOX VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight> )
+            <optheight>, <.hscroll.> )
 
 #command SET COMBOREFRESH ON ;
    => ;

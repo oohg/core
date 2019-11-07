@@ -857,6 +857,7 @@ COMBOBOX CONTROL
 #define CBS_SORT                      0x0100
 #define CBS_DROPDOWN                  0x0002
 #define CBS_DROPDOWNLIST              0x0003
+#define CBS_AUTOHSCROLL               0x0040
 #define CBS_NOINTEGRALHEIGHT          0x0400
 #define CBS_OWNERDRAWFIXED            0x0010
 #define CB_GETDROPPEDSTATE            0x0157

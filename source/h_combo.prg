@@ -148,7 +148,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemNumber, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
-               sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight ) CLASS TCombo
+               sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight, ;
+               lHScroll ) CLASS TCombo
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
@@ -207,7 +208,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
              iif( HB_ISLOGICAL( sort ) .AND. sort, CBS_SORT, 0 ) + ;
              iif( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemNumber ) .OR. displaychange, CBS_OWNERDRAWFIXED, 0) + ;
-             iif( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 )
+             iif( OSisWinXPorLater() .AND. _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 ) + ;
+             iif( HB_ISLOGICAL( lHScroll ) .AND. lHScroll, CBS_AUTOHSCROLL, 0 )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
 
@@ -1687,9 +1689,9 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
          ENDIF
          ( nArea )->( dbGoto( BackRec ) )
       ENDIF
-
+      RETURN NIL
    ELSEIF Lo_wParam == SB_PAGEDOWN .OR. Lo_wParam == SB_THUMBPOSITION
-      If ( nArea := Select( ::Container:WorkArea ) ) != 0
+      IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          // load one more page of items
          nLoad := ::Container:VisibleItems
          bField := ::Container:Field
@@ -1723,7 +1725,7 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
          ENDIF
          ( nArea )->( dbGoto( BackRec ) )
       ENDIF
-
+      RETURN NIL
    ELSEIF Lo_wParam == SB_BOTTOM
       IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          // load all remaining items
@@ -1756,7 +1758,7 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
          ENDIF
          ( nArea )->( dbGoto( BackRec ) )
       ENDIF
-
+      RETURN NIL
    ELSEIF Lo_wParam == SB_THUMBTRACK
       IF ( nArea := Select( ::Container:WorkArea ) ) != 0
          bField := ::Container:Field
@@ -1791,13 +1793,10 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
          ( nArea )->( dbGoto( BackRec ) )
          SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_FRAMECHANGED + SWP_NOSIZE + SWP_NOMOVE )
       ENDIF
-
-   ELSE
-      RETURN ::Super:Events_VScroll( wParam )
-
+      RETURN NIL
    ENDIF
 
-   RETURN NIL
+   RETURN ::Super:Events_VScroll( wParam )
 
 
 #pragma BEGINDUMP
@@ -1877,7 +1876,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
 METHOD MaxLength( nLen ) CLASS TEditCombo
 
    IF HB_ISNUMERIC( nLen )
-      ::nMaxLength := If( nLen >= 1, nLen, 0 )
+      ::nMaxLength := iif( nLen >= 1, nLen, 0 )
       SendMessage( ::hWnd, EM_LIMITTEXT, ::nMaxLength, 0 )
    ENDIF
 
