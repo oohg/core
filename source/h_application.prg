@@ -1409,7 +1409,7 @@ METHOD Value_Pos11( uValue ) CLASS TApplication
    LOCAL uRet
 
    ::MutexLock()
-   IF HB_ISOBJECT( uValue ) .OR. uValue == NIL
+   IF HB_ISOBJECT( uValue ) .OR. ( PCount() > 0 .AND. uValue == NIL )
       ::aVars[ NDX_OOHG_MAIN ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_MAIN ]
