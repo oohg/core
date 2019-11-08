@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-04 15:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_application.prg
+     ! _OOHG_Main is set to NIL when it's accessed without parameters.
+
 2019-11-04 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_combo.ch
      + Clause HSCROLL.
