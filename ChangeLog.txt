@@ -32,6 +32,7 @@
        if it belongs to the current workarea.
      * ITEMSOURCE now accepts a codeblock.
      + Support for data sources compatible with class OOHGRecord.
+     + Support for delayed-loading of items from array.
      ! Method ValueSource of class TCombo when the parameter is
        an array.
      ! Return value of method VisibleItems of class TCombo.
