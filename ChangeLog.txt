@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-11 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.ch
+     ! App is not ended after releasing MAIN window.
+
 2019-11-10 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
@@ -40,7 +44,7 @@
 
 2019-11-10 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_combobox.ch
-     + Clause IMAGES as a synonym  of IMAGE.
+     + Clause IMAGES as a synonym of IMAGE.
 
 2019-11-10 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_controlmisc.c
