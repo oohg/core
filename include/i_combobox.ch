@@ -91,7 +91,7 @@ STANDARD VERSION
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
-      [ IMAGE <aImage> ] ;
+      [ <dummy10: IMAGE, IMAGES> <aImage> ] ;
       [ IMAGESOURCE <imagesource> ] ;
       [ <fit: FIT> ] ;
       [ <sort: SORT> ] ;
