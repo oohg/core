@@ -12,6 +12,55 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-10 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-11-10 22:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.ch
+     + Data aRows to class TCombo.
+     * Data ItemNumber of class TCombo renamed as ItemImgNum
+       for clarity. INCOMPATIBLE
+     - Data WorkArea of class TCombo.
+     + Data oWorkArea to class TCombo
+     + Data uWorkArea to class TCombo.
+     + Method ReadData to class TCombo.
+     + Method Rows to class TCombo.
+     + Method WorkArea to class TCombo.
+     - Now longer needed calls to OSisWinXPorLater().
+     * ITEMSOURCE now accepts a not qualified fieldname
+       if it belongs to the current workarea.
+     * ITEMSOURCE now accepts a codeblock.
+     + Support for data sources compatible with class OOHGRecord.
+     ! Method ValueSource of class TCombo when the parameter is
+       an array.
+     ! Return value of method VisibleItems of class TCombo.
+     * TEditCombo and TListCombo are now longer STATIC.
+
+2019-11-10 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_combobox.ch
+     + Clause IMAGES as a synonym  of IMAGE.
+
+2019-11-10 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     * Function ImageFillParameter now forces cString to "" when
+       first item of pString is not a string.
+
+2019-11-10 21:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     + Data lRefreshDataOnActivate.
+       Set to .F. (at ON INIT procedure ) to prevent executing
+       method RefreshData at form's activation. Defaults to .T.
+
+2019-11-10 21:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     * Some format.
+     * Data ImageList is always set to 0 by method ClearBitmaps.
+
+2019-11-10 21:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_xbrowse.prg
+     * Some format.
+
 2019-11-08 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\README.md
      * Updated.
@@ -50,6 +99,7 @@
 2019-11-04 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg.h
      + Defines and includes common to almost all sources.
+     ; Windows minimum supported version is now XP.
    * core\source\bostaurus.prg
    * core\source\c_activex.c
    * core\source\c_controlmisc.c
