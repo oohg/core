@@ -1210,7 +1210,7 @@ FUNCTION _SetFontItalic( ControlName, ParentForm, Value )
 
    RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , Value )
 
-FUNCTION _SetFontUnderline( ControlName, ParentForm, Value ) 
+FUNCTION _SetFontUnderline( ControlName, ParentForm, Value )
 
    RETURN GetControlObject( ControlName, ParentForm ):SetFont( , , , , Value )
 
@@ -1877,8 +1877,8 @@ METHOD ClearBitMaps CLASS TControl
 
    IF ValidHandler( ::ImageList )
       ImageList_Destroy( ::ImageList )
-      ::ImageList := 0
    ENDIF
+   ::ImageList := 0
 
    RETURN NIL
 
