@@ -330,7 +330,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
 
    ASSIGN ::Lock          VALUE lLock          TYPE "L"
    ASSIGN ::aReplaceField VALUE aReplaceFields TYPE "A"
-   ASSIGN ::lRecCount     VALUE lRecCount     TYPE "L"
+   ASSIGN ::lRecCount     VALUE lRecCount      TYPE "L"
 
    IF ::lRtl .AND. ! ::Parent:lRtl
       ::nCol := ::nCol + GetVScrollBarWidth()
