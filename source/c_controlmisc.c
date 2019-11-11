@@ -810,7 +810,14 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
    }
    else if( pString && HB_IS_ARRAY( pString ) && hb_arrayLen( pString ) > 0 )
    {
-      pResult->cString = hb_arrayGetC( pString, 1 );
+      if( HB_IS_STRING( hb_arrayGetItemPtr( pString, 1 ) ) )
+      {
+         pResult->cString = hb_arrayGetC( pString, 1 );
+      }
+      else
+      {
+         pResult->cString = "";
+      }
       if( hb_arrayLen( pString ) > 1 && HB_IS_NUMERIC( hb_arrayGetItemPtr( pString, 2 ) ) )
       {
          pResult->iImage1 = hb_arrayGetNI( pString, 2 );
