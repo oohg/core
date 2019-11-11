@@ -116,6 +116,7 @@ CLASS TForm FROM TWindow
    DATA lEnterSizeMove            INIT .F.
    DATA lDefined                  INIT .F.
    DATA uFormCursor               INIT IDC_ARROW
+   DATA lRefreshDataOnActivate    INIT .T.
 
    DATA OnRelease                 INIT NIL
    DATA OnInit                    INIT NIL
@@ -610,7 +611,10 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
    ::ProcessInitProcedure()
 
    ::ClientsPos()
-   ::RefreshData()
+
+   IF ::lRefreshDataOnActivate
+      ::RefreshData()
+   ENDIF
 
    // Starts the Message Loop
    IF ! lNoStop
