@@ -2909,10 +2909,10 @@ FUNCTION ReleaseAllWindows( lExit )
 
 FUNCTION _ReleaseWindowList( aWindows )
 
-   LOCAL i, oWnd, nLen := Len( aWindows )
+   LOCAL i, oWnd
 
    IF _OOHG_WinReleaseSameOrder
-      FOR i := 1 TO nLen
+      FOR i := 1 TO Len( aWindows )
          oWnd := aWindows[ i ]
 
          IF ! oWnd:lReleased
@@ -2932,16 +2932,18 @@ FUNCTION _ReleaseWindowList( aWindows )
             _ReleaseWindowList( oWnd:aChildPopUp )
             oWnd:aChildPopUp := {}
 
+            // Hide form while destroying controls
             HideWindow( oWnd:hWnd )
-
             oWnd:ReleaseAttached()
 
+            // Destroy form
+            DestroyWindow( oWnd:hWnd )
             oWnd:lReleased := .T.
          ENDIF
       NEXT i
    ELSE
       // Reverse order: release first the latest defined forms
-      FOR i := nLen TO 1 STEP -1
+      FOR i := Len( aWindows ) TO 1 STEP -1
          oWnd := aWindows[ i ]
 
          IF ! oWnd:lReleased
@@ -2961,10 +2963,12 @@ FUNCTION _ReleaseWindowList( aWindows )
             // Prepare all controls to be destroyed
             oWnd:PreRelease()
 
+            // Hide form while destroying controls
             HideWindow( oWnd:hWnd )
-
             oWnd:ReleaseAttached()
 
+            // Destroy form
+            DestroyWindow( oWnd:hWnd )
             oWnd:lReleased := .T.
          ENDIF
       NEXT i
