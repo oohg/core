@@ -486,7 +486,7 @@ HB_FUNC( WAITRUN )
    ZeroMemory( &stInfo, sizeof( stInfo ) );
    stInfo.cb = sizeof( stInfo );
    stInfo.dwFlags = STARTF_USESHOWWINDOW;
-   stInfo.wShowWindow = (SHORT) hb_parni( 2 );
+   stInfo.wShowWindow = ( WORD ) hb_parni( 2 );
 
    bResult = CreateProcess( NULL,
                             ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ),
@@ -498,17 +498,97 @@ HB_FUNC( WAITRUN )
                             NULL,
                             &stInfo,
                             &prInfo );
-
    if( ! bResult )
    {
-      hb_retl( -1 );
+      hb_retnl( -1 );
    }
 
    WaitForSingleObject( prInfo.hProcess, INFINITE );
-
    GetExitCodeProcess( prInfo.hProcess, &dwExitCode );
 
+   CloseHandle( prInfo.hThread );
+   CloseHandle( prInfo.hProcess );
+
    hb_retnl( dwExitCode );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( WAITRUNTERM )
+{
+   PHB_ITEM    pWaitProc  = hb_param( 4, HB_IT_BLOCK );
+   ULONG       ulWaitMsec = ( HB_ISNIL( 5 ) ? 2000 : hb_parnl( 5 ) );
+   BOOL        bTerm      = FALSE;
+   BOOL        bWait;
+   ULONG       ulNoSignal;
+   DWORD       dwExitCode;
+   STARTUPINFO stInfo;
+   PROCESS_INFORMATION prInfo;
+   BOOL bResult;
+
+   ZeroMemory( &stInfo, sizeof( stInfo ) );
+   stInfo.cb          = sizeof( stInfo );
+   stInfo.dwFlags     = STARTF_USESHOWWINDOW;
+   stInfo.wShowWindow = ( WORD ) ( HB_ISNIL( 3 ) ? 5 : hb_parni( 3 ) );
+
+   bResult = CreateProcess( NULL,
+                            ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ),
+                            NULL,
+                            NULL,
+                            TRUE,
+                            CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
+                            NULL,
+                            HB_ISNIL( 2 ) ? NULL : hb_parc( 2 ),
+                            &stInfo,
+                            &prInfo );
+   if( ! bResult )
+      hb_retnl( -2 );
+
+   if( pWaitProc )
+   {
+      do
+      {
+         ulNoSignal = WaitForSingleObject( prInfo.hProcess, ulWaitMsec );
+         if( ulNoSignal )
+         {
+            hb_evalBlock0( pWaitProc );
+            bWait = hb_parl( -1 );
+            if( ! bWait )
+            {
+               if( TerminateProcess( prInfo.hProcess, 0 ) != 0 )
+                  bTerm = TRUE;
+               else
+                  bWait = TRUE;
+            }
+         }
+         else
+            bWait = FALSE;
+      }
+      while( bWait );
+   }
+   else
+      WaitForSingleObject( prInfo.hProcess, INFINITE );
+
+   if( bTerm )
+      dwExitCode = ( DWORD ) -1;
+   else
+      GetExitCodeProcess( prInfo.hProcess, &dwExitCode );
+
+   CloseHandle( prInfo.hThread );
+   CloseHandle( prInfo.hProcess );
+   hb_retnl( dwExitCode );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ISEXERUNNING )          /* FUNCTION IsExeRunnnig( cExeNameCaseSensitive ) -> lResult */
+{
+   HANDLE hMutex = CreateMutex( NULL, FALSE, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ) );
+
+   hb_retl( GetLastError() == ERROR_ALREADY_EXISTS );
+
+   if( hMutex )
+   {
+      ReleaseMutex( hMutex );
+   }
 }
 
 HB_FUNC( CREATEMUTEX )
