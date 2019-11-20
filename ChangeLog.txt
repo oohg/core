@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-20 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_label.prg
+     % Small simplification.
+   * core\source\h_combobox.prg
+     ! DisplayValue is cleared at form's activation.
+
 2019-11-20 18:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
