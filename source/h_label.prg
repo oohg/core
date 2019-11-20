@@ -177,11 +177,9 @@ METHOD Caption( cValue ) CLASS TLabel
       IF ::Transparent
          RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
       ENDIF
-   ELSE
-      cValue := GetWindowText( ::hWnd )
    ENDIF
 
-   RETURN cValue
+   RETURN GetWindowText( ::hWnd )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS Tlabel

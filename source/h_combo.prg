@@ -400,10 +400,12 @@ METHOD Rows( aRows ) CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Refresh() CLASS TCombo
 
-   LOCAL uValue
+   LOCAL uValue, cDisplayValue
 
    IF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
       uValue := ::Value
+      cDisplayValue := ::DisplayValue
+
       ComboboxReset( ::hWnd )
       ::aValues := {}
       IF HB_ISBLOCK( ::ImageSource )
@@ -414,6 +416,8 @@ METHOD Refresh() CLASS TCombo
       ::ReadData()
 
       ::Value := uValue
+      ::DisplayValue := cDisplayValue
+
       ::DoEvent( ::OnRefresh, "REFRESH" )
    ENDIF
 
