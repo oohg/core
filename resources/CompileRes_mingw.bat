@@ -62,14 +62,14 @@ rem
 
 :COMPILE
 
-   if /I "%1"=="HM30" ( if exist oohg_hb30.o del oohg_hb30.o )
-   if /I "%1"=="HM30" ( if exist oohg_hb30.o goto ERROR4 )
+   if /I "%1"=="HM30" ( if exist ooHG_HM30.o del ooHG_HM30.o )
+   if /I "%1"=="HM30" ( if exist ooHG_HM30.o goto ERROR4 )
 
-   if /I "%1"=="HM32" ( if exist oohg_hb32.o del oohg_hb32.o )
-   if /I "%1"=="HM32" ( if exist oohg_hb32.o goto ERROR5 )
+   if /I "%1"=="HM32" ( if exist ooHG_HM32.o del ooHG_HM32.o )
+   if /I "%1"=="HM32" ( if exist ooHG_HM32.o goto ERROR5 )
 
-   if /I "%1"=="HM34" ( if exist oohg_hb34.o del oohg_hb34.o )
-   if /I "%1"=="HM34" ( if exist oohg_hb34.o goto ERROR6 )
+   if /I "%1"=="HM34" ( if exist ooHG_HM34.o del ooHG_HM34.o )
+   if /I "%1"=="HM34" ( if exist ooHG_HM34.o goto ERROR6 )
 
    if /I "%1"=="XM"   ( if exist oohg_xm.o   del oohg_xm.o )
    if /I "%1"=="XM"   ( if exist oohg_xm.o   goto ERROR7 )
@@ -83,23 +83,23 @@ rem
    set "HG_PATH=%PATH%"
    set "PATH=%HG_MINGW%\bin"
 
-   if /I "%1"=="HM30" ( windres -i oohg.rc -o oohg_hb30.o )
-   if /I "%1"=="HM32" ( windres -i oohg.rc -o oohg_hb32.o )
-   if /I "%1"=="HM34" ( windres -i oohg.rc -o oohg_hb34.o )
+   if /I "%1"=="HM30" ( windres -i oohg.rc -o ooHG_HM30.o )
+   if /I "%1"=="HM32" ( windres -i oohg.rc -o ooHG_HM32.o )
+   if /I "%1"=="HM34" ( windres -i oohg.rc -o ooHG_HM34.o )
    if /I "%1"=="XM"   ( windres -i oohg.rc -o oohg_xm.o )
 
    set "PATH=%HG_PATH%"
    set HG_PATH=
 
    rem Do not delete _oohg_resconfig.h, QAC/QPM needs it
-   if /I "%1"=="HM30" ( if exist oohg_hb30.o echo oohg_hb30.o builded ok. )
-   if /I "%1"=="HM30" ( if not exist oohg_hb30.o echo Error building oohg_hb30.o. )
+   if /I "%1"=="HM30" ( if exist ooHG_HM30.o echo ooHG_HM30.o builded ok. )
+   if /I "%1"=="HM30" ( if not exist ooHG_HM30.o echo Error building ooHG_HM30.o. )
 
-   if /I "%1"=="HM32" ( if exist oohg_hb32.o echo oohg_hb32.o builded ok. )
-   if /I "%1"=="HM32" ( if not exist oohg_hb32.o echo Error building oohg_hb32.o. )
+   if /I "%1"=="HM32" ( if exist ooHG_HM32.o echo ooHG_HM32.o builded ok. )
+   if /I "%1"=="HM32" ( if not exist ooHG_HM32.o echo Error building ooHG_HM32.o. )
 
-   if /I "%1"=="HM34" ( if exist oohg_hb34.o echo oohg_hb34.o builded ok. )
-   if /I "%1"=="HM34" ( if not exist oohg_hb34.o echo Error building oohg_hb34.o. )
+   if /I "%1"=="HM34" ( if exist ooHG_HM34.o echo ooHG_HM34.o builded ok. )
+   if /I "%1"=="HM34" ( if not exist ooHG_HM34.o echo Error building ooHG_HM34.o. )
 
    if /I "%1"=="XM"   ( if exist oohg_xm.o echo oohg_xm.o builded ok. )
    if /I "%1"=="XM"   ( if not exist oohg_xm.o echo Error building oohg_xm.o. )
@@ -125,17 +125,17 @@ rem
 
 :ERROR4
 
-   echo Can not delete old oohg_hb30.o !!!
+   echo Can not delete old ooHG_HM30.o !!!
    goto EXIT
 
 :ERROR5
 
-   echo Can not delete old oohg_hb32.o !!!
+   echo Can not delete old ooHG_HM32.o !!!
    goto EXIT
 
 :ERROR6
 
-   echo Can not delete old oohg_hb34.o !!!
+   echo Can not delete old ooHG_HM34.o !!!
    goto EXIT
 
 :ERROR7
