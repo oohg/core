@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlNoClone                => _OOHG_ActiveControlInfo \( \) \[  60 \]
 #xtranslate _OOHG_ActiveControlOnBeforeInsert         => _OOHG_ActiveControlInfo \( \) \[  61 \]
 #xtranslate _OOHG_ActiveControlOnHeadDblClick         => _OOHG_ActiveControlInfo \( \) \[  62 \]
 #xtranslate _OOHG_ActiveControlContextMenu            => _OOHG_ActiveControlInfo \( \) \[  63 \]
@@ -2084,7 +2085,13 @@ COMBOBOX
       _OOHG_ActiveControlSearchLapse       := NIL  ;;
       _OOHG_ActiveControlMaxLength         := NIL  ;;
       _OOHG_ActiveControlEditHeight        := NIL  ;;
-      _OOHG_ActiveControlOptionsHeight     := NIL
+      _OOHG_ActiveControlOptionsHeight     := NIL  ;;
+      _OOHG_ActiveControlNoHScroll         := .F.  ;;
+      _OOHG_ActiveControlNoClone           := .F.
+
+#xcommand NOCLONE <noclone> ;
+   => ;
+      _OOHG_ActiveControlNoClone := <noclone>
 
 #xcommand DELAYEDLOAD <delayedload> ;
    => ;
@@ -2240,7 +2247,9 @@ COMBOBOX
             _OOHG_ActiveControlSearchLapse, ;
             _OOHG_ActiveControlMaxLength, ;
             _OOHG_ActiveControlEditHeight, ;
-            _OOHG_ActiveControlOptionsHeight )
+            _OOHG_ActiveControlOptionsHeight, ;
+            _OOHG_ActiveControlNoHScroll, ;
+            _OOHG_ActiveControlNoClone )
 
 /*---------------------------------------------------------------------------
 DATEPICKER

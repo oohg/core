@@ -68,7 +68,6 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TCombo FROM TLabel
 
-   DATA aRows                     INIT NIL
    DATA aValues                   INIT {}
    DATA cText                     INIT ""
    DATA ImageListColor            INIT CLR_DEFAULT
@@ -79,6 +78,7 @@ CLASS TCombo FROM TLabel
    DATA lDelayLoad                INIT .F.
    DATA lFocused                  INIT .F.
    DATA lIncremental              INIT .F.
+   DATA lNoClone                  INIT .F.
    DATA lRefresh                  INIT NIL
    DATA nHeight2                  INIT 150
    DATA nLastFound                INIT 0
@@ -118,6 +118,7 @@ CLASS TCombo FROM TLabel
    METHOD ForceHide               BLOCK { |Self| SendMessage( ::hWnd, CB_SHOWDROPDOWN, 0, 0 ), ::Super:ForceHide() }
    METHOD GetDropDownWidth
    METHOD GetEditSel
+   METHOD GetItems                BLOCK { |Self| ComboboxGetAllItems( ::hWnd ) }
    METHOD InsertItem
    METHOD Item                    BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
    METHOD ItemBySource
@@ -133,6 +134,7 @@ CLASS TCombo FROM TLabel
    METHOD Rows                    SETGET
    METHOD SelectFirstItem         BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
    METHOD SelectLastItem          BLOCK { |Self| ComboSetCursel( ::hWnd, ::ItemCount ) }
+   METHOD SelectString            BLOCK { |Self, cString| ComboboxSelectString( ::hwnd, cString ) }
    METHOD SetDropDownWidth
    METHOD SetEditSel
    METHOD ShowDropDown
@@ -154,7 +156,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemImgNum, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight, ;
-               lHScroll ) CLASS TCombo
+               lNoHScroll, lNoClone ) CLASS TCombo
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
@@ -171,6 +173,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::lDelayLoad    VALUE lDelayLoad    TYPE "L" DEFAULT .F.
    ASSIGN ::lIncremental  VALUE lIncremental  TYPE "L" DEFAULT .F.
    ASSIGN lWinSize        VALUE lWinSize      TYPE "L" DEFAULT .F.
+   ASSIGN ::lNoClone      VALUE lNoClone      TYPE "L"
    ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L" DEFAULT NIL
    ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
@@ -222,7 +225,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
              iif( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemImgNum ) .OR. displaychange, CBS_OWNERDRAWFIXED, 0) + ;
              iif( _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 ) + ;
-             iif( HB_ISLOGICAL( lHScroll ) .AND. lHScroll, CBS_AUTOHSCROLL, 0 )
+             iif( HB_ISLOGICAL( lNoHScroll ) .AND. lNoHScroll, 0, CBS_AUTOHSCROLL )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )
 
@@ -232,12 +235,13 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ::Register( ControlHandle, ControlName, HelpId, NIL, ToolTip, nId )
 
    ::SetFont()
-   ::Field := uField
    IF ValType( WorkArea ) $ "CMO"
       ::WorkArea := WorkArea
    ELSEIF ValType( rows ) == "A"
-      ::aRows := rows
+      ::WorkArea := TComboArray():New( rows, ::lNoClone )
+      uField := { || ::WorkArea:FieldGet() }
    ENDIF
+   ::Field := uField
    ::ValueSource := valuesource
 
    IF HB_ISARRAY( aImage )
@@ -308,23 +312,28 @@ METHOD Field( uField ) CLASS TCombo
    RETURN ::uField
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ValueSource( uValue ) CLASS TCombo
+METHOD ValueSource( uSource ) CLASS TCombo
 
-   IF PCount() > 0 .AND. uValue == NIL
-      ::aValues := {}
-      ::uValueSource := NIL
-   ELSEIF HB_ISARRAY( uValue )
-      ::aValues := AClone( uValue )
-      ::uValueSource := AClone( uValue )
-   ELSEIF HB_ISBLOCK( uValue )
-      ::aValues := {}
-      ::uValueSource := uValue
-   ELSEIF ValType( uValue ) $ "CM"
-      ::aValues := {}
-      IF Empty( uValue )
-         ::uValueSource := NIL
+   LOCAL aValues
+
+   IF PCount() > 0
+      IF uSource == NIL
+         ::aValues := {}
+         ::uValueSource := { |nRecNo| nRecNo }
+      ELSEIF HB_ISARRAY( uSource )
+         ::aValues := {}
+         aValues := AClone( uSource )
+         ::uValueSource := { |nRecno| aValues[ nRecno ] }
+      ELSEIF HB_ISBLOCK( uSource )
+         ::aValues := {}
+         ::uValueSource := uSource
+      ELSEIF ValType( uSource ) $ "CM" .AND. ! Empty( uSource )
+         ::aValues := {}
+         aValues := uSource
+         ::uValueSource := &( "{ || " + aValues + " }" )
       ELSE
-         ::uValueSource := &( "{ || " + uValue + " }" )
+         ::aValues := {}
+         ::uValueSource := { |nRecNo| nRecNo }
       ENDIF
    ENDIF
 
@@ -379,23 +388,24 @@ METHOD Rows( aRows ) CLASS TCombo
    IF PCount() > 0
       IF aRows == NIL
          ::DeleteAllItems()
+         ::WorkArea := TComboArray():New( {}, ::lNoClone )
       ELSEIF HB_ISARRAY( aRows )
-         ::aRows := AClone( aRows )
+         ::WorkArea := TComboArray():New( aRows, ::lNoClone )
          ::Refresh()
       ENDIF
    ENDIF
 
-   RETURN ::aRows
+   RETURN ::WorkArea:Array( ::lNoClone )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Refresh() CLASS TCombo
 
    LOCAL uValue
 
-   IF HB_ISARRAY( ::aRows ) .OR. ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
+   IF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
       uValue := ::Value
       ComboboxReset( ::hWnd )
-      ::ValueSource := ::ValueSource
+      ::aValues := {}
       IF HB_ISBLOCK( ::ImageSource )
          ::ClearBitMaps()
       ENDIF
@@ -412,22 +422,11 @@ METHOD Refresh() CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReadData( nMax ) CLASS TCombo
 
-   LOCAL BackOrd, BackRec, bField, bValueSource, lNewData, lNoEval, nCount
+   LOCAL BackOrd, BackRec, bField, bValueSource, lNewData, nCount, aItem
 
-   IF HB_ISARRAY( ::aRows )
-      IF ! ::lDelayLoad
-         nMax := Len( ::aRows )
-      ELSEIF ! HB_ISNUMERIC( nMax ) .OR. nMax < 1
-         nMax := ::VisibleItems * 2
-      ENDIF
-      IF ( lNewData := ( ::nLastItem < Len( ::aRows ) ) )
-         AEval( ::aRows, { |x| ::AddItem( x ) }, ::nLastItem + 1, nMax )
-         ::nLastItem += nMax
-      ENDIF
-   ELSEIF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
+   IF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
       bField := ::Field
       bValueSource := ::ValueSource
-      lNoEval := ! HB_ISBLOCK( bValueSource )
       nCount := 0
       IF ! ::lDelayLoad
          nMax := 0
@@ -448,8 +447,12 @@ METHOD ReadData( nMax ) CLASS TCombo
       lNewData := ( ! ::oWorkArea:Eof() .AND. ( ! ::lDelayLoad .OR. nCount < nMax ) )
 
       DO WHILE ! ::oWorkArea:Eof() .AND. ( ! ::lDelayLoad .OR. nCount < nMax )
-         ::AddItem( { ( ::oWorkArea:cAlias__ )->( Eval( bField ) ), _OOHG_Eval( ::ItemImgNum ) } )
-         AAdd( ::aValues, iif( lNoEval, ::oWorkArea:RecNo(), Eval( bValueSource ) ) )
+         aItem := ( ::oWorkArea:cAlias__ )->( Eval( bField ) )
+         IF ! HB_ISARRAY( aItem )
+            aItem := { aItem, _OOHG_Eval( ::ItemImgNum ) }
+         ENDIF
+         ::AddItem( aItem )
+         AAdd( ::aValues, Eval( bValueSource, ::oWorkArea:RecNo() ) )
          ::AddBitMap( _OOHG_Eval( ::ImageSource ) )
 
          ::oWorkArea:Skip()
@@ -1018,7 +1021,6 @@ METHOD DeleteItem( nPos ) CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteAllItems() CLASS TCombo
 
-   ::aRows := NIL
    ::aValues := {}
    ::xOldValue := NIL
    ::OldValue := NIL
@@ -1138,15 +1140,57 @@ HB_FUNC( COMBOBOXRESET )          /* FUNCTION ComboboxReset( hWnd ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOGETSTRING )          /* FUNCTION ComboGetString( hWnd, nPos ) -> cString */
 {
-   char cString [1024] = "";
-   SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
-   hb_retc( cString );
+   int iLen = ( int ) SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) 0 );
+   char * cString;
+
+   if( iLen > 0 && NULL != ( cString = ( char * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+   {
+      SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
+      hb_retclen_buffer( cString, iLen );
+   }
+   else
+   {
+      hb_retc_null();
+   }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXGETITEMCOUNT )          /* FUNCTION ComboboxGetItemCount( hWnd ) -> nCount */
 {
    hb_retnl( SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXGETALLITEMS )          /* FUNCTION ComboboxGetAllItems( hWnd ) -> aItems */
+{
+   int iCount, i, iLen;
+   char * cString;
+
+   iCount = SendMessage( HWNDparam( 1 ), CB_GETCOUNT, 0, 0 );
+   if( ( iCount == CB_ERR ) || ( iCount < 1 ) )
+   {
+      hb_reta( 0 );
+   }
+   else
+   {
+      hb_reta( iCount );
+
+      for( i = 1; i <= iCount; i++ )
+      {
+         iLen = SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) ( i - 1 ), ( LPARAM ) 0 );
+
+         if( iLen > 0 && NULL != ( cString = ( char * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+         {
+            SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) ( i - 1 ), ( LPARAM ) cString );
+            HB_STORC( cString, -1, i );
+         }
+         else
+         {
+            HB_STORC( "", -1, i );
+         }
+         
+      }
+   }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1416,6 +1460,12 @@ HB_FUNC( COMBOBOXFINDSTRINGEXACT )          /* FUNCTION ComboboxFindStringExact(
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( COMBOBOXSELECTSTRING )          /* FUNCTION ComboboxSelectString( hWnd, cSearch ) -> nPos */
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_SELECTSTRING, ( WPARAM ) -1, ( LPARAM ) hb_parc( 2 ) ) + 1 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXGETLISTHWND )          /* FUNCTION ComboboxGetListHWND( hWnd ) -> hWnd */
 {
    COMBOBOXINFO info;
@@ -1670,3 +1720,65 @@ HB_FUNC( INITEDITCOMBO )          /* FUNCTION InitEditCombo( hWnd ) -> NIL */
 }
 
 #pragma ENDDUMP
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+CLASS TComboArray
+
+   DATA aArray                    INIT {} HIDDEN
+   DATA cAlias__                  INIT NIL
+   DATA lBof                      INIT .F.
+   DATA nRecNo                    INIT 1
+
+   METHOD Array                   BLOCK { |Self, lNoClone| iif( lNoClone, ::aArray, AClone( ::aArray ) ) }
+   METHOD Eof                     BLOCK { |Self| ( ::RecNo > ::RecCount ) }
+   METHOD FieldGet                BLOCK { |Self| ::aArray[ ::nRecNo ] }
+   METHOD GoTo
+   METHOD New
+   METHOD RecCount                BLOCK { |Self| Len( ::aArray ) }
+   METHOD RecNo                   BLOCK { |Self| ::nRecNo }
+   METHOD SetOrder( nOrder )      INLINE nOrder
+   METHOD Skip
+
+   ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD New( aArray, lNoClone ) CLASS TComboArray
+
+   IF HB_ISARRAY( aArray )
+      IF HB_ISLOGICAL( lNoClone ) .AND. lNoClone
+         ::aArray := aArray
+      ELSE
+         ::aArray := AClone( aArray )
+      ENDIF
+   ENDIF
+
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD GoTo( nRecNo ) CLASS TComboArray
+
+   IF nRecNo < 1 .OR. nRecNo > Len( ::aArray )
+      ::nRecNo := Len( ::aArray ) + 1
+   ELSE
+      ::nRecNo := Int( nRecNo )
+   ENDIF
+   ::lBof := ( ::RecCount == 0 )
+
+   RETURN ::nRecNo
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Skip( nRecNo ) CLASS TComboArray
+
+   IF ! HB_ISNUMERIC( nRecNo )
+      nRecNo := 1
+   ENDIF
+   ::nRecNo := Int( ::RecNo + nRecNo )
+   ::lBof := .F.
+   IF ::nRecNo < 1
+      ::nRecNo := 1
+      ::lBof := .T.
+   ELSEIF ::nRecNo > ::RecCount()
+      ::nRecNo := ::RecCount() + 1
+   ENDIF
+
+   RETURN NIL

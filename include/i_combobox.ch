@@ -70,12 +70,12 @@ STANDARD VERSION
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
-      [ ITEMS <rows> ] ;
+      [ ITEMS <rows> [ <noclone: NOCLONE> ] ] ;
       [ ITEMSOURCE <itemsource> ] ;
       [ ITEMIMAGENUMBER <itemimagenumber> ] ;
       [ VALUE <value> ] ;
       [ VALUESOURCE <valuesource> ] ;
-      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] ] ;
+      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] [ <nohscroll: NOHSCROLL> ] ] ;
       [ FONT <f> ] ;
       [ SIZE <n> ] ;
       [ <bold: BOLD> ] ;
@@ -114,7 +114,6 @@ STANDARD VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
-      [ <hscroll: HSCROLL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <rows>, <value>, ;
@@ -129,7 +128,7 @@ STANDARD VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.hscroll.> )
+            <optheight>, <.nohscroll.>, <.noclone.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -140,12 +139,12 @@ SPLITBOX VERSION
       [ <dummy1: OF, PARENT> <parent> ] ;
       [ WIDTH <w> ] ;
       [ HEIGHT <h> ] ;
-      [ ITEMS <rows> ] ;
+      [ ITEMS <rows> [ <noclone: NOCLONE> ] ] ;
       [ ITEMSOURCE <itemsource> ] ;
       [ ITEMIMAGENUMBER <itemimagenumber> ] ;
       [ VALUE <value> ] ;
       [ VALUESOURCE <valuesource> ] ;
-      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] ] ;
+      [ <displayedit: DISPLAYEDIT> [ MAXLENGTH <max> ] [ <nohscroll: NOHSCROLL> ] ] ;
       [ FONT <f> ] ;
       [ SIZE <n> ] ;
       [ <bold: BOLD> ] ;
@@ -186,7 +185,6 @@ SPLITBOX VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
-      [ <hscroll: HSCROLL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <rows>, <value>, ;
@@ -201,7 +199,7 @@ SPLITBOX VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.hscroll.> )
+            <optheight>, <.nohscroll.>, <.noclone.> )
 
 #command SET COMBOREFRESH ON ;
    => ;
