@@ -12,6 +12,109 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-20 18:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-11-20 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.ch
+     - Unneded REQUEST.
+     * HB_GT_GUI_DEFAULT is requested only if _OOHG_CONSOLEMODE_
+       constant is not defined at runtime. This constant must be
+       defined when OOHG libraries are build to avoid forcing
+       GTGUI as default GT for every app.
+
+2019-11-20 18:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_init.prg
+     - Unneded ANNOUNCE.
+
+2019-11-20 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+     ! Support for console mode.
+
+2019-11-20 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\buildapp.bat
+   * core\oohg.hbc
+     * Vars HG_HB* renamed as HG_HM*
+
+2019-11-20 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_005.txt
+   * core\compile.bat
+   * core\resources\CompileRes_mingw.bat
+     * References to files oohg_hb* changed to oohg_hm*
+
+2019-11-20 18:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     + Switch /V.
+     ! Define for console mode.
+     * Define for console mode is set for Harbour compiler only.
+     ! Libraries order.
+     ! Optional libraries.
+
+2019-11-20 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_MINGW.BAT
+     * Comment.
+     * Define for console mode is set for Harbour compiler only.
+     ! Libraries order.
+     ! Optional libraries.
+     * Use LIB_GUI instead of hardwired path.
+
+2019-11-20 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_misc.ch
+     + SET MIXEDMODE command.
+       It equals REQUEST HB_GET_WIN_DEFAULT.
+
+2019-11-20 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+   * core\source\common_make.bat
+     + _OOHG_CONSOLEMODE_ define.
+       This constant must be defined when building libraries
+       that include oohg.ch to avoid forcing the request of
+       HB_GET_GUI_DEFAULT on every app.
+
+2019-11-20 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimsc.c
+     ! Return value of function WAITRUN.
+     ! Casting.
+     ! Handle leaks.
+     + Functions WaitRunTerm and IsExeRunning.
+
+2019-11-20 17:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_combobox.ch
+     - Clause HSCROLL.
+     + Clause NOHSCROLL.
+     + Clause NOCLONE.
+       Set to .T. to allow the control to use the ITEMS array
+       without cloning it. Beware that the app may crash if
+       you mishandle the original array. Defaults to .F.
+   * core\include\i_altsyntax.ch
+     + Support for combobox clauses NOHSCROLL and NOCLONE.
+   * core\source\h_combobox.prg
+     * Parameter lHScroll of method Define replace by lNoHScroll.
+       Combo's horizontal text scrolling is now the default
+       behaviour. Add NOHSCROLL clause to get old behaviour.
+       INCOMPATIBLE.
+     - Data aRows from class TCombo.
+     + Data lNoClone to class TCombo.
+       Defaulfs to .F.
+     + Parameter lNoClose to method Define.
+     + Method GetItems to class TCombo.
+       Returns an array with all the items that are loaded in the
+       combobox. The array is build from the Windows' control.
+     + Method SelectString to class TCombo.
+       Searches the list for an item that begins with specified
+       string. If found, it's selected and copied to the display.
+     + Class TComboArray to handle ITEMS array as a database.
+     * Method ValueSource will now only return codeblocks.
+     * Methods Rows, Refresh, ReadData and DeleteAllItems were
+       adapted to work with class TComboArray.
+     * Removed length limit from function COMBOGETSTRING.
+     + Function COMBOBOXGETALLITEMS.
+     + Function COMBOBOXSELECTSTRING.
+
 2019-11-11 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.ch
      ! App is not ended after releasing MAIN window.
@@ -75,7 +178,7 @@
      ! _OOHG_Main is set to NIL when it's accessed without parameters.
 
 2019-11-04 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\include\i_combo.ch
+   * core\include\i_combobox.ch
      + Clause HSCROLL.
    * core\include\oohg.h
      + CBS_AUTOHSCROLL.
