@@ -67,10 +67,6 @@
 #define DOUBLE_QUOTATION_MARK '"'
 #define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
 
-#ifndef __XHARBOUR__
-   ANNOUNCE HB_GTSYS
-#endif
-
 STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 STATIC _OOHG_Language := NIL
 
