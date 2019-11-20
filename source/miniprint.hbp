@@ -22,7 +22,8 @@
 -i..\include
 
 # harbour compiler flags
--n -q0 -w3 -es2
+# this define is needed to handle GT_GUI in Harbour builds
+-n -q0 -w3 -es2 -D_OOHG_CONSOLEMODE_
 
 #alerts on exit
 -beep

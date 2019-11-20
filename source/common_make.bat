@@ -20,7 +20,8 @@ rem
 
 :HARBOUR_COMPILE
 
-   set HG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 %2
+   rem This define is needed to handle GT_GUI in Harbour builds
+   set HG_X_FLAGS=-i"%HG_HRB%\include;%HG_ROOT%\include" -n1 -w3 -gc0 -es2 -d_OOHG_CONSOLEMODE_ %2
    goto PRG_COMPILE
 
 :XHARBOUR_COMPILE
