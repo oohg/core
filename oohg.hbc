@@ -21,19 +21,21 @@ incpaths=${hb_curdir}
 # Multithread support
 mt=yes
 
+#Harbour flags
+prgflags=-n -q0 -w3 -es2
+
 # oohg libs
 libs=oohg hbprinter miniprint bostaurus
 
 # harbour libs
 libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbzebra hbhpdf hbmemio rddsql hbodbc sddodbc hbwin png xhb
+{HB30}libs=libhpdf
+{HB32}libs=libhpdf
+{HB34}libs=hpdf
 
 # additional harbour libs not autodetected by hbmk2
 # for example: to add librddads remove the # from the next line
 #libs=rddads
-
-{HG_HB30}libs=libhpdf
-{HG_HB32}libs=libhpdf
-{HG_HB34}libs=hpdf
 
 # optional libs
 #libs=socket mysqldll dll hbmysql rddleto
