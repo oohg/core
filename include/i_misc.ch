@@ -134,3 +134,9 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/bb762494(v=vs.85).aspx
 #define CSIDL_FLAG_CREATE             0x8000
 #define CSIDL_FLAG_DONT_VERIFY        0x4000
 #define CSIDL_FLAG_MASK               0xFF00
+
+/*---------------------------------------------------------------------------
+Add a console window
+---------------------------------------------------------------------------*/
+
+#xcommand SET MIXEDMODE => REQUEST HB_GT_WIN_DEFAULT
