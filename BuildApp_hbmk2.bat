@@ -42,15 +42,24 @@ rem
    set HG_NOLOG=NO
    set HG_RUNEXE=-run
    set HG_EXTRA=
+   set HG_COMP_TYPE=STD
 
 :LOOP_START
 
-   if    "%2" == ""    goto LOOP_END
-   if /I "%2" == "/SL" goto SUPPRESS_LOG
-   if /I "%2" == "-SL" goto SUPPRESS_LOG
-   if /I "%2" == "-NR" goto SUPPRESS_RUN
-   if /I "%2" == "/NR" goto SUPPRESS_RUN
+   if    "%2" == ""       goto LOOP_END
+   if /I "%2" == "/SL"    goto SUPPRESS_LOG
+   if /I "%2" == "-SL"    goto SUPPRESS_LOG
+   if /I "%2" == "-NR"    goto SUPPRESS_RUN
+   if /I "%2" == "/NR"    goto SUPPRESS_RUN
+   if /I "%2" == "-GTWIN" goto SW_CONSOLE
    set HG_EXTRA=%HG_EXTRA% %2
+   shift
+   goto LOOP_START
+
+:SW_CONSOLE
+
+   set HG_COMP_TYPE=CONSOLE
+   set HG_EXTRA=%HG_EXTRA% -D_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
@@ -67,6 +76,9 @@ rem
    goto LOOP_START
 
 :LOOP_END
+
+   if     "%HG_COMP_TYPE%" == "CONSOLE" set HG_EXTRA=-GTWIN %HG_EXTRA%
+   if not "%HG_COMP_TYPE%" == "CONSOLE" set HG_EXTRA=-GTGUI %HG_EXTRA%
 
    rem *** Process Resource File ***
    echo Compiling %HG_FILE% ...
