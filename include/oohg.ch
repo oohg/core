@@ -135,9 +135,15 @@
 
 #ifndef __XHARBOUR__
 
+/*
+This constant must be defined when building libraries that
+include oohg.ch to avoid forcing the request on every app.
+*/
+#ifndef _OOHG_CONSOLEMODE_
 REQUEST HB_GT_GUI_DEFAULT
+#endif
+
 REQUEST DBFNTX, DBFDBT
-REQUEST HB_GTSYS
 
 #endif
 
