@@ -91,9 +91,10 @@
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <pnwidth> ] ;
       [ FILLCOLOR <fillrgb> ] ;
+      [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
-            <pnwidth>, [<fillrgb>] )
+            <pnwidth>, [<fillrgb>], [<.transparent.>] )
 
 #xcommand DRAW ROUNDRECTANGLE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -102,18 +103,20 @@
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <pnwidth> ] ;
       [ FILLCOLOR <fillrgb> ] ;
+      [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawRoundRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <width>, ;
-            <height>, [<penrgb>], <pnwidth>, [<fillrgb>] )
+            <height>, [<penrgb>], <pnwidth>, [<fillrgb>], [<.transparent.>] )
 
 #xcommand DRAW ELLIPSE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <pnwidth> ] ;
       [ FILLCOLOR <fillrgb> ] ;
+      [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawEllipse( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
-            <pnwidth>, [<fillrgb>] )
+            <pnwidth>, [<fillrgb>], [<.transparent.>] )
 
 #xcommand DRAW ARC IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -132,9 +135,10 @@
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <pnwidth> ] ;
       [ FILLCOLOR <fillrgb> ] ;
+      [ <transparent: TRANSPARENT> ] ;
    => ;
    DrawPie( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
-         <rrow1>, <rcol1>, [<penrgb>], <pnwidth>, [<fillrgb>] )
+         <rrow1>, <rcol1>, [<penrgb>], <pnwidth>, [<fillrgb>], [<.transparent.>] )
 
 /*
  * POINTS must be specified using this syntax:
@@ -145,9 +149,10 @@
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <penwidth> ] ;
       [ FILLCOLOR <fillrgb> ] ;
+      [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawPolygon( <(windowname)>, [<pointsarr>], [<penrgb>], ;
-            <penwidth>, [<fillrgb>] )
+            <penwidth>, [<fillrgb>], [<.transparent.>] )
 
 #xcommand DRAW POLYBEZIER IN WINDOW <windowname> ;
       POINTS <pointsarr> ;

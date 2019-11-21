@@ -399,6 +399,7 @@ struct _OOHG_GraphData {
    int  penwidth;
    COLORREF fillrgb;
    BOOL fill;
+   BOOL usenull;
    int  top2;
    int  left2;
    int  bottom2;
@@ -433,6 +434,10 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData * pData )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
+         else if( pData->usenull )
+         {
+            hbrush = GetStockObject( NULL_BRUSH );
+         }
          else
          {
             hbrush = GetSysColorBrush( COLOR_WINDOW );
@@ -452,6 +457,10 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData * pData )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
+         else if( pData->usenull )
+         {
+            hbrush = GetStockObject( NULL_BRUSH );
+         }
          else
          {
             hbrush = GetSysColorBrush( COLOR_WINDOW );
@@ -470,6 +479,10 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData * pData )
          if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else if( pData->usenull )
+         {
+            hbrush = GetStockObject( NULL_BRUSH );
          }
          else
          {
@@ -497,6 +510,10 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData * pData )
          if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else if( pData->usenull )
+         {
+            hbrush = GetStockObject( NULL_BRUSH );
          }
          else
          {
@@ -527,6 +544,10 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData * pData )
          if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
+         }
+         else if( pData->usenull )
+         {
+            hbrush = GetStockObject( NULL_BRUSH );
          }
          else
          {
@@ -652,7 +673,7 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )
 }
 
 HB_FUNC( _OOHG_NEWGRAPHCOMMAND ) // ( hWnd, nType, top, left, bottom, right, penrgb, penwidth, fillrgb, lFill,
-                                 //   top2, left2, bottom2, right2, width, height )
+                                 //   top2, left2, bottom2, right2, width, height, usenull )
 {
    struct _OOHG_GraphData pStruct, * pData;
    HWND hWnd;
@@ -705,6 +726,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND ) // ( hWnd, nType, top, left, bottom, right, pen
    pData->right2   = hb_parni( 14 );
    pData->width    = hb_parni( 15 );
    pData->height   = hb_parni( 16 );
+   pData->usenull  = hb_parl( 17 );
 
    hWnd = HWNDparam( 1 );
    if( ValidHandler( hWnd ) )

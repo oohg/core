@@ -108,10 +108,10 @@ Function DrawLine( window, row, col, row1, col1, penrgb, penwidth )
    Return Nil
 
 
-Function DrawRect( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
+Function DrawRect( window, row, col, row1, col1, penrgb, penwidth, fillrgb, transparent )
 
    Local oWnd := GetFormObject( window )
-   Local fill
+   Local fill, usenullbrush
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -123,8 +123,10 @@ Function DrawRect( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
       If ValType( fillrgb ) == "U"
          fillrgb := {255, 255, 255}
          fill := .F.
+         usenullbrush := ( HB_ISLOGICAL( transparent ) .AND. transparent )
       Else
          fill := .T.
+         usenullbrush := .F.
       EndIf
       /*
       rectdraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill)
@@ -132,15 +134,15 @@ Function DrawRect( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
       aAdd ( oWnd:GraphTasks, { || rectdraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill) } )
       */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
-      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 2, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
+      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 2, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, , , , , , , usenullbrush ) )
    EndIf
 
    Return Nil
 
-Function DrawRoundRect( window, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb )
+Function DrawRoundRect( window, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb, transparent )
 
    Local oWnd := GetFormObject( window )
-   Local fill
+   Local fill, usenullbrush
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -151,9 +153,10 @@ Function DrawRoundRect( window, row, col, row1, col1, width, height, penrgb, pen
       EndIf
       If ValType( fillrgb ) == "U"
          fillrgb := {255, 255, 255}
-         fill := .F.
+         usenullbrush := ( HB_ISLOGICAL( transparent ) .AND. transparent )
       Else
          fill := .T.
+         usenullbrush := .F.
       EndIf
       /*
       roundrectdraw( oWnd:hWnd, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb, fill)
@@ -161,15 +164,15 @@ Function DrawRoundRect( window, row, col, row1, col1, width, height, penrgb, pen
       aAdd ( oWnd:GraphTasks, { || roundrectdraw( oWnd:hWnd, row, col, row1, col1, width, height, penrgb, penwidth, fillrgb, fill) } )
       */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
-      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 3, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, , , , , width, height ) )
+      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 3, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, , , , , width, height, usenullbrush ) )
    EndIf
 
    Return Nil
 
-Function DrawEllipse( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
+Function DrawEllipse( window, row, col, row1, col1, penrgb, penwidth, fillrgb, transparent )
 
    Local oWnd := GetFormObject( window )
-   Local fill
+   Local fill, usenullbrush
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -181,8 +184,10 @@ Function DrawEllipse( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
       If ValType( fillrgb ) == "U"
          fillrgb := {255, 255, 255}
          fill := .F.
+         usenullbrush := ( HB_ISLOGICAL( transparent ) .AND. transparent )
       Else
          fill := .T.
+         usenullbrush := .F.
       EndIf
       /*
       ellipsedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill)
@@ -190,7 +195,7 @@ Function DrawEllipse( window, row, col, row1, col1, penrgb, penwidth, fillrgb )
       aAdd ( oWnd:GraphTasks, { || ellipsedraw( oWnd:hWnd, row, col, row1, col1, penrgb, penwidth, fillrgb, fill) } )
       */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
-      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 4, row, col, row1, col1, penrgb, penwidth, fillrgb, fill ) )
+      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 4, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, , , , , , , usenullbrush ) )
    EndIf
 
    Return Nil
@@ -216,10 +221,10 @@ Function DrawArc( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb
 
    Return Nil
 
-Function DrawPie( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb )
+Function DrawPie( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb, transparent )
 
    Local oWnd := GetFormObject( window )
-   Local fill
+   Local fill, usenullbrush
 
    If oWnd:hWnd > 0
       If ValType( penrgb ) == "U"
@@ -231,8 +236,10 @@ Function DrawPie( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb
       If ValType( fillrgb ) == "U"
          fillrgb := {255, 255, 255}
          fill := .F.
+         usenullbrush := ( HB_ISLOGICAL( transparent ) .AND. transparent )
       Else
          fill := .T.
+         usenullbrush := .F.
       EndIf
       /*
       piedraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb, fill)
@@ -240,15 +247,15 @@ Function DrawPie( window, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb
       aAdd ( oWnd:GraphTasks, { || piedraw( oWnd:hWnd, row, col, row1, col1, rowr, colr, rowr1, colr1, penrgb, penwidth, fillrgb, fill) } )
       */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
-      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 6, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, rowr, colr, rowr1, colr1 ) )
+      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 6, row, col, row1, col1, penrgb, penwidth, fillrgb, fill, rowr, colr, rowr1, colr1, , , usenullbrush ) )
    EndIf
 
    Return Nil
 
-Function DrawPolygon( window, apoints, penrgb, penwidth, fillrgb )
+Function DrawPolygon( window, apoints, penrgb, penwidth, fillrgb, transparent )
 
    Local oWnd := GetFormObject( window )
-   Local fill
+   Local fill, usenullbrush
    Local xarr
    Local yarr
 
@@ -262,8 +269,10 @@ Function DrawPolygon( window, apoints, penrgb, penwidth, fillrgb )
       If ValType( fillrgb ) == "U"
          fillrgb := {255, 255, 255}
          fill := .F.
+         usenullbrush := ( HB_ISLOGICAL( transparent ) .AND. transparent )
       Else
          fill := .T.
+         usenullbrush := .F.
       EndIf
       xarr := Array( Len( apoints ) )
       yarr := Array( Len( apoints ) )
@@ -273,7 +282,7 @@ Function DrawPolygon( window, apoints, penrgb, penwidth, fillrgb )
       aAdd( oWnd:GraphTasks, {||polygondraw(oWnd:hWnd, xarr, yarr, penrgb, penwidth, fillrgb, fill)})
       */
       oWnd:GraphCommand := { | hWnd, aData | _OOHG_GraphCommand( hWnd, aData ) }
-      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 8, yarr, xarr, , , penrgb, penwidth, fillrgb, fill ) )
+      aAdd( oWnd:GraphData, _OOHG_NewGraphCommand( oWnd:hWnd, 8, yarr, xarr, , , penrgb, penwidth, fillrgb, fill, , , , , , , usenullbrush ) )
    EndIf
 
    Return Nil
