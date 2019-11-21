@@ -873,6 +873,7 @@ COMBOBOX CONTROL
 #define CBN_SELCHANGE                 1
 #define CBN_DROPDOWN                  7
 #define CBN_CLOSEUP                   8
+#define CBN_SELENDCANCEL              10
 
 /*---------------------------------------------------------------------------
 SPLITBOX, STATUSBAR AND TOOLBAR CONTROLS

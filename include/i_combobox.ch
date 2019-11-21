@@ -114,10 +114,12 @@ STANDARD VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
+      [ <NoTrans: NOLOADTRANSPARENT> ] ;
+      [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <rows>, <value>, ;
-            <f>, <n>, <tooltip>, <{changeprocedure}>, <h>,  <{gotfocus}>, ;
+            <f>, <n>, <tooltip>, <{changeprocedure}>, <h>, <{gotfocus}>, ;
             <{lostfocus}>, <{enter}>, <helpid>, <.invisible.>, <.notabstop.>, ;
             <.sort.>,<.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(itemsource)>, <(valuesource)>, <.displayedit.>, ;
@@ -128,7 +130,7 @@ STANDARD VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.nohscroll.>, <.noclone.> )
+            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -185,6 +187,8 @@ SPLITBOX VERSION
       [ SOURCEORDER <sourceorder> ] ;
       [ <dummy09: ONREFRESH, ON REFRESH> <refresh> ] ;
       [ SEARCHLAPSE <nLapse> ] ;
+      [ <NoTrans: NOLOADTRANSPARENT> ] ;
+      [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <rows>, <value>, ;
@@ -199,7 +203,7 @@ SPLITBOX VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.nohscroll.>, <.noclone.> )
+            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}> )
 
 #command SET COMBOREFRESH ON ;
    => ;

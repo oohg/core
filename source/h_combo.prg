@@ -87,6 +87,7 @@ CLASS TCombo FROM TLabel
    DATA nWidth                    INIT 120
    DATA oEditBox                  INIT NIL
    DATA oListBox                  INIT NIL
+   DATA OnCancel                  INIT NIL
    DATA OnListClose               INIT NIL
    DATA OnListDisplay             INIT NIL
    DATA OnRefresh                 INIT NIL
@@ -156,7 +157,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemImgNum, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight, ;
-               lNoHScroll, lNoClone ) CLASS TCombo
+               lNoHScroll, lNoClone, lNoTrans, bOnCancel ) CLASS TCombo
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
@@ -179,6 +180,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
    IF HB_ISNUMERIC( nLapse ) .AND. nLapse >= 0
       ::SearchLapse := nLapse
+   ENDIF
+   IF HB_ISLOGICAL( lNoTrans ) .AND. lNoTrans
+      ::ImageListColor := CLR_NONE
    ENDIF
 
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
@@ -278,6 +282,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ASSIGN ::OnEnter       VALUE uEnter                   TYPE "B"
    ASSIGN ::OnListDisplay VALUE onListDisplay            TYPE "B"
    ASSIGN ::OnListClose   VALUE onListClose              TYPE "B"
+   ASSIGN ::OnCancel      VALUE bOnCancel                TYPE "B"
 
    RETURN Self
 
@@ -796,6 +801,11 @@ METHOD Events_Command( wParam ) CLASS TCombo
       ENDIF
 
       ::DoChange()
+      RETURN NIL
+
+   ELSEIF Hi_wParam == CBN_SELENDCANCEL
+      ::cText := ""
+      ::DoEvent( ::OnCancel, "CANCEL" )
       RETURN NIL
 
    ELSEIF Hi_wParam == CBN_DROPDOWN

@@ -643,11 +643,11 @@ FRAME
 
 #xcommand ONDBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnDblClick := <dblclick>
 
 #xcommand ON DBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnDblClick := <dblclick>
 
 #xcommand ONHEADCLICK <aHeadClick> ;
    => ;
@@ -1259,7 +1259,7 @@ TEXT BOX
 
 #xcommand ACTION2 <action> ;
    => ;
-      _OOHG_ActiveControlAction2 := <{action}>
+      _OOHG_ActiveControlAction2 := <action>
 
 #xcommand ACTION2TT <tooltip> ;
    => ;
@@ -1283,11 +1283,11 @@ TEXT BOX
 
 #xcommand ONTEXTFILLED <ontextfilled> ;
    => ;
-      _OOHG_ActiveControlOnTextFilled := <{ontextfilled}>
+      _OOHG_ActiveControlOnTextFilled := <ontextfilled>
 
 #xcommand ON TEXTFILLED <ontextfilled> ;
    => ;
-      _OOHG_ActiveControlOnTextFilled := <{ontextfilled}>
+      _OOHG_ActiveControlOnTextFilled := <ontextfilled>
 
 #xcommand END TEXTBOX;
    => ;
@@ -1365,11 +1365,11 @@ MONTH CALENDAR
 
 #xcommand ON VIEWCHANGE <viewchange> ;
    => ;
-      _OOHG_ActiveControlDisplayChange := <{viewchange}>
+      _OOHG_ActiveControlDisplayChange := <viewchange>
 
 #xcommand ONVIEWCHANGE <viewchange> ;
    => ;
-      _OOHG_ActiveControlDisplayChange := <{viewchange}>
+      _OOHG_ActiveControlDisplayChange := <viewchange>
 
 #xcommand NOTODAY <notoday> ;
    => ;
@@ -1483,15 +1483,15 @@ BUTTON
 
 #xcommand ACTION <action> ;
    => ;
-      _OOHG_ActiveControlAction := <{action}>
+      _OOHG_ActiveControlAction := <action>
 
 #xcommand ONCLICK <action> ;
    => ;
-      _OOHG_ActiveControlAction := <{action}>
+      _OOHG_ActiveControlAction := <action>
 
 #xcommand ON CLICK <action> ;
    => ;
-      _OOHG_ActiveControlAction := <{action}>
+      _OOHG_ActiveControlAction := <action>
 
 #xcommand ITEMCOUNT <itemcount> ;
    => ;
@@ -1503,27 +1503,27 @@ BUTTON
 
 #xcommand ONMOUSEMOVE <onmousemove> ;
    => ;
-      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+      _OOHG_ActiveControlOnMouseMove := <onmousemove>
 
 #xcommand ON MOUSEMOVE <onmousemove> ;
    => ;
-      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+      _OOHG_ActiveControlOnMouseMove := <onmousemove>
 
 #xcommand ONGOTFOCUS <ongotfocus> ;
    => ;
-      _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>
+      _OOHG_ActiveControlOnGotFocus := <ongotfocus>
 
 #xcommand ON GOTFOCUS <ongotfocus> ;
    => ;
-      _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>
+      _OOHG_ActiveControlOnGotFocus := <ongotfocus>
 
 #xcommand ONLOSTFOCUS <onlostfocus> ;
    => ;
-      _OOHG_ActiveControlOnLostFocus := <{onlostfocus}>
+      _OOHG_ActiveControlOnLostFocus := <onlostfocus>
 
 #xcommand ON LOSTFOCUS <onlostfocus> ;
    => ;
-      _OOHG_ActiveControlOnLostFocus := <{onlostfocus}>
+      _OOHG_ActiveControlOnLostFocus := <onlostfocus>
 
 #xcommand PICTURE <picture> ;
    => ;
@@ -1787,27 +1787,27 @@ IMAGE
 
 #xcommand ONMCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnMClick := <{dblclick}>
+      _OOHG_ActiveControlOnMClick := <dblclick>
 
 #xcommand ON MCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnMClick := <{dblclick}>
+      _OOHG_ActiveControlOnMClick := <dblclick>
 
 #xcommand ONRDBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnRDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnRDblClick := <dblclick>
 
 #xcommand ON RDBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnRDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnRDblClick := <dblclick>
 
 #xcommand ONMDBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnMDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnMDblClick := <dblclick>
 
 #xcommand ON MDBLCLICK <dblclick> ;
    => ;
-      _OOHG_ActiveControlOnMDblClick := <{dblclick}>
+      _OOHG_ActiveControlOnMDblClick := <dblclick>
 
 #xcommand END IMAGE ;
    => ;
@@ -1911,19 +1911,19 @@ CHECKBOX
 
 #xcommand ONCHANGE <onchange> ;
    => ;
-      _OOHG_ActiveControlOnChange := <{onchange}>
+      _OOHG_ActiveControlOnChange := <onchange>
 
 #xcommand ON CHANGE <onchange> ;
    => ;
-      _OOHG_ActiveControlOnChange := <{onchange}>
+      _OOHG_ActiveControlOnChange := <onchange>
 
 #xcommand ON QUERYDATA <onquerydata> ;
    => ;
-      _OOHG_ActiveControlOnQueryData := <{onquerydata}>
+      _OOHG_ActiveControlOnQueryData := <onquerydata>
 
 #xcommand ONQUERYDATA <onquerydata> ;
    => ;
-      _OOHG_ActiveControlOnQueryData := <{onquerydata}>
+      _OOHG_ActiveControlOnQueryData := <onquerydata>
 
 #xcommand END CHECKBOX ;
    => ;
@@ -2087,7 +2087,9 @@ COMBOBOX
       _OOHG_ActiveControlEditHeight        := NIL  ;;
       _OOHG_ActiveControlOptionsHeight     := NIL  ;;
       _OOHG_ActiveControlNoHScroll         := .F.  ;;
-      _OOHG_ActiveControlNoClone           := .F.
+      _OOHG_ActiveControlNoClone           := .F.  ;;
+      _OOHG_ActiveControlNoLoadTransparent := .F.  ;;
+      _OOHG_ActiveControlCancel            := NIL
 
 #xcommand NOCLONE <noclone> ;
    => ;
@@ -2119,11 +2121,11 @@ COMBOBOX
 
 #xcommand IMAGESOURCE <imagesource> ;
    => ;
-      _OOHG_ActiveControlImageSource := <{imagesource}>
+      _OOHG_ActiveControlImageSource := <imagesource>
 
 #xcommand ITEMIMAGENUMBER <itemimagenumber> ;
    => ;
-      _OOHG_ActiveControlItemImageNumber := <{itemimagenumber}>
+      _OOHG_ActiveControlItemImageNumber := <itemimagenumber>
 
 #xcommand LISTWIDTH <listwidth> ;
    => ;
@@ -2139,11 +2141,11 @@ COMBOBOX
 
 #xcommand ON DISPLAYCHANGE <displaychange> ;
    => ;
-      _OOHG_ActiveControlDisplayChange := <{displaychange}>
+      _OOHG_ActiveControlDisplayChange := <displaychange>
 
 #xcommand ONDISPLAYCHANGE <displaychange> ;
    => ;
-      _OOHG_ActiveControlDisplayChange := <{displaychange}>
+      _OOHG_ActiveControlDisplayChange := <displaychange>
 
 #xcommand ITEM <aRows> ;
    => ;
@@ -2155,27 +2157,27 @@ COMBOBOX
 
 #xcommand ONENTER <enter> ;
    => ;
-      _OOHG_ActiveControlOnEnter := <{enter}>
+      _OOHG_ActiveControlOnEnter := <enter>
 
 #xcommand ON ENTER <enter> ;
    => ;
-      _OOHG_ActiveControlOnEnter := <{enter}>
+      _OOHG_ActiveControlOnEnter := <enter>
 
 #xcommand ONLISTDISPLAY <enter> ;
    => ;
-      _OOHG_ActiveControlOnListDisplay := <{enter}>
+      _OOHG_ActiveControlOnListDisplay := <enter>
 
 #xcommand ON LISTDISPLAY <enter> ;
    => ;
-      _OOHG_ActiveControlOnListDisplay := <{enter}>
+      _OOHG_ActiveControlOnListDisplay := <enter>
 
 #xcommand ONLISTCLOSE <enter> ;
    => ;
-      _OOHG_ActiveControlOnListClose := <{enter}>
+      _OOHG_ActiveControlOnListClose := <enter>
 
 #xcommand ON LISTCLOSE <enter> ;
    => ;
-      _OOHG_ActiveControlOnListClose := <{enter}>
+      _OOHG_ActiveControlOnListClose := <enter>
 
 #xcommand FIRSTITEM <firstitem> ;
    => ;
@@ -2187,11 +2189,19 @@ COMBOBOX
 
 #xcommand ONREFRESH <refresh> ;
    => ;
-      _OOHG_ActiveControlOnRefresh := <{refresh}>
+      _OOHG_ActiveControlOnRefresh := <refresh>
 
 #xcommand ON REFRESH <refresh> ;
    => ;
-      _OOHG_ActiveControlOnRefresh := <{refresh}>
+      _OOHG_ActiveControlOnRefresh := <refresh>
+
+#xcommand ONCANCEL <cancel> ;
+   => ;
+      _OOHG_ActiveControlCancel := <cancel>
+
+#xcommand ON CANCEL <cancel> ;
+   => ;
+      _OOHG_ActiveControlCancel := <cancel>
 
 #xcommand END COMBOBOX ;
    => ;
@@ -2249,7 +2259,9 @@ COMBOBOX
             _OOHG_ActiveControlEditHeight, ;
             _OOHG_ActiveControlOptionsHeight, ;
             _OOHG_ActiveControlNoHScroll, ;
-            _OOHG_ActiveControlNoClone )
+            _OOHG_ActiveControlNoClone, ;
+            _OOHG_ActiveControlNoLoadTransparent, ;
+            _OOHG_ActiveControlCancel )
 
 /*---------------------------------------------------------------------------
 DATEPICKER
@@ -2488,11 +2500,11 @@ RICH EDIT BOX
 
 #xcommand ONSELCHANGE <onselchange> ;
    => ;
-      _OOHG_ActiveControlOnSelChange := <{onselchange}>
+      _OOHG_ActiveControlOnSelChange := <onselchange>
 
 #xcommand ON SELCHANGE <onselchange> ;
    => ;
-      _OOHG_ActiveControlOnSelChange := <{onselchange}>
+      _OOHG_ActiveControlOnSelChange := <onselchange>
 
 #xcommand PLAINTEXT <plain> ;
    => ;
@@ -2835,11 +2847,11 @@ GRID
 
 #xcommand ONBEFOREINSERT <beforeinsert> ;
    => ;
-      _OOHG_ActiveControlOnBeforeInsert := <{beforeinsert}>
+      _OOHG_ActiveControlOnBeforeInsert := <beforeinsert>
 
 #xcommand ON BEFOREINSERT <beforeinsert> ;
    => ;
-      _OOHG_ActiveControlOnBeforeInsert := <{beforeinsert}>
+      _OOHG_ActiveControlOnBeforeInsert := <beforeinsert>
 
 #xcommand ONHEADDBLCLICK <aHeadDblClick> ;
    => ;
@@ -2851,11 +2863,11 @@ GRID
 
 #xcommand ONCHECKCHANGE <checkchange> ;
    => ;
-      _OOHG_ActiveControlOnCheckChange := <{checkchange}>
+      _OOHG_ActiveControlOnCheckChange := <checkchange>
 
 #xcommand ON CHECKCHANGE <checkchange> ;
    => ;
-      _OOHG_ActiveControlOnCheckChange := <{checkchange}>
+      _OOHG_ActiveControlOnCheckChange := <checkchange>
 
 #xcommand PAINTLEFTMARGIN <paintleftmargin> ;
    => ;
@@ -2879,23 +2891,23 @@ GRID
 
 #xcommand BEFORECOLMOVE <bBefMov> ;
    => ;
-      _OOHG_ActiveControlBeforeColMove := <{bBefMov}>
+      _OOHG_ActiveControlBeforeColMove := <bBefMov>
 
 #xcommand AFTERCOLMOVE <bAftMov> ;
    => ;
-      _OOHG_ActiveControlAfterColMove := <{bAftMov}>
+      _OOHG_ActiveControlAfterColMove := <bAftMov>
 
 #xcommand BEFORECOLSIZE <bBefSiz> ;
    => ;
-      _OOHG_ActiveControlBeforeColSize := <{bBefSiz}>
+      _OOHG_ActiveControlBeforeColSize := <bBefSiz>
 
 #xcommand AFTERCOLSIZE <bAftSiz> ;
    => ;
-      _OOHG_ActiveControlAfterColSize := <{bAftSiz}>
+      _OOHG_ActiveControlAfterColSize := <bAftSiz>
 
 #xcommand BEFOREAUTOFIT <bBefAut> ;
    => ;
-      _OOHG_ActiveControlBeforeAutoFit := <{bBefAut}>
+      _OOHG_ActiveControlBeforeAutoFit := <bBefAut>
 
 #xcommand EDITLIKEEXCEL <excel> ;
    => ;
@@ -2919,11 +2931,11 @@ GRID
 
 #xcommand ONHEADRCLICK <bheadrclick> ;
    => ;
-      _OOHG_ActiveControlOnHeaderRClick := <{bheadrclick}>
+      _OOHG_ActiveControlOnHeaderRClick := <bheadrclick>
 
 #xcommand ON HEADRCLICK <bheadrclick> ;
    => ;
-      _OOHG_ActiveControlOnHeaderRClick := <{bheadrclick}>
+      _OOHG_ActiveControlOnHeaderRClick := <bheadrclick>
 
 #xcommand NOCLICKONCHECKBOX <noclick> ;
    => ;
@@ -2943,19 +2955,19 @@ GRID
 
 #xcommand ONRCLICK <action> ;
    => ;
-      _OOHG_ActiveControlOnRClick := <{action}>
+      _OOHG_ActiveControlOnRClick := <action>
 
 #xcommand ON RCLICK <action> ;
    => ;
-      _OOHG_ActiveControlOnRClick := <{action}>
+      _OOHG_ActiveControlOnRClick := <action>
 
 #xcommand ONINSERT <action> ;
    => ;
-      _OOHG_ActiveControlOnInsert := <{action}>
+      _OOHG_ActiveControlOnInsert := <action>
 
 #xcommand ON INSERT <action> ;
    => ;
-      _OOHG_ActiveControlOnInsert := <{action}>
+      _OOHG_ActiveControlOnInsert := <action>
 
 #xcommand EDITFIRSTVISIBLE <efv> ;
    => ;
@@ -2963,7 +2975,7 @@ GRID
 
 #xcommand EDITCELLVALUE <edtval> ;
    => ;
-      _OOHG_ActiveControlEditCellValue := <{edtval}>
+      _OOHG_ActiveControlEditCellValue := <edtval>
 
 #xcommand END GRID ;
    => ;
@@ -3166,7 +3178,7 @@ BROWSE
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
-      _OOHG_ActiveControlDeleteWhen := <{delwhen}>
+      _OOHG_ActiveControlDeleteWhen := <delwhen>
 
 #xcommand DELETEMSG <delmsg> ;
    => ;
@@ -3174,11 +3186,11 @@ BROWSE
 
 #xcommand ONDELETE <ondelete> ;
    => ;
-      _OOHG_ActiveControlOnDelete := <{ondelete}>
+      _OOHG_ActiveControlOnDelete := <ondelete>
 
 #xcommand ON DELETE <ondelete> ;
    => ;
-      _OOHG_ActiveControlOnDelete := <{ondelete}>
+      _OOHG_ActiveControlOnDelete := <ondelete>
 
 #xcommand COLUMNINFO <columninfo> ;
    => ;
@@ -3234,11 +3246,11 @@ BROWSE
 
 #xcommand ONROWREFRESH <block> ;
    => ;
-      _OOHG_ActiveControlOnTextFilled := <{block}>
+      _OOHG_ActiveControlOnTextFilled := <block>
 
 #xcommand ON ROWREFRESH <block> ;
    => ;
-      _OOHG_ActiveControlOnTextFilled := <{block}>
+      _OOHG_ActiveControlOnTextFilled := <block>
 
 #xcommand DEFAULTVALUES <aDefVal> ;
    => ;
@@ -3870,123 +3882,123 @@ SCROLLBAR
 
 #xcommand ONLINEUP <lineup> ;
    => ;
-      _OOHG_ActiveControlOnLineUp := <{lineup}>
+      _OOHG_ActiveControlOnLineUp := <lineup>
 
 #xcommand ON LINEUP <lineup> ;
    => ;
-      _OOHG_ActiveControlOnLineUp := <{lineup}>
+      _OOHG_ActiveControlOnLineUp := <lineup>
 
 #xcommand ONLINELEFT <lineup> ;
    => ;
-      _OOHG_ActiveControlOnLineUp := <{lineup}>
+      _OOHG_ActiveControlOnLineUp := <lineup>
 
 #xcommand ON LINELEFT <lineup> ;
    => ;
-      _OOHG_ActiveControlOnLineUp := <{lineup}>
+      _OOHG_ActiveControlOnLineUp := <lineup>
 
 #xcommand ONLINEDOWN <linedown> ;
    => ;
-      _OOHG_ActiveControlOnLineDown := <{linedown}>
+      _OOHG_ActiveControlOnLineDown := <linedown>
 
 #xcommand ON LINEDOWN <linedown> ;
    => ;
-      _OOHG_ActiveControlOnLineDown := <{linedown}>
+      _OOHG_ActiveControlOnLineDown := <linedown>
 
 #xcommand ONLINERIGHT <linedown> ;
    => ;
-      _OOHG_ActiveControlOnLineDown := <{linedown}>
+      _OOHG_ActiveControlOnLineDown := <linedown>
 
 #xcommand ON LINERIGHT <linedown> ;
    => ;
-      _OOHG_ActiveControlOnLineDown := <{linedown}>
+      _OOHG_ActiveControlOnLineDown := <linedown>
 
 #xcommand ONPAGEUP <pageup> ;
    => ;
-      _OOHG_ActiveControlOnPageUp := <{pageup}>
+      _OOHG_ActiveControlOnPageUp := <pageup>
 
 #xcommand ON PAGEUP <pageup> ;
    => ;
-      _OOHG_ActiveControlOnPageUp := <{pageup}>
+      _OOHG_ActiveControlOnPageUp := <pageup>
 
 #xcommand ONPAGELEFT <pageup> ;
    => ;
-      _OOHG_ActiveControlOnPageUp := <{pageup}>
+      _OOHG_ActiveControlOnPageUp := <pageup>
 
 #xcommand ON PAGELEFT <pageup> ;
    => ;
-      _OOHG_ActiveControlOnPageUp := <{pageup}>
+      _OOHG_ActiveControlOnPageUp := <pageup>
 
 #xcommand ONPAGEDOWN <pagedown> ;
    => ;
-      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+      _OOHG_ActiveControlOnPageDown := <pagedown>
 
 #xcommand ON PAGEDOWN <pagedown> ;
    => ;
-      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+      _OOHG_ActiveControlOnPageDown := <pagedown>
 
 #xcommand ONPAGERIGHT <pagedown> ;
    => ;
-      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+      _OOHG_ActiveControlOnPageDown := <pagedown>
 
 #xcommand ON PAGERIGHT <pagedown> ;
    => ;
-      _OOHG_ActiveControlOnPageDown := <{pagedown}>
+      _OOHG_ActiveControlOnPageDown := <pagedown>
 
 #xcommand ONTOP <top> ;
    => ;
-      _OOHG_ActiveControlOnTop := <{top}>
+      _OOHG_ActiveControlOnTop := <top>
 
 #xcommand ON TOP <top> ;
    => ;
-      _OOHG_ActiveControlOnTop := <{top}>
+      _OOHG_ActiveControlOnTop := <top>
 
 #xcommand ONLEFT <top> ;
    => ;
-      _OOHG_ActiveControlOnTop := <{top}>
+      _OOHG_ActiveControlOnTop := <top>
 
 #xcommand ON LEFT <top> ;
    => ;
-      _OOHG_ActiveControlOnTop := <{top}>
+      _OOHG_ActiveControlOnTop := <top>
 
 #xcommand ONBOTTOM <bottom> ;
    => ;
-      _OOHG_ActiveControlOnBottom := <{bottom}>
+      _OOHG_ActiveControlOnBottom := <bottom>
 
 #xcommand ON BOTTOM <bottom> ;
    => ;
-      _OOHG_ActiveControlOnBottom := <{bottom}>
+      _OOHG_ActiveControlOnBottom := <bottom>
 
 #xcommand ON RIGHT <bottom> ;
    => ;
-      _OOHG_ActiveControlOnBottom := <{bottom}>
+      _OOHG_ActiveControlOnBottom := <bottom>
 
 #xcommand ONRIGHT <bottom> ;
    => ;
-      _OOHG_ActiveControlOnBottom := <{bottom}>
+      _OOHG_ActiveControlOnBottom := <bottom>
 
 #xcommand ONTHUMB <thumb> ;
    => ;
-      _OOHG_ActiveControlOnThumb := <{thumb}>
+      _OOHG_ActiveControlOnThumb := <thumb>
 
 #xcommand ON THUMB <thumb> ;
    => ;
-      _OOHG_ActiveControlOnThumb := <{thumb}>
+      _OOHG_ActiveControlOnThumb := <thumb>
 
 #xcommand ONTRACK <track> ;
    => ;
-      _OOHG_ActiveControlOnTrack := <{track}>
+      _OOHG_ActiveControlOnTrack := <track>
 
 #xcommand ON TRACK <track> ;
    => ;
-      _OOHG_ActiveControlOnTrack := <{track}>
+      _OOHG_ActiveControlOnTrack := <track>
 
 #xcommand ON ENDTRACK <endtrack> ;
    => ;
-      _OOHG_ActiveControlOnEndTrack := <{endtrack}>
+      _OOHG_ActiveControlOnEndTrack := <endtrack>
 
 #xcommand ONENDTRACK <endtrack> ;
    => ;
-      _OOHG_ActiveControlOnEndTrack := <{endtrack}>
+      _OOHG_ActiveControlOnEndTrack := <endtrack>
 
 #xcommand ATTACHED <attached> ;
    => ;
