@@ -12,6 +12,20 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-20 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_graph.ch
+     + Clause TRANSPARENT to DRAW RECTANGLE, DRAW ROUNDRECTANGLE,
+       DRAW ELLIPSE, DRAW PIE and DRAW POLYGON commands.
+     ; To draw using a null brush ommit FILLCOLL and add TRANSPARENT.
+   * core\source\c_graph.c
+     + Member BOOL usenull to structure _OOHG_GraphData.
+     * _OOHG_GraphCommand will use a null brush to paint when
+       usenull member is TRUE.
+     + Parameter usenull to function _OOHG_NEWGRAPHCOMMAND.
+   * core\source\h_graph.prg
+     + Parameter transparent to functions DrawLine, DrawRect,
+       DrawRoundRect, DrawEllipse, DrawPie and DrawwPolygon.
+
 2019-11-20 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_label.prg
      % Small simplification.
