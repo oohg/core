@@ -175,7 +175,7 @@ HB_FUNC( GETSYSTEMFONT )   // No parameters
 
 /*
  * Borrowed from HGM Extended.
- * Based on the workds by Petr Chornyj, Claudio Soto, Viktor Szakats and Grigory Filatov.
+ * Based on the works of Petr Chornyj, Claudio Soto, Viktor Szakats and Grigory Filatov.
  * EnumFontsEx( [hDC], [cFontFamilyName], [nCharSet], [nPitch], [nFontType], [SortCodeBlock], [@aFontName] ) ->{ { cFontName, nCharSet, nPitchAndFamily, nFontType }, ... }
  */
 

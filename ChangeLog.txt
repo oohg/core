@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-22 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_font.c
+     * Comment.
+
 2019-11-21 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
      ! Codeblock is not evaluated because of bad result marker.
