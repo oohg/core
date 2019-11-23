@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-22 21:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+     ! .exe erasing when an extension is specified.
+
 2019-11-22 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_font.c
      * Comment.
