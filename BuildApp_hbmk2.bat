@@ -26,8 +26,8 @@ rem
 
 :CONTINUE
 
-   if exist %1.exe del %1.exe
-   if exist %1.exe goto ERROR4
+   if exist %HG_FILE%.exe del %HG_FILE%.exe
+   if exist %HG_FILE%.exe goto ERROR4
    if exist output.log del output.log
    if exist output.log goto ERROR5
 
