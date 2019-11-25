@@ -604,8 +604,8 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TForm
 
    // Show window
    IF ::lVisible
-      _OOHG_UserWindow := Self
       ::Show()
+      _OOHG_UserWindow := Self
    ENDIF
 
    ::ProcessInitProcedure()
@@ -2150,33 +2150,38 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
 
 METHOD Visible( lVisible ) CLASS TFormModal
 
-   If HB_IsLogical( lVisible )
-      If lVisible
-         // Find Previous window
-         If aScan( _OOHG_aFormhWnd, GetActiveWindow() ) > 0
-            ::oPrevWindow := GetFormObjectByHandle( GetActiveWindow() )
-         ElseIf _OOHG_UserWindow != NIL .AND. ascan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
+   LOCAL hActive
+
+   IF HB_ISLOGICAL( lVisible )
+      IF lVisible
+         // Find previous window
+         hActive := GetActiveWindow()
+         IF hActive == ::hWnd
+            // It's already set
+         ELSEIF AScan( _OOHG_aFormhWnd, hActive ) > 0
+            ::oPrevWindow := GetFormObjectByHandle( hActive )
+         ELSEIF _OOHG_UserWindow != NIL .AND. AScan( _OOHG_aFormhWnd, _OOHG_UserWindow:hWnd ) > 0
             ::oPrevWindow := _OOHG_UserWindow
-         ElseIf Len( _OOHG_ActiveModal ) != 0 .AND. ascan( _OOHG_aFormhWnd, ATAIL( _OOHG_ActiveModal ):hWnd ) > 0
-            ::oPrevWindow := ATAIL( _OOHG_ActiveModal )
-         ElseIf ::Parent != NIL .AND. ascan( _OOHG_aFormhWnd, ::Parent:hWnd ) > 0
-            ::oPrevWindow := _OOHG_UserWindow
-         ElseIf _OOHG_Main != nil
+         ELSEIF Len( _OOHG_ActiveModal ) != 0 .AND. AScan( _OOHG_aFormhWnd, ATail( _OOHG_ActiveModal ):hWnd ) > 0
+            ::oPrevWindow := ATail( _OOHG_ActiveModal )
+         ELSEIF ::Parent != NIL .AND. AScan( _OOHG_aFormhWnd, ::Parent:hWnd ) > 0
+            ::oPrevWindow := ::Parent
+         ELSEIF _OOHG_Main != NIL
             ::oPrevWindow := _OOHG_Main
-         Else
+         ELSE
             ::oPrevWindow := NIL
             // Not mandatory MAIN
             // NO PREVIOUS DETECTED!
-         EndIf
+         ENDIF
 
-         AEVAL( _OOHG_aFormObjects, { |o| if( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AADD( ::LockedForms, o ), DisableWindow( o:hWnd ) ), ) } )
+         AEval( _OOHG_aFormObjects, { |o| iif( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AAdd( ::LockedForms, o ), DisableWindow( o:hWnd ) ), ) } )
 
-         If Len( _OOHG_ActiveModal ) == 0  .OR. aTail( _OOHG_ActiveModal ):hWnd != ::hWnd
-           AADD( _OOHG_ActiveModal, Self )
-         EndIf
+         IF Len( _OOHG_ActiveModal ) == 0  .OR. ATail( _OOHG_ActiveModal ):hWnd != ::hWnd
+           AAdd( _OOHG_ActiveModal, Self )
+         ENDIF
          EnableWindow( ::hWnd )
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
    RETURN ( ::Super:Visible := lVisible )
 
