@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-11-24 21:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! Previous windows is not focused after releasing modal.
+
 2019-11-22 21:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\BuildApp_hbmk2.bat
      ! .exe erasing when an extension is specified.
@@ -166,7 +170,7 @@
      + Function COMBOBOXSELECTSTRING.
 
 2019-11-11 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\h_form.ch
+   * core\source\h_form.prg
      ! App is not ended after releasing MAIN window.
 
 2019-11-10 22:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
