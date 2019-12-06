@@ -199,7 +199,7 @@ CLASS TForm FROM TWindow
    METHOD ToolTipIcon( nIcon )            BLOCK { | Self, nIcon | ::oToolTip:Icon( nIcon ) }
    METHOD ToolTipTitle( cTitle )          BLOCK { | Self, cTitle | ::oToolTip:Title( cTitle ) }
 
-   METHOD GetWindowState()
+   METHOD GetWindowState
 
    METHOD SetActivationFocus
    METHOD ProcessInitProcedure
@@ -662,7 +662,6 @@ METHOD Release() CLASS TForm
          SendMessage( ::hWnd, WM_SYSCOMMAND, SC_CLOSE, 0 )
       ELSE
          _ReleaseWindowList( { Self } )
-         ::OnHideFocusManagement()
       ENDIF
    ENDIF
 
@@ -1335,7 +1334,7 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
     * FLASHW_CAPTION   Flash the window caption.
     * FLASHW_TRAY      Flash the taskbar button.
     * FLASHW_ALL       Flash both the window caption and the taskbar button.
-    * FLASHW_TIMER     Add to one the previous to flash continuously, until the FLASHW_STOP flag is set.
+    * FLASHW_TIMER     Add to one the of the previous values to flash continuously until the FLASHW_STOP flag is set.
     * FLASHW_STOP      Stop flashing. The system restores the window to its original state.
     * FLASHW_TIMERNOFG Add to FLASHW_TRAY to continuously flash the taskbar button until the window comes to the foreground.
     *
@@ -1785,10 +1784,7 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
       ELSE
          // Destroy window
          _ReleaseWindowList( { Self } )
-         ::OnHideFocusManagement()
       ENDIF
-
-      DestroyWindow( ::hWnd )
 
       RETURN 0
 
@@ -2166,12 +2162,10 @@ METHOD Visible( lVisible ) CLASS TFormModal
             ::oPrevWindow := ATail( _OOHG_ActiveModal )
          ELSEIF ::Parent != NIL .AND. AScan( _OOHG_aFormhWnd, ::Parent:hWnd ) > 0
             ::oPrevWindow := ::Parent
-         ELSEIF _OOHG_Main != NIL
+         ELSEIF _OOHG_Main != NIL .AND. _OOHG_Main:hWnd != ::hWnd
             ::oPrevWindow := _OOHG_Main
          ELSE
             ::oPrevWindow := NIL
-            // Not mandatory MAIN
-            // NO PREVIOUS DETECTED!
          ENDIF
 
          AEval( _OOHG_aFormObjects, { |o| iif( ! o:lInternal .AND. o:hWnd != ::hWnd .AND. IsWindowEnabled( o:hWnd ), ( AAdd( ::LockedForms, o ), DisableWindow( o:hWnd ) ), ) } )
@@ -2210,19 +2204,19 @@ METHOD Release() CLASS TFormModal
 
    Return ::Super:Release()
 
+// ver que pasa si una modal crea otra modal
+
 METHOD OnHideFocusManagement() CLASS TFormModal
 
    // Re-enables locked forms
-   AEVAL( ::LockedForms, { |o| IF( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), ) } )
+   AEval( ::LockedForms, { |o| iif( ValidHandler( o:hWnd ), EnableWindow( o:hWnd ), NIL) } )
    ::LockedForms := {}
 
-   If ::oPrevWindow == nil
-      // _OOHG_Main:SetFocus()
-   Else
+   IF ::oPrevWindow # NIL
       ::oPrevWindow:SetFocus()
-   EndIf
+   ENDIF
 
-   Return ::Super:OnHideFocusManagement()
+   RETURN ::Super:OnHideFocusManagement()
 
 
 CLASS TFormInternal FROM TForm
@@ -2937,13 +2931,11 @@ FUNCTION _ReleaseWindowList( aWindows )
             _ReleaseWindowList( oWnd:aChildPopUp )
             oWnd:aChildPopUp := {}
 
-            // Hide form while destroying controls
-            HideWindow( oWnd:hWnd )
-            oWnd:ReleaseAttached()
+            // Reassign focus
+            oWnd:OnHideFocusManagement()
 
             // Destroy form
             DestroyWindow( oWnd:hWnd )
-            oWnd:lReleased := .T.
          ENDIF
       NEXT i
    ELSE
@@ -2968,13 +2960,11 @@ FUNCTION _ReleaseWindowList( aWindows )
             // Prepare all controls to be destroyed
             oWnd:PreRelease()
 
-            // Hide form while destroying controls
-            HideWindow( oWnd:hWnd )
-            oWnd:ReleaseAttached()
+            // Reassign focus
+            oWnd:OnHideFocusManagement()
 
             // Destroy form
             DestroyWindow( oWnd:hWnd )
-            oWnd:lReleased := .T.
          ENDIF
       NEXT i
    ENDIF
