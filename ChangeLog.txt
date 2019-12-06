@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-12-05 22:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     + Support for clause AUTOSKIP to classes TGridControlTextBox
+       and TGridControlTextBoxAction.
+
 2019-12-05 21:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
      ! Main is obscured by a non-app window after releasing
