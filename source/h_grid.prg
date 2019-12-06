@@ -6197,9 +6197,9 @@ FUNCTION GridControlObject( aEditControl, oGrid )
       Case cControl == "CHECKBOX"
          oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
       Case cControl == "TEXTBOX"
-         oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ] )
+         oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ] )
       Case cControl == "TEXTBOXACTION"
-         oGridControl := TGridControlTextBoxAction():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ] )
+         oGridControl := TGridControlTextBoxAction():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ], aEdit2[ 12 ] )
       Case cControl == "IMAGELIST"
          oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ] )
       Case cControl == "IMAGEDATA"
@@ -6479,6 +6479,7 @@ CLASS TGridControlTextBox FROM TGridControl
    DATA cMask                     INIT ""
    DATA cType                     INIT ""
    DATA cEditKey                  INIT "F2"
+   DATA lAutoSkip                 INIT .F.
    DATA lForceModal               INIT .F.
    DATA Type                      INIT "TGRIDCONTROLTEXTBOX" READONLY
 
@@ -6492,9 +6493,9 @@ CLASS TGridControlTextBox FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal}
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal, lAutoSkip}
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal ) CLASS TGridControlTextBox
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, lAutoSkip ) CLASS TGridControlTextBox
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -6541,7 +6542,8 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
       ::cEditKey := ::oGrid:cEditKey
    EndIf
 
-   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
+   ASSIGN ::lNoModal  VALUE lNoModal  TYPE "L"
+   ASSIGN ::lAutoSkip VALUE lAutoSkip TYPE "L"
 
    // TODO: use buttons with NOMODAL state
    If ::lButtons
@@ -6693,31 +6695,59 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    ElseIf ValType( uValue ) == "T"
       uValue := ::GridValue( uValue )
    EndIf
-   If ! Empty( ::cMask )
-      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+   IF ::lAutoSkip
+      If ! Empty( ::cMask )
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
+      ElseIf ::cType == "N"
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
+      ElseIf ::cType == "D"
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
       Else
-        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
       EndIf
-   ElseIf ::cType == "N"
-      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+   ELSE
+      If ! Empty( ::cMask )
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+         EndIf
+      ElseIf ::cType == "N"
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+         EndIf
+      ElseIf ::cType == "D"
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
+         EndIf
       Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+         If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
+         EndIf
       EndIf
-   ElseIf ::cType == "D"
-      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
-      Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
-      EndIf
-   Else
-      If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
-      Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
-      EndIf
-   EndIf
+   ENDIF
    If ::lButtons .OR. ( HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons )
       ::oControl:oButton1:TabIndex := 2
    EndIf
@@ -6777,9 +6807,9 @@ CLASS TGridControlTextBoxAction FROM TGridControlTextBox
 
 /*
 COLUMNCONTROLS syntax:
-{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2}
+{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip }
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2 ) CLASS TGridControlTextBoxAction
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip ) CLASS TGridControlTextBoxAction
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -6825,9 +6855,10 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel,
       ::cEditKey := ::oGrid:cEditKey
    EndIf
 
-   ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
-   ASSIGN ::bAction  VALUE bAction  TYPE "B"
-   ASSIGN ::bAction2 VALUE bAction2 TYPE "B"
+   ASSIGN ::lNoModal  VALUE lNoModal  TYPE "L"
+   ASSIGN ::bAction   VALUE bAction   TYPE "B"
+   ASSIGN ::bAction2  VALUE bAction2  TYPE "B"
+   ASSIGN ::lAutoSkip VALUE lAutoSkip TYPE "L"
 
    // TODO: use actions with NOMODAL state
    If HB_IsBlock( ::bAction ) .OR. HB_IsBlock( ::bAction2 )
@@ -6843,55 +6874,107 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    ElseIf ValType( uValue ) == "T"
       uValue := ::GridValue( uValue )
    EndIf
-   If ! Empty( ::cMask )
-      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
-      ElseIf HB_IsBlock( ::bAction )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
-      ElseIf HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
-      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+   IF ::lAutoSkip
+      If ! Empty( ::cMask )
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, } AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
+      ElseIf ::cType == "N"
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, } AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
+      ElseIf ::cType == "D"
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, } AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
       Else
-        @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, } AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk} AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos AUTOSKIP ON TEXTFILLED Eval( ::bOk, -1 )
+         EndIf
       EndIf
-   ElseIf ::cType == "N"
-      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
-      ElseIf HB_IsBlock( ::bAction )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
-      ElseIf HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
-      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+   ELSE
+      If ! Empty( ::cMask )
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow,nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue INPUTMASK ::cMask FOCUSEDPOS ::nOnFocusPos
+         EndIf
+      ElseIf ::cType == "N"
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+         EndIf
+      ElseIf ::cType == "D"
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
+         EndIf
       Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue NUMERIC FOCUSEDPOS ::nOnFocusPos
+         If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
+         ElseIf HB_IsBlock( ::bAction )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
+         ElseIf HB_IsBlock( ::bAction2 )
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
+         ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
+         Else
+           @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
+         EndIf
       EndIf
-   ElseIf ::cType == "D"
-      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
-      ElseIf HB_IsBlock( ::bAction )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
-      ElseIf HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
-      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
-      Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue DATE FOCUSEDPOS ::nOnFocusPos
-      EndIf
-   Else
-      If HB_IsBlock( ::bAction ) .AND. HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) ACTION2 EVAL( ::bAction2 ) IMAGE {::cImageCancel, ::cImageOk}
-      ElseIf HB_IsBlock( ::bAction )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bAction ) IMAGE {::cImageCancel, }
-      ElseIf HB_IsBlock( ::bAction2 )
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION2 EVAL( ::bAction2 ) IMAGE { , ::cImageOk}
-      ElseIf HB_IsObject( ::oGrid ) .AND. ::oGrid:lButtons
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos ACTION EVAL( ::bCancel ) ACTION2 EVAL( ::bOK, -1 ) IMAGE {::cImageCancel, ::cImageOk}
-      Else
-        @ nRow, nCol TEXTBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth HEIGHT nHeight VALUE uValue FOCUSEDPOS ::nOnFocusPos
-      EndIf
-   EndIf
+   ENDIF
    If HB_IsBlock( ::bAction )
       ::oControl:oButton1:TabIndex := 2
    ElseIf HB_IsBlock( ::bAction2 )
