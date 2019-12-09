@@ -96,11 +96,11 @@
       [ <vcntralign: VCENTERALIGN> ] ;
       [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ):Define( ;
-            <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
             <fontname>, <fontsize>, <.bold.>, <.border.>, <.clientedge.>, ;
-            <.hscroll.>, <.vscroll.>, <.transparent.>, [ <backcolor> ], ;
-            [ <fontcolor> ], <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
+            <.hscroll.>, <.vscroll.>, <.transparent.>, <backcolor>, ;
+            <fontcolor>, <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
             <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}> )
