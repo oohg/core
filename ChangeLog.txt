@@ -12,6 +12,16 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-12-09 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_color.ch
+     * CYAN color was renamed to LCYAN (light cyan).
+     + True CYAN color.
+     + Metro UI colors.
+
+2019-12-09 19:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_label.ch
+     - Unneeded brackets.
+
 2019-12-06 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
