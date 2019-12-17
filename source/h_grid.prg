@@ -5493,9 +5493,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 
    ::Value := { nRow, nCol }
 
-   ::lCalledFromClass := .T.
    lRet := ::Super:EditCell( ::nRowPos, ::nColPos, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F. )
-   ::lCalledFromClass := .F.
 
    If lRet
       // ::bPosition is set by TGridControl()
