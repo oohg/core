@@ -2866,17 +2866,17 @@
 2014-06-05 21:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * include\i_altsyntax.ch
     + Support for TRANSPARENT in DEFINE IMAGE.
-    * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+    * NOTRANSPARENT renamed as NOLOADTRANSPARENT.
   * include\i_button.ch
-    * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+    * NOTRANSPARENT renamed as NOLOADTRANSPARENT.
   * include\i_hmg_compat.ch
-    * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+    * NOTRANSPARENT renamed as NOLOADTRANSPARENT.
   * include\i_image.ch
-    * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+    * NOTRANSPARENT renamed as NOLOADTRANSPARENT.
     + TRANSPARENT.
     - Commented code.
   * include\i_picture.ch
-    * NOTRANPARENT renamed as NOLOADTRANSPARENT.
+    * NOTRANSPARENT renamed as NOLOADTRANSPARENT.
   * include\oohg.h
     + Define for s_aExcludeArea.
   * source\c_controlmisc.c
