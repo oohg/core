@@ -2606,7 +2606,7 @@ HB_FUNC( BT_BMP_GETINFO )    // ( hBitmap, Info, x, y )
 
 HB_FUNC( BT_BMP_CLONE )    // ( hBitmap, x1, y1, Width1, Height1 )
 {
-   HBITMAP hBitmap, hBitmap_New;
+   HBITMAP hBitmap, hBitmap_New, hOld1, hOld2;
    INT     y1, x1, Width1, Height1;
    HDC     memDC1, memDC2;
 
@@ -2617,14 +2617,18 @@ HB_FUNC( BT_BMP_CLONE )    // ( hBitmap, x1, y1, Width1, Height1 )
    Height1 = (INT)     hb_parni( 5 );
 
    memDC1 = CreateCompatibleDC( NULL );
-   SelectObject( memDC1, hBitmap );
+   hOld1 = SelectObject( memDC1, hBitmap );
 
    memDC2 = CreateCompatibleDC( NULL );
    hBitmap_New = bt_bmp_create_24bpp( Width1, Height1 );
-   SelectObject( memDC2, hBitmap_New );
+   hOld2 = SelectObject( memDC2, hBitmap_New );
 
    BitBlt( memDC2, 0, 0, Width1, Height1, memDC1, x1, y1, SRCCOPY );
+
+   SelectObject( memDC1, hOld1 );
    DeleteDC( memDC1 );
+
+   SelectObject( memDC2, hOld2 );
    DeleteDC( memDC2 );
 
    HB_RETNL( (LONG_PTR) hBitmap_New );
