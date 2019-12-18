@@ -68,7 +68,7 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TButton FROM TControl
 
-   DATA aImageMargin              INIT { 0, 0, 0, 0 }      // top, left, bottom, right
+   DATA aImageMargin              INIT { 6, 10, 6, 10 }    // top, left, bottom, right
    DATA aTextMargin               INIT { 0, 0, 0, 0 }      // top, left, bottom, right
    DATA AutoFit                   INIT .F.
    DATA cBuffer                   INIT ""
@@ -88,7 +88,7 @@ CLASS TButton FROM TControl
    DATA lNoTransparent            INIT .F.
    DATA lNoPrintOver              INIT .F.
    DATA lSolid                    INIT .F.
-   DATA nAlign                    INIT -1
+   DATA nAlign                    INIT BUTTON_IMAGELIST_ALIGN_LEFT
    DATA nHeight                   INIT 28
    DATA nTextAlign                INIT BS_CENTER + BS_VCENTER
    DATA nWidth                    INIT 100
@@ -100,6 +100,7 @@ CLASS TButton FROM TControl
    METHOD DefineImage
    METHOD Events_Notify
    METHOD HBitMap                 SETGET
+   METHOD ImageList               BLOCK { || NIL }
    METHOD ImageMargin             SETGET
    METHOD Picture                 SETGET
    METHOD Release
@@ -118,8 +119,8 @@ CLASS TButton FROM TControl
    +--------------------------------------------------------+  b
    |    top margin               |     top margin           |  u
    | l +-------------------+ r   |    +---------------+ r   |  t.
-   | e |                   | i   |  l |   text        | i   |
-   | f | IMAGESIZE {iw,ih} | g   |  e |   area        | g   |  h
+   | e | image             | i   |  l |   text        | i   |
+   | f | area              | g   |  e |   area        | g   |  h
    | t |                   | h   |  f |               | h   |  e
    |   |                   | t   |  t |               | t   |  i
    |   +-------------------+     |    +---------------+     |  g
@@ -129,59 +130,28 @@ CLASS TButton FROM TControl
    |                             |                          |  (H)
    +--------------------------------------------------------+
 
-Image painting, see function SETIMAGEXP:
+   Note that when themes are enabled the area for the content is reduced by a 3 pixel margin.
+   Note that when themes are not enabled or the painting is done by the OS then IMAGEMARGIN is ignored.
 
-   STRETCH:   proportionally scales the image to button's rect ( minus aImageMargin if lFitImg is .T.)
-   AUTOFIT:   scales the image to button's rect (minus aImageMargin if lFitImg is .T.). Proportion may be lost.
-   OTHERWISE: the image is painted without scaling. Clipping may occur if the margins are not zeroes.
+Image painting, see functionS SetImageXP and TButton_Notify_CustomDraw:
 
-   FITIMG:    reduces the size of the image area by the values defined by IMAGEMARGIN before drawing the image.
-              Clipping may occur if the resulting area is smaller than the image.
-   FITTXT:    the text is clipped into the text area.
-
+   The image is always loaded at its full size.
    The image is drawn centered at the image area.
    The image has precedence over the text thus, if there's no room left, the text is not shown.
    In such case, you can use NOPRINTOVER clause to displayed the text over the image.
 
-   AUTOFIT  IMAGESIZE  STRETCH  RESULT
-   .T.      .F.        .F.      Image is loaded using the dimensions of the button's clientarea.
-                                Image is painted without scaling.
-                                When ::lFitImg is .T. the area is reduced by ::aImageMargin margins.
+   IMAGESIZE: Button's size is adjusted to the image's size plus theme's margins.
+              STRETCH, AUTOFIT AND FITIMG are ignored.
+              Alignment is set to BUTTON_IMAGELIST_ALIGN_CENTER.
 
-   .T.      .T.        .T.      Image is loaded at its full size.
-                                Button's size is adjusted to the image's size.
-                                Image is proportionally scaled to best fit the button.
-                                When ::lFitImg is .T. the image area is reduced by ::aImageMargin margins.
+   FITIMG:    Sets ::lFitImg to .T.
 
-   .T.      .T.        .F.      Image is loaded at its full size.
-                                Button's size is adjusted to the image's size.
-                                Image is scaled to best fit the button.
-                                When ::lFitImg is .T. the image area is reduced by ::aImageMargin margins.
+   STRETCH:   Proportionally scales the image to button's rect ( minus aImageMargin if ::lFitImg is .T.)
+              Has precedence over AUTOFIT.
+   AUTOFIT:   Scales the image to button's rect (minus aImageMargin if ::lFitImg is .T.). Proportion may be lost.
+   NONE:      The image is painted without scaling.
 
-   .T.      .F.        .T.      Image is loaded at its full size.
-                                Image is proportionally scaled to best fit the button.
-                                When ::lFitImg is .T. the image area is reduced by ::aImageMargin margins.
-
-   .F.      .F.        .F.      Image is loaded at full size.
-                                Image is painted without scaling.
-                                When ::lFitImg is .T. the area is reduced by ::aImageMargin margins.
-
-   .F.      .T.        .F.      Image is loaded at its full size.
-                                Button's size is adjusted to the image's size.
-
-   .F.      .F.        .T.      Image is loaded at full size.
-                                Image is proportionally scaled to best fit the button's area.
-                                When ::lFitImg is .T. the area is reduced by ::aImageMargin margins.
-
-   .F.      .T.        .T.      Image is loaded at full size.
-                                Image is proportionally scaled to best fit the button's area.
-                                When ::lFitImg is .T. the area is reduced by ::aImageMargin margins.
-
-IMAGESIZE forces IMAGEMARGIN to { 0, 0, 0, 0 } and nAling to BUTTON_IMAGELIST_ALIGN_CENTER.
-
-The text is placed inside the text area according to TEXTALIGN clause, defaults to (DT_CENTER + DT_VCENTER).
-
-Transparency:
+Image transparency:
 
    ICO images:
       a. color depth 24 bpp + alpha channel, or
@@ -198,6 +168,12 @@ Transparency:
    JPG/JPEG/GIF images:
       a. whatever transparency is defined.
 
+Text painting, see function TButton_Notify_CustomDraw:
+
+   The text is placed inside the text area according to TEXTALIGN clause, defaults to ( DT_CENTER + DT_VCENTER ).
+   FITTXT: The text is clipped into the text area.
+   The image has precedence over the text thus, if there's no room left, the text is not shown.
+   In such case, you can use NOPRINTOVER clause to displayed the text over the image.
 */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -209,7 +185,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
           lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, ;
           lNoImgLst, lNoDestroy ) CLASS TButton
 
-   LOCAL nControlHandle, nStyle, lBitMap, i
+   LOCAL nControlHandle, nStyle, lBitMap, i, nAlign
 
    ASSIGN ::nCol           VALUE nCol         TYPE "N"
    ASSIGN ::nRow           VALUE nRow         TYPE "N"
@@ -244,7 +220,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
 
    IF HB_ISLOGICAL( lDrawBy )
       ::lLibDraw := lDrawBy
-   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. HB_ISARRAY( ::aTextMargin )
+   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. ValType( aTextMargin ) $ "AN"
       ::lLibDraw := .T.
    ELSE
       ::lLibDraw := _OOHG_UseLibraryDraw
@@ -323,40 +299,45 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
       uAlign := AllTrim( Upper( uAlign ) )
       DO CASE
       CASE "LEFT" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       CASE "RIGHT" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
+         nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
       CASE "BOTTOM" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
+         nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
       CASE "TOP" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_TOP
+         nAlign := BUTTON_IMAGELIST_ALIGN_TOP
       CASE "CENTER" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       ENDCASE
    ELSEIF ValType( uAlign ) == "N"
       DO CASE
       CASE BUTTON_IMAGELIST_ALIGN_LEFT == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       CASE BUTTON_IMAGELIST_ALIGN_RIGHT == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
+         nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
       CASE BUTTON_IMAGELIST_ALIGN_BOTTOM == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
+         nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
       CASE BUTTON_IMAGELIST_ALIGN_CENTER == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       CASE BUTTON_IMAGELIST_ALIGN_TOP == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_TOP
+         nAlign := BUTTON_IMAGELIST_ALIGN_TOP
       ENDCASE
    ENDIF
-   IF ::nAlign < 0
+   IF ! HB_ISNUMERIC( nAlign )
       IF Empty( ::Caption ) .OR. ::ImageSize
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       ELSE
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       ENDIF
    ENDIF
+   ::nAlign := nAlign
 
    IF ::ImageSize
-      ::aImageMargin := { 0, 0, 0, 0 }
+      IF ::lLibDraw .AND. ::IsVisualStyled
+         ::aImageMargin := ThemeMargins( ::hWnd )
+      ELSE
+         ::aImageMargin := { 0, 0, 0, 0 }
+      ENDIF
    ELSEIF HB_ISARRAY( aImageMargin )
       FOR i := 1 TO Min( 4, Len( aImageMargin ) )
          IF HB_ISNUMERIC( aImageMargin[ i ] )
@@ -366,7 +347,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
    ELSEIF HB_ISNUMERIC( aImageMargin )
       ::aImageMargin := { aImageMargin, aImageMargin, aImageMargin, aImageMargin }
    ELSEIF Empty( ::Caption )
-      ::aImageMargin := { 0, 0, 0, 0 }
+      IF ::lLibDraw .AND. ::IsVisualStyled
+         ::aImageMargin := ThemeMargins( ::hWnd )
+      ELSE
+         ::aImageMargin := { 0, 0, 0, 0 }
+      ENDIF
    ENDIF
 
    ::Picture := cImage
@@ -441,7 +426,7 @@ METHOD Picture( cPicture ) CLASS TButton
          nAttrib := LR_CREATEDIBSECTION
       ENDIF
 
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch, .F. )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F., ::lNoTransparent )
       IF ValidHandler( ::hImage )
          IF lReplace
             IF ! ::IsVisualStyled .OR. Len( ::Caption ) > 0 .OR. ! ::lNoImgLst
@@ -452,8 +437,8 @@ METHOD Picture( cPicture ) CLASS TButton
          ENDIF
          IF ValidHandler( ::hImage )
             IF ::ImageSize
-               ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-               ::nHeight := _OOHG_BitMapHeight( ::hImage )
+               ::nWidth  := _OOHG_BitmapWidth( ::hImage ) + ::aImageMargin[ 2 ] + ::aImageMargin[ 4 ]
+               ::nHeight := _OOHG_BitmapHeight( ::hImage ) + ::aImageMargin[ 1 ] + ::aImageMargin[ 3 ]
             ENDIF
          ELSE
             ::hImage := NIL
@@ -476,13 +461,13 @@ METHOD HBitMap( hBitMap ) CLASS TButton
 
       IF ValidHandler( hBitMap )
          IF ::lNoDestroy
-            ::hImage := _OOHG_CopyBitmap( hBitMap, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE )
+            ::hImage := _OOHG_CopyImage( hBitMap, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE )
          ELSE
             ::hImage := hBitMap
          ENDIF
          IF ::ImageSize
-            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-            ::nHeight := _OOHG_BitMapHeight( ::hImage )
+            ::nWidth  := _OOHG_BitmapWidth( ::hImage ) + ::aImageMargin[ 2 ] + ::aImageMargin[ 4 ]
+            ::nHeight := _OOHG_BitmapHeight( ::hImage ) + ::aImageMargin[ 1 ] + ::aImageMargin[ 3 ]
          ENDIF
       ELSE
          ::hImage := NIL
@@ -500,11 +485,11 @@ METHOD Buffer( cBuffer ) CLASS TButton
       ::cPicture := ""
       ::cBuffer := cBuffer
 
-      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, ::AutoFit .AND. ! ::ImageSize .AND. ! ::Stretch, ::lNoTransparent )
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F., ::lNoTransparent )
       IF ValidHandler( ::hImage )
          IF ::ImageSize
-            ::nWidth  := _OOHG_BitMapWidth( ::hImage )
-            ::nHeight := _OOHG_BitMapHeight( ::hImage )
+            ::nWidth  := _OOHG_BitmapWidth( ::hImage ) + ::aImageMargin[ 2 ] + ::aImageMargin[ 4 ]
+            ::nHeight := _OOHG_BitmapHeight( ::hImage ) + ::aImageMargin[ 1 ] + ::aImageMargin[ 3 ]
          ENDIF
       ELSE
          ::hImage := NIL
@@ -522,8 +507,6 @@ METHOD Value( uValue ) CLASS TButton
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint( lChange ) CLASS TButton
 
-   LOCAL aImageMargin
-
    IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
@@ -531,26 +514,12 @@ METHOD RePaint( lChange ) CLASS TButton
       ::AuxHandle := NIL
       ::TControl():SizePos()
       IF ::IsVisualStyled .AND. ( Len( ::Caption ) > 0 .OR. ! ::lNoImgLst )
-         IF ::nAlign < 0
-            IF Empty( ::Caption ) .OR. ::ImageSize
-               ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
-            ELSE
-               ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
-            ENDIF
-         ENDIF
-         IF ::ImageSize
-            aImageMargin := { 0, 0, 0, 0 }
-         ELSE
-            aImageMargin := ::aImageMargin
-         ENDIF
          IF HB_ISLOGICAL( lChange ) .AND. lChange
-            ::ImageList := SetImageXP( ::hWnd, ::hImage, ::nAlign, ::ImageBkClr, aImageMargin, ::Stretch, ::AutoFit, ::lFitImg )
+            SetImageXP( ::hWnd, ::hImage, ::nAlign, ::ImageBkClr, ::aImageMargin, ::Stretch, ::AutoFit, ::lFitImg, ::ImageSize )
          ENDIF
          ::ReDraw()
-      ELSEIF ::Stretch .OR. ::AutoFit
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, .F. )
       ELSE
-         SendMessage( ::hWnd, BM_SETIMAGE, IMAGE_BITMAP, ::hImage )
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoLoadTransparent )
       ENDIF
    ENDIF
 
@@ -571,7 +540,6 @@ METHOD Release() CLASS TButton
 
    DeleteObject( ::hImage )
    ClearImageXP( ::hWnd )
-   ::Imagelist := NIL
 
    RETURN ::Super:Release()
 
@@ -631,6 +599,10 @@ METHOD TextMargin( aMargins ) CLASS TButton
 #pragma BEGINDUMP
 
 #include "oohg.h"
+
+#ifndef TMT_CONTENTMARGINS
+   #define TMT_CONTENTMARGINS     0x0E12
+#endif
 
 #ifndef BCM_FIRST
    #define BCM_FIRST     0x1600
@@ -730,9 +702,9 @@ HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> NIL */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlign, uBackcolor, { nTop, nLeft, nBottom, nRight }, lStretch, lAutoFit, lFitImg ) -> hImageList */
+HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlign, uBackcolor, { nTop, nLeft, nBottom, nRight }, lStretch, lAutoFit, lFitImg, lImageSize ) -> NIL */
 {
-   HIMAGELIST himl;
+   HIMAGELIST himl = 0;
    BUTTON_IMAGELIST bi ;
    HBITMAP hBmp;
    HBITMAP hBmp2;
@@ -765,48 +737,113 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
       {
          clrColor = ( COLORREF ) hb_parnl( 4 );
       }
-      if( hb_parl( 8 ) )           // FITIMG
-      {
-         iTop    = HB_PARNI( 5, 1 );
-         iLeft   = HB_PARNI( 5, 2 );
-         iBottom = HB_PARNI( 5, 3 );
-         iRight  = HB_PARNI( 5, 4 );
-      }
       memset( &bm, 0, sizeof( bm ) );
       GetObject( hBmp, sizeof( bm ), &bm );
-      if( hb_parl( 6 ) )            // STRETCH, proportionally scales the image to button's rect ( minus aImageMargin if lFitImg is .T.)
+      if( hb_parl( 9 ) )   // IMAGESIZE
       {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
+         hBmp2 = CopyImage( hBmp, IMAGE_BITMAP, 0, 0, 0 );
       }
-      else if( hb_parl( 7 ) )      // AUTOFIT, scales the image to button's rect ( minus aImageMargin if lFitImg is .T.). Proportion may be lost.
+      else
       {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
-      }
-      else                          // the image is copied without scaling. Clipping may occur if the margins are not zeroes.
-      {
-         hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, bm.bmWidth, bm.bmHeight, FALSE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
+         if( hb_parl( 8 ) )   // FITIMG
+         {
+            iTop    = HB_PARNI( 5, 1 );
+            iLeft   = HB_PARNI( 5, 2 );
+            iBottom = HB_PARNI( 5, 3 );
+            iRight  = HB_PARNI( 5, 4 );
+         }
+         if( hb_parl( 6 ) )   // STRETCH
+         {
+            hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
+         }
+         else if( hb_parl( 7 ) )   // AUTOFIT
+         {
+            hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
+         }
+         else   // just copy
+         {
+            hBmp2 = _OOHG_CopyBitmap( hBmp, 0, 0, bm.bmWidth - iLeft - iRight, bm.bmHeight - iTop - iBottom );
+         }
       }
 
-      memset( &bm, 0, sizeof( bm ) );
-      GetObject( hBmp2, sizeof( bm ), &bm );
-      himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );
-      ImageList_AddMasked( himl, hBmp2, clrColor );
-      DeleteObject( hBmp2 );
+      if( hBmp2 )
+      {
+         memset( &bm, 0, sizeof( bm ) );
+         GetObject( hBmp2, sizeof( bm ), &bm );
+         himl = ImageList_Create( bm.bmWidth, bm.bmHeight, ILC_COLOR32 | ILC_MASK, 2, 2 );
+         ImageList_AddMasked( himl, hBmp2, clrColor );
+         DeleteObject( hBmp2 );
 
-      memset( &bi, 0, sizeof( bi ) );
-      bi.himl = himl;
-      bi.margin.top = HB_PARNI( 5, 1 );
-      bi.margin.left = HB_PARNI( 5, 2 );
-      bi.margin.bottom = HB_PARNI( 5, 3 );
-      bi.margin.right = HB_PARNI( 5, 4 );
-      bi.uAlign = hb_parni( 3 );
-      SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
-
-      // This handle must be explicitly released !!!
-      HB_RETNL( (LONG_PTR) himl );
+         memset( &bi, 0, sizeof( bi ) );
+         bi.himl = himl;
+         bi.margin.top = HB_PARNI( 5, 1 );
+         bi.margin.left = HB_PARNI( 5, 2 );
+         bi.margin.bottom = HB_PARNI( 5, 3 );
+         bi.margin.right = HB_PARNI( 5, 4 );
+         bi.uAlign = hb_parni( 3 );
+         SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
+      }
    }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( THEMEMARGINS )
+{
+   HTHEME hTheme;
+   MARGINS pMargins;
+   INT iLeft = 0, iRight = 0, iTop = 0, iBottom = 0;
+
+   if( _UxTheme_Init() )
+   {
+      hTheme = ( HTHEME ) ProcOpenThemeData( HWNDparam( 1 ), L"BUTTON" );
+      if( hTheme )
+      {
+         /* get max content margins, usually all are { 3, 3, 3, 3 } */
+
+         memset( &pMargins, 0, sizeof( MARGINS ) );
+         ProcGetThemeMargins( hTheme, NULL, BP_PUSHBUTTON, PBS_DEFAULTED, TMT_CONTENTMARGINS, NULL, &pMargins );
+         iLeft = max( iLeft, pMargins.cxLeftWidth );
+         iRight = max( iRight, pMargins.cxRightWidth );
+         iTop = max( iTop, pMargins.cyTopHeight );
+         iBottom = max( iBottom, pMargins.cyBottomHeight );
+
+         memset( &pMargins, 0, sizeof( MARGINS ) );
+         ProcGetThemeMargins( hTheme, NULL, BP_PUSHBUTTON, PBS_DISABLED, TMT_CONTENTMARGINS, NULL, &pMargins );
+         iLeft = max( iLeft, pMargins.cxLeftWidth );
+         iRight = max( iRight, pMargins.cxRightWidth );
+         iTop = max( iTop, pMargins.cyTopHeight );
+         iBottom = max( iBottom, pMargins.cyBottomHeight );
+
+         memset( &pMargins, 0, sizeof( MARGINS ) );
+         ProcGetThemeMargins( hTheme, NULL, BP_PUSHBUTTON, PBS_HOT, TMT_CONTENTMARGINS, NULL, &pMargins );
+         iLeft = max( iLeft, pMargins.cxLeftWidth );
+         iRight = max( iRight, pMargins.cxRightWidth );
+         iTop = max( iTop, pMargins.cyTopHeight );
+         iBottom = max( iBottom, pMargins.cyBottomHeight );
+
+         memset( &pMargins, 0, sizeof( MARGINS ) );
+         ProcGetThemeMargins( hTheme, NULL, BP_PUSHBUTTON, PBS_NORMAL, TMT_CONTENTMARGINS, NULL, &pMargins );
+         iLeft = max( iLeft, pMargins.cxLeftWidth );
+         iRight = max( iRight, pMargins.cxRightWidth );
+         iTop = max( iTop, pMargins.cyTopHeight );
+         iBottom = max( iBottom, pMargins.cyBottomHeight );
+
+         memset( &pMargins, 0, sizeof( MARGINS ) );
+         ProcGetThemeMargins( hTheme, NULL, BP_PUSHBUTTON, PBS_PRESSED, TMT_CONTENTMARGINS, NULL, &pMargins );
+         iLeft = max( iLeft, pMargins.cxLeftWidth );
+         iRight = max( iRight, pMargins.cxRightWidth );
+         iTop = max( iTop, pMargins.cyTopHeight );
+         iBottom = max( iBottom, pMargins.cyBottomHeight );
+      }
+   }
+
+   hb_reta( 4 );
+   HB_STORNI( iTop, -1, 1 );
+   HB_STORNI( iLeft, -1, 2 );
+   HB_STORNI( iBottom, -1, 3 );
+   HB_STORNI( iRight, -1, 4 );
+   return;
+}
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BOOL bSolid, LPCSTR cCaption, BOOL bNoPrintOver, BOOL bNoFocusRect, RECT * margin, BOOL bFitTxt )
 {
@@ -891,39 +928,11 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       memset( &bi, 0, sizeof( bi ) );
       SendMessage( pCustomDraw->hdr.hwndFrom, BCM_GETIMAGELIST, 0, (LPARAM) &bi );
 
+      rect = pCustomDraw->rc;
+
       if( bi.himl )
       {
          ImageList_GetIconSize( bi.himl, &dx, &dy );
-
-         if( ( pCustomDraw->rc.right - pCustomDraw->rc.left == dx ) && ( pCustomDraw->rc.bottom - pCustomDraw->rc.top == dy ) )
-         {
-            // ImageSize is .T.
-            rect.top    = pCustomDraw->rc.top;
-            rect.left   = pCustomDraw->rc.left;
-            rect.bottom = pCustomDraw->rc.bottom;
-            rect.right  = pCustomDraw->rc.right;
-         }
-         else if( ( bi.uAlign == BUTTON_IMAGELIST_ALIGN_LEFT ) || ( bi.uAlign == BUTTON_IMAGELIST_ALIGN_RIGHT ) )
-         {
-            rect.top    = pCustomDraw->rc.top;
-            rect.left   = content_rect.left;
-            rect.bottom = content_rect.bottom;
-            rect.right  = content_rect.right;
-         }
-         else if( bi.uAlign == BUTTON_IMAGELIST_ALIGN_CENTER )
-         {
-            rect.top    = content_rect.top;
-            rect.left   = content_rect.left;
-            rect.bottom = pCustomDraw->rc.bottom;
-            rect.right  = content_rect.right;
-         }
-         else
-         {
-            rect.top    = pCustomDraw->rc.top;
-            rect.left   = pCustomDraw->rc.left;
-            rect.bottom = content_rect.bottom;
-            rect.right  = pCustomDraw->rc.right;
-         }
 
          /* calculate the position of the image so it is drawn on left, right or centered (the default) as dictated by the style settings */
          w = rect.right - rect.left - bi.margin.right - bi.margin.left;
@@ -969,7 +978,7 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
             }
             else
             {
-               y = rect.top + (int) ( ( rect.bottom - rect.top - bi.margin.top - dy - bi.margin.bottom ) / 2 ) - 1;
+               y = rect.top + (int) ( ( rect.bottom - rect.top - bi.margin.top - dy - bi.margin.bottom ) / 2 ) + bi.margin.top;
             }
          }
 
@@ -977,13 +986,6 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
          {
             ImageList_DrawEx( bi.himl, 0, pCustomDraw->hdc, x, y, dx, dy, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
          }
-      }
-      else
-      {
-         rect.top    = content_rect.top;
-         rect.left   = content_rect.left;
-         rect.bottom = content_rect.bottom;
-         rect.right  = content_rect.right;
       }
 
       /* draw the caption */
@@ -1158,7 +1160,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
           lFlat, lNoHotLight, lSolid, uFontColor, aTextAlign, lNoPrintOver, aTextMargin, lFitTxt, lFitImg, ;
           lImgSize, lTransparent, lNoFocusRect, lNoImgLst ) CLASS TButtonCheck
 
-   LOCAL nControlHandle, nStyle, lBitMap, i
+   LOCAL nControlHandle, nStyle, lBitMap, i, nAlign
 
    ASSIGN ::nCol           VALUE nCol         TYPE "N"
    ASSIGN ::nRow           VALUE nRow         TYPE "N"
@@ -1191,8 +1193,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
 
    IF HB_ISLOGICAL( lDrawBy )
       ::lLibDraw := lDrawBy
-   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. HB_ISARRAY( ::aTextMargin )
+   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. ValType( aTextMargin ) $ "AN"
       ::lLibDraw := .T.
+   ELSE
+      ::lLibDraw := _OOHG_UseLibraryDraw
    ENDIF
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
@@ -1259,37 +1263,38 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
       uAlign := AllTrim( Upper( uAlign ) )
       DO CASE
       CASE "LEFT" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       CASE "RIGHT" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
+         nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
       CASE "BOTTOM" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
+         nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
       CASE "TOP" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_TOP
+         nAlign := BUTTON_IMAGELIST_ALIGN_TOP
       CASE "CENTER" == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       ENDCASE
    ELSEIF ValType( uAlign ) == "N"
       DO CASE
       CASE BUTTON_IMAGELIST_ALIGN_LEFT == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       CASE BUTTON_IMAGELIST_ALIGN_RIGHT == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
+         nAlign := BUTTON_IMAGELIST_ALIGN_RIGHT
       CASE BUTTON_IMAGELIST_ALIGN_BOTTOM == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
+         nAlign := BUTTON_IMAGELIST_ALIGN_BOTTOM
       CASE BUTTON_IMAGELIST_ALIGN_CENTER == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       CASE BUTTON_IMAGELIST_ALIGN_TOP == uAlign
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_TOP
+         nAlign := BUTTON_IMAGELIST_ALIGN_TOP
       ENDCASE
    ENDIF
-   IF ::nAlign < 0
+   IF ! HB_ISNUMERIC( nAlign )
       IF Empty( ::Caption ) .OR. ::ImageSize
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
+         nAlign := BUTTON_IMAGELIST_ALIGN_CENTER
       ELSE
-         ::nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
+         nAlign := BUTTON_IMAGELIST_ALIGN_LEFT
       ENDIF
    ENDIF
+   ::nAlign := nAlign
 
    IF ::ImageSize
       ::aImageMargin := { 0, 0, 0, 0 }

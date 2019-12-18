@@ -387,7 +387,7 @@ METHOD Copy( lAsDIB ) CLASS TPicture
    DEFAULT lAsDIB TO ! ::lNoDIBSection
    // Do not forget to call DeleteObject
 
-   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0 ) )
+   AAdd( ::aCopies, _OOHG_CopyImage( ::hImage, IMAGE_BITMAP, 0, 0, iif( lAsDib, LR_CREATEDIBSECTION, 0 ) ) )
 
    RETURN ATail( ::aCopies )
 

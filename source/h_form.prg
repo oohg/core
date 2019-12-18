@@ -1316,7 +1316,7 @@ METHOD BackImage( uBackImage ) CLASS TForm
          If ::lStretchBack
             hImageWork := _OOHG_ScaleImage( Self, ::hBackImage, ::ClientWidth, ::ClientHeight, .F., NIL, .F., 0, 0 )
          Else
-            hImageWork := _OOHG_CopyBitmap( ::hBackImage, 0, 0, LR_CREATEDIBSECTION )
+            hImageWork := _OOHG_CopyImage( ::hBackImage, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION )
          Endif
          ::BackBitmap := hImageWork
          DeleteObject( hImageWork )
@@ -2231,6 +2231,7 @@ CLASS TFormInternal FROM TForm
    METHOD SizePos
    METHOD Row       SETGET
    METHOD Col       SETGET
+   METHOD Center
 
    METHOD ContainerRow        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
    METHOD ContainerCol        BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
@@ -2339,6 +2340,12 @@ METHOD Row( nRow ) CLASS TFormInternal
    ENDIF
 
    RETURN ::nRow
+
+METHOD Center() CLASS TFormInternal
+
+   ::SizePos( Int( ::Parent:ClientHeight - ::Height ) / 2, Int( ::Parent:ClientWidth - ::Width ) / 2 )
+
+   RETURN NIL
 
 
 CLASS TFormSplit FROM TFormInternal

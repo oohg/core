@@ -1697,6 +1697,7 @@ static CALL_DRAWTHEMEPARENTBACKGROUND pProcDrawThemeParentBackground = NULL;
 static CALL_DRAWTHEMETEXT pProcDrawThemeText = NULL;
 static CALL_DRAWTHEMETEXTEX pProcDrawThemeTextEx = NULL;
 static CALL_GETTHEMEBACKGROUNDCONTENTRECT pProcGetThemeBackgroundContentRect = NULL;
+static CALL_GETTHEMEMARGINS pProcGetThemeMargins = NULL;
 static CALL_GETTHEMEPARTSIZE pProcGetThemePartSize = NULL;
 static CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT pProcIsThemeBackgroundPartiallyTransparent = NULL;
 static CALL_OPENTHEMEDATA pProcOpenThemeData = NULL;
@@ -1721,6 +1722,7 @@ HMODULE _UxTheme_Init( void )
          pProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) GetProcAddress( hDllUxTheme, "DrawThemeText" );
          pProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) GetProcAddress( hDllUxTheme, "DrawThemeTextEx" );
          pProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hDllUxTheme, "GetThemeBackgroundContentRect" );
+         pProcGetThemeMargins = ( CALL_GETTHEMEMARGINS ) GetProcAddress( hDllUxTheme, "GetThemeMargins" );
          pProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) GetProcAddress( hDllUxTheme, "GetThemePartSize" );
          pProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hDllUxTheme, "IsThemeBackgroundPartiallyTransparent" );
          pProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hDllUxTheme, "OpenThemeData" );
@@ -1731,6 +1733,7 @@ HMODULE _UxTheme_Init( void )
                  pProcDrawThemeBackground &&
                  pProcDrawThemeParentBackground &&
                  pProcGetThemeBackgroundContentRect &&
+                 pProcGetThemeMargins &&
                  pProcGetThemePartSize &&
                  pProcIsThemeBackgroundPartiallyTransparent &&
                  pProcOpenThemeData &&
@@ -1747,6 +1750,7 @@ HMODULE _UxTheme_Init( void )
             pProcDrawThemeText = NULL;
             pProcDrawThemeTextEx = NULL;
             pProcGetThemeBackgroundContentRect = NULL;
+            pProcGetThemeMargins = NULL;
             pProcGetThemePartSize = NULL;
             pProcIsThemeBackgroundPartiallyTransparent = NULL;
             pProcOpenThemeData = NULL;
@@ -1798,6 +1802,12 @@ INT ProcGetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc, int iPartId, int 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+INT ProcGetThemeMargins( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPCRECT prc, MARGINS * pMargins )
+{
+   return ( pProcGetThemeMargins )( hTheme, hdc, iPartId, iStateId, iPropId, prc, pMargins );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 INT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE * psz )
 {
    return ( pProcGetThemePartSize )( hTheme, hdc, iPartId, iStateId, prc, eSize, psz );
@@ -1842,6 +1852,7 @@ void _UxTheme_DeInit( void )
       pProcDrawThemeText = NULL;
       pProcDrawThemeTextEx = NULL;
       pProcGetThemeBackgroundContentRect = NULL;
+      pProcGetThemeMargins = NULL;
       pProcGetThemePartSize = NULL;
       pProcIsThemeBackgroundPartiallyTransparent = NULL;
       pProcOpenThemeData = NULL;

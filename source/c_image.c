@@ -173,7 +173,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG l
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, BOOL scalestrech, LONG BackColor, BOOL bIgnoreBkColor, INT iHrzMrgn, INT iVrtMrgn )
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, BOOL scale, LONG BackColor, BOOL bIgnoreBkColor, INT iHrzMrgn, INT iVrtMrgn )
 {
    RECT fromRECT, toRECT;
    HBITMAP hOldTo, hOldFrom, hpic = 0;
@@ -214,7 +214,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
          GetClientRect( hWnd, &toRECT );
          iWidth  = toRECT.right - toRECT.left - iHrzMrgn;
          iHeight = toRECT.bottom - toRECT.top - iVrtMrgn;
-         if( scalestrech )
+         if( scale )
          {
             if( (int) ( lWidth * iHeight / lHeight ) <= iWidth )
             {
@@ -620,8 +620,8 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf
       }
       else
       {
-         lWidth = lHeight = 0;
-         hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), lWidth, lHeight, hWnd, lBackColor, hb_parl( 5 ) );
+         /* full size */
+         hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), 0, 0, hWnd, lBackColor, hb_parl( 5 ) );
          HWNDret( hBitmap );
       }
    }
@@ -705,7 +705,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )           /* FUNCTION _OOHG_BitmapFromBuffer( 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_SETBITMAP )           /* FUNCTION _OOHG_SetBitmap( oSelf, hBitmap, iMessage, lScaleStretch, lAutoSize, lIgnoreBkColor ) -> hBitmap */
+HB_FUNC( _OOHG_SETBITMAP )           /* FUNCTION _OOHG_SetBitmap( oSelf, hBitmap, iMessage, lStretch, lAutoSize, lIgnoreBkColor ) -> hBitmap */
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap1, hBitmap2 = 0;
@@ -775,7 +775,7 @@ HB_FUNC( _OOHG_ROTATEIMAGE )          /* FUNCTION _OOHG_RotateImage( oSelf, hBit
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_SCALEIMAGE )          /* FUNCTION _OOHG_ScaleImage( oSelf, hBitMap, nWidth, nHeight, lScalestrech, uBackcolor, lIgnoreBkColor, nHrzMrgn, nVrtMrg ) -> hBitmap */
+HB_FUNC( _OOHG_SCALEIMAGE )          /* FUNCTION _OOHG_ScaleImage( oSelf, hBitMap, nWidth, nHeight, lScale, uBackcolor, lIgnoreBkColor, nHrzMrgn, nVrtMrg ) -> hBitmap */
 {
    POCTRL oSelf;
    HWND hWnd = NULL;
@@ -871,11 +871,46 @@ HB_FUNC( _OOHG_BLENDIMAGE )          /* FUNCTION _OOHG_BlendImage( hImage, nImgX
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_COPYBITMAP )          /* FUNCTION _OOHG_CopyImage( hBitmap, nWidth, nHeight, iAttributes ) -> hBitmap */
+HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, INT x, INT y, INT width, INT height )
 {
-   HBITMAP hCopy;
+   HBITMAP hbmOldSrc, hbmOldDst, hBitmap_New = 0;
+   HDC hdcSrc, hdcDst;
+   BITMAP bm;
 
-   hCopy = CopyImage( ( HBITMAP ) HWNDparam( 1 ), IMAGE_BITMAP, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
+   if( ( hdcSrc = CreateCompatibleDC( NULL ) ) != NULL )
+   {
+      if( ( hdcDst = CreateCompatibleDC( NULL ) ) != NULL )
+      {
+         GetObject( hBitmap, sizeof( bm ), &bm );
+         hBitmap_New = CreateBitmap( width, height, bm.bmPlanes, bm.bmBitsPixel, NULL );
+
+         hbmOldSrc = SelectObject( hdcSrc, hBitmap );
+         hbmOldDst = SelectObject( hdcDst, hBitmap_New );
+
+         BitBlt( hdcDst, 0, 0, width, height, hdcSrc, x, y, SRCCOPY );
+
+         SelectObject( hdcDst, hbmOldDst);
+         DeleteDC( hdcDst );
+         SelectObject( hdcSrc, hbmOldSrc );
+      }
+      DeleteDC( hdcSrc );
+   }
+
+   return hBitmap_New;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_COPYBITMAP )          /* FUNCTION _OOHG_CopyBitmap( hBitmap, nCol, nRow, nWidth, nHeight ) -> hBitmap */
+{
+   HB_RETNL( (LONG_PTR) _OOHG_CopyBitmap( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_COPYIMAGE )          /* FUNCTION _OOHG_CopyImage( hWnd, nType, nWidth, nHeight, nAttributes ) -> hWnd */
+{
+   HANDLE hCopy;
+
+   hCopy = CopyImage( (HANDLE) HWNDparam( 1 ), (UINT) hb_parni( 2 ), (INT) hb_parni( 3 ), (INT) hb_parni( 4 ), (UINT) hb_parni( 5 ) );
 
    HWNDret( hCopy );
 }

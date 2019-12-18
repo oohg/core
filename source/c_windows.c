@@ -425,18 +425,76 @@ HB_FUNC( SETWINDOWTEXT )
    SetWindowText( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ) );
 }
 
-HB_FUNC( C_CENTER )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static BOOL CenterIntoDesktop( HWND hwnd )
 {
    RECT rect;
-   HWND hwnd;
    int w, h, x, y;
-   hwnd = HWNDparam( 1 );
+
+   GetWindowRect( hwnd, &rect );
+   w = rect.right - rect.left;
+   h = rect.bottom - rect.top;
+
+   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
+   x = rect.right - rect.left;
+   y = rect.bottom - rect.top;
+
+   SetWindowPos( hwnd, HWND_TOP, ( x - w ) / 2, ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
+
+   return TRUE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static BOOL CenterIntoScreen( HWND hwnd )
+{
+   RECT rect;
+   int w, h, x, y;
+
    GetWindowRect( hwnd, &rect );
    w = rect.right  - rect.left + 1;
    h = rect.bottom - rect.top  + 1;
+
    x = GetSystemMetrics( SM_CXSCREEN );
    y = GetSystemMetrics( SM_CYSCREEN );
+
    SetWindowPos( hwnd, HWND_TOP, ( x - w ) / 2, ( y - h ) / 2, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE );
+
+   return TRUE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( C_CENTER )
+{
+   int iType;
+   HWND hwnd = HWNDparam( 1 );
+
+   if( hwnd )
+   {
+      iType = ( HB_ISNUM( 2 ) && hb_parni( 2 ) >= 0 && hb_parni( 2 ) <= 1 ) ? hb_parni( 2 ) : 0;
+
+      switch ( iType )
+      {
+         case 0:
+         {
+            /* 0 -> center into screen */
+            CenterIntoScreen( hwnd );
+            break;
+         }
+         case 1:
+         {
+            /* 1 -> center into desktop workarea */
+            CenterIntoDesktop( hwnd );
+            break;
+         }
+      }
+   }
+   else
+   {
+      /* -1 -> no change */
+      iType = -1;
+   }
+
+   hb_retni( iType );
 }
 
 HB_FUNC( GETWINDOWTEXT )

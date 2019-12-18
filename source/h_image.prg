@@ -260,7 +260,7 @@ METHOD Buffer( cBuffer ) CLASS TImage
       ::cBuffer := cBuffer
 
       // load image at full size
-      ::hImage := _OOHG_BitMapFromBuffer( Self, cBuffer, .F. )
+      ::hImage := _OOHG_BitmapFromBuffer( Self, cBuffer, .F. )
       IF ValidHandler( ::hImage )
          IF ::ImageSize
             ::nWidth  := _OOHG_BitMapWidth( ::hImage )
@@ -503,7 +503,7 @@ METHOD Copy( lAsDIB ) CLASS TImage
       lAsDib := ! ::lNoDIBSection
    ENDIF
 
-   AAdd( ::aCopies, _OOHG_CopyBitmap( ::hImage, 0, 0, iif( lAsDib, LR_CREATEDIBSECTION, 0 ) ) )
+   AAdd( ::aCopies, _OOHG_CopyImage( ::hImage, IMAGE_BITMAP, 0, 0, iif( lAsDib, LR_CREATEDIBSECTION, 0 ) ) )
 
    RETURN ATail( ::aCopies )
 
