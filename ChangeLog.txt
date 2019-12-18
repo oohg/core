@@ -12,6 +12,61 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-12-17 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+   * core\include\oohg.h
+     + Declarations of functions ProcGetThemeMargins and _OOHG_CopyBitmap.
+   * core\source\c_winapimisc.c
+     + ProcGetThemeMargins initialization at function _UxTheme_Init.
+   * core\source\c_image.c
+     * Some parameters renamed and other minor changes in functions
+       _OOHG_ScaleImage, _OOHG_SETBITMAP, _OOHG_SCALEIMAGE.
+     + C function _OOHG_CopyBitmap to copy all or part of a bitmap
+       into a new bitmap.
+     * Function _OOHG_COPYBITMAP now calls _OOHG_CopyBitmap.
+   * core\source\c_windows.c
+     + C functions CenterIntoDesktop and CenterIntoScreen.
+     + Second parameter to function C_Center:
+       0 means center the window on the screen and
+       1 means center the window on the desktop workarea.
+     * Function C_Center now returns 0, 1 or -1 (nothing done).
+   * core\source\h_button.prg
+     * Some comments.
+     * Image alignment now defaults to LEFT is button has caption
+       or to CENTER if not.
+     * Margins default to theme's margins if themes are enabled.
+     * Image are always loaded at full size.
+     * Function _OOHG_CopyBitmap was replaced by _OOHG_CopyImage.
+     % Method RePaint.
+     % Function SETIMAGEXP.
+     * Button's imagelist if no longer accesible via ::ImageList
+       or any other method or function.
+     + Function THEMEMARGINS.
+     ! Painting always defaults to OOHGDRAW.
+     ! Button shows wrong image alignment.
+     ! Image dissapears when button is repainted.
+     ! Image placement on customdraw buttons.
+   * core\source\h_form.prg
+     * Function _OOHG_CopyBitmap was replaced by _OOHG_CopyImage.
+     * Method Center to TFormInternal class.
+   * core\source\h_image.prg
+     * Function _OOHG_CopyBitmap was replaced by _OOHG_CopyImage.
+   * core\source\h_picture.prg
+     * Function _OOHG_CopyBitmap was replaced by _OOHG_CopyImage.
+
+2019-12-17 20:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     ! Resource leak.
+
+2019-12-17 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_004.txt
+     ! Typos.
+
+2019-12-17 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! GridByCell permits edition of a readonly column.
+
 2019-12-09 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_color.ch
      * CYAN color was renamed to LCYAN (light cyan).
@@ -27,7 +82,7 @@
      * Updated.
 
 2019-12-06 21:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\incluide\i_var.ch
+   * core\include\i_var.ch
      + Translate for _OOHG_ActiveTree var.
    * core\source\h_application.prg
      + Support for _OOHG_ActiveTree var.
