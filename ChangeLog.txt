@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-12-24 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Error 9023 at LISTVIEW_GETCOLUMNORDER when
+       deleting a column and the grid has no columns.
+
 2019-12-17 21:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg_dyns.hbx
      * Updated.
