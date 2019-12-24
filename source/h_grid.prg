@@ -8002,22 +8002,29 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDER )
    if( ValidHandler( hWnd ) )
    {
       iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
-      nArray = (int *) hb_xgrab( ( iCount ) * sizeof( int ) );
-
-      if( ListView_GetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
+      if( iCount > 0 )
       {
-         hb_reta( iCount );
-         for( n = 0; n < iCount; n++ )
-         {
-            HB_STORNI( nArray[ n ] + 1, -1, n + 1 );
-         }
+         nArray = (int *) hb_xgrab( ( iCount ) * sizeof( int ) );
 
-         hb_xfree( nArray );
+         if( ListView_GetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
+         {
+            hb_reta( iCount );
+            for( n = 0; n < iCount; n++ )
+            {
+               HB_STORNI( nArray[ n ] + 1, -1, n + 1 );
+            }
+
+            hb_xfree( nArray );
+         }
+         else
+         {
+            hb_xfree( nArray );
+
+            hb_reta( 0 );
+         }
       }
       else
       {
-         hb_xfree( nArray );
-
          hb_reta( 0 );
       }
    }
