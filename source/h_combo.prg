@@ -69,6 +69,7 @@
 CLASS TCombo FROM TLabel
 
    DATA aValues                   INIT {}
+   DATA aValueSource              INIT NIL
    DATA cText                     INIT ""
    DATA ImageListColor            INIT CLR_DEFAULT
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
@@ -80,6 +81,7 @@ CLASS TCombo FROM TLabel
    DATA lIncremental              INIT .F.
    DATA lNoClone                  INIT .F.
    DATA lRefresh                  INIT NIL
+   DATA lUsesTComboArray          INIT .F.
    DATA nHeight2                  INIT 150
    DATA nLastFound                INIT 0
    DATA nLastItem                 INIT 0
@@ -121,7 +123,8 @@ CLASS TCombo FROM TLabel
    METHOD GetEditSel
    METHOD GetItems                BLOCK { |Self| ComboboxGetAllItems( ::hWnd ) }
    METHOD InsertItem
-   METHOD Item                    BLOCK { |Self, nItem, uValue| ComboItem( Self, nItem, uValue ) }
+   METHOD IsValTypeOK
+   METHOD Item                    BLOCK { |Self, nItem, uData| ComboItem( Self, nItem, uData ) }
    METHOD ItemBySource
    METHOD ItemCount               BLOCK { |Self| ComboboxGetItemCount( ::hWnd ) }
    METHOD ItemHeight
@@ -141,6 +144,7 @@ CLASS TCombo FROM TLabel
    METHOD ShowDropDown
    METHOD Value                   SETGET
    METHOD ValueSource             SETGET
+   METHOD ValueType               
    METHOD Visible                 SETGET
    METHOD VisibleItems
    METHOD WorkArea                SETGET
@@ -148,7 +152,7 @@ CLASS TCombo FROM TLabel
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
+METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
                fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
@@ -161,6 +165,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
+   ASSIGN aRows           VALUE aRows         TYPE "A" DEFAULT {}
    ASSIGN ::nCol          VALUE x             TYPE "N"
    ASSIGN ::nRow          VALUE y             TYPE "N"
    ASSIGN ::nWidth        VALUE w             TYPE "N"
@@ -241,8 +246,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, rows, value, fontname, ;
    ::SetFont()
    IF ValType( WorkArea ) $ "CMO"
       ::WorkArea := WorkArea
-   ELSEIF ValType( rows ) == "A"
-      ::WorkArea := TComboArray():New( rows, ::lNoClone )
+   ELSE
+      ::lUsesTComboArray := .T.
+      ::WorkArea := TComboArray():New( aRows, ::lNoClone )
       uField := { || ::WorkArea:FieldGet() }
    ENDIF
    ::Field := uField
@@ -319,25 +325,30 @@ METHOD Field( uField ) CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ValueSource( uSource ) CLASS TCombo
 
-   LOCAL aValues
-
    IF PCount() > 0
       IF uSource == NIL
          ::aValues := {}
+         ::aValueSource := NIL
          ::uValueSource := { |nRecNo| nRecNo }
       ELSEIF HB_ISARRAY( uSource )
          ::aValues := {}
-         aValues := AClone( uSource )
-         ::uValueSource := { |nRecno| aValues[ nRecno ] }
+         IF ::lNoClone
+            ::aValueSource := uSource
+         ELSE
+            ::aValueSource := AClone( uSource )
+         ENDIF
+         ::uValueSource := { |nRecNo| iif( nRecNo > 0 .AND. nRecNo <= Len( ::aValueSource ), ::aValueSource[ nRecno ], NIL ) }
       ELSEIF HB_ISBLOCK( uSource )
          ::aValues := {}
+         ::aValueSource := NIL
          ::uValueSource := uSource
       ELSEIF ValType( uSource ) $ "CM" .AND. ! Empty( uSource )
          ::aValues := {}
-         aValues := uSource
-         ::uValueSource := &( "{ || " + aValues + " }" )
+         ::aValueSource := NIL
+         ::uValueSource := &( "{ |nRecNo| " + uSource + " }" )
       ELSE
          ::aValues := {}
+         ::aValueSource := NIL
          ::uValueSource := { |nRecNo| nRecNo }
       ENDIF
    ENDIF
@@ -394,8 +405,10 @@ METHOD Rows( aRows ) CLASS TCombo
       IF aRows == NIL
          ::DeleteAllItems()
          ::WorkArea := TComboArray():New( {}, ::lNoClone )
+         ::lUsesTComboArray := .T.
       ELSEIF HB_ISARRAY( aRows )
          ::WorkArea := TComboArray():New( aRows, ::lNoClone )
+         ::lUsesTComboArray := .T.
          ::Refresh()
       ENDIF
    ENDIF
@@ -407,7 +420,7 @@ METHOD Refresh() CLASS TCombo
 
    LOCAL uValue, cDisplayValue
 
-   IF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
+   IF ! ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
       uValue := ::Value
       cDisplayValue := ::DisplayValue
 
@@ -431,12 +444,11 @@ METHOD Refresh() CLASS TCombo
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReadData( nMax ) CLASS TCombo
 
-   LOCAL BackOrd, BackRec, bField, bValueSource, lNewData, nCount, aItem
+   LOCAL BackOrd, BackRec, bField, bValueSource, nCount := 0, aItem, aValue
 
-   IF ! ( Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 ) )
+   IF ! ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
       bField := ::Field
       bValueSource := ::ValueSource
-      nCount := 0
       IF ! ::lDelayLoad
          nMax := 0
       ELSEIF ! HB_ISNUMERIC( nMax ) .OR. nMax < 1
@@ -453,31 +465,29 @@ METHOD ReadData( nMax ) CLASS TCombo
       ENDIF
 
       ::oWorkArea:GoTo( ::nLastItem + 1 )
-      lNewData := ( ! ::oWorkArea:Eof() .AND. ( ! ::lDelayLoad .OR. nCount < nMax ) )
-
       DO WHILE ! ::oWorkArea:Eof() .AND. ( ! ::lDelayLoad .OR. nCount < nMax )
-         aItem := ( ::oWorkArea:cAlias__ )->( Eval( bField ) )
-         IF ! HB_ISARRAY( aItem )
-            aItem := { aItem, _OOHG_Eval( ::ItemImgNum ) }
+         aValue := Eval( bValueSource, ::oWorkArea:RecNo() )
+         IF ::IsValTypeOK( aValue )
+            AAdd( ::aValues, aValue )
+            aItem := ( ::oWorkArea:cAlias__ )->( Eval( bField ) )
+            IF ! HB_ISARRAY( aItem )
+               aItem := { aItem, _OOHG_Eval( ::ItemImgNum ) }
+            ENDIF
+            TCombo_Add_Item( Self, aItem )
+            ::AddBitMap( _OOHG_Eval( ::ImageSource ) )
+            nCount ++
          ENDIF
-         ::AddItem( aItem )
-         AAdd( ::aValues, Eval( bValueSource, ::oWorkArea:RecNo() ) )
-         ::AddBitMap( _OOHG_Eval( ::ImageSource ) )
-
          ::oWorkArea:Skip()
          ::nLastItem ++
-         nCount ++
       ENDDO
 
       IF BackOrd != NIL
          ::oWorkArea:SetOrder( BackOrd )
       ENDIF
       ::oWorkArea:GoTo( BackRec )
-   ELSE
-      lNewData := .F.
    ENDIF
 
-   RETURN lNewData
+   RETURN ( nCount > 0 )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DisplayValue( cValue ) CLASS TCombo
@@ -485,26 +495,62 @@ METHOD DisplayValue( cValue ) CLASS TCombo
    RETURN ( ::Caption := cValue )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ValueType() CLASS TCombo
+
+   LOCAL cRet := "U"
+
+   IF Len( ::aValues ) > 0
+      cRet := ValType( ::aValues[ 1 ] )
+      IF cRet == "M"
+         cRet := "C"
+      ELSEIF ! cRet $ "CN"
+         MsgOOHGError( "COMBOBOX: The valtype of the first item is not valid. Program terminated." )
+      ENDIF
+   ENDIF
+
+   RETURN cRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD IsValTypeOK( uValue ) CLASS TCombo
+
+   LOCAL cValueType, cType, lRet
+
+   IF uValue == NIL
+      lRet := .T.
+   ELSE
+      cValueType := ::ValueType()
+      IF cValueType == "U"
+         lRet := .T.
+      ELSE
+         cType := ValType( uValue )
+         IF cType == "M"
+            cType := "C"
+         ENDIF
+         lRet := ( cType == cValueType )
+      ENDIF
+   ENDIF
+
+   RETURN lRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TCombo
 
    LOCAL uRet
 
    IF Len( ::aValues ) == 0
-      IF HB_ISNUMERIC( uValue )
-         ComboSetCursel( ::hWnd, uValue )
-         ::DoChange()
+      IF ::ItemCount > 0
+         ::DeleteAllItems()
       ENDIF
-      uRet := ComboGetCursel( ::hWnd )
+      uRet := 0
    ELSE
-      IF ValType( ::aValues[ 1 ] ) == ValType( uValue ) .OR. ;
-         ( ValType( uValue ) $ "CM" .AND. ValType( ::aValues[ 1 ] ) $ "CM" )
+      IF uValue # NIL .AND. ::IsValTypeOK( uValue )
          ComboSetCursel( ::hWnd, AScan( ::aValues, uValue ) )
-          ::DoChange()
+         ::DoChange()
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
       IF uRet >= 1 .AND. uRet <= Len( ::aValues )
          uRet := ::aValues[ uRet ]
-      ELSEIF ValType( ::aValues[ 1 ] ) $ "CM"
+      ELSEIF ::ValueType() == "C"
          uRet := ""
       ELSE
          uRet := 0
@@ -719,9 +765,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
             ::nLastFound := ::FindString( ::cText, nStart )
             IF ::nLastFound > 0 .AND. ::nLastFound >= nStart
                // item was found in the rest of the list, select
-               IF Len( ::aValues ) == 0
-                  ::Value := ::nLastFound
-               ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
+               IF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
                   ::Value := ::aValues[ ::nLastFound ]
                ENDIF
             ELSE
@@ -737,9 +781,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
                ENDIF
 
                IF ::nLastFound > 0
-                  IF Len( ::aValues ) == 0
-                     ::Value := ::nLastFound
-                  ELSEIF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
+                  IF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
                      ::Value := ::aValues[ ::nLastFound ]
                   ENDIF
                ELSE
@@ -950,17 +992,15 @@ METHOD CaretPos( nPos ) CLASS TCombo
    RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ItemValue( cText ) CLASS TCombo
+METHOD ItemValue( cText ) CLASS TCombo    
 
-   LOCAL nPos, uRet
+   LOCAL uRet
 
-   nPos := ::FindStringExact( cText )
+   uRet := ::FindStringExact( cText )
 
-   IF Len( ::aValues ) == 0
-      uRet := nPos
-   ELSEIF nPos >= 1 .AND. nPos <= Len( ::aValues )
-      uRet := ::aValues[ nPos ]
-   ELSEIF ValType( ::aValues[ 1 ] ) $ "CM"
+   IF uRet >= 1 .AND. uRet <= Len( ::aValues )
+      uRet := ::aValues[ uRet ]
+   ELSEIF ::ValueType() == "C"
       uRet := ""
    ELSE
       uRet := 0
@@ -969,20 +1009,19 @@ METHOD ItemValue( cText ) CLASS TCombo
    RETURN uRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ItemBySource( nItem, uValue ) CLASS TCombo
+METHOD ItemBySource( uValue, uData ) CLASS TCombo
 
-   LOCAL cRet, nPos
+   LOCAL cRet := NIL, nPos
 
    IF Len( ::aValues ) == 0
-      cRet := ComboItem( Self, nItem, uValue )
+      IF ::ItemCount > 0
+         ::DeleteAllItems()
+      ENDIF
    ELSE
-      IF ValType( ::aValues[ 1 ] ) == ValType( nItem ) .OR. ;
-         ( ValType( nItem ) $ "CM" .AND. ValType( ::aValues[ 1 ] ) $ "CM" )
-         nPos := AScan( ::aValues, nItem )
+      IF ::IsValTypeOK( uValue )
+         nPos := AScan( ::aValues, uValue )
          IF nPos > 0
-            cRet := ComboItem( Self, nPos, uValue )
-         ELSE
-            cRet := ""
+            cRet := ComboItem( Self, nPos, uData )
          ENDIF
       ENDIF
    ENDIF
@@ -990,44 +1029,127 @@ METHOD ItemBySource( nItem, uValue ) CLASS TCombo
    RETURN cRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AddItem( uValue, uSource ) CLASS TCombo
+METHOD AddItem( uData, uValue ) CLASS TCombo
 
-   IF PCount() > 1 .AND. ( Len( ::aValues ) > 0 .OR. ( Len( ::aValues ) == 0 .AND. ::ItemCount == 0 ) )
-      AAdd( ::aValues, uSource )
+   LOCAL nItem, nRecNo
+
+   IF ::lUsesTComboArray
+      IF ::IsValTypeOK( uValue )
+         ::oWorkArea:Append( uData )
+
+         IF ::lDelayLoad
+            nItem := 0   // The new item will be added automatically
+         ELSE
+            IF HB_ISARRAY( ::aValueSource )
+               nRecNo := ::oWorkArea:RecCount()
+               IF Len( ::aValueSource ) < nRecNo
+                  ASize( ::aValueSource, nRecNo )
+               ENDIF
+               ::aValueSource[ nRecNo ] := uValue
+            ELSE
+               uValue := Eval( ::ValueSource, ::oWorkArea:RecCount() )
+            ENDIF
+            AAdd( ::aValues, uValue )
+            TCombo_Add_Item( Self, uData )
+            nItem := ::ItemCount
+         ENDIF
+      ELSE
+         nItem := -1   // Item not added because its value is not of the expected type
+      ENDIF
+   ELSE
+      nItem := -2   // Operation not allowed for other data sources
    ENDIF
 
-   RETURN TCombo_Add_Item( Self, uValue )
+   RETURN nItem
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InsertItem( nItem, uValue, uSource ) CLASS TCombo
+METHOD InsertItem( nPos, uData, uValue ) CLASS TCombo
 
-   IF PCount() > 2 .AND. Len( ::aValues ) > 0
-      AAdd( ::aValues, NIL )
-      AIns( ::aValues, nItem )
-      ::aValues[ nItem ] := uSource
+   LOCAL nItem, nRecNo
+
+   IF HB_ISNUMERIC( nPos ) .AND. nPos > 0
+      IF ::lUsesTComboArray
+         IF ::IsValTypeOK( uValue )
+            IF ::lDelayLoad
+               IF nPos > ::oWorkArea:RecCount()
+                  nItem := ::AddItem( uData, uValue )
+               ELSE
+                  ::oWorkArea:Insert( nPos, uData )
+                  IF nPos > ::nLastItem
+                     nItem := 0   // The new item will be added automatically
+                  ELSE
+                     IF HB_ISARRAY( ::aValueSource )
+                        nRecNo := ::oWorkArea:RecCount()
+                        IF Len( ::aValueSource ) < nRecNo
+                           ASize( ::aValueSource, nRecNo )
+                        ENDIF
+                        _OOHG_InsertArrayItem( ::aValues, nPos, uValue )
+                        ::aValueSource[ nPos ] := uValue
+                     ELSE
+                        uValue := Eval( ::ValueSource, nPos )
+                     ENDIF
+                     _OOHG_InsertArrayItem( ::aValues, nPos, uValue )
+                     TCombo_Insert_Item( Self, nPos, uData )
+                     nItem := ::ItemCount
+                  ENDIF
+               ENDIF
+            ELSE
+               IF nPos > ::oWorkArea:RecCount()
+                  nItem := ::AddItem( uData, uValue )
+               ELSE
+                  ::oWorkArea:Insert( nPos, uData )
+                  IF HB_ISARRAY( ::aValueSource )
+                     nRecNo := ::oWorkArea:RecCount()
+                     IF Len( ::aValueSource ) < nRecNo
+                        ASize( ::aValueSource, nRecNo )
+                     ENDIF
+                     _OOHG_InsertArrayItem( ::aValues, nPos, uValue )
+                     ::aValueSource[ nPos ] := uValue
+                  ELSE
+                     uValue := Eval( ::ValueSource, nPos )
+                  ENDIF
+                  _OOHG_InsertArrayItem( ::aValues, nPos, uValue )
+                  TCombo_Insert_Item( Self, nPos, uData )
+                  nItem := ::ItemCount
+               ENDIF
+            ENDIF
+         ELSE
+            nItem := -1   // Item not added because its value is not of the expected type
+         ENDIF
+      ELSE
+         nItem := -2   // Operation not allowed for other data sources
+      ENDIF
+   ELSE
+      nItem := -3   // Item not added because its positions is not valid
    ENDIF
 
-   RETURN TCombo_Insert_Item( Self, nItem, uValue )
+   RETURN nItem
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteItem( nPos ) CLASS TCombo
 
-  LOCAL nSel, nSize
+  LOCAL nSel
 
-   nSel := ComboGetCursel( ::hWnd )
-
-   nSize := Len( ::aValues )
-   IF nSize >= nPos
-      ADel( ::aValues, nPos )
-      ASize( ::aValues, nSize - 1 )
-   ENDIF
-
-   IF ComboboxDeleteString( ::hWnd, nPos )
-      IF nSel # ComboGetCursel( ::hWnd )
-         ::Redraw()
-         ::DoChange()
+   IF ::lUsesTComboArray
+      IF HB_ISNUMERIC( nPos ) .AND. nPos > 0 
+         IF nPos <= ::oWorkArea:RecCount()
+            ::oWorkArea:Delete( nPos )
+         ENDIF
+         IF nPos <= Len( ::aValues )
+            _OOHG_DeleteArrayItem( ::aValues, nPos )
+         ENDIF
+         IF HB_ISARRAY( ::aValueSource ) .AND. nPos <= Len( ::aValueSource )
+            _OOHG_DeleteArrayItem( ::aValueSource, nPos )
+         ENDIF
+         nSel := ComboGetCursel( ::hWnd )
+         IF ComboboxDeleteString( ::hWnd, nPos )
+            IF nSel # ComboGetCursel( ::hWnd )
+               ::Redraw()
+               ::DoChange()
+            ENDIF
+            RETURN .T.
+         ENDIF
       ENDIF
-      RETURN .T.
    ENDIF
 
    RETURN .F.
@@ -1105,13 +1227,13 @@ HB_FUNC( COMBOADDSTRING )          /* FUNCTION ComboAddString( hWnd, cString ) -
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOINSERTSTRING )          /* FUNCTION ComboInsertString( hWnd, cString, nPos ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) hb_parni( 3 ) - 1, ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) ( hb_parni( 3 ) - 1 ), ( LPARAM ) hb_parc( 2 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOSETCURSEL )          /* FUNCTION ComboSetCurSel( hwnd, nPos ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) hb_parni( 2 ) - 1, 0 );
+   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1135,7 +1257,7 @@ HB_FUNC( COMBOSETDROPPEDWIDTH )          /* FUNCTION ComboSetDroppedWidth( hWnd,
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXDELETESTRING )          /* FUNCTION ComboboxDeleteString( hWnd, nPos ) -> lSuccess */
 {
-   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, ( WPARAM ) hb_parni( 2 ) - 1, 0 ) >= 0 )
+   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0 ) >= 0 )
    {
       hb_retl( TRUE );
    }
@@ -1154,12 +1276,12 @@ HB_FUNC( COMBOBOXRESET )          /* FUNCTION ComboboxReset( hWnd ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOGETSTRING )          /* FUNCTION ComboGetString( hWnd, nPos ) -> cString */
 {
-   int iLen = ( int ) SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) 0 );
+   int iLen = ( int ) SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) 0 );
    char * cString;
 
    if( iLen > 0 && NULL != ( cString = ( char * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
    {
-      SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) cString );
+      SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) cString );
       hb_retclen_buffer( cString, iLen );
    }
    else
@@ -1394,7 +1516,7 @@ HB_FUNC( TCOMBO_ADD_ITEM )          /* FUNCTION TCombo_Add_Item( Self, uValue ) 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uValue ) -> cItem */
+HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uData ) -> cItem */
 {
    PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1403,6 +1525,7 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uValue ) -> cI
    CHAR * cBuffer;
    struct IMAGE_PARAMETER pStruct;
    INT nItemSel, nItemNew;
+   INT iLen;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
    {
@@ -1429,14 +1552,21 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uValue ) -> cI
       }
    }
 
-   cBuffer = ( CHAR * ) hb_xgrab( 2000 );
-   SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
-   hb_retc( cBuffer );
-   hb_xfree( cBuffer );
+   iLen = ( int ) SendMessage( oSelf->hWnd, CB_GETLBTEXTLEN, ( WPARAM ) nItem, ( LPARAM ) 0 );
+
+   if( iLen > 0 && NULL != ( cBuffer = ( CHAR * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+   {
+      SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
+      hb_retclen_buffer( cBuffer, iLen );
+   }
+   else
+   {
+      hb_retc_null();
+   }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nItem, uValue ) -> nItem */
+HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nItem, uData ) -> nItem */
 {
    PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1458,7 +1588,7 @@ HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nIt
       }
    }
 
-   hb_ret();
+   hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1740,13 +1870,18 @@ CLASS TComboArray
 
    DATA aArray                    INIT {} HIDDEN
    DATA cAlias__                  INIT NIL
-   DATA lBof                      INIT .F.
-   DATA nRecNo                    INIT 1
+   DATA nRecNo                    INIT 0
 
+   METHOD Append                  BLOCK { |Self, uValue| AAdd( ::aArray, uValue ) }
    METHOD Array                   BLOCK { |Self, lNoClone| iif( lNoClone, ::aArray, AClone( ::aArray ) ) }
-   METHOD Eof                     BLOCK { |Self| ( ::RecNo > ::RecCount ) }
+   METHOD Bof                     BLOCK { |Self| ( ::RecCount() == 0 .OR. ::RecNo() < 1 ) }
+   METHOD Delete                  BLOCK { |Self, nRecNo| _OOHG_DeleteArrayItem( ::aArray, nRecNo ) }
+   METHOD Eof                     BLOCK { |Self| ( ::RecCount() == 0 .OR. ::RecNo() > ::RecCount() ) }
    METHOD FieldGet                BLOCK { |Self| ::aArray[ ::nRecNo ] }
    METHOD GoTo
+   METHOD GoBottom                BLOCK { |Self| ::GoTo( ::RecCount ) }
+   METHOD GoTop                   BLOCK { |Self| ::GoTo( 1 ) }
+   METHOD Insert                  BLOCK { |Self, nPos, uValue| _OOHG_InsertArrayItem( ::aArray, nPos, uValue ) }
    METHOD New
    METHOD RecCount                BLOCK { |Self| Len( ::aArray ) }
    METHOD RecNo                   BLOCK { |Self| ::nRecNo }
@@ -1764,35 +1899,39 @@ METHOD New( aArray, lNoClone ) CLASS TComboArray
       ELSE
          ::aArray := AClone( aArray )
       ENDIF
+      IF ::RecCount() > 0
+         ::GoTop()
+      ENDIF
    ENDIF
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GoTo( nRecNo ) CLASS TComboArray
+METHOD GoTo( nNewRec ) CLASS TComboArray
 
-   IF nRecNo < 1 .OR. nRecNo > Len( ::aArray )
-      ::nRecNo := Len( ::aArray ) + 1
+   IF nNewRec < 1
+      ::nRecNo := 0
+   ELSEIF nNewRec > ::RecCount()
+      ::nRecNo := ::RecCount() + 1
    ELSE
-      ::nRecNo := Int( nRecNo )
+      ::nRecNo := Int( nNewRec )
    ENDIF
-   ::lBof := ( ::RecCount == 0 )
 
-   RETURN ::nRecNo
+   RETURN ::RecNo()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Skip( nRecNo ) CLASS TComboArray
+METHOD Skip( nCount ) CLASS TComboArray
 
-   IF ! HB_ISNUMERIC( nRecNo )
-      nRecNo := 1
-   ENDIF
-   ::nRecNo := Int( ::RecNo + nRecNo )
-   ::lBof := .F.
-   IF ::nRecNo < 1
-      ::nRecNo := 1
-      ::lBof := .T.
-   ELSEIF ::nRecNo > ::RecCount()
+   LOCAL nNewRec
+
+   ASSIGN nCount VALUE nCount TYPE "N" DEFAULT 1
+   nNewRec := Int( ::RecNo() + nCount )
+   IF nNewRec < 1
+      ::nRecNo := 0
+   ELSEIF nNewRec > ::RecCount()
       ::nRecNo := ::RecCount() + 1
+   ELSE
+      ::nRecNo := nNewRec
    ENDIF
 
-   RETURN NIL
+   RETURN ::RecNo()
