@@ -12,6 +12,45 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2019-12-30 18:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2019-12-30 18:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_combo.prg
+     ! Items are not shown if they're added at OnInitProcedure
+       using method AddItem.
+     + Data aValueSource.
+     + Data lUsesTComboArray.
+     + Method IsValTypeOK.
+     + Method ValueType.
+     * ITEMS clause will now default to an empty arrays when missing.
+     * Combo will use a TComboArray object if the WorkaArea parameter
+       is not a datasource (object or work area).
+     + Some validations to prevent adding items with wrong type values.
+       All items values must be of the same type (numeric or char).
+     % Methods ReadData, Value, ItemValue, ItemBySource.
+     ! Methods AddItem, InsertItem and DeleteItem for array based combos.
+     ! Casting at functions COMBOINSERTSTRING, COMBOSETCURSEL,
+       COMBOBOXDELETESTRING, COMBOGETSTRING and COMBOITEM.
+     * Removed length limit from function COMBOITEM.
+     * Function TCOMBO_INSERT_ITEM now returns item count.
+     + Data lBof of class TComboArray.
+     + Method Append to class TComboArray.
+     + Method Bof to class TComboArray.
+     + Method Delete to class TComboArray.
+     + Method GoBottom to class TComboArray.
+     + Method GoTop to class TComboArray.
+     + Method Insert to class TComboArray.
+     * Method New now positions the array to it's first item.
+     * Some vars were renamed to improve clarity.
+
+2019-12-30 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Added third parameter lShrink to function _OOHG_DeleteArrayItem.
+     * Now uses Harbour's function hb_ADel.
+     + Function _OOHG_InsertArrayItem( aArray, nItem, uValue, lGrow ).
+
 2019-12-24 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_grid.prg
      ! Error 9023 at LISTVIEW_GETCOLUMNORDER when
