@@ -1972,17 +1972,25 @@ FUNCTION _OOHG_GetArrayItem( uaArray, nItem, uExtra1, uExtra2 )
    RETURN uRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _OOHG_DeleteArrayItem( aArray, nItem )
+FUNCTION _OOHG_InsertArrayItem( aArray, nItem, uValue, lGrow )
+
+   ASSIGN lGrow VALUE lGrow TYPE "L" DEFAULT .T.
 
 #ifdef __XHARBOUR__
-   RETURN ADel( aArray, nItem, .T. )
+   RETURN AIns( aArray, nItem, uValue, lGrow )
 #else
-   IF HB_ISARRAY( aArray ) .AND. Len( aArray ) >= nItem
-      ADel( aArray, nItem )
-      ASize( aArray, Len( aArray ) - 1 )
-   ENDIF
+   RETURN hb_AIns( aArray, nItem, uValue, lGrow )
+#endif
 
-   RETURN aArray
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_DeleteArrayItem( aArray, nItem, lShrink )
+
+   ASSIGN lShrink VALUE lShrink TYPE "L" DEFAULT .T.
+
+#ifdef __XHARBOUR__
+   RETURN ADel( aArray, nItem, lShrink )
+#else
+   RETURN hb_ADel( aArray, nItem, lShrink )
 #endif
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
