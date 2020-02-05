@@ -84,7 +84,7 @@ CLASS TCombo FROM TLabel
    DATA lUsesTComboArray          INIT .F.
    DATA nHeight2                  INIT 150
    DATA nLastFound                INIT 0
-   DATA nLastItem                 INIT 0
+   DATA nNextItem                 INIT 0
    DATA nTextHeight               INIT 0
    DATA nWidth                    INIT 120
    DATA oEditBox                  INIT NIL
@@ -430,7 +430,7 @@ METHOD Refresh() CLASS TCombo
          ::ClearBitMaps()
       ENDIF
 
-      ::nLastItem := 0
+      ::nNextItem := 0
       ::ReadData()
 
       ::Value := uValue
@@ -464,7 +464,13 @@ METHOD ReadData( nMax ) CLASS TCombo
          BackOrd := NIL
       ENDIF
 
-      ::oWorkArea:GoTo( ::nLastItem + 1 )
+      IF ::nNextItem == 0
+         ::oWorkArea:GoTop()
+         ::nNextItem := ::oWorkArea:RecNo()
+      ELSE
+         ::oWorkArea:GoTo( ::nNextItem )
+      ENDIF
+
       DO WHILE ! ::oWorkArea:Eof() .AND. ( ! ::lDelayLoad .OR. nCount < nMax )
          aValue := Eval( bValueSource, ::oWorkArea:RecNo() )
          IF ::IsValTypeOK( aValue )
@@ -478,7 +484,7 @@ METHOD ReadData( nMax ) CLASS TCombo
             nCount ++
          ENDIF
          ::oWorkArea:Skip()
-         ::nLastItem ++
+         ::nNextItem := ::oWorkArea:RecNo()
       ENDDO
 
       IF BackOrd != NIL
@@ -1075,7 +1081,7 @@ METHOD InsertItem( nPos, uData, uValue ) CLASS TCombo
                   nItem := ::AddItem( uData, uValue )
                ELSE
                   ::oWorkArea:Insert( nPos, uData )
-                  IF nPos > ::nLastItem
+                  IF nPos > ::nNextItem
                      nItem := 0   // The new item will be added automatically
                   ELSE
                      IF HB_ISARRAY( ::aValueSource )
