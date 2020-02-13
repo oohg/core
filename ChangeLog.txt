@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-02-13 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_button.prg
+     ! RTE "Message not found LNOLOADTRANSPARENT".
+
 2020-02-05 17:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_combo.prg
      ! Some items are not shown when using a source with
