@@ -519,7 +519,7 @@ METHOD RePaint( lChange ) CLASS TButton
          ENDIF
          ::ReDraw()
       ELSE
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoLoadTransparent )
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoTransparent )
       ENDIF
    ENDIF
 
