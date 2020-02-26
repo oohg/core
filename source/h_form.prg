@@ -117,7 +117,7 @@ CLASS TForm FROM TWindow
    DATA lDefined                  INIT .F.
    DATA uFormCursor               INIT IDC_ARROW
    DATA lRefreshDataOnActivate    INIT .T.
-
+   DATA hParent                   INIT 0
    DATA OnRelease                 INIT NIL
    DATA OnInit                    INIT NIL
    DATA OnMove                    INIT NIL
@@ -465,9 +465,10 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
    ::BackColor := aRGB
    ::AutoRelease := ! ( HB_IsLogical( NoAutoRelease ) .AND. NoAutoRelease )
 
-   If ! ::lInternal .AND. ValidHandler( hParent )
-      AADD( GetFormObjectByHandle( hParent ):aChildPopUp, Self )
-   EndIf
+   IF ! ::lInternal .AND. ValidHandler( hParent )
+      AAdd( GetFormObjectByHandle( hParent ):aChildPopUp, Self )
+      ::hParent := hParent
+   ENDIF
 
    _PushEventInfo()
    _OOHG_ThisForm      := Self
@@ -1123,7 +1124,7 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
 
 METHOD Events_Destroy() CLASS TForm
 
-   LOCAL mVar, i
+   LOCAL mVar, i, oParent
 
    IF ::lDestroyed
       RETURN NIL
@@ -1144,14 +1145,23 @@ METHOD Events_Destroy() CLASS TForm
       ENDIF
    ENDIF
 
-   // Removes from container
+   // Remove from container
    IF ::Container != NIL
       ::Container:DeleteControl( Self )
    ENDIF
 
-   // Removes from parent
+   // Remove from parent
    IF ::Parent != NIL
       ::Parent:DeleteControl( Self )
+   ENDIF
+
+   // Remove from ::hParent
+   IF ValidHandler( ::hParent )
+      oParent := GetFormObjectByHandle( ::hParent )
+      IF HB_ISOBJECT( oParent )
+         oParent:DeleteControl( Self )
+      ENDIF
+      ::hParent := 0
    ENDIF
 
    // Verify if window was multi-activated
@@ -2125,8 +2135,8 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
    IF HB_ISOBJECT( oParent )
       hParent := oParent:hWnd
    ELSE
-      hParent := 0   // TODO: Check
-      // Must have a parent!!!!!
+      hParent := 0
+      // It can be the first defined form
    ENDIF
 
    ::oPrevWindow := oParent
@@ -2196,13 +2206,20 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormModal
 
 METHOD Release() CLASS TFormModal
 
-   If ! ::lReleasing
-      If ( Len( _OOHG_ActiveModal ) == 0 .OR. ATAIL( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
+   IF ! ::lReleasing
+      IF ( Len( _OOHG_ActiveModal ) == 0 .OR. ATail( _OOHG_ActiveModal ):hWnd <> ::hWnd ) .AND. IsWindowVisible( ::hWnd )
          MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program terminated." )
-      EndIf
-   EndIf
+      ENDIF
 
-   Return ::Super:Release()
+      IF ! ::Active
+         MsgOOHGError( "WINDOW RELEASE: " + ::Name + " is not active. Program terminated." )
+      ENDIF
+      ::lReleasing := .T.
+
+      _ReleaseWindowList( { Self } )
+   ENDIF
+
+   RETURN NIL
 
 // ver que pasa si una modal crea otra modal
 
