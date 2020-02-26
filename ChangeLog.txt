@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-02-25 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     ! After pressing ESC on a TGridControlComboBox's list
+       the app becomes unresponsive.
+
 2020-02-13 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_button.prg
      ! RTE "Message not found LNOLOADTRANSPARENT".
