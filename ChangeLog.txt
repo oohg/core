@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-03-02 17:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_tree.prg
+     ! RTE "Message not found: TTREE:HWNDEDITCTRL" when pressing
+       ESC key on a tree control.
+
 2020-02-25 21:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_form.prg
      ! After pressing ESC on a TGridControlComboBox's list
