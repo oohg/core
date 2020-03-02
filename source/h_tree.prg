@@ -2067,7 +2067,7 @@ METHOD GetChildren( Item ) CLASS TTree
 METHOD LookForKey( nKey, nFlags ) CLASS TTree
 
    If nKey == VK_ESCAPE .and. nFlags == 0
-      If ::hWndEditCtrl != Nil
+      IF HB_ISOBJECT( ::oEditCtrl )
          Return Nil
 
       ElseIf ::DragActive
