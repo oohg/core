@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-03-10 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+   * core\source\h_button.prg
+     * Use HWNDret instead of HB_RETNL+(LONG_PTR) at
+       function _OOHG_COPYBITMAP.
+
 2020-03-10 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_winapimisc.c
      * Avoid waiting on error at WAITRUN function.
