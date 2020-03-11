@@ -762,7 +762,7 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
          }
          else   // just copy
          {
-            hBmp2 = _OOHG_CopyBitmap( hBmp, 0, 0, bm.bmWidth - iLeft - iRight, bm.bmHeight - iTop - iBottom );
+            hBmp2 = (HBITMAP) _OOHG_CopyBitmap( hBmp, 0, 0, bm.bmWidth - iLeft - iRight, bm.bmHeight - iTop - iBottom );
          }
       }
 

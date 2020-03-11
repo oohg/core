@@ -902,7 +902,7 @@ HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, INT x, INT y, INT width, INT height )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_COPYBITMAP )          /* FUNCTION _OOHG_CopyBitmap( hBitmap, nCol, nRow, nWidth, nHeight ) -> hBitmap */
 {
-   HB_RETNL( (LONG_PTR) _OOHG_CopyBitmap( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
+   HWNDret( _OOHG_CopyBitmap( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
