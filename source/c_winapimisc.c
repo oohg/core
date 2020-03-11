@@ -501,6 +501,7 @@ HB_FUNC( WAITRUN )
    if( ! bResult )
    {
       hb_retnl( -1 );
+      return ;
    }
 
    WaitForSingleObject( prInfo.hProcess, INFINITE );
@@ -541,7 +542,10 @@ HB_FUNC( WAITRUNTERM )
                             &stInfo,
                             &prInfo );
    if( ! bResult )
+   {
       hb_retnl( -2 );
+      return;
+   }
 
    if( pWaitProc )
    {
