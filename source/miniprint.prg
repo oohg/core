@@ -4088,7 +4088,7 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
    picd.cbSizeofstruct = sizeof( PICTDESC );
    picd.picType = PICTYPE_BITMAP;
    picd.bmp.hbitmap = hbmp;
-   OleCreatePictureIndirect( &picd, &IID_IPicture, TRUE, ( LPVOID * )  iPictureRef );
+   OleCreatePictureIndirect( &picd, &IID_IPicture, FALSE, ( LPVOID * )  iPictureRef );
 
    if( iPicture == NULL )
    {
@@ -4105,7 +4105,6 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
       odr = lHeight;
    }
    odc = hb_parni( 6 );  
-
    if( odc == 0 )
    {
       odc = lWidth;
@@ -4138,6 +4137,8 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
    hb_retl( iPicture->lpVtbl->Render( iPicture, hdcPrint, c, r, dc, dr, 0, lHeight, lWidth, -lHeight, NULL ) == S_OK );
 
    SelectClipRgn( hdcPrint, NULL );
+
+   DeleteObject( hrgn );
 
    iPicture->lpVtbl->Release( iPicture );
 }
