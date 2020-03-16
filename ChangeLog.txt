@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-03-16 18:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     ! The second time PrintBitmap is called for the same image
+       nothing is printed.
+     ! Resource leak.
+
 2020-03-10 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_image.c
    * core\source\h_button.prg
