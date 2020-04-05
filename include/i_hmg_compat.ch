@@ -659,4 +659,8 @@ TODO: implement this clauses:
    => ;
       GetDefaultFontName()
 
+#xtranslate BUTTON [ <x> ] DEFAULT ;
+   => ;
+      BUTTON [ <x> ]
+
 #endif
