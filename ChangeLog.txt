@@ -12,6 +12,22 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-04-05 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     * Changed parameter testing order at method PrintBitmapX.
+
+2020-04-05 09:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+     * Resulting pattern of INIT PRINTSYS is now optional.
+
+2020-04-05 09:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_form.prg
+     + Support for releasing non-active forms.
+
+2020-04-05 09:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hmg_compat.ch
+     + Translate for BUTTON's DEFAULT clause.
+
 2020-03-16 18:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\miniprint.prg
      ! The second time PrintBitmap is called for the same image
