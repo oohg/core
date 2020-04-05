@@ -1707,18 +1707,20 @@ METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CL
    // It will be filled with as many additional copies of the image as they fit.
    ASSIGN aExt  VALUE aExt  TYPE "A" DEFAULT { nLinF, nColF }
 
-   IF ::cUnits == "MM"
-      IF aSize
+   IF aSize
+      IF ::cUnits == "MM"
          @ nLin, nCol PRINT BITMAP hBitmap IMAGESIZE
       ELSE
-         @ nLin, nCol PRINT BITMAP hBitmap WIDTH ( nColF - nCol ) HEIGHT ( nLinF - nLin )
+         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT BITMAP hBitmap IMAGESIZE
       ENDIF
    ELSE
-      IF aSize
-         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT BITMAP hBitmap IMAGESIZE
+      IF ::cUnits == "MM"
+         @ nLin, nCol PRINT BITMAP hBitmap WIDTH ( nColF - nCol ) HEIGHT ( nLinF - nLin ) STRETCH
       ELSE
          @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT BITMAP hBitmap ;
-            WIDTH ( nColF - nCol ) * ::nmHor HEIGHT ( nLinF - nLin ) * ::nmVer
+            WIDTH ( ( nColF - nCol - 1 ) * ::nmHor + ::nhFij ) ;
+            HEIGHT ( ( nLinF + 0.5 - nLin ) * ::nmVer + ::nvFij ) ;
+            STRETCH
       ENDIF
    ENDIF
 
