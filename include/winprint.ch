@@ -141,7 +141,7 @@ MEMVAR HBPRN
 
 #xcommand INIT PRINTSYS [ LANGUAGE <cLang> ] [ FOLDER <cFolder> ] ;
    => ;
-      hbprn := HBPrinter():New( <cLang>, <cFolder> )
+      hbprn := HBPrinter():New( [ <cLang>, <cFolder> ] )
 
 #xcommand START DOC [ NAME <docname> ] ;
    => ;
