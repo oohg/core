@@ -653,9 +653,6 @@ METHOD MessageLoop() CLASS TForm
 METHOD Release() CLASS TForm
 
    IF ! ::lReleasing
-      IF ! ::Active
-         MsgOOHGError( "WINDOW RELEASE: " + ::Name + " is not active. Program terminated." )
-      ENDIF
       ::lReleasing := .T.
 
       IF ValidHandler( ::hWnd )
@@ -2026,7 +2023,6 @@ CLASS TFormMain FROM TForm
 
    METHOD Define
    METHOD Activate
-   METHOD Release
 
    METHOD CheckInteractiveClose
 
@@ -2077,13 +2073,6 @@ METHOD Activate( lNoStop, oWndLoop ) CLASS TFormMain
    ::lFirstActivate := .T.
 
    Return ::Super:Activate( lNoStop, oWndLoop )
-
-METHOD Release() CLASS TFormMain
-
-   ::Super:Release()
-   // Processing will never reach this point
-
-   RETURN NIL
 
 METHOD CheckInteractiveClose() CLASS TFormMain
 
@@ -2211,9 +2200,6 @@ METHOD Release() CLASS TFormModal
          MsgOOHGError( "Non top modal window *" + ::Name + "* can't be released. Program terminated." )
       ENDIF
 
-      IF ! ::Active
-         MsgOOHGError( "WINDOW RELEASE: " + ::Name + " is not active. Program terminated." )
-      ENDIF
       ::lReleasing := .T.
 
       _ReleaseWindowList( { Self } )
@@ -2959,7 +2945,11 @@ FUNCTION _ReleaseWindowList( aWindows )
             oWnd:OnHideFocusManagement()
 
             // Destroy form
-            DestroyWindow( oWnd:hWnd )
+            IF oWnd:Active .AND. ValidHandler( oWnd:hWnd )
+               DestroyWindow( oWnd:hWnd )
+            ELSE
+               oWnd:Events_Destroy()
+            ENDIF
          ENDIF
       NEXT i
    ELSE
@@ -2988,7 +2978,11 @@ FUNCTION _ReleaseWindowList( aWindows )
             oWnd:OnHideFocusManagement()
 
             // Destroy form
-            DestroyWindow( oWnd:hWnd )
+            IF oWnd:Active .AND. ValidHandler( oWnd:hWnd )
+               DestroyWindow( oWnd:hWnd )
+            ELSE
+               oWnd:Events_Destroy()
+            ENDIF
          ENDIF
       NEXT i
    ENDIF
