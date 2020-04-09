@@ -2337,7 +2337,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    COLORREF      BackgroundColor = (COLORREF) RGB( HB_PARNL2( 2, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 3 ) );
    INT           ModeStretch     = HB_ISNUM( 5 ) ? (INT) hb_parnl( 5 ) : BT_SCALE;
    HDC           memDC;
-   HBITMAP       hBitmap;
+   HBITMAP       hBitmap, hOldBmp;
    HENHMETAFILE  hEMF            = NULL;
    ENHMETAHEADER emh;
    HRSRC         hResourceData;
@@ -2397,7 +2397,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    // Create Bitmap
    memDC   = CreateCompatibleDC( NULL );
    hBitmap = bt_bmp_create_24bpp( nWidth, nHeight );
-   SelectObject( memDC, hBitmap );
+   hOldBmp = SelectObject( memDC, hBitmap );
 
    // Paint the background of the Bitmap
    hBrush = CreateSolidBrush( BackgroundColor );
@@ -2413,6 +2413,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
 
    // Release handles
    SelectObject( memDC, OldBrush );
+   SelectObject( memDC, hOldBmp );
    DeleteEnhMetaFile( hEMF );
    DeleteDC( memDC );
    DeleteObject( hBrush );
