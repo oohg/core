@@ -903,43 +903,45 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintResource( nLin, nCol, nLinF, nColF, cResource, aResol, aSize, aExt, lNoDIB, lNo3DC, lNoTra, lNoChk ) CLASS TPrintBase
 
-   LOCAL nAttrib, aPictSize, lSet, hBitmap
+   LOCAL nAttrib, aPictSize, lSet, hBitmap, lRet
 
-   // This is the same code used by method Picture of class TImage.
-   IF ValType( cResource ) $ "CM"
-      ASSIGN lNoDIB VALUE lNoDIB TYPE "L" DEFAULT .F.
-      ASSIGN lNo3DC VALUE lNo3DC TYPE "L" DEFAULT .F.
-      ASSIGN lNoTra VALUE lNoTra TYPE "L" DEFAULT .F.
-      ASSIGN lNoChk VALUE lNoChk TYPE "L" DEFAULT .F.
-
-      IF lNoDIB
-         nAttrib := LR_DEFAULTCOLOR
-         IF ! lNo3DC .OR. ! lNoTra
-            IF lNoChk
-               lSet := .T.
-            ELSE
-               aPictSize := _OOHG_SizeOfBitmapFromFile( cResource )      // {width, height, depth}
-               lSet := aPictSize[ 3 ] <= 8
-            ENDIF
-            IF lSet
-              IF ! lNo3DC
-                 nAttrib += LR_LOADMAP3DCOLORS
-              ENDIF
-              IF ! lNoTra
-                 nAttrib += LR_LOADTRANSPARENT
-              ENDIF
-            ENDIF
-         ENDIF
-      ELSE
-         nAttrib := LR_CREATEDIBSECTION
-      ENDIF
-      hBitmap := _OOHG_BitmapFromFile( NIL, cResource, nAttrib, .F. )
-
-      ::PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt )
-      DeleteObject( hBitmap )
+   IF ! ValType( cResource ) $ "CM" .OR. Empty( cResource )
+      RETURN .F.
    ENDIF
 
-   RETURN .T.
+   ASSIGN lNoDIB VALUE lNoDIB TYPE "L" DEFAULT .F.
+   ASSIGN lNo3DC VALUE lNo3DC TYPE "L" DEFAULT .F.
+   ASSIGN lNoTra VALUE lNoTra TYPE "L" DEFAULT .F.
+   ASSIGN lNoChk VALUE lNoChk TYPE "L" DEFAULT .F.
+
+   // This is the same code used by method Picture of class TImage.
+   IF lNoDIB
+      nAttrib := LR_DEFAULTCOLOR
+      IF ! lNo3DC .OR. ! lNoTra
+         IF lNoChk
+            lSet := .T.
+         ELSE
+            aPictSize := _OOHG_SizeOfBitmapFromFile( cResource )      // {width, height, depth}
+            lSet := aPictSize[ 3 ] <= 8
+         ENDIF
+         IF lSet
+           IF ! lNo3DC
+              nAttrib += LR_LOADMAP3DCOLORS
+           ENDIF
+           IF ! lNoTra
+              nAttrib += LR_LOADTRANSPARENT
+           ENDIF
+         ENDIF
+      ENDIF
+   ELSE
+      nAttrib := LR_CREATEDIBSECTION
+   ENDIF
+   hBitmap := _OOHG_BitmapFromFile( NIL, cResource, nAttrib, .F. )
+
+   lRet := ::PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt )
+   DeleteObject( hBitmap )
+
+   RETURN lRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLASS TPrintBase
@@ -948,25 +950,6 @@ METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLA
       RETURN .F.
    ENDIF
 
-   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1
-   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1
-   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4
-   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4
-
-   IF ! HB_ISARRAY( aExt )
-      aExt := { nLinF, nColF }
-   ELSE
-      IF Len( aExt ) < 2
-         aExt := ASize( aExt, 2 )
-      ENDIF
-      IF ! HB_ISNUMERIC( aExt[ 1 ] ) .OR. aExt[ 1 ] < nLinF
-         aExt[ 1 ] := nLinF
-      ENDIF
-      IF ! HB_ISNUMERIC( aExt[ 2 ] ) .OR. aExt[ 2 ] < nColF
-         aExt[ 2 ] := nColF
-      ENDIF
-   ENDIF
-
    IF ::cUnits == "MM"
       ::nmVer := 1
       ::nvFij := 0
@@ -983,18 +966,14 @@ METHOD PrintBitmap( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CLA
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintBitmapX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, hBitmap, aResol, aSize, aExt )
-
-   RETURN .T.
+   RETURN ::PrintBitmapX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, hBitmap, aResol, aSize, aExt )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS TPrintBase
 
-   ASSIGN nLin   VALUE nLin   TYPE "N" DEFAULT 1
-   ASSIGN nCol   VALUE nCol   TYPE "N" DEFAULT 1
-   ASSIGN cImage VALUE cImage TYPE "C" DEFAULT ""
-   ASSIGN nLinF  VALUE nLinF  TYPE "N" DEFAULT 4
-   ASSIGN nColF  VALUE nColF  TYPE "N" DEFAULT 4
+   IF ! ValType( cImage ) $ "CM" .OR. Empty( cImage )
+      RETURN .F.
+   ENDIF
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -1012,17 +991,11 @@ METHOD PrintImage( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintImageX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, cImage, aResol, aSize, aExt )
-
-   RETURN .T.
+   RETURN ::PrintImageX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, cImage, aResol, aSize, aExt )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPrintBase
 
-   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
-   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
-   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
    ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
    ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
    ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
@@ -1043,17 +1016,11 @@ METHOD PrintLine( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS TPri
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintLineX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid )
-
-   RETURN .T.
+   RETURN ::PrintLineX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPrintBase
 
-   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
-   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
-   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
    ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
    ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
    ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
@@ -1075,17 +1042,11 @@ METHOD PrintRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColo
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintRectangleX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid, arColor  )
-
-   RETURN .T.
+   RETURN ::PrintRectangleX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid, arColor  )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS TPrintBase
 
-   ASSIGN nLin    VALUE nLin    TYPE "N" DEFAULT 1
-   ASSIGN nCol    VALUE nCol    TYPE "N" DEFAULT 1
-   ASSIGN nLinF   VALUE nLinF   TYPE "N" DEFAULT 4
-   ASSIGN nColF   VALUE nColF   TYPE "N" DEFAULT 4
    ASSIGN atColor VALUE atColor TYPE "A" DEFAULT ::aColor
    ASSIGN ntwPen  VALUE ntwPen  TYPE "N" DEFAULT ::nwPen
    ASSIGN lSolid  VALUE lSolid  TYPE "L" DEFAULT .T.
@@ -1107,9 +1068,7 @@ METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, a
       ::nhFij := ( 12 / 3.70 )
    ENDIF
 
-   ::PrintRoundRectangleX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid, arColor  )
-
-   RETURN .T.
+   RETURN ::PrintRoundRectangleX( ::nTMargin + nLin, ::nLMargin + nCol, ::nTMargin + nLinF, ::nLMargin + nColF, atColor, ntwPen, lSolid, arColor  )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintMode( cFile ) CLASS TPrintBase
@@ -1696,16 +1655,8 @@ METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CL
    HB_SYMBOL_UNUSED( aResol )
    HB_SYMBOL_UNUSED( aExt )
 
-   // Coordinates of the rectangle for the first copy of the image.
-   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1   // Start row
-   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1   // Start col
-   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4   // End row
-   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4   // End col
+   // .T. means print at image size
    ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
-
-   // Coordinates of the lower right corner of the extension rectangle.
-   // It will be filled with as many additional copies of the image as they fit.
-   ASSIGN aExt  VALUE aExt  TYPE "A" DEFAULT { nLinF, nColF }
 
    IF aSize
       IF ::cUnits == "MM"
@@ -1732,6 +1683,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
    HB_SYMBOL_UNUSED( aResol )
    HB_SYMBOL_UNUSED( aExt )
 
+   // .T. means print at image size
    ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
 
    IF aSize
@@ -2419,7 +2371,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
       ENDIF
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintBarcodeX( y, x, y1, x1, aColor ) CLASS THBPrinter
@@ -2434,22 +2386,31 @@ METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CL
 
    HB_SYMBOL_UNUSED( aResol )
 
-   // Coordinates of the rectangle for the first copy of the image.
-   ASSIGN nLin  VALUE nLin  TYPE "N" DEFAULT 1   // Start row
-   ASSIGN nCol  VALUE nCol  TYPE "N" DEFAULT 1   // Start col
-   ASSIGN nLinF VALUE nLinF TYPE "N" DEFAULT 4   // End row
-   ASSIGN nColF VALUE nColF TYPE "N" DEFAULT 4   // End col
+   // .T. means print at image size
    ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
 
-   // Coordinates of the lower right corner of the extension rectangle.
-   // It will be filled with as many additional copies of the image as they fit.
-   ASSIGN aExt  VALUE aExt  TYPE "A" DEFAULT { nLinF, nColF }
+   // Size of the extension rectangle.
+   // The image will be painted as many times needed to fill the rectangle defined by
+   // ( top = nLin, left = nCol ) and ( bottom = nLen + aExt[1], right = nCol + aExt[2] )
+   IF ! HB_ISARRAY( aExt )
+      aExt := { 0, 0 }
+   ELSE
+      IF Len( aExt ) < 2
+         aExt := ASize( aExt, 2 )
+      ENDIF
+      IF ! HB_ISNUMERIC( aExt[ 1 ] )
+         aExt[ 1 ] := 0
+      ENDIF
+      IF ! HB_ISNUMERIC( aExt[ 2 ] )
+         aExt[ 2 ] := 0
+      ENDIF
+   ENDIF
 
    IF ::cUnits == "MM"
       IF aSize
          @ nLin, nCol BITMAP hBitmap IMAGESIZE
       ELSE
-         @ nLin, nCol BITMAP hBitmap SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND ( aExt[ 1 ] - nLinF ), ( aExt[ 2 ] - nColF )
+         @ nLin, nCol BITMAP hBitmap SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND aExt[ 1 ], aExt[ 2 ]
       ENDIF
    ELSE
       IF aSize
@@ -2457,41 +2418,54 @@ METHOD PrintBitmapX( nLin, nCol, nLinF, nColF, hBitmap, aResol, aSize, aExt ) CL
       ELSE
          @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 BITMAP hBitmap ;
             SIZE ( nLinF - nLin ) * ::nmVer, ( nColF - nCol ) * ::nmHor ;
-            EXTEND ( aExt[ 1 ] - nLinF ) * ::nmVer, ( aExt[ 2 ] - nColF ) * ::nmHor
+            EXTEND aExt[ 1 ] * ::nmVer, aExt[ 2 ] * ::nmHor
       ENDIF
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLASS THBPrinter
 
    HB_SYMBOL_UNUSED( aResol )
 
+   // .T. means print at image size
    ASSIGN aSize VALUE aSize TYPE "L" DEFAULT .F.
+
+   // Size of the extension rectangle.
+   // The image will be painted as many times needed to fill the rectangle defined by
+   // ( top = nLin, left = nCol ) and ( bottom = nLen + aExt[1], right = nCol + aExt[2] )
+   IF ! HB_ISARRAY( aExt )
+      aExt := { 0, 0 }
+   ELSE
+      IF Len( aExt ) < 2
+         aExt := ASize( aExt, 2 )
+      ENDIF
+      IF ! HB_ISNUMERIC( aExt[ 1 ] )
+         aExt[ 1 ] := 0
+      ENDIF
+      IF HB_ISNUMERIC( aExt[ 2 ] )
+         aExt[ 2 ] := 0
+      ENDIF
+   ENDIF
 
    IF ::cUnits == "MM"
       IF aSize
          @ nLin, nCol PICTURE cImage IMAGESIZE
-      ELSEIF aExt == NIL
-         @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol )
       ELSE 
          @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND aExt[ 1 ], aExt[ 2 ]
       ENDIF
    ELSE
       IF aSize
          @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage IMAGESIZE
-      ELSEIF aExt == NIL
-         @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage ;
-            SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol ) * ::nmHor + ::nhFij * 2
       ELSE
          @ nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PICTURE cImage ;
-            SIZE ( nLinF - nLin ) * ::nmVer + ::nvFij, ( nColF - nCol ) * ::nmHor + ::nhFij * 2 ;
-            EXTEND aExt[ 1 ], aExt[ 2 ]
+            SIZE ( nLinF - nLin ) * ::nmVer, ( nColF - nCol ) * ::nmHor ;
+            EXTEND aExt[ 1 ] * ::nmVer, aExt[ 2 ] * ::nmHor
       ENDIF
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS THBPrinter
@@ -2505,7 +2479,7 @@ METHOD PrintLineX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid ) CLASS THB
       @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 LINE PEN "P0"
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPrinter
@@ -2520,7 +2494,7 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
       @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 RECTANGLE PEN "P0" BRUSH "B1"
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arColor ) CLASS THBPrinter
@@ -2535,7 +2509,7 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
       @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2, nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ROUNDRECT ROUNDR 10 ROUNDC 10 PEN "P0" BRUSH "B1"
    ENDIF
 
-   RETURN .T.
+   RETURN HBPRNERROR
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SelPrinterX( lSelect, lPreview, lLandscape, nPaperSize, cPrinterX, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nPaperLength, nPaperWidth, cLang ) CLASS THBPrinter
