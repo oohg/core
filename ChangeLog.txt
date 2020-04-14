@@ -12,6 +12,192 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-04-13 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\resources\oohg.rc
+     + New HBPRINTER messages.
+
+   * core\include\hbprinter_dyns.hbx
+     * Updated.
+
+   * core\include\bostaurus.ch
+   * core\include\i_graph.ch
+     ! Compiler error when winprint.ch and bostaurus.ch are
+       included at the same time.
+
+   * core\include\winprint.ch
+     + Command MOVE TO.
+     + Constant GDI_ERROR.
+     + Defines for handling colors when oohg.ch is not included.
+     ! "_OOHG_ActiveFrame undefined" error when oohg.ch is not included.
+
+   * core\source\winprint.prg
+
+     ; At PRG level:
+     * Some comments, cosmetic changes, minor optimizations and defines
+       to improve source readability.
+     + DATA lReturnRGB INIT .T.
+       ; This forces method DxColors and pseudofunction HBPRNCOLOR to
+         return a COLORREF instead of an ARGB color.
+         INCOMPATIBLE.
+       ; Set this data to .F. to restore the previous behaviour.
+         In this case use ( aRGB_color % 0xFF000000 ) to set the color.
+     * Methods SetDevMode, SetUserMode, DrawText, Say, DefineImageList,
+       DrawImageList, Rectangle, FrameRect, RoundRect, FillRect, TextOut,
+       InvertRect, Ellipse, Arc, ArcTo, Chord, Pie, Polygon, PolyBezier,
+       PolyBezierTo, Line, LineTo, GetTextExtend, GetTextExtend_MM,
+       SetViewPortOrg, GetViewPortOrg, SetTextCharExtra, GetTextCharExtra,
+       GetTextAlign, SetTextAlign, Picture and Bitmap:
+       *  Now set ::Error aka HBPRNERROR.
+     + Method GetFontNames:
+       * Returns an array of font names.
+     + Method UnConvert to translate a position given in points to
+       its equivalent in ::Units.
+     * Method SetDevMode:
+       * No longer modifies ::hDCRef.
+     * Method SetUserMode:
+       * No longer modifies ::hDCRef.
+       ! RTE caused by a missing parameter in a function call.
+     * Method StartDoc: function RR_CreateFile replaced by RR_CreatEMFile.
+     * Method TextOut:
+       ! Amount of space the system should add to the break characters.
+     * Method Say:
+       ! Amount of space the system should add to the break characters.
+     + Method MoveTo to set the current drawing position of the page.
+       Use it to set the starting point for method PolyBezierTo.
+     * Method DxColors:
+       * Changed previous behaviour: by default now returns a COLORREF
+         instead of an ARGB color. To revert to previous behaviour set
+         ::lReturnRGB to .F.
+         INCOMPATIBLE.
+     * Method InitMessages:
+       + "Report is empty!" and "OK" messages.
+       + Support for loading new messages from oohg.rc
+     * Method PrevThumb:
+       ! Avoid double painting.
+       * Use image controls objects instead of win functions.
+       * Function RR_PlayFThumb replaced by RR_PlayThumb.
+       ! Size of thumbnails.
+     * Method PrevShow:
+       * Functions RR_PreviewPlay and RR_PreviewFPlay replaced
+         by RR_PlayPreview.
+       * Use the image control object instead of win functions.
+       - Unneeded call to function RR_ScrollWindow.
+       ! Size of preview page.
+     * Method PrevPrint:
+       * Function RR_PlayFEnhMetaFile replaced by RR_PlayEnhMetaFile.
+     * Method Preview:
+       ! RTE when the report has no pages.
+       ! Avoid double painting.
+       ! RTE when a non valid page number is entered in the combobox.
+       ! Missing caption on page preview form.
+       ! Size of thumbnails.
+       ! No thumbnails are shown when ::InMemory is .T.
+     * Method PrintOption:
+       + NOSYSMENU SIZE 9 styles to options form.
+
+     ; At C level:
+     - Unneeded header.
+     * Order of included headers.
+     + Some defines to improve source readability.
+     * Some changes for 64 bits support.
+     * Functions RR_TEXTOUT, RR_DRAWTEXT, RR_RECTANGLE, RR_SETVIEWPORTORG,
+       RR_GETVIEWPORTORG, RR_DRAWPICTURE, RR_DRAWIMAGELIST, RR_POLYGON,
+       RR_POLYBEZIER, RR_POLYBEZIERTO, RR_GETTEXTEXTEND, RR_INVERTRECT,
+       RR_GETTEXTEXTEND_MM, RR_ROUNDRECT, RR_ELLIPSE, RR_CHORD, RR_ARCTO,
+       RR_ARC, RR_PIE, RR_FILLRECT, RR_FRAMERECT, RR_LINE, RR_LINETO
+       and RR_DRAWBITMAP now return 1 on error or 0 on success.
+     * Added one item to devcaps array in order to use the same
+       indexes used at PRG level.
+     - Members preview and hbmp from structure HBPRINTERDATA.
+     + Function EnumFontsCallBack.
+     + Function RR_GETFONTNAMES.
+     * Function RR_PRINTDIALOG:
+       * Initial page interval set to 1-65535.
+       + Min page set to 1 and max page set 65535.
+       + Initial number of copies is set to 1.
+       + Check for a NULL HDC.
+       + Check to correctly set the number of copies in old Windows.
+     * Function RR_RESETPRINTER:
+       ! Memory leak.
+     * Function RR_DELETEDC:
+       ! Memory and resource leaks.
+       * Use C pointer instead PRG pointer to release the DC.
+     * Function RR_SETDEVMODE:
+       * Now returns NIL when change fails.
+     * Function RR_SETUSERMODE:
+       * Now it only processes DMPAPER_USER property.
+       * Now returns NIL when change fails.
+     * Function RR_GETDEFAULTPRINTER:
+       ! Member PrinterDefault of structure HBPRINTERDATA wasn't updated
+         when no default printer was found.
+       ! Return value was wrong when no default printer wasn't found.
+     * Function RR_SETPOLYFILLMODE:
+       ! Wrong casting of mode parameter.
+     * Function RR_SETBKMODE:
+       * Now returns 0 when change fails.
+     * Function RR_SAVEMETAFILE:
+       * Now returns the handle to the new EMF.
+     * Function RR_CreatEMFile now handles in-memory and at-disk files.
+     - Function RR_CreateFile.
+     - Function RR_PICTURE superseded by RR_DRAWPICTURE.
+     + Function RR_DrawIPicture:
+       ; Draws an image on a DC from an IPicture object.
+       ; Derives form previous version of function RR_DRAWPICTURE but.
+         uses diferent default values for image dimensions.
+     * Function RR_DRAWPICTURE:
+       * Now uses function RR_DrawIPicture.
+     * Function RR_DRAWBITMAP:
+       * Now uses function RR_DrawIPicture.
+     * Function RR_CREATEIMAGELIST:
+       * Now returns NULL on fail.
+     * Function RR_DRAWIMAGELIST:
+       ! RTE caused by access to the wrong parameter.
+     + Function RR_MOVETO:
+       ; Sets the current drawing position inside the page.
+     - Function RR_ScrollWindow.
+     + Function RR_PLAYPREVIEW:
+       ; This new function plays the metafiles on a 24-bit bitmap.
+       ; It handles both in-memory and at-disk files.
+       ! Page preview shows wrong images when the pages are created
+         using commands INVERTRECT or DRAW IMAGELIST.
+     - Function RR_PREVIEWPLAY substituted by RR_PLAYPREVIEW.
+     - Function RR_PREVIEWFPLAY substituted by RR_PLAYPREVIEW.
+     * Function RR_PLAYTHUMB:
+       * Metafiles are played on a 24-bit bitmap.
+       * Both in-memory and at-disk metafiles are now supported.
+       ! Thumbnails show wrong images when the pages are createad
+         using commands INVERTRECT or DRAW IMAGELIST.
+     - Function RR_PLAYFTHUMB substituted by RR_PLAYTHUMB.
+     * Function RR_PLAYENHMETAFILE:
+       * Both in-memory and at-disk metafiles are now supported.
+       ! Some resource leaks.
+     - Function RR_PLAYFENHMETAFILE substituted by RR_PLAYENHMETAFILE.
+
+2020-04-10 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     * Method PrintResource of TPrintBase:
+       + Check for empty resource name.
+     * Method PrintImage of TPrintBase:
+       + Check for empty file name.
+     * Methods PrintResource, PrintBitmap, PrintImage, PrintLine,
+       PrintRectangle, PrintRoundRectangle of TPrintBase:
+       - Default values for ommited parameters.
+       * Now return the return value of the subclass method.
+     * Method PrintBitmapX of TMiniPrint:
+       - Default values of printing coordinates.
+     * Methods PrintDataX, PrintBitmapX, PrintImageX, PrintLineX,
+       PrintRectangleX and PrintRoundRectangleX of THBPrinter:
+       * Now return HBPRNERROR.
+     * Methods PrintBarcodeX, PrintBitmapX and PrintImageX
+       of THBPrinter:
+       - Default values for ommited printing coordinates.
+     * Method PrintBitmapX and PrintImageX of THBPrinter:
+       ! Support for the extension rectangle.
+
+2020-04-08 23:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     ! Resource leak.
+
 2020-04-05 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_print.prg
      * Changed parameter testing order at method PrintBitmapX.
