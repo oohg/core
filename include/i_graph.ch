@@ -170,14 +170,14 @@
       <uVar1> := IIF( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
       [ <uVarN> := IIF( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
 
+#ifndef _BT_INFO_NAME_
+#ifndef __HBPRN__
 #translate RGB( <nRed>, <nGreen>, <nBlue> ) ;
    => ;
       ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
-
-#ifndef _BT_INFO_NAME_
-
 #define ArrayRGB_TO_COLORREF( aRGB ) RGB( aRGB[1], aRGB[2], aRGB[3] )
 #define COLORREF_TO_ArrayRGB( nRGB ) { hb_bitAnd( nRGB, 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -8 ), 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -16 ), 0xFF ) }
+#endif
 #endif
 
 

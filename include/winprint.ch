@@ -68,7 +68,13 @@ MEMVAR HBPRN
 #endif
 
 #ifndef __OOHG__
-#define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#ifndef _BT_INFO_NAME_
+#translate RGB( <nRed>, <nGreen>, <nBlue> ) ;
+   => ;
+      ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#define ArrayRGB_TO_COLORREF( aRGB ) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#define COLORREF_TO_ArrayRGB( nRGB ) { hb_bitAnd( nRGB, 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -8 ), 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -16 ), 0xFF ) }
+#endif
 #endif
 
 #xcommand SET CLOSEPREVIEW ON ;
@@ -151,9 +157,15 @@ MEMVAR HBPRN
    => ;
       hbprn:StartPage()
 
+#ifndef __OOHG__
+#xcommand END PAGE ;
+   => ;
+      hbprn:EndPage()
+#else
 #xcommand END PAGE ;
    => ;
       iif( __DYNSISFUN( "TAPPLICATION" ) .AND. _OOHG_ActiveFrame # NIL, Do( "_EndTabPage" ), hbprn:EndPage() )
+#endif
 
 #xcommand END DOC [ <nowait: NOWAIT> ] [ <size: SIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
    => ;
@@ -665,6 +677,10 @@ MEMVAR HBPRN
    => ;
       hbprn:Picture( <row>, <col>,,, <cpic>,,, .T. )
 
+#xcommand MOVE TO <row>, <col> [ PREVIOUS <aRowCol> ] ;
+   => ;
+      [ <aRowCol> := ] hbprn:MoveTo( <row>, <col> )
+
 #xcommand @ <row>, <col>, <row2>, <col2> LINE [ PEN <cpen> ] ;
    => ;
       hbprn:Line( <row>, <col>, <row2>, <col2>, <cpen> )
@@ -862,6 +878,7 @@ TEXT ALIGNMENT OPTIONS
 #define TA_BASELINE                           24
 #define TA_RTLREADING                         256
 #define TA_MASK                               ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
+#define GDI_ERROR                             0xFFFFFFFF
 #endif
 
 /*---------------------------------------------------------------------------

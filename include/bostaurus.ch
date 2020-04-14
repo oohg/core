@@ -300,8 +300,13 @@
 
 // PSEUDO-FUNCTIONS
 #ifndef __OOHG__
-#define ArrayRGB_TO_COLORREF(aRGB)                 RGB( aRGB[1], aRGB[2], aRGB[3] )
-#define COLORREF_TO_ArrayRGB(nRGB)                 { hb_bitAND( nRGB, 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -8 ), 0xFF ), hb_bitAND( HB_bitSHIFT( nRGB, -16 ), 0xFF ) }
+#ifndef __HBPRN__
+#translate RGB( <nRed>, <nGreen>, <nBlue> ) ;
+   => ;
+      ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#define ArrayRGB_TO_COLORREF( aRGB ) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#define COLORREF_TO_ArrayRGB( nRGB ) { hb_bitAnd( nRGB, 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -8 ), 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -16 ), 0xFF ) }
+#endif
 #endif
 
 #endif
