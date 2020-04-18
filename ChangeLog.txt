@@ -12,6 +12,39 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-04-18 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_combobox.ch
+     + Clause AUTOSIZE.
+     + Clauses INDEXISVALUE and SOURCEISVALUE.
+       ; INDEXISVALUE forces the use of sequential indexes as values.
+       ; SOURCEISVALUE forces the use of VALUESOURCE values.
+       ; See samples\combobox.
+     + Command SET COMBOINDEXISVALUE ON|OFF.
+       ; ON means that new combos without one of the previous clauses
+         will behave as if they have INDEXISVALUE clause.
+       ; OFF means that new combos without one of the previous clauses
+         will behave as if they have SOURCEISVALUE clause.
+       ; OFF is the default value.
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     + Global var _OOHG_ComboIndexIsValue.
+       ; Defaults to .F.
+   * core\source\h_combo.prg
+     + Data lUseIndexVal.
+     + New parameters to method Define.
+     * Do not force initialization of class datas lDelayLoad,
+       lIncremental and lRefresh.
+     + Support for autosize on method Define.
+     * Method Value:
+       ! Was ignoring empty values thus preventing the removal
+         of the current selection.
+       + Support for clauses INDEXISVALUE and SOURCEISVALUE.
+     * Method Autosize:
+       ! Was not setting the correct width.
+     * Methods Events, ItemValue, ItemBySource:
+       + Support for clauses INDEXISVALUE and SOURCEISVALUE.
+
 2020-04-13 21:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\resources\oohg.rc
      + New HBPRINTER messages.
