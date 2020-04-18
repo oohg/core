@@ -81,6 +81,7 @@ CLASS TCombo FROM TLabel
    DATA lIncremental              INIT .F.
    DATA lNoClone                  INIT .F.
    DATA lRefresh                  INIT NIL
+   DATA lUseIndexVal              INIT _OOHG_ComboIndexIsValue
    DATA lUsesTComboArray          INIT .F.
    DATA nHeight2                  INIT 150
    DATA nLastFound                INIT 0
@@ -161,28 +162,30 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemImgNum, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight, ;
-               lNoHScroll, lNoClone, lNoTrans, bOnCancel ) CLASS TCombo
+               lNoHScroll, lNoClone, lNoTrans, bOnCancel, lIndex, lAutosize ) CLASS TCombo
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
    ASSIGN aRows           VALUE aRows         TYPE "A" DEFAULT {}
-   ASSIGN ::nCol          VALUE x             TYPE "N"
-   ASSIGN ::nRow          VALUE y             TYPE "N"
-   ASSIGN ::nWidth        VALUE w             TYPE "N"
-   ASSIGN ::nHeight       VALUE h             TYPE "N"
-   ASSIGN sort            VALUE sort          TYPE "L" DEFAULT .F.
-   ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
    ASSIGN displaychange   VALUE displaychange TYPE "L" DEFAULT .F.
-   ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
+   ASSIGN lWinSize        VALUE lWinSize      TYPE "L" DEFAULT .F.
+   ASSIGN sort            VALUE sort          TYPE "L" DEFAULT .F.
    ASSIGN ::ImageSource   VALUE ImageSource   TYPE "B"
    ASSIGN ::ItemImgNum    VALUE ItemImgNum    TYPE "B"
-   ASSIGN ::lDelayLoad    VALUE lDelayLoad    TYPE "L" DEFAULT .F.
-   ASSIGN ::lIncremental  VALUE lIncremental  TYPE "L" DEFAULT .F.
-   ASSIGN lWinSize        VALUE lWinSize      TYPE "L" DEFAULT .F.
+   ASSIGN ::lAdjustImages VALUE lAdjustImages TYPE "L"
+   ASSIGN ::lAutosize     VALUE lAutosize     TYPE "L"
+   ASSIGN ::lDelayLoad    VALUE lDelayLoad    TYPE "L"
+   ASSIGN ::lIncremental  VALUE lIncremental  TYPE "L"
    ASSIGN ::lNoClone      VALUE lNoClone      TYPE "L"
-   ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L" DEFAULT NIL
-   ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
+   ASSIGN ::lRefresh      VALUE lRefresh      TYPE "L"
+   ASSIGN ::lUseIndexVal  VALUE lIndex        TYPE "L"
+   ASSIGN ::nCol          VALUE x             TYPE "N"
+   ASSIGN ::nHeight       VALUE h             TYPE "N"
+   ASSIGN ::nRow          VALUE y             TYPE "N"
+   ASSIGN ::nTextHeight   VALUE TextHeight    TYPE "N"
+   ASSIGN ::nWidth        VALUE w             TYPE "N"
    ASSIGN ::OnRefresh     VALUE onrefresh     TYPE "B"
+   ASSIGN ::SourceOrder   VALUE sourceorder   TYPE "CMNB"
    IF HB_ISNUMERIC( nLapse ) .AND. nLapse >= 0
       ::SearchLapse := nLapse
    ENDIF
@@ -262,6 +265,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
       ::SetDropDownWidth( ListWidth )
    ENDIF
 
+   ::EditHeight := editheight
+   ::OptionsHeight := optheight
+
    ::Refresh()
 
    IF HB_ISLOGICAL( lFirstItem ) .AND. lFirstItem .AND. ::ItemCount > 0
@@ -277,9 +283,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
    ENDIF
 
    ::Value := Value
-
-   ::EditHeight := editheight
-   ::OptionsHeight := optheight
 
    ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
    ASSIGN ::OnLostFocus   VALUE LostFocus                TYPE "B"
@@ -436,6 +439,10 @@ METHOD Refresh() CLASS TCombo
       ::Value := uValue
       ::DisplayValue := cDisplayValue
 
+      IF ::lAutosize
+         ::Autosize( .T. )
+      ENDIF
+
       ::DoEvent( ::OnRefresh, "REFRESH" )
    ENDIF
 
@@ -549,14 +556,22 @@ METHOD Value( uValue ) CLASS TCombo
       ENDIF
       uRet := 0
    ELSE
-      IF uValue # NIL .AND. ::IsValTypeOK( uValue )
-         ComboSetCursel( ::hWnd, AScan( ::aValues, uValue ) )
+      IF PCount() > 0 .AND. ::IsValTypeOK( uValue )
+         IF Empty( uValue )
+            ComboSetCursel( ::hWnd, 0 )
+         ELSEIF ::lUseIndexVal
+            ComboSetCursel( ::hWnd, uValue )
+         ELSE
+            ComboSetCursel( ::hWnd, AScan( ::aValues, uValue ) )
+         ENDIF
          ::DoChange()
       ENDIF
       uRet := ComboGetCursel( ::hWnd )
       IF uRet >= 1 .AND. uRet <= Len( ::aValues )
-         uRet := ::aValues[ uRet ]
-      ELSEIF ::ValueType() == "C"
+         IF ! ::lUseIndexVal
+            uRet := ::aValues[ uRet ]
+         ENDIF
+      ELSEIF ::ValueType() == "C" .AND. ! ::lUseIndexVal
          uRet := ""
       ELSE
          uRet := 0
@@ -701,8 +716,9 @@ METHOD AutoSize( lValue ) CLASS TCombo
    IF HB_ISLOGICAL( lValue )
       ::lAutoSize := lValue
       IF lValue
-         cCaption := GetWindowText( ::hWnd )
-         ::SizePos(, , GetTextWidth( NIL, cCaption + "0", ::FontHandle ) + ::IconWidth + GetVScrollBarWidth(), GetTextHeight( NIL, cCaption, ::FontHandle ) )
+         cCaption := GetWindowText( ::hWnd ) + "0"
+         ::EditHeight := GetTextHeight( NIL, cCaption, ::FontHandle )
+         ::width := GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth + GetVScrollBarWidth()
       ENDIF
    ENDIF
 
@@ -772,7 +788,11 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
             IF ::nLastFound > 0 .AND. ::nLastFound >= nStart
                // item was found in the rest of the list, select
                IF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
-                  ::Value := ::aValues[ ::nLastFound ]
+                  IF ::lUseIndexVal
+                     ::Value := ::nLastFound
+                  ELSE
+                     ::Value := ::aValues[ ::nLastFound ]
+                  ENDIF
                ENDIF
             ELSE
                // if there are more items not already loaded, load them and search again
@@ -788,7 +808,11 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
 
                IF ::nLastFound > 0
                   IF ::nLastFound >= 1 .AND. ::nLastFound <= Len( ::aValues )
-                     ::Value := ::aValues[ ::nLastFound ]
+                     IF ::lUseIndexVal
+                        ::Value := ::nLastFound
+                     ELSE
+                        ::Value := ::aValues[ ::nLastFound ]
+                     ENDIF
                   ENDIF
                ELSE
                   ::cText := ""
@@ -845,7 +869,7 @@ METHOD Events_Command( wParam ) CLASS TCombo
 
    IF Hi_wParam == CBN_SELCHANGE
       IF ::lAutosize
-         ::Autosize(.T.)
+         ::Autosize( .T. )
       ENDIF
 
       ::DoChange()
@@ -1005,8 +1029,10 @@ METHOD ItemValue( cText ) CLASS TCombo
    uRet := ::FindStringExact( cText )
 
    IF uRet >= 1 .AND. uRet <= Len( ::aValues )
-      uRet := ::aValues[ uRet ]
-   ELSEIF ::ValueType() == "C"
+      IF ! ::lUseIndexVal
+         uRet := ::aValues[ uRet ]
+      ENDIF
+   ELSEIF ::ValueType() == "C" .AND. ! ::lUseIndexVal
       uRet := ""
    ELSE
       uRet := 0
@@ -1024,8 +1050,12 @@ METHOD ItemBySource( uValue, uData ) CLASS TCombo
          ::DeleteAllItems()
       ENDIF
    ELSE
-      IF ::IsValTypeOK( uValue )
-         nPos := AScan( ::aValues, uValue )
+      IF ! Empty( uValue ) .AND. ::IsValTypeOK( uValue )
+         IF ::lUseIndexVal
+            nPos := uValue
+         ELSE
+            nPos := AScan( ::aValues, uValue )
+         ENDIF
          IF nPos > 0
             cRet := ComboItem( Self, nPos, uData )
          ENDIF

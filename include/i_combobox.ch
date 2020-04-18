@@ -116,6 +116,8 @@ STANDARD VERSION
       [ SEARCHLAPSE <nLapse> ] ;
       [ <NoTrans: NOLOADTRANSPARENT> ] ;
       [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
+      [ <index: INDEXISVALUE, SOURCEISVALUE> ] ;
+      [ <autosize: AUTOSIZE> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <rows>, <value>, ;
@@ -127,10 +129,13 @@ STANDARD VERSION
             <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor>, ;
             <listwidth>, <{listdisplay}>, <{listclose}>, <{imagesource}>, ;
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
-            IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
-            IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
+            iif( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
+            iif( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}> )
+            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}>, ;
+            iif( Upper( #<index> ) == "INDEXISVALUE", .T., ;
+            iif( Upper( #<index> ) == "SOURCEISVALUE", .F., NIL ) ), ;
+            <.autosize.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -189,6 +194,8 @@ SPLITBOX VERSION
       [ SEARCHLAPSE <nLapse> ] ;
       [ <NoTrans: NOLOADTRANSPARENT> ] ;
       [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
+      [ <index: INDEXISVALUE, SOURCEISVALUE> ] ;
+      [ <autosize: AUTOSIZE> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <rows>, <value>, ;
@@ -203,7 +210,10 @@ SPLITBOX VERSION
             IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
             IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
-            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}> )
+            <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}>, ;
+            iif( Upper( #<index> ) == "INDEXISVALUE", .T., ;
+            iif( Upper( #<index> ) == "SOURCEISVALUE", .F., NIL ) ), ;
+            <.autosize.> )
 
 #command SET COMBOREFRESH ON ;
    => ;
@@ -212,3 +222,11 @@ SPLITBOX VERSION
 #command SET COMBOREFRESH OFF ;
    => ;
       SetComboRefresh( .F. )
+
+#command SET COMBOINDEXISVALUE ON ;
+   => ;
+      _OOHG_ComboIndexIsValue :=  .T.
+
+#command SET COMBOINDEXISVALUE OFF ;
+   => ;
+      _OOHG_ComboIndexIsValue :=  .F.

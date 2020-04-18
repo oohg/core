@@ -143,7 +143,8 @@
 #define NDX_OOHG_LOGFILE               57
 #define NDX_OOHG_INTERACTIVECLOSE      58
 #define NDX_OOHG_ACTIVETREE            59
-#define NUMBER_OF_APP_WIDE_VARS        59
+#define NDX_OOHG_COMBOINDEXISVALUE     59
+#define NUMBER_OF_APP_WIDE_VARS        60
 
 STATIC oAppObj := NIL
 
@@ -270,6 +271,7 @@ CLASS TApplication
    METHOD Value_Pos57             SETGET
    METHOD Value_Pos58             SETGET
    METHOD Value_Pos59             SETGET
+   METHOD Value_Pos60             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -354,8 +356,9 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]     := .T.
       ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .F.
       ::aVars[ NDX_OOHG_LOGFILE ]               := {}
-      ::aVars[ NDX_OOHG_ACTIVETREE ]            := NIL
       ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
+      ::aVars[ NDX_OOHG_ACTIVETREE ]            := NIL
+      ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ]     := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -364,7 +367,7 @@ METHOD New() CLASS TApplication
       ::Path     := Left( ::ExeName, RAt( '\', ::ExeName ) - 1 )
       ::FileName := SubStr( ::ExeName, RAt( '\', ::ExeName ) + 1 )
 
-      _GETDDLMESSAGE()
+      _GetDDLMessage()
 
       oAppObj := Self
    ENDIF
@@ -2144,6 +2147,20 @@ METHOD Value_Pos59( uValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_ACTIVETREE ] := uValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_ACTIVETREE ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos60( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ]
    ::MutexUnlock()
 
    RETURN ( uRet )

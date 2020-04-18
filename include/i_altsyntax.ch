@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlValueIs                => _OOHG_ActiveControlInfo \( \) \[  59 \]
 #xtranslate _OOHG_ActiveControlNoClone                => _OOHG_ActiveControlInfo \( \) \[  60 \]
 #xtranslate _OOHG_ActiveControlOnBeforeInsert         => _OOHG_ActiveControlInfo \( \) \[  61 \]
 #xtranslate _OOHG_ActiveControlOnHeadDblClick         => _OOHG_ActiveControlInfo \( \) \[  62 \]
@@ -2089,7 +2090,17 @@ COMBOBOX
       _OOHG_ActiveControlNoHScroll         := .F.  ;;
       _OOHG_ActiveControlNoClone           := .F.  ;;
       _OOHG_ActiveControlNoLoadTransparent := .F.  ;;
-      _OOHG_ActiveControlCancel            := NIL
+      _OOHG_ActiveControlCancel            := NIL  ;;
+      _OOHG_ActiveControlValueIs           := NIL  ;;
+      _OOHG_ActiveControlAutoSize          := .F.
+
+#xcommand INDEXISVALUE <index> ;
+   => ;
+      _OOHG_ActiveControlValueIs := <index>
+
+#xcommand SOURCEISVALUE <index> ;
+   => ;
+      _OOHG_ActiveControlValueIs := <index>
 
 #xcommand NOCLONE <noclone> ;
    => ;
@@ -2261,7 +2272,9 @@ COMBOBOX
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlNoClone, ;
             _OOHG_ActiveControlNoLoadTransparent, ;
-            _OOHG_ActiveControlCancel )
+            _OOHG_ActiveControlCancel, ;
+            _OOHG_ActiveControlValueIs, ;
+            _OOHG_ActiveControlAutoSize )
 
 /*---------------------------------------------------------------------------
 DATEPICKER
