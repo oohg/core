@@ -12,6 +12,24 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-04-19 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_combobox.ch
+     + Command SET COMBOINDEXISVALUEARRAY ON|OFF.
+     + Command SET COMBOINDEXISVALUEDBF ON|OFF.
+       ; Like COMBOINDEXISVALUE but specific.
+   * core\include\i_var.ch
+   * core\source\h_application.prg
+     - Global var _OOHG_ComboIndexIsValue.
+     + Global vars _OOHG_ComboIndexIsValueArray.
+       ; Defaults to .F.
+     + Global var _OOHG_ComboIndexIsValueDbf.
+       ; Defaults to .F.
+   * core\source\h_combo.prg
+     * DATA lUseIndexVal now defaults to NIL.
+     * DATA lUseIndexVal is set according to the data source.
+   ; This changes add the ability to change globaly only the combo's
+     based on DBFs or only the ones based on arrays.
+
 2020-04-18 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_application.prg
      ! RTE at method Value of class TCombo caused by wrong item
