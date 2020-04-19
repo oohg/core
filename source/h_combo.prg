@@ -81,7 +81,7 @@ CLASS TCombo FROM TLabel
    DATA lIncremental              INIT .F.
    DATA lNoClone                  INIT .F.
    DATA lRefresh                  INIT NIL
-   DATA lUseIndexVal              INIT _OOHG_ComboIndexIsValue
+   DATA lUseIndexVal              INIT NIL
    DATA lUsesTComboArray          INIT .F.
    DATA nHeight2                  INIT 150
    DATA nLastFound                INIT 0
@@ -218,6 +218,9 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
             ASSIGN ::SourceOrder VALUE itemsource[ 3 ] TYPE "CMNB"
          ENDIF
       ENDIF
+      IF ! HB_ISLOGICAL( ::lUseIndexVal )
+         ::lUseIndexVal := _OOHG_ComboIndexIsValueDbf
+      ENDIF
    ELSEIF ValType( itemsource ) $ 'CM'
       IF '->' $ itemsource
          WorkArea := Left( itemsource, At( '->', itemsource ) - 1 )
@@ -228,8 +231,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
       ELSE
          MsgOOHGError( "ITEMSOURCE is not a qualified field name nor a field in the current workarea. Program terminated." )
       ENDIF
-   ELSEIF ValType( itemsource ) == "B"
-      uField := itemsource
+      IF ! HB_ISLOGICAL( ::lUseIndexVal )
+         ::lUseIndexVal := _OOHG_ComboIndexIsValueDbf
+      ENDIF
+   ELSE
+      IF ValType( itemsource ) == "B"
+         uField := itemsource
+      ENDIF
+      IF ! HB_ISLOGICAL( ::lUseIndexVal )
+         ::lUseIndexVal := _OOHG_ComboIndexIsValueArray
+      ENDIF
    ENDIF
 
    nStyle := ::InitStyle( NIL, NIL, Invisible, notabstop, lDisabled ) + ;

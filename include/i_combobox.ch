@@ -223,10 +223,28 @@ SPLITBOX VERSION
    => ;
       SetComboRefresh( .F. )
 
+#command SET COMBOINDEXISVALUEARRAY ON ;
+   => ;
+      _OOHG_ComboIndexIsValueArray :=  .T.
+
+#command SET COMBOINDEXISVALUEARRAY OFF ;
+   => ;
+      _OOHG_ComboIndexIsValueArray :=  .F.
+
+#command SET COMBOINDEXISVALUEDBF ON ;
+   => ;
+      _OOHG_ComboIndexIsValueDbf :=  .T.
+
+#command SET COMBOINDEXISVALUEDBF OFF ;
+   => ;
+      _OOHG_ComboIndexIsValueDbf :=  .F.
+
 #command SET COMBOINDEXISVALUE ON ;
    => ;
-      _OOHG_ComboIndexIsValue :=  .T.
+      SET COMBOINDEXISVALUEARRAY ON ;;
+      SET COMBOINDEXISVALUEDBF ON
 
 #command SET COMBOINDEXISVALUE OFF ;
    => ;
-      _OOHG_ComboIndexIsValue :=  .F.
+      SET COMBOINDEXISVALUEARRAY OFF ;;
+      SET COMBOINDEXISVALUEDBF OFF

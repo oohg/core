@@ -124,7 +124,8 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_LogFile                => _OOHG_AppObject():Value_Pos57
 #xtranslate _OOHG_InteractiveClose       => _OOHG_AppObject():Value_Pos58
 #xtranslate _OOHG_ActiveTree             => _OOHG_AppObject():Value_Pos59
-#xtranslate _OOHG_ComboIndexIsValue      => _OOHG_AppObject():Value_Pos60
+#xtranslate _OOHG_ComboIndexIsValueArray => _OOHG_AppObject():Value_Pos60
+#xtranslate _OOHG_ComboIndexIsValueDbf   => _OOHG_AppObject():Value_Pos61
 #xtranslate _OOHG_ActiveFrame            => _OOHG_AppObject():ActiveFrameGet()
 
 /*---------------------------------------------------------------------------

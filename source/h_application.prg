@@ -143,8 +143,9 @@
 #define NDX_OOHG_LOGFILE               57
 #define NDX_OOHG_INTERACTIVECLOSE      58
 #define NDX_OOHG_ACTIVETREE            59
-#define NDX_OOHG_COMBOINDEXISVALUE     60
-#define NUMBER_OF_APP_WIDE_VARS        60
+#define NDX_OOHG_CMBINDEXISVALUEARRAY  60
+#define NDX_OOHG_CMBINDEXISVALUEDBF    61
+#define NUMBER_OF_APP_WIDE_VARS        61
 
 STATIC oAppObj := NIL
 
@@ -272,6 +273,7 @@ CLASS TApplication
    METHOD Value_Pos58             SETGET
    METHOD Value_Pos59             SETGET
    METHOD Value_Pos60             SETGET
+   METHOD Value_Pos61             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -358,7 +360,8 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_LOGFILE ]               := {}
       ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
       ::aVars[ NDX_OOHG_ACTIVETREE ]            := NIL
-      ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ]     := .F.
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ]  := .F.
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]    := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -2158,9 +2161,23 @@ METHOD Value_Pos60( lValue ) CLASS TApplication
 
    ::MutexLock()
    IF HB_ISLOGICAL( lValue )
-      ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ] := lValue
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ] := lValue
    ENDIF
-   uRet := ::aVars[ NDX_OOHG_COMBOINDEXISVALUE ]
+   uRet := ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos61( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]
    ::MutexUnlock()
 
    RETURN ( uRet )
