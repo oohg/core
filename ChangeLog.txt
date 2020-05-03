@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-05-02 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     + IMAGEALIGN clause for BUTTON control.
+
 2020-04-19 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_combobox.ch
      + Command SET COMBOINDEXISVALUEARRAY ON|OFF.
