@@ -1958,7 +1958,7 @@ METHOD DoLostFocus() CLASS TControl
                Return Nil
             EndIf
             _OOHG_Validating := .T.
-            uRet := _OOHG_Eval( ::postBlock, Self )
+            uRet := ::DoEvent( ::postBlock, "VALID", { Self } )
             If HB_IsLogical( uRet ) .AND. ! uRet
                ::SetFocus()
                _OOHG_Validating := .F.
