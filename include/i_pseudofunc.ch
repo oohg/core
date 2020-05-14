@@ -209,4 +209,4 @@
 
 #xtranslate OOHGVersion() ;
    => ;
-      "OOHG Ver. 2019.02.27"
+      ( "OOHG Ver. " + OOHG_VER_DATE + iif( IsExe64(), "(64 bits)", "(32 bits)" ) )
