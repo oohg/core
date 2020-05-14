@@ -63,6 +63,12 @@
 
 #ifndef __XHARBOUR__                                 // This pp rules are only needed for Harbour compilers
 
+   #include "hbver.ch"
+
+   #xtranslate IsExe64() ;
+      => ;
+         ( hb_Version( HB_VERSION_BITWIDTH ) == 64 )
+
    #xtranslate AScan( <a>, <b>, [ <c> ], [ <d> ], <e> ) ;
       => ;
          hb_AScan( <a>, <b>, <c>, <d>, <e> )
