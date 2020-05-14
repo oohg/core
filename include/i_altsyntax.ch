@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlHeaderColors           => _OOHG_ActiveControlInfo \( \) \[  58 \]
 #xtranslate _OOHG_ActiveControlValueIs                => _OOHG_ActiveControlInfo \( \) \[  59 \]
 #xtranslate _OOHG_ActiveControlNoClone                => _OOHG_ActiveControlInfo \( \) \[  60 \]
 #xtranslate _OOHG_ActiveControlOnBeforeInsert         => _OOHG_ActiveControlInfo \( \) \[  61 \]
@@ -2800,7 +2801,8 @@ GRID
       _OOHG_ActiveControlNoHScroll        := .F. ;;
       _OOHG_ActiveControlNoVScroll        := .F. ;;
       _OOHG_ActiveControlOnBeforeInsert   := NIL ;;
-      _OOHG_ActiveControlOnHeadDblClick   := NIL
+      _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
+      _OOHG_ActiveControlHeaderColors     := NIL
 
 #xcommand SILENT <silent> ;
    => ;
@@ -2833,6 +2835,10 @@ GRID
 #xcommand ON APPEND <onappend> ;
    => ;
       _OOHG_ActiveControlOnAppend := <onappend>
+
+#xcommand HEADERCOLORS <aHeaderColors> ;
+   => ;
+      _OOHG_ActiveControlHeaderColors:= <aHeaderColors>
 
 #xcommand HEADERIMAGES <aHeaderImages> ;
    => ;
@@ -3096,7 +3102,8 @@ GRID
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlNoVScroll, ;
             _OOHG_ActiveControlOnBeforeInsert, ;
-            _OOHG_ActiveControlOnHeadDblClick )
+            _OOHG_ActiveControlOnHeadDblClick, ;
+            _OOHG_ActiveControlHeaderColors )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -3191,7 +3198,8 @@ BROWSE
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
       _OOHG_ActiveControlNoHScroll        := .F. ;;
-      _OOHG_ActiveControlOnHeadDblClick   := NIL
+      _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
+      _OOHG_ActiveControlHeaderColors     := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3389,7 +3397,8 @@ BROWSE
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
             _OOHG_ActiveControlNoHScroll, ;
-            _OOHG_ActiveControlOnHeadDblClick )
+            _OOHG_ActiveControlOnHeadDblClick, ;
+            _OOHG_ActiveControlHeaderColors )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3584,7 +3593,8 @@ XBROWSE
             _OOHG_ActiveControlKeysLikeClipper, ;
             _OOHG_ActiveControlCellToolTip, ;
             _OOHG_ActiveControlNoHScroll, ;
-            _OOHG_ActiveControlOnHeadDblClick )
+            _OOHG_ActiveControlOnHeadDblClick, ;
+            _OOHG_ActiveControlHeaderColors )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

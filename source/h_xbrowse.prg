@@ -242,7 +242,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lNoShowEmptyRow, lUpdCols, bHeadRClick, lNoModal, lExtDbl, ;
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
                rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
-               bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick ) CLASS TXBrowse
+               bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick, aHeaderColors ) CLASS TXBrowse
 
    Local nWidth2, nCol2, z
 
@@ -322,7 +322,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               NIL, NIL, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, NIL, ;
-              NIL, aHeadDblClick )
+              NIL, aHeadDblClick, aHeaderColors )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -3136,7 +3136,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, ;
-                lNoVSB, aHeadDblClick ) CLASS TXBrowseByCell
+                lNoVSB, aHeadDblClick, aHeaderColors ) CLASS TXBrowseByCell
 
    HB_SYMBOL_UNUSED( nStyle )
    HB_SYMBOL_UNUSED( lNone )
@@ -3158,7 +3158,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                     lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                     lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-                    aHeadDblClick )
+                    aHeadDblClick, aHeaderColors )
 
    // By default, search in the current column
    ::SearchCol := -1

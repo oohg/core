@@ -72,6 +72,7 @@ CLASS TGrid FROM TControl
    DATA aEditKeys                 INIT Nil
    DATA aHeadClick                INIT {}
    DATA aHeadDblClick             INIT {}
+   DATA aHeaderColors             INIT {}
    DATA aHeaderImage              INIT {}
    DATA aHeaderImageAlign         INIT {}
    DATA aHeaders                  INIT {}
@@ -300,7 +301,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGrid
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
+               aHeaderColors ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -315,7 +317,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick )
+              aHeadDblClick, aHeaderColors )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -339,7 +341,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
-                lNoHSB, lNoVSB, aHeadDblClick ) CLASS TGrid
+                lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -388,6 +390,16 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       ::aHeadDblClick := Array( Len( ::aHeaders ) )
       IF HB_ISBLOCK( aHeadDblClick )
          AFill( ::aHeadDblClick, aHeadDblClick )
+      ENDIF
+   ENDIF
+
+   IF HB_ISARRAY( aHeaderColors )
+      ::aHeaderColors := aHeaderColors
+      ASize( ::aHeaderColors, Len( ::aHeaders ) )
+   ELSE
+      ::aHeaderColors := Array( Len( ::aHeaders ) )
+      IF HB_ISBLOCK( aHeaderColors )
+         AFill( ::aHeaderColors, aHeaderColors )
       ENDIF
    ENDIF
 
@@ -1883,7 +1895,7 @@ METHOD IsColumnWhen( nCol, nRow ) CLASS TGrid
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly, cColType, uHeadDblClick ) CLASS TGrid
+                  uReadOnly, cColType, uHeadDblClick, uHeaderColor ) CLASS TGrid
 
    Local nColumns, i
 
@@ -1972,6 +1984,11 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ASize( ::aHeadDblClick, nColumns )
    AIns( ::aHeadDblClick, nColIndex )
    ::aHeadDblClick[ nColIndex ] := uHeadDblClick
+
+   // Update header color
+   ASize( ::aHeaderColors, nColumns )
+   AIns( ::aHeaderColors, nColIndex )
+   ::aHeaderColors[ nColIndex ] := uHeaderColor
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2135,7 +2152,7 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, aDynamicColor, nWi
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadonly, cColType, uHeadDblClick ) CLASS TGrid
+                  uReadonly, cColType, uHeadDblClick, uHeaderColor ) CLASS TGrid
 
    Local nColumns, i
 
@@ -2209,6 +2226,10 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update on head dblclick codeblock
    ASize( ::aHeadDblClick, nColumns )
    ::aHeadDblClick[ nColIndex ] := uHeadDblClick
+
+   // Update on head dblclick codeblock
+   ASize( ::aHeaderColors, nColumns )
+   ::aHeaderColors[ nColIndex ] := uHeaderColor
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2349,6 +2370,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
    _OOHG_DeleteArrayItem( ::ColType, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadClick, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadDblClick, nColIndex )
+   _OOHG_DeleteArrayItem( ::aHeaderColors, nColIndex )
    _OOHG_DeleteArrayItem( ::aJust, nColIndex )
    _OOHG_DeleteArrayItem( ::Valid, nColIndex )
    _OOHG_DeleteArrayItem( ::ValidMessages, nColIndex )
@@ -3105,10 +3127,9 @@ METHOD HScrollUpdate CLASS TGrid
 
 FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
 
-   Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect
+   Local nNotify, nColumn, lGo, nNewWidth, nResul, aRect, uColor
 
    nNotify := GetNotifyCode( lParam )
-   nColumn := NMHeader_iItem( lParam )
 
    If nNotify == HDN_BEGINDRAG
       // The user has begun dragging a column
@@ -3117,6 +3138,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          Return 1
       EndIf
 
+      nColumn := NMHeader_iItem( lParam )
       If HB_IsBlock( ::bBeforeColMove )
          lGo := _OOHG_Eval( ::bBeforeColMove, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
@@ -3126,6 +3148,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       EndIf
 
    ELSEIF nNotify == HDN_ITEMDBLCLICK
+      nColumn := NMHeader_iItem( lParam )
       IF nColumn > 0 .AND. nColumn <= Len( ::aHeadDblClick ) .AND. HB_ISBLOCK( ::aHeadDblClick[ nColumn ] )
          ::DoEvent( ::aHeadDblClick[ nColumn ], "HEADDBLCLICK", { nColumn } )
       ENDIF
@@ -3133,6 +3156,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
    ElseIf nNotify == HDN_ENDDRAG
       // The user has finished dragging a column
       If HB_IsBlock( ::bAfterColMove )
+         nColumn := NMHeader_iItem( lParam )
          // HDITEM_iOrder() Returns the destination position in the header
          lGo := _OOHG_Eval( ::bAfterColMove, nColumn, HDITEM_iOrder( lParam ) )
          If HB_IsLogical( lGo ) .and. ! lGo
@@ -3148,6 +3172,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          Return 1
       EndIf
 
+      nColumn := NMHeader_iItem( lParam )
       // Is a hidden column ?
       If AScan( ::aHiddenCols, nColumn ) > 0
          // Prevent the action
@@ -3198,6 +3223,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
    ElseIf nNotify == HDN_ENDTRACK
       // The user has finished dragging a column divider but the new width is not set yet
       If HB_IsBlock( ::bAfterColSize )
+         nColumn := NMHeader_iItem( lParam )
          // HDITEM_cxy() gets the user's selected width from lParam
          nNewWidth := _OOHG_Eval( ::bAfterColSize, nColumn, HDITEM_cxy( lParam ) )
          If HB_IsNumeric( nNewWidth ) .and. nNewWidth >= 0
@@ -3220,6 +3246,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       EndIf
 
       If HB_IsBlock( ::bBeforeAutofit )
+         nColumn := NMHeader_iItem( lParam )
          lGo := _OOHG_Eval( ::bBeforeAutofit, nColumn )
          If HB_IsLogical( lGo ) .and. ! lGo
             // Prevent column autofit
@@ -3255,6 +3282,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          // Do default processing (needed to properly update header)
          nResul := TGrid_ExecOldWndProc( ::hWnd, WM_NOTIFY, wParam, lParam )
 
+         nColumn := NMHeader_iItem( lParam )
          // Ensure column is visible
          aRect := ListView_GetSubitemRect( ::hWnd, 0, nColumn - 1 )     // top, left, width, height
          If aRect[ 2 ] < 0
@@ -3275,6 +3303,12 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          //Prevent default processing
          Return nResul
       EndIf
+
+   ElseIf nNotify == NM_CUSTOMDRAW
+      // Function NMCUSTOMDRAW_IITEM() returns column number
+      nColumn := NMCustomDraw_iItem( lParam )
+      uColor := iif( HB_ISBLOCK( ::aHeaderColors[ nColumn ] ), Eval( ::aHeaderColors[ nColumn ], nColumn ), ::aHeaderColors[ nColumn ] )
+      RETURN TGrid_Header_CustomDraw( lParam, uColor )
 
    ElseIf nNotify == NM_RELEASEDCAPTURE
       If ::lTracking
@@ -4484,7 +4518,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGridMulti
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
+               aHeaderColors ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4503,7 +4538,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick )
+              aHeadDblClick, aHeaderColors )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4697,7 +4732,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick ) CLASS TGridByCell
+               lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
+               aHeaderColors ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4716,7 +4752,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick )
+              aHeadDblClick, aHeaderColors )
 
    // Search the current column
    ::SearchCol := -1
@@ -8595,6 +8631,11 @@ HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
    hb_retl( (BOOL) SendMessage( oSelf->hWnd, LVM_SORTITEMSEX, (WPARAM) pSelf, (LPARAM) _OOHG_SortItemsUser ) );
 }
 
+HB_FUNC( NMCUSTOMDRAW_IITEM )
+{
+   hb_retni( ( (NMCUSTOMDRAW *) HB_PARNL( 1 ) )->dwItemSpec + 1 );
+}
+
 HB_FUNC( NMHEADER_IITEM )
 {
    hb_retni( ( (NMHEADER *) HB_PARNL( 1 ) )->iItem + 1 );
@@ -9197,6 +9238,27 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
       }
    }
    return -1;
+}
+
+HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
+{
+   LPNMCUSTOMDRAW lpnmcd = ( LPNMCUSTOMDRAW ) HB_PARNL( 1 );
+   LONG lColor;
+
+   if( lpnmcd->dwDrawStage == CDDS_PREPAINT )
+   {
+      hb_retni( CDRF_NOTIFYITEMDRAW );
+   }
+   else
+   {
+      if( lpnmcd->dwDrawStage == CDDS_ITEMPREPAINT )
+      {
+         lColor = GetSysColor( COLOR_BTNTEXT ); // COLOR_3DHILIGHT
+         _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lColor );
+         SetTextColor( lpnmcd->hdc, ( COLORREF ) lColor );
+      }
+      hb_retni( CDRF_DODEFAULT );
+   }
 }
 
 int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iRow, int iCol, BOOL bCheckBoxes, BOOL bFocusRect, BOOL bNoGrid, BOOL bPLM )

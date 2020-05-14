@@ -171,8 +171,9 @@
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
+      [ HEADERCOLORS <aHeadClrs> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TXBrowseByCell(), ;
+      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
             <col>, <row>, <w>, <h>, <headers>, <widths>, <Fields>, ;
             <(workarea)>, <value>, <.delete.>, <.lock.>, <.novsb.>, ;
@@ -188,20 +189,21 @@
             <{bWhenDel}>, <DelMsg>, <{onDelete}>, <aHeaderImages>, ;
             <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
             ! <.bffr.>, ;
-            IIF( upper( #<focus> ) == "NOFOCUSRECT", .F., ;
-            IIF( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
+            iif( upper( #<focus> ) == "NOFOCUSRECT", .F., ;
+            iif( upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
-            IIF( upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
-            IIF( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
+            iif( upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
+            iif( upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
             <.excel.>, <.buts.>, <.nodelmsg.>, ;
-            IIF( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <.noshowempty.>, <.upcol.>, <{bheadrclick}>, <.nomodal.>, ;
             <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
-            <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick> )
+            <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
+            <aHeadClrs> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

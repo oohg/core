@@ -174,9 +174,10 @@ STANDARD VERSION
       [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
       [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
+      [ HEADERCOLORS <aHeadClr> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
-            IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
+      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
+            iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, <col>, <row>, ;
             <w>, <h>, <headers>, <widths>, <rows>, <value>, <fontname>, ;
             <fontsize>, <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, ;
@@ -190,18 +191,19 @@ STANDARD VERSION
             <{enter}>, <aHeaderImages>, <aImgAlign>, <.fullmove.>, ;
             <aSelectedColors>, <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
             ! <.bffr.>, ;
-            IIF( #<focus> == "NOFOCUSRECT", .F., ;
-            IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+            iif( #<focus> == "NOFOCUSRECT", .F., ;
+            iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
             <.excel.>, <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, ;
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
-            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            iif( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            iif( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, <aHeadDblClick> )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
+            <aHeadDblClick>, <aHeadClr> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -309,9 +311,10 @@ SPLITBOX VERSION
       [ <novsb: NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
       [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
+      [ HEADERCOLORS <aHeadClrs> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TGridByCell(), ;
-            IIF( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
+      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
+            iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, , , <w>, <h>, ;
             <headers>, <widths>, <rows>, <value>, <fontname>, <fontsize>, ;
             <tooltip>, <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
@@ -325,18 +328,19 @@ SPLITBOX VERSION
             <aHeaderImages>, <aImgAlign>, <.fullmove.>, <aSelectedColors>, ;
             <aEditKeys>, <.checkboxes.>, <{checkchange}>, ;
             ! <.bffr.>, ;
-            IIF( #<focus> == "NOFOCUSRECT", .F., ;
-            IIF( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
+            iif( #<focus> == "NOFOCUSRECT", .F., ;
+            iif( #<focus> == "FOCUSRECT", .T., NIL ) ), ;
             <.plm.>, <.fixedcols.>, <{abortedit}>, <{click}>, <.fixedwidths.>, ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
             <.excel.>, <.buts.>, <.delete.>, <{onDelete}>, <{bWhenDel}>, ;
             <DelMsg>, <.nodelmsg.>, <.append.>, <{onappend}>, <.nomodal.>, ;
-            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            iif( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            iif( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, ! <.noclick.>, ! <.norclick.>, <.extdbl.>, ;
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
-            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, <aHeadDblClick> ) )
+            <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
+            <aHeadDblClick>, <aHeadClrs> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

@@ -185,8 +185,9 @@ STANDARD VERSION
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
+      [ HEADERCOLORS <aHeadClrs> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
+      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
@@ -201,25 +202,25 @@ STANDARD VERSION
             <.disabled.>, <.notabstop.>, <.invisible.>, <.descending.>, ;
             <{bWhenDel}>, <DelMsg>, <{onDelete}>, <aHeaderImages>, ;
             <aImgAlign>, <.fullmove.>, <aSelectedColors>, <aEditKeys>, ;
-            IIF( <.forcerefresh.>, 0, IIF( <.norefresh.>, 1, NIL ) ), ;
+            iif( <.forcerefresh.>, 0, iif( <.norefresh.>, 1, NIL ) ), ;
             ! <.bffr.>, ;
-            IIF( Upper( #<focus> ) == "NOFOCUSRECT", .F., ;
-            IIF( Upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
-            <.plm.>, IIF( Upper( #<sync> ) == "UNSYNCHRONIZED", .F., ;
-            IIF( Upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
+            iif( Upper( #<focus> ) == "NOFOCUSRECT", .F., ;
+            iif( Upper( #<focus> ) == "FOCUSRECT", .T., NIL ) ), ;
+            <.plm.>, iif( Upper( #<sync> ) == "UNSYNCHRONIZED", .F., ;
+            iif( Upper( #<sync> ) == "SYNCHRONIZED", .T., NIL ) ), ;
             <.fixedcols.>, <.nodelmsg.>, <.updall.>, <{abortedit}>, <{click}>, ;
-            <.fixedwidths.>, IIF( Upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
-            IIF( Upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
+            <.fixedwidths.>, iif( Upper( #<blocks> ) == "FIXEDBLOCKS", .T., ;
+            iif( Upper( #<blocks> ) == "DYNAMICBLOCKS", .F., NIL ) ), ;
             <{bBefMov}>, <{bAftMov}>, <{bBefSiz}>, <{bAftSiz}>, <{bBefAut}>, ;
             <.excel.>, <.buts.>, <.upcol.>, ;
-            IIF( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
-            IIF( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
+            iif( Upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
+            iif( Upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <{bheadrclick}>, <.extdbl.>, <.nomodal.>, <.silent.>, ;
             ! <.disalta.>, <.noshow.>, ;
             <.none.>, <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
-            <.ctt.>, <.nohsb.>, <aHeadDblClick> )
+            <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs> )
 
 #command SET BROWSESYNC ON ;
    => ;
