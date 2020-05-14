@@ -660,7 +660,7 @@ HB_FUNC( _OOHG_SIZEOFHBITMAP )           /* FUNCTION _OOHG_SizeOfHBitmap( hBitma
 
    memset( &bm, 0, sizeof( bm ) );
 
-   if( hBitmap )
+   if( ValidHandler( hBitmap ) )
    {
       GetObject( hBitmap, sizeof( bm ), &bm );
    }
