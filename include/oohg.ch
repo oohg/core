@@ -62,8 +62,8 @@
 
 
 #ifndef __OOHG__
-#define __OOHG__
 
+#include "oohgversion.h"
 #include "common.ch"
 #include "i_activex.ch"
 #include "i_altsyntax.ch"
