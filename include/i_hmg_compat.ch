@@ -81,6 +81,10 @@
    => ;
       HB_Random( <arg1> )
 
+#xtranslate IsThemed() ;
+   => ;
+      .T.
+
 #xtranslate GlobalMemoryStatusEx() ;
    => ;
       GlobalMemoryStatus()
