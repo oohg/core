@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-05-13 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     ! Checkbox never looses focus after checking it.
+
 2020-05-04 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_controlmisc.prg
      ! THIS doesn't point to the correct object when VALID
