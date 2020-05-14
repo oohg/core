@@ -2513,6 +2513,10 @@ Function GetStartUpFolder()
 
    Return Left ( StartUpFolder , Rat ( '\' , StartUpFolder ) - 1 )
 
+FUNCTION _OOHG_ControlObjects()
+
+   RETURN AClone( _OOHG_aControlObjects )
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _OOHG_Init_C_Vars_Controls()
 
