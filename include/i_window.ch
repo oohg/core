@@ -72,7 +72,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             FocusedControl, hWnd, Object, Cursor, NotifyIcon, NotifyToolTip, ;
             SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight, Topmost, ;
             HelpButton, Closable, Handle, BackColorCode, ClientAdjust, ;
-            NoDefWinProc\> ;
+            NoDefWinProc, Cargo\> ;
             => GetExistingFormObject( <(w)> ):\<p\> ;;
       #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
             Restore, Show, Hide, Print, SetFocus, Redraw\> \[()\] ;
@@ -88,7 +88,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
             HBitMap, Handle, oBkGrnd, Transparent, Parent, Container, ;
-            OnRClick, BackColorCode\> ;
+            OnRClick, BackColorCode, Cursor\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
