@@ -220,3 +220,19 @@ Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault
    EndIf
 
    Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+
+FUNCTION BmpSize( uImage )
+
+   LOCAL aRet
+
+   DO CASE
+   CASE HB_ISSTRING( uImage )
+      aRet := _OOHG_SizeOfBitmapFromFile( uImage )
+   CASE HB_ISNUMERIC( uImage ) .AND. ValidHandler( uImage )
+      aRet := _OOHG_SizeOfHBitmap( uImage )
+   OTHERWISE
+      // This is for compatibility with HMG
+      aRet := { 0, 0, 4 }
+   ENDCASE
+
+RETURN aRet
