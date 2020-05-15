@@ -158,26 +158,6 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
       EndIf
    EndIf
 
-   /*
-   METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
-               aRows, value, fontname, fontsize, tooltip, change, dblclick, ;
-               aHeadClick, gotfocus, lostfocus, nogrid, aImage, aJust, ;
-               break, HelpId, bold, italic, underline, strikeout, ownerdata, ;
-               ondispinfo, itemcount, editable, backcolor, fontcolor, ;
-               dynamicbackcolor, dynamicforecolor, aPicture, lRtl, inplace, ;
-               editcontrols, readonly, valid, validmessages, editcell, ;
-               aWhenFields, lDisabled, lNoTabStop, lInvisible, lHasHeaders, ;
-               onenter, aHeaderImage, aHeaderImageAlign, FullMove, ;
-               aSelectedColors, aEditKeys, lCheckBoxes, oncheck, lDblBffr, ;
-               lFocusRect, lPLM, lFixedCols, abortedit, click, lFixedWidths, ;
-               bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize, ;
-               bBeforeAutofit, lLikeExcel, lButtons, AllowDelete, onDelete, ;
-               bDelWhen, DelMsg, lNoDelMsg, AllowAppend, onappend, lNoModal, ;
-               lFixedCtrls, bHeadRClick, lClickOnCheckbox, lRClickOnCheckbox, ;
-               lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
-               oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
-               lLabelTip ) CLASS TGrid
-   */
    ::Super:Define( ControlName, ParentForm, x, y, w, h, aHdr, aWidth, ;
                    {}, Nil, fontname, fontsize, tooltip, change, Nil, ;
                    Nil, gotfocus, lostfocus, .T., aImage, aJust, ;
@@ -193,9 +173,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                    Nil, Nil, Nil, Nil, Nil, ;
                    Nil, Nil, Nil, Nil, Nil, Nil, ;
                    .T., Nil, Nil, Nil, ;
-                   Nil, Nil, .F., .F., .F., Nil, Nil, ;
-                   Nil, Nil, Nil, Nil, Nil, Nil, ;
-                   Nil )
+                   Nil, Nil, .F., .F., .F. )
 
    aEval( aRows, { |u| ::AddItem( u ) } )
 
