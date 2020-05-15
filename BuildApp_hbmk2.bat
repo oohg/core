@@ -83,6 +83,7 @@ rem
    rem *** Process Resource File ***
    echo Compiling %HG_FILE% ...
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
    copy /b "%HG_ROOT%\resources\oohg.rc" + "%HG_FILE%.rc" _temp.rc > nul
    if exist _temp.rc goto BUILD
    copy /b %HG_FILE%.rc _temp.rc > nul
