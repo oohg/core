@@ -1889,27 +1889,17 @@ FUNCTION SetAppHotKeyByName( cKey, bAction )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_MacroCall( cMacro )
 
-   LOCAL uRet, oError
+   LOCAL uRet, bErrorBlock
 
-   oError := ErrorBlock()
-   ErrorBlock( { |e| _OOHG_MacroCall_Error( e ) } )
+   bErrorBlock := ErrorBlock( { |e| Break( e ) } )
    BEGIN SEQUENCE
       uRet := &cMacro
    RECOVER
       uRet := NIL
    END SEQUENCE
-   ErrorBlock( oError )
+   ErrorBlock( bErrorBlock )
 
    RETURN uRet
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-STATIC FUNCTION _OOHG_MacroCall_Error( oError )
-
-   IF ! Empty( oError )
-      BREAK oError
-   ENDIF
-
-   RETURN 1
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ExitProcess( nExit )
