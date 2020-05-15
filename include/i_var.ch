@@ -136,3 +136,5 @@ PSEUDO VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_MouseCol           => _OOHG_GetMouseCol()
 #xtranslate _OOHG_MouseRow           => _OOHG_GetMouseRow()
 #xtranslate _OOHG_RegisteredForms    => _OOHG_FormObjects()
+#xtranslate _OOHG_RegisteredControls => _OOHG_ControlObjects()
+#xtranslate _OOHG_LastDefinedControl => ATail( _OOHG_RegisteredControls )
