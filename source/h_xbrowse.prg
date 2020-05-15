@@ -2554,7 +2554,7 @@ METHOD WorkArea( uWorkArea ) CLASS TXBrowse
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick, ,
+                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick, ;
                   uHeaderColor ) CLASS TXBrowse
 
    LOCAL nRet, nColumns := Len( ::aHeaders ) + 1
