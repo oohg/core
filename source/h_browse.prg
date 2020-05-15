@@ -2386,12 +2386,14 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
 METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                   uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                   uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick ) CLASS TOBrowseByCell
+                  uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick, ;
+                  uHeaderColor ) CLASS TOBrowseByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                                    uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                                    uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick )
+                                   uReplaceField, lRefresh, uReadOnly, uDefault, uHeadDblClick, ;
+                                   uHeaderColor )
 
    IF nColIndex <= ::nColPos
       ::CurrentCol := ::nColPos + 1
