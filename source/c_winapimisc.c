@@ -1009,6 +1009,14 @@ HB_FUNC( WINVERSION )
    HB_STORC( szVersionEx, -1, 4 );
 }
 
+#if defined( __XHARBOUR__ )
+
+HB_FUNC( ISEXE64 ) // Check if our app is 64 bits
+{
+   hb_retl( ( sizeof( void * ) == 8 ) );
+}
+#endif
+
 HB_FUNC( SETWINDOWPOS )
 {
    hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), ( UINT ) hb_parni( 7 ) ) );
