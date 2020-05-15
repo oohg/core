@@ -63,35 +63,58 @@
 
 #include "oohg.ch"
 
-Function GetColor( aInitColor )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetColor( uInitColor, uCustomColors )
 
-   Local aRetVal, nColor, nInitColor
+   LOCAL aRetVal, nColor, nInitColor, v
 
-   If HB_IsArray( aInitColor )
-      nInitColor := RGB( aInitColor[ 1 ], aInitColor[ 2 ], aInitColor[ 3 ] )
-   ElseIf HB_IsNumeric( aInitColor )
-      nInitColor := aInitColor
-   EndIf
+   IF HB_ISARRAY( uInitColor )
+      nInitColor := RGB( uInitColor[ 1 ], uInitColor[ 2 ], uInitColor[ 3 ] )
+   ELSEIF HB_ISNUMERIC( uInitColor )
+      nInitColor := uInitColor
+   ENDIF
+   IF HB_ISNUMERIC( uCustomColors )
+      nColor := uCustomColors
+      uCustomColors := Array( 16 )
+      AFill( uCustomColors, nColor )
+   ELSEIF HB_ISARRAY( uCustomColors )
+      ASize( uCustomColors, 16 )
+      FOR EACH v IN uCustomColors
+         IF HB_ISNUMERIC( v )
+            // OK
+         ELSEIF HB_ISARRAY( v )
+            v := RGB( v[ 1 ], v[ 2 ], v[ 3 ] )
+         ELSE
+            v := -1   // Defaults to COLOR_BTNFACE
+         ENDIF
+      NEXT
+   ELSE
+      uCustomColors := Array( 16 )
+      AFill( uCustomColors, -1 )
+   ENDIF
 
-   nColor := ChooseColor( Nil, nInitColor )
+   nColor := ChooseColor( NIL, nInitColor, uCustomColors )
 
-   If nColor == -1
-      aRetVal := { Nil, Nil, Nil }
-   Else
+   IF nColor == -1
+      aRetVal := { NIL, NIL, NIL }
+   ELSE
       aRetVal := { GetRed( nColor ), GetGreen( nColor ), GetBlue( nColor ) }
-   EndIf
+   ENDIF
 
-   Return aRetVal
+   RETURN aRetVal
 
-Function GetFolder( cTitle, cInitPath )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetFolder( cTitle, cInitPath )
 
-   Return C_Browseforfolder( Nil, cTitle, Nil, Nil, cInitPath )
+   RETURN C_Browseforfolder( NIL, cTitle, NIL, NIL, cInitPath )
 
-Function BrowseForFolder( nFolder, nFlag, cTitle, cInitPath ) // Contributed By Ryszard Rylko
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION BrowseForFolder( nFolder, nFlag, cTitle, cInitPath ) // Contributed By Ryszard Rylko
 
-   Return C_BrowseForFolder( Nil, cTitle, nFlag, nFolder, cInitPath )
+   RETURN C_BrowseForFolder( NIL, cTitle, nFlag, nFolder, cInitPath )
 
-Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
 
    Local c := ''
    Local cFiles
@@ -107,7 +130,7 @@ Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefault
    EndIf
 
    If ! multiselect
-      Return C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
+      RETURN C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
    EndIf
 
    cFiles := C_GetFile( c, title, cIniFolder, multiselect, nochangedir, cDefaultFileName, hidereadonly )
@@ -125,9 +148,10 @@ Function GetFile( aFilter, title, cIniFolder, multiselect, nochangedir, cDefault
       Endif
    Endif
 
-   Return FilesList
+   RETURN FilesList
 
-Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
    Local c := ''
 
@@ -135,9 +159,10 @@ Function Putfile( aFilter, title, cIniFolder, nochangedir, cDefaultFileName, lFo
       aEval( aFilter, { |a| c += a[ 1 ] + Chr( 0 ) + a[ 2 ] + Chr( 0 ) } )
    EndIf
 
-   Return C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
+   RETURN C_PutFile( c, title, cIniFolder, nochangedir, cDefaultFileName, lForceExt )
 
-Function GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUnderLine, lStrikeOut, nCharset )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUnderLine, lStrikeOut, nCharset )
 
    Local RetArray, Tmp, rgbcolor
 
@@ -181,7 +206,7 @@ Function GetFont( cInitFontName, nInitFontSize, lBold, lItalic, anInitColor, lUn
       Tmp := RetArray[ 5 ]
       RetArray[ 5 ] := { GetRed( Tmp ), GetGreen( Tmp ), GetBlue( Tmp ) }
    Else
-      RetArray[ 5 ] := { Nil, Nil, Nil }
+      RetArray[ 5 ] := { NIL, NIL, NIL }
    EndIf
 
-   Return RetArray
+   RETURN RetArray
