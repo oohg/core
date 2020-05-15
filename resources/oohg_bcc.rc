@@ -3,6 +3,8 @@
 //
 // Use CompileRes_bcc.bat to build oohg.res from this file using Borland compiler
 
+#include "oohgversion.h"
+
 // MANIFEST ALLOW THE STYLING OF CONTROLS BY THE OS
 
 1 24 Windows.Manifest
@@ -39,7 +41,7 @@ ZZZ_AAAWINDOW           ICON           window.ico
 ZZZ_LED_ON              ICON           led_on.ico
 ZZZ_LED_OFF             ICON           led_off.ico
 
-// HBPRINT PRINT PREVIEW IMAGE BUTTONS
+// HBPRINTER PREVIEW IMAGE BUTTONS
 
 zzz_printicon           ICON           print.ico
 hbprint_end             BITMAP         hbprint_end.bmp
@@ -52,6 +54,121 @@ hbprint_save            BITMAP         hbprint_save.bmp
 hbprint_zoomin          BITMAP         hbprint_zoomin.bmp
 hbprint_zoomout         BITMAP         hbprint_zoomout.bmp
 hbprint_option          BITMAP         hbprint_option.bmp
+
+// HBPRINTER REPLACE STRINGS
+// define one or more if these items to replace the value for the current language
+// useful if you're not satisfied with the hardwired value
+
+/*
+#define HBPRINTER_PREVIEW      1
+#define HBPRINTER_CANCEL       2
+#define HBPRINTER_PRINT        3
+#define HBPRINTER_SAVE         4
+#define HBPRINTER_FIRST        5
+#define HBPRINTER_PREVIOUS     6
+#define HBPRINTER_NEXT         7
+#define HBPRINTER_LAST         8
+#define HBPRINTER_ZOOMIN       9
+#define HBPRINTER_ZOOMOUT      10
+#define HBPRINTER_OPTIONS      11
+#define HBPRINTER_GOTOPAGE     12
+#define HBPRINTER_PAGEPREVIEW  13
+#define HBPRINTER_THUMBPREVIEW 14
+#define HBPRINTER_PAGE         15
+#define HBPRINTER_PRTCURRENT   16
+#define HBPRINTER_PAGES        17
+#define HBPRINTER_NOMOREZOOM   18
+#define HBPRINTER_PRTOPTIONS   19
+#define HBPRINTER_PRTFROM      20
+#define HBPRINTER_PRTTO        21
+#define HBPRINTER_COPIES       22
+#define HBPRINTER_COLLATION    23
+#define HBPRINTER_EVERYSEQ     24
+#define HBPRINTER_ONLYODD      25
+#define HBPRINTER_ONLYEVEN     26
+#define HBPRINTER_EVERYODD     27
+#define HBPRINTER_EVERYEVEN    28
+#define HBPRINTER_PRINTING     29
+#define HBPRINTER_WAITPAPER    30
+#define HBPRINTER_PRESSOK      31
+#define HBPRINTER_DONE         32
+#define HBPRINTER_SAVEAS       33
+#define HBPRINTER_SAVEALL      34
+#define HBPRINTER_EMFFILES     35
+#define HBPRINTER_ALLFILES     36
+#define HBPRINTER_NOTSUPPORTED 37
+#define HBPRINTER_UNKNOWN      38
+#define HBPRINTER_ORIENTATION  39
+#define HBPRINTER_PAPERSIZE    40
+#define HBPRINTER_SCALE        41
+#define HBPRINTER_COPIES       42
+#define HBPRINTER_DEFSOURCE    43
+#define HBPRINTER_PRINTQUALITY 44
+#define HBPRINTER_COLOR        45
+#define HBPRINTER_DUPLEX       46
+#define HBPRINTER_COLLATE      47
+#define HBPRINTER_PAPERLENGTH  48
+#define HBPRINTER_PAPERWIDTH   49
+#define HBPRINTER_SELECTFOLDER 50
+#define HBPRINTER_REPORTEMPTY  51
+#define HBPRINTER_OK           52
+
+STRINGTABLE
+{
+        HBPRINTER_PREVIEW,      "Preview"
+        HBPRINTER_CANCEL,       "&Cancel"
+        HBPRINTER_PRINT,        "&Print"
+        HBPRINTER_SAVE,         "&Save"
+        HBPRINTER_FIRST,        "&First"
+        HBPRINTER_PREVIOUS,     "P&revious"
+        HBPRINTER_NEXT,         "&Next"
+        HBPRINTER_LAST,         "&Last"
+        HBPRINTER_ZOOMIN,       "Zoom In"
+        HBPRINTER_ZOOMOUT,      "Zoom Out"
+        HBPRINTER_OPTIONS,      "&Options"
+        HBPRINTER_GOTOPAGE,     "Go To Page"
+        HBPRINTER_PAGEPREVIEW,  "Page preview "
+        HBPRINTER_THUMBPREVIEW, "Thumbnails preview"
+        HBPRINTER_PAGE,         "Page"
+        HBPRINTER_PRTCURRENT,   "Print current page only"
+        HBPRINTER_PAGES,        "Pages:"
+        HBPRINTER_NOMOREZOOM,   "No more zoom!"
+        HBPRINTER_PRTOPTIONS,   "Print options"
+        HBPRINTER_PRTFROM,      "Print from"
+        HBPRINTER_PRTTO,        "to"
+        HBPRINTER_COPIES,       "Copies"
+        HBPRINTER_COLLATION,    "Collation"
+        HBPRINTER_EVERYSEQ,     "Everything, sequential"
+        HBPRINTER_ONLYODD,      "Only odd pages"
+        HBPRINTER_ONLYEVEN,     "Only even pages"
+        HBPRINTER_EVERYODD,     "Everything, odd pages first"
+        HBPRINTER_EVERYEVEN,    "Everything, even pages first"
+        HBPRINTER_PRINTING,     "Printing..."
+        HBPRINTER_WAITPAPER,    "Waiting for paper change..."
+        HBPRINTER_PRESSOK,      "Press OK to continue."
+        HBPRINTER_DONE,         "Done!"
+        HBPRINTER_SAVEAS,       "Save as..."
+        HBPRINTER_SAVEALL,      "Save all"
+        HBPRINTER_EMFFILES,     "EMF files"
+        HBPRINTER_ALLFILES,     "All files"
+        HBPRINTER_NOTSUPPORTED, "Unsupported setting:"
+        HBPRINTER_UNKNOWN,      "UNKNOWN"
+        HBPRINTER_ORIENTATION,  "ORIENTATION"
+        HBPRINTER_PAPERSIZE,    "PAPERSIZE"
+        HBPRINTER_SCALE,        "SCALE"
+        HBPRINTER_COPIES,       "COPIES"
+        HBPRINTER_DEFSOURCE,    "DEFAULTSOURCE"
+        HBPRINTER_PRINTQUALITY, "PRINTQUALITY"
+        HBPRINTER_COLOR,        "COLOR"
+        HBPRINTER_DUPLEX,       "DUPLEX"
+        HBPRINTER_COLLATE,      "COLLATE"
+        HBPRINTER_PAPERLENGTH,  "PAPERLENGTH"
+        HBPRINTER_PAPERWIDTH,   "PAPERWIDTH"
+        HBPRINTER_SELECTFOLDER, "Select a folder"
+        HBPRINTER_REPORTEMPTY,  "Report is empty!"
+        HBPRINTER_OK,           "&OK"
+}
+*/
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
@@ -66,6 +183,87 @@ HP_CLOSE                BITMAP         hp_close.bmp
 HP_SAVE                 BITMAP         hp_save.bmp
 HP_THUMBNAIL            BITMAP         hp_thumbnail.bmp
 HP_GLASS                CURSOR         hp_glass.cur
+
+// MINIPRINT REPLACE STRINGS
+// define one or more if these items to replace the value for the current language
+// useful if you're not satisfied with the hardwired value
+
+/*
+#define MINIPRINT_PAGE     101
+#define MINIPRINT_PREVIEW  102
+#define MINIPRINT_FIRST    103
+#define MINIPRINT_PREVIOUS 104
+#define MINIPRINT_NEXT     105
+#define MINIPRINT_LAST     106
+#define MINIPRINT_GOTOPAGE 107
+#define MINIPRINT_ZOOM     108
+#define MINIPRINT_PRINT    109
+#define MINIPRINT_PAGENUM  110
+#define MINIPRINT_OK       111
+#define MINIPRINT_CANCEL   112
+#define MINIPRINT_SELECT   113
+#define MINIPRINT_COLLATE  114
+#define MINIPRINT_RANGE    115
+#define MINIPRINT_ALL      116
+#define MINIPRINT_PAGES    117
+#define MINIPRINT_FROM     118
+#define MINIPRINT_TO       119
+#define MINIPRINT_COPIES   120
+#define MINIPRINT_RANGEALL 121
+#define MINIPRINT_ONLYODDS 122
+#define MINIPRINT_ONLYEVEN 123
+#define MINIPRINT_YES      124
+#define MINIPRINT_NO       125
+#define MINIPRINT_CLOSE    126
+#define MINIPRINT_SAVE     127
+#define MINIPRINT_THUMBS   128
+#define MINIPRINT_WAITHMBS 129
+#define MINIPRINT_WARNING  130
+#define MINIPRINT_SELFLDR  131
+#define MINIPRINT_NOPRINT  132
+#define MINIPRINT_CLOSING  133
+#define MINIPRINT_DRVERROR 134
+#define MINIPRINT_ERRCODE  135
+
+STRINGTABLE
+{
+        MINIPRINT_PAGE,      'Page'
+        MINIPRINT_PREVIEW,   'Print Preview'
+        MINIPRINT_FIRST,     'First Page [HOME]'
+        MINIPRINT_PREVIOUS,  'Previous Page [PGUP]'
+        MINIPRINT_NEXT,      'Next Page [PGDN]'
+        MINIPRINT_LAST,      'Last Page [END]'
+        MINIPRINT_GOTOPAGE,  'Go To Page'
+        MINIPRINT_ZOOM,      'Zoom'
+        MINIPRINT_PRINT,     'Print'
+        MINIPRINT_PAGENUM,   'Page Number'
+        MINIPRINT_OK,        'Ok'
+        MINIPRINT_CANCEL,    'Cancel'
+        MINIPRINT_SELECT,    'Select Printer'
+        MINIPRINT_COLLATE,   'Collate Copies'
+        MINIPRINT_RANGE,     'Print Range'
+        MINIPRINT_ALL,       'All'
+        MINIPRINT_PAGES,     'Pages'
+        MINIPRINT_FROM,      'From'
+        MINIPRINT_TO,        'To'
+        MINIPRINT_COPIES,    'Copies'
+        MINIPRINT_RANGEALL,  'All Range'
+        MINIPRINT_ONLYODDS,  'Odd Pages Only'
+        MINIPRINT_ONLYEVEN,  'Even Pages Only'
+        MINIPRINT_YES,       'Yes'
+        MINIPRINT_NO,        'No'
+        MINIPRINT_CLOSE,     'Close'
+        MINIPRINT_SAVE,      'Save'
+        MINIPRINT_THUMBS,    'Thumbnails'
+        MINIPRINT_WAITHMBS,  'Generating Thumbnails... Please Wait...'
+        MINIPRINT_WARNING,   'Warning'
+        MINIPRINT_SELFLDR,   'Select a Folder'
+        MINIPRINT_NOPRINT,   'No printer is installed in this system.'
+        MINIPRINT_CLOSING,   'Closing preview... Please Wait...'
+        MINIPRINT_DRVERROR,  'Error'
+        MINIPRINT_ERRCODE,   'Printer configuration failed with code: '
+}
+*/
 
 // IMAGES FOR TGRIDCONTROL BUTTONS
 
