@@ -370,27 +370,51 @@ HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<n
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CHOOSECOLOR )
 {
-   CHOOSECOLOR cc;
-   COLORREF crCustClr[ 16 ];
    INT i;
+   CHOOSECOLOR cc;
+   static BOOL bFirst = TRUE;
+   static COLORREF crCustClr[ 16 ];
 
-   for( i = 0; i < 16; i++ )
+   if( bFirst )
    {
-      crCustClr[ i ] = ( HB_ISARRAY( 3 ) ? (COLORREF) HB_PARNL2( 3, i + 1 ) : GetSysColor( COLOR_BTNFACE ) );
+      for( i = 0; i < 16; i++ )
+      {
+         crCustClr[ i ] = GetSysColor( COLOR_BTNFACE );
+      }
+      bFirst = FALSE;
    }
 
-   cc.lStructSize = sizeof( CHOOSECOLOR );
-   cc.hwndOwner = HB_ISNIL( 1 ) ? GetActiveWindow() : HWNDparam( 1 );
-   cc.rgbResult = ( COLORREF ) ( HB_ISNIL( 2 ) ?  0 : hb_parnl( 2 ) );
-   cc.lpCustColors = crCustClr;
-   cc.Flags = ( WORD ) ( HB_ISNIL( 4 ) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl( 4 ) );
-
-   if( ! ChooseColorA( &cc ) )
+   if( HB_ISARRAY( 3 ) )
    {
-      hb_retnl( - 1 );
+      for( i = 0; i < 16; i++ )
+      {
+         if( HB_PARVNL( 3, i + 1 ) > 0 )
+         {
+            crCustClr[ i ] = ( COLORREF ) HB_PARVNL( 3, i + 1 );
+         }
+      }
+   }
+
+   ZeroMemory( &cc, sizeof( cc ) );
+   cc.lStructSize  = sizeof( cc );
+   cc.hwndOwner    = HB_ISNIL( 1 ) ? GetActiveWindow() : ( HWND ) HB_PARNL( 1 );
+   cc.rgbResult    = ( COLORREF ) ( HB_ISNIL( 2 ) ?  0 : hb_parnl( 2 ) );
+   cc.lpCustColors = crCustClr;
+   cc.Flags        = ( WORD ) ( HB_ISNIL( 4 ) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl( 4 ) );
+
+   if( ChooseColorA( &cc ) )
+   {
+      if( HB_ISARRAY( 3 ) )
+      {
+         for( i = 0; i < 16; i++ )
+         {
+            HB_STORVNL( ( LONG ) crCustClr[ i ], 3, i + 1 );
+         }
+      }
+      hb_retnl( ( LONG ) cc.rgbResult );
    }
    else
    {
-      hb_retnl( ( LONG ) cc.rgbResult );
+      hb_retnl( - 1 );
    }
 }
