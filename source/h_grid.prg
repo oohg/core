@@ -4769,12 +4769,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly, cColType ) CLASS TGridByCell
+                  uReadOnly, cColType, uHeadDblClick, uHeaderColor ) CLASS TGridByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                                    lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                                    uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReadOnly, cColType )
+                                   uReadOnly, cColType, uHeadDblClick, uHeaderColor )
 
    If nColIndex <= ::nColPos
       ::Value := { ::nRowPos, ::nColPos + 1 }
