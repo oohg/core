@@ -622,6 +622,19 @@ HB_FUNC( GETDESKTOPHEIGHT )
    hb_retni( GetSystemMetrics( SM_CYSCREEN ) );
 }
 
+HB_FUNC( GETDESKTOPAREA )
+{
+   RECT rect;
+
+   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
+
+   hb_reta( 4 );
+   HB_STORNI( ( INT ) rect.left, -1, 1 );
+   HB_STORNI( ( INT ) rect.top, -1, 2 );
+   HB_STORNI( ( INT ) rect.right, -1, 3 );
+   HB_STORNI( ( INT ) rect.bottom, -1, 4 );
+}
+
 HB_FUNC( GETDESKTOPREALHEIGHT )
 //  Returns the height of the free part of the desktop
 {
