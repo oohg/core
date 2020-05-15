@@ -23,7 +23,7 @@ rem
    if exist oohg.res del oohg.res
    if exist oohg.res goto ERROR1
 
-   "%HG_BCC%\bin\brc32.exe" -r -fooohg.res oohg_bcc.rc > nul
+   "%HG_BCC%\bin\brc32.exe" -i..\include -r -fooohg.res oohg_bcc.rc > nul
 
    if exist oohg.res echo Done.
    if not exist oohg.res echo Not done.
