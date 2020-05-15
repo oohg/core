@@ -131,7 +131,7 @@ CLASS TWindow
    DATA lRtl                      INIT .F.
    DATA lVisible                  INIT .T.
    DATA lVisualStyled             INIT NIL PROTECTED
-   DATA Name                      INIT ""
+   DATA cName                     INIT ""  READONLY
    DATA nAnchor                   INIT NIL
    DATA nBorders                  INIT {0,0,0}                                // size of outside border, size of gap, size of inside border.
    DATA nCol                      INIT 0
@@ -240,6 +240,7 @@ CLASS TWindow
    METHOD IsVisualStyled
    METHOD Line
    METHOD LookForKey
+   METHOD Name                    SETGET
    METHOD Object                  BLOCK { |Self| Self }
    METHOD ParentDefaults
    METHOD Pie
@@ -276,6 +277,15 @@ CLASS TWindow
    METHOD Visible                 SETGET
 
    ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Name( cName ) CLASS TWindow
+
+   IF Empty( ::cName ) .AND. HB_ISSTRING( cName ) .AND. ! Empty( cName )
+      ::cName := cName
+   ENDIF
+
+   RETURN ::cName
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD IsVisualStyled CLASS TWindow
