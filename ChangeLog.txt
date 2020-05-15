@@ -12,6 +12,131 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-05-15 00:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2020-05-15 00:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_bcc.bat
+     + Include folder for proper resource compilation.
+
+2020-05-15 00:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile_MINGW.BAT
+     + #include "oohgversion.h"
+
+C:\GitOOHG\core\compile_MINGW.BAT
+2020-05-15 00:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\BuildApp_hbmk2.bat
+     + #include "oohgversion.h"
+
+2020-05-15 00:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\resources\_oohg_resconfig.h
+     + #include "oohgversion.h"
+
+2020-05-14 23:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\resources\CompileRes_bcc.bat
+     + Include folder for proper resource compilation.
+
+2020-05-14 23:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\resources\oohg_bcc.rc
+     + #include "oohgversion.h"
+     + Comments with HBPRINTER and MINIPRINT string tables.
+
+2020-05-14 23:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_dialogs.prg
+     * Function GetColor:
+       + Second parameter uCustomColors: an array of 16 colors
+         to fill the custom color boxes of the dialog. Each item
+         must be a COLORREF (number) or and RGB array. Invalid
+         items will default to -1 (COLOR_BTNFACE). Any change
+         made by the user in the dialog will be reflected in
+         the array.
+
+2020-05-14 23:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_winapimisc.prg
+     + Function BmpSize( uImage) where uImage is an HBITMAP or
+       the name of a resource.
+
+2020-05-14 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_checklist.prg
+     - Unneeded code.
+
+2020-05-14 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_this.ch
+     + Support for Cargo and Cursor properties to This semi-object.
+     + Virtual vars: ThisForm, ThisControl, LastForm, LastControl.
+       They can be used in semioop and in object notation, e.g.
+       ThisForm:Name and ThisForm.Name are both acceptable.
+
+2020-05-14 23:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_var.ch
+     + Pseudo-variable _OOHG_RegisteredControls: returns a clone
+       of OOHG's _OOHG_aControlObjects array.
+     + Pseudo-variable _OOHG_LastDefinedControl: returns the object
+       corresponding to the last defined (the tail item of the
+       _OOHG_aControlObjects array.
+
+2020-05-14 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_winapimisc.c
+     + Function IsExe64 for xHarbour builds.
+
+2020-05-14 23:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_windows.c
+     + Function GetDesktopArea: returns {left,top,right,bottom}.
+
+2020-05-14 23:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_dialogs.c
+     * Function ChooseColor now has the ability to retain custom
+       colors between calls. These custom colors can be set and
+       read using an array as the third parameter.
+
+2020-05-14 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_image.c
+     ! Parameter validation at function _OOHG_SIZEOFHBITMAP.
+
+2020-05-14 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_controlmisc.prg
+     + Function _OOHG_ControlObjects() that returns a clone of
+       OOHG's _OOHG_aControlObjects array.
+
+2020-05-14 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hmg_compat.ch
+     + Translate for IsThemed() function.
+
+2020-05-14 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_hb_compat.ch
+     + Translate for IsExe64() function.
+
+2020-05-14 20:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.ch
+     * Use new defines in OOHGVersion() pseudofunction.
+
+2020-05-14 20:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_window.ch
+     + Support for Cargo and Cursor properties to semioop syntax.
+
+2020-05-14 20:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.ch
+   * core\include\oohg.h
+     + #include "oohgversion.h"
+
+2020-05-14 19:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   + core\include\oohgversion.h
+     ; Defines related to the library's version information.
+
+2020-05-14 19:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+   * core\include\i_browse.ch
+   * core\include\i_grid.ch
+   * core\include\i_xbrowse.ch
+   * core\source\h_browse.prg
+   * core\source\h_xbrowse.prg
+   * core\source\h_grid.prg
+     + Clause HEADERCOLORS.
+       Accepts an array of colors or an array of codeblocks or a
+       single codeblock that return colors (codeblocks receive the
+       column number as a parameter when evaluated).
+
 2020-05-13 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_controlmisc.prg
      ! Checkbox never looses focus after checking it.
