@@ -169,10 +169,12 @@ rem
 
 :LOOP_END
 
+   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
+
    set HG_OBJS=%HG_FILE%.o
    if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
-   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
    windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
@@ -300,7 +302,7 @@ rem
    set HG_W_LIBS=
 
    rem *** Run ***
-   if "%HG_NO_RUN%" == "FALSE" %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" start %HG_FILE%
 
    set HG_FILE=
    set HG_NO_RUN=
