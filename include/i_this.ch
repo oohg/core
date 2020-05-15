@@ -70,7 +70,7 @@ COMMON (THIS)
       _OOHG_ThisObject:<p>()
 
 #xtranslate This . <p: Name, Row, Col, Width, Height, Caption, BackColor, ;
-      Visible, Enabled> ;
+      Visible, Enabled, Cargo> ;
    => ;
       _OOHG_ThisObject:<p>
 
@@ -79,7 +79,7 @@ WINDOWS (THIS)
 ---------------------------------------------------------------------------*/
 
 #xtranslate This . <p: Title, NotifyIcon, NotifyTooltip, FocusedControl, ;
-      MinWidth, MaxWidth, MinHeight, MaxHeight> ;
+      MinWidth, MaxWidth, MinHeight, MaxHeight, Cargo> ;
    => ;
       _OOHG_ThisForm:<p>
 
@@ -95,7 +95,7 @@ WINDOWS (THISWINDOW)
       ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
       HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
       NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
-      VirtualHeight, VirtualWidth, Width> ;
+      VirtualHeight, VirtualWidth, Width, Cargo> ;
    => ;
       _OOHG_ThisForm:<p>
 
@@ -112,14 +112,15 @@ CONTROLS
 #xtranslate This . <p: FontColor, ForeColor, Value, Address, Picture, Tooltip, ;
       FontName, FontSize, FontBold, FontItalic, FontUnderline, FontStrikeout, ;
       Displayvalue, Checked, ItemCount, RangeMin, RangeMax, Length, Position, ;
-      CaretPos, ScrollCaret> ;
+      CaretPos, ScrollCaret, Cargo, Cursor> ;
    => ;
       GetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)> )
 
 #xtranslate This . <p: FontColor, ForeColor, Value, ReadOnly, Address, ;
       Picture, Tooltip, FontName, FontSize, FontBold, FontItalic, ;
       FontUnderline, FontStrikeout, DisplayValue, Checked, RangeMin, RangeMax, ;
-      Repeat, Speed, Volume, Zoom, Position, CaretPos, ScrollCaret> := <arg> ;
+      Repeat, Speed, Volume, Zoom, Position, CaretPos, ScrollCaret, Cargo, ;
+      Cursor> := <arg> ;
    => ;
       SetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg> )
 
@@ -219,3 +220,35 @@ EVENT PROCEDURES
 #xtranslate ThisWindow : <x> ;
    => ;
       _OOHG_ThisForm:<x>
+
+#xtranslate ThisForm : <x> ;
+   => ;
+      _OOHG_ThisForm:<x>
+
+#xtranslate ThisControl : <x> ;
+   => ;
+      _OOHG_ThisControl:<x>
+
+#xtranslate LastForm . <x> ;
+   => ;
+      _OOHG_LastDefinedForm:<x>
+
+#xtranslate LastForm . <x> . <y> ;
+   => ;
+      _OOHG_LastDefinedForm:<x>:<y>
+
+#xtranslate LastControl . <x> ;
+   => ;
+      _OOHG_LastDefinedControl:<x>
+
+#xtranslate LastForm : <x> : <y> ;
+   => ;
+      _OOHG_LastDefinedForm:<x>:<y>
+
+#xtranslate LastForm : <x> ;
+   => ;
+      _OOHG_LastDefinedForm:<x>
+
+#xtranslate LastControl : <x> ;
+   => ;
+      _OOHG_LastDefinedControl:<x>
