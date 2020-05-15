@@ -78,6 +78,7 @@ rem
    if exist _oohg_resconfig.h goto ERROR2
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
    if not exist _oohg_resconfig.h goto ERROR3
 
    set "HG_PATH=%PATH%"
