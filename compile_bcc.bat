@@ -165,7 +165,7 @@ rem
 
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc                _temp.rc %HG_C_LOG%
-   %HG_BCC%\bin\brc32.exe -r -i%HG_ROOT%\resources _temp.rc %HG_C_LOG%
+   "%HG_BCC%\bin\brc32.exe" -r -i%HG_ROOT%\resources;%HG_ROOT%\include _temp.rc %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
    goto COMPILE_PRG
 
@@ -252,7 +252,7 @@ rem
 
 :CLEANUP
 
-   del b32.bc
+   if exist b32.bc        del b32.bc
    if exist %HG_FILE%.map del %HG_FILE%.map
    if exist %HG_FILE%.obj del %HG_FILE%.obj
    if exist %HG_FILE%.tds del %HG_FILE%.tds
@@ -274,7 +274,7 @@ rem
 
    rem *** Run ***
    if errorlevel 1 set HG_NO_RUN=TRUE
-   if "%HG_NO_RUN%" == "FALSE" %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" start %HG_FILE%
 
    set HG_FILE=
    set HG_NO_RUN=
