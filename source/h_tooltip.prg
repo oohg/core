@@ -407,7 +407,7 @@ HB_FUNC( INITTOOLTIP )
       }
    }
 
-   _OOHG_TToolTip_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htooltip, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TToolTip_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htooltip, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( htooltip );
 }
@@ -430,7 +430,7 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
 // TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT ) hWnd;
+   ti.uId = ( UINT_PTR ) hWnd;
 
    if( SendMessage( hWnd_ToolTip, ( UINT ) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
    {

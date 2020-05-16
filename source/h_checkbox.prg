@@ -277,7 +277,7 @@ HB_FUNC( INITCHECKBOX )          /* FUNCTION InitCheckBox( hWnd, cCaption, hMenu
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 8 ), hb_parni( 9 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL ) ;
 
-   _OOHG_TCheckBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hChkBox, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TCheckBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hChkBox, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hChkBox );
 }

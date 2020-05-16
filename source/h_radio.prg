@@ -974,7 +974,7 @@ HB_FUNC( INITRADIOGROUP )          /* FUNCTION InitRadioGroup( hWnd, nCol, nRow,
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TRadioGroup_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hgroup, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TRadioGroup_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hgroup, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
    HWNDret( hgroup );
 }
@@ -1016,7 +1016,7 @@ HB_FUNC( INITRADIOBUTTON )          /* FUNCTION InitRadioButton( hWnd, nCol, nRo
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TRadioButton_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hbutton, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TRadioButton_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hbutton, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
    HWNDret( hbutton );
 }

@@ -204,7 +204,7 @@ HB_FUNC( INITFRAME )          /* FUNCTION InitFrame( hWnd, hMenu, nCol, nRow, nW
                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TFrame_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hframe, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TFrame_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hframe, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
    HWNDret( hframe );
 }

@@ -293,7 +293,7 @@ HB_FUNC( INITSPINNER )          /* FUNCTION InitSpinner( hWnd, hMenu, nCol, nRow
    SendMessage( hUpDown, UDM_SETBUDDY, ( WPARAM ) HWNDparam( 11 ), ( LPARAM ) NULL );
    SendMessage( hUpDown, UDM_SETRANGE32, ( WPARAM ) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
 
-   _OOHG_TSpinner_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hUpDown, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TSpinner_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hUpDown, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hUpDown );
 }

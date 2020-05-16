@@ -676,7 +676,7 @@ HB_FUNC( INITBUTTON )          /* FUNCTION InitButton( hWnd, cCaption, hMenu, nC
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TButton_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TButton_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hbutton );
 }

@@ -632,7 +632,7 @@ HB_FUNC( INITMESSAGEBAR )          /* FUNCTION InitMonthCal( hWnd, cCaption, nId
 
    hCtrl = CreateStatusWindow( Style, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
 
-   _OOHG_TMessageBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TMessageBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

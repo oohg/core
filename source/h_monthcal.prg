@@ -482,7 +482,7 @@ HB_FUNC( INITMONTHCAL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TMonthCal_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TMonthCal_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

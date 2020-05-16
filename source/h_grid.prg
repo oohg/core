@@ -8194,7 +8194,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
       ListView_SetItemCount( hlistview, hb_parni( 11 ) ) ;
    }
 
-   _OOHG_TGrid_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hlistview, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TGrid_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hlistview, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hlistview );
 }

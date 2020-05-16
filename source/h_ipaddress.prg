@@ -187,7 +187,7 @@ HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, 
    hCtrl = CreateWindowEx( StyleEx, WC_IPADDRESS, "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TIPAddress_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TIPAddress_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

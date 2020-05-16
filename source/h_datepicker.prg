@@ -321,7 +321,7 @@ HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
 
    HWNDret( hCtrl );
 }
@@ -437,7 +437,7 @@ HB_FUNC( INITTIMEPICK )          /* FUNCTION InitTimePick( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
    HWNDret( hCtrl );
 }

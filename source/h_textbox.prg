@@ -823,7 +823,7 @@ HB_FUNC( INITTEXTBOX )          /* FUNCTION InitTextBox( hWnd, hMenu, nCol, nRow
       SendMessage( hCtrl, ( UINT ) EM_LIMITTEXT, ( WPARAM ) hb_parni( 8 ), ( LPARAM ) 0 );
    }
 
-   _OOHG_TText_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TText_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

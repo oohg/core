@@ -638,7 +638,7 @@ HB_FUNC( INITTOOLBAR )
                             0, 0, 0, 0,
                             HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TToolbar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hwndTB, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TToolbar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hwndTB, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    if( hb_parni( 6 ) && hb_parni( 7 ) )
    {

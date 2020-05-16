@@ -981,11 +981,11 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS T
          if( oSelf->lBackColor != -1 )
          {
             oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
-            SetClassLongPtr( oSelf->hWnd, GCL_HBRBACKGROUND, ( LONG_PTR )  oSelf->BrushHandle );
+            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, ( LONG_PTR )  oSelf->BrushHandle );
          }
          else
          {
-            SetClassLongPtr( oSelf->hWnd, GCL_HBRBACKGROUND, ( LONG_PTR ) ( COLOR_BTNFACE + 1 ) );
+            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, ( LONG_PTR ) ( COLOR_BTNFACE + 1 ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }

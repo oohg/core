@@ -1260,7 +1260,7 @@ HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, nId, nCol, nRow
                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hcombo, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hcombo, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hcombo );
 }
@@ -1817,7 +1817,7 @@ static LRESULT APIENTRY SubClassFuncCL( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITLISTCOMBO )          /* FUNCTION InitListCombo( hWnd ) -> NIL */
 {
-   _OOHG_TListCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCL ) );
+   _OOHG_TListCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncCL ) );
 }
 
 #pragma ENDDUMP
@@ -1907,7 +1907,7 @@ static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITEDITCOMBO )          /* FUNCTION InitEditCombo( hWnd ) -> NIL */
 {
-   _OOHG_TEditCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncCE ) );
+   _OOHG_TEditCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncCE ) );
 }
 
 #pragma ENDDUMP

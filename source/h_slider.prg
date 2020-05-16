@@ -242,7 +242,7 @@ HB_FUNC( INITSLIDER )          /* FUNCTION InitSlider( hWnd, hMenu, nCol, nRow, 
 
    SendMessage( hCtrl, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
 
-   _OOHG_TSlider_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TSlider_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

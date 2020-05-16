@@ -600,7 +600,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
       color = hBrush;
    }
 
-   SetClassLongPtr( hWnd, GCL_HBRBACKGROUND, (LONG_PTR) color );
+   SetClassLongPtr( hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) color );
 
    RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 

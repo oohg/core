@@ -467,7 +467,7 @@ HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitScrollBar( hWnd, nCol, nRow, n
 
    SetScrollRange( hCtrl, SB_CTL, 1, 100, TRUE );
 
-   _OOHG_TScrollBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TScrollBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

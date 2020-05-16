@@ -274,7 +274,7 @@ HB_FUNC( INITSPLITBOX )          /* FUNCTION IniTSplitBox( hWnd, nStyle, lRtl ) 
    rbi.himl   = ( HIMAGELIST ) NULL;
    SendMessage( hCtrl, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
 
-   _OOHG_TSplitBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TSplitBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

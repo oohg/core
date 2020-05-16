@@ -276,7 +276,7 @@ HB_FUNC( INITLABEL )          /* FUNCTION InitLabel( hWnd, cCaption, hMenu, nCol
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TLabel_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hlabel, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TLabel_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hlabel, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hlabel );
 }

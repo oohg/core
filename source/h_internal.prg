@@ -322,7 +322,7 @@ HB_FUNC( INITINTERNAL )
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TINTERNAL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TInternal_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWL_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TInternal_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

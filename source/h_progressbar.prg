@@ -333,7 +333,7 @@ HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, 
    SendMessage( hCtrl, PBM_SETRANGE, 0, ( WPARAM ) MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
    SendMessage( hCtrl, PBM_SETPOS, ( WPARAM ) hb_parni( 12 ), 0 );
 
-   _OOHG_TProgressBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TProgressBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }

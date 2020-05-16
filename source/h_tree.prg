@@ -2364,7 +2364,7 @@ HB_FUNC( INITTREE )          /* FUNCTION InitTree( hWnd, nCol, nRow, nWidth, nHe
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hWndTV, GWL_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hWndTV, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
 
    if( hb_parl( 8 ) )
    {
@@ -3541,7 +3541,7 @@ static LRESULT APIENTRY SubClassFuncTE( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITEDITTREE )          /* FUNCTION InitEditTree( hWnd ) -> NIL */
 {
-   _OOHG_TEditTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWL_WNDPROC, ( LONG_PTR ) SubClassFuncTE ) );
+   _OOHG_TEditTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncTE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

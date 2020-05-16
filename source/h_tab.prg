@@ -1929,7 +1929,7 @@ HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, 
 
    TabCtrl_SetCurSel( hCtrl, hb_parni( 8 ) - 1 );
 
-   _OOHG_TTabRaw_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWL_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TTabRaw_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
