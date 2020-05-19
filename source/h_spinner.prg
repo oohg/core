@@ -290,10 +290,10 @@ HB_FUNC( INITSPINNER )          /* FUNCTION InitSpinner( hWnd, hMenu, nCol, nRow
                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                              HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   SendMessage( hUpDown, UDM_SETBUDDY, ( WPARAM ) HWNDparam( 11 ), ( LPARAM ) NULL );
-   SendMessage( hUpDown, UDM_SETRANGE32, ( WPARAM ) hb_parni( 7 ), ( LPARAM ) hb_parni( 8 ) );
+   SendMessage( hUpDown, UDM_SETBUDDY, ( WPARAM ) HWNDparam( 11 ), (LPARAM) NULL );
+   SendMessage( hUpDown, UDM_SETRANGE32, ( WPARAM ) hb_parni( 7 ), (LPARAM) hb_parni( 8 ) );
 
-   _OOHG_TSpinner_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hUpDown, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TSpinner_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hUpDown, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hUpDown );
 }
@@ -301,7 +301,7 @@ HB_FUNC( INITSPINNER )          /* FUNCTION InitSpinner( hWnd, hMenu, nCol, nRow
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETSPINNERRANGE )          /* FUNCTION SetSpinnerRange( hWndUpDown, nMin, nMax ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), UDM_SETRANGE32, ( WPARAM ) hb_parni( 2 ), ( LPARAM ) hb_parni( 3 ) ) ;
+   SendMessage( HWNDparam( 1 ), UDM_SETRANGE32, ( WPARAM ) hb_parni( 2 ), (LPARAM) hb_parni( 3 ) ) ;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -311,7 +311,7 @@ HB_FUNC( SETSPINNERINCREMENT )          /* FUNCTION SetSpinnerIncrement( hWndUpD
 
    inc.nSec = 0;
    inc.nInc = hb_parnl( 2 );
-   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, ( WPARAM ) 1 , ( LPARAM ) &inc ) ;
+   SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, ( WPARAM ) 1 , (LPARAM) &inc ) ;
 }
 
 #pragma ENDDUMP
