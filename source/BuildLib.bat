@@ -38,29 +38,50 @@ rem -info to see informational messages
 
 :TEST
 
-   if /I "%1" == "HM30" goto TEST_HM30
-   if /I "%1" == "HM32" goto TEST_HM32
-   if /I "%1" == "HM34" goto TEST_HM34
+   if /I "%1" == "HM30"   goto TEST_HM30
+   if /I "%1" == "HM32"   goto TEST_HM32
+   if /I "%1" == "HM3264" goto TEST_HM3264
+   if /I "%1" == "HM34"   goto TEST_HM34
+   if /I "%1" == "HM3464" goto TEST_HM3464
 
 :DETECT_HM30
 
-   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat" goto DETECT_HM32
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto SYNTAX
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto SYNTAX
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat"   goto DETECT_HM32
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat"   goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat" goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat"   goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto SYNTAX
    goto BUILDLIB_HM30
 
 :DETECT_HM32
 
-   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat" goto DETECT_HM34
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto SYNTAX
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat"   goto DETECT_HM3264
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat" goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat"   goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto SYNTAX
    goto BUILDLIB_HM32
+
+:DETECT_HM3264
+
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat" goto DETECT_HM34
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat"   goto SYNTAX
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto SYNTAX
+   goto BUILDLIB_HM3264
 
 :DETECT_HM34
 
-   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto BUILDLIB_HM34
+   if not exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat"   goto DETECT_HM3464
+   if     exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto SYNTAX
+   goto BUILDLIB_HM34
+
+:DETECT_HM3464
+
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto BUILDLIB_HM3464
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib30.bat not found !!!
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib32.bat not found !!!
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat not found !!!
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat not found !!!
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -73,8 +94,12 @@ rem -info to see informational messages
    echo       BuildLib HM30 [options]
    echo   To build with Harbour 3.2 and MinGW
    echo       BuildLib HM32 [options]
+   echo   To build with Harbour 3.2 and MinGW, 64 bits
+   echo       BuildLib HM3264 [options]
    echo   To build with Harbour 3.4 and MinGW
    echo       BuildLib HM34 [options]
+   echo   To build with Harbour 3.4 and MinGW, 64 bits
+   echo       BuildLib HM3464 [options]
    echo.
    goto END
 
@@ -98,11 +123,31 @@ rem -info to see informational messages
    echo.
    goto END
 
+:TEST_HM3264
+
+   shift
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat" goto BUILDLIB_HM32
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib3264.bat not found !!!
+   echo.
+   echo This file must be executed from SOURCE folder !!!
+   echo.
+   goto END
+
 :TEST_HM34
 
    shift
    if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat" goto BUILDLIB_HM34
    echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib34.bat not found !!!
+   echo.
+   echo This file must be executed from SOURCE folder !!!
+   echo.
+   goto END
+
+:TEST_HM3464
+
+   shift
+   if exist "%HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat" goto BUILDLIB_HM3464
+   echo File %HG_START_DP_BUILDLIB_BAT%\BuildLib3464.bat not found !!!
    echo.
    echo This file must be executed from SOURCE folder !!!
    echo.
@@ -132,6 +177,18 @@ rem -info to see informational messages
    call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
+:BUILDLIB_HM3264
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb3264
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw64
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw64
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
 :BUILDLIB_HM34
 
    if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb34
@@ -140,6 +197,18 @@ rem -info to see informational messages
    set HG_CCOMP=%HG_MINGW%
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang
+   if "%BIN_HRB%"  == "" set BIN_HRB=bin
+   call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
+:BUILDLIB_HM3464
+
+   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\hb3464
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw64
+   if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang64
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
    call "%HG_START_DP_BUILDLIB_BAT%\BuildLib_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END

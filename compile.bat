@@ -32,41 +32,64 @@ rem
 
 :TEST
 
-   if /I "%1" == "HM30" goto TEST_HM30
-   if /I "%1" == "HM32" goto TEST_HM32
-   if /I "%1" == "HM34" goto TEST_HM34
-   if /I "%1" == "XB55" goto TEST_XB
-   if /I "%1" == "XB58" goto TEST_XB
-   if /I "%1" == "XM"   goto TEST_XM
+   if /I "%1" == "HM30"   goto TEST_HM30
+   if /I "%1" == "HM32"   goto TEST_HM32
+   if /I "%1" == "HM3264" goto TEST_HM3264
+   if /I "%1" == "HM34"   goto TEST_HM34
+   if /I "%1" == "HM3464" goto TEST_HM3464
+   if /I "%1" == "XB55"   goto TEST_XB
+   if /I "%1" == "XB58"   goto TEST_XB
+   if /I "%1" == "XM"     goto TEST_XM
 
 :DETECT_HM30
 
-   if not exist "%HG_ROOT%\compile30.bat" goto DETECT_HM32
-   if exist "%HG_ROOT%\compile32.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compile34.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   if not exist "%HG_ROOT%\compile30.bat"   goto DETECT_HM32
+   if     exist "%HG_ROOT%\compile32.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compile3264.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compile34.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compile3464.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compileXB.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat"   goto SYNTAX
    goto COMPILE_HM30
 
 :DETECT_HM32
 
-   if not exist "%HG_ROOT%\compile32.bat" goto DETECT_HM34
-   if exist "%HG_ROOT%\compile34.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   if not exist "%HG_ROOT%\compile32.bat"   goto DETECT_HM3264
+   if     exist "%HG_ROOT%\compile3264.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compile34.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compile3464.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compileXB.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat"   goto SYNTAX
    goto COMPILE_HM32
+
+:DETECT_HM3264
+
+   if not exist "%HG_ROOT%\compile3264.bat" goto DETECT_HM34
+   if     exist "%HG_ROOT%\compile34.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compile3464.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compileXB.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat"   goto SYNTAX
+   goto COMPILE_HM3264
 
 :DETECT_HM34
 
-   if not exist "%HG_ROOT%\compile34.bat" goto DETECT_XB
-   if exist "%HG_ROOT%\compileXB.bat" goto SYNTAX
-   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   if not exist "%HG_ROOT%\compile34.bat"   goto DETECT_HM3464
+   if     exist "%HG_ROOT%\compile3464.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compileXB.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat"   goto SYNTAX
    goto COMPILE_HM34
+
+:DETECT_HM3464
+
+   if not exist "%HG_ROOT%\compile3464.bat" goto DETECT_XB
+   if     exist "%HG_ROOT%\compileXB.bat"   goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat"   goto SYNTAX
+   goto COMPILE_HM3464
 
 :DETECT_XB
 
    if not exist "%HG_ROOT%\compileXB.bat" goto DETECT_XM
-   if exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
+   if     exist "%HG_ROOT%\compileXM.bat" goto SYNTAX
    goto COMPILE_XB
 
 :DETECT_XM
@@ -74,7 +97,9 @@ rem
    if exist "%HG_ROOT%\compileXM.bat" goto COMPILE_XM
    echo File %HG_ROOT%\compile30.bat not found !!!
    echo File %HG_ROOT%\compile32.bat not found !!!
+   echo File %HG_ROOT%\compile3264.bat not found !!!
    echo File %HG_ROOT%\compile34.bat not found !!!
+   echo File %HG_ROOT%\compile3464.bat not found !!!
    echo File %HG_ROOT%\compileXB.bat not found !!!
    echo File %HG_ROOT%\compileXM.bat not found !!!
    echo.
@@ -87,8 +112,12 @@ rem
    echo       compile [/C] HM30 file [options]
    echo   To build with Harbour 3.2 and MinGW
    echo       compile [/C] HM32 file [options]
+   echo   To build with Harbour 3.2 and MinGW, 64 bits
+   echo       compile [/C] HM3264 file [options]
    echo   To build with Harbour 3.4 and MinGW
    echo       compile [/C] HM34 file [options]
+   echo   To build with Harbour 3.4 and MinGW, 64 bits
+   echo       compile [/C] HM3464 file [options]
    echo   To build with xHarbour and BCC 5.5.1
    echo       compile [/C] XB55 file [options]
    echo   To build with xHarbour and BCC 5.8.2
@@ -114,11 +143,27 @@ rem
    echo.
    goto END
 
+:TEST_HM3264
+
+   shift
+   if exist "%HG_ROOT%\compile3264.bat" goto COMPILE_HM3264
+   echo File compile3264.bat not found !!!
+   echo.
+   goto END
+
 :TEST_HM34
 
    shift
    if exist "%HG_ROOT%\compile34.bat" goto COMPILE_HM34
    echo File compile34.bat not found !!!
+   echo.
+   goto END
+
+:TEST_HM3464
+
+   shift
+   if exist "%HG_ROOT%\compile3464.bat" goto COMPILE_HM3464
+   echo File compile3464.bat not found !!!
    echo.
    goto END
 
@@ -168,6 +213,21 @@ rem
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
+:COMPILE_HM3264
+
+   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb3264
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb\mingw64
+   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw64
+   if "%BIN_HRB%"    == "" set BIN_HRB=bin
+   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
+   set HG_FLAVOR=HARBOUR
+   call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
 :COMPILE_HM34
 
    if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb34
@@ -178,6 +238,21 @@ rem
    if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\clang
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM34.o
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   set HG_FLAVOR=HARBOUR
+   call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
+   goto END
+
+:COMPILE_HM3464
+
+   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb3464
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   set HG_CCOMP=%HG_MINGW%
+   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb34\mingw64
+   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\clang64
+   if "%BIN_HRB%"    == "" set BIN_HRB=bin
+   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3464.o
    if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
