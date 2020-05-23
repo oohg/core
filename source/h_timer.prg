@@ -155,13 +155,13 @@ METHOD Events_TimeOut() CLASS TTimer
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITTIMER )          /* FUNCTION InitTimer( hWnd, nId, nInterval ) -> NIL */
 {
-   SetTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( UINT ) hb_parni( 3 ), ( TIMERPROC ) NULL );
+   SetTimer( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (UINT) hb_parni( 3 ), ( TIMERPROC ) NULL );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( KILLTIMER )          /* FUNCTION KillTimer( hWnd, nId ) -> NIL */
 {
-   KillTimer( HWNDparam( 1 ), ( UINT ) hb_parni( 2 ) );
+   KillTimer( HWNDparam( 1 ), (UINT) hb_parni( 2 ) );
 }
 
 #pragma ENDDUMP
