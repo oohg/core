@@ -458,7 +458,7 @@ METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
    ENDIF
    ::BringToTop()
    hBitMap := ::GetBitMap( lAll )
-   aSize := _OOHG_SizeOfHBitmap( hBitMap )
+   aSize := _OOHG_SizeOfHBitmap( hBitmap )
    IF cType == "BMP"
       _SaveBitmap( hBitMap, cFile )
    ELSE
@@ -494,7 +494,7 @@ METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
          gPlusDeInit()
       ENDIF
    ENDIF
-   DeleteObject( hBitMap )
+   DeleteObject( hBitmap )
 
    RETURN NIL
 
@@ -1359,26 +1359,26 @@ METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
    LOCAL cValue, oControl
 
    IF nMsg == WM_COMMAND
-      oControl := GetControlObjectById( LOWORD( wParam ) )
+      oControl := GetControlObjectById( LOWORD( wParam  ) )
       IF oControl:Id == 0
          oControl := GetControlObjectByHandle( lParam )
       ENDIF
       cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
    ELSEIF nMsg == WM_NOTIFY
       cValue := GetControlObjectByHandle( GethWndFrom( lParam ) ):DebugMessageQueryNotify( ::Name, wParam, lParam )
    ELSEIF nMsg == WM_CTLCOLORBTN
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
    ELSEIF nMsg == WM_CTLCOLORSTATIC
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORSTATIC   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
    ELSEIF nMsg == WM_CTLCOLOREDIT
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLOREDIT   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
    ELSEIF nMsg == WM_CTLCOLORLISTBOX
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORLISTBOX   0x" + _OOHG_HEX( wParam, 8 )
@@ -1445,7 +1445,7 @@ METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
 
    LOCAL cValue
 
-   Empty( wParam )
+   HB_SYMBOL_UNUSED( wParam  )
    cValue := cParentName + "." + ;
              iif( Empty( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
              ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
@@ -2124,13 +2124,13 @@ METHOD Error( xParam ) CLASS TDynamicValues
    #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )
 #endif
 
-static INT _OOHG_ShowContextMenus = 1;      // TODO: Thread safe ?
-static BOOL _OOHG_NestedSameEvent = FALSE;  // TRUE allows event nesting
-static INT _OOHG_MouseCol = 0;              // TODO: Thread safe ?
-static INT _OOHG_MouseRow = 0;              // TODO: Thread safe ?
+static int _OOHG_ShowContextMenus = 1;      /* TODO: Thread safe ? */
+static BOOL _OOHG_NestedSameEvent = FALSE;  /* TRUE allows event nesting */
+static int _OOHG_MouseCol = 0;              /* TODO: Thread safe ? */
+static int _OOHG_MouseRow = 0;              /* TODO: Thread safe ? */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-VOID _OOHG_SetMouseCoords( PHB_ITEM pSelf, INT iCol, INT iRow )
+void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 {
    PHB_ITEM pSelf2;
 
@@ -2176,11 +2176,11 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
    HDC hdc;
    HBRUSH OldBrush;
 
-   // ImageList
+   /* ImageList */
    ImageList_Destroy( oSelf->ImageList );
    oSelf->ImageList = NULL;
 
-   // Auxiliar Buffer
+   /* Auxiliar Buffer */
    if( oSelf->AuxBuffer )
    {
       hb_xfree( oSelf->AuxBuffer );
@@ -2188,17 +2188,17 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
       oSelf->AuxBufferLen = 0;
    }
 
-   // Icon handle
+   /* Icon handle */
    DeleteObject( oSelf->IconHandle );
    oSelf->IconHandle = NULL;
 
-   // Brush handle
+   /* Brush handle */
    if( ValidHandler( oSelf->hWnd ) )
    {
       hdc = GetDC( oSelf->hWnd );
       if( ValidHandler( hdc ) )
       {
-         OldBrush = SelectObject( hdc, oSelf->OriginalBrush );
+         OldBrush = (HBRUSH) SelectObject( hdc, oSelf->OriginalBrush );
          DeleteObject( OldBrush );
          DeleteObject( oSelf->BrushHandle );
          oSelf->BrushHandle = NULL;
@@ -2206,11 +2206,11 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
       }
    }
 
-   // Font handle
+   /* Font handle */
    DeleteObject( oSelf->hFontHandle );
    oSelf->hFontHandle = NULL;
 
-   // Context menu
+   /* Context menu */
    _OOHG_Send( pSelf, s_ContextMenu );
    hb_vmSend( 0 );
    if( hb_param( -1, HB_IT_OBJECT ) )
@@ -2222,8 +2222,8 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
       hb_vmSend( 1 );
    }
 
-   // Note that ::hWnd := -1 is set at ::Events_Destroy()
-   oSelf->hWnd = ( HWND )( ~0 );
+   /* Note that ::hWnd := -1 is set at ::Events_Destroy() */
+   oSelf->hWnd = (HWND) ( ~0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2277,7 +2277,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )          /* METHOD Imagelist( handle ) CLASS
       oSelf->ImageList = hImageList;
    }
 
-   HB_RETNL( ( LONG_PTR ) oSelf->ImageList );
+   HB_RETNL( (LONG_PTR) oSelf->ImageList );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2288,7 +2288,7 @@ HB_FUNC_STATIC( TWINDOW_ICONHANDLE )          /* METHOD IconHandle( hIcon ) CLAS
 
    if( hb_pcount() >= 1 )
    {
-      HICON hIcon = ( HICON ) HB_PARNL( 1 );
+      HICON hIcon = (HICON) HB_PARNL( 1 );
 
       if( oSelf->IconHandle )
       {
@@ -2297,7 +2297,7 @@ HB_FUNC_STATIC( TWINDOW_ICONHANDLE )          /* METHOD IconHandle( hIcon ) CLAS
       oSelf->IconHandle = hIcon;
    }
 
-   HB_RETNL( ( LONG_PTR ) oSelf->IconHandle );
+   HB_RETNL( (LONG_PTR) oSelf->IconHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2317,7 +2317,7 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )          /* METHOD BrushHandle( hBrush ) C
       oSelf->BrushHandle = hBrush;
    }
 
-   HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
+   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2328,7 +2328,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )          /* METHOD FontHandle( hFont ) CLAS
 
    if( hb_pcount() >= 1 )
    {
-      HFONT hFont = ( HFONT ) HB_PARNL( 1 );
+      HFONT hFont = (HFONT) HB_PARNL( 1 );
 
       if( oSelf->hFontHandle )
       {
@@ -2337,7 +2337,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )          /* METHOD FontHandle( hFont ) CLAS
       oSelf->hFontHandle = hFont;
    }
 
-   HB_RETNL( ( LONG_PTR ) oSelf->hFontHandle );
+   HB_RETNL( (LONG_PTR) oSelf->hFontHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2354,7 +2354,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLOR )          /* METHOD FontColor( uColor ) CLASS
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2392,7 +2392,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2430,7 +2430,7 @@ HB_FUNC_STATIC( TWINDOW_FONTCOLORSELECTED )          /* METHOD FontColorSelected
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2447,7 +2447,7 @@ HB_FUNC_STATIC( TWINDOW_BACKCOLORSELECTED )          /* METHOD BackColorSelected
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2455,19 +2455,19 @@ HB_FUNC_STATIC( TWINDOW_BACKBITMAP )          /* METHOD BackBitmap( hBitmap ) CL
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HBITMAP hBitMap;
+   HBITMAP hBitmap;
 
-   hBitMap = ( HBITMAP ) HWNDparam( 1 );
-   if( ValidHandler( hBitMap ) )
+   hBitmap = (HBITMAP) HWNDparam( 1 );
+   if( ValidHandler( hBitmap ) )
    {
       if( oSelf->BrushHandle )
       {
          DeleteObject( oSelf->BrushHandle );
       }
-      oSelf->BrushHandle = CreatePatternBrush( hBitMap );
+      oSelf->BrushHandle = CreatePatternBrush( hBitmap );
    }
 
-   HB_RETNL( ( LONG_PTR ) oSelf->BrushHandle );
+   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2475,16 +2475,16 @@ HB_FUNC_STATIC( TWINDOW_CAPTION )          /* METHOD Caption( cCaption ) CLASS T
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   INT iLen;
+   int iLen;
    LPTSTR cText;
 
    if( HB_ISCHAR( 1 ) )
    {
-      SetWindowText( oSelf->hWnd, ( LPCTSTR ) hb_parc( 1 ) );
+      SetWindowText( oSelf->hWnd, (LPCTSTR) hb_parc( 1 ) );
    }
 
    iLen = GetWindowTextLength( oSelf->hWnd ) + 1;
-   cText = ( LPTSTR ) hb_xgrab( iLen );
+   cText = (LPTSTR) hb_xgrab( iLen );
    GetWindowText( oSelf->hWnd, cText, iLen );
    hb_retc( cText );
    hb_xfree( cText );
@@ -2505,13 +2505,13 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )          /* METHOD AcceptFiles( lOnOff ) C
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static UINT _OOHG_ListBoxDragNotification = 0;            // It's thread safe because is set only once.
+static UINT _OOHG_ListBoxDragNotification = 0;            /* It's thread safe because is set only once. */
 
 HB_FUNC( _GETDDLMESSAGE )          /* FUNCTION _GetDDLMessage() -> NIL */
 {
    if( ! _OOHG_ListBoxDragNotification )
    {
-      _OOHG_ListBoxDragNotification = ( UINT ) RegisterWindowMessage( DRAGLISTMSGSTRING );
+      _OOHG_ListBoxDragNotification = (UINT) RegisterWindowMessage( DRAGLISTMSGSTRING );
    }
 }
 
@@ -2519,17 +2519,17 @@ HB_FUNC( _GETDDLMESSAGE )          /* FUNCTION _GetDDLMessage() -> NIL */
 HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow -> nRet */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
    {
       case WM_CTLCOLORBTN:
       case WM_CTLCOLORSTATIC:
-         _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushNumInt( wParam );
+         _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushLong( COLOR_3DFACE );
          hb_vmPushNil();
          hb_vmSend( 3 );
@@ -2537,8 +2537,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
-         _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushNumInt( wParam );
+         _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushLong( COLOR_WINDOW );
          hb_vmPushNil();
          hb_vmSend( 3 );
@@ -2546,16 +2546,16 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
 
       case WM_NOTIFY:
          _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom, TRUE ), s_Events_Notify );
-         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 2 );
          break;
 
       case WM_COMMAND:
-         // See https://support.microsoft.com/en-us/help/102589/how-to-use-the-enter-key-from-edit-controls-in-a-dialog-box
+         /* See https://support.microsoft.com/en-us/help/102589/how-to-use-the-enter-key-from-edit-controls-in-a-dialog-box */
          if( wParam == IDOK )
          {
-            // Enter key
+            /* Enter key */
             _OOHG_Send( _OOHG_GetExistingObject( GetFocus(), TRUE, TRUE ), s_Events_Enter );
             hb_vmSend( 0 );
          }
@@ -2563,9 +2563,9 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          {
             if( lParam )
             {
-               // From control by handle
-               _OOHG_Send( _OOHG_GetExistingObject( ( HWND ) lParam, FALSE, TRUE ), s_Events_Command );
-               hb_vmPushNumInt( wParam );
+               /* From control by handle */
+               _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Command );
+               hb_vmPushNumInt( wParam  );
                hb_vmSend( 1 );
             }
             else
@@ -2573,12 +2573,12 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                PHB_ITEM pControl, pOnClick;
 
                pControl = hb_itemNew( NULL );
-               hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
+               hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam  ), hWnd ) );
                _OOHG_Send( pControl, s_Id );
                hb_vmSend( 0 );
                if( hb_parni( -1 ) != 0 )
                {
-                  // From menu by Iid
+                  /* From menu by Iid */
                   BOOL bClicked = 0;
 
                   _OOHG_Send( pControl, s_NestedClick );
@@ -2623,36 +2623,36 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_TIMER:
-         _OOHG_Send( GetControlObjectById( LOWORD( wParam ), hWnd ), s_Events_TimeOut );
+         _OOHG_Send( GetControlObjectById( LOWORD( wParam  ), hWnd ), s_Events_TimeOut );
          hb_vmSend( 0 );
          hb_ret();
          break;
 
       case WM_DRAWITEM:
-         if( wParam )
+         if( wParam  )
          {
-            // ComboBox and ListBox
-            _OOHG_Send( GetControlObjectByHandle( ( ( LPDRAWITEMSTRUCT ) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
+            /* ComboBox and ListBox */
+            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAWITEMSTRUCT) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
          }
          else
          {
-            // Menu
-            _OOHG_Send( GetControlObjectById( ( ( MYITEM * ) ( ( ( LPDRAWITEMSTRUCT ) lParam )->itemData ) )->id, hWnd ), s_Events_DrawItem );
+            /* Menu */
+            _OOHG_Send( GetControlObjectById( ( (MYITEM *) ( ( (LPDRAWITEMSTRUCT) lParam )->itemData ) )->id, hWnd ), s_Events_DrawItem );
          }
          hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
          break;
 
       case WM_MEASUREITEM:
-         if( wParam )
+         if( wParam  )
          {
-            // ComboBox and ListBox
-            _OOHG_Send( GetControlObjectById( ( LONG ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->CtlID ), hWnd ), s_Events_MeasureItem );
+            /* ComboBox and ListBox */
+            _OOHG_Send( GetControlObjectById( (long) ( ( (LPMEASUREITEMSTRUCT) lParam )->CtlID ), hWnd ), s_Events_MeasureItem );
          }
          else
          {
-            // Menu
-            _OOHG_Send( GetControlObjectById( ( ( MYITEM * ) ( ( ( LPMEASUREITEMSTRUCT ) lParam )->itemData ) )->id, hWnd ), s_Events_MeasureItem );
+            /* Menu */
+            _OOHG_Send( GetControlObjectById( ( (MYITEM *) ( ( (LPMEASUREITEMSTRUCT) lParam )->itemData ) )->id, hWnd ), s_Events_MeasureItem );
          }
          hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
@@ -2663,27 +2663,27 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          {
             PHB_ITEM pControl, pContext;
 
-            // Sets mouse coords
+            /* Sets mouse coords */
             _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
 
-            SetFocus( ( HWND ) wParam );
-            pControl = GetControlObjectByHandle( ( HWND ) wParam, TRUE );
+            SetFocus( (HWND) wParam );
+            pControl = GetControlObjectByHandle( (HWND) wParam, TRUE );
 
-            // Check if control have context menu
+            /* Check if control have context menu */
             _OOHG_Send( pControl, s_ContextMenu );
             hb_vmSend( 0 );
             pContext = hb_param( -1, HB_IT_OBJECT );
             if( ! pContext )
             {
-               // TODO: Check for CONTEXTMENU at container control...
+               /* TODO: Check for CONTEXTMENU at container control. */
 
-               // Check if form have context menu
+               /* Check if form have context menu */
                _OOHG_Send( pSelf, s_ContextMenu );
                hb_vmSend( 0 );
                pContext = hb_param( -1, HB_IT_OBJECT );
             }
 
-            // If there's a context menu, show it
+            /* If there's a context menu, show it */
             if( pContext )
             {
                _OOHG_Send( pContext, s_Activate );
@@ -2706,22 +2706,22 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_INITMENUPOPUP:
          if( ! HIWORD( lParam ) )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) ( HMENU ) wParam, TRUE ), s_Events_InitMenuPopUp );
-            hb_vmPushLong( ( LONG ) LOWORD( lParam ) );
+            _OOHG_Send( GetControlObjectByHandle( (HWND) (HMENU) wParam, TRUE ), s_Events_InitMenuPopUp );
+            hb_vmPushLong( (long) LOWORD( lParam ) );
             hb_vmSend( 1 );
          }
          break;
 
       case WM_MENUSELECT:
-         if( ( HIWORD( wParam ) & MF_SYSMENU ) != MF_SYSMENU )
+         if( ( HIWORD( wParam  ) & MF_SYSMENU ) != MF_SYSMENU )
          {
-            if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
+            if( ( HIWORD( wParam  ) & MF_HILITE ) == MF_HILITE )
             {
-               if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
+               if( ( HIWORD( wParam  ) & MF_POPUP ) == MF_POPUP )
                {
                   MENUITEMINFO MenuItemInfo;
                   PHB_ITEM pMenu = hb_itemNew( NULL );
-                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam, TRUE ) );
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) lParam, TRUE ) );
                   _OOHG_Send( pMenu, s_hWnd );
                   hb_vmSend( 0 );
                   if( ValidHandler( HWNDparam( -1 ) ) )
@@ -2729,10 +2729,10 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                      memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                      MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                      MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                     GetMenuItemInfo( ( HMENU ) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
+                     GetMenuItemInfo( (HMENU) lParam, LOWORD( wParam  ), MF_BYPOSITION, &MenuItemInfo );
                      if( MenuItemInfo.hSubMenu )
                      {
-                        hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
+                        hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
                      }
                      else
                      {
@@ -2746,7 +2746,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                else
                {
                   PHB_ITEM pControl = hb_itemNew( NULL );
-                  hb_itemCopy( pControl, GetControlObjectById( ( LONG ) LOWORD( wParam ), hWnd ) );
+                  hb_itemCopy( pControl, GetControlObjectById( (long) LOWORD( wParam  ), hWnd ) );
                   _OOHG_Send( pControl, s_ContextMenu );
                   hb_vmSend( 0 );
                   if( hb_param( -1, HB_IT_OBJECT ) )
@@ -2768,7 +2768,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
             POINT Point;
 
             pMenu = hb_itemNew( NULL );
-            hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) lParam, TRUE ) );
+            hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) lParam, TRUE ) );
             _OOHG_Send( pMenu, s_hWnd );
             hb_vmSend( 0 );
             if( ValidHandler( HWNDparam( -1 ) ) )
@@ -2776,10 +2776,10 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-               GetMenuItemInfo( ( HMENU ) lParam, wParam, MF_BYPOSITION, &MenuItemInfo );
+               GetMenuItemInfo( (HMENU) lParam, wParam, MF_BYPOSITION, &MenuItemInfo );
                if( MenuItemInfo.hSubMenu )
                {
-                  hb_itemCopy( pMenu, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
+                  hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
                }
                else
                {
@@ -2805,14 +2805,14 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_HSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam, TRUE ), s_Events_HScroll );
-            hb_vmPushNumInt( wParam );
+            _OOHG_Send( GetControlObjectByHandle( (HWND) lParam, TRUE ), s_Events_HScroll );
+            hb_vmPushNumInt( wParam  );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_HScroll );
-            hb_vmPushNumInt( wParam );
+            hb_vmPushNumInt( wParam  );
             hb_vmSend( 1 );
          }
          break;
@@ -2820,14 +2820,14 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_VSCROLL:
          if( lParam )
          {
-            _OOHG_Send( GetControlObjectByHandle( ( HWND ) lParam, TRUE ), s_Events_VScroll );
-            hb_vmPushNumInt( wParam );
+            _OOHG_Send( GetControlObjectByHandle( (HWND) lParam, TRUE ), s_Events_VScroll );
+            hb_vmPushNumInt( wParam  );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushNumInt( wParam );
+            hb_vmPushNumInt( wParam  );
             hb_vmSend( 1 );
          }
          break;
@@ -2862,8 +2862,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
             hb_arrayNew( pFiles, iCount );
             for( iPos = 0; iPos < iCount; iPos++ )
             {
-               iLen2 = DragQueryFile( hDrop, iPos, ( char * ) pBuffer, iLen );
-               hb_itemPutCL( hb_arrayGetItemPtr( pFiles, iPos + 1 ), ( char * ) pBuffer, iLen2 );
+               iLen2 = DragQueryFile( hDrop, iPos, (char *) pBuffer, iLen );
+               hb_itemPutCL( hb_arrayGetItemPtr( pFiles, iPos + 1 ), (char *) pBuffer, iLen2 );
             }
             hb_xfree( pBuffer );
             _OOHG_DoEvent( pSelf, s_OnDropFiles, "DROPFILES", pArray );
@@ -2892,7 +2892,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
                HWNDpush( hWnd );
                hb_vmPushLong( message );
-               hb_vmPushNumInt( wParam );
+               hb_vmPushNumInt( wParam  );
                hb_vmPushNumInt( lParam );
                hb_vmPush( pSelf );
                hb_vmDo( 5 );
@@ -2924,12 +2924,12 @@ HB_FUNC( DISABLEVISUALSTYLE )          /* FUNCTION DisableVisualStyle() -> lSucc
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_HEX )          /* FUNCTION _OOHG_Hex( nNum, nDigits ) -> cHexNum */
 {
-   CHAR cLine[ 50 ], cBuffer[ 50 ];
+   char cLine[ 50 ], cBuffer[ 50 ];
    UINT iNum;
-   INT iCount, iLen, iDigit;
+   int iCount, iLen, iDigit;
 
    iCount = 0;
-   iNum = ( UINT ) hb_parni( 1 );
+   iNum = (UINT) hb_parni( 1 );
    iLen = hb_parni( 2 );
    while( iNum )
    {
@@ -2938,7 +2938,7 @@ HB_FUNC( _OOHG_HEX )          /* FUNCTION _OOHG_Hex( nNum, nDigits ) -> cHexNum 
       {
          iDigit += 7;
       }
-      cBuffer[ iCount++ ] = ( CHAR ) ( '0' + iDigit );
+      cBuffer[ iCount++ ] = ( char ) ( '0' + iDigit );
       iNum = iNum >> 4;
    }
    if( ! iCount )
@@ -2966,7 +2966,7 @@ HB_FUNC( _OOHG_HEX )          /* FUNCTION _OOHG_Hex( nNum, nDigits ) -> cHexNum 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-void _oohg_calldump( CHAR * cTitle, CHAR * cOutput )
+void _oohg_calldump( char * cTitle, char * cOutput )
 {
    static PHB_SYMB s_Func = 0;
 
@@ -3001,7 +3001,7 @@ HB_FUNC( _OOHG_EVAL_ARRAY )          /* FUNCTION _OOHG_Eval_Array( bCodeblock, a
 
    if( HB_ISBLOCK( 1 ) )
    {
-      INT iCount, iLen;
+      int iCount, iLen;
       PHB_ITEM pArray, pItem;
 
       if( ! s_Eval )
@@ -3045,7 +3045,7 @@ HB_FUNC( _OOHG_SHOWCONTEXTMENUS )          /* FUNCTION _OOHG_ShowContextMenus( l
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GLOBALRTL )          /* FUNCTION _OOHG_GlobalRTL( lOnOff ) -> lOnOff */
 {
-   static BOOL _OOHG_GlobalRTL = FALSE;             // TRUE forces RTL functionality on all forms and controls
+   static BOOL _OOHG_GlobalRTL = FALSE;             /* TRUE forces RTL functionality on all forms and controls */
    BOOL bRet;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
@@ -3098,42 +3098,43 @@ HB_FUNC( _OOHG_GETMOUSEROW )          /* FUNCTION _OOHG_GetMouseRow() -> nRow */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_LINE )          /* FUNCTION C_Line( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6: width
-   // 7: R Color
-   // 8: G Color
-   // 9: B Color
-   // 10: lWidth
-   // 11: lColor
-   // 12: lStyle
-   // 13: nStyle
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6: width
+    * 7: R Color
+    * 8: G Color
+    * 9: B Color
+    * 10: lWidth
+    * 11: lColor
+    * 12: lStyle
+    * 13: nStyle
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width = 0;
-   INT nStyle;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width = 0;
+   int nStyle;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3153,10 +3154,10 @@ HB_FUNC( C_LINE )          /* FUNCTION C_Line( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       MoveToEx( hdc, x, y, NULL );
       LineTo( hdc, tox, toy );
@@ -3168,31 +3169,32 @@ HB_FUNC( C_LINE )          /* FUNCTION C_Line( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_FILL )          /* FUNCTION C_Fill( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6: R Color
-   // 7: G Color
-   // 8: B Color
-   // 9: lColor
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6: R Color
+    * 7: G Color
+    * 8: B Color
+    * 9: lColor
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parnl( 3 );
-   INT y = hb_parnl( 2 );
-   INT tox = hb_parnl( 5 );
-   INT toy = hb_parnl( 4 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parnl( 3 );
+   int y = hb_parnl( 2 );
+   int tox = hb_parnl( 5 );
+   int toy = hb_parnl( 4 );
    RECT rect;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HBRUSH hBrush;
 
    if( hdc != 0 )
    {
-      // Color
+      /* Color */
       if( hb_parl( 9 ) )
       {
          r = hb_parni( 6 );
@@ -3210,7 +3212,7 @@ HB_FUNC( C_FILL )          /* FUNCTION C_Fill( ... ) -> NIL */
       rect.top = y;
       rect.right = tox;
       rect.bottom = toy;
-      hBrush = CreateSolidBrush( ( COLORREF ) RGB(r, g, b) );
+      hBrush = CreateSolidBrush( (COLORREF) RGB(r, g, b) );
       hgdiobj = SelectObject( hdc, hBrush );
       FillRect( hdc, &rect, hBrush );
       SelectObject( hdc, hgdiobj );
@@ -3221,41 +3223,42 @@ HB_FUNC( C_FILL )          /* FUNCTION C_Fill( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6: width
-   // 7: R Color
-   // 8: G Color
-   // 9: B Color
-   // 10: lWidth
-   // 11: lColor
-   // 12: lStyle
-   // 13: nStyle
-   // 14: lBrusStyle
-   // 15: nBrushStyle
-   // 16: lBrushColor
-   // 17: nColorR
-   // 18: nColorG
-   // 19: nColorB
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6: width
+    * 7: R Color
+    * 8: G Color
+    * 9: B Color
+    * 10: lWidth
+    * 11: lColor
+    * 12: lStyle
+    * 13: nStyle
+    * 14: lBrusStyle
+    * 15: nBrushStyle
+    * 16: lBrushColor
+    * 17: nColorR
+    * 18: nColorG
+    * 19: nColorB
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3263,7 +3266,7 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -3273,7 +3276,7 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
          width = 1 ;
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3293,7 +3296,7 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 14 ) )
@@ -3328,9 +3331,9 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
-      hpen = CreatePen( nStyle,  width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle,  width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
@@ -3345,42 +3348,43 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6: width
-   // 7: R Color
-   // 8: G Color
-   // 9: B Color
-   // 10: lWidth
-   // 11: lColor
-   // 12: lStyle
-   // 13: nStyle
-   // 14: lBrusStyle
-   // 15: nBrushStyle
-   // 16: lBrushColor
-   // 17: nColorR
-   // 18: nColorG
-   // 19: nColorB
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6: width
+    * 7: R Color
+    * 8: G Color
+    * 9: B Color
+    * 10: lWidth
+    * 11: lColor
+    * 12: lStyle
+    * 13: nStyle
+    * 14: lBrusStyle
+    * 15: nBrushStyle
+    * 16: lBrushColor
+    * 17: nColorR
+    * 18: nColorG
+    * 19: nColorB
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT p;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int p;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3388,7 +3392,7 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -3398,7 +3402,7 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
          width = 1 ;
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3418,7 +3422,7 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 14 ) )
@@ -3453,9 +3457,9 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
@@ -3472,41 +3476,42 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6: width
-   // 7: R Color
-   // 8: G Color
-   // 9: B Color
-   // 10: lWidth
-   // 11: lColor
-   // 12: lStyle
-   // 13: nStyle
-   // 14: lBrusStyle
-   // 15: nBrushStyle
-   // 16: lBrushColor
-   // 17: nColorR
-   // 18: nColorG
-   // 19: nColorB
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6: width
+    * 7: R Color
+    * 8: G Color
+    * 9: B Color
+    * 10: lWidth
+    * 11: lColor
+    * 12: lStyle
+    * 13: nStyle
+    * 14: lBrusStyle
+    * 15: nBrushStyle
+    * 16: lBrushColor
+    * 17: nColorR
+    * 18: nColorG
+    * 19: nColorB
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3514,7 +3519,7 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 10 ) )
       {
          width = hb_parni( 6 );
@@ -3524,7 +3529,7 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
          width = 1 * 10000 / 254;
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 11 ) )
       {
          r = hb_parni( 7 );
@@ -3544,7 +3549,7 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 14 ) )
@@ -3579,9 +3584,9 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
@@ -3596,47 +3601,48 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_ARC )          /* FUNCTION C_Arc( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6-9, x1, y1, x2, y2
-   // 10: width
-   // 11: R Color
-   // 12: G Color
-   // 13: B Color
-   // 14: lWidth
-   // 15: lColor
-   // 16: lStyle
-   // 17: nStyle
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6-9, x1, y1, x2, y2
+    * 10: width
+    * 11: R Color
+    * 12: G Color
+    * 13: B Color
+    * 14: lWidth
+    * 15: lColor
+    * 16: lStyle
+    * 17: nStyle
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -3656,10 +3662,10 @@ HB_FUNC( C_ARC )          /* FUNCTION C_Arc( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       Arc( hdc, x, y, tox, toy, x1, y1, x2, y2 );
       SelectObject( hdc, hgdiobj );
@@ -3670,47 +3676,48 @@ HB_FUNC( C_ARC )          /* FUNCTION C_Arc( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_ARCTO )          /* FUNCTION C_ArcTo( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6-9, x1, y1, x2, y2
-   // 10: width
-   // 11: R Color
-   // 12: G Color
-   // 13: B Color
-   // 14: lWidth
-   // 15: lColor
-   // 16: lStyle
-   // 17: nStyle
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6-9, x1, y1, x2, y2
+    * 10: width
+    * 11: R Color
+    * 12: G Color
+    * 13: B Color
+    * 14: lWidth
+    * 15: lColor
+    * 16: lStyle
+    * 17: nStyle
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -3730,10 +3737,10 @@ HB_FUNC( C_ARCTO )          /* FUNCTION C_ArcTo( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       ArcTo( hdc, x, y, tox, toy, x1, y1, x2, y2 );
       SelectObject( hdc, hgdiobj );
@@ -3744,46 +3751,47 @@ HB_FUNC( C_ARCTO )          /* FUNCTION C_ArcTo( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6-9, x1, y1, x2, y2
-   // 10: width
-   // 11: R Color
-   // 12: G Color
-   // 13: B Color
-   // 14: lWidth
-   // 15: lColor
-   // 16: lStyle
-   // 17: nStyle
-   // 18: lBrusStyle
-   // 19: nBrushStyle
-   // 20: lBrushColor
-   // 21: nColorR
-   // 22: nColorG
-   // 23: nColorB
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6-9, x1, y1, x2, y2
+    * 10: width
+    * 11: R Color
+    * 12: G Color
+    * 13: B Color
+    * 14: lWidth
+    * 15: lColor
+    * 16: lStyle
+    * 17: nStyle
+    * 18: lBrusStyle
+    * 19: nBrushStyle
+    * 20: lBrushColor
+    * 21: nColorR
+    * 22: nColorG
+    * 23: nColorB
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3791,13 +3799,13 @@ HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -3817,7 +3825,7 @@ HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 18 ) )
@@ -3852,9 +3860,9 @@ HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
@@ -3869,24 +3877,25 @@ HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: aPy
-   // 3: aPx
-   // 4: width
-   // 5: R Color
-   // 6: G Color
-   // 7: B Color
-   // 8: lWidth
-   // 9: lColor
-   // 10: lStyle
-   // 11: nStyle
+   /* 1: hDC
+    * 2: aPy
+    * 3: aPx
+    * 4: width
+    * 5: R Color
+    * 6: G Color
+    * 7: B Color
+    * 8: lWidth
+    * 9: lColor
+    * 10: lStyle
+    * 11: nStyle
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT width = 0;
-   INT nStyle;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int width = 0;
+   int nStyle;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
    DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
@@ -3900,13 +3909,13 @@ HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
          apoints[ i ].x = HB_PARNI( 3, i + 1 );
       }
 
-      // Width
+      /* Width */
       if( hb_parl( 8 ) )
       {
          width = hb_parni( 4 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 9 ) )
       {
          r = hb_parni( 5 );
@@ -3926,10 +3935,10 @@ HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       PolyBezier( hdc, apoints, number );
       SelectObject( hdc, hgdiobj );
@@ -3940,24 +3949,25 @@ HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: aPy
-   // 3: aPx
-   // 4: width
-   // 5: R Color
-   // 6: G Color
-   // 7: B Color
-   // 8: lWidth
-   // 9: lColor
-   // 10: lStyle
-   // 11: nStyle
+   /* 1: hDC
+    * 2: aPy
+    * 3: aPx
+    * 4: width
+    * 5: R Color
+    * 6: G Color
+    * 7: B Color
+    * 8: lWidth
+    * 9: lColor
+    * 10: lStyle
+    * 11: nStyle
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT width = 0;
-   INT nStyle;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int width = 0;
+   int nStyle;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
    DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
@@ -3971,13 +3981,13 @@ HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
          apoints[ i ].x = HB_PARNI( 3, i + 1 );
       }
 
-      // Width
+      /* Width */
       if( hb_parl( 8 ) )
       {
          width = hb_parni( 4 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 9 ) )
       {
          r = hb_parni( 5 );
@@ -3997,10 +4007,10 @@ HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       PolyBezierTo( hdc, apoints, number );
       SelectObject( hdc, hgdiobj );
@@ -4011,44 +4021,45 @@ HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: aPy
-   // 3: aPx
-   // 4: width
-   // 5: R Color
-   // 6: G Color
-   // 7: B Color
-   // 8: lWidth
-   // 9: lColor
-   // 10: lStyle
-   // 11: nStyle
-   // 12: lBrusStyle
-   // 13: nBrushStyle
-   // 14: lBrushColor
-   // 15: nColorR
-   // 16: nColorG
-   // 17: nColorB
-   // 18: nFillMode
+   /* 1: hDC
+    * 2: aPy
+    * 3: aPx
+    * 4: width
+    * 5: R Color
+    * 6: G Color
+    * 7: B Color
+    * 8: lWidth
+    * 9: lColor
+    * 10: lStyle
+    * 11: nStyle
+    * 12: lBrusStyle
+    * 13: nBrushStyle
+    * 14: lBrushColor
+    * 15: nColorR
+    * 16: nColorG
+    * 17: nColorB
+    * 18: nFillMode
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT width;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
+   int r;
+   int g;
+   int b;
+   int width;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
    HBRUSH hbr;
    DWORD i, number;
    POINT apoints[ 1024 ];
-   INT oldFillMode;
-   INT newFillMode;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int oldFillMode;
+   int newFillMode;
+   HDC hdc = (HDC) HB_PARNL( 1 );
 
    if( hdc != 0 )
    {
@@ -4069,7 +4080,7 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
          apoints[ i ].x = HB_PARNI( 3, i + 1 );
       }
 
-      // Width
+      /* Width */
       if( hb_parl( 8 ) )
       {
          width = hb_parni( 4 );
@@ -4079,7 +4090,7 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
          width = 0;
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 9 ) )
       {
          r = hb_parni( 5 );
@@ -4099,7 +4110,7 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 12 ) )
@@ -4134,10 +4145,10 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
       hbr = CreateBrushIndirect( &pbr );
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
       SetPolyFillMode( hdc, newFillMode );
@@ -4153,46 +4164,47 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
 {
-   // 1: hDC
-   // 2: y
-   // 3: x
-   // 4: toy
-   // 5: tox
-   // 6-9, x1, y1, x2, y2
-   // 10: width
-   // 11: R Color
-   // 12: G Color
-   // 13: B Color
-   // 14: lWidth
-   // 15: lColor
-   // 16: lStyle
-   // 17: nStyle
-   // 18: lBrusStyle
-   // 19: nBrushStyle
-   // 20: lBrushColor
-   // 21: nColorR
-   // 22: nColorG
-   // 23: nColorB
+   /* 1: hDC
+    * 2: y
+    * 3: x
+    * 4: toy
+    * 5: tox
+    * 6-9, x1, y1, x2, y2
+    * 10: width
+    * 11: R Color
+    * 12: G Color
+    * 13: B Color
+    * 14: lWidth
+    * 15: lColor
+    * 16: lStyle
+    * 17: nStyle
+    * 18: lBrusStyle
+    * 19: nBrushStyle
+    * 20: lBrushColor
+    * 21: nColorR
+    * 22: nColorG
+    * 23: nColorB
+    */
 
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBr;
-   LONG nBh;
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBr;
+   long nBh;
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -4200,13 +4212,13 @@ HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
 
    if( hdc != 0 )
    {
-      // Width
+      /* Width */
       if( hb_parl( 14 ) )
       {
          width = hb_parni( 10 );
       }
 
-      // Color
+      /* Color */
       if( hb_parl( 15 ) )
       {
          r = hb_parni( 11 );
@@ -4226,7 +4238,7 @@ HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
       }
       else
       {
-         nStyle = ( INT ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       if( hb_parl( 18 ) )
@@ -4261,9 +4273,9 @@ HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
       }
 
       pbr.lbStyle = nBr;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBh;
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hbr = CreateBrushIndirect( &pbr );
       hgdiobj = SelectObject( hdc, hpen );
       hgdiobj2 = SelectObject( hdc, hbr );
