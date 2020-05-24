@@ -774,8 +774,8 @@ METHOD MoveTo( nTo, nFrom ) CLASS TXBrowse
    Local lMoved := .F.
 
    If ! ::lLocked .AND. ! ( ::lNoShowEmptyRow .AND. ::oWorkArea:IsTableEmpty() )
-      ASSIGN nTo   VALUE INT( nTo )   TYPE "N" DEFAULT ::CurrentRow
-      ASSIGN nFrom VALUE INT( nFrom ) TYPE "N" DEFAULT ::nRowPos
+      ASSIGN nTo   VALUE Int( nTo )   TYPE "N" DEFAULT ::CurrentRow
+      ASSIGN nFrom VALUE Int( nFrom ) TYPE "N" DEFAULT ::nRowPos
       nFrom := Max( Min( nFrom, ::ItemCount ), 1 )
       nTo   := Max( Min( nTo,   ::CountPerPage ), 1 )
       ::RefreshRow( nFrom )
@@ -1164,13 +1164,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
          Return 0
       ElseIf Empty( ::cText )
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       Else
          ::uIniTime := HB_MilliSeconds()
-         ::cText += Upper( Chr( wParam ) )
+         ::cText += Upper( Chr( wParam  ) )
       EndIf
 
       cWorkArea := ::WorkArea
@@ -1255,13 +1255,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
          ::lNeedsAdjust := .T.
       ELSE
          i := 0
-         IF IsWindowStyle( hwnd, WS_HSCROLL )
+         IF IsWindowStyle( hWnd, WS_HSCROLL )
             ::HScrollUpdate()
-            IF ::lNoHSB .AND. IsWindowStyle( hwnd, WS_HSCROLL )
+            IF ::lNoHSB .AND. IsWindowStyle( hWnd, WS_HSCROLL )
                i -= WS_HSCROLL
             ENDIF
          ENDIF
-         IF IsWindowStyle( hwnd, WS_VSCROLL )
+         IF IsWindowStyle( hWnd, WS_VSCROLL )
             // The grid's vertical scrollbar should remain invisible all the times because
             // the number of items is equal to exactly 1 page.
             i -= WS_VSCROLL
@@ -2858,7 +2858,7 @@ METHOD Skipper( nSkip ) CLASS ooHGRecord
    LOCAL nCount
 
    nCount := 0
-   nSkip := If( ValType( nSkip ) == "N", INT( nSkip ), 1 )
+   nSkip := If( ValType( nSkip ) == "N", Int( nSkip ), 1 )
    If nSkip == 0
       ::Skip( 0 )
    Else
@@ -3768,7 +3768,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
       If ( ! ::lLocked .AND. ::AllowEdit .AND. ( ::lLikeExcel .OR. ::EditControlLikeExcel( nCol ) ) .AND. ;
            ! ::IsColumnReadOnly( nCol, nRow ) .AND. ::IsColumnWhen( nCol, nRow ) .AND. aScan( ::aHiddenCols, nCol ) == 0 )
-         ::EditCell( , , , Chr( wParam ), , , , , .F. )
+         ::EditCell( , , , Chr( wParam  ), , , , , .F. )
 
       Else
          If wParam < 32
@@ -3776,13 +3776,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
             Return 0
          ElseIf Empty( ::cText )
             ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
+            ::cText := Upper( Chr( wParam  ) )
          ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
             ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
+            ::cText := Upper( Chr( wParam  ) )
          Else
             ::uIniTime := HB_MilliSeconds()
-            ::cText += Upper( Chr( wParam ) )
+            ::cText += Upper( Chr( wParam  ) )
          EndIf
 
          If ::SearchCol <= 0
@@ -3988,7 +3988,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
       Return 0
 
    ElseIf nMsg == WM_MOUSEWHEEL
-      If GET_WHEEL_DELTA_WPARAM( wParam ) > 0
+      If GET_WHEEL_DELTA_WPARAM( wParam  ) > 0
          ::Up()
       Else
          ::Down()
