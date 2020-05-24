@@ -3678,7 +3678,7 @@ HB_FUNC( RR_PRINTDIALOG )          /* FUNCTION RR_PrintDialog( { @nFromPage, @nT
           * of pDevMode->dmDeviceName. (E.F.)
           */
          pDevice = (LPCTSTR) lpData->pDevNames + lpData->pDevNames->wDeviceOffset;
-         strcpy( lpData->PrinterName, (char *) pDevice );
+         strcpy( lpData->PrinterName, pDevice );
 
          HB_STORNL3( (long) lpData->pdlg.nFromPage, 1, 1 );
          HB_STORNL3( (long) lpData->pdlg.nToPage, 1, 2 );
@@ -5676,9 +5676,9 @@ HB_FUNC( RR_PLAYPREVIEW )          /* FUNCTION RR_PlayPreview( hWnd, aEMFData, a
                himgbmp = CreateDIBSection( tmpDC, &bi, DIB_RGB_COLORS, (void **) &lpBitmapBits, NULL, 0 );
                if( lpBitmapBits )
                {
-                  holdbmp = SelectObject( tmpDC, himgbmp );
-                  hnewbsh = GetStockObject( WHITE_BRUSH );
-                  holdbsh = SelectObject( tmpDC, hnewbsh );
+                  holdbmp = (HBITMAP) SelectObject( tmpDC, himgbmp );
+                  hnewbsh = (HBRUSH) GetStockObject( WHITE_BRUSH );
+                  holdbsh = (HBRUSH) SelectObject( tmpDC, hnewbsh );
                   FillRect( tmpDC, &rect, hnewbsh );
                   GetBrushOrgEx( tmpDC, &Point );
                   SetStretchBltMode( tmpDC, HALFTONE );
@@ -5747,9 +5747,9 @@ HB_FUNC( RR_PLAYTHUMB )          /* FUNCTION RR_PlayThumb( aWinThumbsData, aEMFD
                himgbmp = CreateDIBSection( tmpDC, &bi, DIB_RGB_COLORS, (void **) &lpBitmapBits, NULL, 0 );
                if( lpBitmapBits )
                {
-                  holdbmp = SelectObject( tmpDC, himgbmp );
-                  hnewbsh = GetStockObject( WHITE_BRUSH );
-                  holdbsh = SelectObject( tmpDC, hnewbsh );
+                  holdbmp = (HBITMAP) SelectObject( tmpDC, himgbmp );
+                  hnewbsh = (HBRUSH) GetStockObject( WHITE_BRUSH );
+                  holdbsh = (HBRUSH) SelectObject( tmpDC, hnewbsh );
                   FillRect( tmpDC, &rect, hnewbsh );
                   GetBrushOrgEx( tmpDC, &Point );
                   SetStretchBltMode( tmpDC, HALFTONE );
@@ -5845,7 +5845,7 @@ HB_FUNC( RR_GETPIXELCOLOR )          /* FUNCTION RR_GetPixelColor( hBitmap, nRow
    if( hBmp )
    {
       memDC = CreateCompatibleDC( NULL );
-      hOld = SelectObject( memDC, hBmp );
+      hOld = (HBITMAP) SelectObject( memDC, hBmp );
       color = GetPixel( memDC, hb_parni( 2 ), hb_parni( 3 ) );
       SelectObject( memDC, hOld );
       DeleteDC( memDC );
