@@ -2052,30 +2052,30 @@ HB_FUNC( _HMG_PRINTER_SETCHARSET )          /* _HMG_PRINTER_SetCharset( nCharSet
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_GETTEXTALIGN )          /* _HMG_PRINTER_GetTextAlign( hdc ) -> nAlign */
+HB_FUNC( _HMG_PRINTER_GETTEXTALIGN )          /* _HMG_PRINTER_GetTextAlign( hdcPrint ) -> nAlign */
 {
-   hb_retni( GetTextAlign( ( HDC ) HB_PARNL( 1 ) ) );
+   hb_retni( GetTextAlign( (HDC) HB_PARNL( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _HMG_PRINTER_SETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdc, nAlign ) -> nOldAlign */
+HB_FUNC( _HMG_PRINTER_SETTEXTALIGN )          /* _HMG_PRINTER_SetTextAlign( hdcPrint, nAlign ) -> nOldAlign */
 {
-   hb_retni( SetTextAlign( ( HDC ) HB_PARNL( 1 ), hb_parni( 2 ) ) );
+   hb_retni( SetTextAlign( (HDC) HB_PARNL( 1 ), hb_parni( 2 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_ABORTDOC )          /* _HMG_PRINTER_AbortDoc( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    AbortDoc( hdcPrint );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_STARTDOC )          /* _HMG_PRINTER_StartDoc( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    DOCINFO docInfo;
-   INT iRet = 0;
+   int iRet = 0;
 
    if( hdcPrint != 0 )
    {
@@ -2096,8 +2096,8 @@ HB_FUNC( _HMG_PRINTER_STARTDOC )          /* _HMG_PRINTER_StartDoc( hdcPrint ) -
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_STARTPAGE )          /* _HMG_PRINTER_StartPage( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   INT iRet = 0;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
+   int iRet = 0;
 
    if( hdcPrint != 0 )
    {
@@ -2112,21 +2112,21 @@ HB_FUNC( _HMG_PRINTER_C_PRINT )          /* _HMG_PRINTER_C_Print( hdcPrint, nRow
 {
    HGDIOBJ hgdiobj;
    char FontName[ 32 ];
-   INT FontSize;
+   int FontSize;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   INT fnWeight;
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   LONG nAngle;
-   LONG nWidth ;
+   int fnWeight;
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   long nAngle;
+   long nWidth ;
    HFONT hfont;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   INT FontHeight;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
+   int FontHeight;
 
    if( hdcPrint != 0 )
    {
@@ -2262,24 +2262,24 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
 {
    HGDIOBJ hgdiobj;
    char FontName[ 32 ];
-   INT FontSize;
+   int FontSize;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
    RECT rect;
-   INT fnWeight;
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   LONG nAngle;
-   LONG nWidth ;
-   INT toy = hb_parni( 17 );
-   INT tox = hb_parni( 18 );
+   int fnWeight;
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   long nAngle;
+   long nWidth ;
+   int toy = hb_parni( 17 );
+   int tox = hb_parni( 18 );
    HFONT hfont;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   INT FontHeight;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
+   int FontHeight;
    UINT uFormat = 0;
 
    if( hdcPrint != 0 )
@@ -2407,10 +2407,10 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
       SetTextColor( hdcPrint, RGB( r, g, b ) );
       SetBkMode( hdcPrint, TRANSPARENT );
 
-      rect.left   = ( LONG ) ( ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.top    = ( LONG ) ( ( y   * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
-      rect.right  = ( LONG ) ( ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.bottom = ( LONG ) ( ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.left   = (long) ( ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.top    = (long) ( ( y   * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.right  = (long) ( ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.bottom = (long) ( ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
 
       DrawText( hdcPrint,
                 hb_parc( 9 ),
@@ -2426,8 +2426,8 @@ HB_FUNC( _HMG_PRINTER_C_MULTILINE_PRINT )          /* _HMG_PRINTER_C_MultiLine_P
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_ENDPAGE )          /* _HMG_PRINTER_EndPage( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   INT iRet = 0;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
+   int iRet = 0;
 
    if( hdcPrint != 0 )
    {
@@ -2440,8 +2440,8 @@ HB_FUNC( _HMG_PRINTER_ENDPAGE )          /* _HMG_PRINTER_EndPage( hdcPrint ) -> 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_ENDDOC )          /* _HMG_PRINTER_EndDoc( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
-   INT iRet = 0;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
+   int iRet = 0;
 
    if( hdcPrint != 0 )
    {
@@ -2454,7 +2454,7 @@ HB_FUNC( _HMG_PRINTER_ENDDOC )          /* _HMG_PRINTER_EndDoc( hdcPrint ) -> NI
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_DELETEDC )          /* _HMG_PRINTER_DeleteDC( hdcPrint ) -> NIL */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
 
    DeleteDC( hdcPrint );
 }
@@ -2469,18 +2469,18 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )          /* _HMG_PRINTER_PrintDialog() -> { 
    pd.hDevNames = ( HANDLE ) NULL;
    pd.Flags = PD_RETURNDC | PD_PRINTSETUP;
    pd.hwndOwner = GetActiveWindow();
-   pd.hDC = ( HDC ) NULL;
+   pd.hDC = (HDC) NULL;
    pd.nFromPage = 1;
    pd.nToPage = 1;
    pd.nMinPage = 0;
    pd.nMaxPage = 0;
    pd.nCopies = 1;
-   pd.hInstance = ( HINSTANCE ) NULL;
+   pd.hInstance = (HINSTANCE) NULL;
    pd.lCustData = 0L;
    pd.lpfnPrintHook = ( LPPRINTHOOKPROC ) NULL;
    pd.lpfnSetupHook = ( LPSETUPHOOKPROC ) NULL;
-   pd.lpPrintTemplateName = ( LPSTR ) NULL;
-   pd.lpSetupTemplateName = ( LPSTR ) NULL;
+   pd.lpPrintTemplateName = (LPSTR) NULL;
+   pd.lpSetupTemplateName = (LPSTR) NULL;
    pd.hPrintTemplate = ( HANDLE ) NULL;
    pd.hSetupTemplate = ( HANDLE ) NULL;
 
@@ -2489,8 +2489,8 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )          /* _HMG_PRINTER_PrintDialog() -> { 
       pDevMode = ( LPDEVMODE ) GlobalLock( pd.hDevMode );
 
       hb_reta( 5 );
-      HB_STORNL3( ( LONG_PTR ) pd.hDC, -1, 1 );
-      HB_STORC( ( char * ) pDevMode->dmDeviceName, -1, 2 );
+      HB_STORNL3( (LONG_PTR) pd.hDC, -1, 1 );
+      HB_STORC( (char *) pDevMode->dmDeviceName, -1, 2 );
       HB_STORNI( pDevMode->dmCopies, -1, 3 );
       HB_STORNI( pDevMode->dmCollate, -1, 4 );
       HB_STORNI( 0, -1, 5 );
@@ -2556,14 +2556,14 @@ HB_FUNC( _HMG_PRINTER_C_APRINTERS )          /* _HMG_PRINTER_C_aPrinters() -> { 
             break;
       }
       EnumPrinters( flags, NULL, level, NULL, 0, &dwSize, &dwPrinters );
-      pBuffer = ( char * ) GlobalAlloc( GPTR, dwSize );
+      pBuffer = (char *) GlobalAlloc( GPTR, dwSize );
       if( pBuffer == NULL )
       {
          hb_reta( 0 );
          GlobalFree( pBuffer );
          return;
       }
-      EnumPrinters( flags, NULL, level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters );
+      EnumPrinters( flags, NULL, level, (BYTE *) pBuffer, dwSize, &dwSize, &dwPrinters );
       if( dwPrinters == 0 )
       {
          hb_reta( 0 );
@@ -2577,7 +2577,7 @@ HB_FUNC( _HMG_PRINTER_C_APRINTERS )          /* _HMG_PRINTER_C_aPrinters() -> { 
             hb_reta( dwPrinters );
             for( i = 0; i < dwPrinters; i++, pInfo_4++)
             {
-               cBuffer = ( char * ) GlobalAlloc( GPTR, 256 );
+               cBuffer = (char *) GlobalAlloc( GPTR, 256 );
                strcat( cBuffer, pInfo_4->pPrinterName );
                HB_STORC( cBuffer, -1, i + 1 );
                GlobalFree( cBuffer );
@@ -2589,7 +2589,7 @@ HB_FUNC( _HMG_PRINTER_C_APRINTERS )          /* _HMG_PRINTER_C_aPrinters() -> { 
             hb_reta( dwPrinters );
             for( i = 0; i < dwPrinters; i++, pInfo_5++)
             {
-               cBuffer = ( char * ) GlobalAlloc( GPTR, 256 );
+               cBuffer = (char *) GlobalAlloc( GPTR, 256 );
                strcat( cBuffer, pInfo_5->pPrinterName );
                HB_STORC( cBuffer, -1, i + 1 );
                GlobalFree( cBuffer );
@@ -2607,21 +2607,21 @@ HB_FUNC( _HMG_PRINTER_C_APRINTERS )          /* _HMG_PRINTER_C_aPrinters() -> { 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBstyle;
-   LONG nBhatch;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBstyle;
+   long nBhatch;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj1 = NULL;
    HGDIOBJ hgdiobj2 = NULL;
    HPEN hpen = NULL;
@@ -2664,7 +2664,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       // lBrushStyle
@@ -2702,7 +2702,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
       }
 
       pbr.lbStyle = nBstyle;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBhatch;
 
       if( ! bNoBrush )
@@ -2713,7 +2713,7 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
 
       if( ! bNoPen )
       {
-         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
+         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r, g, b ) );
          hgdiobj2 = SelectObject( hdcPrint, hpen );
       }
 
@@ -2741,22 +2741,22 @@ HB_FUNC( _HMG_PRINTER_C_RECTANGLE )          /* _HMG_PRINTER_C_Rectangle( hdcPri
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectangle( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT w, h, p;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBstyle;
-   LONG nBhatch;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int w, h, p;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBstyle;
+   long nBhatch;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj1 = NULL;
    HGDIOBJ hgdiobj2 = NULL;
    HPEN hpen = NULL;
@@ -2798,7 +2798,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       // lBrushStyle
@@ -2836,7 +2836,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
       }
 
       pbr.lbStyle = nBstyle;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBhatch;
 
       if( ! bNoBrush )
@@ -2847,7 +2847,7 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
 
       if( ! bNoPen )
       {
-         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
+         hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r, g, b ) );
          hgdiobj2 = SelectObject( hdcPrint, hpen );
       }
 
@@ -2881,15 +2881,15 @@ HB_FUNC( _HMG_PRINTER_C_ROUNDRECTANGLE )          /* _HMG_PRINTER_C_RoundRectang
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_FILL )          /* _HMG_PRINTER_C_Fill( hdcPrint, nRow, nCol, nToRow, nToCol, nRed, nGreen, nBlue, lColor ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parnl( 3 );
-   INT y = hb_parnl( 2 );
-   INT tox = hb_parnl( 5 );
-   INT toy = hb_parnl( 4 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parnl( 3 );
+   int y = hb_parnl( 2 );
+   int tox = hb_parnl( 5 );
+   int toy = hb_parnl( 4 );
    RECT rect;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HBRUSH hBrush;
 
@@ -2909,10 +2909,10 @@ HB_FUNC( _HMG_PRINTER_C_FILL )          /* _HMG_PRINTER_C_Fill( hdcPrint, nRow, 
          b = 0;
       }
 
-      rect.left   = ( LONG ) ( ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.top    = ( LONG ) ( ( y   * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
-      rect.right  = ( LONG ) ( ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
-      rect.bottom = ( LONG ) ( ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.left   = (long) ( ( x   * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.top    = (long) ( ( y   * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
+      rect.right  = (long) ( ( tox * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETX ) );
+      rect.bottom = (long) ( ( toy * GetDeviceCaps( hdcPrint, LOGPIXELSY ) / 1000 ) - GetDeviceCaps( hdcPrint, PHYSICALOFFSETY ) );
 
       hBrush = CreateSolidBrush( RGB( r, g, b ) );
       hgdiobj = SelectObject( hdcPrint, hBrush );
@@ -2927,16 +2927,16 @@ HB_FUNC( _HMG_PRINTER_C_FILL )          /* _HMG_PRINTER_C_Fill( hdcPrint, nRow, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT nStyle;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int nStyle;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
@@ -2973,10 +2973,10 @@ HB_FUNC( _HMG_PRINTER_C_LINE)          /* _HMG_PRINTER_C_Line( hdcPrint, nRow, n
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, ( width * GetDeviceCaps( hdcPrint, LOGPIXELSX ) / 1000 ), (COLORREF) RGB( r, g, b ) );
 
       hgdiobj = SelectObject( hdcPrint, hpen );
 
@@ -3005,13 +3005,13 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    BOOL bVerbose = ! hb_parl( 13 );
    BOOL bAbort = ! hb_parl( 14 );
    BOOL bGlobal = hb_parl( 15 );
-   LONG lFlag;
+   long lFlag;
    HDC hdcPrint;
-   INT error = 0;
+   int error = 0;
 
    // Get the current settings of the printer's driver
 
-   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
+   bFlag = OpenPrinter( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
 
    if( ! bFlag || ( hPrinter == NULL ) )
    {
@@ -3089,7 +3089,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
 
    if( pi2->pDevMode == NULL)
    {
-      dwNeeded = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), NULL, NULL, 0 );
+      dwNeeded = DocumentProperties( NULL, hPrinter, (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), NULL, NULL, 0 );
 
       if( dwNeeded <= 0 )
       {
@@ -3127,7 +3127,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
          return;
       }
 
-      lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pDevMode, NULL, DM_OUT_BUFFER );
+      lFlag = DocumentProperties( NULL, hPrinter, (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), pDevMode, NULL, DM_OUT_BUFFER );
 
       if( lFlag != IDOK || pDevMode == NULL )
       {
@@ -3505,7 +3505,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
 
    // Change the driver's configuration
 
-   lFlag = DocumentProperties( NULL, hPrinter, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
+   lFlag = DocumentProperties( NULL, hPrinter, (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), pi2->pDevMode, pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
 
    if( lFlag != IDOK )
    {
@@ -3555,20 +3555,20 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    }
 
    hb_reta( 14 );
-   HB_STORNL3( ( LONG_PTR ) hdcPrint, -1, 1 );
+   HB_STORNL3( (LONG_PTR) hdcPrint, -1, 1 );
    HB_STORC( hb_parc( 1 ), -1, 2 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmCopies, -1, 3 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmCollate, -1, 4 );
+   HB_STORNI( (int) pi2->pDevMode->dmCopies, -1, 3 );
+   HB_STORNI( (int) pi2->pDevMode->dmCollate, -1, 4 );
    HB_STORNI( error, -1, 5 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmOrientation, -1, 6 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmPaperSize, -1, 7 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmPaperLength, -1, 8 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmPaperWidth, -1, 9 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmDefaultSource, -1, 10 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmPrintQuality, -1, 11 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmColor, -1, 12 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmDuplex, -1, 13 );
-   HB_STORNI( ( int ) pi2->pDevMode->dmScale, -1, 14 );
+   HB_STORNI( (int) pi2->pDevMode->dmOrientation, -1, 6 );
+   HB_STORNI( (int) pi2->pDevMode->dmPaperSize, -1, 7 );
+   HB_STORNI( (int) pi2->pDevMode->dmPaperLength, -1, 8 );
+   HB_STORNI( (int) pi2->pDevMode->dmPaperWidth, -1, 9 );
+   HB_STORNI( (int) pi2->pDevMode->dmDefaultSource, -1, 10 );
+   HB_STORNI( (int) pi2->pDevMode->dmPrintQuality, -1, 11 );
+   HB_STORNI( (int) pi2->pDevMode->dmColor, -1, 12 );
+   HB_STORNI( (int) pi2->pDevMode->dmDuplex, -1, 13 );
+   HB_STORNI( (int) pi2->pDevMode->dmScale, -1, 14 );
 
    GlobalFree( pDevMode );
    GlobalFree( pi2 );
@@ -3586,7 +3586,7 @@ HB_FUNC( _HMG_PRINTER_C_GETJOBINFO )          /* FUNCTION _HMG_PRINTER_C_GetJobI
    char cDateTime[ 256 ];
    SYSTEMTIME LocalSystemTime;
 
-   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
+   bFlag = OpenPrinter( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
 
    if( bFlag || hPrinter != NULL )
    {
@@ -3650,7 +3650,7 @@ HB_FUNC( _HMG_PRINTER_C_GETSTATUS )          /* _HMG_PRINTER_C_GetStatus( cPrint
    BOOL bFlag;
    PRINTER_INFO_6 * pi6;
 
-   bFlag = OpenPrinter( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
+   bFlag = OpenPrinter( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), &hPrinter, NULL );
 
    if( bFlag || hPrinter != NULL )
    {
@@ -3685,7 +3685,7 @@ HB_FUNC( _HMG_PRINTER_C_GETSTATUS )          /* _HMG_PRINTER_C_GetStatus( cPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )          /* _HMG_PRINTER_StartPage_Preview( hdcPrint, cName ) -> hdcEmf */
 {
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HDC hdcEmf;
    RECT emfrect;
 
@@ -3693,13 +3693,13 @@ HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )          /* _HMG_PRINTER_StartPage_Pre
 
    hdcEmf = CreateEnhMetaFile( hdcPrint, hb_parc( 2 ), &emfrect, "" );
 
-   HB_RETNL( ( LONG_PTR ) hdcEmf );
+   HB_RETNL( (LONG_PTR) hdcEmf );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_ENDPAGE_PREVIEW )          /* _HMG_PRINTER_EndPage_Preview( hdcEmf ) -> NIL */
 {
-   DeleteEnhMetaFile( CloseEnhMetaFile( ( HDC ) HB_PARNL ( 1 ) ) );
+   DeleteEnhMetaFile( CloseEnhMetaFile( (HDC) HB_PARNL ( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -3707,16 +3707,16 @@ HB_FUNC( _HMG_PRINTER_SHOWPAGE )          /* _HMG_PRINTER_ShowPage( cEmf, hWnd, 
 {
    HENHMETAFILE hemf;
    HWND hWnd = HWNDparam( 2 );
-   HDC hdcPrint = ( HDC ) HB_PARNL( 3 );
+   HDC hdcPrint = (HDC) HB_PARNL( 3 );
    HDC hDC;
    RECT rct;
    RECT aux;
-   INT zw;
-   INT zh;
-   INT ClientWidth;
-   INT ClientHeight;
-   INT xOffset;
-   INT yOffset;
+   int zw;
+   int zh;
+   int ClientWidth;
+   int ClientHeight;
+   int xOffset;
+   int yOffset;
 
    hemf = GetEnhMetaFile( hb_parc( 1 ) );
 
@@ -3782,20 +3782,20 @@ HB_FUNC( _HMG_PRINTER_SHOWPAGE )          /* _HMG_PRINTER_ShowPage( cEmf, hWnd, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPAGEWIDTH )          /* _HMG_PRINTER_GetPageWidth( hdcPrint ) -> nRet */
 {
-   hb_retni( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), HORZSIZE ) );
+   hb_retni( GetDeviceCaps( (HDC) HB_PARNL( 1 ), HORZSIZE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPAGEHEIGHT )          /* _HMG_PRINTER_GetPageHeight( hdcPrint ) -> nRet */
 {
-   hb_retni( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), VERTSIZE ) );
+   hb_retni( GetDeviceCaps( (HDC) HB_PARNL( 1 ), VERTSIZE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_PRINTPAGE )          /* _HMG_PRINTER_PrintPage( hdcPrint, cFile ) -> NIL */
 {
    RECT rect;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HENHMETAFILE hemf = GetEnhMetaFile( hb_parc( 2 ) );
 
    if( hemf != NULL )
@@ -3840,44 +3840,44 @@ HB_FUNC( _HMG_PRINTER_SETVSCROLLVALUE )          /* _HMG_PRINTER_SetVScrollValue
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTERWIDTH )          /* _HMG_PRINTER_GetPrinterWidth( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), HORZSIZE ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), HORZSIZE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTERHEIGHT )          /* _HMG_PRINTER_GetPrinterHeight( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), VERTSIZE ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), VERTSIZE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTABLEAREAPHYSICALOFFSETX )          /* _HMG_PRINTER_GetPrintableAreaPhysicalOffsetX( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), PHYSICALOFFSETX ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), PHYSICALOFFSETX ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTABLEAREALOGPIXELSX )          /* _HMG_PRINTER_GetPrintableAreaLogPixelsX( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), LOGPIXELSX ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), LOGPIXELSX ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTABLEAREAPHYSICALOFFSETY )          /* _HMG_PRINTER_GetPrintableAreaPhysicalOffsetY( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), PHYSICALOFFSETY ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), PHYSICALOFFSETY ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_GETPRINTABLEAREALOGPIXELSY )          /* _HMG_PRINTER_GetPrintableAreaLogPixelsY( hdcPrint ) -> nRet */
 {
-   hb_retnl( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), LOGPIXELSY ) );
+   hb_retnl( GetDeviceCaps( (HDC) HB_PARNL( 1 ), LOGPIXELSY ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFile, nRow, nCol, nHeight, nWidth, lStretch ) -> lSuccess */
 {
    HRGN hrgn;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    IStream * iStream;
    IPicture * iPicture;
    IPicture ** iPictureRef = &iPicture;
@@ -3885,22 +3885,22 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFil
    HANDLE hFile;
    DWORD nFileSize;
    DWORD nReadByte;
-   LONG lWidth;
-   LONG lHeight;
+   long lWidth;
+   long lHeight;
    POINT lpp;
    HRSRC hSource;
    HGLOBAL hGlobalRes;
    LPVOID lpVoid;
-   INT nSize;
+   int nSize;
    HINSTANCE hinstance = GetModuleHandle( NULL );
    HBITMAP hbmp;
    PICTDESC picd;
-   INT r;
-   INT c;
-   INT odr;
-   INT odc;
-   INT dr;
-   INT dc;
+   int r;
+   int c;
+   int odr;
+   int odc;
+   int dr;
+   int dc;
 
    if( hdcPrint != 0 )
    {
@@ -3908,7 +3908,7 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFil
 
       if( hFile == INVALID_HANDLE_VALUE )
       {
-         hbmp = ( HBITMAP ) LoadImage( hinstance, hb_parc( 2 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
+         hbmp = (HBITMAP) LoadImage( hinstance, hb_parc( 2 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
 
          if( hbmp != NULL )
          {
@@ -4064,20 +4064,20 @@ HB_FUNC( _HMG_PRINTER_C_IMAGE )          /* _HMG_PRINTER_C_Image( hdcPrint, cFil
 HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hBitmap, nRow, nCol, nHeight, nWidth, lStretch ) -> lSuccess */
 {
    HRGN hrgn;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    IPicture * iPicture;
    IPicture ** iPictureRef = &iPicture;
-   LONG lWidth;
-   LONG lHeight;
+   long lWidth;
+   long lHeight;
    POINT lpp;
-   HBITMAP hbmp = ( HBITMAP ) HB_PARNL( 2 );
+   HBITMAP hbmp = (HBITMAP) HB_PARNL( 2 );
    PICTDESC picd;
-   INT r;
-   INT c;
-   INT odr;
-   INT odc;
-   INT dr;
-   INT dc;
+   int r;
+   int c;
+   int odr;
+   int odc;
+   int dr;
+   int dc;
 
    if( hdcPrint == NULL ||  hbmp == NULL )
    {
@@ -4146,21 +4146,21 @@ HB_FUNC( _HMG_PRINTER_C_BITMAP )          /* _HMG_PRINTER_C_Bitmap( hdcPrint, hB
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, nRow, nCol, nToRow, nToCol, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT width;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBstyle;
-   LONG nBhatch;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int width;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBstyle;
+   long nBhatch;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj1 = NULL;
    HGDIOBJ hgdiobj2 = NULL;
    HPEN hpen = NULL;
@@ -4202,7 +4202,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       // lBrushStyle
@@ -4240,7 +4240,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
       }
 
       pbr.lbStyle = nBstyle;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBhatch;
 
       if( ! bNoBrush )
@@ -4251,7 +4251,7 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
 
       if( ! bNoPen )
       {
-         hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+         hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
          hgdiobj2 = SelectObject( hdcPrint, hpen );
       }
 
@@ -4278,20 +4278,20 @@ HB_FUNC( _HMG_PRINTER_C_ELLIPSE )          /* _HMG_PRINTER_C_Ellipse( hdcPrint, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
@@ -4324,10 +4324,10 @@ HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nC
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
-      hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+      hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
       hgdiobj = SelectObject( hdcPrint, hpen );
 
       Arc( hdcPrint,
@@ -4349,25 +4349,25 @@ HB_FUNC( _HMG_PRINTER_C_ARC )          /* _HMG_PRINTER_C_Arc( hdcPrint, nRow, nC
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nCol, nToRow, nToCol, nRow1, nCol1, nRow2, nCol2, nWidth, nRed, nGreen, nBlue, lWidth, lColor, lStyle, nStyle, lBrushStyle, nBrushStyle, lBrushColor, nRedB, nGreenB, nBlueB, lNoPen, lNoBrush ) -> NIL */
 {
-   INT r;
-   INT g;
-   INT b;
-   INT x = hb_parni( 3 );
-   INT y = hb_parni( 2 );
-   INT tox = hb_parni( 5 );
-   INT toy = hb_parni( 4 );
-   INT x1 = hb_parni( 7 );
-   INT y1 = hb_parni( 6 );
-   INT x2 = hb_parni( 9 );
-   INT y2 = hb_parni( 8 );
-   INT width = 0;
-   INT nStyle;
-   INT br;
-   INT bg;
-   INT bb;
-   INT nBstyle;
-   LONG nBhatch;
-   HDC hdcPrint = ( HDC ) HB_PARNL( 1 );
+   int r;
+   int g;
+   int b;
+   int x = hb_parni( 3 );
+   int y = hb_parni( 2 );
+   int tox = hb_parni( 5 );
+   int toy = hb_parni( 4 );
+   int x1 = hb_parni( 7 );
+   int y1 = hb_parni( 6 );
+   int x2 = hb_parni( 9 );
+   int y2 = hb_parni( 8 );
+   int width = 0;
+   int nStyle;
+   int br;
+   int bg;
+   int bb;
+   int nBstyle;
+   long nBhatch;
+   HDC hdcPrint = (HDC) HB_PARNL( 1 );
    HGDIOBJ hgdiobj1 = NULL;
    HGDIOBJ hgdiobj2 = NULL;
    HPEN hpen = NULL;
@@ -4405,7 +4405,7 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
       }
       else
       {
-         nStyle = ( int ) PS_SOLID;
+         nStyle = (int) PS_SOLID;
       }
 
       // lBrushStyle
@@ -4443,7 +4443,7 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
       }
 
       pbr.lbStyle = nBstyle;
-      pbr.lbColor = ( COLORREF ) RGB( br, bg, bb );
+      pbr.lbColor = (COLORREF) RGB( br, bg, bb );
       pbr.lbHatch = nBhatch;
 
       if( ! bNoBrush )
@@ -4454,7 +4454,7 @@ HB_FUNC( _HMG_PRINTER_C_PIE )          /* _HMG_PRINTER_C_Pie( hdcPrint, nRow, nC
 
       if( ! bNoPen )
       {
-         hpen = CreatePen( nStyle, width, ( COLORREF ) RGB( r, g, b ) );
+         hpen = CreatePen( nStyle, width, (COLORREF) RGB( r, g, b ) );
          hgdiobj2 = SelectObject( hdcPrint, hpen );
       }
 
@@ -4487,19 +4487,19 @@ HB_FUNC( _HMG_PRINTER_GETMAXCOL )          /* _HMG_PRINTER_GetMaxCol( hdcPrint, 
 {
    HDC hdcPrint;
    char FontName[ 32 ];
-   INT FontSize;
-   INT nWidth;
-   INT nAngle;
-   INT fnWeight;
+   int FontSize;
+   int nWidth;
+   int nAngle;
+   int fnWeight;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   INT FontHeight;
+   int FontHeight;
    HFONT hfont;
    HGDIOBJ hgdiobj;
    TEXTMETRIC tm;
 
-   hdcPrint = ( HDC ) HB_PARNL( 1 );
+   hdcPrint = (HDC) HB_PARNL( 1 );
 
    // FontName
    if( hb_parclen( 2 ) )
@@ -4588,7 +4588,7 @@ HB_FUNC( _HMG_PRINTER_GETMAXCOL )          /* _HMG_PRINTER_GetMaxCol( hdcPrint, 
 
    GetTextMetrics( hdcPrint, &tm );
 
-   hb_retni( ( int ) ( GetDeviceCaps( hdcPrint, HORZRES ) / tm.tmAveCharWidth - 1 ) );
+   hb_retni( (int) ( GetDeviceCaps( hdcPrint, HORZRES ) / tm.tmAveCharWidth - 1 ) );
 
    SelectObject( hdcPrint, hgdiobj );
 
@@ -4600,19 +4600,19 @@ HB_FUNC( _HMG_PRINTER_GETMAXROW )          /* _HMG_PRINTER_GetMaxRow( hdcPrint, 
 {
    HDC hdcPrint;
    char FontName[ 32 ];
-   INT FontSize;
-   INT nWidth;
-   INT nAngle;
-   INT fnWeight;
+   int FontSize;
+   int nWidth;
+   int nAngle;
+   int fnWeight;
    DWORD fdwItalic;
    DWORD fdwUnderline;
    DWORD fdwStrikeOut;
-   INT FontHeight;
+   int FontHeight;
    HFONT hfont;
    HGDIOBJ hgdiobj;
    TEXTMETRIC tm;
 
-   hdcPrint = ( HDC ) HB_PARNL( 1 );
+   hdcPrint = (HDC) HB_PARNL( 1 );
 
    // FontName
    if( hb_parclen( 2 ) )
@@ -4701,7 +4701,7 @@ HB_FUNC( _HMG_PRINTER_GETMAXROW )          /* _HMG_PRINTER_GetMaxRow( hdcPrint, 
 
    GetTextMetrics( hdcPrint, &tm );
 
-   hb_retni( ( int ) ( ( GetDeviceCaps( ( HDC ) HB_PARNL( 1 ), VERTRES ) - tm.tmAscent ) / tm.tmHeight - 1 ) );
+   hb_retni( (int) ( ( GetDeviceCaps( (HDC) HB_PARNL( 1 ), VERTRES ) - tm.tmAscent ) / tm.tmHeight - 1 ) );
 
    SelectObject( hdcPrint, hgdiobj );
 
