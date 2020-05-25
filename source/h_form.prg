@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -981,17 +981,17 @@ HB_FUNC_STATIC( TFORM_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS T
          if( oSelf->lBackColor != -1 )
          {
             oSelf->BrushHandle = CreateSolidBrush( oSelf->lBackColor );
-            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, ( LONG_PTR )  oSelf->BrushHandle );
+            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, (LONG_PTR)  oSelf->BrushHandle );
          }
          else
          {
-            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, ( LONG_PTR ) ( COLOR_BTNFACE + 1 ) );
+            SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) ( COLOR_BTNFACE + 1 ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   // Return value was set by _OOHG_DetermineColorReturn()
+   /* Return value was set by _OOHG_DetermineColorReturn() */
 }
 
 HB_FUNC( SETFORMTOPMOST )
@@ -1043,7 +1043,6 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TForm
       nHeight := actpos[ 4 ] - actpos[ 2 ]
    EndIf
    xRet := MoveWindow( ::hWnd, nCol, nRow, nWidth, nHeight, .t. )
-   //CGR
    ::CheckClientsPos()
 
    Return xRet
@@ -1052,13 +1051,13 @@ METHOD DeleteControl( oControl ) CLASS TForm
 
    Local nPos
 
-   // Removes INTERNAL window from ::SplitChildList
+   /* Removes INTERNAL window from ::SplitChildList */
    nPos := aScan( ::SplitChildList, { |o| o:hWnd == oControl:hWnd } )
    If nPos > 0
       _OOHG_DeleteArrayItem( ::SplitChildList, nPos )
    EndIf
 
-   // Removes POPUP window from ::aChildPopUp
+   /* Removes POPUP window from ::aChildPopUp */
    nPos := aScan( ::aChildPopUp, { |o| o:hWnd == oControl:hWnd } )
    If nPos > 0
       _OOHG_DeleteArrayItem( ::aChildPopUp, nPos )
@@ -1364,16 +1363,15 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
 #define WM_MOUSEHWHEEL 0x020e
 #endif
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TFORM_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm */
 {
    static PHB_SYMB s_Events2 = 0;
 
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -1385,7 +1383,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
             RECT rect;
             GetClientRect( hWnd, &rect );
             hBrush = oSelf->BrushHandle ? oSelf->BrushHandle : ( HBRUSH ) ( COLOR_BTNFACE + 1 );
-            FillRect( ( HDC ) wParam, &rect, hBrush );
+            FillRect( (HDC) wParam, &rect, hBrush );
             hb_retni( 1 );
          }
          break;
@@ -1470,11 +1468,11 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
                   POCTRL oMenu;
                   HMENU hMenu;
                   oMenu = _OOHG_GetControlInfo( pMenu );
-                  hMenu = ( HMENU ) oMenu->hWnd;
+                  hMenu = (HMENU) oMenu->hWnd;
                   if( IsMenu( hMenu ) )
                   {
                      POINT ptScreen;
-                     INT iPos;
+                     int iPos;
                      MENUITEMINFO MenuItemInfo;
                      ptScreen.x = GET_X_LPARAM( lParam );
                      ptScreen.y = GET_Y_LPARAM( lParam );
@@ -1488,7 +1486,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
                         GetMenuItemInfo( hMenu, iPos, MF_BYPOSITION, &MenuItemInfo );
                         if( MenuItemInfo.hSubMenu )
                         {
-                           hb_itemCopy( pMenuItem, GetControlObjectByHandle( ( HWND ) MenuItemInfo.hSubMenu, TRUE ) );
+                           hb_itemCopy( pMenuItem, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
                         }
                         else
                         {
@@ -1826,10 +1824,10 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
 #pragma BEGINDUMP
 
-int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
+BOOL _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
 {
    int iWidth, iHeight;
-   BOOL bChanged = 0;
+   BOOL bChanged = FALSE;
 
    iWidth  = rect->right - rect->left;
    iHeight = rect->bottom - rect->top;
@@ -1852,7 +1850,7 @@ int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, in
       {
          rect->right = rect->left + iWidth;
       }
-      bChanged = 1;
+      bChanged = TRUE;
    }
 
    if( iMinHeight > 0 && iMinHeight > iHeight )
@@ -1873,39 +1871,39 @@ int _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, in
       {
          rect->bottom = rect->top + iHeight;
       }
-      bChanged = 1;
+      bChanged = TRUE;
    }
 
    return bChanged;
 }
 
-HB_FUNC_STATIC( _TFORM_SIZING )   // wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight
+HB_FUNC_STATIC( _TFORM_SIZING )          /* FUNCTION _TForm_Sizing( wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight ) -> lChanged */
 {
-   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
+   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) (HB_PTRUINT) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
 }
 
-int _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
+BOOL _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
 {
-   BOOL bChanged = 0;
+   BOOL bChanged = FALSE;
 
    if( iForceRow >= 0 && rect->top != iForceRow )
    {
       rect->bottom = iForceRow + ( rect->bottom - rect->top );
       rect->top = iForceRow;
-      bChanged = 1;
+      bChanged = TRUE;
    }
 
    if( iForceCol >= 0 && rect->left != iForceCol )
    {
       rect->right = iForceCol + ( rect->right - rect->left );
       rect->left = iForceCol;
-      bChanged = 1;
+      bChanged = TRUE;
    }
 
    return bChanged;
 }
 
-HB_FUNC_STATIC( _TFORM_MOVING )   // lParam, nForceRow, nForceCol
+HB_FUNC_STATIC( _TFORM_MOVING )          /* FUNCTION _TForm_Moving( lParam, nForceRow, nForceCol ) -> lChanged */
 {
    int iForceRow, iForceCol;
 
@@ -3110,13 +3108,13 @@ Function _SetWindowSizePos( FormName, row, col, width, height )
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
-// Thread safe, see _OOHG_INIT_C_VARS_C_SIDE, GetFormObjectByHandle() and _OOHG_GetExistingObject()
+/* Thread safe, see _OOHG_INIT_C_VARS_C_SIDE, GetFormObjectByHandle() and _OOHG_GetExistingObject() */
 static PHB_SYMB _ooHG_Symbol_TForm = 0;
 static PHB_ITEM _OOHG_aFormhWnd, _OOHG_aFormObjects;        
 
 HB_FUNC( _OOHG_INIT_C_VARS_C_SIDE )
 {
-   // See _OOHG_Init_C_Vars() at h_form.prg
+   /* See _OOHG_Init_C_Vars() at h_form.prg */
    _ooHG_Symbol_TForm = hb_dynsymSymbol( hb_dynsymFind( "TFORM" ) );
    _OOHG_aFormhWnd    = hb_itemNew( NULL );
    _OOHG_aFormObjects = hb_itemNew( NULL );
@@ -3144,7 +3142,7 @@ int _OOHG_SearchFormHandleInArray( HWND hWnd )
    for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aFormhWnd ); ulCount++ )
    {
       #ifdef OOHG_HWND_POINTER
-         if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aFormhWnd, ulCount ) )
+         if( hWnd == (HWND) hb_arrayGetPtr( _OOHG_aFormhWnd, ulCount ) )
       #else
          if( (LONG_PTR) hWnd == HB_ARRAYGETNL( _OOHG_aFormhWnd, ulCount ) )
       #endif
@@ -3213,7 +3211,7 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
    _OOHG_Send( pSelf, s_OverWndProc );
    hb_vmSend( 0 );
    pResult = hb_param( -1, HB_IT_BLOCK );
-   // ::OverWndProc is a codeblock... execute it
+   /* ::OverWndProc is a codeblock... execute it */
    if( pResult )
    {
 #ifdef __XHARBOUR__
@@ -3233,7 +3231,7 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
       pResult = hb_param( -1, HB_IT_NUMERIC );
    }
 
-   // ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events()
+   /* ::OverWndProc is NOT a codeblock, or it returns a non-numeric value... execute ::Events() */
    if( ! pResult )
    {
       _OOHG_Send( pSelf, s_Events );
@@ -3247,12 +3245,12 @@ LRESULT APIENTRY _OOHG_WndProc( PHB_ITEM pSelf, HWND hWnd, UINT uiMsg, WPARAM wP
 
    if( pResult )
    {
-      // Return value is numeric... return it to Windows
+      /* Return value is numeric... return it to Windows */
       iReturn = hb_itemGetNL( pResult );
    }
    else
    {
-      // Return value is NOT numeric... execute default WindowProc
+      /* Return value is NOT numeric... execute default WindowProc */
       iReturn = CallWindowProc( lpfnOldWndProc, hWnd, uiMsg, wParam, lParam );
    }
 
@@ -3332,7 +3330,7 @@ HB_FUNC( REGISTERWINDOW )
    WNDCLASS WndClass;
    HBRUSH hbrush = NULL;
    int iWindowType = hb_parni( 4 );
-   LONG lColor;
+   long lColor;
    BOOL bError = FALSE;
    HICON hicon = NULL;
 
@@ -3341,21 +3339,21 @@ HB_FUNC( REGISTERWINDOW )
 
    switch( iWindowType )
    {
-      case 2:                           // MDI client
+      case 2:                           /* MDI client */
          WndClass.lpfnWndProc = WndProcMdiChild;
          break;
 
-      case 3:                           // MDI child
+      case 3:                           /* MDI child */
          WndClass.lpfnWndProc = WndProcMdiChild;
          break;
 
-      case 4:                           // MDI frame
+      case 4:                           /* MDI frame */
          WndClass.lpfnWndProc = WndProcMdi;
          break;
 
       default:
-      // case 0:                           //
-      // case 1:                           // Splitchild
+      /* case 0: */
+      /* case 1:                           Splitchild */
          WndClass.lpfnWndProc = WndProc;
          break;
    }
@@ -3368,7 +3366,7 @@ HB_FUNC( REGISTERWINDOW )
       WndClass.hIcon = LoadIcon( GetModuleHandle( NULL ), hb_parc( 1 ) );
       if( ! WndClass.hIcon )
       {
-         hicon = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ), IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
+         hicon = (HICON) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ), IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
          WndClass.hIcon = hicon;
       }
    }
@@ -3414,22 +3412,22 @@ HB_FUNC( INITDUMMY )
 
 HB_FUNC( INITWINDOW )
 {
-   HWND hwnd;
-   INT Style, StyleEx;
+   HWND hWnd;
+   int Style, StyleEx;
 
    Style   = hb_parni( 8 );
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 10 ) );
 
-   hwnd = CreateWindowEx( StyleEx, hb_parc( 7 ), hb_parc( 1 ), Style,
+   hWnd = CreateWindowEx( StyleEx, hb_parc( 7 ), hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                           HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), NULL );
-   HWNDret( hwnd );
+   HWNDret( hWnd );
 }
 
 HB_FUNC( INITWINDOWMDICLIENT )
 {
-   HWND hwnd;
-   INT Style, StyleEx;
+   HWND hWnd;
+   int Style, StyleEx;
    CLIENTCREATESTRUCT ccs;
 
    Style   = hb_parni( 8 );
@@ -3438,11 +3436,11 @@ HB_FUNC( INITWINDOWMDICLIENT )
    ccs.hWindowMenu = NULL;
    ccs.idFirstChild = 0;
 
-   hwnd = CreateWindowEx( StyleEx, "MDICLIENT", hb_parc( 1 ), Style,
+   hWnd = CreateWindowEx( StyleEx, "MDICLIENT", hb_parc( 1 ), Style,
                           hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
-                          HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), ( LPSTR ) &ccs );
+                          HWNDparam( 6 ), NULL, GetModuleHandle( NULL ), (LPSTR) &ccs );
 
-   HWNDret( hwnd );
+   HWNDret( hWnd );
 }
 
 HB_FUNC( GETSYSTEMMENU )
