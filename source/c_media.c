@@ -96,7 +96,7 @@ HB_FUNC( PLAYOK )
 
 HB_FUNC( C_PLAYWAVE )
 {
-   INT Style = SND_ASYNC;
+   int Style = SND_ASYNC;
    HMODULE hmod = NULL;
 
    if( hb_parl( 2 ) )
@@ -124,5 +124,5 @@ HB_FUNC( C_PLAYWAVE )
 
 HB_FUNC( STOPWAVE )
 {
-   hb_retl( PlaySound( ( LPCSTR ) NULL, ( HMODULE ) GetModuleHandle( NULL ), SND_PURGE ) ) ;
+   hb_retl( PlaySound( (LPCSTR) NULL, (HMODULE) GetModuleHandle( NULL ), SND_PURGE ) ) ;
 }
