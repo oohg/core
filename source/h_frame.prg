@@ -149,7 +149,7 @@ METHOD Caption( cCaption ) CLASS TFrame
 METHOD ToolTip( uToolTip ) CLASS TFrame
 
    IF PCount() > 0
-      TFrame_SetToolTip( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+      TFrame_SetToolTip( Self, ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
       ::Super:ToolTip( uToolTip )
    ENDIF
 
@@ -169,9 +169,9 @@ BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 #define s_Super s_TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TFrame_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TFrame_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -180,7 +180,7 @@ static WNDPROC _OOHG_TFrame_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -204,7 +204,7 @@ HB_FUNC( INITFRAME )          /* FUNCTION InitFrame( hWnd, hMenu, nCol, nRow, nW
                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TFrame_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hframe, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TFrame_lpfnOldWndProc( SetWindowLongPtr( hframe, GWLP_WNDPROC, (LONG_PTR) SubClassFuncA ) );
 
    HWNDret( hframe );
 }
