@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -231,32 +231,32 @@ EXTERN MCIFUNC
 #include "oohg.h"
 #include <vfw.h>
 
-// This fixes a warning over dwICValue
+/* This fixes a warning over dwICValue */
 HB_FUNC( ICGETDEFAULTQUALITY )
 {
-   hb_retnl( ( LONG ) ICGetDefaultQuality( (HIC) hb_parnl( 1 ) ) );
+   HB_RETNL( ICGetDefaultQuality( (HIC) HB_PARNL( 1 ) ) );
 }
 
 HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
 {
-   hb_retnl( ( LONG ) ICGetDefaultKeyFrameRate( (HIC) hb_parnl( 1 ) ) );
+   hb_retnl( ICGetDefaultKeyFrameRate( (HIC) HB_PARNL( 1 ) ) );
 }
 
 HB_FUNC( INITANIMATE )
 {
-   HWND hwnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
+   HWND hWnd = Animate_Create( HWNDparam( 1 ), NULL, hb_parni( 6 ), GetModuleHandle( NULL ) );
 
-   if( hwnd )
+   if( hWnd )
    {
-      MoveWindow( hwnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
+      MoveWindow( hWnd, hb_parnl( 2 ), hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), TRUE );
    }
 
-   HWNDret( hwnd );
+   HWNDret( hWnd );
 }
 
 HB_FUNC( OPENANIMATE )
 {
-   Animate_Open( HWNDparam( 1 ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ) );
+   Animate_Open( HWNDparam( 1 ), (LPTSTR) HB_UNCONST( hb_parc( 2 ) ) );
 }
 
 HB_FUNC( PLAYANIMATE )
@@ -286,14 +286,14 @@ HB_FUNC( DESTROYANIMATE )
 
 HB_FUNC( INITPLAYER )
 {
-   HWND hwnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
+   HWND hWnd = MCIWndCreate( HWNDparam( 1 ), NULL, hb_parni( 7 ), hb_parc( 2 ) );
 
-   if( hwnd )
+   if( hWnd )
    {
-      MoveWindow( hwnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
+      MoveWindow( hWnd, hb_parnl( 3 ), hb_parnl( 4 ), hb_parnl( 5 ), hb_parnl( 6 ), TRUE );
    }
 
-   HWNDret( hwnd );
+   HWNDret( hWnd );
 }
 
 HB_FUNC( MCIFUNC )
