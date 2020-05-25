@@ -242,9 +242,9 @@ METHOD Align( nAlign ) CLASS TLabel
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TLabel_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TLabel_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -253,7 +253,7 @@ static WNDPROC _OOHG_TLabel_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -276,7 +276,7 @@ HB_FUNC( INITLABEL )          /* FUNCTION InitLabel( hWnd, cCaption, hMenu, nCol
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TLabel_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hlabel, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TLabel_lpfnOldWndProc( SetWindowLongPtr( hlabel, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hlabel );
 }
