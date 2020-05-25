@@ -124,9 +124,9 @@ METHOD Value( uValue ) CLASS THotKeyBox
 #include <hbapiitm.h>
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_THotKeyBox_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_THotKeyBox_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -135,7 +135,7 @@ static WNDPROC _OOHG_THotKeyBox_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -148,19 +148,19 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITHOTKEYBOX )          /* FUNCTION InitHotKeyBox( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
 
    Style = hb_parni( 7 ) | WS_CHILD;
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
 
    InitCommonControls();
 
-   // Creates the child control.
+   /* Creates the child control. */
    hCtrl = CreateWindowEx( StyleEx, HOTKEY_CLASS, "", Style,
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_THotKeyBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_THotKeyBox_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -189,9 +189,9 @@ HB_FUNC( HOTKEYBOXVALUE )
       SendMessage( hWnd, HKM_SETHOTKEY, ( ( iKey & 0xFF ) | ( ( iMod & 0xFF ) << 8 ) ), 0 );
    }
 
-   if( hb_parl( 3 ) )   // If force ALT...
+   if( hb_parl( 3 ) )   /* If forces ALT */
    {
-      SendMessage( hWnd, HKM_SETRULES, ( WPARAM ) HKCOMB_NONE | HKCOMB_S, ( LPARAM ) HOTKEYF_ALT );
+      SendMessage( hWnd, HKM_SETRULES, (WPARAM) HKCOMB_NONE | HKCOMB_S, (LPARAM) HOTKEYF_ALT );
    }
 
    iValue = SendMessage( hWnd, HKM_GETHOTKEY, 0, 0 );
