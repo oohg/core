@@ -178,21 +178,21 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
 
    Return Self
 
-METHOD Events_VScroll( wParam ) CLASS TInternal
+METHOD Events_VScroll( wParam  ) CLASS TInternal
 
    Local uRet
 
-   uRet := ::VScrollBar:Events_VScroll( wParam )
+   uRet := ::VScrollBar:Events_VScroll( wParam  )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
 
    Return uRet
 
-METHOD Events_HScroll( wParam ) CLASS TInternal
+METHOD Events_HScroll( wParam  ) CLASS TInternal
 
    Local uRet
 
-   uRet := ::HScrollBar:Events_HScroll( wParam )
+   uRet := ::HScrollBar:Events_HScroll( wParam  )
    ::ColMargin := - ::HScrollBar:Value
    ::ScrollControls()
 
@@ -247,9 +247,9 @@ Function _EndInternal()
 #define s_Super s_TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TInternal_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TInternal_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -258,7 +258,7 @@ static WNDPROC _OOHG_TInternal_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -304,7 +304,7 @@ HB_FUNC( _OOHG_TINTERNAL_REGISTER )          /* FUNCTION _OOHG_TInternal_Registe
 
       if( ! RegisterClass( &WndClass ) )
       {
-         hb_retni( ( int ) GetLastError() );
+         hb_retni( (int) GetLastError() );
       }
 
       bRegistered = TRUE;
@@ -322,18 +322,18 @@ HB_FUNC( INITINTERNAL )
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TINTERNAL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TInternal_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TInternal_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TInternal
+HB_FUNC_STATIC( TINTERNAL_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TInternal */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -347,7 +347,7 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
       case WM_MOUSEWHEEL:
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
+            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam  ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
             hb_vmSend( 1 );
          }
          hb_retni( 1 );
@@ -360,14 +360,14 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
             RECT rect;
             GetClientRect( hWnd, &rect );
             hBrush = oSelf->BrushHandle ? oSelf->BrushHandle : ( HBRUSH ) ( COLOR_BTNFACE + 1 );
-            FillRect( ( HDC ) wParam, &rect, hBrush );
+            FillRect( (HDC) wParam, &rect, hBrush );
             hb_retni( 1 );
          }
          break;
 
       case WM_LBUTTONUP:
          {
-            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), (LPARAM) hWnd );
          }
          break;
 
@@ -377,7 +377,7 @@ HB_FUNC_STATIC( TINTERNAL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lPara
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
@@ -402,7 +402,7 @@ HB_FUNC_STATIC( TINTERNAL_BACKCOLOR )
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 HB_FUNC_STATIC( TINTERNAL_BACKCOLORCODE )
