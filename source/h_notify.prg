@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -182,9 +182,9 @@ METHOD HIcon( hIcon ) CLASS TNotifyIcon
 
    Return ::hImage
 
-METHOD HBitMap( hBitMap ) CLASS TNotifyIcon
+METHOD HBitMap( hBitmap ) CLASS TNotifyIcon
 
-   If ValType( hBitMap ) $ "NP"
+   If ValType( hBitmap ) $ "NP"
       ::HIcon := hBitMap
    EndIf
 
@@ -249,22 +249,22 @@ METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
 HB_FUNC( LOADTRAYICON )
 {
    HICON hImage;
-   HINSTANCE hInstance  = ( HINSTANCE ) hb_parnl( 1 );  // handle to application instance
-   LPCTSTR   lpIconName = ( LPCTSTR )   hb_parc( 2 );   // name string or resource identifier
+   HINSTANCE hInstance = (HINSTANCE) HB_PARNL( 1 );  /* handle to application instance */
+   LPCTSTR lpIconName = (LPCTSTR) hb_parc( 2 );                   /* name string or resource identifier */
 
    hImage = LoadIcon( hInstance, lpIconName );
 
    if( hImage == NULL )
    {
-      hImage = ( HICON ) LoadImage( hInstance, lpIconName, IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
+      hImage = (HICON) LoadImage( hInstance, lpIconName, IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
    }
 
-   HWNDret( ( HWND ) hImage );
+   HWNDret( (HWND) hImage );
 }
 
-HB_FUNC( CHANGENOTIFYICON )     // ( hWnd, hIcon, cTooltip )
+HB_FUNC( CHANGENOTIFYICON )          /* FUNCTION ChangeNotifyIcon( hWnd, hIcon, cTooltip ) -> NIL */
 {
-   CHAR *pText;
+   char *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -272,16 +272,16 @@ HB_FUNC( CHANGENOTIFYICON )     // ( hWnd, hIcon, cTooltip )
    nid.uID = 0;
    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    nid.uCallbackMessage = WM_TASKBAR;
-   nid.hIcon = ( HICON ) HWNDparam( 2 );
+   nid.hIcon = (HICON) HWNDparam( 2 );
    pText = hb_strndup( hb_parc( 3 ), sizeof( nid.szTip ) );
    lstrcpy( nid.szTip, pText );
    hb_xfree( pText );
    Shell_NotifyIcon( NIM_MODIFY, &nid );
 }
 
-HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
+HB_FUNC( SHOWNOTIFYICON )          /* FUNCTION ShowNotifyIcon( hWnd, lAdd, hIcon, cTooltip ) -> NIL */
 {
-   CHAR *pText;
+   char *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -289,7 +289,7 @@ HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
    nid.uID = 0;
    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    nid.uCallbackMessage = WM_TASKBAR;
-   nid.hIcon = ( HICON ) HWNDparam( 3 );
+   nid.hIcon = (HICON) HWNDparam( 3 );
    pText = hb_strndup( hb_parc( 4 ), sizeof( nid.szTip ) );
    lstrcpy( nid.szTip, pText );
    hb_xfree( pText );
@@ -299,9 +299,9 @@ HB_FUNC( SHOWNOTIFYICON )     // ( hWnd, lAdd, hIcon, cTooltip )
       Shell_NotifyIcon( NIM_DELETE, &nid );
 }
 
-HB_FUNC( SETNOTIFYICONDATA )     // ( hWnd, nId, lAlreadyCreated, hIcon, cTooltip )
+HB_FUNC( SETNOTIFYICONDATA )          /* FUNCTION SetNotifyIconData( hWnd, nId, lAlreadyCreated, hIcon, cTooltip ) -> NIL */
 {
-   CHAR *pText;
+   char *pText;
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
    nid.cbSize = sizeof( NOTIFYICONDATA );
@@ -311,7 +311,7 @@ HB_FUNC( SETNOTIFYICONDATA )     // ( hWnd, nId, lAlreadyCreated, hIcon, cToolti
    if( ! HB_ISNIL( 4 ) )
    {
       nid.uFlags |= NIF_ICON;
-      nid.hIcon = ( HICON ) HWNDparam( 4 );
+      nid.hIcon = (HICON) HWNDparam( 4 );
    }
    if( HB_ISCHAR( 5 ) )
    {
