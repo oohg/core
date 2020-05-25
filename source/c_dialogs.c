@@ -74,15 +74,15 @@ HB_FUNC( CHOOSEFONT )
 {
    CHOOSEFONT cf;
    LOGFONT lf;
-   LONG PointSize;
-   INT bold;
+   long PointSize;
+   int bold;
    HDC hdc;
-   HWND hwnd;
+   HWND hWnd;
 
    strcpy( lf.lfFaceName, hb_parc( 1 ) );
 
-   hwnd = GetActiveWindow();
-   hdc = GetDC( hwnd );
+   hWnd = GetActiveWindow();
+   hdc = GetDC( hWnd );
 
    lf.lfHeight = - MulDiv( hb_parnl( 2 ), GetDeviceCaps( hdc, LOGPIXELSY ), 72 );
 
@@ -122,19 +122,19 @@ HB_FUNC( CHOOSEFONT )
        lf.lfStrikeOut = FALSE;
    }
 
-   lf.lfCharSet = ( BYTE ) hb_parni( 8 );
+   lf.lfCharSet = (BYTE) hb_parni( 8 );
 
    cf.lStructSize = sizeof( CHOOSEFONT );
-   cf.hwndOwner = hwnd;
-   cf.hDC = ( HDC ) NULL;
+   cf.hwndOwner = hWnd;
+   cf.hDC = (HDC) NULL;
    cf.lpLogFont = &lf;
    cf.Flags = CF_SCREENFONTS | CF_EFFECTS | CF_INITTOLOGFONTSTRUCT;
-   cf.rgbColors = ( COLORREF ) hb_parnl( 5 );
+   cf.rgbColors = (COLORREF) hb_parnl( 5 );
    cf.lCustData = 0L;
    cf.lpfnHook = ( LPCFHOOKPROC ) NULL;
-   cf.lpTemplateName = ( LPSTR ) NULL;
-   cf.hInstance = ( HINSTANCE ) NULL;
-   cf.lpszStyle = ( LPSTR ) NULL;
+   cf.lpTemplateName = (LPSTR) NULL;
+   cf.hInstance = (HINSTANCE) NULL;
+   cf.lpszStyle = (LPSTR) NULL;
    cf.nFontType = SCREEN_FONTTYPE;
    cf.nSizeMin = 0;
    cf.nSizeMax = 0;
@@ -166,28 +166,28 @@ HB_FUNC( CHOOSEFONT )
 
    hb_reta( 8 );
    HB_STORC( lf.lfFaceName, -1, 1 );
-   HB_STORNL3( ( LONG ) PointSize, -1, 2 );
+   HB_STORNL3( (long) PointSize, -1, 2 );
    HB_STORL( bold, -1, 3 );
    HB_STORL( lf.lfItalic, -1, 4 );
-   HB_STORNL3( ( LONG ) cf.rgbColors, -1, 5 );
+   HB_STORNL3( (long) cf.rgbColors, -1, 5 );
    HB_STORL( lf.lfUnderline, -1, 6 );
    HB_STORL( lf.lfStrikeOut, -1, 7 );
    HB_STORNI( lf.lfCharSet, -1, 8 );
 
-   ReleaseDC( hwnd, hdc );
+   ReleaseDC( hWnd, hdc );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( C_GETFILE )
 {
    OPENFILENAME ofn;
-   CHAR buffer[ 32768 ];
-   CHAR cFullName[ 64 ][ 1024 ];
-   CHAR cCurDir[ 512 ];
-   CHAR cFileName[ 512 ];
-   INT iPosition = 0;
-   INT iNumSelected = 0;
-   INT n;
+   char buffer[ 32768 ];
+   char cFullName[ 64 ][ 1024 ];
+   char cCurDir[ 512 ];
+   char cFileName[ 512 ];
+   int iPosition = 0;
+   int iNumSelected = 0;
+   int n;
    DWORD flags = OFN_FILEMUSTEXIST;
 
    if( HB_ISCHAR( 6 ) )
@@ -212,7 +212,7 @@ HB_FUNC( C_GETFILE )
       flags = flags | OFN_HIDEREADONLY;
    }
 
-   memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
+   memset( (void *) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner = GetActiveWindow();
    ofn.lpstrFilter = hb_parc( 1 );
@@ -233,13 +233,13 @@ HB_FUNC( C_GETFILE )
       else
       {
          wsprintf( cCurDir, "%s", &buffer[ iPosition ] );
-         iPosition = iPosition + ( INT ) strlen( cCurDir ) + 1;
+         iPosition = iPosition + (int) strlen( cCurDir ) + 1;
 
          do
          {
             iNumSelected++;
             wsprintf( cFileName, "%s", &buffer[ iPosition ] );
-            iPosition = iPosition + ( INT ) strlen( cFileName ) + 1;
+            iPosition = iPosition + (int) strlen( cFileName ) + 1;
             wsprintf( cFullName[ iNumSelected ], "%s\\%s", cCurDir, cFileName );
          }
          while( ( strlen( cFileName ) != 0) && ( iNumSelected <= 63 ) );
@@ -269,8 +269,8 @@ HB_FUNC( C_GETFILE )
 HB_FUNC( C_PUTFILE )
 {
    OPENFILENAME ofn;
-   CHAR buffer[ 512 ];
-   CHAR cExt[ 4 ];
+   char buffer[ 512 ];
+   char cExt[ 4 ];
    DWORD flags = OFN_FILEMUSTEXIST | OFN_EXPLORER;
 
    if( hb_parl( 4 ) )
@@ -287,7 +287,7 @@ HB_FUNC( C_PUTFILE )
       strcpy( buffer, "" );
    }
 
-   memset( ( void * ) &ofn, 0, sizeof( OPENFILENAME ) );
+   memset( (void *) &ofn, 0, sizeof( OPENFILENAME ) );
    ofn.lStructSize = sizeof( ofn );
    ofn.hwndOwner = GetActiveWindow();
    ofn.lpstrFilter = hb_parc( 1 );
@@ -320,7 +320,7 @@ HB_FUNC( C_PUTFILE )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData )
+int CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData )
 {
    if( uMsg == BFFM_INITIALIZED && lParam == 0 )
    {
@@ -330,27 +330,27 @@ INT CALLBACK BrowseCallbackProc( HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpD
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<nFlags>,[<nFolderType>], [<cInitPath>] )
+HB_FUNC( C_BROWSEFORFOLDER )          /* FUNCTION C_BrowseForFolder( [<hWnd>], [<cTitle>], <nFlags>, [<nFolderType>], [<cInitPath>] ) -> cPath */
 {
-   HWND hwnd;
+   HWND hWnd;
    BROWSEINFO BrowseInfo;
-   CHAR * lpBuffer = ( CHAR * ) hb_xgrab( MAX_PATH + 1 );
+   char * lpBuffer = (char *) hb_xgrab( MAX_PATH + 1 );
    LPITEMIDLIST pidlBrowse;
 
-   hwnd = HWNDparam( 1 );
-   if( ! ValidHandler( hwnd ) )
+   hWnd = HWNDparam( 1 );
+   if( ! ValidHandler( hWnd ) )
    {
-      hwnd = GetActiveWindow();
+      hWnd = GetActiveWindow();
    }
 
-   SHGetSpecialFolderLocation( hwnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlBrowse );
-   BrowseInfo.hwndOwner = hwnd;
+   SHGetSpecialFolderLocation( hWnd, HB_ISNIL( 4 ) ? CSIDL_DRIVES : hb_parni( 4 ), &pidlBrowse );
+   BrowseInfo.hwndOwner = hWnd;
    BrowseInfo.pidlRoot = pidlBrowse;
    BrowseInfo.pszDisplayName = lpBuffer;
    BrowseInfo.lpszTitle = HB_ISNIL( 2 ) ? "Select a Folder" : hb_parc( 2 );
-   BrowseInfo.ulFlags = ( UINT ) ( HB_ISNIL( 3 ) ? 0 : hb_parni( 3 ) );
+   BrowseInfo.ulFlags = (UINT) ( HB_ISNIL( 3 ) ? 0 : hb_parni( 3 ) );
    BrowseInfo.lpfn = ( BFFCALLBACK ) ( HB_ISCHAR( 5 ) ? BrowseCallbackProc : NULL );
-   BrowseInfo.lParam = HB_ISCHAR( 5 ) ? ( LPARAM ) hb_parc( 5 ) : 1;
+   BrowseInfo.lParam = HB_ISCHAR( 5 ) ? (LPARAM) HB_UNCONST( hb_parc( 5 ) ) : 1;
    BrowseInfo.iImage = 0;
    pidlBrowse = SHBrowseForFolder( &BrowseInfo );
 
@@ -370,7 +370,7 @@ HB_FUNC( C_BROWSEFORFOLDER ) // Syntax: C_BROWSEFORFOLDER([<hWnd>],[<cTitle>],<n
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CHOOSECOLOR )
 {
-   INT i;
+   int i;
    CHOOSECOLOR cc;
    static BOOL bFirst = TRUE;
    static COLORREF crCustClr[ 16 ];
@@ -390,17 +390,17 @@ HB_FUNC( CHOOSECOLOR )
       {
          if( HB_PARVNL( 3, i + 1 ) > 0 )
          {
-            crCustClr[ i ] = ( COLORREF ) HB_PARVNL( 3, i + 1 );
+            crCustClr[ i ] = (COLORREF) HB_PARVNL( 3, i + 1 );
          }
       }
    }
 
    ZeroMemory( &cc, sizeof( cc ) );
    cc.lStructSize  = sizeof( cc );
-   cc.hwndOwner    = HB_ISNIL( 1 ) ? GetActiveWindow() : ( HWND ) HB_PARNL( 1 );
-   cc.rgbResult    = ( COLORREF ) ( HB_ISNIL( 2 ) ?  0 : hb_parnl( 2 ) );
+   cc.hwndOwner    = HB_ISNIL( 1 ) ? GetActiveWindow() : HWNDparam( 1 );
+   cc.rgbResult    = (COLORREF) ( HB_ISNIL( 2 ) ?  0 : hb_parnl( 2 ) );
    cc.lpCustColors = crCustClr;
-   cc.Flags        = ( WORD ) ( HB_ISNIL( 4 ) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl( 4 ) );
+   cc.Flags        = (WORD) ( HB_ISNIL( 4 ) ? CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT : hb_parnl( 4 ) );
 
    if( ChooseColorA( &cc ) )
    {
@@ -408,10 +408,10 @@ HB_FUNC( CHOOSECOLOR )
       {
          for( i = 0; i < 16; i++ )
          {
-            HB_STORVNL( ( LONG ) crCustClr[ i ], 3, i + 1 );
+            HB_STORVNL( (long) crCustClr[ i ], 3, i + 1 );
          }
       }
-      hb_retnl( ( LONG ) cc.rgbResult );
+      hb_retnl( (long) cc.rgbResult );
    }
    else
    {
