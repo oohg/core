@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -346,7 +346,7 @@ METHOD KeyDelete( cSubKey ) CLASS TReg32
 #include "hbstack.h"
 #include "hbapiitm.h"
 
-typedef LONG LSTATUS;
+typedef long LSTATUS;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( REGCLOSEKEY )
@@ -384,9 +384,9 @@ HB_FUNC( REGQUERYVALUEEXA )
       lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, (BYTE *) lpData, &lpcbData );
       if ( lError == ERROR_SUCCESS )
       {
-         HB_STORNL2( ( LONG ) lpType, 4 );
+         HB_STORNL2( (long) lpType, 4 );
          hb_storc( (char *) lpData, 5 );
-         HB_STORNL2( ( LONG ) lpcbData, 6 );
+         HB_STORNL2( (long) lpcbData, 6 );
       }
       hb_xfree( (BYTE *) lpData );
    }
@@ -407,9 +407,9 @@ HB_FUNC( REGENUMKEYEXA )
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      HB_STORNL2( ( LONG ) dwBuffSize, 4 );
+      HB_STORNL2( (long) dwBuffSize, 4 );
       hb_storc( Class , 6 );
-      HB_STORNL2( ( LONG ) dwClass, 7 );
+      HB_STORNL2( (long) dwClass, 7 );
    }
    HB_RETNL( lError );
 }
@@ -464,9 +464,9 @@ HB_FUNC( REGENUMVALUEA )
    if ( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
-      HB_STORNL2( ( LONG ) dwBuffSize, 4 );
-      HB_STORNL2( ( LONG ) lpType, 6 );
-      HB_STORNL2( ( LONG ) dwClass, 8 );
+      HB_STORNL2( (long) dwBuffSize, 4 );
+      HB_STORNL2( (long) lpType, 6 );
+      HB_STORNL2( (long) dwClass, 8 );
    }
    HB_RETNL( lError );
 }
@@ -505,10 +505,9 @@ typedef BOOL ( WINAPI *LPFN_ISWOW64PROCESS ) ( HANDLE, PBOOL );
 HB_FUNC( ISWOW64 )
 {
    BOOL bIsWow64 = FALSE;
-
    LPFN_ISWOW64PROCESS fnIsWow64Process;
 
-   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
+   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
    if( NULL != fnIsWow64Process )
    {
       fnIsWow64Process( GetCurrentProcess(), &bIsWow64 );
