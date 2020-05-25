@@ -365,9 +365,9 @@ METHOD Value( cValue ) CLASS TEditRich
 #define MSFTEDIT_CLASS "RICHEDIT50W"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TEditRich_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TEditRich_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -376,7 +376,7 @@ static WNDPROC _OOHG_TEditRich_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -389,7 +389,7 @@ static HMODULE hDllRichEdit30 = NULL;
 static HMODULE hDllRichEdit41 = NULL;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-VOID _RichEdit_DeInit( VOID )
+void _RichEdit_DeInit( void )
 {
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( hDllRichEdit41 )
@@ -409,8 +409,8 @@ VOID _RichEdit_DeInit( VOID )
 HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, nMaxLength, lRtl, nVersion ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx, Mask;
-   char * classname = NULL;
+   int Style, StyleEx, Mask;
+   const char * classname = NULL;
    BOOL bIs41 = FALSE;
 
    Style = ES_MULTILINE | ES_WANTRETURN | WS_CHILD | hb_parni( 7 );
@@ -478,18 +478,18 @@ ENM_MOUSEEVENTS
 
    if ( classname != NULL )
    {
-      hCtrl = CreateWindowEx( StyleEx, classname, ( LPSTR ) NULL, Style,
+      hCtrl = CreateWindowEx( StyleEx, classname, (LPSTR) NULL, Style,
                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                               HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-      _OOHG_TEditRich_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+      _OOHG_TEditRich_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
       if( hb_parni( 8 ) != 0 )
       {
-         SendMessage( hCtrl, EM_EXLIMITTEXT, ( WPARAM) 0, ( LPARAM ) hb_parni( 8 ) );
+         SendMessage( hCtrl, EM_EXLIMITTEXT, ( WPARAM) 0, (LPARAM) hb_parni( 8 ) );
       }
 
-      SendMessage( hCtrl, EM_SETEVENTMASK, 0, ( LPARAM ) Mask );
+      SendMessage( hCtrl, EM_SETEVENTMASK, 0, (LPARAM) Mask );
 
       if( bIs41 )
       {
@@ -526,7 +526,7 @@ HB_FUNC_STATIC( TEDITRICH_BACKCOLOR )          /* METHOD BackColor( uColor ) CLA
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -543,29 +543,29 @@ HB_FUNC_STATIC( TEDITRICH_FONTCOLOR )          /* METHOD FontColor( uColor ) CLA
          memset( &Format, 0, sizeof( Format ) );
          Format.cbSize = sizeof( Format );
          Format.dwMask = CFM_COLOR;
-         Format.crTextColor = ( ( oSelf->lFontColor != -1 ) ? ( COLORREF ) oSelf->lFontColor : GetSysColor( COLOR_WINDOWTEXT ) );
+         Format.crTextColor = ( ( oSelf->lFontColor != -1 ) ? (COLORREF) oSelf->lFontColor : GetSysColor( COLOR_WINDOWTEXT ) );
 
-         SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, ( WPARAM ) SCF_ALL, ( LPARAM ) &Format );
+         SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_ALL, (LPARAM) &Format );
 
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 struct StreamInfo {
-   LONG lSize;
-   LONG lRead;
+   long lSize;
+   long lRead;
    char *cBuffer;
    struct StreamInfo *pNext;
 };
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
+DWORD CALLBACK EditStreamCallbackIn( DWORD_PTR dwCookie, LPBYTE pbBuff, long cb, long FAR *pcb )
 {
    struct StreamInfo *si;
-   LONG lMax;
+   long lMax;
 
    si = ( struct StreamInfo * ) dwCookie;
 
@@ -596,17 +596,17 @@ HB_FUNC( RICHSTREAMIN )          /* FUNCTION RichStreamIn( hWnd, cValue ) -> NIL
 
    si.lSize = hb_parclen( 2 );
    si.lRead = 0;
-   si.cBuffer = ( char * ) HB_UNCONST( hb_parc( 2 ) );
+   si.cBuffer = (char *) HB_UNCONST( hb_parc( 2 ) );
 
-   es.dwCookie = ( DWORD_PTR ) &si;
+   es.dwCookie = (DWORD_PTR) &si;
    es.dwError = 0;
    es.pfnCallback = ( EDITSTREAMCALLBACK ) EditStreamCallbackIn;
 
-   SendMessage( HWNDparam( 1 ), EM_STREAMIN, ( WPARAM ) iType, ( LPARAM ) &es );
+   SendMessage( HWNDparam( 1 ), EM_STREAMIN, (WPARAM) iType, (LPARAM) &es );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
+DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, long cb, long FAR *pcb )
 {
    struct StreamInfo *si;
 
@@ -618,7 +618,7 @@ DWORD CALLBACK EditStreamCallbackOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb
    }
    else
    {
-      // Locates next available block
+      /* Locates next available block */
       while( si->lSize != 0 )
       {
          if( si->pNext )
@@ -648,18 +648,18 @@ HB_FUNC( RICHSTREAMOUT )          /* FUNCTION RichStreamOut( hWnd ) -> NIL */
    int iType = SF_RTF;
    EDITSTREAM es;
    struct StreamInfo *si, *si2;
-   LONG lSize, lRead;
+   long lSize, lRead;
    char *cBuffer;
 
    si = (struct StreamInfo *) hb_xgrab( sizeof( struct StreamInfo ) );
    si->lSize = 0;
    si->pNext = NULL;
 
-   es.dwCookie = ( DWORD_PTR ) si;
+   es.dwCookie = (DWORD_PTR) si;
    es.dwError = 0;
    es.pfnCallback = ( EDITSTREAMCALLBACK ) EditStreamCallbackOut;
 
-   SendMessage( HWNDparam( 1 ), EM_STREAMOUT, ( WPARAM ) iType, ( LPARAM ) &es );
+   SendMessage( HWNDparam( 1 ), EM_STREAMOUT, (WPARAM) iType, (LPARAM) &es );
 
    lSize = si->lSize;
    si2 = si->pNext;
@@ -693,7 +693,7 @@ HB_FUNC( RICHSTREAMOUT )          /* FUNCTION RichStreamOut( hWnd ) -> NIL */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
+DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, long cb, long FAR *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
@@ -708,7 +708,7 @@ DWORD CALLBACK EditStreamCallbackFileIn( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG FAR *pcb )
+DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, long cb, long FAR *pcb )
 {
    HANDLE hFile = (HANDLE) dwCookie;
 
@@ -725,10 +725,10 @@ DWORD CALLBACK EditStreamCallbackFileOut( DWORD_PTR dwCookie, LPBYTE pbBuff, LON
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) -> lSuccess */
 {
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    HANDLE hFile;
    EDITSTREAM es;
-   LONG lFlag, lMode;
+   long lFlag, lMode;
 
    switch( hb_parni( 3 ) )
    {
@@ -780,12 +780,12 @@ HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) 
       hb_retl( FALSE );
    }
 
-   es.dwCookie = (DWORD) hFile;
+   es.dwCookie = (DWORD_PTR) hFile;
    es.dwError = 0;
    es.pfnCallback = (EDITSTREAMCALLBACK) EditStreamCallbackFileIn;
 
-   SendMessage( hwnd, (UINT) EM_STREAMIN, (WPARAM) lFlag, (LPARAM) &es );
-   SendMessage( hwnd, (UINT) EM_SETTEXTMODE, (WPARAM) lMode, 0 );
+   SendMessage( hWnd, (UINT) EM_STREAMIN, (WPARAM) lFlag, (LPARAM) &es );
+   SendMessage( hWnd, (UINT) EM_SETTEXTMODE, (WPARAM) lMode, 0 );
 
    CloseHandle( hFile );
 
@@ -802,10 +802,10 @@ HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( FILESTREAMOUT )          /* FUNCTION FileStreamOut( hWnd, cFile, nType ) -> lSuccess */
 {
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    HANDLE hFile;
    EDITSTREAM es;
-   LONG lFlag;
+   long lFlag;
 
    switch( hb_parni( 3 ) )
    {
@@ -850,11 +850,11 @@ HB_FUNC( FILESTREAMOUT )          /* FUNCTION FileStreamOut( hWnd, cFile, nType 
       hb_retl( FALSE );
    }
 
-   es.dwCookie = (DWORD) hFile;
+   es.dwCookie = (DWORD_PTR) hFile;
    es.dwError = 0;
    es.pfnCallback = (EDITSTREAMCALLBACK) EditStreamCallbackFileOut;
 
-   SendMessage( hwnd, EM_STREAMOUT, (WPARAM) lFlag, (LPARAM) &es );
+   SendMessage( hWnd, EM_STREAMOUT, (WPARAM) lFlag, (LPARAM) &es );
 
    CloseHandle( hFile );
 
@@ -874,9 +874,9 @@ HB_FUNC( FILESTREAMOUT )          /* FUNCTION FileStreamOut( hWnd, cFile, nType 
 HB_FUNC_STATIC( TEDITRICH_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditRich -> uRet */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -899,7 +899,7 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
@@ -953,7 +953,7 @@ HB_FUNC_STATIC( TEDITRICH_SETSELECTIONBACKCOLOR )          /* METHOD SetSelectio
    Format.dwMask = CFM_BACKCOLOR;
    Format.crBackColor = clrColor;
 
-   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, ( WPARAM ) SCF_SELECTION, ( LPARAM ) &Format );
+   SendMessage( oSelf->hWnd, EM_SETCHARFORMAT, (WPARAM) SCF_SELECTION, (LPARAM) &Format );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -962,7 +962,7 @@ HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )          /* METHOD HideSelection( lHid
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
-   SendMessage( oSelf->hWnd, EM_HIDESELECTION, ( WPARAM ) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
+   SendMessage( oSelf->hWnd, EM_HIDESELECTION, (WPARAM) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -975,15 +975,15 @@ HB_FUNC( RICHEDIT_GETSELTEXT )          /* FUNCTION RichEdit_GetSelText( hWnd ) 
    gtl.flags = GTL_USECRLF | GTL_PRECISE | GTL_NUMCHARS;
    gtl.codepage = CP_ACP;
 
-   gte.cb = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, ( WPARAM ) &gtl, 0 ) + 1;
+   gte.cb = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, (WPARAM) &gtl, 0 ) + 1;
    gte.flags = GT_SELECTION | GT_USECRLF;
    gte.codepage = CP_ACP;
    gte.lpDefaultChar = NULL;
    gte.lpUsedDefChar = NULL;
 
-   cBuffer = ( char * ) hb_xgrab( gte.cb );
+   cBuffer = (char *) hb_xgrab( gte.cb );
 
-   SendMessage( HWNDparam( 1 ), EM_GETSELTEXT, 0, ( LPARAM ) cBuffer );
+   SendMessage( HWNDparam( 1 ), EM_GETSELTEXT, 0, (LPARAM) cBuffer );
 
    hb_retc( cBuffer );
    hb_xfree( cBuffer );
@@ -999,19 +999,19 @@ HB_FUNC_STATIC( TEDITRICH_GETCHARFROMPOS )          /* METHOD GetCharFromPos( nR
    pnt.x = hb_parni( 2 );
    pnt.y = hb_parni( 1 );
 
-   hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, ( LPARAM ) &pnt ) );        // zero-based index
+   hb_retni( SendMessage( oSelf->hWnd, EM_CHARFROMPOS, 0, (LPARAM) &pnt ) );        /* zero-based index */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETFONTRTF )          /* FUNCTION GetFontRTF( hWnd, nSel ) -> { cFontName, nFontSize, lBold, lItalic, nTextColor, lUnderline, lStrikeout, nCharset } */
 {
    CHARFORMAT  cF;
-   LONG        PointSize;
-   INT         bold;
-   INT         Italic;
-   INT         Underline;
-   INT         StrikeOut;
-   INT         SelText;
+   long        PointSize;
+   int         bold;
+   int         Italic;
+   int         Underline;
+   int         StrikeOut;
+   int         SelText;
    HWND        hWnd = HWNDparam( 1 );
 
    cF.cbSize = sizeof( CHARFORMAT );
@@ -1025,7 +1025,7 @@ HB_FUNC( GETFONTRTF )          /* FUNCTION GetFontRTF( hWnd, nSel ) -> { cFontNa
       SelText = SCF_DEFAULT;
    }
 
-   SendMessage( hWnd, EM_GETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
+   SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
 
    PointSize = cF.yHeight / 20;
 
@@ -1036,10 +1036,10 @@ HB_FUNC( GETFONTRTF )          /* FUNCTION GetFontRTF( hWnd, nSel ) -> { cFontNa
 
    hb_reta( 8 );
    HB_STORC( cF.szFaceName, -1, 1 );
-   HB_STORNL3( ( LONG ) PointSize, -1, 2 );
+   HB_STORNL3( (long) PointSize, -1, 2 );
    HB_STORL( bold, -1, 3 );
    HB_STORL( Italic, -1, 4 );
-   HB_STORNL3( ( LONG ) cF.crTextColor, -1, 5 );
+   HB_STORNL3( (long) cF.crTextColor, -1, 5 );
    HB_STORL( Underline, -1, 6 );
    HB_STORL( StrikeOut, -1, 7 );
    HB_STORNI( cF.bCharSet, -1, 8 );
@@ -1061,7 +1061,7 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
    HWND        hWnd = HWNDparam( 1 );
 
    cF.cbSize = sizeof( CHARFORMAT );
-   Mask = SendMessage( hWnd, EM_GETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
+   Mask = SendMessage( hWnd, EM_GETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
 
    if( hb_parni( 10 ) > 0 )
    {
@@ -1112,7 +1112,7 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
       lstrcpy( cF.szFaceName, hb_parc( 3 ) );
    }
 
-   lResult = SendMessage( hWnd, EM_SETCHARFORMAT, ( WPARAM ) SelText, ( LPARAM ) &cF );
+   lResult = SendMessage( hWnd, EM_SETCHARFORMAT, (WPARAM) SelText, (LPARAM) &cF );
 
    if( lResult )
    {
@@ -1131,13 +1131,13 @@ HB_FUNC ( TEDITRICH_SETTEXT )         /* FUNCTION TEditRich_SetText( hWnd, lRepl
 
    ST.flags = ( hb_parl( 2 ) ? ST_SELECTION : ST_DEFAULT );
    ST.codepage = CP_ACP;
-   SendMessage ( HWNDparam( 1 ), EM_SETTEXTEX, ( WPARAM ) &ST, ( LPARAM ) hb_parc( 3 ) );
+   SendMessage ( HWNDparam( 1 ), EM_SETTEXTEX, (WPARAM) &ST, (LPARAM) HB_UNCONST( hb_parc( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TEDITRICH_SETOPTIONS )         /* FUNCTION TEditRich_SetOptions( hWnd, nNew ) ->  nOld */
 {
-   hb_retnl( SendMessage( HWNDparam( 1 ), EM_SETOPTIONS, ( WPARAM ) ECOOP_SET, ( LPARAM ) hb_parnl( 2 ) ) );   // See ECO_* defines
+   hb_retnl( SendMessage( HWNDparam( 1 ), EM_SETOPTIONS, (WPARAM) ECOOP_SET, (LPARAM) hb_parnl( 2 ) ) );   /* See ECO_* defines */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1157,14 +1157,14 @@ HB_FUNC( TEDITRICH_SETSELEX )         /* FUNCTION TEditRich_SetSelEx( hWnd, nSta
       cRange.cpMax = hb_parnl( 3 );
    }
 
-   SendMessage( HWNDparam( 1 ), EM_EXSETSEL, 0, ( LPARAM ) &cRange );
+   SendMessage( HWNDparam( 1 ), EM_EXSETSEL, 0, (LPARAM) &cRange );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TEDITRICH_SELECTIONTYPE )          /* FUNCTION TEditRich_SelectionType( hWnd ) -> nType */
 {
    LRESULT lResult;
-   int nMode = 0;
+   int nMode;
 
    lResult = SendMessage( HWNDparam( 1 ), EM_SELECTIONTYPE, 0, 0 );
 
