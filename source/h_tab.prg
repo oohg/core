@@ -1880,9 +1880,9 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TTabRaw_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TTabRaw_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -1891,7 +1891,7 @@ static WNDPROC _OOHG_TTabRaw_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1905,7 +1905,7 @@ HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, 
 {
    HWND hCtrl;
    TC_ITEM tie;
-   INT i, Style, StyleEx;
+   int i, Style, StyleEx;
    PHB_ITEM hArray;
 
    Style = WS_CHILD | hb_parni( 9 );
@@ -1923,13 +1923,13 @@ HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, 
 
    for( i = hb_parinfa( 7, 0 ); i > 0; i-- )
    {
-      tie.pszText = ( LPTSTR ) HB_UNCONST( hb_arrayGetCPtr( hArray, i ) );
+      tie.pszText = (LPTSTR) HB_UNCONST( hb_arrayGetCPtr( hArray, i ) );
       TabCtrl_InsertItem( hCtrl, 0, &tie );
    }
 
    TabCtrl_SetCurSel( hCtrl, hb_parni( 8 ) - 1 );
 
-   _OOHG_TTabRaw_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TTabRaw_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -1962,7 +1962,7 @@ HB_FUNC( TABCTRL_INSERTITEM )
 
    tie.mask = TCIF_TEXT;
    tie.iImage = -1;
-   tie.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
+   tie.pszText = (LPSTR) HB_UNCONST( hb_parc( 3 ) );
 
    TabCtrl_InsertItem( HWNDparam( 1 ), i, &tie );
 }
@@ -1979,7 +1979,7 @@ HB_FUNC( SETTABCAPTION )
    TC_ITEM tie;
 
    tie.mask = TCIF_TEXT ;
-   tie.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
+   tie.pszText = (LPSTR) HB_UNCONST( hb_parc( 3 ) );
 
    TabCtrl_SetItem( HWNDparam( 1 ), hb_parni( 2 ) - 1, &tie );
 }
@@ -1991,7 +1991,7 @@ HB_FUNC( GETTABCAPTION )
    char cBuffer[ 1025 ];
 
    tie.mask = TCIF_TEXT ;
-   tie.pszText = ( char * ) cBuffer;
+   tie.pszText = (char *) cBuffer;
    tie.cchTextMax = 1024;
 
    cBuffer[ 0 ] = 0;
