@@ -197,7 +197,7 @@ METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
 
 METHOD HBitMap( hBitMap, lNoRepaint ) CLASS TPicture
 
-   If ValType( hBitMap ) $ "NP"
+   If ValType( hBitmap ) $ "NP"
       DeleteObject( ::hImage )
       ::hImage := hBitMap
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
@@ -255,7 +255,7 @@ METHOD OnClick( bOnClick ) CLASS TPicture
 METHOD ToolTip( cToolTip ) CLASS TPicture
 
    If PCOUNT() > 0
-      TPicture_SetToolTip( Self,  ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
+      TPicture_SetToolTip( Self, ( ValType( cToolTip ) $ "CM" .AND. ! Empty( cToolTip ) ) .OR. HB_IsBlock( cToolTip ) )
       ::Super:ToolTip( cToolTip )
    EndIf
 
@@ -409,9 +409,9 @@ METHOD Copy( lAsDIB ) CLASS TPicture
 */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_PictureControl_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_PictureControl_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -420,7 +420,7 @@ static WNDPROC _OOHG_PictureControl_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -466,7 +466,7 @@ HB_FUNC( _OOHG_PICTURECONTROL_REGISTER )          /* FUNCTION _OOHG_PictureContr
 
       if( ! RegisterClass( &WndClass ) )
       {
-         hb_retni( ( int ) GetLastError() );
+         hb_retni( (int) GetLastError() );
       }
 
       bRegistered = TRUE;
@@ -484,7 +484,7 @@ HB_FUNC( INITPICTURECONTROL )
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_PICTURECONTROL", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_PictureControl_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_PictureControl_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -510,10 +510,10 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
       return;
    }
 
-   // NOTE: It affects RETURN value on stack!!!!!
+   /* NOTE: It affects RETURN value on stack!!!!! */
    _OOHG_Send( pSelf, s_AuxHandle );
    hb_vmSend( 0 );
-   hBmp = ( HBITMAP ) HWNDparam( -1 );
+   hBmp = (HBITMAP) HWNDparam( -1 );
    if( hBmp )
    {
       memset( &bm, 0, sizeof( bm ) );
@@ -547,7 +547,7 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
    hDCAux = CreateCompatibleDC( hdc );
    if( hBmp )
    {
-      hBmpOld = SelectObject( hDCAux, hBmp );
+      hBmpOld = (HBITMAP) SelectObject( hDCAux, hBmp );
    }
 
    SetStretchBltMode( hdc, COLORONCOLOR );
@@ -650,12 +650,12 @@ void _OOHG_PictureControl_RePaint( PHB_ITEM pSelf, RECT * rect, HDC hdc )
 
 BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y );
 
-HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TPicture
+HB_FUNC_STATIC( TPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TPicture */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
@@ -665,7 +665,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          {
             RECT rect;
             GetClientRect( hWnd, &rect );
-            _OOHG_PictureControl_RePaint( pSelf, &rect, ( HDC ) wParam );
+            _OOHG_PictureControl_RePaint( pSelf, &rect, (HDC) wParam );
             hb_retni( 1 );
          }
          break;
@@ -688,7 +688,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
                   _OOHG_PictureControl_RePaint( pSelf, &rect, hdc );
                }
                EndPaint( hWnd, &ps );
-               hb_retni( 0 );                 // TODO: Check if retval is OK or must be 1
+               hb_retni( 0 );                 /* TODO: Check if retval is OK or must be 1 */
             }
          }
          break;
@@ -709,7 +709,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             }
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
-            switch( LOWORD( wParam ) )
+            switch( LOWORD( wParam  ) )
             {
                case SB_LINERIGHT:
                   iNewPos += _ScrollSkip;
@@ -736,13 +736,15 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
                   break;
 
                case SB_THUMBPOSITION:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
                case SB_THUMBTRACK:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
+               default:
+                  break;
             }
             iNewPos = ( iNewPos > ScrollInfo.nMax ) ? ScrollInfo.nMax : iNewPos;
             iNewPos = ( iNewPos < ScrollInfo.nMin ) ? ScrollInfo.nMin : iNewPos;
@@ -774,7 +776,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             }
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
-            switch( LOWORD( wParam ) )
+            switch( LOWORD( wParam  ) )
             {
                case SB_LINEDOWN:
                   iNewPos += _ScrollSkip;
@@ -801,13 +803,15 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
                   break;
 
                case SB_THUMBPOSITION:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
                case SB_THUMBTRACK:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
+               default:
+                  break;
             }
             iNewPos = ( iNewPos > ScrollInfo.nMax ) ? ScrollInfo.nMax : iNewPos;
             iNewPos = ( iNewPos < ScrollInfo.nMin ) ? ScrollInfo.nMin : iNewPos;
@@ -826,7 +830,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
       case WM_MOUSEWHEEL:
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
+            hb_vmPushLong( ( GET_WHEEL_DELTA_WPARAM( wParam  ) > 0 ) ? SB_LINEUP : SB_LINEDOWN );
             hb_vmSend( 1 );
             hb_ret();
          }
@@ -834,7 +838,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
 
       case WM_LBUTTONUP:
          {
-            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), (LPARAM) hWnd );
          }
          break;
 
@@ -874,7 +878,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
             _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
             HWNDpush( hWnd );
             hb_vmPushLong( message );
-            hb_vmPushNumInt( wParam );
+            hb_vmPushNumInt( wParam  );
             hb_vmPushNumInt( lParam );
             hb_vmSend( 4 );
          }
@@ -915,40 +919,39 @@ HB_FUNC_STATIC( TPICTURE_REDRAW )
    hb_ret();
 }
 
-HB_FUNC( TPICTURE_SETNOTIFY )   // ( oSelf, lHit )
+HB_FUNC( TPICTURE_SETNOTIFY )          /* FUNCTION TPicture_SetNotify( oSelf, lHit ) -> NIL */
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    oSelf->lAux[ 0 ] = ( hb_parl( 2 ) || ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & ( WS_HSCROLL | WS_VSCROLL ) ) );
-   hb_ret();
 }
 
-HB_FUNC( TPICTURE_SETTOOLTIP )   // ( oSelf, lShow )
+HB_FUNC( TPICTURE_SETTOOLTIP )          /* FUNCTION TPicture_SetToolTip( oSelf, lShow ) -> NIL */
 {
    PHB_ITEM pSelf = hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    oSelf->lAux[ 2 ] = hb_parl( 2 );
-   hb_ret();
 }
 
-HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
+HB_FUNC( SCROLLS )          /* FUNCTION Scrolls( hWnd, nWidth, nHeight )-> lChanged */
 {
    HWND hWnd;
    LONG_PTR lStyle, lOldStyle;
    int iWidth, iHeight, iClientWidth, iClientHeight;
    int iScrollWidth, iScrollHeight;
    int iRangeHorz, iRangeVert, iPosHorz, iPosVert, iPageHorz, iPageVert;
-   int bChanged, iRange, iPos;
+   BOOL bChanged = FALSE;
+   int iRange, iPos;
    RECT rect;
    SCROLLINFO ScrollInfo;
 
-   // Can it be processed?
+   /* Can it be processed? */
    hWnd = HWNDparam( 1 );
    if( ! ValidHandler( hWnd ) )
    {
-      hb_retl( 0 );
+      hb_retl( FALSE );
       return;
    }
 
@@ -962,11 +965,10 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    iClientWidth  = rect.right  - rect.left + ( ( lStyle & WS_VSCROLL ) ? iScrollWidth  : 0 );
    iClientHeight = rect.bottom - rect.top  + ( ( lStyle & WS_HSCROLL ) ? iScrollHeight : 0 );
 
-   bChanged = 0;
    if( iWidth > iClientWidth )
    {
       iClientHeight -= iScrollHeight;
-      bChanged = 1;
+      bChanged = TRUE;
    }
    if( iHeight > iClientHeight )
    {
@@ -995,7 +997,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
       iPageVert  = ScrollInfo.nPage;
    }
 
-   bChanged = 0;
+   bChanged = FALSE;
    lStyle = lStyle & ( ~ ( WS_HSCROLL | WS_VSCROLL ) );
 
    iRange = iPos = 0;
@@ -1008,7 +1010,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    }
    if( iRange != iRangeHorz || iPos != iPosHorz || iClientWidth != iPageHorz )
    {
-      bChanged = 1;
+      bChanged = TRUE;
    }
    iRangeHorz = iRange;
    iPosHorz   = iPos;
@@ -1023,7 +1025,7 @@ HB_FUNC( SCROLLS )   // ( hWnd, nWidth, nHeight )
    }
    if( iRange != iRangeVert || iPos != iPosVert || iClientHeight != iPageVert )
    {
-      bChanged = 1;
+      bChanged = TRUE;
    }
    iRangeVert = iRange;
    iPosVert   = iPos;
