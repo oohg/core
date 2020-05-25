@@ -1822,13 +1822,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          RETURN 0
       ELSEIF Empty( ::cText )
          ::uIniTime := hb_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ELSEIF hb_MilliSeconds() > ::uIniTime + ::SearchLapse
          ::uIniTime := hb_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ELSE
          ::uIniTime := hb_MilliSeconds()
-         ::cText += Upper( Chr( wParam ) )
+         ::cText += Upper( Chr( wParam  ) )
       ENDIF
 
       IF ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
@@ -2581,13 +2581,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
          RETURN 0
       ELSEIF Empty( ::cText )
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ELSEIF HB_MilliSeconds() > ::uIniTime + ::SearchLapse
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ELSE
          ::uIniTime := HB_MilliSeconds()
-         ::cText += Upper( Chr( wParam ) )
+         ::cText += Upper( Chr( wParam  ) )
       ENDIF
 
       IF ::SearchCol < 1 .OR. ::SearchCol > ::ColumnCount
