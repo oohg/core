@@ -163,8 +163,8 @@ METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nA
 
 typedef struct {
    BYTE character;
-   LONG FontColor;
-   LONG BackColor;
+   long FontColor;
+   long BackColor;
 } CHARCELL, *PCHARCELL;
 
 /*
@@ -193,9 +193,9 @@ typedef struct {
 #define LO_HI_AUX( _Lo, _Hi, _Aux )       if( _Lo > _Hi ) { _Aux = _Hi; _Hi = _Lo; _Lo = _Aux; }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TTextArray_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TTextArray_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -204,7 +204,7 @@ static WNDPROC _OOHG_TTextArray_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -250,7 +250,7 @@ HB_FUNC( _OOHG_TTEXTARRAY_REGISTER )          /* FUNCTION _OOHG_TTextArray_Regis
 
       if( ! RegisterClass( &WndClass ) )
       {
-         hb_retni( ( int ) GetLastError() );
+         hb_retni( (int) GetLastError() );
       }
 
       bRegistered = TRUE;
@@ -268,7 +268,7 @@ HB_FUNC( INITTEXTARRAY )          /* FUNCTION InitTextArray( hWnd, nCol, nRow, n
    HWND hCtrl = CreateWindowEx( StyleEx, "_OOHG_TTEXTARRAY", "", Style, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
                                 hb_parni( 5 ), HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTextArray_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TTextArray_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -288,12 +288,12 @@ static void TTextArray_Empty( PCHARCELL pCell, POCTRL oSelf )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static void FillClear( RECT *rect, HDC hdc, LONG lColor )
+static void FillClear( RECT *rect, HDC hdc, long lColor )
 {
    COLORREF OldColor;
 
    OldColor = SetBkColor( hdc, lColor );
-   // Transparent?
+   /* Transparent? */
    ExtTextOut( hdc, 0, 0, ETO_CLIPPED | ETO_OPAQUE, rect, "", 0, NULL );
    SetBkColor( hdc, OldColor );
 }
@@ -306,8 +306,9 @@ static void RePaint_Out( HDC hdc, PCHARCELL pCell, RECT *rect2, char *cText, int
       cText[ iTextIndex ] = 0;
       SetTextColor( hdc, ( ( pCell->FontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) pCell->FontColor ) );
       SetBkColor( hdc, ( ( pCell->BackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) pCell->BackColor ) );
-      // Transparent?
-      // Any different font??
+      /* Transparent?
+       * Any different font??
+       */
       ExtTextOut( hdc, rect2->left, rect2->top, ETO_CLIPPED | ETO_OPAQUE, rect2, cText, iTextIndex, NULL );
    }
 }
@@ -317,7 +318,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
 {
    CHARCELL    sNull, *pCell, xCell = {0,0,0};
    COLORREF    FontColor, BackColor;
-   LONG        x, y, lCell, lMaxCell, lStartX, lStartY;
+   long        x, y, lCell, lMaxCell, lStartX, lStartY;
    HFONT       hOldFont;
    RECT        rect2, ClientRect, updateRect2;
    HDC         hdc;
@@ -341,7 +342,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
 
    FontColor = SetTextColor( hdc, sNull.FontColor );
    BackColor = SetBkColor( hdc, sNull.BackColor );
-   SetTextAlign( hdc, TA_LEFT );  // TA_CENTER
+   SetTextAlign( hdc, TA_LEFT );  /* TA_CENTER */
 
    if( ! oSelf->AuxBuffer )
    {
@@ -355,7 +356,7 @@ static void RePaint( POCTRL oSelf, HDC hdc2, RECT *updateRect )
       GetClientRect( oSelf->hWnd, &ClientRect );
       lStartY = - ClientRect.top  + GetScrollPos( oSelf->hWnd, SB_VERT );
       lStartX = - ClientRect.left + GetScrollPos( oSelf->hWnd, SB_HORZ );
-      hOldFont = ( HFONT ) SelectObject( hdc, oSelf->hFontHandle );
+      hOldFont = (HFONT) SelectObject( hdc, oSelf->hFontHandle );
       lMaxCell = oSelf->AuxBufferLen / sizeof( CHARCELL );
       y = ( updateRect->top + lStartY ) / SELF_TEXTHEIGHT( oSelf );
       if( y < 0 )
@@ -483,7 +484,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
          ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
          GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo );
-         if( ( LONG ) ScrollInfo.nPage != ( rect.right - rect.left ) || ScrollInfo.nMax != ( SELF_COLCOUNT( oSelf ) * SELF_TEXTWIDTH( oSelf ) ) - 1 )
+         if( (long) ScrollInfo.nPage != ( rect.right - rect.left ) || ScrollInfo.nMax != ( SELF_COLCOUNT( oSelf ) * SELF_TEXTWIDTH( oSelf ) ) - 1 )
          {
             iPos = ScrollInfo.nPos;
             ScrollInfo.fMask = SIF_PAGE | SIF_RANGE;
@@ -504,7 +505,7 @@ static void Redraw( POCTRL oSelf, int iCol1, int iRow1, int iCol2, int iRow2 )
          ScrollInfo.cbSize = sizeof( SCROLLINFO );
          ScrollInfo.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_TRACKPOS;
          GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo );
-         if( ( LONG ) ScrollInfo.nPage != ( rect.bottom - rect.top ) || ScrollInfo.nMax != ( SELF_ROWCOUNT( oSelf ) * SELF_TEXTHEIGHT( oSelf ) ) - 1 )
+         if( (long) ScrollInfo.nPage != ( rect.bottom - rect.top ) || ScrollInfo.nMax != ( SELF_ROWCOUNT( oSelf ) * SELF_TEXTHEIGHT( oSelf ) ) - 1 )
          {
             iPos = ScrollInfo.nPos;
             ScrollInfo.fMask = SIF_PAGE | SIF_RANGE;
@@ -572,12 +573,15 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
       rect3.right  = rect2.right;
       switch( SELF_CURSORTYPE( oSelf ) )
       {
-         case 2:   // Bottom line
+         case 2:   /* Bottom line */
             rect3.top = rect2.top + ( ( SELF_TEXTHEIGHT( oSelf ) * 3 ) / 4 );
             break;
 
-         case 3:   // Left line
+         case 3:   /* Left line */
             rect3.right  = rect2.left + ( SELF_TEXTWIDTH( oSelf ) / 4 );
+            break;
+
+         default:
             break;
       }
       if( ! ( rect3.right <= rect.left || rect3.left >= rect.right ||
@@ -600,8 +604,8 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
             FontColor = SetTextColor( hDC, pCell->FontColor );
             BackColor = SetBkColor( hDC, pCell->BackColor );
          }
-         SetTextAlign( hDC, TA_LEFT );  // TA_CENTER
-         ExtTextOut( hDC, rect2.left, rect2.top, ETO_CLIPPED | ETO_OPAQUE, &rect3, ( char * ) &( pCell->character ), 1, NULL );
+         SetTextAlign( hDC, TA_LEFT );  /* TA_CENTER */
+         ExtTextOut( hDC, rect2.left, rect2.top, ETO_CLIPPED | ETO_OPAQUE, &rect3, (char *) &( pCell->character ), 1, NULL );
          SetTextColor( hDC, FontColor );
          SetBkColor( hDC, BackColor );
          if( hFont )
@@ -617,9 +621,9 @@ static void DrawCursor( POCTRL oSelf, BOOL bStatus )
 HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTextArray -> uRetVal */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
@@ -655,7 +659,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
             GetScrollInfo( oSelf->hWnd, SB_HORZ, &ScrollInfo );
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
-            switch( LOWORD( wParam ) )
+            switch( LOWORD( wParam  ) )
             {
                case SB_LINERIGHT:
                   if( iNewPos < ScrollInfo.nMax )
@@ -674,14 +678,14 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
                case SB_PAGELEFT:
                   if( iNewPos > ScrollInfo.nMin )
                   {
-                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
+                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < (int) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
                case SB_PAGERIGHT:
                   if( iNewPos < ScrollInfo.nMax )
                   {
-                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
+                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < (int) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
@@ -694,13 +698,15 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
                   break;
 
                case SB_THUMBPOSITION:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
                case SB_THUMBTRACK:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
+               default:
+                  break;
             }
             if( iOldPos != iNewPos && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
             {
@@ -721,7 +727,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
             GetScrollInfo( oSelf->hWnd, SB_VERT, &ScrollInfo );
             iOldPos = ScrollInfo.nPos;
             iNewPos = ScrollInfo.nPos;
-            switch( LOWORD( wParam ) )
+            switch( LOWORD( wParam  ) )
             {
                case SB_LINEDOWN:
                   if( iNewPos < ScrollInfo.nMax )
@@ -740,14 +746,14 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
                case SB_PAGEUP:
                   if( iNewPos > ScrollInfo.nMin )
                   {
-                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < ( int ) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
+                     iNewPos -= ( ( ( iNewPos - ScrollInfo.nMin ) < (int) ScrollInfo.nPage ) ? ( iNewPos - ScrollInfo.nMin ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
                case SB_PAGEDOWN:
                   if( iNewPos < ScrollInfo.nMax )
                   {
-                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < ( int ) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
+                     iNewPos += ( ( ( ScrollInfo.nMax - iNewPos ) < (int) ScrollInfo.nPage ) ? ( ScrollInfo.nMax - iNewPos ) : (int) ScrollInfo.nPage );
                   }
                   break;
 
@@ -760,13 +766,15 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
                   break;
 
                case SB_THUMBPOSITION:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
                case SB_THUMBTRACK:
-                  iNewPos = HIWORD( wParam );
+                  iNewPos = HIWORD( wParam  );
                   break;
 
+               default:
+                  break;
             }
             if( iOldPos != iNewPos && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
             {
@@ -782,7 +790,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
          hb_vmSend( 0 );
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
          hb_vmSend( 0 );
-         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam ), ( WORD ) EN_SETFOCUS ), ( LPARAM ) hWnd );
+         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam  ), (WORD) EN_SETFOCUS ), (LPARAM) hWnd );
          hb_ret();
          break;
 
@@ -791,13 +799,13 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
          hb_vmSend( 0 );
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_hWnd );
          hb_vmSend( 0 );
-         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam ), ( WORD ) EN_KILLFOCUS ), ( LPARAM ) hWnd );
+         PostMessage( GetParent( hWnd ), WM_COMMAND, MAKEWPARAM( LOWORD( wParam  ), (WORD) EN_KILLFOCUS ), (LPARAM) hWnd );
          hb_ret();
          break;
 
       case WM_LBUTTONUP:
          {
-            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), ( LPARAM ) hWnd );
+            SendMessage( GetParent( hWnd ), WM_COMMAND, MAKEWORD( STN_CLICKED, 0 ), (LPARAM) hWnd );
          }
          break;
 
@@ -807,7 +815,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
@@ -857,7 +865,7 @@ HB_FUNC_STATIC( TTEXTARRAY_MAXCHARS )          /* FUNCTION TTextArray_SetFontSiz
       oSelf = _OOHG_GetControlInfo( pSelf );
       GetClientRect( oSelf->hWnd, &rect );
 
-      if( hb_parni( 2 ) )   // == 1
+      if( hb_parni( 2 ) )   /* == 1 */
       {
          iRet = ( rect.right - rect.left ) / SELF_TEXTWIDTH( oSelf );
       }
@@ -1189,7 +1197,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )          /* METHOD Write( cText, nCol, nRow, 
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    BYTE *pBuffer, cByte;
    ULONG lBuffer;
-   LONG lFontColor, lBackColor, lAuxColor;
+   long lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
    RECT rect;
 
@@ -1217,7 +1225,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITE )          /* METHOD Write( cText, nCol, nRow, 
 
    if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      pBuffer = ( BYTE * ) HB_UNCONST( hb_parc( 1 ) );
+      pBuffer = (BYTE *) HB_UNCONST( hb_parc( 1 ) );
       lBuffer = hb_parclen( 1 );
       while( lBuffer )
       {
@@ -1261,7 +1269,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )          /* METHOD WriteRaw( cText, nCol, 
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    BYTE *pBuffer;
    ULONG lBuffer;
-   LONG lFontColor, lBackColor, lAuxColor;
+   long lFontColor, lBackColor, lAuxColor;
    int iRow, iCol;
    RECT rect;
 
@@ -1289,7 +1297,7 @@ HB_FUNC_STATIC( TTEXTARRAY_WRITERAW )          /* METHOD WriteRaw( cText, nCol, 
 
    if( HB_ISCHAR( 1 ) && oSelf->AuxBuffer && SELF_COLCOUNT( oSelf ) && SELF_ROWCOUNT( oSelf ) )
    {
-      pBuffer = ( BYTE * ) HB_UNCONST( hb_parc( 1 ) );
+      pBuffer = (BYTE *) HB_UNCONST( hb_parc( 1 ) );
       lBuffer = hb_parclen( 1 );
       while( lBuffer )
       {
