@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -2111,7 +2111,7 @@ METHOD IsItemValid( Item ) CLASS TTree
    If ::ItemIds
       lRet := aScan( ::aTreeIdMap, Item ) # 0
    Else
-      lRet := HB_IsNumeric( Item ) .AND. Item == INT( Item ) .AND. Item >= 1 .AND. Item <= len( ::aTreeMap )
+      lRet := HB_IsNumeric( Item ) .AND. Item == Int( Item ) .AND. Item >= 1 .AND. Item <= len( ::aTreeMap )
    EndIf
 
    Return lRet
@@ -2317,13 +2317,13 @@ METHOD Release() CLASS TTree
 #include "tchar.h"
 #include <olectl.h>
 
-#define HTREEparam( x )     ( HTREEITEM ) HWNDparam( ( x ) )
-#define HTREEret( x )       HWNDret( ( HWND ) ( x ) )
+#define HTREEparam( x )     (HTREEITEM) HWNDparam( ( x ) )
+#define HTREEret( x )       HWNDret( (HWND) ( x ) )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TTree_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TTree_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -2332,7 +2332,7 @@ static WNDPROC _OOHG_TTree_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2345,7 +2345,7 @@ static LRESULT APIENTRY SubClassFuncB( HWND hWnd, UINT msg, WPARAM wParam, LPARA
 HB_FUNC( INITTREE )          /* FUNCTION InitTree( hWnd, nCol, nRow, nWidth, nHeight, nStyle, lRtl, lChkBox, lBorder ) -> hWnd */
 {
    HWND hWndTV;
-   INT Style, StyleEx;
+   int Style, StyleEx;
    LONG_PTR CurStyle;
    INITCOMMONCONTROLSEX i;
 
@@ -2364,7 +2364,7 @@ HB_FUNC( INITTREE )          /* FUNCTION InitTree( hWnd, nCol, nRow, nWidth, nHe
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hWndTV, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TTree_lpfnOldWndProc( SetWindowLongPtr( hWndTV, GWLP_WNDPROC, (LONG_PTR) SubClassFuncB ) );
 
    if( hb_parl( 8 ) )
    {
@@ -2376,7 +2376,7 @@ HB_FUNC( INITTREE )          /* FUNCTION InitTree( hWnd, nCol, nRow, nWidth, nHe
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( ADDTREEITEM )          /* FUNCTION AddTreeItem( hwnd, 0, cValue, nUnSelImg, nSelImg, nId ) -> hWnd */
+HB_FUNC( ADDTREEITEM )          /* FUNCTION AddTreeItem( hWnd, 0, cValue, nUnSelImg, nSelImg, nId ) -> hWnd */
 
 {
    HWND hWndTV = HWNDparam( 1 );
@@ -2385,7 +2385,7 @@ HB_FUNC( ADDTREEITEM )          /* FUNCTION AddTreeItem( hwnd, 0, cValue, nUnSel
    TV_INSERTSTRUCT is;
 
    tvi.mask           = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
-   tvi.pszText        = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
+   tvi.pszText        = (LPSTR) HB_UNCONST( hb_parc( 3 ) );
    tvi.cchTextMax     = 1024;
    tvi.iImage         = hb_parni( 4 );
    tvi.iSelectedImage = hb_parni( 5 );
@@ -2599,7 +2599,7 @@ HB_FUNC( TREEVIEW_SETINDENT )          /* FUNCTION TreeView_SetIndent( hWnd, nIn
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_GETKEYDOWN )          /* FUNCTION TreeView_GetKeyDown( lParam ) -> nKey */
 {
-   LPNMLVKEYDOWN ptvkd = ( LPNMLVKEYDOWN ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMLVKEYDOWN ptvkd = (LPNMLVKEYDOWN) (LPARAM) HB_PARNL( 1 );
 
    hb_retni( ptvkd->wVKey );
 }
@@ -2607,7 +2607,7 @@ HB_FUNC( TREEVIEW_GETKEYDOWN )          /* FUNCTION TreeView_GetKeyDown( lParam 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_LABELVALUE )          /* FUNCTION TreeView_LabelValue( lParam ) -> cText */
 {
-   LPNMTVDISPINFO lptvdi = ( LPNMTVDISPINFO ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMTVDISPINFO lptvdi = (LPNMTVDISPINFO) (LPARAM) HB_PARNL( 1 );
 
    if( lptvdi->item.pszText )
       hb_retc( lptvdi->item.pszText );
@@ -2618,9 +2618,9 @@ HB_FUNC( TREEVIEW_LABELVALUE )          /* FUNCTION TreeView_LabelValue( lParam 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
 {
-   LPNMTVCUSTOMDRAW lptvcd = ( LPNMTVCUSTOMDRAW ) lParam;
+   LPNMTVCUSTOMDRAW lptvcd = (LPNMTVCUSTOMDRAW) lParam;
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lSelColor;
+   long lSelColor;
 
    /* stage 1: whole control */
    if( lptvcd->nmcd.dwDrawStage == CDDS_PREPAINT )
@@ -2634,27 +2634,27 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
       if( lOnDrag )
       {
          /* lptvcd->nmcd.dwItemSpec it's the handle of the item to draw */
-         if( ( HTREEITEM ) lptvcd->nmcd.dwItemSpec == TreeView_GetDropHilight( oSelf->hWnd ) )
+         if( (HTREEITEM) lptvcd->nmcd.dwItemSpec == TreeView_GetDropHilight( oSelf->hWnd ) )
          {
             /* get selected item's color */
             _OOHG_Send( pSelf, s_aSelColor );
             hb_vmSend( 0 );
 
-            lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lFontColor );
+            lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lFontColor );
 
             if( _OOHG_DetermineColor( hb_param( -1, HB_IT_ANY ), &lSelColor ) )
             {
-               lptvcd->clrTextBk = ( COLORREF ) lSelColor;
+               lptvcd->clrTextBk = (COLORREF) lSelColor;
             }
             else
             {
-               lptvcd->clrTextBk = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor );
+               lptvcd->clrTextBk = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
             }
          }
          else
          {
-            lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor );
-            lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lBackColor ) ;
+            lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
+            lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) ;
          }
       }
       else if( lptvcd->nmcd.uItemState & CDIS_SELECTED )
@@ -2663,21 +2663,21 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
          _OOHG_Send( pSelf, s_aSelColor );
          hb_vmSend( 0 );
 
-         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lFontColor );
+         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lFontColor );
 
          if( _OOHG_DetermineColor( hb_param( -1, HB_IT_ANY ), &lSelColor ) )
          {
-            lptvcd->clrTextBk = ( COLORREF ) lSelColor;
+            lptvcd->clrTextBk = (COLORREF) lSelColor;
          }
          else
          {
-            lptvcd->clrTextBk = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor );
+            lptvcd->clrTextBk = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
          }
       }
       else
       {
-         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor );
-         lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lBackColor ) ;
+         lptvcd->clrText = ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor );
+         lptvcd->clrTextBk = ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) ;
       }
       return CDRF_NEWFONT;
    }
@@ -2695,13 +2695,13 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_NOTIFY_CUSTOMDRAW )          /* FUNCTION TreeView_NotifyCustomDraw( Self, lParam, lHasDragFocus ) -> nRet */
 {
-   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) HB_PARNL( 2 ), hb_parl( 3 ) ) );
+   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_GETITEMHIT )          /* FUNCTION TreeView_GetItemHit( lParam ) -> hWnd */
 {
-   LPNMHDR lpnmh = ( LPNMHDR ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
    TVHITTESTINFO ht;
 
    DWORD dwpos = GetMessagePos();
@@ -2711,7 +2711,7 @@ HB_FUNC( TREEVIEW_GETITEMHIT )          /* FUNCTION TreeView_GetItemHit( lParam 
 
    MapWindowPoints( HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1 );
 
-   TreeView_HitTest( lpnmh->hwndFrom, &ht );
+   (void) TreeView_HitTest( lpnmh->hwndFrom, &ht );
 
    HTREEret( ht.hItem );
 }
@@ -2719,7 +2719,7 @@ HB_FUNC( TREEVIEW_GETITEMHIT )          /* FUNCTION TreeView_GetItemHit( lParam 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_HITISONSTATEICON )          /* FUNCTION TreeView_HitOnStateIcon( lParam ) -> lRet */
 {
-   LPNMHDR lpnmh = ( LPNMHDR ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
    TVHITTESTINFO ht;
    BOOL bRet;
 
@@ -2730,7 +2730,7 @@ HB_FUNC( TREEVIEW_HITISONSTATEICON )          /* FUNCTION TreeView_HitOnStateIco
 
    MapWindowPoints( HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1 );
 
-   TreeView_HitTest( lpnmh->hwndFrom, &ht );
+   (void) TreeView_HitTest( lpnmh->hwndFrom, &ht );
 
    if( ht.hItem )
    {
@@ -2814,7 +2814,7 @@ HB_FUNC( TREEVIEW_GETIMAGELIST )          /* FUNCTION TreeView_GetImageList( hWn
  * application-defined item states. A state image is displayed to the left
  * of an item's selected or nonselected image.
  */
-   HB_RETNL( ( LONG_PTR ) TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) );
+   HB_RETNL( (LONG_PTR) TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2826,7 +2826,7 @@ HB_FUNC( TREEVIEW_EDITLABEL )          /* FUNCTION TreeView_EditLabel( hWnd, hWn
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ENDEDITLABELNOW )          /* FUNCTION TreeView_EndEditLabelNow( hWnd, nList ) -> lSuccess */
 {
-   hb_retl( TreeView_EndEditLabelNow( HWNDparam( 1 ), ( WPARAM ) hb_parl( 2 ) ) );
+   hb_retl( TreeView_EndEditLabelNow( HWNDparam( 1 ), (WPARAM) hb_parl( 2 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2896,7 +2896,7 @@ HB_FUNC( TREEVIEW_GETEXPANDEDSTATE )          /* FUNCTION TreeView_GetExpandedSt
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ITEMEXPANDINGITEM )          /* FUNCTION TreeView_ItemExpandingItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = ( LPNMTREEVIEW ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
@@ -2904,7 +2904,7 @@ HB_FUNC( TREEVIEW_ITEMEXPANDINGITEM )          /* FUNCTION TreeView_ItemExpandin
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ITEMEXPANDINGACTION )          /* FUNCTION TreeView_ItemExpandingAction( lParam ) -> nAction */
 {
-   LPNMTREEVIEW lpnmtv = ( LPNMTREEVIEW ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    hb_retni( lpnmtv->action );
 }
@@ -2912,7 +2912,7 @@ HB_FUNC( TREEVIEW_ITEMEXPANDINGACTION )          /* FUNCTION TreeView_ItemExpand
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )          /* FUNCTION TreeView_PreviousSelectedItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = ( LPNMTREEVIEW ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    HTREEret( lpnmtv->itemOld.hItem );
 }
@@ -2920,7 +2920,7 @@ HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )          /* FUNCTION TreeView_PreviousS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )          /* FUNCTION TreeView_ActualSelectedItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = ( LPNMTREEVIEW ) ( LPARAM ) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
@@ -2929,7 +2929,7 @@ HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )          /* FUNCTION TreeView_ActualSelec
 HB_FUNC( TREEVIEW_BEGINDRAG )          /* FUNCTION TreeView_BeginDrag( hWnd, lParam ) -> hWnd */
 {
    HWND hTree = HWNDparam( 1 );
-   LPNMTREEVIEW lpnmtv = ( LPNMTREEVIEW ) ( LPARAM ) HB_PARNL( 2 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 2 );
    HIMAGELIST himl;
    HFONT oldFont, newFont;
    UINT iIndent;
@@ -2937,15 +2937,15 @@ HB_FUNC( TREEVIEW_BEGINDRAG )          /* FUNCTION TreeView_BeginDrag( hWnd, lPa
 
    /* needed in some XP systems to show text in the drag image */
    iIndent = TreeView_GetIndent( hTree );
-   oldFont = ( HFONT ) SendMessage( hTree, ( UINT ) WM_GETFONT, ( WPARAM ) 0, ( LPARAM ) 0 );
-   newFont = ( HFONT ) PrepareFont( "MS Sans Serif", 10, FW_NORMAL, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, FALSE );
-   SendMessage( hTree, ( UINT ) WM_SETFONT, ( WPARAM ) newFont, ( LPARAM ) 1 );
+   oldFont = (HFONT) SendMessage( hTree, (UINT) WM_GETFONT, (WPARAM) 0, (LPARAM) 0 );
+   newFont = (HFONT) PrepareFont( "MS Sans Serif", 10, FW_NORMAL, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, FALSE );
+   SendMessage( hTree, (UINT) WM_SETFONT, (WPARAM) newFont, (LPARAM) 1 );
 
    /* tell the treeview control to create an image to use for dragging */
    himl = TreeView_CreateDragImage( hTree, lpnmtv->itemNew.hItem );
 
    /* restore font and indentation */
-   SendMessage( hTree, ( UINT ) WM_SETFONT, ( WPARAM ) oldFont, 1 );
+   SendMessage( hTree, (UINT) WM_SETFONT, (WPARAM) oldFont, 1 );
    TreeView_SetIndent( hTree, iIndent );
    DeleteObject( newFont );
 
@@ -2966,7 +2966,7 @@ HB_FUNC( TREEVIEW_BEGINDRAG )          /* FUNCTION TreeView_BeginDrag( hWnd, lPa
       SetCapture( hTree );
    }
 
-   HB_RETNL( ( LONG_PTR ) himl );
+   HB_RETNL( (LONG_PTR) himl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -3042,7 +3042,7 @@ HB_FUNC( TREEVIEW_ONMOUSEDRAG )          /* FUNCTION TreeView_OnMouseDrag( hWnd,
 
             if( hb_parl( -1 ) )
             {
-               SetDragCursorARROW( ( ( ( WPARAM ) HB_PARNL( 4 ) & MK_CONTROL ) == MK_CONTROL ) );
+               SetDragCursorARROW( ( ( (WPARAM) HB_PARNL( 4 ) & MK_CONTROL ) == MK_CONTROL ) );
             }
             else
             {
@@ -3455,17 +3455,17 @@ HB_FUNC_STATIC( TTREE_BACKCOLOR )          /* METHOD BackColor( uColor ) -> aCol
       {
          if( oSelf->lBackColor != -1 )
          {
-            TreeView_SetBkColor( oSelf->hWnd, ( COLORREF ) oSelf->lBackColor );
+            (void) TreeView_SetBkColor( oSelf->hWnd, (COLORREF) oSelf->lBackColor );
          }
          else
          {
-            TreeView_SetBkColor( oSelf->hWnd, ( COLORREF ) GetSysColor( COLOR_WINDOW ) );
+            (void) TreeView_SetBkColor( oSelf->hWnd, (COLORREF) GetSysColor( COLOR_WINDOW ) );
          }
          RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 #pragma ENDDUMP
@@ -3519,9 +3519,9 @@ METHOD Release() CLASS TEditTree
 #pragma BEGINDUMP
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TEditTree_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TEditTree_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProcTE = 0;
+   static LONG_PTR lpfnOldWndProcTE = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcTE )
@@ -3530,7 +3530,7 @@ static WNDPROC _OOHG_TEditTree_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProcTE;
+   return (WNDPROC) lpfnOldWndProcTE;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -3541,25 +3541,25 @@ static LRESULT APIENTRY SubClassFuncTE( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITEDITTREE )          /* FUNCTION InitEditTree( hWnd ) -> NIL */
 {
-   _OOHG_TEditTree_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncTE ) );
+   _OOHG_TEditTree_lpfnOldWndProc( SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, (LONG_PTR) SubClassFuncTE ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_PROCESSEDITMSG )          /* FUNCTION TreeView_ProcessEditMsg( hWnd, nMsg ) -> nWanted */
 {
    HWND hWndTV = HWNDparam( 1 );
-   LPMSG msg = ( LPMSG ) ( LPARAM ) HB_PARNL( 2 );
+   LPMSG msg = (LPMSG) (LPARAM) HB_PARNL( 2 );
 
    if( msg && msg->message == WM_KEYDOWN )
    {
       if( msg->wParam == VK_ESCAPE )
       {
-         TreeView_EndEditLabelNow( hWndTV, ( WPARAM ) TRUE );
+         TreeView_EndEditLabelNow( hWndTV, (WPARAM) TRUE );
          hb_retni( DLGC_WANTMESSAGE );
       }
       else if( msg->wParam == VK_RETURN )
       {
-         TreeView_EndEditLabelNow( hWndTV, ( WPARAM ) FALSE );
+         TreeView_EndEditLabelNow( hWndTV, (WPARAM) FALSE );
          hb_retni( DLGC_WANTMESSAGE );
       }
       else
