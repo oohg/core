@@ -134,7 +134,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, LO, HI, value, tooltip, ;
 
    IF HB_IsNumeric ( uValue )
       SendMessage( ::hWnd, TBM_SETPOS, 1, uValue )
-      //// SendMessage( ::hwnd, WM_HSCROLL, TB_ENDTRACK,0)
+      //// SendMessage( ::hWnd, WM_HSCROLL, TB_ENDTRACK,0)
       ::DoChange()
    ENDIF
 
@@ -176,22 +176,22 @@ METHOD BackColor( uValue ) CLASS TSlider
 
    RETURN ::Super:BackColor
 
-METHOD Events_Hscroll ( wParam )   CLASS TSlider
+METHOD Events_Hscroll ( wParam  )   CLASS TSlider
 
-   IF loword( wParam ) == TB_ENDTRACK
+   IF loword( wParam  ) == TB_ENDTRACK
       ::DoChange()
    ELSE
-      Return ::Super:Events_HScroll( wParam )
+      Return ::Super:Events_HScroll( wParam  )
    ENDIF
 
    Return NIL
 
-METHOD Events_Vscroll ( wParam )   CLASS TSlider
+METHOD Events_Vscroll ( wParam  )   CLASS TSlider
 
-   IF loword( wParam ) == TB_ENDTRACK
+   IF loword( wParam  ) == TB_ENDTRACK
       ::DoChange()
    ELSE
-      Return ::Super:Events_VScroll( wParam )
+      Return ::Super:Events_VScroll( wParam  )
    ENDIF
 
    Return NIL
@@ -202,9 +202,9 @@ METHOD Events_Vscroll ( wParam )   CLASS TSlider
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TSlider_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TSlider_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -213,7 +213,7 @@ static WNDPROC _OOHG_TSlider_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -226,7 +226,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITSLIDER )          /* FUNCTION InitSlider( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nMin, nMax, nStyle, lRtl ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -242,7 +242,7 @@ HB_FUNC( INITSLIDER )          /* FUNCTION InitSlider( hWnd, hMenu, nCol, nRow, 
 
    SendMessage( hCtrl, TBM_SETRANGE, TRUE, MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
 
-   _OOHG_TSlider_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TSlider_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
