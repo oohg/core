@@ -280,9 +280,9 @@ METHOD BackColor( uValue ) CLASS TProgressBar
 #include "tchar.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TProgressBar_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TProgressBar_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -291,7 +291,7 @@ static WNDPROC _OOHG_TProgressBar_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -304,7 +304,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, nStyle, nCol, nRow, nWidth, nHeight, nMin, nMax, lVertical, lSmooth, lInvisible, nValue, lRtl ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -330,10 +330,10 @@ HB_FUNC( INITPROGRESSBAR )          /* FUNCTION InitProgressBar( ContainerhWnd, 
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   SendMessage( hCtrl, PBM_SETRANGE, 0, ( WPARAM ) MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
-   SendMessage( hCtrl, PBM_SETPOS, ( WPARAM ) hb_parni( 12 ), 0 );
+   SendMessage( hCtrl, PBM_SETRANGE, 0, (WPARAM) MAKELONG( hb_parni( 7 ), hb_parni( 8 ) ) );
+   SendMessage( hCtrl, PBM_SETPOS, (WPARAM) hb_parni( 12 ), 0 );
 
-   _OOHG_TProgressBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TProgressBar_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
