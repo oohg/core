@@ -228,14 +228,14 @@ METHOD Picture( cPicture ) CLASS TImage
    RETURN ::cPicture
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD HBitMap( hBitMap ) CLASS TImage
+METHOD HBitMap( hBitmap ) CLASS TImage
 
-   IF ValType( hBitMap ) $ "NP"
+   IF ValType( hBitmap ) $ "NP"
       DeleteObject( ::hImage )
       ::cPicture := ""
       ::cBuffer := ""
 
-      IF ValidHandler( hBitMap )
+      IF ValidHandler( hBitmap )
          ::hImage := hBitMap
          IF ::ImageSize
             ::nWidth  := _OOHG_BitMapWidth( ::hImage )
@@ -406,7 +406,7 @@ METHOD OnRDblClick( bOnRDblClick ) CLASS TImage
 METHOD ToolTip( uToolTip ) CLASS TImage
 
    IF PCount() > 0
-      TImage_SetToolTip( Self,  ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
+      TImage_SetToolTip( Self, ( ValType( uToolTip ) $ "CM" .AND. ! Empty( uToolTip ) ) .OR. HB_ISBLOCK( uToolTip ) )
       ::Super:ToolTip( uToolTip )
    ENDIF
 
@@ -588,9 +588,9 @@ METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
 #define s_Super s_TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TImage_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TImage_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -599,7 +599,7 @@ static WNDPROC _OOHG_TImage_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -612,7 +612,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITIMAGE )          /* FUNCTION InitImage( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl, nStyleEx ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
 
    Style = hb_parni( 7 ) | WS_CHILD | SS_BITMAP | SS_NOTIFY;
    StyleEx = hb_parni( 9 ) | _OOHG_RTL_Status( hb_parl( 8 ) );
@@ -621,7 +621,7 @@ HB_FUNC( INITIMAGE )          /* FUNCTION InitImage( hWnd, hMenu, nCol, nRow, nW
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
-   _OOHG_TImage_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TImage_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
