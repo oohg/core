@@ -444,9 +444,9 @@ FUNCTION RetDayState( Self, lParam )
 #include "tchar.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TMonthCal_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TMonthCal_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -455,7 +455,7 @@ static WNDPROC _OOHG_TMonthCal_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -468,7 +468,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITMONTHCAL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
    INITCOMMONCONTROLSEX i;
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -482,7 +482,7 @@ HB_FUNC( INITMONTHCAL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TMonthCal_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TMonthCal_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -558,7 +558,7 @@ HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lFontColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -568,15 +568,16 @@ HB_FUNC_STATIC( TMONTHCAL_FONTCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_TEXT, (COLORREF) oSelf->lFontColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_TEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -587,7 +588,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -597,15 +598,16 @@ HB_FUNC_STATIC( TMONTHCAL_BACKCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_MONTHBK, (COLORREF) oSelf->lBackColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_MONTHBK );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -616,7 +618,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -626,15 +628,16 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEFONTCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_TITLETEXT, (COLORREF) lColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLETEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -645,7 +648,7 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -655,15 +658,16 @@ HB_FUNC_STATIC( TMONTHCAL_TITLEBACKCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_TITLEBK, (COLORREF) lColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_TITLEBK );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -674,7 +678,7 @@ HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -684,15 +688,16 @@ HB_FUNC_STATIC( TMONTHCAL_TRAILINGFONTCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_TRAILINGTEXT, (COLORREF) lColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_TRAILINGTEXT );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -703,7 +708,7 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LONG lColor;
+   long lColor;
 
    if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &lColor, ( hb_pcount() >= 1 ) ) )
    {
@@ -713,15 +718,16 @@ HB_FUNC_STATIC( TMONTHCAL_BACKGROUNDCOLOR )
          {
             MonthCal_SetColor( oSelf->hWnd, MCSC_BACKGROUND, (COLORREF) lColor );
          }
-         // else
-         // {
-         //    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
-         // }
-         // RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+         /* else
+          * {
+          *    ListView_SetTextColor( oSelf->hWnd, GetSysColor( COLOR_WINDOWTEXT ) );
+          * }
+          * RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+          */
       }
    }
 
-   lColor = ( LONG ) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
+   lColor = (long) MonthCal_GetColor( oSelf->hWnd, MCSC_BACKGROUND );
    hb_reta( 3 );
    HB_STORNL3( GetRValue( lColor ), -1, 1 );
    HB_STORNL3( GetGValue( lColor ), -1, 2 );
@@ -839,7 +845,7 @@ HB_FUNC( GETMONTHCALRANGE )
 
 HB_FUNC( GETVIEWCHANGEDATA )
 {
-   LPNMVIEWCHANGE pData = (NMVIEWCHANGE *) hb_parnl( 1 );
+   LPNMVIEWCHANGE pData = (NMVIEWCHANGE *) HB_PARNL( 1 );
 
    hb_reta( 2 );
    HB_STORNI( (int) pData->dwOldView, -1, 1 );
@@ -868,7 +874,7 @@ HB_FUNC( C_SETDAYSTATE )
 {
    int i, j, iSize;
    LPMONTHDAYSTATE rgMonths;
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    int iCount = hb_parni( 2 );
    PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
 
@@ -887,7 +893,7 @@ HB_FUNC( C_SETDAYSTATE )
       }
    }
 
-   SendMessage( hwnd, MCM_SETDAYSTATE, (WPARAM) iCount, (LPARAM) rgMonths );
+   SendMessage( hWnd, MCM_SETDAYSTATE, (WPARAM) iCount, (LPARAM) rgMonths );
    hb_xfree( rgMonths );
 }
 
@@ -895,7 +901,7 @@ HB_FUNC( C_RETDAYSTATE )
 {
    int i, j, iSize;
    LPMONTHDAYSTATE rgMonths;
-   LPNMDAYSTATE pData = (NMDAYSTATE *) hb_parnl( 1 );
+   LPNMDAYSTATE pData = (NMDAYSTATE *) HB_PARNL( 1 );
    int iCount = hb_parni( 2 );
    PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
 
@@ -920,7 +926,7 @@ HB_FUNC( C_RETDAYSTATE )
 
 HB_FUNC( GETDAYSTATEDATA )
 {
-   LPNMDAYSTATE pData = (NMDAYSTATE *) hb_parnl( 1 );
+   LPNMDAYSTATE pData = (NMDAYSTATE *) HB_PARNL( 1 );
 
    hb_reta( 2 );
    HB_STORNI( (int) pData->cDayState, -1, 1 );
