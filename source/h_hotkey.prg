@@ -194,18 +194,16 @@ Function _DefineAccelerator( cParentForm, cKey, bAction )
    Return bCode
 
 
-EXTERN InitHotKey, ReleaseHotKey
-
 #pragma BEGINDUMP
 
 #include "oohg.h"
 
-HB_FUNC( INITHOTKEY )   // InitHotKey( hWnd, nMod, nKey, nHotKeyID )
+HB_FUNC( INITHOTKEY )          /* FUNCTION InitHotKey( hWnd, nMod, nKey, nHotKeyID ) -> lSuccess */
 {
    RegisterHotKey( HWNDparam( 1 ), hb_parni( 4 ), hb_parni( 2 ), hb_parni( 3 ) );
 }
 
-HB_FUNC( RELEASEHOTKEY )   // ReleaseHotKey( hWnd, nHotKeyID )
+HB_FUNC( RELEASEHOTKEY )          /* FUNCTION ReleaseHotKey( hWnd, nHotKeyID ) -> lSuccess */
 {
    UnregisterHotKey( HWNDparam( 1 ), hb_parni( 2 ) );
 }
