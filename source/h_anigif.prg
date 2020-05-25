@@ -274,6 +274,8 @@ METHOD ShowNextFrame() CLASS TAniGIF
 #include <hbapi.h>
 #include <windows.h>
 
+BOOL SaveResourceToFile( const char *, const char *, const char * );
+
 BOOL SaveResourceToFile( const char * res, const char * filename, const char * type )
 {
    HRSRC     hrsrc;
@@ -299,9 +301,8 @@ BOOL SaveResourceToFile( const char * res, const char * filename, const char * t
   return TRUE;
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SAVERESOURCETOFILE )
-//------------------------------------------------------------------------------
 {
    hb_retl( SaveResourceToFile( hb_parc( 1 ), hb_parc( 2 ), hb_parc( 3 ) ) );
 }
