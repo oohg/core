@@ -228,7 +228,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
                 ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-                ValidHandler( hBitMap ) ) .AND. ;
+                ValidHandler( hBitmap ) ) .AND. ;
               ( ! ValType( cCaption ) $ "CM" .OR. Empty( cCaption ) ) .AND. ;
               ::lNoImgLst
 
@@ -452,14 +452,14 @@ METHOD Picture( cPicture ) CLASS TButton
    RETURN ::cPicture
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD HBitMap( hBitMap ) CLASS TButton
+METHOD HBitMap( hBitmap ) CLASS TButton
 
-   IF ValType( hBitMap ) $ "NP"
+   IF ValType( hBitmap ) $ "NP"
       DeleteObject( ::hImage )
       ::cPicture := ""
       ::cBuffer := ""
 
-      IF ValidHandler( hBitMap )
+      IF ValidHandler( hBitmap )
          IF ::lNoDestroy
             ::hImage := _OOHG_CopyImage( hBitMap, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE )
          ELSE
@@ -642,9 +642,9 @@ enum {
 #define BUTTON_IMAGELIST_ALIGN_CENTER 4
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TButton_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TButton_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -653,7 +653,7 @@ static WNDPROC _OOHG_TButton_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -676,20 +676,20 @@ HB_FUNC( INITBUTTON )          /* FUNCTION InitButton( hWnd, cCaption, hMenu, nC
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TButton_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hbutton, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TButton_lpfnOldWndProc( SetWindowLongPtr( hbutton, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hbutton );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> NIL */
+HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP(HWND) -> NIL */
 {
    HIMAGELIST himl;
    BUTTON_IMAGELIST bi ;
    HWND hWnd = HWNDparam( 1 );
 
    memset( &bi, 0, sizeof( bi ) );
-   SendMessage( hWnd, BCM_GETIMAGELIST, 0, ( LPARAM ) &bi );
+   SendMessage( hWnd, BCM_GETIMAGELIST, 0, (LPARAM) &bi );
    himl = bi.himl;
    if( himl )
    {
@@ -697,14 +697,14 @@ HB_FUNC( CLEARIMAGEXP )          /* FUNCTION ClearImageXP( hWnd ) -> NIL */
 
       memset( &bi, 0, sizeof( bi ) );
       bi.himl = ( HIMAGELIST ) ( -1 ) ;
-      SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
+      SendMessage( hWnd, BCM_SETIMAGELIST, 0, (LPARAM) &bi );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlign, uBackcolor, { nTop, nLeft, nBottom, nRight }, lStretch, lAutoFit, lFitImg, lImageSize ) -> NIL */
 {
-   HIMAGELIST himl = 0;
+   HIMAGELIST himl;
    BUTTON_IMAGELIST bi ;
    HBITMAP hBmp;
    HBITMAP hBmp2;
@@ -714,11 +714,11 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
    int iLeft = 0, iRight = 0, iTop = 0, iBottom = 0;
 
    hWnd = HWNDparam( 1 );
-   hBmp = ( HBITMAP ) HWNDparam( 2 );
+   hBmp = (HBITMAP) HWNDparam( 2 );
    if( hBmp )
    {
       memset( &bi, 0, sizeof( bi ) );
-      SendMessage( hWnd, BCM_GETIMAGELIST, 0, ( LPARAM ) &bi );
+      SendMessage( hWnd, BCM_GETIMAGELIST, 0, (LPARAM) &bi );
       himl = bi.himl;
       if( himl )
       {
@@ -726,7 +726,7 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
 
          memset( &bi, 0, sizeof( bi ) );
          bi.himl = ( HIMAGELIST ) ( -1 ) ;
-         SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
+         SendMessage( hWnd, BCM_SETIMAGELIST, 0, (LPARAM) &bi );
       }
 
       if( hb_parnl( 4 ) == -1 )
@@ -735,32 +735,32 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
       }
       else
       {
-         clrColor = ( COLORREF ) hb_parnl( 4 );
+         clrColor = (COLORREF) hb_parnl( 4 );
       }
       memset( &bm, 0, sizeof( bm ) );
       GetObject( hBmp, sizeof( bm ), &bm );
-      if( hb_parl( 9 ) )   // IMAGESIZE
+      if( hb_parl( 9 ) )   /* IMAGESIZE */
       {
-         hBmp2 = CopyImage( hBmp, IMAGE_BITMAP, 0, 0, 0 );
+         hBmp2 = (HBITMAP) CopyImage( hBmp, IMAGE_BITMAP, 0, 0, 0 );
       }
       else
       {
-         if( hb_parl( 8 ) )   // FITIMG
+         if( hb_parl( 8 ) )   /* FITIMG */
          {
             iTop    = HB_PARNI( 5, 1 );
             iLeft   = HB_PARNI( 5, 2 );
             iBottom = HB_PARNI( 5, 3 );
             iRight  = HB_PARNI( 5, 4 );
          }
-         if( hb_parl( 6 ) )   // STRETCH
+         if( hb_parl( 6 ) )   /* STRETCH */
          {
             hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, TRUE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
          }
-         else if( hb_parl( 7 ) )   // AUTOFIT
+         else if( hb_parl( 7 ) )   /* AUTOFIT */
          {
             hBmp2 = _OOHG_ScaleImage( hWnd, hBmp, 0, 0, FALSE, hb_parnl( 4 ), FALSE, iLeft + iRight, iTop + iBottom );
          }
-         else   // just copy
+         else   /* just copy */
          {
             hBmp2 = (HBITMAP) _OOHG_CopyBitmap( hBmp, 0, 0, bm.bmWidth - iLeft - iRight, bm.bmHeight - iTop - iBottom );
          }
@@ -780,8 +780,8 @@ HB_FUNC( SETIMAGEXP )          /* FUNCTION SetImageXP( hWnd, hBitmap, nImageAlig
          bi.margin.left = HB_PARNI( 5, 2 );
          bi.margin.bottom = HB_PARNI( 5, 3 );
          bi.margin.right = HB_PARNI( 5, 4 );
-         bi.uAlign = hb_parni( 3 );
-         SendMessage( hWnd, BCM_SETIMAGELIST, 0, ( LPARAM ) &bi );
+         bi.uAlign = (UINT) hb_parni( 3 );
+         SendMessage( hWnd, BCM_SETIMAGELIST, 0, (LPARAM) &bi );
       }
    }
 }
@@ -791,7 +791,7 @@ HB_FUNC( THEMEMARGINS )
 {
    HTHEME hTheme;
    MARGINS pMargins;
-   INT iLeft = 0, iRight = 0, iTop = 0, iBottom = 0;
+   int iLeft = 0, iRight = 0, iTop = 0, iBottom = 0;
 
    if( _UxTheme_Init() )
    {
@@ -844,18 +844,22 @@ HB_FUNC( THEMEMARGINS )
    HB_STORNI( iRight, -1, 4 );
    return;
 }
+
+int TButton_Notify_CustomDraw( PHB_ITEM, LPARAM, BOOL, BOOL, LPCSTR, BOOL, BOOL, RECT *, BOOL bFitTxt );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BOOL bSolid, LPCSTR cCaption, BOOL bNoPrintOver, BOOL bNoFocusRect, RECT * margin, BOOL bFitTxt )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
    HTHEME hTheme;
-   INT state_id, x = 0, y = 0, dx = 0, dy = 0, w, h, iHrzNeeded, iVrtNeeded, nTextAlign = 0;
+   int state_id, x = 0, y = 0, dx = 0, dy = 0, w, h, iHrzNeeded, iVrtNeeded;
+   UINT nTextAlign = 0;
    LONG_PTR style;
    BOOL bShowText;
    BUTTON_IMAGELIST bi ;
    RECT content_rect, rect, aux_rect;
-   LONG lBackColor;
+   long lBackColor;
    HBRUSH hBrush;
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
@@ -910,7 +914,7 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
          lBackColor = ( oSelf->lUseBackColor != -1 ) ? oSelf->lUseBackColor : oSelf->lBackColor;
          if( lBackColor != -1 )
          {
-            hBrush = CreateSolidBrush( lBackColor );
+            hBrush = CreateSolidBrush( (COLORREF) lBackColor );
             FillRect( pCustomDraw->hdc, &pCustomDraw->rc, hBrush );
             DeleteObject( hBrush );
          }
@@ -924,7 +928,7 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       /* get content rectangle (space inside button for image) */
       ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_PUSHBUTTON, state_id, &pCustomDraw->rc, &content_rect );
 
-		/* draw the image */
+      /* draw the image */
       memset( &bi, 0, sizeof( bi ) );
       SendMessage( pCustomDraw->hdr.hwndFrom, BCM_GETIMAGELIST, 0, (LPARAM) &bi );
 
@@ -1046,8 +1050,8 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
                nTextAlign += DT_TOP;
             }
 
-      		if( style & BS_MULTILINE )
-      		{
+            if( style & BS_MULTILINE )
+            {
                if( bFitTxt )
                {
                   iVrtNeeded = DrawText( pCustomDraw->hdc, cCaption, -1, &aux_rect, DT_WORDBREAK | nTextAlign | DT_CALCRECT );
@@ -1107,11 +1111,11 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
          }
       }
 
-		/* draw the focus rectangle if needed and required */
-		if( ( ( pCustomDraw->uItemState & CDIS_FOCUS ) == CDIS_FOCUS ) && ( ! bNoFocusRect ) )
-		{
-			DrawFocusRect( pCustomDraw->hdc, &content_rect );
-		}
+      /* draw the focus rectangle if needed and required */
+      if( ( ( pCustomDraw->uItemState & CDIS_FOCUS ) == CDIS_FOCUS ) && ( ! bNoFocusRect ) )
+      {
+         DrawFocusRect( pCustomDraw->hdc, &content_rect );
+      }
 
       /* cleanup */
      ProcCloseThemeData( hTheme );
@@ -1131,8 +1135,8 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomD
    rect.bottom = hb_arrayGetNL( pArrayRect, 3 );
    rect.right  = hb_arrayGetNL( pArrayRect, 4 );
 
-   hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) HB_PARNL( 2 ), hb_parl( 3 ), hb_parl( 4 ),
-                                        ( LPCSTR ) hb_parc( 5 ), hb_parl( 6 ), hb_parl( 7 ), &rect, hb_parl( 9 ) ) );
+   hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ), hb_parl( 4 ),
+                                        (LPCSTR) hb_parc( 5 ), hb_parl( 6 ), hb_parl( 7 ), &rect, hb_parl( 9 ) ) );
 }
 
 #pragma ENDDUMP
@@ -1201,7 +1205,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
 
    lBitMap := ( ( ValType( cImage ) $ "CM" .AND. ! Empty( cImage ) ) .OR. ;
                 ( ValType( cBuffer ) $ "CM" .AND. ! Empty( cBuffer ) ) .OR. ;
-                ValidHandler( hBitMap ) ) .AND. ;
+                ValidHandler( hBitmap ) ) .AND. ;
               ( ! ValType( cCaption ) $ "CM" .OR. Empty( cCaption ) ) .AND. ;
               ::lNoImgLst
 
