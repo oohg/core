@@ -207,7 +207,7 @@ METHOD SetRange( nRangeMin, nRangeMax ) CLASS TScrollBar
       ASSIGN ::nRangeMax VALUE nRangeMax TYPE "N"
       * nMax := MAX( ABS( ::nRangeMin ), ABS( ::nRangeMax ) )
       * IF nMax > 32000
-      *    ::nFactor := INT( nMax / 32000 )
+      *    ::nFactor := int( nMax / 32000 )
       * ELSE
       *    ::nFactor := 1
       * ENDIF
@@ -368,9 +368,9 @@ METHOD Track( nPos ) CLASS TScrollBar
 
    RETURN uRet
 
-METHOD Events_VScroll( wParam ) CLASS TScrollBar
+METHOD Events_VScroll( wParam  ) CLASS TScrollBar
 
-   LOCAL Lo_wParam := LoWord( wParam )
+   LOCAL Lo_wParam := LoWord( wParam  )
    LOCAL uRet
 
    IF Lo_wParam == SB_LINEDOWN         // .OR. Lo_wParam == SB_LINERIGHT
@@ -392,17 +392,17 @@ METHOD Events_VScroll( wParam ) CLASS TScrollBar
       uRet := ::Bottom()
 
    ELSEIF Lo_wParam == SB_THUMBPOSITION
-      uRet := ::Thumb( HiWord( wParam ) )
+      uRet := ::Thumb( HiWord( wParam  ) )
 
    ELSEIF Lo_wParam == SB_THUMBTRACK
-      uRet := ::Track( HiWord( wParam ) )
+      uRet := ::Track( HiWord( wParam  ) )
 
    ELSEIF Lo_wParam == SB_ENDSCROLL
-      uRet := _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam ) )
+      uRet := _OOHG_EVAL( ::OnEndTrack, Self, HiWord( wParam  ) )
       ::DoChange()
 
    ELSE
-      RETURN ::Super:Events_VScroll( wParam )
+      RETURN ::Super:Events_VScroll( wParam  )
 
    ENDIF
 
@@ -427,9 +427,9 @@ EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TScrollBar_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TScrollBar_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -438,7 +438,7 @@ static WNDPROC _OOHG_TScrollBar_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -451,13 +451,14 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, nType, nStyle )) -> hWnd */
 {
    HWND hCtrl;
-   INT Style, StyleEx;
+   int Style, StyleEx;
 
    Style = hb_parni( 8 ) | WS_CHILD;
    switch( hb_parni( 7 ) )
    {
       case SB_HORZ: Style |= SBS_HORZ; break;
       case SB_VERT: Style |= SBS_VERT; break;
+      default: break;
    }
    StyleEx = _OOHG_RTL_Status( hb_parl( 6 ) );
 
@@ -467,7 +468,7 @@ HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitScrollBar( hWnd, nCol, nRow, n
 
    SetScrollRange( hCtrl, SB_CTL, 1, 100, TRUE );
 
-   _OOHG_TScrollBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TScrollBar_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -483,20 +484,20 @@ HB_FUNC( GETHSCROLLBARHEIGHT )
    hb_retni( GetSystemMetrics( SM_CYHSCROLL ) );
 }
 
-HB_FUNC( SETSCROLLPOS ) // ( hWnd, fnBar, nPos, lRedraw )
+HB_FUNC( SETSCROLLPOS )          /* FUNCTION SetScrollPos( hWnd, fnBar, nPos, lRedraw ) -> nPos */
 {
    hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
-   #ifdef __MINGW32__                  // This applies to 32 and 64 bits versions
+   #ifdef __MINGW32__                  /* This applies to 32 and 64 bits versions */
       RedrawWindow( HWNDparam( 1 ), NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW | RDW_FRAME );
    #endif
 }
 
-HB_FUNC( SETSCROLLRANGE ) // ( hWnd, fnBar, nRangeMin, nRangeMax, lRedraw )
+HB_FUNC( SETSCROLLRANGE )          /* FUNCTION SetScrollRange( hWnd, fnBar, nRangeMin, nRangeMax, lRedraw ) -> nPos */
 {
    hb_retl( SetScrollRange( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ) ) );
 }
 
-HB_FUNC( GETSCROLLPOS ) // ( hWnd, fnBar )
+HB_FUNC( GETSCROLLPOS )          /* FUNCTION GetScrollPos( hWnd, fnBar ) -> nPos */
 {
    hb_retni( GetScrollPos( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
@@ -530,7 +531,7 @@ HB_FUNC( _SETSCROLL )
          {
             nStyle = nStyle &~ WS_HSCROLL;
             bChange = 1;
-            // Clears scroll range
+            /* Clears scroll range */
             SetScrollRange( hWnd, SB_HORZ, 0, 0, 1 );
          }
       }
@@ -552,7 +553,7 @@ HB_FUNC( _SETSCROLL )
          {
             nStyle = nStyle &~ WS_VSCROLL;
             bChange = 1;
-            // Clears scroll range
+            /* Clears scroll range */
             SetScrollRange( hWnd, SB_VERT, 0, 0, 1 );
          }
       }
@@ -567,7 +568,7 @@ HB_FUNC( _SETSCROLL )
    hb_retni( nStyle );
 }
 
-HB_FUNC( SETSCROLLPAGE ) // ( hWnd, fnBar [ , size ] )
+HB_FUNC( SETSCROLLPAGE )          /* FUNCTION SetScrollPage( hWnd, fnBar [ , size ] ) -> nPage */
 {
    HWND hWnd = HWNDparam( 1 );
    int iType = hb_parni( 2 );
@@ -588,7 +589,7 @@ HB_FUNC( SETSCROLLPAGE ) // ( hWnd, fnBar [ , size ] )
    hb_retni( iPage );
 }
 
-HB_FUNC( GETSCROLLRANGEMIN ) // ( hWnd, fnBar )
+HB_FUNC( GETSCROLLRANGEMIN )          /* FUNCTION GetScrollRangeMin( hWnd, fnBar ) -> nMin */
 {
    int MinPos, MaxPos;
 
@@ -596,7 +597,7 @@ HB_FUNC( GETSCROLLRANGEMIN ) // ( hWnd, fnBar )
    hb_retni( MinPos );
 }
 
-HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
+HB_FUNC( GETSCROLLRANGEMAX )          /* FUNCTION GetScrollRangeMax( hWnd, fnBar ) -> nMax */
 {
    int MinPos, MaxPos;
 
@@ -604,7 +605,7 @@ HB_FUNC( GETSCROLLRANGEMAX ) // ( hWnd, fnBar )
    hb_retni( MaxPos );
 }
 
-HB_FUNC( SETSCROLLINFO ) // ( hWnd, nMax, nPos, nPage, nMin )
+HB_FUNC( SETSCROLLINFO )          /* FUNCTION SetScrollInfo( hWnd, nMax, nPos, nPage, nMin ) -> nPos */
 {
    SCROLLINFO lpsi;
 
