@@ -283,9 +283,9 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTimePick
 #include "tchar.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TDatePick_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TDatePick_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProcA = 0;
+   static LONG_PTR lpfnOldWndProcA = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcA )
@@ -294,7 +294,7 @@ static WNDPROC _OOHG_TDatePick_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProcA;
+   return (WNDPROC) lpfnOldWndProcA;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -321,7 +321,7 @@ HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TDatePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TDatePick_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFuncA ) );
 
    HWNDret( hCtrl );
 }
@@ -330,7 +330,7 @@ HB_FUNC( INITDATEPICK )          /* FUNCTION InitDatePick( hWnd, hMenu, nCol, nR
 HB_FUNC( SETDATEPICK )
 {
    SYSTEMTIME sysTime;
-   const CHAR *cDate;
+   const char *cDate;
 
    memset( &sysTime, 0, sizeof( sysTime ) );
 
@@ -360,12 +360,12 @@ HB_FUNC( SETDATEPICKNULL )
    SendMessage( HWNDparam( 1 ), DTM_SETSYSTEMTIME, GDT_NONE, (LPARAM) 0 );
 }
 
-HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
+HB_FUNC_STATIC( TDATEPICK_SETRANGE )          /* METHOD SetRange( DateFrom, DateTo ) CLASS TDatePick */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    SYSTEMTIME sysTime[ 2 ];
-   const CHAR *cDate;
+   const char *cDate;
    WPARAM wLimit = 0;
 
    if( HB_ISDATE( 1 ) && HB_ISDATE( 2 ) )
@@ -399,9 +399,9 @@ HB_FUNC_STATIC( TDATEPICK_SETRANGE )      // METHOD SetRange( DateFrom, DateTo )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TTimePick_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TTimePick_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProcB = 0;
+   static LONG_PTR lpfnOldWndProcB = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcB )
@@ -410,7 +410,7 @@ static WNDPROC _OOHG_TTimePick_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProcB;
+   return (WNDPROC) lpfnOldWndProcB;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -437,7 +437,7 @@ HB_FUNC( INITTIMEPICK )          /* FUNCTION InitTimePick( hWnd, hMenu, nCol, nR
                            hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TTimePick_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TTimePick_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFuncB ) );
 
    HWNDret( hCtrl );
 }
@@ -502,7 +502,7 @@ HB_FUNC( GETDATEPICKSECOND )
    }
 }
 
-HB_FUNC( SETDATEPICKERDATEFORMAT )           // ( hwnd, cFormat )
+HB_FUNC( SETDATEPICKERDATEFORMAT )          /* FUNCTION SetDatePickerDateFormat( hWnd, cFormat ) -> lSuccess */
 {
    if( HB_ISCHAR( 2 ) && hb_parclen( 2 ) > 0 )
    {
@@ -510,7 +510,7 @@ HB_FUNC( SETDATEPICKERDATEFORMAT )           // ( hwnd, cFormat )
    }
    else
    {
-      // reset to default
+      /* reset to default */
       hb_retl( SendMessage( HWNDparam( 1 ), DTM_SETFORMAT, 0, (LPARAM) NULL ) );
    }
 }
