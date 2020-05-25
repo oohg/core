@@ -37,7 +37,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -76,16 +76,16 @@ EXTERN PtrStr
 static HINSTANCE HB_DllStore[ 256 ];
 HINSTANCE HB_LoadDll( const CHAR * );
 VOID      HB_UnloadDll( VOID );
-typedef   INT ( CALLBACK * DYNACALL0 ) ( VOID );
-typedef   INT ( CALLBACK * DYNACALL1 ) ( INT d1 );
-typedef   INT ( CALLBACK * DYNACALL2 ) ( INT d1, INT d2 );
-typedef   INT ( CALLBACK * DYNACALL3 ) ( INT d1, INT d2, INT d3 );
-typedef   INT ( CALLBACK * DYNACALL4 ) ( INT d1, INT d2, INT d3, INT d4 );
-typedef   INT ( CALLBACK * DYNACALL5 ) ( INT d1, INT d2, INT d3, INT d4, INT d5 );
-typedef   INT ( CALLBACK * DYNACALL6 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6 );
-typedef   INT ( CALLBACK * DYNACALL7 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7 );
-typedef   INT ( CALLBACK * DYNACALL8 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8 );
-typedef   INT ( CALLBACK * DYNACALL9 ) ( INT d1, INT d2, INT d3, INT d4, INT d5, INT d6, INT d7, INT d8, INT d9 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL0 ) ( VOID );
+typedef   LONG_PTR ( CALLBACK * DYNACALL1 ) ( LONG_PTR d1 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL2 ) ( LONG_PTR d1, LONG_PTR d2 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL3 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL4 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL5 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL6 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL7 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL8 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8 );
+typedef   LONG_PTR ( CALLBACK * DYNACALL9 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8, LONG_PTR d9 );
 
 HINSTANCE HB_LoadDll( const CHAR * DllName )
 {
@@ -126,17 +126,18 @@ void HB_UnloadDll( void )
    }
 }
 
-HB_FUNC( CALLDLL32 )
+HB_FUNC( OOHG_CALLDLL32 )
 {
    register INT i;
    HINSTANCE hInst;
    DYNACALL1 lpAddr;
-   INT result = -2000;
+   LONG_PTR result = -2000;
    CHAR buff[ 256 ];
-   const CHAR * FuncName = ( const CHAR * ) hb_parc( 1 );
-   const CHAR * DllName = ( const CHAR * ) hb_parc( 2 );
+   const CHAR * FuncName = hb_parc( 1 );
+   const CHAR * DllName = hb_parc( 2 );
    INT nArgs;
-   INT dd[ MAX_PARAMS ];
+   LONG_PTR dd[ MAX_PARAMS ];
+   void *p;
 
    nArgs = hb_pcount();
    if( nArgs < 2 || nArgs > MAX_PARAMS + 2 )
@@ -173,58 +174,59 @@ HB_FUNC( CALLDLL32 )
       {
          if( HB_ISCHAR( i + 3 ) )
          {
-            dd[ i ] = ( INT ) ( const char * ) hb_parc( i + 3 );
+            dd[ i ] = (LONG_PTR) HB_UNCONST( hb_parc( i + 3 ) );
          }
          else if( ISPTR( i + 3 ) )
          {
-            dd[ i ] = ( INT ) hb_parptr( i + 3 );
+            p = hb_parptr( i + 3 );
+            dd[ i ] = (LONG_PTR) p;
          }
          else
          {
-            dd[ i ] = ( INT ) hb_parni( i + 3 );
+            dd[ i ] = (LONG_PTR) hb_parnl( i + 3 );
          }
       }
 
       switch( nArgs )
       {
          case 0:
-            result = ( INT )( ( DYNACALL0 ) ( FARPROC ) lpAddr )();
+            result = (LONG_PTR) ( ( DYNACALL0 ) ( FARPROC ) lpAddr )();
             break;
 
          case 1:
-            result = ( INT )( ( DYNACALL1 ) ( FARPROC ) lpAddr )( dd[ 0 ] );
+            result = (LONG_PTR) ( ( DYNACALL1 ) ( FARPROC ) lpAddr )( dd[ 0 ] );
             break;
 
          case 2:
-            result = ( INT )( ( DYNACALL2 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ] );
+            result = (LONG_PTR) ( ( DYNACALL2 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ] );
             break;
 
          case 3:
-            result = ( INT )( ( DYNACALL3 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
+            result = (LONG_PTR) ( ( DYNACALL3 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
             break;
 
          case 4:
-            result = ( INT )( ( DYNACALL4 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
+            result = (LONG_PTR) ( ( DYNACALL4 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
             break;
 
          case 5:
-            result = ( INT )( ( DYNACALL5 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
+            result = (LONG_PTR) ( ( DYNACALL5 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
             break;
 
          case 6:
-            result = ( INT )( ( DYNACALL6 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
+            result = (LONG_PTR) ( ( DYNACALL6 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
             break;
 
          case 7:
-            result = ( INT )( ( DYNACALL7 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
+            result = (LONG_PTR) ( ( DYNACALL7 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
             break;
 
          case 8:
-            result = ( INT )( ( DYNACALL8 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
+            result = (LONG_PTR) ( ( DYNACALL8 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
             break;
 
          default:
-            result = ( INT )( ( DYNACALL9 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
+            result = (LONG_PTR) ( ( DYNACALL9 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
             break;
 
       }
@@ -235,7 +237,7 @@ HB_FUNC( CALLDLL32 )
 
 HB_FUNC( STRPTR )
 {
-   const CHAR * cString = ( const CHAR * ) hb_parc( 1 );
+   const CHAR * cString = hb_parc( 1 );
    HB_RETNL( ( LONG_PTR ) cString );
 }
 
