@@ -870,9 +870,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem
    RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Events_Command( wParam ) CLASS TRadioItem
+METHOD Events_Command( wParam  ) CLASS TRadioItem
 
-   LOCAL Hi_wParam := HIWORD( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam  )
 
    IF Hi_wParam == BN_CLICKED
       ::DoChange()
@@ -882,7 +882,7 @@ METHOD Events_Command( wParam ) CLASS TRadioItem
       RETURN NIL
    ENDIF
 
-   RETURN ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam  )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TRadioItem
@@ -938,9 +938,9 @@ enum {
 };
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TRadioGroup_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TRadioGroup_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProcA = 0;
+   static LONG_PTR lpfnOldWndProcA = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcA )
@@ -949,7 +949,7 @@ static WNDPROC _OOHG_TRadioGroup_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProcA;
+   return (WNDPROC) lpfnOldWndProcA;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -974,15 +974,15 @@ HB_FUNC( INITRADIOGROUP )          /* FUNCTION InitRadioGroup( hWnd, nCol, nRow,
                             hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                             HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TRadioGroup_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hgroup, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncA ) );
+   _OOHG_TRadioGroup_lpfnOldWndProc( SetWindowLongPtr( hgroup, GWLP_WNDPROC, (LONG_PTR) SubClassFuncA ) );
 
    HWNDret( hgroup );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TRadioButton_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TRadioButton_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProcB = 0;
+   static LONG_PTR lpfnOldWndProcB = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProcB )
@@ -991,7 +991,7 @@ static WNDPROC _OOHG_TRadioButton_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProcB;
+   return (WNDPROC) lpfnOldWndProcB;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1016,13 +1016,13 @@ HB_FUNC( INITRADIOBUTTON )          /* FUNCTION InitRadioButton( hWnd, nCol, nRo
                              hb_parni( 2 ), hb_parni( 3 ), hb_parni( 6 ), hb_parni( 7 ),
                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TRadioButton_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hbutton, GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncB ) );
+   _OOHG_TRadioButton_lpfnOldWndProc( SetWindowLongPtr( hbutton, GWLP_WNDPROC, (LONG_PTR) SubClassFuncB ) );
 
    HWNDret( hbutton );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
+int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
@@ -1107,12 +1107,12 @@ INT TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       if( bLeftAlign )
       {
          aux_rect.left = aux_rect.right - s.cx;
-         content_rect.right = aux_rect.left - 3;      // Arbitrary margin between text and button
+         content_rect.right = aux_rect.left - 3;      /* Arbitrary margin between text and button */
       }
       else
       {
          aux_rect.right = aux_rect.left + s.cx;
-         content_rect.left = aux_rect.right + 3;      // Arbitrary margin between text and button
+         content_rect.left = aux_rect.right + 3;      /* Arbitrary margin between text and button */
       }
 
       /* draw button */
@@ -1129,7 +1129,7 @@ INT TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
             if( oSelf->lFontColor != -1 )
             {
                pOptions.dwFlags |= DTT_TEXTCOLOR;
-               pOptions.crText = ( COLORREF ) oSelf->lFontColor;
+               pOptions.crText = (COLORREF) oSelf->lFontColor;
             }
             ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
 
@@ -1185,8 +1185,8 @@ INT TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TRADIOITEM_NOTIFY_CUSTOMDRAW )          /* FUNCTION TRadioItem_Notify_CustomDraw( Self, lParam, cCaption, bDrawBkGrnd, lLeftAlign, lNoFocusRect ) -> nRet */
 {
-   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), ( LPCSTR ) hb_parc( 3 ),
-                                           ( BOOL ) hb_parl( 4 ), ( BOOL ) hb_parl( 5 ), ( BOOL ) hb_parl( 6 ) ) );
+   hb_retni( TRadioItem_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ),
+                                           (BOOL) hb_parl( 4 ), (BOOL) hb_parl( 5 ), (BOOL) hb_parl( 6 ) ) );
 }
 
 #pragma ENDDUMP
