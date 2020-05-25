@@ -3120,26 +3120,26 @@ METHOD ClosePage() CLASS TPDF
             FRead( nImageHandle, @cBuffer, nBuffer )
 
             cBuffer := HB_INLINE( cBuffer, ::aImages[ nI, 3, IMAGE_WIDTH ], ::aImages[ nI, 3, IMAGE_HEIGHT ], ::aImages[ nI, 3, IMAGE_BITS ] ) {
-               LONG lWidth, lHeight, lLenFrom, lLenTo, lBits, lSize;
-               CHAR * cFrom, * cTo, * cBuffer;
+               long lWidth, lHeight, lLenFrom, lLenTo, lBits, lSize;
+               char * cFrom, * cTo, * cBuffer;
 
                lWidth   = hb_parnl( 2 );
                lHeight  = hb_parnl( 3 );
                lBits    = hb_parnl( 4 );
                lLenFrom = ( ( ( lWidth * lBits ) + 31 ) / 32 ) * 4;
-               cFrom    = ( CHAR * ) HB_UNCONST( hb_parc( 1 ) ) + ( lLenFrom * ( lHeight - 1 ) );
+               cFrom    = (char *) HB_UNCONST( hb_parc( 1 ) ) + ( lLenFrom * ( lHeight - 1 ) );
 
                if( lBits == 24 )
                {
                   lLenTo = ( ( lWidth * 32 ) + 7 ) / 8;
                   lSize = lLenTo * lHeight;
-                  cBuffer = ( CHAR * ) hb_xgrab( lSize + 1 );
+                  cBuffer = (char *) hb_xgrab( lSize + 1 );
                   cTo = cBuffer;
 
                   while( lHeight )
                   {
-                     CHAR * cFromCopy, * cToCopy;
-                     LONG lCopyPixels;
+                     char * cFromCopy, * cToCopy;
+                     long lCopyPixels;
                      FLOAT fR, fG, fB, fK;
 
                      cFromCopy   = cFrom;
@@ -3155,10 +3155,10 @@ METHOD ClosePage() CLASS TPDF
                         fK = ( fK > fB ) ? fK : fB;
                         fK = 1 - fK;
 
-                        *cToCopy ++ = ( CHAR ) ( UCHAR ) ( ( ( 1 - fR - fK ) / ( 1 - fK ) ) * 255 );
-                        *cToCopy ++ = ( CHAR ) ( UCHAR ) ( ( ( 1 - fG - fK ) / ( 1 - fK ) ) * 255 );
-                        *cToCopy ++ = ( CHAR ) ( UCHAR ) ( ( ( 1 - fB - fK ) / ( 1 - fK ) ) * 255 );
-                        *cToCopy ++ = ( CHAR ) ( UCHAR ) (                           fK     * 255 );
+                        *cToCopy ++ = ( char ) ( UCHAR ) ( ( ( 1 - fR - fK ) / ( 1 - fK ) ) * 255 );
+                        *cToCopy ++ = ( char ) ( UCHAR ) ( ( ( 1 - fG - fK ) / ( 1 - fK ) ) * 255 );
+                        *cToCopy ++ = ( char ) ( UCHAR ) ( ( ( 1 - fB - fK ) / ( 1 - fK ) ) * 255 );
+                        *cToCopy ++ = ( char ) ( UCHAR ) (                           fK     * 255 );
 
                         cFromCopy = cFromCopy + 3;
                         lCopyPixels --;
@@ -3173,7 +3173,7 @@ METHOD ClosePage() CLASS TPDF
                {
                   lLenTo  = ( ( lWidth * lBits ) + 7 ) / 8;
                   lSize   = lLenTo * lHeight;
-                  cBuffer = ( CHAR * ) hb_xgrab( lSize + 1 );
+                  cBuffer = (char *) hb_xgrab( lSize + 1 );
                   cTo     = cBuffer;
 
                   while( lHeight )
