@@ -174,7 +174,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
          IF LEN( aWidth ) == 0
             IF HB_IsArray( rows[1] )
                FOR i := 1 TO LEN( rows[1] )
-                  AADD( aWidth, INT( w / LEN( rows[1] ) ) )
+                  AAdd( aWidth, Int( w / Len( rows[1] ) ) )
                NEXT
             ENDIF
          ENDIF
@@ -296,9 +296,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TList
 
    RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
 
-METHOD Events_Command( wParam ) CLASS TList
+METHOD Events_Command( wParam  ) CLASS TList
 
-   LOCAL Hi_wParam := HIWORD( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam  )
 
    IF Hi_wParam == LBN_SELCHANGE
       ::DoChange()
@@ -321,7 +321,7 @@ METHOD Events_Command( wParam ) CLASS TList
 
    ENDIF
 
-   RETURN ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam  )
 
 METHOD Events_Drag( lParam ) CLASS TList
 
@@ -511,9 +511,9 @@ METHOD Value( uValue ) CLASS TListMulti
 #include <windowsx.h>
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TListBox_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TListBox_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -522,7 +522,7 @@ static WNDPROC _OOHG_TListBox_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -540,7 +540,7 @@ HB_FUNC( INITLISTBOX )          /* FUNCTION InitListBox( hWnd, hMenu, nCol, nRow
    HWND hCtrl = CreateWindowEx( StyleEx, "LISTBOX", "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                 HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TListBox_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TListBox_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    if( hb_parl( 9 ) )
    {
@@ -707,12 +707,12 @@ HB_FUNC( LISTBOXRESET )
 
 HB_FUNC( LISTBOXGETMULTISEL )
 {
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    int i;
    int *buffer;
    int n;
 
-   n = SendMessage( hwnd, LB_GETSELCOUNT, 0, 0);
+   n = SendMessage( hWnd, LB_GETSELCOUNT, 0, 0);
 
    if( n > 0 )
    {
@@ -720,7 +720,7 @@ HB_FUNC( LISTBOXGETMULTISEL )
 
       buffer = (int *) hb_xgrab( ( n + 1 ) * sizeof( int ) );
 
-      SendMessage( hwnd, LB_GETSELITEMS, (WPARAM) n, (LPARAM) buffer );
+      SendMessage( hWnd, LB_GETSELITEMS, (WPARAM) n, (LPARAM) buffer );
 
       for( i = 0; i < n; i++ )
       {
@@ -738,7 +738,7 @@ HB_FUNC( LISTBOXGETMULTISEL )
 HB_FUNC( LISTBOXSETMULTISEL )
 {
    PHB_ITEM wArray;
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    int i;
    int n;
    int l;
@@ -747,18 +747,18 @@ HB_FUNC( LISTBOXSETMULTISEL )
 
    l = hb_parinfa( 2, 0 );
 
-   n = SendMessage( hwnd, LB_GETCOUNT, 0, 0 );
+   n = SendMessage( hWnd, LB_GETCOUNT, 0, 0 );
 
-   // CLEAR CURRENT SELECTIONS
+   /* CLEAR CURRENT SELECTIONS */
    for( i = 0; i < n; i ++ )
    {
-      SendMessage( hwnd, LB_SETSEL, 0, (LPARAM) i );
+      SendMessage( hWnd, LB_SETSEL, 0, (LPARAM) i );
    }
 
-   // SET NEW SELECTIONS
+   /* SET NEW SELECTIONS */
    for( i = 1; i <= l ; i ++ )
    {
-      SendMessage( hwnd, LB_SETSEL, (WPARAM) 1, (LPARAM) ( hb_arrayGetNI( wArray, i ) - 1 ) );
+      SendMessage( hWnd, LB_SETSEL, (WPARAM) 1, (LPARAM) ( hb_arrayGetNI( wArray, i ) - 1 ) );
    }
 }
 
@@ -769,7 +769,7 @@ HB_FUNC( LISTBOXSETMULTITAB )
    int      l, i;
    DWORD    dwDlgBase = GetDialogBaseUnits();
    int      baseunitX = LOWORD( dwDlgBase );
-   HWND     hwnd = HWNDparam( 1 );
+   HWND     hWnd = HWNDparam( 1 );
 
    wArray = hb_param( 2, HB_IT_ARRAY );
 
@@ -782,7 +782,7 @@ HB_FUNC( LISTBOXSETMULTITAB )
       for( i = 0; i <= l; i++ )
          nTabStops[ i ] = MulDiv( hb_arrayGetNI( wArray, i + 1 ), 4, baseunitX );
 
-      SendMessage( hwnd, LB_SETTABSTOPS, (WPARAM) ( l + 1 ), (LPARAM) nTabStops );
+      SendMessage( hWnd, LB_SETTABSTOPS, (WPARAM) ( l + 1 ), (LPARAM) nTabStops );
 
       hb_xfree( nTabStops );
    }
@@ -794,7 +794,7 @@ HB_FUNC( LISTBOXGETITEMCOUNT )
    hb_retni( SendMessage( HWNDparam( 1 ), LB_GETCOUNT, 0, 0 ) );
 }
 
-HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
+HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lParam ) CLASS TList */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -812,7 +812,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
    {
       if( ( lpdis->itemAction == ODA_SELECT ) || ( lpdis->itemAction == ODA_DRAWENTIRE ) )
       {
-         // Text color
+         /* Text color */
          if( lpdis->itemState & ODS_SELECTED )
          {
             FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
@@ -829,7 +829,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
             BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) );
          }
 
-         // See if the current item has an image
+         /* See if the current item has an image */
          if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
          {
             iImage = ( (int *) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
@@ -851,41 +851,41 @@ HB_FUNC_STATIC( TLIST_EVENTS_DRAWITEM )   // METHOD Events_DrawItem( lParam )
             iImage = -1;
          }
 
-         // Window position
+         /* Window position */
          GetTextMetrics( lpdis->hDC, &lptm );
          y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
          x = LOWORD( GetDialogBaseUnits() ) / 2;
 
-         // Text
+         /* Text */
          SendMessage( lpdis->hwndItem, LB_GETTEXT, lpdis->itemID, (LPARAM) cBuffer );
          ExtTextOut( lpdis->hDC, cx + x, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
 
-         // Restore DC
+         /* Restore DC */
          SetTextColor( lpdis->hDC, FontColor );
          SetBkColor( lpdis->hDC, BackColor );
 
-         // Draws image vertically centered
+         /* Draws image vertically centered */
          if( iImage != -1 )
          {
-            if( cy <= lpdis->rcItem.bottom - lpdis->rcItem.top )                  // there is spare space
+            if( cy <= lpdis->rcItem.bottom - lpdis->rcItem.top )                  /* there is spare space */
             {
-               y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
-               dy = cy;                                                           // use real size
+               y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         /* center image */
+               dy = cy;                                                           /* use real size */
             }
             else
             {
-               y = lpdis->rcItem.top;                                             // place image at top
+               y = lpdis->rcItem.top;                                             /* place image at top */
 
                _OOHG_Send( pSelf, s_lAdjustImages );
                hb_vmSend( 0 );
 
                if( hb_parl( -1 ) )
                {
-                  dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+                  dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              /* clip exceeding pixels or stretch image */
                }
                else
                {
-                  dy = cy;                                                        // use real size
+                  dy = cy;                                                        /* use real size */
                }
             }
 
@@ -909,7 +909,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureItem
    SIZE sz;
    int iSize;
 
-   // Checks for a pre-defined text size
+   /* Checks for a pre-defined text size */
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
@@ -953,18 +953,18 @@ HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 
 HB_FUNC( DRAG_LIST_DRAWINSERT )
 {
-   HWND hwnd = HWNDparam( 1 );
+   HWND hWnd = HWNDparam( 1 );
    LPARAM lParam = (LPARAM) HB_PARNL( 2 );
    int nItem = hb_parni( 3 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    int nItemCount;
 
-   nItemCount = SendMessage( ( HWND ) lpdli->hWnd, LB_GETCOUNT, 0, 0 );
+   nItemCount = SendMessage( (HWND) lpdli->hWnd, LB_GETCOUNT, 0, 0 );
 
    if( nItem < nItemCount )
-      DrawInsert( hwnd, lpdli->hWnd, nItem );
+      DrawInsert( hWnd, lpdli->hWnd, nItem );
    else
-      DrawInsert( hwnd, lpdli->hWnd, -1 );
+      DrawInsert( hWnd, lpdli->hWnd, -1 );
 }
 
 HB_FUNC( DRAG_LIST_MOVE_ITEMS )
@@ -985,7 +985,7 @@ HB_FUNC( DRAG_LIST_MOVE_ITEMS )
    hb_retl( result != LB_ERR ? TRUE : FALSE );
 }
 
-HB_FUNC( TLIST_ENSUREVISIBLE )   // METHOD EnsureVisible( nItem )
+HB_FUNC( TLIST_ENSUREVISIBLE )          /* METHOD EnsureVisible( nItem ) CLASS TList */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
@@ -1002,9 +1002,9 @@ HB_FUNC( TLIST_ENSUREVISIBLE )   // METHOD EnsureVisible( nItem )
       if( nItem > 0 )
       {
          if( nItem < nTopIndex )
-            nTopIndex = nItem - 1;                               // scroll up
+            nTopIndex = nItem - 1;                               /* scroll up */
          else if( nItem >= nTopIndex + nVisibleCount )
-            nTopIndex = nItem - nVisibleCount;                   // scroll down
+            nTopIndex = nItem - nVisibleCount;                   /* scroll down */
       }
       SendMessage( oSelf->hWnd, LB_SETTOPINDEX, (WPARAM) nTopIndex, 0 );
    }
@@ -1032,12 +1032,12 @@ HB_FUNC( LISTBOXSETCOLUMNWIDTH )
 
 HB_FUNC( LISTBOXFINDSTRING )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRING, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) + 1 );
 }
 
 HB_FUNC( LISTBOXFINDSTRINGEXACT )
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRINGEXACT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), LB_FINDSTRINGEXACT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) + 1 );
 }
 
 #pragma ENDDUMP
