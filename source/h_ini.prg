@@ -243,7 +243,7 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
    const char * lpFileName = hb_parc( 4 );
    dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
    if( dwLen )
-      hb_retclen( ( char * ) bBuffer, dwLen );
+      hb_retclen( (char *) bBuffer, dwLen );
    else
       hb_retc( lpDefault );
 }
@@ -263,18 +263,18 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
 
 HB_FUNC( DELINIENTRY )
 {
-   hb_retl( WritePrivateProfileString( hb_parc( 1 ),         // Section
-                                       hb_parc( 2 ),         // Entry
-                                       NULL,                 // String
-                                       hb_parc( 3 ) ) );     // INI File
+   hb_retl( WritePrivateProfileString( hb_parc( 1 ),         /* Section */
+                                       hb_parc( 2 ),         /* Entry */
+                                       NULL,                 /* String */
+                                       hb_parc( 3 ) ) );     /* INI File */
 }
 
 HB_FUNC( DELINISECTION )
 {
-   hb_retl( WritePrivateProfileString( hb_parc( 1 ),       // Section
-                                       NULL,               // Entry
-                                       "",                 // String
-                                       hb_parc( 2 ) ) );   // INI File
+   hb_retl( WritePrivateProfileString( hb_parc( 1 ),       /* Section */
+                                       NULL,               /* Entry */
+                                       "",                 /* String */
+                                       hb_parc( 2 ) ) );   /* INI File */
 }
 
 #pragma ENDDUMP
