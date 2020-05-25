@@ -197,11 +197,11 @@ METHOD Value( aValue ) CLASS TCheckList
       nFirst := 0
 
       For i := 1 to ::ItemCount
-         lOld := ListView_GetCheckState( ::hwnd, i )
+         lOld := ListView_GetCheckState( ::hWnd, i )
          lSet := ( aScan( aValue, i ) > 0 )
 
          If lSet # lOld
-            If ListView_SetCheckState( ::hwnd, i, lSet ) == lSet
+            If ListView_SetCheckState( ::hWnd, i, lSet ) == lSet
                lChanged := .T.
                ::LastChangedItem := i
                If lSet .and. nFirst == 0
@@ -222,7 +222,7 @@ METHOD Value( aValue ) CLASS TCheckList
 
    aItems := {}
    For i := 1 to ::ItemCount
-      If ListView_GetCheckState( ::hwnd, i )
+      If ListView_GetCheckState( ::hWnd, i )
          aAdd( aItems, i )
       EndIf
    Next
@@ -272,7 +272,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
    Local nNotify := GetNotifyCode( lParam )
    Local uValue, uRet, nItem
 
-   Empty( wParam )
+   HB_SYMBOL_UNUSED( wParam )
 
    If nNotify == NM_CUSTOMDRAW
       // hide the horizontal scrollbar if any is shown
@@ -367,12 +367,12 @@ METHOD CheckItem( nItem, lChecked ) CLASS TCheckList
    Local lRet, lOld
 
    If HB_IsNumeric( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
-      lOld := ListView_GetCheckState( ::hwnd, nItem )
+      lOld := ListView_GetCheckState( ::hWnd, nItem )
 
       If HB_IsLogical( lChecked ) .AND. lChecked # lOld
-         ListView_SetCheckState( ::hwnd, nItem, lChecked )
+         ListView_SetCheckState( ::hWnd, nItem, lChecked )
 
-         lRet := ListView_GetCheckState( ::hwnd, nItem )
+         lRet := ListView_GetCheckState( ::hWnd, nItem )
 
          If lRet # lOld
             ::LastChangedItem := nItem
