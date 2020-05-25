@@ -244,9 +244,9 @@ enum {
 };
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TCheckBox_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TCheckBox_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -255,7 +255,7 @@ static WNDPROC _OOHG_TCheckBox_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -277,24 +277,24 @@ HB_FUNC( INITCHECKBOX )          /* FUNCTION InitCheckBox( hWnd, cCaption, hMenu
                              hb_parni( 4 ), hb_parni( 5 ), hb_parni( 8 ), hb_parni( 9 ),
                              HWNDparam( 1 ), HMENUparam( 3 ), GetModuleHandle( NULL ), NULL ) ;
 
-   _OOHG_TCheckBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hChkBox, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TCheckBox_lpfnOldWndProc( SetWindowLongPtr( hChkBox, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hChkBox );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
+int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
    DTTOPTS pOptions;
    HTHEME hTheme;
-   INT state_id, checkState, drawState;
+   int state_id, checkState, drawState;
    LONG_PTR style, state;
    RECT content_rect, aux_rect;
    SIZE s;
    OSVERSIONINFO osvi;
-   static const INT cb_states[ 3 ][ 5 ] =
+   static const int cb_states[ 3 ][ 5 ] =
    {
       { CBS_UNCHECKEDNORMAL, CBS_UNCHECKEDHOT, CBS_UNCHECKEDPRESSED, CBS_UNCHECKEDDISABLED, CBS_UNCHECKEDNORMAL },
       { CBS_CHECKEDNORMAL,   CBS_CHECKEDHOT,   CBS_CHECKEDPRESSED,   CBS_CHECKEDDISABLED,   CBS_CHECKEDNORMAL },
@@ -374,13 +374,13 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
       {
          aux_rect.right = content_rect.right;
          aux_rect.left = aux_rect.right - s.cx;
-         content_rect.right = aux_rect.left - 3;      // Arbitrary margin between text and button
+         content_rect.right = aux_rect.left - 3;      /* Arbitrary margin between text and button */
       }
       else
       {
          aux_rect.left = content_rect.left;
          aux_rect.right = aux_rect.left + s.cx;
-         content_rect.left = aux_rect.right + 3;      // Arbitrary margin between text and button
+         content_rect.left = aux_rect.right + 3;      /* Arbitrary margin between text and button */
       }
 
       /* aux_rect is the rect of the item's button area */
@@ -448,8 +448,8 @@ INT TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TCHECKBOX_NOTIFY_CUSTOMDRAW )          /* FUNCTION TCheckBox_Notify_CustomDraw( hWnd, lParam, cCaption, lDrawBkGrnd, lLeftAlign, lNoFocusRect ) -> nRet */
 {
-   hb_retni( TCheckBox_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) hb_parnl( 2 ), ( LPCSTR ) hb_parc( 3 ),
-                                          ( BOOL ) hb_parl( 4 ), ( BOOL ) hb_parl( 5 ), ( BOOL ) hb_parl( 6 ) ) );
+   hb_retni( TCheckBox_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ),
+                                          (BOOL) hb_parl( 4 ), (BOOL) hb_parl( 5 ), (BOOL) hb_parl( 6 ) ) );
 }
 
 #pragma ENDDUMP
