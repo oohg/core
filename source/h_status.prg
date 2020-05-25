@@ -596,9 +596,9 @@ FUNCTION _SetStatusItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, l
 #define NUM_OF_PARTS 40
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TMessageBar_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TMessageBar_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -607,7 +607,7 @@ static WNDPROC _OOHG_TMessageBar_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -620,7 +620,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITMESSAGEBAR )          /* FUNCTION InitMonthCal( hWnd, cCaption, nId, lTop ) -> hWnd */
 {
    HWND hCtrl;
-   INT Style;
+   int Style;
 
    Style = WS_CHILD | WS_VISIBLE | WS_BORDER | SBT_TOOLTIPS;
    if( hb_parl( 4 ) )
@@ -632,7 +632,7 @@ HB_FUNC( INITMESSAGEBAR )          /* FUNCTION InitMonthCal( hWnd, cCaption, nId
 
    hCtrl = CreateStatusWindow( Style, hb_parc( 2 ), HWNDparam( 1 ), hb_parni ( 3 ) );
 
-   _OOHG_TMessageBar_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TMessageBar_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -645,7 +645,7 @@ HB_FUNC( GETITEMCOUNT )
 
 HB_FUNC( SETITEMBAR )
 {
-   SendMessage( HWNDparam( 1 ), SB_SETTEXT, hb_parni( 3 ), ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), SB_SETTEXT, hb_parni( 3 ), (LPARAM) HB_UNCONST( hb_parc( 2 ) ) );
 }
 
 HB_FUNC( GETITEMBAR )
@@ -657,7 +657,7 @@ HB_FUNC( GETITEMBAR )
    hWnd = HWNDparam( 1 );
    iPos = hb_parni( 2 );
    cString = (char *) hb_xgrab( LOWORD( SendMessage( hWnd, SB_GETTEXTLENGTH, iPos, 0 ) ) + 1 );
-   SendMessage( hWnd, SB_GETTEXT, ( WPARAM ) iPos, ( LPARAM ) cString );
+   SendMessage( hWnd, SB_GETTEXT, (WPARAM) iPos, (LPARAM) cString );
    hb_retc( cString );
    hb_xfree( cString );
 }
@@ -738,13 +738,13 @@ HB_FUNC( INITITEMBAR )
       SendMessage( hWndSB, SB_SETICON, (WPARAM) ( nrOfParts - 1 ), (LPARAM) hIcon );
    }
 
-   SendMessage( hWndSB, SB_SETTEXT, (WPARAM) ( ( nrOfParts - 1 ) | displayFlags ), (LPARAM) hb_parc( 2 ) );
-   SendMessage( hWndSB, SB_SETTIPTEXT, (WPARAM) ( nrOfParts - 1 ), (LPARAM) hb_parc( 7 ) );
+   SendMessage( hWndSB, SB_SETTEXT, (WPARAM) ( ( nrOfParts - 1 ) | displayFlags ), (LPARAM) HB_UNCONST( hb_parc( 2 ) ) );
+   SendMessage( hWndSB, SB_SETTIPTEXT, (WPARAM) ( nrOfParts - 1 ), (LPARAM) HB_UNCONST( hb_parc( 7 ) ) );
 
    hb_retni( nrOfParts );
 }
 
-//////////// to check...
+/* TODO: check */
 HB_FUNC( GETITEMWIDTH )
 {
    HWND  hWnd;
@@ -757,8 +757,8 @@ HB_FUNC( GETITEMWIDTH )
    iSize = 0;
    if( iItems != 0 && iPos <= iItems )
    {
-      piItems = (int *) hb_xgrab( sizeof( int ) * iItems );
-      SendMessage( hWnd, SB_GETPARTS, iItems, ( LPARAM ) piItems );
+      piItems = (int *) hb_xgrab( sizeof(int) * iItems );
+      SendMessage( hWnd, SB_GETPARTS, iItems, (LPARAM) piItems );
       if( iPos == 1 )
       {
          iSize = piItems[ iPos - 1 ];
@@ -774,7 +774,7 @@ HB_FUNC( GETITEMWIDTH )
 
 HB_FUNC( SETITEMTOOLTIP )
 {
-   SendMessage( HWNDparam( 1 ), SB_SETTIPTEXT, hb_parni( 3 ), ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), SB_SETTIPTEXT, hb_parni( 3 ), (LPARAM) HB_UNCONST( hb_parc( 2 ) ) );
 }
 
 HB_FUNC( GETITEMTOOLTIP )
@@ -784,13 +784,13 @@ HB_FUNC( GETITEMTOOLTIP )
    cBuffer[ 0 ] = 0;
    SendMessage( HWNDparam( 1 ), SB_GETTIPTEXT,
                 MAKEWPARAM( hb_parni( 2 ), 1023 ),
-                ( LPARAM ) cBuffer );
+                (LPARAM) cBuffer );
 
    hb_retc( cBuffer );
 }
 
-//////////// to check...
-HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
+/* TODO: check */
+HB_FUNC( REFRESHITEMBAR )          /* FUNCTION RefreshItemBar( hWnd, aWidths, lAutoAdjust ) -> nItems */
 {
    HWND  hWnd;
    int   *piItems;
@@ -801,12 +801,12 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
    iItems = SendMessage( hWnd, SB_GETPARTS, 0, 0 );
    if( iItems != 0 )
    {
-      // GetWindowRect( hWnd, &rect );
+      /* GetWindowRect( hWnd, &rect ); */
       GetClientRect( GetParent( hWnd ), &rect );
       iWidth = rect.right - rect.left;
 
-      piItems = (int *) hb_xgrab( sizeof( int ) * iItems );
-      SendMessage( hWnd, SB_GETPARTS, iItems, ( WPARAM ) piItems );
+      piItems = (int *) hb_xgrab( sizeof(int) * iItems );
+      SendMessage( hWnd, SB_GETPARTS, iItems, (WPARAM) piItems );
         if( hb_parl( 3 ) )
       {
          iCount = iItems;
@@ -826,46 +826,44 @@ HB_FUNC( REFRESHITEMBAR )   // ( hWnd, aWidths, lAutoAdjust )
             piItems[ iCount ] = iWidth;
          }
       }
-      SendMessage( hWnd, SB_SETPARTS, iItems, ( LPARAM ) piItems );
+      SendMessage( hWnd, SB_SETPARTS, iItems, (LPARAM) piItems );
       MoveWindow( hWnd, 0, 0, 0, 0, TRUE );
       hb_xfree( piItems );
    }
    hb_retni( iItems );
 }
 
-//////////// to check...
-HB_FUNC_EXTERN( SETSTATUSITEMICON )
+/* TODO: check */
+HB_FUNC( SETSTATUSITEMICON )
 {
-   HWND  hwnd;
-   RECT  rect;
+   HWND hwnd;
+   RECT rect;
    HICON hIcon ;
-   int   cx;
-   int   cy;
+   int cx, cy;
 
    hwnd = HWNDparam( 1 );
 
-   // Unloads from memory current icon
-   DestroyIcon( ( HICON ) SendMessage( hwnd, SB_GETICON, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) 0 ) );
+   /* Unloads from memory current icon */
+   DestroyIcon( (HICON) SendMessage( hwnd, SB_GETICON, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) 0 ) );
 
-   //
    GetClientRect( hwnd, &rect );
    cy = rect.bottom - rect.top-4;
    cx = cy;
 
-   hIcon = ( HICON ) LoadImage( GetModuleHandle( NULL ), hb_parc( 3 ), IMAGE_ICON, cx, cy, 0 );
+   hIcon = (HICON) LoadImage( GetModuleHandle( NULL ), hb_parc( 3 ), IMAGE_ICON, cx, cy, 0 );
 
    if( ! hIcon )
    {
-      hIcon = ( HICON ) LoadImage( 0, hb_parc( 3 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
+      hIcon = (HICON) LoadImage( 0, hb_parc( 3 ), IMAGE_ICON, cx, cy, LR_LOADFROMFILE );
    }
 
-   SendMessage( hwnd, SB_SETICON, ( WPARAM ) hb_parni( 2 ) - 1, ( LPARAM ) hIcon );
+   SendMessage( hwnd, SB_SETICON, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) hIcon );
 }
 
 HB_FUNC( KEYTOGGLE )
 {
    BYTE pBuffer[ 256 ];
-   WORD wKey = ( WORD ) hb_parni( 1 );
+   WORD wKey = (WORD) hb_parni( 1 );
 
    GetKeyboardState( pBuffer );
 
@@ -893,7 +891,7 @@ HB_FUNC_STATIC( TMESSAGEBAR_BACKCOLOR )
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 #pragma ENDDUMP
