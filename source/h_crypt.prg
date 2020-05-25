@@ -581,21 +581,21 @@ FUNCTION DB_CODE( cData, cKey, aFields, cPass, cFor, cWhile )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CHARXOR )
 {
-   const CHAR *cData, *cMask;
-   CHAR *cRet, *cPos;
+   const char *cData, *cMask;
+   char *cRet, *cPos;
    ULONG ulData, ulMask, ulRemain, ulMaskPos;
 
    ulData = hb_parclen( 1 );
    ulMask = hb_parclen( 2 );
-   cData = ( const CHAR * ) hb_parc( 1 );
-   cMask = ( const CHAR * ) hb_parc( 2 );
+   cData = ( const char * ) hb_parc( 1 );
+   cMask = ( const char * ) hb_parc( 2 );
    if( ulData == 0 || ulMask == 0 )
    {
       hb_retclen( cData, ulData );
    }
    else
    {
-      cRet = ( CHAR * ) hb_xgrab( ulData );
+      cRet = (char *) hb_xgrab( ulData );
 
       cPos = cRet;
       ulRemain = ulData;
