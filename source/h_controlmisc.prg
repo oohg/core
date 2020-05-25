@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -69,15 +69,6 @@
 
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
-
-#pragma BEGINDUMP
-
-#include "oohg.h"
-#include "hbapiitm.h"
-#include "hbvm.h"
-#include "hbstack.h"
-
-#pragma ENDDUMP
 
 Function _Getvalue( ControlName, ParentForm )
 
@@ -2007,25 +1998,29 @@ METHOD DoChange() CLASS TControl
 
 #pragma BEGINDUMP
 
+#include "oohg.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+
 #define s_Super s_TWindow
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   ULONG lData;
+   ULONG_PTR lData;
 
    switch( message )
    {
       case WM_MOUSEMOVE:
          _OOHG_Send( pSelf, s_hCursor );
          hb_vmSend( 0 );
-         lData = hb_parnl( -1 );
+         lData = HB_PARNL( -1 );
          if( lData )
          {
             SetCursor( ( HCURSOR ) lData );
@@ -2041,11 +2036,13 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam
          hb_ret();
          break;
 
-      // *** Commented for use current behaviour.
-      // case WM_LBUTTONUP:
-      //    _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
-      //    hb_ret();
-      //    break;
+      /*
+       * Commented for use current behaviour.
+       * case WM_LBUTTONUP:
+       *    _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
+       *    hb_ret();
+       *    break;
+       */
 
       case WM_LBUTTONDBLCLK:
          _OOHG_DoEventMouseCoords( pSelf, s_OnDblClick, "DBLCLICK", lParam );
@@ -2090,12 +2087,12 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hdc = ( HDC ) HB_PARNL( 1 );
+   HDC hdc = (HDC) HB_PARNL( 1 );
    HBRUSH OldBrush, NewBrush;
-   LONG lBackColor;
+   long lBackColor;
    RECT rc;
    BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
-   HWND hwnd = 0;
+   HWND hWnd = 0;
    PHB_ITEM pBkGrnd;
    POCTRL oBkGrnd;
    POINT pt;
@@ -2104,7 +2101,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
 
    if( oSelf->lFontColor != -1 )
    {
-      SetTextColor( hdc, ( COLORREF ) oSelf->lFontColor );
+      SetTextColor( hdc, (COLORREF) oSelf->lFontColor );
    }
 
    /* Check if the control has a valid BACKGROUND object */
@@ -2114,9 +2111,9 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    if( pBkGrnd )
    {
       oBkGrnd = _OOHG_GetControlInfo( pBkGrnd );
-      hwnd = oBkGrnd->hWnd;
+      hWnd = oBkGrnd->hWnd;
    }
-   if( ValidHandler( hwnd ) )
+   if( ValidHandler( hWnd ) )
    {
       bPaint = TRUE;
    }
@@ -2125,8 +2122,8 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       /* If not, check if it's inside a TAB and has TRANSPARENT clause */
       _OOHG_Send( pSelf, s_TabHandle );
       hb_vmSend( 0 );
-      hwnd = HWNDparam( -1 );
-      if( ValidHandler( hwnd ) )
+      hWnd = HWNDparam( -1 );
+      if( ValidHandler( hWnd ) )
       {
          _OOHG_Send( pSelf, s_Transparent );
          hb_vmSend( 0 );
@@ -2138,14 +2135,14 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
         /* Paint using a brush derived from the BACKGROUND object or the TAB */
       SetBkMode( hdc, TRANSPARENT );
       DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = GetTabBrush( hwnd );
+      oSelf->BrushHandle = GetTabBrush( hWnd );
       oSelf->lOldBackColor = -1;
       pt.x = 0; pt.y = 0;
-      MapWindowPoints( oSelf->hWnd, hwnd, &pt, 1 );
+      MapWindowPoints( oSelf->hWnd, hWnd, &pt, 1 );
       SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
-      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+      OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
       DeleteObject( OldBrush );
-      HB_RETNL( ( INT_PTR ) oSelf->BrushHandle );
+      HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
       return;
    }
 
@@ -2157,9 +2154,9 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       /* Paint using a NULL brush */
       SetBkMode( hdc, TRANSPARENT );
       DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = GetStockObject( NULL_BRUSH );
+      oSelf->BrushHandle = (HBRUSH) GetStockObject( NULL_BRUSH );
       oSelf->lOldBackColor = -1;
-      OldBrush = SelectObject( hdc, oSelf->BrushHandle );
+      OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
       DeleteObject( OldBrush );
 
       /* FRAME, CHECKBOX, BUTTON, RADIOITEM */
@@ -2181,19 +2178,19 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
          lBackColor = GetSysColor( hb_parnl( 2 ) );
          bUseSys = TRUE;
       }
-      SetBkColor( hdc, ( COLORREF ) lBackColor );
+      SetBkColor( hdc, (COLORREF) lBackColor );
       if( lBackColor != oSelf->lOldBackColor )
       {
          oSelf->lOldBackColor = lBackColor;
          if( bUseSys )
          {
-            NewBrush = GetSysColorBrush( hb_parnl( 2 ) );
+            NewBrush = (HBRUSH) GetSysColorBrush( hb_parnl( 2 ) );
          }
          else
          {
             NewBrush = CreateSolidBrush( lBackColor );
          }
-         OldBrush = SelectObject( hdc, NewBrush );
+         OldBrush = (HBRUSH) SelectObject( hdc, NewBrush );
          if( oSelf->OriginalBrush )
          {
             DeleteObject( OldBrush );
@@ -2206,7 +2203,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       }
    }
 
-   HB_RETNL( ( INT_PTR ) oSelf->BrushHandle );
+   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP
@@ -2546,9 +2543,6 @@ PROCEDURE _OOHG_Init_C_Vars_Controls()
 
    RETURN
 
-
-EXTERN _OOHG_UnTransform
-
 #pragma BEGINDUMP
 
 HB_FUNC( _OOHG_UNTRANSFORM )
@@ -2569,7 +2563,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
    {
       cText = ( const char * ) hb_parc( 1 );
       cPicture = ( const char * ) hb_parc( 2 );
-      cReturn = ( char * ) hb_xgrab( iMax );
+      cReturn = (char *) hb_xgrab( iMax );
       iReturn = 0;
 
       if( hb_parclen( 3 ) > 0 )
@@ -2589,7 +2583,7 @@ HB_FUNC( _OOHG_UNTRANSFORM )
       bIgnoreMasks = ( cType == 'N' || cType == 'L' );
       bPadLeft = 0;
 
-      // Picture function
+      /* Picture function */
       if( iPicture && *cPicture == '@' )
       {
          iPicture--;
@@ -2632,6 +2626,8 @@ HB_FUNC( _OOHG_UNTRANSFORM )
                   }
                   break;
 
+               default:
+                  break;
             }
          }
          if( iPicture && *cPicture == ' ' )
@@ -2647,9 +2643,10 @@ HB_FUNC( _OOHG_UNTRANSFORM )
          {
             iPicture--;
             cPicture++;
-            // TODO:
-            // - Must fill cReturn[] left?
-            // - Must bIgnoreMasks ?
+            /* TODO:
+             * - Must fill cReturn[] left?
+             * - Must bIgnoreMasks ?
+             */
          }
       }
 
