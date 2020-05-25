@@ -137,19 +137,18 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
    Local nNotify := GetNotifyCode( lParam )
    Local oControl, cToolTip
 
-   HB_SYMBOL_UNUSED( wParam )
+   HB_SYMBOL_UNUSED( wParam  )
 
-   If     nNotify == TTN_GETDISPINFO
+   IF nNotify == TTN_GETDISPINFO
       oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
       cToolTip := oControl:cToolTip
       IF HB_IsBlock( cToolTip )
          oControl:DoEvent( { || cToolTip := EVAL( cToolTip, oControl ) }, "TOOLTIP" )
       EndIf
       _SetToolTipGetDispInfo( lParam, cToolTip )
+   ENDIF
 
-   EndIf
-
-   Return ::Super:Events_Notify( wParam, lParam )
+   RETURN ::Super:Events_Notify( wParam, lParam )
 
 METHOD WindowWidth( nWidth ) CLASS TToolTip
 
@@ -338,17 +337,17 @@ METHOD Title( cTitle ) CLASS TToolTip
 
 #include "oohg.h"
 
-static LONG _OOHG_TooltipBackcolor = -1;     // Tooltip's backcolor
-static LONG _OOHG_TooltipForecolor = -1;     // Tooltip's forecolor
+static long _OOHG_TooltipBackcolor = -1;     /* Tooltip's backcolor */
+static long _OOHG_TooltipForecolor = -1;     /* Tooltip's forecolor */
 
 #ifndef TTS_CLOSE
    #define TTS_CLOSE 0x80
 #endif
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -357,7 +356,7 @@ static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -396,25 +395,24 @@ HB_FUNC( INITTOOLTIP )
          {
             if( _OOHG_TooltipBackcolor != -1 )
             {
-               SendMessage( htooltip, TTM_SETTIPBKCOLOR, ( WPARAM ) _OOHG_TooltipBackcolor, 0 );
+               SendMessage( htooltip, TTM_SETTIPBKCOLOR, (WPARAM) _OOHG_TooltipBackcolor, 0 );
             }
 
             if( _OOHG_TooltipForecolor != -1 )
             {
-               SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, ( WPARAM ) _OOHG_TooltipForecolor, 0 );
+               SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, (WPARAM) _OOHG_TooltipForecolor, 0 );
             }
          }
       }
    }
 
-   _OOHG_TToolTip_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( htooltip, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( htooltip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( htooltip );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-
-HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
+HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolTip ) -> 0 */
 {
    TOOLINFO  ti;
 
@@ -427,35 +425,33 @@ HB_FUNC( SETTOOLTIP )   // ( hWnd, cToolTip, hWndToolTip )
    memset( &ti, 0, sizeof( ti ) );
 
    ti.cbSize = sizeof( ti );
-// TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK
+/* TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK */
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
    ti.uId = ( UINT_PTR ) hWnd;
 
-   if( SendMessage( hWnd_ToolTip, ( UINT ) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
+   if( SendMessage( hWnd_ToolTip, (UINT) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
    {
-      SendMessage( hWnd_ToolTip, ( UINT ) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
+      SendMessage( hWnd_ToolTip, (UINT) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
    }
 
    ti.cbSize = sizeof( ti );
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT ) hWnd;
+   ti.uId = ( UINT_PTR ) hWnd;
    if( HB_ISBLOCK( 2 ) )
    {
       ti.lpszText = LPSTR_TEXTCALLBACK;
    }
    else
    {
-      ti.lpszText = ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) );
+      ti.lpszText = (LPTSTR) HB_UNCONST( hb_parc( 2 ) );
    }
 
    SendMessage( hWnd_ToolTip, (UINT) TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti );
-
-   hb_retni( 0 );
 }
 
-HB_FUNC( GETTOOLTIP )   // ( hWnd, hWndToolTip )
+HB_FUNC( GETTOOLTIP )          /* FUNCTION GetToolTip( hWnd, hWndToolTip ) -> cText */
 {
    TOOLINFO ti;
    HWND hWnd_ToolTip;
@@ -469,13 +465,13 @@ HB_FUNC( GETTOOLTIP )   // ( hWnd, hWndToolTip )
    ti.cbSize = sizeof( ti );
    ti.uFlags = TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT ) hWnd;
-   ti.lpszText = ( LPTSTR ) &cText;
+   ti.uId = ( UINT_PTR ) hWnd;
+   ti.lpszText = (LPTSTR) &cText;
    cText[ 0 ] = 0;
 
    SendMessage( hWnd_ToolTip, TTM_GETTOOLINFO, 0, (LPARAM) &ti );
 
-   hb_retc( ( char * ) &cText );
+   hb_retc( (char *) &cText );
 }
 
 HB_FUNC( _SETTOOLTIPBACKCOLOR )
@@ -488,19 +484,21 @@ HB_FUNC( _SETTOOLTIPFORECOLOR )
    _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
 }
 
-HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )     // ( lParam )
+HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )          /* FUNCTION _GetToolTipGetDispInfoHWND( lParam ) -> hWnd */
 {
    NMTTDISPINFO *notify;
-   notify = ( NMTTDISPINFO * ) hb_parnl( 1 );
+   notify = (NMTTDISPINFO *) HB_PARNL( 1 );
    HWNDret( notify->hdr.idFrom );
 }
 
-static char _OOHG_ToolTipBuffer[ 10001 ];             // TODO: Thread safe ?
+static char _OOHG_ToolTipBuffer[ 10001 ];      
 
-HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
+HB_FUNC( _SETTOOLTIPGETDISPINFO )          /* FUNCTION _SetToolTipGetDispInfo( lParam, cToolTip ) -> NIL */
 {
    NMTTDISPINFO *notify;
    int iLen;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
    iLen = hb_parclen( 2 );
    if( iLen > 10000 )
@@ -513,10 +511,12 @@ HB_FUNC( _SETTOOLTIPGETDISPINFO )     // ( lParam, cToolTip )
    }
    _OOHG_ToolTipBuffer[ iLen ] = 0;
 
-   notify = ( NMTTDISPINFO * ) hb_parnl( 1 );
-   notify->lpszText = ( LPSTR ) _OOHG_ToolTipBuffer;
+   notify = (NMTTDISPINFO *) HB_PARNL( 1 );
+   notify->lpszText = (LPSTR) _OOHG_ToolTipBuffer;
    notify->szText[ 0 ] = 0;
    notify->hinst = NULL;
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
 HB_FUNC( GETINITIALTIME )
@@ -560,7 +560,7 @@ HB_FUNC( GETDOUBLECLICKTIME )
 }
 
 #ifndef TTM_GETTITLE
-   #define TTM_GETTITLE ( WM_USER + 35 ) // wParam = 0, lParam = TTGETTITLE*
+   #define TTM_GETTITLE ( WM_USER + 35 ) /* wParam = 0, lParam = TTGETTITLE* */
 
    typedef struct _TTGETTITLE
    {
@@ -571,7 +571,7 @@ HB_FUNC( GETDOUBLECLICKTIME )
    } TTGETTITLE, *PTTGETTITLE;
 #endif
 
-HB_FUNC( TTOOLTIP_GETICON )   // ( hWnd )
+HB_FUNC( TTOOLTIP_GETICON )          /* FUNCTION TToolTip_GetIcon( hWnd ) -> nIcon */
 {
    TTGETTITLE gt;
 
@@ -583,7 +583,7 @@ HB_FUNC( TTOOLTIP_GETICON )   // ( hWnd )
    hb_retni( (int) gt.uTitleBitmap );
 }
 
-HB_FUNC( TTOOLTIP_GETTITLE )   // ( hWnd )
+HB_FUNC( TTOOLTIP_GETTITLE )          /* FUNCTION TToolTip_GetTitle( hWnd ) -> cTitle */
 {
    TTGETTITLE gt;
    char *cBuffer;
@@ -610,9 +610,9 @@ HB_FUNC( TTOOLTIP_GETTITLE )   // ( hWnd )
    #define TTM_SETTITLE ( WM_USER + 32 )
 #endif
 
-HB_FUNC( TTOOLTIP_SETICONANDTITLE )   // ( hWnd, nIcon, cTitle )
+HB_FUNC( TTOOLTIP_SETICONANDTITLE )          /* FUNCTION TToolTip_SetIconAndTitle( hWnd, nIcon, cTitle ) -> lSuccess */
 {
-   hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) hb_parni( 2 ), (LPARAM) hb_parc( 3 ) ) );
+   hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) hb_parni( 2 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) );
 
 }
 
