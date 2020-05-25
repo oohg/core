@@ -186,8 +186,9 @@ METHOD RangeMax( uValue ) CLASS TProgressMeter
 
 #define s_Super s_TLabel
 
-// lAux[ 0 ] = Percent
-// lAux[ 1 ] = Align
+/* lAux[ 0 ] = Percent
+ * lAux[ 1 ] = Align
+ */
 
 void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
 {
@@ -223,11 +224,11 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
 
    if( oSelf->AuxBuffer )
    {
-      txt = ( char * ) oSelf->AuxBuffer;
+      txt = (char *) oSelf->AuxBuffer;
    }
    else
    {
-      sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
+      sprintf( cPercent, "%i%%", (int)( oSelf->lAux[ 0 ] / 100 ) );
       txt = cPercent;
    }
    len = strlen( txt );
@@ -237,7 +238,7 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    FontColor = SetTextColor( hdc2, xFont );
    BackColor = SetBkColor( hdc2, xBack );
    SetTextAlign( hdc2, oSelf->lAux[ 1 ] );
-   hOldFont = ( HFONT ) SelectObject( hdc2, oSelf->hFontHandle );
+   hOldFont = (HFONT) SelectObject( hdc2, oSelf->hFontHandle );
    rect2.right = iWidth1;
    ExtTextOut( hdc2, x, 0, ETO_CLIPPED | ETO_OPAQUE, &rect2, txt, len, NULL );
    rect2.left = iWidth1;
@@ -255,12 +256,12 @@ void ProgressMeter_Paint( POCTRL oSelf, HDC hdc )
    }
 }
 
-HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TProgressMeter
+HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TProgressMeter */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
 
@@ -289,16 +290,16 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
       case WM_GETTEXT:
          {
             char *txt;
-            unsigned long len;
+            ULONG len;
             char cPercent[ 100 ];
 
             if( oSelf->AuxBuffer )
             {
-               txt = ( char * ) oSelf->AuxBuffer;
+               txt = (char *) oSelf->AuxBuffer;
             }
             else
             {
-               sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
+               sprintf( cPercent, "%i%%", (int)( oSelf->lAux[ 0 ] / 100 ) );
                txt = cPercent;
             }
             len = strlen( txt ) + 1;
@@ -313,9 +314,9 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
             len--;
             if( len )
             {
-               memcpy( ( char * ) lParam, txt, len );
+               memcpy( (char *) lParam, txt, len );
             }
-            ( ( char * ) lParam )[ len ] = 0;
+            ( (char *) lParam )[ len ] = 0;
 
             hb_retnl( len );
          }
@@ -324,21 +325,21 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
       case WM_GETTEXTLENGTH:
          if( oSelf->AuxBuffer )
          {
-            hb_retnl( strlen( ( char * ) oSelf->AuxBuffer ) );
+            hb_retnl( strlen( (char *) oSelf->AuxBuffer ) );
          }
          else
          {
             char cPercent[ 100 ];
-            sprintf( cPercent, "%i%%", ( int )( oSelf->lAux[ 0 ] / 100 ) );
+            sprintf( cPercent, "%i%%", (int)( oSelf->lAux[ 0 ] / 100 ) );
             hb_retnl( strlen( cPercent ) );
          }
          break;
 
       case WM_SETTEXT:
          {
-            unsigned long iLen;
+            ULONG iLen;
 
-            iLen = lParam ? strlen( ( char * ) lParam ) : 0;
+            iLen = lParam ? strlen( (char *) lParam ) : 0;
             if( iLen )
             {
                if( iLen > oSelf->AuxBufferLen )
@@ -350,7 +351,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
                   oSelf->AuxBuffer = (BYTE *) hb_xgrab( iLen + 1 );
                   oSelf->AuxBufferLen = iLen;
                }
-               memcpy( oSelf->AuxBuffer, ( char * ) lParam, iLen + 1 );
+               memcpy( oSelf->AuxBuffer, (char *) lParam, iLen + 1 );
             }
             else
             {
@@ -372,7 +373,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, 
          _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
          HWNDpush( hWnd );
          hb_vmPushLong( message );
-         hb_vmPushNumInt( wParam );
+         hb_vmPushNumInt( wParam  );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 4 );
          break;
@@ -384,7 +385,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    double dNum;
-   LONG lNum;
+   long lNum;
 
    if( HB_ISNUM( 1 ) )
    {
@@ -399,7 +400,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_SETPERCENT )
       }
       else
       {
-         lNum = ( LONG ) dNum;
+         lNum = (long) dNum;
       }
       if( lNum != oSelf->lAux[ 0 ] || ( HB_ISLOG( 2 ) && hb_parl( 2 ) ) )
       {
