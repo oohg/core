@@ -139,7 +139,7 @@ CLASS TCombo FROM TLabel
    METHOD Rows                    SETGET
    METHOD SelectFirstItem         BLOCK { |Self| ComboSetCursel( ::hWnd, 1 ) }
    METHOD SelectLastItem          BLOCK { |Self| ComboSetCursel( ::hWnd, ::ItemCount ) }
-   METHOD SelectString            BLOCK { |Self, cString| ComboboxSelectString( ::hwnd, cString ) }
+   METHOD SelectString            BLOCK { |Self, cString| ComboboxSelectString( ::hWnd, cString ) }
    METHOD SetDropDownWidth
    METHOD SetEditSel
    METHOD ShowDropDown
@@ -783,15 +783,15 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCombo
          ELSE
             IF Empty( ::cText )
                ::uIniTime := hb_MilliSeconds()
-               ::cText := Upper( Chr( wParam ) )
+               ::cText := Upper( Chr( wParam  ) )
                nStart := ComboGetCursel( ::hWnd )
             ELSEIF ::SearchLapse > 0 .AND. hb_MilliSeconds() > ::uIniTime + ::SearchLapse
                ::uIniTime := hb_MilliSeconds()
-               ::cText := Upper( Chr( wParam ) )
+               ::cText := Upper( Chr( wParam  ) )
                nStart := ComboGetCursel( ::hWnd )
             ELSE
                ::uIniTime := hb_MilliSeconds()
-               ::cText += Upper( Chr( wParam ) )
+               ::cText += Upper( Chr( wParam  ) )
                nStart := ::nLastFound
             ENDIF
 
@@ -1227,9 +1227,9 @@ METHOD DeleteAllItems() CLASS TCombo
 #define s_Super s_TLabel
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TCombo_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TCombo_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -1238,7 +1238,7 @@ static WNDPROC _OOHG_TCombo_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1251,7 +1251,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, nId, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
    HWND hcombo;
-   INT Style, StyleEx;
+   int Style, StyleEx;
 
    Style = hb_parni( 7 ) | WS_CHILD | WS_VSCROLL | CBS_HASSTRINGS;
    StyleEx = _OOHG_RTL_Status( hb_parl( 8 ) );
@@ -1260,7 +1260,7 @@ HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, nId, nCol, nRow
                             hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                             HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hcombo, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TCombo_lpfnOldWndProc( SetWindowLongPtr( hcombo, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hcombo );
 }
@@ -1268,19 +1268,19 @@ HB_FUNC( INITCOMBOBOX )          /* FUNCTION InitCombobox( hWnd, nId, nCol, nRow
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOADDSTRING )          /* FUNCTION ComboAddString( hWnd, cString ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), CB_ADDSTRING, 0, ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), CB_ADDSTRING, 0, (LPARAM) hb_parc( 2 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOINSERTSTRING )          /* FUNCTION ComboInsertString( hWnd, cString, nPos ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, ( WPARAM ) ( hb_parni( 3 ) - 1 ), ( LPARAM ) hb_parc( 2 ) );
+   SendMessage( HWNDparam( 1 ), CB_INSERTSTRING, (WPARAM) ( hb_parni( 3 ) - 1 ), (LPARAM) hb_parc( 2 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( COMBOSETCURSEL )          /* FUNCTION ComboSetCurSel( hwnd, nPos ) -> NIL */
+HB_FUNC( COMBOSETCURSEL )          /* FUNCTION ComboSetCurSel( hWnd, nPos ) -> NIL */
 {
-   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0 );
+   SendMessage( HWNDparam( 1 ), CB_SETCURSEL, (WPARAM) ( hb_parni( 2 ) - 1 ), 0 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1298,13 +1298,13 @@ HB_FUNC( COMBOGETDROPPEDWIDTH )          /* FUNCTION ComboGetDroppedWidth( hWnd 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOSETDROPPEDWIDTH )          /* FUNCTION ComboSetDroppedWidth( hWnd, nWidth ) -> nWidth */
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH, ( WPARAM ) hb_parni( 2 ), 0 ) );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_SETDROPPEDWIDTH, (WPARAM) hb_parni( 2 ), 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXDELETESTRING )          /* FUNCTION ComboboxDeleteString( hWnd, nPos ) -> lSuccess */
 {
-   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), 0 ) >= 0 )
+   if( SendMessage( HWNDparam( 1 ), CB_DELETESTRING, (WPARAM) ( hb_parni( 2 ) - 1 ), 0 ) >= 0 )
    {
       hb_retl( TRUE );
    }
@@ -1323,12 +1323,12 @@ HB_FUNC( COMBOBOXRESET )          /* FUNCTION ComboboxReset( hWnd ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOGETSTRING )          /* FUNCTION ComboGetString( hWnd, nPos ) -> cString */
 {
-   int iLen = ( int ) SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) 0 );
+   int iLen = (int) SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) 0 );
    char * cString;
 
-   if( iLen > 0 && NULL != ( cString = ( char * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+   if( iLen > 0 && NULL != ( cString = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
    {
-      SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) cString );
+      SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) cString );
       hb_retclen_buffer( cString, iLen );
    }
    else
@@ -1360,11 +1360,11 @@ HB_FUNC( COMBOBOXGETALLITEMS )          /* FUNCTION ComboboxGetAllItems( hWnd ) 
 
       for( i = 1; i <= iCount; i++ )
       {
-         iLen = SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, ( WPARAM ) ( i - 1 ), ( LPARAM ) 0 );
+         iLen = SendMessage( HWNDparam( 1 ), CB_GETLBTEXTLEN, (WPARAM) ( i - 1 ), (LPARAM) 0 );
 
-         if( iLen > 0 && NULL != ( cString = ( char * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+         if( iLen > 0 && NULL != ( cString = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
          {
-            SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, ( WPARAM ) ( i - 1 ), ( LPARAM ) cString );
+            SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, (WPARAM) ( i - 1 ), (LPARAM) cString );
             HB_STORC( cString, -1, i );
          }
          else
@@ -1381,30 +1381,30 @@ static void TCombo_SetImageBuffer( POCTRL oSelf, struct IMAGE_PARAMETER pStruct,
 {
    BYTE * cBuffer;
    ULONG ulSize, ulSize2;
-   INT * pImage;
+   int * pImage;
 
    if( oSelf->AuxBuffer || pStruct.iImage1 != -1 || pStruct.iImage2 != -1 )
    {
-      if( nItem >= ( INT ) oSelf->AuxBufferLen )
+      if( nItem >= (int) oSelf->AuxBufferLen )
       {
-         ulSize = sizeof( INT ) * 2 * ( nItem + 100 );
-         cBuffer = ( BYTE * ) hb_xgrab( ulSize );
+         ulSize = sizeof(int) * 2 * ( nItem + 100 );
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
          memset( cBuffer, -1, ulSize );
          if( oSelf->AuxBuffer )
          {
-            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof( INT ) * 2 * oSelf->AuxBufferLen ) );
+            memcpy( cBuffer, oSelf->AuxBuffer, ( sizeof(int) * 2 * oSelf->AuxBufferLen ) );
             hb_xfree( oSelf->AuxBuffer );
          }
          oSelf->AuxBuffer = cBuffer;
          oSelf->AuxBufferLen = nItem + 100;
       }
 
-      pImage = &( ( INT * ) oSelf->AuxBuffer )[ nItem * 2 ];
+      pImage = &( (int *) oSelf->AuxBuffer )[ nItem * 2 ];
       if( nItem < ComboBox_GetCount( oSelf->hWnd ) )
       {
-         ulSize  = sizeof( INT ) * 2 * ComboBox_GetCount( oSelf->hWnd );
-         ulSize2 = sizeof( INT ) * 2 * nItem;
-         cBuffer = ( BYTE * ) hb_xgrab( ulSize );
+         ulSize  = sizeof(int) * 2 * ComboBox_GetCount( oSelf->hWnd );
+         ulSize2 = sizeof(int) * 2 * nItem;
+         cBuffer = (BYTE *) hb_xgrab( ulSize );
          memcpy( cBuffer, pImage, ulSize - ulSize2 );
          memcpy( &pImage[ 2 ], cBuffer, ulSize - ulSize2 );
          hb_xfree( cBuffer );
@@ -1419,18 +1419,18 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lPa
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPDRAWITEMSTRUCT lpdis = ( LPDRAWITEMSTRUCT ) HB_PARNL( 1 );
+   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) HB_PARNL( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
-   CHAR cBuffer[ 2048 ];
-   INT x, y, cx, cy, iImage, dy;
+   char cBuffer[ 2048 ];
+   int x, y, cx, cy, iImage, dy;
 
-   if( lpdis->itemID != ( UINT ) -1 )
+   if( lpdis->itemID != (UINT) -1 )
    {
-      // checks if an image is defined for the current item
+      /* checks if an image is defined for the current item */
       if( oSelf->ImageList && oSelf->AuxBuffer && ( lpdis->itemID + 1 ) <= oSelf->AuxBufferLen )
       {
-         iImage = ( ( INT * ) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
+         iImage = ( (int *) oSelf->AuxBuffer )[ ( lpdis->itemID * 2 ) + ( lpdis->itemState & ODS_SELECTED ? 1 : 0 ) ];
          if( iImage >= 0 && iImage < ImageList_GetImageCount( oSelf->ImageList ) )
          {
             ImageList_GetIconSize( oSelf->ImageList, &cx, &cy );
@@ -1449,11 +1449,11 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lPa
          iImage = -1;
       }
 
-      // text color
+      /* text color */
       if( lpdis->itemState & ODS_SELECTED )
       {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : ( COLORREF ) oSelf->lFontColorSelected ) );
-         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : ( COLORREF ) oSelf->lBackColorSelected ) );
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHTTEXT ) : (COLORREF) oSelf->lFontColorSelected ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColorSelected == -1 ) ? GetSysColor( COLOR_HIGHLIGHT ) : (COLORREF) oSelf->lBackColorSelected ) );
       }
       else if( lpdis->itemState & ODS_DISABLED )
       {
@@ -1462,51 +1462,51 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lPa
       }
       else
       {
-         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : ( COLORREF ) oSelf->lFontColor ) );
-         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : ( COLORREF ) oSelf->lBackColor ) );
+         FontColor = SetTextColor( lpdis->hDC, ( ( oSelf->lFontColor == -1 ) ? GetSysColor( COLOR_WINDOWTEXT ) : (COLORREF) oSelf->lFontColor ) );
+         BackColor = SetBkColor( lpdis->hDC, ( ( oSelf->lBackColor == -1 ) ? GetSysColor( COLOR_WINDOW ) : (COLORREF) oSelf->lBackColor ) );
       }
 
-      // window position
+      /* window position */
       GetTextMetrics( lpdis->hDC, &lptm );
       y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - lptm.tmHeight ) / 2;
       x = LOWORD( GetDialogBaseUnits() ) / 2;
 
-      // text
-      SendMessage( lpdis->hwndItem, CB_GETLBTEXT, lpdis->itemID, ( LPARAM ) cBuffer );
-      ExtTextOut( lpdis->hDC, cx + x * 2, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, ( LPCSTR ) cBuffer, strlen( cBuffer ), NULL );
+      /* text */
+      SendMessage( lpdis->hwndItem, CB_GETLBTEXT, lpdis->itemID, (LPARAM) cBuffer );
+      ExtTextOut( lpdis->hDC, cx + x * 2, y, ETO_CLIPPED | ETO_OPAQUE, &lpdis->rcItem, (LPCSTR) cBuffer, strlen( cBuffer ), NULL );
 
       SetTextColor( lpdis->hDC, FontColor );
       SetBkColor( lpdis->hDC, BackColor );
 
-      // draws image vertically centered
+      /* draws image vertically centered */
       if( iImage != -1 )
       {
-         if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   // there is spare space
+         if( cy < lpdis->rcItem.bottom - lpdis->rcItem.top )                   /* there is spare space */
          {
-            y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         // center image
+            y = ( lpdis->rcItem.bottom + lpdis->rcItem.top - cy ) / 2;         /* center image */
             dy = cy;
          }
          else
          {
-            y = lpdis->rcItem.top;                                             // place image at top
+            y = lpdis->rcItem.top;                                             /* place image at top */
 
             _OOHG_Send( pSelf, s_lAdjustImages );
             hb_vmSend( 0 );
 
             if( hb_parl( -1 ) )
             {
-               dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              // clip exceeding pixels or stretch image
+               dy = ( lpdis->rcItem.bottom - lpdis->rcItem.top );              /* clip exceeding pixels or stretch image */
             }
             else
             {
-               dy = cy;                                                        // use real size
+               dy = cy;                                                        /* use real size */
             }
          }
 
          ImageList_DrawEx( oSelf->ImageList, iImage, lpdis->hDC, x, y, cx, dy, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
       }
 
-      // focused rectangle
+      /* focused rectangle */
       if( lpdis->itemState & ODS_FOCUS )
       {
          DrawFocusRect( lpdis->hDC, &lpdis->rcItem );
@@ -1519,25 +1519,25 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureIte
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = ( LPMEASUREITEMSTRUCT ) ( LPARAM ) HB_PARNL( 1 );
+   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) (LPARAM) HB_PARNL( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );
    HFONT hOldFont;
    SIZE sz;
-   INT iSize;
+   int iSize;
 
-   // checks for a pre-defined text size
+   /* checks for a pre-defined text size */
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
 
-   hOldFont = ( HFONT ) SelectObject( hDC, oSelf->hFontHandle );
+   hOldFont = (HFONT) SelectObject( hDC, oSelf->hFontHandle );
    GetTextExtentPoint32( hDC, "_", 1, &sz );
    SelectObject( hDC, hOldFont );
    ReleaseDC( hWnd, hDC );
 
-   if( iSize < sz.cy + 2 )
+   if( iSize < ( sz.cy + 2 ) )
    {
       iSize = sz.cy + 2;
    }
@@ -1553,11 +1553,11 @@ HB_FUNC( TCOMBO_ADD_ITEM )          /* FUNCTION TCombo_Add_Item( Self, uValue ) 
    PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    struct IMAGE_PARAMETER pStruct;
-   INT nItem = ComboBox_GetCount( oSelf->hWnd );
+   int nItem = ComboBox_GetCount( oSelf->hWnd );
 
    ImageFillParameter( &pStruct, hb_param( 2, HB_IT_ANY ) );
    TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-   SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+   SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, (LPARAM) pStruct.cString );
 
    hb_retnl( ComboBox_GetCount( oSelf->hWnd ) );
 }
@@ -1568,11 +1568,11 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uData ) -> cIt
    PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 3, HB_IT_ANY );
-   INT nItem = hb_parni( 2 ) - 1;
-   CHAR * cBuffer;
+   int nItem = hb_parni( 2 ) - 1;
+   char * cBuffer;
    struct IMAGE_PARAMETER pStruct;
-   INT nItemSel, nItemNew;
-   INT iLen;
+   int nItemSel, nItemNew;
+   int iLen;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
    {
@@ -1580,30 +1580,30 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uData ) -> cIt
 
       if( ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
       {
-         SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
+         SendMessage( oSelf->hWnd, CB_DELETESTRING, (WPARAM) nItem, 0 );
          ImageFillParameter( &pStruct, pValue );
          TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-         nItemNew = SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+         nItemNew = SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, (LPARAM) pStruct.cString );
       }
       else
       {
-        SendMessage( oSelf->hWnd, CB_DELETESTRING, ( WPARAM ) nItem, 0 );
+        SendMessage( oSelf->hWnd, CB_DELETESTRING, (WPARAM) nItem, 0 );
         ImageFillParameter( &pStruct, pValue );
         TCombo_SetImageBuffer( oSelf, pStruct, nItem );
-        nItemNew = SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+        nItemNew = SendMessage( oSelf->hWnd, CB_INSERTSTRING, (WPARAM) nItem, (LPARAM) pStruct.cString );
       }
 
       if( nItem == nItemSel )
       {
-        SendMessage( oSelf->hWnd, CB_SETCURSEL, ( WPARAM ) nItemNew, 0 );
+        SendMessage( oSelf->hWnd, CB_SETCURSEL, (WPARAM) nItemNew, 0 );
       }
    }
 
-   iLen = ( int ) SendMessage( oSelf->hWnd, CB_GETLBTEXTLEN, ( WPARAM ) nItem, ( LPARAM ) 0 );
+   iLen = (int) SendMessage( oSelf->hWnd, CB_GETLBTEXTLEN, (WPARAM) nItem, (LPARAM) 0 );
 
-   if( iLen > 0 && NULL != ( cBuffer = ( CHAR * ) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
+   if( iLen > 0 && NULL != ( cBuffer = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
    {
-      SendMessage( oSelf->hWnd, CB_GETLBTEXT, ( WPARAM ) nItem, ( LPARAM ) cBuffer );
+      SendMessage( oSelf->hWnd, CB_GETLBTEXT, (WPARAM) nItem, (LPARAM) cBuffer );
       hb_retclen_buffer( cBuffer, iLen );
    }
    else
@@ -1618,7 +1618,7 @@ HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nIt
    PHB_ITEM pSelf = ( PHB_ITEM ) hb_param( 1, HB_IT_ANY );
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    PHB_ITEM pValue = hb_param( 3, HB_IT_ANY );
-   INT nItem = hb_parni( 2 ) - 1;
+   int nItem = hb_parni( 2 ) - 1;
    struct IMAGE_PARAMETER pStruct;
 
    if( pValue && ( HB_IS_STRING( pValue ) || HB_IS_NUMERIC( pValue ) || HB_IS_ARRAY( pValue ) ) )
@@ -1627,11 +1627,11 @@ HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nIt
       TCombo_SetImageBuffer( oSelf, pStruct, nItem );
       if( ( GetWindowLongPtr( oSelf->hWnd, GWL_STYLE ) & CBS_SORT ) == CBS_SORT )
       {
-         SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, ( LPARAM ) pStruct.cString );
+         SendMessage( oSelf->hWnd, CB_ADDSTRING, 0, (LPARAM) pStruct.cString );
       }
       else
       {
-         SendMessage( oSelf->hWnd, CB_INSERTSTRING, ( WPARAM ) nItem, ( LPARAM ) pStruct.cString );
+         SendMessage( oSelf->hWnd, CB_INSERTSTRING, (WPARAM) nItem, (LPARAM) pStruct.cString );
       }
    }
 
@@ -1641,19 +1641,19 @@ HB_FUNC( TCOMBO_INSERT_ITEM )          /* FUNCTION TCombo_Insert_Item( Self, nIt
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXFINDSTRING )          /* FUNCTION ComboboxFindString( hWnd, nStart, cString ) -> nPos */
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRING, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) hb_parc( 3 ) ) + 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXFINDSTRINGEXACT )          /* FUNCTION ComboboxFindStringExact( hWnd, nStart, cString ) -> nPos */
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, ( WPARAM ) ( hb_parni( 2 ) - 1 ), ( LPARAM ) hb_parc( 3 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_FINDSTRINGEXACT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) hb_parc( 3 ) ) + 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( COMBOBOXSELECTSTRING )          /* FUNCTION ComboboxSelectString( hWnd, cSearch ) -> nPos */
 {
-   hb_retni( SendMessage( HWNDparam( 1 ), CB_SELECTSTRING, ( WPARAM ) -1, ( LPARAM ) hb_parc( 2 ) ) + 1 );
+   hb_retni( SendMessage( HWNDparam( 1 ), CB_SELECTSTRING, (WPARAM) -1, (LPARAM) hb_parc( 2 ) ) + 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1664,7 +1664,7 @@ HB_FUNC( COMBOBOXGETLISTHWND )          /* FUNCTION ComboboxGetListHWND( hWnd ) 
    info.cbSize = sizeof( COMBOBOXINFO );
    info.hwndList = 0;
 
-   SendMessage( HWNDparam( 1 ), CB_GETCOMBOBOXINFO, 0, ( LPARAM ) &info );
+   SendMessage( HWNDparam( 1 ), CB_GETCOMBOBOXINFO, 0, (LPARAM) &info );
 
    HWNDret( info.hwndList );
 }
@@ -1678,18 +1678,18 @@ HB_FUNC_STATIC( TCOMBO_ITEMHEIGHT )          /* METHOD ItemHeight() CLASS TCombo
    COMBOBOXINFO info;
    HFONT hOldFont;
    SIZE sz;
-   INT iSize;
+   long iSize;
 
    info.cbSize = sizeof( COMBOBOXINFO );
    info.hwndList = 0;
-   SendMessage( oSelf->hWnd, CB_GETCOMBOBOXINFO, 0, ( LPARAM ) &info );
+   SendMessage( oSelf->hWnd, CB_GETCOMBOBOXINFO, 0, (LPARAM) &info );
    hDC = GetDC( info.hwndList );
 
    _OOHG_Send( pSelf, s_nTextHeight );
    hb_vmSend( 0 );
    iSize = hb_parni( -1 );
 
-   hOldFont = ( HFONT ) SelectObject( hDC, oSelf->hFontHandle );
+   hOldFont = (HFONT) SelectObject( hDC, oSelf->hFontHandle );
    GetTextExtentPoint32( hDC, "_", 1, &sz );
    SelectObject( hDC, hOldFont );
    ReleaseDC( info.hwndList, hDC );
@@ -1794,9 +1794,9 @@ METHOD Events_VScroll( wParam ) CLASS TListCombo
 #pragma BEGINDUMP
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TListCombo_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TListCombo_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -1805,7 +1805,7 @@ static WNDPROC _OOHG_TListCombo_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1817,7 +1817,7 @@ static LRESULT APIENTRY SubClassFuncCL( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITLISTCOMBO )          /* FUNCTION InitListCombo( hWnd ) -> NIL */
 {
-   _OOHG_TListCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncCL ) );
+   _OOHG_TListCombo_lpfnOldWndProc( SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, (LONG_PTR) SubClassFuncCL ) );
 }
 
 #pragma ENDDUMP
@@ -1884,9 +1884,9 @@ METHOD Release() CLASS TEditCombo
 #pragma BEGINDUMP
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TEditCombo_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TEditCombo_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -1895,7 +1895,7 @@ static WNDPROC _OOHG_TEditCombo_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1907,7 +1907,7 @@ static LRESULT APIENTRY SubClassFuncCE( HWND hWnd, UINT msg, WPARAM wParam, LPAR
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITEDITCOMBO )          /* FUNCTION InitEditCombo( hWnd ) -> NIL */
 {
-   _OOHG_TEditCombo_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, ( LONG_PTR ) SubClassFuncCE ) );
+   _OOHG_TEditCombo_lpfnOldWndProc( SetWindowLongPtr( HWNDparam( 1 ), GWLP_WNDPROC, (LONG_PTR) SubClassFuncCE ) );
 }
 
 #pragma ENDDUMP
