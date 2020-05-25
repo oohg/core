@@ -642,7 +642,7 @@ METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, l
    ENDIF
    ::MutexUnlock()
 
-   RETURN ( hFont )
+   RETURN hFont
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventInfoList() CLASS TApplication
@@ -773,7 +773,7 @@ METHOD GetLogFontHandle( cFontID ) CLASS TApplication
    ENDIF
    ::MutexUnlock()
 
-   RETURN ( hFont )
+   RETURN hFont
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetLogFontID( hFont ) CLASS TApplication
