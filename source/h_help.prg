@@ -135,7 +135,7 @@ HB_FUNC( WINHELP )
 
    switch( hb_parni( 4 ) )
    {
-//      case 0:  styl = HELP_CONTENTS ;     context = 0 ;             break;
+/*    case 0:  styl = HELP_CONTENTS ;     context = 0 ;             break; */
       case 0:  styl = HELP_FINDER ;       context = 0 ;             break;
       case 1:  styl = HELP_CONTEXT ;      context = hb_parni( 5 ) ; break;
       case 2:  styl = HELP_CONTEXTPOPUP ; context = hb_parni( 5 ) ; break;
@@ -144,12 +144,12 @@ HB_FUNC( WINHELP )
 
    if( hb_parni( 3 ) )
    {
-//      HtmlHelp( HWNDparam( 1 ),  hb_parc( 2 ), HH_DISPLAY_TOPIC    ,0);
-      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+/*    HtmlHelp( HWNDparam( 1 ), hb_parc( 2 ), HH_DISPLAY_TOPIC, 0); */
+      rezult = WinHelp( HWNDparam( 1 ), (LPCTSTR) hb_parc( 2 ), styl, context );
    }
    else
    {
-      rezult = WinHelp( HWNDparam( 1 ), ( LPCTSTR ) hb_parc( 2 ), styl, context );
+      rezult = WinHelp( HWNDparam( 1 ), (LPCTSTR) hb_parc( 2 ), styl, context );
    }
 
    hb_retni( rezult );
