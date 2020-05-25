@@ -150,9 +150,9 @@ METHOD String( uValue ) CLASS TIpAddress
 #include "tchar.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TIPAddress_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TIPAddress_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -161,7 +161,7 @@ static WNDPROC _OOHG_TIPAddress_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -173,7 +173,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, nRow, nWidth, nHeight, nStyle, lRtl ) -> hWnd */
 {
-   INT Style, StyleEx;
+   int Style, StyleEx;
    HWND hCtrl;
 
    INITCOMMONCONTROLSEX i;
@@ -187,7 +187,7 @@ HB_FUNC( INITIPADDRESS )          /* FUNCTION InitIPAddress( hWnd, hMenu, nCol, 
    hCtrl = CreateWindowEx( StyleEx, WC_IPADDRESS, "", Style, hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   _OOHG_TIPAddress_lpfnOldWndProc( (WNDPROC) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   _OOHG_TIPAddress_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -199,7 +199,7 @@ HB_FUNC( SETIPADDRESS )          /* FUNCTION SetIPAddress( hWnd, cIP or nF1, NIL
 
    if( HB_ISCHAR( 2 ) )
    {
-      v = ( BYTE * ) HB_UNCONST( hb_parc( 2 ) );
+      v = (BYTE *) HB_UNCONST( hb_parc( 2 ) );
       v1 = v[ 0 ];
       v2 = v[ 1 ];
       v3 = v[ 2 ];
@@ -207,10 +207,10 @@ HB_FUNC( SETIPADDRESS )          /* FUNCTION SetIPAddress( hWnd, cIP or nF1, NIL
    }
    else
    {
-      v1 = ( BYTE ) hb_parni( 2 );
-      v2 = ( BYTE ) hb_parni( 3 );
-      v3 = ( BYTE ) hb_parni( 4 );
-      v4 = ( BYTE ) hb_parni( 5 );
+      v1 = (BYTE) hb_parni( 2 );
+      v2 = (BYTE) hb_parni( 3 );
+      v3 = (BYTE) hb_parni( 4 );
+      v4 = (BYTE) hb_parni( 5 );
    }
 
    SendMessage( HWNDparam( 1 ), IPM_SETADDRESS, 0, MAKEIPADDRESS( v1, v2, v3, v4 ) );
@@ -231,18 +231,18 @@ HB_FUNC( GETIPADDRESS )          /* FUNCTION GetIPAddress( hWnd ) -> { nF1, nF2,
    DWORD pdwAddr;
    BYTE v1, v2, v3, v4;
 
-   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
+   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, (LPARAM)( LPDWORD ) &pdwAddr );
 
-   v1 = ( BYTE ) ( UINT ) FIRST_IPADDRESS( pdwAddr );
-   v2 = ( BYTE ) ( UINT ) SECOND_IPADDRESS( pdwAddr );
-   v3 = ( BYTE ) ( UINT ) THIRD_IPADDRESS( pdwAddr );
-   v4 = ( BYTE ) ( UINT ) FOURTH_IPADDRESS( pdwAddr );
+   v1 = (BYTE) (UINT) FIRST_IPADDRESS( pdwAddr );
+   v2 = (BYTE) (UINT) SECOND_IPADDRESS( pdwAddr );
+   v3 = (BYTE) (UINT) THIRD_IPADDRESS( pdwAddr );
+   v4 = (BYTE) (UINT) FOURTH_IPADDRESS( pdwAddr );
 
    hb_reta( 4 );
-   HB_STORNI( ( int ) v1, -1, 1 );
-   HB_STORNI( ( int ) v2, -1, 2 );
-   HB_STORNI( ( int ) v3, -1, 3 );
-   HB_STORNI( ( int ) v4, -1, 4 );
+   HB_STORNI( (int) v1, -1, 1 );
+   HB_STORNI( (int) v2, -1, 2 );
+   HB_STORNI( (int) v3, -1, 3 );
+   HB_STORNI( (int) v4, -1, 4 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -251,14 +251,14 @@ HB_FUNC( GETIPADDRESSSTRING )          /* FUNCTION GetIPAddressString( hWnd ) ->
    DWORD pdwAddr;
    BYTE v[ 4 ];
 
-   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, ( LPARAM )( LPDWORD ) &pdwAddr );
+   SendMessage( HWNDparam( 1 ), IPM_GETADDRESS, 0, (LPARAM)( LPDWORD ) &pdwAddr );
 
-   v[ 0 ] = ( BYTE ) ( UINT ) FIRST_IPADDRESS( pdwAddr );
-   v[ 1 ] = ( BYTE ) ( UINT ) SECOND_IPADDRESS( pdwAddr );
-   v[ 2 ] = ( BYTE ) ( UINT ) THIRD_IPADDRESS( pdwAddr );
-   v[ 3 ] = ( BYTE ) ( UINT ) FOURTH_IPADDRESS( pdwAddr );
+   v[ 0 ] = (BYTE) (UINT) FIRST_IPADDRESS( pdwAddr );
+   v[ 1 ] = (BYTE) (UINT) SECOND_IPADDRESS( pdwAddr );
+   v[ 2 ] = (BYTE) (UINT) THIRD_IPADDRESS( pdwAddr );
+   v[ 3 ] = (BYTE) (UINT) FOURTH_IPADDRESS( pdwAddr );
 
-   hb_retclen( ( char * ) &v[ 0 ], 4 );
+   hb_retclen( (char *) &v[ 0 ], 4 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
