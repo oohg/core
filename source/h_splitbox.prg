@@ -222,9 +222,9 @@ FUNCTION _ForceBreak( ParentForm )
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TSplitBox_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TSplitBox_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -233,7 +233,7 @@ static WNDPROC _OOHG_TSplitBox_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -268,13 +268,13 @@ HB_FUNC( INITSPLITBOX )          /* FUNCTION IniTSplitBox( hWnd, nStyle, lRtl ) 
                            0, 0, 0, 0,
                            HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL );
 
-   // Initialize and send the REBARINFO structure.
-   rbi.cbSize = sizeof( REBARINFO );  // Required when using this struct.
+   /* Initialize and send the REBARINFO structure. */
+   rbi.cbSize = sizeof( REBARINFO );  /* Required when using this struct. */
    rbi.fMask  = 0;
    rbi.himl   = ( HIMAGELIST ) NULL;
-   SendMessage( hCtrl, RB_SETBARINFO, 0, ( LPARAM ) &rbi );
+   SendMessage( hCtrl, RB_SETBARINFO, 0, (LPARAM) &rbi );
 
-   _OOHG_TSplitBox_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hCtrl, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TSplitBox_lpfnOldWndProc( SetWindowLongPtr( hCtrl, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hCtrl );
 }
@@ -287,7 +287,7 @@ HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBar
    int Style = RBBS_CHILDEDGE | RBBS_GRIPPERALWAYS ;
    int iID = SendMessage( HWNDparam( 2 ), RB_GETBANDCOUNT, 0, 0 ) + 1;
 
-   if( hb_parl( 4 ) )   // lForceBreak
+   if( hb_parl( 4 ) )   /* lForceBreak */
    {
       Style = Style | RBBS_BREAK ;
    }
@@ -304,22 +304,22 @@ HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBar
 
    rbBand.cbSize     = sizeof( REBARBANDINFO );
    rbBand.fMask      = RBBIM_TEXT | RBBIM_STYLE | RBBIM_CHILD | RBBIM_CHILDSIZE | RBBIM_SIZE | RBBIM_ID;
-   if( hb_parni( 9 ) )   // nIdealSize
+   if( hb_parni( 9 ) )   /* nIdealSize */
    {
       rbBand.fMask = rbBand.fMask | RBBIM_IDEALSIZE;
    }
    rbBand.fStyle     = Style ;
    rbBand.hbmBack    = 0;
    rbBand.wID        = iID;
-   rbBand.lpText     = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
+   rbBand.lpText     = (LPTSTR) HB_UNCONST( hb_parc( 5 ) );
    rbBand.hwndChild  = HWNDparam( 1 );
 
-   if ( ! hb_parl( 8 ) )   // ! lInverted
+   if ( ! hb_parl( 8 ) )   /* ! lInverted */
    {
       rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
       rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
       rbBand.cx         = hb_parni( 3 ) ;
-      if( hb_parni( 9 ) )   // nIdealSize
+      if( hb_parni( 9 ) )   /* nIdealSize */
       {
          rbBand.cxIdeal    = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
          rbBand.cxMinChild = hb_parni( 9 );
@@ -331,20 +331,20 @@ HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBar
    }
    else
    {
-      // Horizontal or Vertical
-      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   // nMinWidth == 0 .AND. nMinHeight == 0
+      /* Horizontal or Vertical */
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   /* nMinWidth == 0 .AND. nMinHeight == 0 */
       {
-         // Not ToolBar
+         /* Not ToolBar */
          rbBand.cxMinChild = 0 ;
          rbBand.cyMinChild = rc.right - rc.left ;
          rbBand.cx         = rc.bottom - rc.top ;
       }
       else
       {
-         // ToolBar
+         /* ToolBar */
          rbBand.cyMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;
          rbBand.cx         = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
-         if( hb_parni( 9 ) )   // nIdealSize
+         if( hb_parni( 9 ) )   /* nIdealSize */
          {
             rbBand.cxIdeal    = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
             rbBand.cxMinChild = hb_parni( 9 );
@@ -356,7 +356,7 @@ HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBar
       }
    }
 
-   SendMessage( HWNDparam( 2 ), RB_INSERTBAND, ( WPARAM ) -1, ( LPARAM ) &rbBand );
+   SendMessage( HWNDparam( 2 ), RB_INSERTBAND, (WPARAM) -1, (LPARAM) &rbBand );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -388,10 +388,10 @@ HB_FUNC( SETSPLITBOXITEM )          /* FUNCTION SetSplitBoxItem( CtrlhWnd, ReBar
    if( HB_ISCHAR( 5 ) )
    {
       rbBand.fMask |= RBBIM_TEXT;
-      rbBand.lpText = ( LPTSTR ) HB_UNCONST( hb_parc( 5 ) );
+      rbBand.lpText = (LPTSTR) HB_UNCONST( hb_parc( 5 ) );
    }
 
-   if( HB_ISNUM( 9 ) && ( hb_parni( 9 ) > 0 ) )   // nIdealSize
+   if( HB_ISNUM( 9 ) && ( hb_parni( 9 ) > 0 ) )   /* nIdealSize */
    {
       rbBand.fMask = rbBand.fMask | RBBIM_IDEALSIZE;
    }
@@ -400,13 +400,13 @@ HB_FUNC( SETSPLITBOXITEM )          /* FUNCTION SetSplitBoxItem( CtrlhWnd, ReBar
 
    GetWindowRect( HWNDparam( 1 ), &rc );
 
-   if ( ! hb_parl( 8 ) )   // ! lInverted
+   if ( ! hb_parl( 8 ) )   /* ! lInverted */
    {
       rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
       rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
       rbBand.cx         = hb_parni( 3 ) ;
 
-      if( hb_parni( 9 ) )   // nIdealSize
+      if( hb_parni( 9 ) )   /* nIdealSize */
       {
          rbBand.cxIdeal    = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
          rbBand.cxMinChild = hb_parni( 9 );
@@ -418,20 +418,20 @@ HB_FUNC( SETSPLITBOXITEM )          /* FUNCTION SetSplitBoxItem( CtrlhWnd, ReBar
    }
    else
    {
-      // Horizontal or Vertical
-      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   // nMinWidth == 0 .AND. nMinHeight == 0
+      /* Horizontal or Vertical */
+      if( hb_parni( 6 ) == 0 && hb_parni( 7 ) == 0 )   /* nMinWidth == 0 .AND. nMinHeight == 0 */
       {
-         // Not ToolBar
+         /* Not ToolBar */
          rbBand.cxMinChild = 0 ;
          rbBand.cyMinChild = rc.right - rc.left ;
          rbBand.cx         = rc.bottom - rc.top ;
       }
       else
       {
-         // ToolBar
+         /* ToolBar */
          rbBand.cyMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0 ;
          rbBand.cx         = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
-         if( hb_parni( 9 ) )   // nIdealSize
+         if( hb_parni( 9 ) )   /* nIdealSize */
          {
             rbBand.cxIdeal    = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top;
             rbBand.cxMinChild = hb_parni( 9 );
@@ -490,8 +490,8 @@ void SetBandStyle( HWND hWnd, int nBandId, int nStyle, BOOL nSet )
 
    if( GetBandStyle( hWnd, nBandIndex, RBBS_HIDDEN ) == FALSE )
    {
-      SendMessage( hWnd, RB_SHOWBAND, ( WPARAM ) nBandIndex, ( LPARAM )( BOOL ) 0 );
-      SendMessage( hWnd, RB_SHOWBAND, ( WPARAM ) nBandIndex, ( LPARAM )( BOOL ) 1 );
+      SendMessage( hWnd, RB_SHOWBAND, (WPARAM) nBandIndex, (LPARAM) FALSE );
+      SendMessage( hWnd, RB_SHOWBAND, (WPARAM) nBandIndex, (LPARAM) TRUE );
    }
 }
 
@@ -534,8 +534,8 @@ HB_FUNC( SIZEREBAR )
    {
       if( GetBandStyle( HWNDparam( 1 ), i, RBBS_HIDDEN ) == FALSE )
       {
-         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM ) i, ( LPARAM )( BOOL ) 0 );
-         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, ( WPARAM ) i, ( LPARAM )( BOOL ) 1 );
+         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, (WPARAM) i, (LPARAM) FALSE );
+         SendMessage( HWNDparam( 1 ), RB_SHOWBAND, (WPARAM) i, (LPARAM) TRUE );
       }
    }
 }
