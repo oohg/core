@@ -3017,12 +3017,12 @@ char * _OOHG_Msg( UINT iTable, UINT iItem, UINT iSubItem )
             if( iSubItem >= 1 && 
                 iSubItem <= hb_arrayLen( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) ) )
             {
-               pMsg = ( char * ) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ), iSubItem ) );
+               pMsg = (char *) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ), iSubItem ) );
             }
          }
          else
          {
-            pMsg = ( char * ) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) );
+            pMsg = (char *) HB_UNCONST( hb_arrayGetCPtr( hb_arrayGetItemPtr( _OOHG_Messages, iTable ), iItem ) );
          }
       }
    }
