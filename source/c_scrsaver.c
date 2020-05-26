@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -69,17 +69,19 @@
 #include "winreg.h"
 #include "tchar.h"
 
-typedef BOOL ( WINAPI * VERIFYSCREENSAVEPWD ) ( HWND hwnd );
-typedef LONG ( WINAPI * PWDCHANGEPASSWORD ) ( LPCSTR lpcRegkeyname, HWND hwnd, UINT uiReserved1, UINT uiReserved2 );
+typedef BOOL ( WINAPI * VERIFYSCREENSAVEPWD ) ( HWND );
+typedef long ( WINAPI * PWDCHANGEPASSWORD ) ( LPCSTR, HWND, UINT, UINT );
 
 HB_FUNC( VERIFYPASSWORD )
 {
-   // Under NT, we return TRUE immediately. This lets the saver quit,
-   // and the system manages passwords. Under '95, we call VerifyScreenSavePwd.
-   // This checks the appropriate registry key and, if necessary,
-   // pops up a verify dialog
+   /*
+    * Under NT, we return TRUE immediately. This lets the saver quit,
+    * and the system manages passwords. Under '95, we call VerifyScreenSavePwd.
+    * This checks the appropriate registry key and, if necessary,
+    * pops up a verify dialog
+    */
 
-   HWND hwnd;
+   HWND hWnd;
    HINSTANCE hpwdcpl;
    VERIFYSCREENSAVEPWD VerifyScreenSavePwd;
    BOOL bres;
@@ -94,15 +96,15 @@ HB_FUNC( VERIFYPASSWORD )
       hb_retl( FALSE );
    }
 
-   VerifyScreenSavePwd = ( VERIFYSCREENSAVEPWD ) GetProcAddress( hpwdcpl, "VerifyScreenSavePwd" );
+   VerifyScreenSavePwd = ( VERIFYSCREENSAVEPWD ) _OOHG_GetProcAddress( hpwdcpl, "VerifyScreenSavePwd" );
    if( VerifyScreenSavePwd == NULL )
    {
       FreeLibrary( hpwdcpl );
       hb_retl( FALSE );
    }
 
-   hwnd = HWNDparam( 1 );
-   bres = VerifyScreenSavePwd( hwnd );
+   hWnd = HWNDparam( 1 );
+   bres = VerifyScreenSavePwd( hWnd );
 
    FreeLibrary( hpwdcpl );
 
@@ -111,26 +113,25 @@ HB_FUNC( VERIFYPASSWORD )
 
 HB_FUNC( CHANGEPASSWORD )
 {
-   // This only ever gets called under '95, when started with the /a option.
-   HWND hwnd;
-
-   HINSTANCE hmpr = LoadLibrary("MPR.DLL");
+   /* This only ever gets called under '95, when started with the /a option. */
    PWDCHANGEPASSWORD PwdChangePassword;
+   HWND hWnd = HWNDparam( 1 );
+   HINSTANCE hmpr = LoadLibrary( "MPR.DLL" );
 
-   if(hmpr == NULL)
+   if ( hmpr == NULL )
       hb_retl( FALSE );
 
-   PwdChangePassword = (PWDCHANGEPASSWORD)GetProcAddress(hmpr, "PwdChangePasswordA");
+   PwdChangePassword = ( PWDCHANGEPASSWORD ) _OOHG_GetProcAddress( hmpr, "PwdChangePasswordA" );
 
-   if(PwdChangePassword == NULL)
+   if ( PwdChangePassword == NULL )
    {
-      FreeLibrary(hmpr);
+      FreeLibrary( hmpr );
       hb_retl( FALSE );
    }
 
-        hwnd = HWNDparam( 1 );
-   PwdChangePassword("SCRSAVE", hwnd, 0, 0);
-   FreeLibrary(hmpr);
+   PwdChangePassword( "SCRSAVE", hWnd, 0, 0 );
+
+   FreeLibrary( hmpr );
 
    hb_retl( TRUE );
 }
