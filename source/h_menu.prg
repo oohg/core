@@ -1469,6 +1469,8 @@ METHOD SeparatorType( nType ) CLASS TMenuItemMRU
 #include "hbvm.h"
 #include "hbstack.h"
 
+HANDLE _OOHG_LoadImage( const CHAR *, INT, INT, INT, HWND, LONG, BOOL );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CREATEMENUITEMDATA )          /* FUNCTION CreateMenuItemData( nId ) -> hStruct */
 {
