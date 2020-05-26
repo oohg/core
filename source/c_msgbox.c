@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -98,7 +98,7 @@ HB_FUNC( C_MSGOKCANCEL )
       uType = hb_parni( 3 );
    }
 
-   hb_retni ( MessageBox( GetActiveWindow(), hb_parc(1), hb_parc(2) , MB_OKCANCEL | MB_ICONQUESTION | uType ) ) ;
+   hb_retni ( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ) , MB_OKCANCEL | MB_ICONQUESTION | uType ) ) ;
 }
 
 HB_FUNC( C_MSGYESNO )
@@ -229,39 +229,39 @@ HB_FUNC( C_MSGEXCLAMATIONYESNO )
    hb_retni( MessageBox( GetActiveWindow(), hb_parc( 1 ), hb_parc( 2 ), MB_YESNO | MB_ICONEXCLAMATION | uType ) );
 }
 
-// MessageBoxIndirect( [hWnd], cText, [cCaption], [nStyle], [xIcon], [hInst], [nHelpId], [nProc], [nLang] )
-// Contributed by Andy Wos <andywos@unwired.com.au>
+/*
+ * MessageBoxIndirect( [hWnd], cText, [cCaption], [nStyle], [xIcon], [hInst], [nHelpId], [nProc], [nLang] )
+ * Contributed by Andy Wos <andywos@unwired.com.au>
+ */
 HB_FUNC( MESSAGEBOXINDIRECT )
 {
    MSGBOXPARAMS mbp;
 
    mbp.cbSize             = sizeof( MSGBOXPARAMS );
    mbp.hwndOwner          = HB_ISNIL( 1 ) ? GetActiveWindow() : HWNDparam( 1 );
-   mbp.hInstance          = HB_ISNIL( 6 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 6 );
+   mbp.hInstance          = HB_ISNIL( 6 ) ? GetModuleHandle( NULL ) : (HINSTANCE) HB_PARNL( 6 );
    mbp.lpszText           = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : ( HB_ISNIL( 2 ) ? NULL : MAKEINTRESOURCE( hb_parni( 2 ) ) );
    mbp.lpszCaption        = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : ( HB_ISNIL( 3 ) ? "" : MAKEINTRESOURCE( hb_parni( 3 ) ) );
-   mbp.dwStyle            = ( DWORD ) hb_parni( 4 );
+   mbp.dwStyle            = (DWORD) hb_parni( 4 );
    mbp.lpszIcon           = HB_ISCHAR( 5 ) ? hb_parc( 5 ) : ( HB_ISNIL( 5 ) ? NULL : MAKEINTRESOURCE( hb_parni( 5 ) ) );
-   mbp.dwContextHelpId    = HB_ISNIL( 7 ) ? 0 : ( DWORD ) hb_parni( 7 );
-   mbp.lpfnMsgBoxCallback = HB_ISNIL( 8 ) ? NULL : ( MSGBOXCALLBACK ) hb_parnl( 8 );
-   mbp.dwLanguageId       = HB_ISNIL( 9 ) ? MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ) : ( DWORD ) hb_parni( 9 );
+   mbp.dwContextHelpId    = HB_ISNIL( 7 ) ? 0 : (DWORD) hb_parni( 7 );
+   mbp.lpfnMsgBoxCallback = HB_ISNIL( 8 ) ? NULL : ( MSGBOXCALLBACK ) HB_PARNL( 8 );
+   mbp.dwLanguageId       = HB_ISNIL( 9 ) ? MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ) : (DWORD) hb_parni( 9 );
 
-   hb_retni( ( int ) MessageBoxIndirect( &mbp ) );
+   hb_retni( (int) MessageBoxIndirect( &mbp ) );
 }
 
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds );
 
-// MessageBoxTimeout( Text, Caption, nTypeButton, nMilliseconds ) ---> Return iRetButton
+/* MessageBoxTimeout( Text, Caption, nTypeButton, nMilliseconds ) ---> Return iRetButton */
 HB_FUNC( MESSAGEBOXTIMEOUT )
 {
    HWND hWnd = GetActiveWindow();
-   const char * lpText         = ( const char * ) hb_parc( 1 );
-   const char * lpCaption      = ( const char * ) hb_parc( 2 );
-   UINT         uType          = HB_ISNIL( 3 ) ? MB_OK : ( UINT ) hb_parnl( 3 );
-   WORD         wLanguageId    = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
-   DWORD        dwMilliseconds = HB_ISNIL( 4 ) ? ( DWORD ) 0xFFFFFFFF : ( DWORD ) hb_parnl( 4 );
+   const char *lpText = hb_parc( 1 );
+   const char *lpCaption = hb_parc( 2 );
+   UINT uType = HB_ISNIL( 3 ) ? MB_OK : (UINT) hb_parnl( 3 );
+   WORD wLanguageId = MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL );
+   DWORD dwMilliseconds = HB_ISNIL( 4 ) ? (DWORD) 0xFFFFFFFF : (DWORD) hb_parnl( 4 );
 
-   int iRet = MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
-
-   hb_retni( iRet );
+   hb_retni( MessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds ) );
 }
