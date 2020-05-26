@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -69,29 +69,29 @@
 HFONT PrepareFont( const char * FontName, int FontSize, int Weight, int Italic, int Underline, int StrikeOut, int Escapement, int Charset, int Width, int Orientation, int Advanced )
 {
    HDC hDC;
-   INT cyp, nEscapement, nOrientation, nHeight, nWidth, nWeight;
+   int cyp, nEscapement, nOrientation, nHeight, nWidth, nWeight;
    DWORD dwItalic, dwUnderline, dwStrikeOut, dwCharSet, dwOutputPrecision, dwClipPrecision, dwQuality, dwPitchAndFamily;
    LPCTSTR lpszFace;
 
    hDC = GetDC( HWND_DESKTOP );
    cyp = GetDeviceCaps( hDC, LOGPIXELSY );
 
-   nEscapement = Escapement;                             // Angle between the escapement vector and the x-axis
+   nEscapement = Escapement;                             /* Angle between the escapement vector and the x-axis */
    if( Advanced )
    {
       SetGraphicsMode( hDC, GM_ADVANCED );
-      nOrientation = Orientation;                             // Angle between character's base line and the x-axis
+      nOrientation = Orientation;                        /* Angle between character's base line and the x-axis */
    }
    else
    {
       SetGraphicsMode( hDC, GM_COMPATIBLE );
-      nOrientation = Escapement;                              // Angle between character's base line and the x-axis
+      nOrientation = Escapement;                         /* Angle between character's base line and the x-axis */
    }
    ReleaseDC( HWND_DESKTOP, hDC );
 
    nHeight           = 0 - ( FontSize * cyp ) / 72;
-   nWidth            = Width;                         // Width of characters in the requested font
-   nWeight           = Weight;                        // Bold
+   nWidth            = Width;                            /* Width of characters in the requested font */
+   nWeight           = Weight;                           /* Bold */
    dwItalic          = ( DWORD ) Italic;
    dwUnderline       = ( DWORD ) Underline;
    dwStrikeOut       = ( DWORD ) StrikeOut;
@@ -100,14 +100,14 @@ HFONT PrepareFont( const char * FontName, int FontSize, int Weight, int Italic, 
    dwClipPrecision   = ( DWORD ) CLIP_DEFAULT_PRECIS;
    dwQuality         = ( DWORD ) DEFAULT_QUALITY;
    dwPitchAndFamily  = ( DWORD ) FF_DONTCARE;
-   lpszFace          = ( LPCTSTR ) FontName;
+   lpszFace          = (LPCTSTR) FontName;
 
    return CreateFont( nHeight, nWidth, nEscapement, nOrientation, nWeight, dwItalic, dwUnderline, dwStrikeOut,
       dwCharSet, dwOutputPrecision, dwClipPrecision, dwQuality, dwPitchAndFamily, lpszFace );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITFONT )   // ( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+HB_FUNC( INITFONT )          /* FUNCTION InitFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) -> hFont */
 {
    int bold        = hb_parl( 3 ) ? FW_BOLD : FW_NORMAL;
    int italic      = hb_parl( 4 ) ? 1 : 0;
@@ -124,7 +124,7 @@ HB_FUNC( INITFONT )   // ( cFontName, nFontSize, lBold, lItalic, lUnderline, lSt
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+HB_FUNC( _SETFONT )          /* FUNCTION _SetFont( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) -> hFont */
 {
    int bold        = hb_parl( 4 ) ? FW_BOLD : FW_NORMAL;
    int italic      = hb_parl( 5 ) ? 1 : 0;
@@ -142,12 +142,12 @@ HB_FUNC( _SETFONT )   // ( hWnd, cFontName, nFontSize, lBold, lItalic, lUnderlin
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETSYSTEMFONT )   // No parameters
+HB_FUNC( GETSYSTEMFONT )          /* FUNCTION GetSystemFont() -> hFont */
 {
    LOGFONT lfDlgFont;
    NONCLIENTMETRICS ncm;
    OSVERSIONINFO osvi;
-   CHAR *szFName;
+   char *szFName;
    int iHeight;
 
    getwinver( &osvi );
@@ -164,7 +164,7 @@ HB_FUNC( GETSYSTEMFONT )   // No parameters
    }
    else
    {
-      szFName = "MS Sans Serif";
+      szFName = HB_UNCONST( "MS Sans Serif" );
       iHeight = 21 + 8;
    }
 
@@ -191,7 +191,7 @@ HB_FUNC( ENUMFONTSEX )
    memset( &lf, 0, sizeof( LOGFONT ) );
 
    if( GetObjectType( (HGDIOBJ) HB_PARNL( 1 ) ) == OBJ_DC )
-      hdc = ( HDC ) HB_PARNL( 1 );
+      hdc = (HDC) HB_PARNL( 1 );
    else
    {
       hdc = GetDC( NULL );
