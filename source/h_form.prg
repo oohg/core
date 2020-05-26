@@ -1879,7 +1879,7 @@ BOOL _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, i
 
 HB_FUNC_STATIC( _TFORM_SIZING )          /* FUNCTION _TForm_Sizing( wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight ) -> lChanged */
 {
-   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) (HB_PTRUINT) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
+   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
 }
 
 BOOL _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
