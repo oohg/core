@@ -5775,7 +5775,7 @@ HB_FUNC( RR_PLAYENHMETAFILE )          /* FUNCTION RR_PlayEnhMetaFile( aData, hD
    HENHMETAFILE hh;
    ENHMETAHEADER emh;
    RECT rect;
-   HDC hDC = (HDC) (HB_PTRUINT) HB_PARNL( 2 );
+   HDC hDC = (HDC) HB_PARNL( 2 );
 
    if( hb_parl( 3 ) )
    {
