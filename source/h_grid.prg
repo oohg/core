@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -823,12 +823,12 @@ METHOD CheckItem( nItem, lChecked ) CLASS TGrid
    LOCAL lRet, lOld
 
    IF ::lCheckBoxes .AND. HB_ISNUMERIC( nItem ) .AND. nItem >= 1 .AND. nItem <= ::ItemCount
-      lOld := ListView_GetCheckState( ::hwnd, nItem )
+      lOld := ListView_GetCheckState( ::hWnd, nItem )
 
       IF HB_ISLOGICAL( lChecked ) .AND. lChecked # lOld
-         ListView_SetCheckState( ::hwnd, nItem, lChecked )
+         ListView_SetCheckState( ::hWnd, nItem, lChecked )
 
-         lRet := ListView_GetCheckState( ::hwnd, nItem )
+         lRet := ListView_GetCheckState( ::hWnd, nItem )
 
          IF lRet # lOld
             ::DoEvent( ::OnCheckChange, "CHECKCHANGE", { nItem } )
@@ -2952,7 +2952,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       Return 0
 
    ElseIf nMsg == WM_MOUSEWHEEL
-      If GET_WHEEL_DELTA_WPARAM( wParam ) > 0
+      If GET_WHEEL_DELTA_WPARAM( wParam  ) > 0
          ::Up()
       Else
          ::Down()
@@ -2965,13 +2965,13 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
          Return 0
       ElseIf Empty( ::cText )
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
          ::uIniTime := HB_MilliSeconds()
-         ::cText := Upper( Chr( wParam ) )
+         ::cText := Upper( Chr( wParam  ) )
       Else
          ::uIniTime := HB_MilliSeconds()
-         ::cText += Upper( Chr( wParam ) )
+         ::cText += Upper( Chr( wParam  ) )
       EndIf
 
       If ::SearchCol >= 1
@@ -3007,13 +3007,13 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
          ::lNeedsAdjust := .T.
       ELSE
          i := 0
-         IF IsWindowStyle( hwnd, WS_HSCROLL )
+         IF IsWindowStyle( hWnd, WS_HSCROLL )
             ::HScrollUpdate()
-            IF ::lNoHSB .AND. IsWindowStyle( hwnd, WS_HSCROLL )
+            IF ::lNoHSB .AND. IsWindowStyle( hWnd, WS_HSCROLL )
                i -= WS_HSCROLL
             ENDIF
          ENDIF
-         IF IsWindowStyle( hwnd, WS_VSCROLL )
+         IF IsWindowStyle( hWnd, WS_VSCROLL )
             ::VScrollUpdate()
             IF ::lNoVSB
                i -= WS_VSCROLL
@@ -5682,7 +5682,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
 
    ElseIf nMsg == WM_CHAR
       If ::AllowEdit .AND. ( ::lLikeExcel .OR. ::EditControlLikeExcel( ::Value[ 2 ] ) )
-         ::EditCell( , , , Chr( wParam ) )
+         ::EditCell( , , , Chr( wParam  ) )
          Return 0
 
       Else
@@ -5691,13 +5691,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
             Return 0
          ElseIf Empty( ::cText )
             ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
+            ::cText := Upper( Chr( wParam  ) )
          ElseIf HB_MilliSeconds() > ::uIniTime + ::SearchLapse
             ::uIniTime := HB_MilliSeconds()
-            ::cText := Upper( Chr( wParam ) )
+            ::cText := Upper( Chr( wParam  ) )
          Else
             ::uIniTime := HB_MilliSeconds()
-            ::cText += Upper( Chr( wParam ) )
+            ::cText += Upper( Chr( wParam  ) )
          EndIf
 
          If ::SearchCol < 0
@@ -6332,9 +6332,9 @@ FUNCTION GetEditControlFromArray( oEditControl, aEditControls, nColumn, oGrid )
 
    Return oEditControl
 
-FUNCTION GetStateListWidth( hwnd )
+FUNCTION GetStateListWidth( hWnd )
 
-   Return ImageList_Size( ListView_GetImageList( hwnd, LVSIL_STATE ) )[ 1 ]
+   Return ImageList_Size( ListView_GetImageList( hWnd, LVSIL_STATE ) )[ 1 ]
 
 
 CLASS TGridControl
@@ -7865,14 +7865,13 @@ METHOD ControlValue( uValue ) CLASS TGridControlLComboBox
 
 #define s_Super s_TControl
 
-// -----------------------------------------------------------------------------
-HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid
-// -----------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TGRID_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGrid */
 {
-   HWND hWnd = HWNDparam( 1 );
-   UINT message   = ( UINT )   hb_parni( 2 );
-   WPARAM wParam  = ( WPARAM ) HB_PARNL( 3 );
-   LPARAM lParam  = ( LPARAM ) HB_PARNL( 4 );
+   HWND hwnd = HWNDparam( 1 );
+   UINT message   = (UINT)   hb_parni( 2 );
+   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
+   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    static PHB_SYMB s_Events2 = 0;  
    static PHB_SYMB s_Notify2 = 0;  
@@ -7893,7 +7892,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          hb_vmPushSymbol( s_Events2 );
          hb_vmPushNil();
          hb_vmPush( pSelf );
-         HWNDpush( hWnd );
+         HWNDpush( hwnd );
          hb_vmPushLong( message );
          hb_vmPushNumInt( wParam );
          hb_vmPushNumInt( lParam );
@@ -7902,7 +7901,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       case WM_NOTIFY:
-         if( ( ( NMHDR FAR * ) lParam )->hwndFrom == ( HWND ) SendMessage( hWnd, LVM_GETHEADER, 0, 0 ) )
+         if( ( (NMHDR FAR *) lParam )->hwndFrom == (HWND) SendMessage( hwnd, LVM_GETHEADER, 0, 0 ) )
          {
             WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
             if( ! s_Notify2 )
@@ -7929,7 +7928,7 @@ HB_FUNC_STATIC( TGRID_EVENTS )   // METHOD Events( hWnd, nMsg, wParam, lParam ) 
       _OOHG_Send( pSelf, s_Super );
       hb_vmSend( 0 );
       _OOHG_Send( hb_param( -1, HB_IT_OBJECT ), s_Events );
-      HWNDpush( hWnd );
+      HWNDpush( hwnd );
       hb_vmPushLong( message );
       hb_vmPushNumInt( wParam );
       hb_vmPushNumInt( lParam );
@@ -7958,7 +7957,7 @@ HB_FUNC_STATIC( TGRID_FONTCOLOR )
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 HB_FUNC_STATIC( TGRID_BACKCOLOR )
@@ -7982,7 +7981,7 @@ HB_FUNC_STATIC( TGRID_BACKCOLOR )
       }
    }
 
-   // Return value was set in _OOHG_DetermineColorReturn()
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 HB_FUNC_STATIC( TGRID_COLUMNCOUNT )
@@ -8031,18 +8030,18 @@ HB_FUNC_STATIC( TGRID_HEADERHEIGHT )
 
 HB_FUNC( LISTVIEW_GETCOLUMNORDER )
 {
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
    int iCount, n;
    int *nArray;
 
-   if( ValidHandler( hWnd ) )
+   if( ValidHandler( hwnd ) )
    {
-      iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
+      iCount = Header_GetItemCount( ListView_GetHeader( hwnd ) );
       if( iCount > 0 )
       {
          nArray = (int *) hb_xgrab( ( iCount ) * sizeof( int ) );
 
-         if( ListView_GetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
+         if( ListView_GetColumnOrderArray( hwnd, (WPARAM) iCount, (LPARAM) (LPINT) nArray ) )
          {
             hb_reta( iCount );
             for( n = 0; n < iCount; n++ )
@@ -8072,15 +8071,15 @@ HB_FUNC( LISTVIEW_GETCOLUMNORDER )
 
 HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
 {
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
    int iCount, n;
    int *iArray;
    PHB_ITEM nArray;
    BOOL bRet = FALSE;
 
-   if( ValidHandler( hWnd ) && HB_ISARRAY( 2 ) )
+   if( ValidHandler( hwnd ) && HB_ISARRAY( 2 ) )
    {
-      iCount = Header_GetItemCount( ListView_GetHeader( hWnd ) );
+      iCount = Header_GetItemCount( ListView_GetHeader( hwnd ) );
 
       if( (int) hb_parinfa( 2, 0 ) == iCount )
       {
@@ -8092,7 +8091,7 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
             iArray[ n - 1 ] = hb_arrayGetNI( nArray, n ) - 1;
          }
 
-         bRet = ListView_SetColumnOrderArray( hWnd, (WPARAM) iCount, (LPARAM) (LPINT) iArray );
+         bRet = ListView_SetColumnOrderArray( hwnd, (WPARAM) iCount, (LPARAM) (LPINT) iArray );
 
          hb_xfree( iArray );
       }
@@ -8102,9 +8101,9 @@ HB_FUNC_STATIC( LISTVIEW_SETCOLUMNORDER )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static WNDPROC _OOHG_TGrid_lpfnOldWndProc( WNDPROC lp )
+static WNDPROC _OOHG_TGrid_lpfnOldWndProc( LONG_PTR lp )
 {
-   static WNDPROC lpfnOldWndProc = 0;
+   static LONG_PTR lpfnOldWndProc = 0;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! lpfnOldWndProc )
@@ -8113,19 +8112,19 @@ static WNDPROC _OOHG_TGrid_lpfnOldWndProc( WNDPROC lp )
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   return lpfnOldWndProc;
+   return (WNDPROC) lpfnOldWndProc;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-   return _OOHG_WndProcCtrl( hWnd, msg, wParam, lParam, _OOHG_TGrid_lpfnOldWndProc( 0 ) );
+   return _OOHG_WndProcCtrl( hwnd, msg, wParam, lParam, _OOHG_TGrid_lpfnOldWndProc( 0 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TGRID_EXECOLDWNDPROC )          /* FUNCTION TGrid_ExecOldWndProc( hWnd, nMsg, wParam, lParam ) -> uRetVal */
 {
-   HB_RETNL( (LRESULT) CallWindowProc( _OOHG_TGrid_lpfnOldWndProc( 0 ), HWNDparam( 1 ), ( UINT ) hb_parni( 2 ), ( WPARAM ) HB_PARNL( 3 ), ( LPARAM ) HB_PARNL( 4 ) ) );
+   HB_RETNL( (LRESULT) CallWindowProc( _OOHG_TGrid_lpfnOldWndProc( 0 ), HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -8148,7 +8147,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
    }
    StyleEx = WS_EX_CLIENTEDGE | _OOHG_RTL_Status( hb_parl( 13 ) );
 
-   // control must have WS_VISIBLE style or it may not be painted properly
+   /* control must have WS_VISIBLE style or it may not be painted properly */
    bVisible = ( Style & WS_VISIBLE );
 
    iCol = hb_parni( 3 );
@@ -8194,7 +8193,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
       ListView_SetItemCount( hlistview, hb_parni( 11 ) ) ;
    }
 
-   _OOHG_TGrid_lpfnOldWndProc( ( WNDPROC ) SetWindowLongPtr( hlistview, GWLP_WNDPROC, ( LONG_PTR ) SubClassFunc ) );
+   _OOHG_TGrid_lpfnOldWndProc( SetWindowLongPtr( hlistview, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hlistview );
 }
@@ -8225,7 +8224,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    {
       COL.fmt = hb_arrayGetNI( jArray, s + 1 );
       COL.cx = hb_arrayGetNI( wArray, s + 1 );
-      COL.pszText = ( LPSTR ) HB_UNCONST( hb_arrayGetCPtr( hArray, s + 1 ) );
+      COL.pszText = (LPSTR) HB_UNCONST( hb_arrayGetCPtr( hArray, s + 1 ) );
       COL.iSubItem = iColumn;
       ListView_InsertColumn( hc, iColumn, &COL );
       if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
@@ -8243,7 +8242,7 @@ HB_FUNC( INITLISTVIEWCOLUMNS )
    }
 }
 
-static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
+static void _OOHG_ListView_FillItem( HWND hwnd, int nItem, PHB_ITEM pItems )
 {
    LV_ITEM LI;
    ULONG s, ulLen;
@@ -8261,7 +8260,7 @@ static void _OOHG_ListView_FillItem( HWND hWnd, int nItem, PHB_ITEM pItems )
       ImageFillParameter( &pStruct, hb_arrayGetItemPtr( pItems, s + 1 ) );
       LI.pszText = pStruct.cString;
       LI.iImage = pStruct.iImage1;
-      ListView_SetItem( hWnd, &LI );
+      ListView_SetItem( hwnd, &LI );
    }
 }
 
@@ -8301,7 +8300,7 @@ HB_FUNC( SETGRIDCOLUMNHEADER )
    LV_COLUMN COL;
 
    COL.mask = LVCF_TEXT;
-   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 3 ) );
+   COL.pszText = (LPSTR) HB_UNCONST( hb_parc( 3 ) );
    COL.fmt = hb_parni( 4 ) ;
 
    ListView_SetColumn( HWNDparam( 1 ), hb_parni( 2 ) - 1, &COL );
@@ -8374,7 +8373,7 @@ HB_FUNC( ADDLISTVIEWITEMS )
    h = HWNDparam( 1 );
    c = ListView_GetItemCount( h );
 
-   // First "default" item
+   /* First "default" item */
    LI.mask = LVIF_TEXT | LVIF_IMAGE;
    LI.state = 0;
    LI.stateMask = 0;
@@ -8408,7 +8407,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
    h = HWNDparam( 1 );
    c = hb_parni( 3 ) - 1;
 
-   // First "default" item
+   /* First "default" item */
    LI.mask = LVIF_TEXT | LVIF_IMAGE;
    LI.state = 0;
    LI.stateMask = 0;
@@ -8482,8 +8481,8 @@ HB_FUNC( LISTVIEWGETITEM )
 
 HB_FUNC( FILLGRIDFROMARRAY )
 {
-   HWND hWnd = HWNDparam( 1 );
-   ULONG iCount = ListView_GetItemCount( hWnd );
+   HWND hwnd = HWNDparam( 1 );
+   ULONG iCount = ListView_GetItemCount( hwnd );
    PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
    ULONG iLen = hb_arrayLen( pScreen );
    LV_ITEM LI;
@@ -8491,7 +8490,7 @@ HB_FUNC( FILLGRIDFROMARRAY )
    while( iCount > iLen )
    {
       iCount--;
-      SendMessage( hWnd, LVM_DELETEITEM, (WPARAM) iCount, 0 );
+      SendMessage( hwnd, LVM_DELETEITEM, (WPARAM) iCount, 0 );
    }
    while( iCount < iLen )
    {
@@ -8502,24 +8501,24 @@ HB_FUNC( FILLGRIDFROMARRAY )
       LI.iSubItem = 0;
       LI.pszText = "";
       LI.iImage = -1;
-      ListView_InsertItem( hWnd, &LI );
+      ListView_InsertItem( hwnd, &LI );
       iCount++;
    }
 
    for( iCount = 1; iCount <= iLen; iCount++ )
    {
-      _OOHG_ListView_FillItem( hWnd, iCount, hb_arrayGetItemPtr( pScreen, iCount ) );
+      _OOHG_ListView_FillItem( hwnd, iCount, hb_arrayGetItemPtr( pScreen, iCount ) );
    }
 }
 
-HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
+HB_FUNC( CELLRAWVALUE )          /* FUNCTION CellRawValue( hWnd, nRow, nCol, nType, uValue ) -> uValue */
 {
-   HWND hWnd;
+   HWND hwnd;
    LV_ITEM LI;
    char buffer[ 1024 ];
    int iType;
 
-   hWnd = HWNDparam( 1 );
+   hwnd = HWNDparam( 1 );
    iType = hb_parni( 4 );
 
    LI.mask = LVIF_TEXT | LVIF_IMAGE;
@@ -8532,43 +8531,43 @@ HB_FUNC( CELLRAWVALUE )   // hWnd, nRow, nCol, nType, uValue
    buffer[ 0 ] = 0;
    buffer[ 1023 ] = 0;
 
-   ListView_GetItem( hWnd, &LI );
+   ListView_GetItem( hwnd, &LI );
 
    if( iType == 1 && HB_ISCHAR( 5 ) )
    {
       LI.cchTextMax = 1022;
-      LI.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 5 ) );
-      ListView_SetItem( hWnd, &LI );
+      LI.pszText = (LPSTR) HB_UNCONST( hb_parc( 5 ) );
+      ListView_SetItem( hwnd, &LI );
    }
    else if( iType == 2 && HB_ISNUM( 5 ) )
    {
       LI.iImage = hb_parni( 5 );
-      ListView_SetItem( hWnd, &LI );
+      ListView_SetItem( hwnd, &LI );
    }
 
    LI.cchTextMax = 1022;
    LI.pszText = buffer;
    buffer[ 0 ] = 0;
    buffer[ 1023 ] = 0;
-   ListView_GetItem( hWnd, &LI );
+   ListView_GetItem( hwnd, &LI );
 
    if( iType == 1 )
    {
       hb_retc( LI.pszText );
    }
-   else // if( iType == 2 )
+   else /* if( iType == 2 ) */
    {
       hb_retni( LI.iImage );
    }
 }
 
 typedef struct __OOHG_SortItemsInfo_ {
-   HWND hWnd;
+   HWND hwnd;
    int  iColumn;
    BOOL bDescending;
 } _OOHG_SortItemsInfo;
 
-PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
+int CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
 {
    _OOHG_SortItemsInfo *si;
    int iRet;
@@ -8583,7 +8582,7 @@ PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lP
    lvItem1.cchTextMax = 1022;
    lvItem1.pszText    = cString1;
    cString1[ 0 ]      = cString1[ 1023 ] = 0;
-   ListView_GetItem( si->hWnd, &lvItem1 );
+   ListView_GetItem( si->hwnd, &lvItem1 );
    cString1[ 1023 ] = 0;
 
    lvItem2.mask       = LVIF_TEXT;
@@ -8592,7 +8591,7 @@ PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lP
    lvItem2.cchTextMax = 1022;
    lvItem2.pszText    = cString2;
    cString2[ 0 ]      = cString2[ 1023 ] = 0;
-   ListView_GetItem( si->hWnd, &lvItem2 );
+   ListView_GetItem( si->hwnd, &lvItem2 );
    cString2[ 1023 ] = 0;
 
    iRet = strcmp( cString1, cString2 );
@@ -8601,26 +8600,26 @@ PFNLVCOMPARE CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lP
       iRet = - iRet;
    }
 
-   return (PFNLVCOMPARE) iRet;
+   return iRet;
 }
 
-HB_FUNC( LISTVIEW_SORTITEMSEX )   // hWnd, nColumn, lDescending
+HB_FUNC( LISTVIEW_SORTITEMSEX )          /* FUNCTION ListView_SortItemsEx( hWnd, nColumn, lDescending ) -> lSuccess */
 {
    _OOHG_SortItemsInfo si;
 
-   si.hWnd = HWNDparam( 1 );
+   si.hwnd = HWNDparam( 1 );
    si.iColumn = hb_parni( 2 ) - 1;
    si.bDescending = hb_parl( 3 );
-   hb_retl( (BOOL) SendMessage( si.hWnd, LVM_SORTITEMSEX, (WPARAM) (_OOHG_SortItemsInfo *) &si, (LPARAM) _OOHG_SortItems ) );
+   hb_retl( (BOOL) SendMessage( si.hwnd, LVM_SORTITEMSEX, (WPARAM) (_OOHG_SortItemsInfo *) &si, (LPARAM) _OOHG_SortItems ) );
 }
 
-PFNLVCOMPARE CALLBACK _OOHG_SortItemsUser( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
+int CALLBACK _OOHG_SortItemsUser( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort )
 {
    _OOHG_Send( (PHB_ITEM) lParamSort, s_CompareItems );
    hb_vmPushNumInt( (int) lParam1 + 1 );
    hb_vmPushNumInt( (int) lParam2 + 1 );
    hb_vmSend( 2 );
-   return (PFNLVCOMPARE) hb_parni( -1 );
+   return hb_parni( -1 );
 }
 
 HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
@@ -8729,13 +8728,13 @@ HB_FUNC( LISTVIEWSETMULTISEL )
 
    n = SendMessage( hwnd, LVM_GETITEMCOUNT, 0, 0 );
 
-   // CLEAR CURRENT SELECTIONS
+   /* CLEAR CURRENT SELECTIONS */
    for( i = 0; i < n; i++ )
    {
       ListView_SetItemState( hwnd, (WPARAM) i, 0, LVIS_FOCUSED | LVIS_SELECTED );
    }
 
-   // SET NEW SELECTIONS
+   /* SET NEW SELECTIONS */
    for( i = 0; i <= l; i++ )
    {
       ListView_SetItemState( hwnd, hb_arrayGetNI( wArray, i + 1 ) - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED );
@@ -8788,7 +8787,7 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
 
 HB_FUNC( LISTVIEW_ITEMACTIVATE )
 {
-   LPNMITEMACTIVATE pData = ( NMITEMACTIVATE * ) HB_PARNL( 1 );
+   LPNMITEMACTIVATE pData = (NMITEMACTIVATE *) HB_PARNL( 1 );
 
    hb_reta( 3 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -8841,8 +8840,8 @@ HB_FUNC( GET_XY_LPARAM )
 #if ( defined( __BORLANDC__ ) && ( __TURBOC__ <= 0x0551 ) ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
 typedef struct tagNMLVSCROLL {
    NMHDR hdr;
-   INT dx;
-   INT dy;
+   int dx;
+   int dy;
 } NMLVSCROLL, * LPNMLVSCROLL;
 #endif
 
@@ -8858,17 +8857,17 @@ HB_FUNC( HEADER_HITTEST )
    int i, index;
    RECT rc;
    POINT point;
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
 
    DWORD dwpos = GetMessagePos();
 
    point.x = GET_X_LPARAM( dwpos );
    point.y = GET_Y_LPARAM( dwpos );
 
-   ScreenToClient( hWnd, &point );
+   ScreenToClient( hwnd, &point );
 
    index = -1;
-   for( i = 0; Header_GetItemRect( hWnd, i, &rc ); i ++ )
+   for( i = 0; Header_GetItemRect( hwnd, i, &rc ); i ++ )
    {
       if( PtInRect( &rc, point ) )
       {
@@ -8921,7 +8920,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
       osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
       GetVersionEx( (OSVERSIONINFO *) &osvi );
 
-      if( osvi.dwMajorVersion >= 6 )                   // Win Vista or later
+      if( osvi.dwMajorVersion >= 6 )                   /* Win Vista or later */
       {
          chkWidth = cx;
          gapWidth = 1;
@@ -8944,7 +8943,7 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
             item = -1;
          }
       }
-      else                                             // XP or older
+      else                                             /* XP or older */
       {
          chkWidth = cx - 3;
          gapWidth = 2;
@@ -8980,15 +8979,15 @@ HB_FUNC( LISTVIEW_GETSUBITEMRECT )
 {
    RECT Rect ;
    LPRECT lpRect = (LPRECT) &Rect ;
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
 
    /*
     * For first column, LVIR_BOUNDS always returns left == 0 and right == sum of all columns' widths
     * As a workaround use LVIR_LABEL to get the subitem's right and compute it's left
     * by substracting the column's width.
     */
-   ListView_GetSubItemRect( hWnd, hb_parni( 2 ), hb_parni( 3 ), LVIR_LABEL, lpRect );
-   Rect.left = Rect.right - ListView_GetColumnWidth( hWnd, hb_parni( 3 ) );
+   ListView_GetSubItemRect( hwnd, hb_parni( 2 ), hb_parni( 3 ), LVIR_LABEL, lpRect );
+   Rect.left = Rect.right - ListView_GetColumnWidth( hwnd, hb_parni( 3 ) );
 
    hb_reta( 4 );
    HB_STORNI( Rect.top,  -1, 1 );
@@ -9032,17 +9031,17 @@ HB_FUNC( LISTVIEW_SCROLL )
 
 HB_FUNC( LISTVIEW_SETBKCOLOR )
 {
-   ListView_SetBkColor( HWNDparam( 1 ), ( COLORREF ) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
+   ListView_SetBkColor( HWNDparam( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
 HB_FUNC( LISTVIEW_SETTEXTBKCOLOR )
 {
-   ListView_SetTextBkColor( HWNDparam( 1 ), ( COLORREF ) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
+   ListView_SetTextBkColor( HWNDparam( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
 HB_FUNC( LISTVIEW_SETTEXTCOLOR )
 {
-   ListView_SetTextColor( HWNDparam( 1 ), ( COLORREF ) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
+   ListView_SetTextColor( HWNDparam( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETTEXTCOLOR )
@@ -9062,16 +9061,16 @@ HB_FUNC( LISTVIEW_GETCOLUMNWIDTH )
 
 HB_FUNC( LISTVIEW_SETCOLUMNWIDTH )
 {
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
    int iColumn = hb_parni( 2 );
 
-   ListView_SetColumnWidth( hWnd, iColumn, hb_parni( 3 ) );
-   hb_retni( ListView_GetColumnWidth( hWnd, iColumn ) );
+   ListView_SetColumnWidth( hwnd, iColumn, hb_parni( 3 ) );
+   hb_retni( ListView_GetColumnWidth( hwnd, iColumn ) );
 }
 
 HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
 {
-   HWND hWnd = HWNDparam( 1 );
+   HWND hwnd = HWNDparam( 1 );
    PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
    ULONG iSum = 0, iCount, iSize;
 
@@ -9079,7 +9078,7 @@ HB_FUNC( _OOHG_GRIDARRAYWIDTHS )
    {
       for( iCount = 0; iCount < hb_arrayLen( pArray ); iCount++ )
       {
-         iSize = ListView_GetColumnWidth( hWnd, iCount );
+         iSize = ListView_GetColumnWidth( hwnd, iCount );
          iSum += iSize;
          HB_STORNI( iSize, 2, iCount + 1 );
       }
@@ -9100,11 +9099,11 @@ HB_FUNC( LISTVIEW_ADDCOLUMN )
       return;
    }
 
-   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
+   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; /* | LVCF_IMAGE; */
    COL.cx = hb_parni( 3 );
-   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 4 ) );
+   COL.pszText = (LPSTR) HB_UNCONST( hb_parc( 4 ) );
    COL.iSubItem = iColumn;
-   COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
+   COL.fmt = hb_parni( 5 ); /* | LVCFMT_IMAGE; */
 
    ListView_InsertColumn( hwnd, iColumn, &COL );
    if( iColumn == 0 && COL.fmt != LVCFMT_LEFT )
@@ -9138,11 +9137,11 @@ HB_FUNC( LISTVIEW_SETCOLUMN )
       return;
    }
 
-   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; // | LVCF_IMAGE;
+   COL.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_FMT | LVCF_SUBITEM; /* | LVCF_IMAGE; */
    COL.cx = hb_parni( 3 );
-   COL.pszText = ( LPSTR ) HB_UNCONST( hb_parc( 4 ) );
+   COL.pszText = (LPSTR) HB_UNCONST( hb_parc( 4 ) );
    COL.iSubItem = iColumn;
-   COL.fmt = hb_parni( 5 ); // | LVCFMT_IMAGE;
+   COL.fmt = hb_parni( 5 ); /* | LVCFMT_IMAGE; */
 
    ListView_SetColumn( hwnd, iColumn, &COL );
 
@@ -9185,16 +9184,16 @@ HB_FUNC( GETGRIDVKEYASCHAR )
 static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, UINT x, UINT y, int sGridColor, int sObjColor, int iDefaultColor )
 {
    PHB_ITEM pColor;
-   LONG iColor;
+   long iColor;
 
    _OOHG_Send( pSelf, sGridColor );
    hb_vmSend( 0 );
 
    pColor = hb_param( -1, HB_IT_ARRAY );
-   if( pColor &&                                                 // ValType( aColor ) == "A"
-       hb_arrayLen( pColor ) >= y &&                             // Len( aColor ) >= y
-       HB_IS_ARRAY( hb_arrayGetItemPtr( pColor, y ) ) &&         // ValType( aColor[ y ] ) == "A"
-       hb_arrayLen( hb_arrayGetItemPtr( pColor, y ) ) >= x )     // Len( aColor[ y ] ) >= x
+   if( pColor &&                                                 /* ValType( aColor ) == "A" */
+       hb_arrayLen( pColor ) >= y &&                             /* Len( aColor ) >= y */
+       HB_IS_ARRAY( hb_arrayGetItemPtr( pColor, y ) ) &&         /* ValType( aColor[ y ] ) == "A" */
+       hb_arrayLen( hb_arrayGetItemPtr( pColor, y ) ) >= x )     /* Len( aColor[ y ] ) >= x */
    {
       pColor = hb_arrayGetItemPtr( hb_arrayGetItemPtr( pColor, y ), x );
    }
@@ -9221,14 +9220,14 @@ static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, UINT x, UINT y, int
 static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
 {
    PHB_ITEM pColor;
-   LONG iColor = -1;
+   long iColor = -1;
 
    _OOHG_Send( pSelf, s_GridSelectedColors );
    hb_vmSend( 0 );
 
    pColor = hb_param( -1, HB_IT_ARRAY );
-   if( pColor &&                                                 // ValType( aColor ) == "A"
-       hb_arrayLen( pColor ) >= x )                              // Len( aColor[ y ] ) >= x
+   if( pColor &&                                                 /* ValType( aColor ) == "A" */
+       hb_arrayLen( pColor ) >= x )                              /* Len( aColor[ y ] ) >= x */
    {
       pColor = hb_arrayGetItemPtr( pColor, x );
 
@@ -9243,7 +9242,7 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
 HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
 {
    LPNMCUSTOMDRAW lpnmcd = ( LPNMCUSTOMDRAW ) HB_PARNL( 1 );
-   LONG lColor;
+   long lColor;
 
    if( lpnmcd->dwDrawStage == CDDS_PREPAINT )
    {
@@ -9253,9 +9252,9 @@ HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
    {
       if( lpnmcd->dwDrawStage == CDDS_ITEMPREPAINT )
       {
-         lColor = GetSysColor( COLOR_BTNTEXT ); // COLOR_3DHILIGHT
+         lColor = GetSysColor( COLOR_BTNTEXT ); /* COLOR_3DHILIGHT */
          _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lColor );
-         SetTextColor( lpnmcd->hdc, ( COLORREF ) lColor );
+         SetTextColor( lpnmcd->hdc, (COLORREF) lColor );
       }
       hb_retni( CDRF_DODEFAULT );
    }
@@ -9285,7 +9284,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    }
    else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPREPAINT ) )
    {
-      // Get subitem's image, text and state
+      /* Get subitem's image, text and state */
       memset( &LI, 0, sizeof( LI ) );
       LI.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_STATE;
       LI.state = 0;
@@ -9300,7 +9299,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
       buffer[ 1023 ] = 0;
 
-      // Get subitem's row (y) and col (x)
+      /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
       y = lplvcd->nmcd.dwItemSpec + 1;
 
@@ -9310,7 +9309,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
        * See http://msdn.microsoft.com/en-us/library/bb775483(v=vs.85).aspx
        */
 
-      // Get text's color and background color
+      /* Get text's color and background color */
       if( LI.state & LVIS_SELECTED )
       {
          if( bByCell )
@@ -9407,11 +9406,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          }
       }
 
-      if( LI.iImage != -1 )                                 // Subitem has image?
+      if( LI.iImage != -1 )                                 /* Subitem has image? */
       {
          return CDRF_NOTIFYPOSTPAINT;
       }
-      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
+      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    /* Is first subitem and has no image nor checkbox? */
       {
          return CDRF_NOTIFYPOSTPAINT;
       }
@@ -9420,7 +9419,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    }
    else if( lplvcd->nmcd.dwDrawStage == ( CDDS_SUBITEM | CDDS_ITEMPOSTPAINT ) )
    {
-      // Get subitem's image and state
+      /* Get subitem's image and state */
       memset( &LI, 0, sizeof( LI ) );
       LI.mask = LVIF_IMAGE | LVIF_STATE;
       LI.iImage = -1;
@@ -9430,11 +9429,11 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
 
-      // Get subitem's row (y) and col (x)
+      /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
       y = lplvcd->nmcd.dwItemSpec + 1;
 
-      // Get text's background color
+      /* Get text's background color */
       if( LI.state & LVIS_SELECTED )
       {
          if( bByCell )
@@ -9495,13 +9494,13 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
-      // Subitem has image?
+      /* Subitem has image? */
       if( LI.iImage != -1 )
       {
-         // Get icon's rect
+         /* Get icon's rect */
          ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, lprcIcon );
 
-         // Calculate area for background and paint it
+         /* Calculate area for background and paint it */
          if( x == 1)
          {
             rcBack.top = rcIcon.top;
@@ -9522,12 +9521,12 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
          DeleteObject( hBrush );
 
-         // Draw image
+         /* Draw image */
          ImageList_DrawEx( oSelf->ImageList, LI.iImage, lplvcd->nmcd.hdc, rcIcon.left, rcIcon.top, 0, 0, CLR_DEFAULT, CLR_NONE, ILD_TRANSPARENT );
 
          return CDRF_SKIPDEFAULT;
       }
-      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    // Is first subitem and has no image nor checkbox?
+      else if( ( x == 1 ) && ( ! bCheckBoxes ) && bPLM )    /* Is first subitem and has no image nor checkbox? */
       {
          /*
           * LVIR_BOUNDS always returns left == 0 and right == sum of all columns' widths
@@ -9541,7 +9540,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          ListView_GetSubItemRect( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, lplvcd->iSubItem, LVIR_ICON, lprcIcon );
          rcBack.right = rcIcon.right;
 
-         // Paint to get rid of empty space at left
+         /* Paint to get rid of empty space at left */
          hBrush = CreateSolidBrush( lplvcd->clrTextBk );
          FillRect( lplvcd->nmcd.hdc, &rcBack, hBrush );
          DeleteObject( hBrush );
@@ -9559,7 +9558,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), ( LPARAM ) HB_PARNL( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
+   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
@@ -9606,24 +9605,24 @@ HB_FUNC( HB_MILLISECONDS )
 
 HB_FUNC( GETGRIDCOLUMN )
 {
-   hb_retni( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->iSubItem );
+   hb_retni( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->iSubItem );
 }
 
 HB_FUNC( GETGRIDOLDSTATE )
 {
-   hb_retni( ( INT ) ( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->uOldState ) );
+   hb_retni( (int) ( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
 }
 
 HB_FUNC( GETGRIDNEWSTATE )
 {
-   hb_retni( ( INT ) ( ( ( NM_LISTVIEW * ) HB_PARNL( 1 ) )->uNewState ) );
+   hb_retni( (int) ( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
 }
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
 {
-   LV_DISPINFO * pDispInfo = (LV_DISPINFO *) HB_PARNL( 1 );
-   INT iItem = pDispInfo->item.iItem;
-   INT iSubItem = pDispInfo->item.iSubItem;
+   NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
+   int iItem = pDispInfo->item.iItem;
+   int iSubItem = pDispInfo->item.iSubItem;
 
    hb_reta( 2 );
    HB_STORNI( iItem + 1 , -1, 1 );
@@ -9633,14 +9632,14 @@ HB_FUNC( GETGRIDDISPINFOINDEX )
 HB_FUNC( SETGRIDQUERYDATA )
 {
    PHB_ITEM pValue = hb_itemNew( NULL );
-   LV_DISPINFO * pDispInfo = ( LV_DISPINFO * ) HB_PARNL( 1 );
+   NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
-   pDispInfo->item.pszText = ( LPTSTR ) HB_UNCONST( hb_itemGetCPtr( pValue ) );
+   pDispInfo->item.pszText = (LPTSTR) HB_UNCONST( hb_itemGetCPtr( pValue ) );
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )
 {
-    LV_DISPINFO * pDispInfo = ( LV_DISPINFO * ) HB_PARNL( 1 );
+    NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
     pDispInfo->item.iImage = hb_parni( 2 );
 }
 
