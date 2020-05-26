@@ -2005,6 +2005,8 @@ METHOD DoChange() CLASS TControl
 
 #define s_Super s_TWindow
 
+HBRUSH GetTabBrush( HWND );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl */
 {
