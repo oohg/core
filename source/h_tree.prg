@@ -2320,6 +2320,8 @@ METHOD Release() CLASS TTree
 #define HTREEparam( x )     (HTREEITEM) HWNDparam( ( x ) )
 #define HTREEret( x )       HWNDret( (HWND) ( x ) )
 
+VOID SetDragCursorARROW( BOOL );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TTree_lpfnOldWndProc( LONG_PTR lp )
 {
