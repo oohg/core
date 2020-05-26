@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -107,7 +107,7 @@
 #endif
 
 /*
- * WaitRun function For minigui With Pipe redirection
+ * WaitRun function for MiniGUI with pipe redirection
  * Author Luiz Rafael Culik Guimaraes: culikr@uol.com.br
  * Parameters WaitRunPipe(cCommand,nShowWindow,cFile)
  */
@@ -118,8 +118,8 @@ HB_FUNC( WAITRUNPIPE )
    PROCESS_INFORMATION ProcessInfo;
    HANDLE ReadPipeHandle;
    HANDLE WritePipeHandle;     
-   CHAR Data[1024];
-   const CHAR * szFile = hb_parc( 3 );
+   char Data[1024];
+   const char * szFile = hb_parc( 3 );
    HB_FHANDLE nHandle;
    SECURITY_ATTRIBUTES sa;
 
@@ -149,11 +149,11 @@ HB_FUNC( WAITRUNPIPE )
 
    memset( &StartupInfo, 0, sizeof( StartupInfo ) );
    StartupInfo.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-   StartupInfo.wShowWindow = ( WORD ) hb_parni( 2 );
+   StartupInfo.wShowWindow = (WORD) hb_parni( 2 );
    StartupInfo.hStdOutput = WritePipeHandle;
    StartupInfo.hStdError = WritePipeHandle;
 
-   if( ! CreateProcess( 0, ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ), 0, 0, FALSE,
+   if( ! CreateProcess( 0, (LPSTR) HB_UNCONST( hb_parc( 1 ) ), 0, 0, FALSE,
                         CREATE_NEW_CONSOLE | NORMAL_PRIORITY_CLASS,
                         0, 0, &StartupInfo, &ProcessInfo ) )
    {
@@ -180,7 +180,7 @@ HB_FUNC( WAITRUNPIPE )
             hb_retnl( -1 );
          }
          Data[ BytesRead ] = '\0';
-         hb_fsWriteLarge( nHandle, ( BYTE * ) Data, BytesRead );
+         hb_fsWriteLarge( nHandle, (BYTE *) Data, BytesRead );
       }
       else
       {
@@ -247,15 +247,15 @@ HB_FUNC( GET_WHEEL_DELTA_WPARAM )
 HB_FUNC( C_GETFOLDER )
 /* Based Upon Code Contributed By Ryszard Ryüko */
 {
-   HWND hwnd = GetActiveWindow();
+   HWND hWnd = GetActiveWindow();
    BROWSEINFO bi;
-   CHAR * lpBuffer = ( CHAR * ) hb_xgrab( MAX_PATH + 1 );
+   char * lpBuffer = (char *) hb_xgrab( MAX_PATH + 1 );
    LPITEMIDLIST pidlBrowse;    /* PIDL selected by user */
 
-   bi.hwndOwner = hwnd;
+   bi.hwndOwner = hWnd;
    bi.pidlRoot = NULL;
    bi.pszDisplayName = lpBuffer;
-   bi.lpszTitle = ( LPCSTR ) hb_parc( 1 );
+   bi.lpszTitle = (LPCSTR) hb_parc( 1 );
    bi.ulFlags = 0;
    bi.lpfn = NULL;
    bi.lParam = 0;
@@ -270,7 +270,7 @@ HB_FUNC( C_GETFOLDER )
 HB_FUNC( C_GETSPECIALFOLDER ) 
 /* Contributed By Ryszard Ryüko */
 {
-   CHAR * lpBuffer = ( CHAR * ) hb_xgrab( MAX_PATH + 1 );
+   char * lpBuffer = (char *) hb_xgrab( MAX_PATH + 1 );
    LPITEMIDLIST pidlBrowse;    /* PIDL selected by user */
    SHGetSpecialFolderLocation( GetActiveWindow(), hb_parni( 1 ), &pidlBrowse );
    SHGetPathFromIDList( pidlBrowse, lpBuffer );
@@ -282,7 +282,7 @@ typedef BOOL ( WINAPI * GlobalMemoryStatusEx_ptr )( MEMORYSTATUSEX * );
 
 HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue */
 {
-   GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = ( GlobalMemoryStatusEx_ptr ) GetProcAddress( GetModuleHandle( "KERNEL32.DLL" ), "GlobalMemoryStatusEx" );
+   GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = ( GlobalMemoryStatusEx_ptr ) _OOHG_GetProcAddress( GetModuleHandle( "KERNEL32.DLL" ), "GlobalMemoryStatusEx" );
 
    if( fn_GlobalMemoryStatusEx )
    {
@@ -361,20 +361,20 @@ HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue *
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), ( HICON ) HB_PARNL(3) );
+   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARNL(3) );
 }
 
 HB_FUNC( PAINTBKGND )
 {
-   HWND hwnd;
+   HWND hWnd;
    HBRUSH brush;
    RECT recClie;
    HDC hdc;
 
-   hwnd = HWNDparam( 1 );
-   hdc  = GetDC( hwnd );
+   hWnd = HWNDparam( 1 );
+   hdc  = GetDC( hWnd );
 
-   GetClientRect( hwnd, &recClie );
+   GetClientRect( hWnd, &recClie );
 
    if( ( hb_pcount() > 1 ) && ( ! HB_ISNIL( 2 ) ) )
    {
@@ -390,7 +390,7 @@ HB_FUNC( PAINTBKGND )
       FillRect( hdc, &recClie, brush );
    }
 
-   ReleaseDC( hwnd, hdc );
+   ReleaseDC( hWnd, hdc );
    hb_ret();
 }
 
@@ -398,66 +398,66 @@ HB_FUNC( PAINTBKGND )
 
 HB_FUNC( GETWINDOWSDIR )
 {
-   CHAR szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = {0};
    GetWindowsDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETSYSTEMDIR )
 {
-   CHAR szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = {0};
    GetSystemDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETTEMPDIR )
 {
-   CHAR szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = {0};
    GetTempPath( MAX_PATH, szBuffer );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( POSTMESSAGE )
 {
-   hb_retl( ( BOOL ) PostMessage( HWNDparam( 1 ),
-                                  ( UINT ) hb_parni( 2 ),
-                                  ( WPARAM ) HB_PARNL( 3 ),
-                                  ( LPARAM ) HB_PARNL( 4 ) ) );
+   hb_retl( (BOOL) PostMessage( HWNDparam( 1 ),
+                                  (UINT) hb_parni( 2 ),
+                                  (WPARAM) HB_PARNL( 3 ),
+                                  (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( DEFWINDOWPROC )
 {
-   HB_RETNL( ( LONG_PTR ) DefWindowProc( HWNDparam( 1 ),
-                                         ( UINT ) hb_parni( 2 ),
-                                         ( WPARAM ) HB_PARNL( 3 ),
-                                         ( LPARAM ) HB_PARNL( 4 ) ) );
+   HB_RETNL( (LONG_PTR) DefWindowProc( HWNDparam( 1 ),
+                                         (UINT) hb_parni( 2 ),
+                                         (WPARAM) HB_PARNL( 3 ),
+                                         (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( DEFFRAMEPROC )
 {
-   HB_RETNL( ( LONG_PTR ) DefFrameProc( HWNDparam( 1 ),
+   HB_RETNL( (LONG_PTR) DefFrameProc( HWNDparam( 1 ),
                                         HWNDparam( 2 ),
-                                        ( UINT ) hb_parni( 3 ),
-                                        ( WPARAM ) HB_PARNL( 4 ),
-                                        ( LPARAM ) HB_PARNL( 5 ) ) );
+                                        (UINT) hb_parni( 3 ),
+                                        (WPARAM) HB_PARNL( 4 ),
+                                        (LPARAM) HB_PARNL( 5 ) ) );
 }
 
 HB_FUNC( DEFMDICHILDPROC )
 {
-   HB_RETNL( ( LONG_PTR ) DefMDIChildProc( HWNDparam( 1 ),
-                                           ( UINT ) hb_parni( 2 ),
-                                           ( WPARAM ) HB_PARNL( 3 ),
-                                           ( LPARAM ) HB_PARNL( 4 ) ) );
+   HB_RETNL( (LONG_PTR) DefMDIChildProc( HWNDparam( 1 ),
+                                           (UINT) hb_parni( 2 ),
+                                           (WPARAM) HB_PARNL( 3 ),
+                                           (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( GETSTOCKOBJECT )
 {
-   HB_RETNL( ( LONG_PTR ) GetStockObject( hb_parni( 1 ) ) );
+   HB_RETNL( (LONG_PTR) GetStockObject( hb_parni( 1 ) ) );
 }
 
 HB_FUNC( SETBKMODE )
 {
-   hb_retni( SetBkMode( ( HDC ) HB_PARNL( 1 ), hb_parni( 2 ) ) );
+   hb_retni( SetBkMode( (HDC) HB_PARNL( 1 ), hb_parni( 2 ) ) );
 }
 
 HB_FUNC( GETNEXTDLGTABITEM )
@@ -467,12 +467,12 @@ HB_FUNC( GETNEXTDLGTABITEM )
 
 HB_FUNC( SHELLEXECUTE )
 {
-   HB_RETNL( ( LONG_PTR ) ShellExecute( HWNDparam( 1 ),
-                                        HB_ISNIL( 2 ) ? NULL : ( LPCSTR ) hb_parc( 2 ),
-                                        ( LPCSTR ) hb_parc( 3 ),
-                                        HB_ISNIL( 4 ) ? NULL : ( LPCSTR ) hb_parc( 4 ),
-                                        HB_ISNIL( 5 ) ? NULL : ( LPCSTR ) hb_parc( 5 ),
-                                        hb_parni( 6 ) ) );
+   HB_RETNL( (LONG_PTR) (HINSTANCE) ShellExecute( HWNDparam( 1 ),
+                                                  HB_ISNIL( 2 ) ? NULL : (LPCSTR) hb_parc( 2 ),
+                                                  (LPCSTR) hb_parc( 3 ),
+                                                  HB_ISNIL( 4 ) ? NULL : (LPCSTR) hb_parc( 4 ),
+                                                  HB_ISNIL( 5 ) ? NULL : (LPCSTR) hb_parc( 5 ),
+                                                  hb_parni( 6 ) ) );
 }
 
 HB_FUNC( WAITRUN )
@@ -486,10 +486,10 @@ HB_FUNC( WAITRUN )
    ZeroMemory( &stInfo, sizeof( stInfo ) );
    stInfo.cb = sizeof( stInfo );
    stInfo.dwFlags = STARTF_USESHOWWINDOW;
-   stInfo.wShowWindow = ( WORD ) hb_parni( 2 );
+   stInfo.wShowWindow = (WORD) hb_parni( 2 );
 
    bResult = CreateProcess( NULL,
-                            ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ),
+                            (LPSTR) HB_UNCONST( hb_parc( 1 ) ),
                             NULL,
                             NULL,
                             TRUE,
@@ -529,10 +529,10 @@ HB_FUNC( WAITRUNTERM )
    ZeroMemory( &stInfo, sizeof( stInfo ) );
    stInfo.cb          = sizeof( stInfo );
    stInfo.dwFlags     = STARTF_USESHOWWINDOW;
-   stInfo.wShowWindow = ( WORD ) ( HB_ISNIL( 3 ) ? 5 : hb_parni( 3 ) );
+   stInfo.wShowWindow = (WORD) ( HB_ISNIL( 3 ) ? 5 : hb_parni( 3 ) );
 
    bResult = CreateProcess( NULL,
-                            ( LPSTR ) HB_UNCONST( hb_parc( 1 ) ),
+                            (LPSTR) HB_UNCONST( hb_parc( 1 ) ),
                             NULL,
                             NULL,
                             TRUE,
@@ -585,7 +585,7 @@ HB_FUNC( WAITRUNTERM )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ISEXERUNNING )          /* FUNCTION IsExeRunnnig( cExeNameCaseSensitive ) -> lResult */
 {
-   HANDLE hMutex = CreateMutex( NULL, FALSE, ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ) );
+   HANDLE hMutex = CreateMutex( NULL, FALSE, (LPTSTR) HB_UNCONST( hb_parc( 1 ) ) );
 
    hb_retl( GetLastError() == ERROR_ALREADY_EXISTS );
 
@@ -604,49 +604,49 @@ HB_FUNC( CREATEMUTEX )
       sa = ( SECURITY_ATTRIBUTES * ) HB_UNCONST( hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) ) );
    }
 
-   HB_RETNL( ( LONG_PTR ) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
+   HB_RETNL( (LONG_PTR) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
 }
 
 HB_FUNC( _OOHG_GETLASTERROR )
 {
-   hb_retnl( ( LONG ) GetLastError() );
+   hb_retnl( (long) GetLastError() );
 }
 
 HB_FUNC( CREATEFOLDER )
 {
-   hb_retl( CreateDirectory( ( LPCTSTR ) hb_parc( 1 ), NULL ) );
+   hb_retl( CreateDirectory( (LPCTSTR) hb_parc( 1 ), NULL ) );
 }
 
 HB_FUNC( SETCURRENTFOLDER )
 {
-   hb_retl( SetCurrentDirectory( ( LPCTSTR ) hb_parc( 1 ) ) );
+   hb_retl( SetCurrentDirectory( (LPCTSTR) hb_parc( 1 ) ) );
 }
 
 HB_FUNC( REMOVEFOLDER )
 {
-   hb_retl( RemoveDirectory( ( LPCSTR ) hb_parc( 1 ) ) );
+   hb_retl( RemoveDirectory( (LPCSTR) hb_parc( 1 ) ) );
 }
 
 HB_FUNC( GETCURRENTFOLDER )
 {
-   CHAR Path[ MAX_PATH + 1 ] = {0};
-   GetCurrentDirectory( MAX_PATH, ( LPSTR ) Path );
+   char Path[ MAX_PATH + 1 ] = {0};
+   GetCurrentDirectory( MAX_PATH, (LPSTR) Path );
    hb_retc( Path );
 }
 
 HB_FUNC( CREATESOLIDBRUSH )
 {
-   HB_RETNL( ( LONG_PTR ) CreateSolidBrush( ( COLORREF ) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
+   HB_RETNL( (LONG_PTR) CreateSolidBrush( (COLORREF) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
 }
 
 HB_FUNC( SETTEXTCOLOR )
 {
-   hb_retnl( ( LONG ) SetTextColor( ( HDC ) HB_PARNL( 1 ), ( COLORREF ) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
+   hb_retnl( (long) SetTextColor( (HDC) HB_PARNL( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
 }
 
 HB_FUNC( SETBKCOLOR )
 {
-   hb_retnl( ( LONG ) SetBkColor( ( HDC ) HB_PARNL( 1 ), ( COLORREF ) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
+   hb_retnl( (long) SetBkColor( (HDC) HB_PARNL( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
 }
 
 HB_FUNC( GETSYSCOLOR )
@@ -689,13 +689,13 @@ HB_FUNC( WINVERSION )
 
    OSVERSIONINFOEX osvi;
    BOOL bOsVersionInfoEx;
-   CHAR * szVersion = NULL;
-   CHAR * szServicePack = NULL;
-   CHAR * szBuild = NULL;
-   CHAR buffer[5];
-   CHAR * szVersionEx = NULL;
+   char * szVersion = NULL;
+   char * szServicePack = NULL;
+   char * szBuild = NULL;
+   char buffer[5];
+   char * szVersionEx = NULL;
    HKEY hKey;
-   LONG lRetVal;
+   long lRetVal;
    DWORD dwBufLen;
    BYTE * lpData = NULL;
    DWORD dwUBR;
@@ -709,7 +709,7 @@ HB_FUNC( WINVERSION )
       osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
       if( ! GetVersionEx( ( OSVERSIONINFO * ) &osvi ) )
       {
-         szVersion = "Unknown Operating System";
+         szVersion = _TEXT( "Unknown Operating System" );
       }
    }
 
@@ -775,7 +775,7 @@ HB_FUNC( WINVERSION )
                                                    &dwBufLen );
                         if( lRetVal == ERROR_SUCCESS )
                         {
-                           lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( ( INT ) dwBufLen + 1 ) );
+                           lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
                            lRetVal = RegQueryValueEx( hKey,
                                                       _TEXT( "ProductName" ),
                                                       NULL,
@@ -783,7 +783,7 @@ HB_FUNC( WINVERSION )
                                                       lpData,
                                                       &dwBufLen );
                            if( lRetVal == ERROR_SUCCESS )
-                              szVersion = ( CHAR * ) lpData;
+                              szVersion = (char *) lpData;
                            else
                               hb_xfree( lpData );
                         }
@@ -791,9 +791,9 @@ HB_FUNC( WINVERSION )
                      RegCloseKey( hKey );
                   }
                   else if( osvi.dwMajorVersion == 4 )
-                     szVersionEx = _TEXT( "Workstation 4.0 " ) ;
+                     szVersionEx = _TEXT( "Workstation 4.0 " );
                   else if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-                     szVersionEx = _TEXT( "Home Edition ") ;
+                     szVersionEx = _TEXT( "Home Edition ");
                   else
                      szVersionEx = _TEXT( "Professional ");
                }
@@ -802,31 +802,31 @@ HB_FUNC( WINVERSION )
                   if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                        szVersionEx = _TEXT( "Datacenter Edition " ) ;
+                        szVersionEx = _TEXT( "Datacenter Edition " );
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        szVersionEx = _TEXT( "Enterprise Edition " ) ;
+                        szVersionEx = _TEXT( "Enterprise Edition " );
                      else if( osvi.wSuiteMask & VER_SUITE_BLADE )
-                        szVersionEx = _TEXT( "Web Edition " ) ;
+                        szVersionEx = _TEXT( "Web Edition " );
                      else if( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
-                        szVersionEx = _TEXT( "Home Edition " ) ;
+                        szVersionEx = _TEXT( "Home Edition " );
                      else
-                        szVersionEx = _TEXT( "Standard Edition " ) ;
+                        szVersionEx = _TEXT( "Standard Edition " );
                   }
                   else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                        szVersionEx = _TEXT( "Datacenter Server " ) ;
+                        szVersionEx = _TEXT( "Datacenter Server " );
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        szVersionEx = _TEXT( "Advanced Server " ) ;
+                        szVersionEx = _TEXT( "Advanced Server " );
                      else
                         szVersionEx = _TEXT( "Server " );
                   }
                   else
                   {
                      if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        szVersionEx = _TEXT( "Server 4.0, Enterprise Edition " ) ;
+                        szVersionEx = _TEXT( "Server 4.0, Enterprise Edition " );
                      else
-                        szVersionEx = _TEXT( "Server 4.0 " ) ;
+                        szVersionEx = _TEXT( "Server 4.0 " );
                   }
                }
             }
@@ -848,7 +848,7 @@ HB_FUNC( WINVERSION )
                                              &dwBufLen );
                   if( lRetVal == ERROR_SUCCESS )
                   {
-                     lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( ( INT ) dwBufLen + 1 ) );
+                     lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
                      lRetVal = RegQueryValueEx( hKey,
                                                 _TEXT( "ProductType" ),
                                                 NULL,
@@ -868,12 +868,12 @@ HB_FUNC( WINVERSION )
 
                if( lstrcmp( szVersion, _TEXT( "Unknown Operating System" ) ) != 0 )
                {
-                  if( lstrcmpi( _TEXT( "WINNT" ), (CHAR *) lpData ) == 0 )
-                     szVersionEx = _TEXT( "Workstation ") ;
-                  if( lstrcmpi( _TEXT( "LANMANNT" ), (CHAR *) lpData  ) == 0 )
-                     szVersionEx = _TEXT( "Server ") ;
-                  if( lstrcmpi( _TEXT( "SERVERNT" ), (CHAR *) lpData  ) == 0 )
-                     szVersionEx = _TEXT( "Advanced Server ") ;
+                  if( lstrcmpi( _TEXT( "WINNT" ), (char *) lpData ) == 0 )
+                     szVersionEx = _TEXT( "Workstation ");
+                  if( lstrcmpi( _TEXT( "LANMANNT" ), (char *) lpData  ) == 0 )
+                     szVersionEx = _TEXT( "Server ");
+                  if( lstrcmpi( _TEXT( "SERVERNT" ), (char *) lpData  ) == 0 )
+                     szVersionEx = _TEXT( "Advanced Server ");
 
                   szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMajorVersion, buffer, 10 ) );
                   szVersion = lstrcat( szVersion, _TEXT( "." ) );
@@ -899,7 +899,7 @@ HB_FUNC( WINVERSION )
                                              &dwBufLen );
                   if( lRetVal == ERROR_SUCCESS )
                   {
-                     lpData = ( BYTE * ) hb_xgrab( ( UINT ) ( ( INT ) dwBufLen + 1 ) );
+                     lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
                      lRetVal = RegQueryValueEx( hKey,
                                                 _TEXT( "ReleaseId" ),
                                                 NULL,
@@ -908,8 +908,8 @@ HB_FUNC( WINVERSION )
                                                 &dwBufLen );
                      if( lRetVal == ERROR_SUCCESS )
                      {
-                        szServicePack = (CHAR *) lpData;
-                        // Add UBR
+                        szServicePack = (char *) lpData;
+                        /* Add UBR */
                         dwBufLen = sizeof( dwUBR );
                         lRetVal = RegQueryValueEx( hKey,
                                                    _TEXT( "UBR" ),
@@ -924,7 +924,7 @@ HB_FUNC( WINVERSION )
                         }
                      }
                      else
-                        hb_xfree( ( BYTE * ) lpData );
+                        hb_xfree( (BYTE *) lpData );
                   }
                }
                RegCloseKey( hKey );
@@ -1011,7 +1011,7 @@ HB_FUNC( WINVERSION )
 
 #if defined( __XHARBOUR__ )
 
-HB_FUNC( ISEXE64 ) // Check if our app is 64 bits
+HB_FUNC( ISEXE64 )
 {
    hb_retl( ( sizeof( void * ) == 8 ) );
 }
@@ -1019,7 +1019,7 @@ HB_FUNC( ISEXE64 ) // Check if our app is 64 bits
 
 HB_FUNC( SETWINDOWPOS )
 {
-   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), ( UINT ) hb_parni( 7 ) ) );
+   hb_retl( SetWindowPos( HWNDparam( 1 ), HWNDparam( 2 ), hb_parni( 4 ), hb_parni( 3 ), hb_parni( 5 ), hb_parni( 6 ), (UINT) hb_parni( 7 ) ) );
 }
 
 HB_FUNC( GETCOMPUTERNAME )
@@ -1051,7 +1051,7 @@ void _ShlWAPI_DeInit( void )
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, INT cchMax, DWORD dwFlags );
+typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, int cchMax, DWORD dwFlags );
 
 static PathCompactPathExA_Ptr pPathCompactPathExA = NULL;
 
@@ -1068,11 +1068,11 @@ HB_FUNC( GETCOMPACTPATH )
    {
       if( pPathCompactPathExA == NULL )
       {
-         pPathCompactPathExA = ( PathCompactPathExA_Ptr ) GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
+         pPathCompactPathExA = ( PathCompactPathExA_Ptr ) _OOHG_GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
       }
       if( pPathCompactPathExA != NULL )
       {
-         bRet = pPathCompactPathExA( ( LPTSTR ) HB_UNCONST( hb_parc( 1 ) ), ( LPTSTR ) HB_UNCONST( hb_parc( 2 ) ), ( INT ) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
+         bRet = pPathCompactPathExA( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), (LPTSTR) HB_UNCONST( hb_parc( 2 ) ), (int) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1083,7 +1083,7 @@ HB_FUNC( GETCOMPACTPATH )
 HB_FUNC( GETSHORTPATHNAME )
 /* Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a */
 {
-   CHAR buffer[ MAX_PATH + 1 ] = {0};
+   char buffer[ MAX_PATH + 1 ] = {0};
    DWORD iRet;
 
    iRet = GetShortPathName( hb_parc( 1 ), buffer, MAX_PATH );
@@ -1095,16 +1095,16 @@ HB_FUNC( GETSHORTPATHNAME )
    {
       hb_storc( "", 2 );
    }
-   hb_retni( ( INT ) iRet );
+   hb_retni( (int) iRet );
 }
 
-LPWSTR AnsiToWide( const CHAR * szString )
+LPWSTR AnsiToWide( const char * szString )
 {
-   INT iLen;
+   int iLen;
    LPWSTR szWide;
 
    iLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, NULL, 0 );
-   szWide = ( LPWSTR ) hb_xgrab( ( UINT ) ( iLen ) * sizeof( WCHAR ) );
+   szWide = ( LPWSTR ) hb_xgrab( (UINT) ( iLen ) * sizeof( WCHAR ) );
    MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, szWide, iLen );
    return szWide;
 }
@@ -1131,7 +1131,7 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    {
       if( pStrRetToBufA == NULL )
       {
-         pStrRetToBufA = ( STRRETTOBUFA ) GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
+         pStrRetToBufA = ( STRRETTOBUFA ) _OOHG_GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
       }
       if( pStrRetToBufA != NULL )
       {
@@ -1145,7 +1145,7 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
 
 TCHAR * _LocalDateTimeToDateTimeANSI( TCHAR *cLocalDateTime )
 {
-   INT           i;
+   int           i;
    TCHAR         cDateFormat[ 80 ];
    TCHAR         Year[ 12 ], Month[ 12 ], Day[ 12 ], Time[ 24 ];
    TCHAR         *p2 = cLocalDateTime;
@@ -1207,7 +1207,7 @@ TCHAR * _SpaceToBlank( TCHAR *cStr )
 
    while( *p != 0 )
    {
-      if( _istspace( *p ) )   // space character (0x09, 0x0D or 0x20)
+      if( _istspace( *p ) )   /* space character (0x09, 0x0D or 0x20) */
          *p = _TEXT( ' ' );
       p ++;
    }
@@ -1238,7 +1238,7 @@ TCHAR * _SpaceToBlank( TCHAR *cStr )
    #define SFGAO_ISSLOW 0x00004000
 #endif
 
-HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, @CSIDL_Name ) --> { { Data1, Data2, Data3, ... } , ... }
+HB_FUNC( DIRECTORYINFO )          /* FUNCTION DirectoryInfo( [ nCSIDL | cPath], [nTypeList], @nIndexRoot, @CSIDL_Name ) --> { { Data1, ... }, ... } */
 {
    LPITEMIDLIST  pidlFolders = NULL;
    LPITEMIDLIST  pidlItems = NULL;
@@ -1255,7 +1255,7 @@ HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, 
    TCHAR         cInternalType[ 33 ];
    SHELLDETAILS  psd;
    SHFILEINFO    psfi;
-   INT           nCSIDL;
+   int           nCSIDL;
    PHB_ITEM      pArray, pSubarray;
    LPCITEMIDLIST *apidl;
 
@@ -1335,14 +1335,14 @@ HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, 
          uAttr = SFGAO_HASSUBFOLDER;
          IShellFolder2_GetAttributesOf( psfFolders, 1, apidl, &uAttr );
          if( uAttr & SFGAO_HASSUBFOLDER )
-            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER ) );    // Folder with Sub-Folder
+            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_HASSUBFOLDER ) );    /* Folder with Sub-Folder */
          else
-            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_FOLDER ) );    // Folder without Sub-Folder
+            lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_FOLDER ) );    /* Folder without Sub-Folder */
          Found_Ok = TRUE;
       }
       else if( nFlags & SHCONTF_NONFOLDERS )
       {
-         lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_NOFOLDER ) );    // File
+         lstrcpy( cInternalType, _TEXT( DIRECTORYINFO_INTERNALDATA_NOFOLDER ) );    /* File */
          Found_Ok = TRUE;
       }
 
@@ -1350,34 +1350,34 @@ HB_FUNC( DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoot, 
       {
          hb_arrayNew( pSubarray, 8 );
 
-         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 0, &psd );    // Name
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 0, &psd );    /* Name */
          win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
          hb_arraySetC( pSubarray, DIRECTORYINFO_NAME, cDisplayData );
 
-         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 3, &psd );    // Date
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 3, &psd );    /* Date */
          win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
          hb_arraySetC( pSubarray, DIRECTORYINFO_DATE, _SpaceToBlank( cDisplayData ) );
          lstrcpy( cDateTime, cDisplayData );
 
-         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 2, &psd );    // Type
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 2, &psd );    /* Type */
          win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
          hb_arraySetC( pSubarray, DIRECTORYINFO_TYPE, _SpaceToBlank( cDisplayData ) );
 
-         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 1, &psd );    // Size
+         IShellFolder2_GetDetailsOf( psfFolders, pidlItems, 1, &psd );    /* Size */
          win_StrRetToBuf( &psd.str, pidlItems, cDisplayData, MAX_PATH );
          hb_arraySetC( pSubarray, DIRECTORYINFO_SIZE, _SpaceToBlank( cDisplayData ) );
 
-         IShellFolder2_GetDisplayNameOf( psfFolders, pidlItems, SHGDN_FORPARSING, &strDispName );    // FullName
+         IShellFolder2_GetDisplayNameOf( psfFolders, pidlItems, SHGDN_FORPARSING, &strDispName );    /* FullName */
          win_StrRetToBuf( &strDispName, pidlItems, cFullPath, MAX_PATH );
          hb_arraySetC( pSubarray, DIRECTORYINFO_FULLNAME, cFullPath );
 
-         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_TYPE, cInternalType );    // D+ | D- | F
+         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_TYPE, cInternalType );    /* D+ | D- | F */
 
          _LocalDateTimeToDateTimeANSI( cDateTime );
-         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_DATE, cDateTime );    // YYYY:MM:DD  HH:MM:SS
+         hb_arraySetC( pSubarray, DIRECTORYINFO_INTERNALDATA_DATE, cDateTime );    /* YYYY:MM:DD  HH:MM:SS */
 
          SHGetFileInfo( (LPCTSTR) cFullPath, 0, &psfi, sizeof( SHFILEINFO ), SHGFI_SYSICONINDEX );
-         hb_arraySetNI( pSubarray, DIRECTORYINFO_INTERNALDATA_IMAGEINDEX, (INT) psfi.iIcon );    // nImageIndex
+         hb_arraySetNI( pSubarray, DIRECTORYINFO_INTERNALDATA_IMAGEINDEX, (int) psfi.iIcon );    /* nImageIndex */
 
          hb_arrayAddForward( pArray, pSubarray );
       }
@@ -1465,9 +1465,9 @@ HB_FUNC( GETOBJECTCOUNT )          /* GetObjectCount( [ nProcessId ] ) -> { nGDI
       CloseHandle( hProcess );
 
       hb_reta(3);
-      HB_STORNI( ( INT ) gdi, -1, 1 );
-      HB_STORNI( ( INT ) user, -1, 2 );
-      HB_STORNI( ( INT ) kernel, -1, 3 );
+      HB_STORNI( (int) gdi, -1, 1 );
+      HB_STORNI( (int) user, -1, 2 );
+      HB_STORNI( (int) kernel, -1, 3 );
    }
 }
 
@@ -1513,12 +1513,12 @@ HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] )
       }
       if( hDllProcess != NULL )
       {
-         pEmptyWorkingSet = ( Func_EmptyWorkingSet ) GetProcAddress( hDllProcess, "K32EmptyWorkingSet" );
+         pEmptyWorkingSet = ( Func_EmptyWorkingSet ) _OOHG_GetProcAddress( hDllProcess, "K32EmptyWorkingSet" );
       }
    }
    if( ( hDllProcess != NULL ) && ( pEmptyWorkingSet == NULL ) )
    {
-      pEmptyWorkingSet = ( Func_EmptyWorkingSet ) GetProcAddress( hDllProcess, "EmptyWorkingSet" );
+      pEmptyWorkingSet = ( Func_EmptyWorkingSet ) _OOHG_GetProcAddress( hDllProcess, "EmptyWorkingSet" );
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
@@ -1574,7 +1574,7 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
       hDllUser32 = LoadLibrary( "USER32.DLL" );
       if( hDllUser32 != NULL )
       {
-         pMessageBoxTimeout = ( PMessageBoxTimeout ) GetProcAddress( hDllUser32, "MessageBoxTimeoutA" );
+         pMessageBoxTimeout = ( PMessageBoxTimeout ) _OOHG_GetProcAddress( hDllUser32, "MessageBoxTimeoutA" );
       }
    }
    if( pMessageBoxTimeout == NULL )
@@ -1594,7 +1594,7 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
  * The SetLayeredWindowAttributes function sets the opacity and transparency
  * color key of a layered window.
  * Parameters:
- * - hwnd   Handle to the layered window.
+ * - hWnd   Handle to the layered window.
  * - crKey   Pointer to a COLORREF value that specifies the transparency color
  *   key to be used.
  *    (When making a certain color transparent...).
@@ -1604,11 +1604,11 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
  *    (When making a certain color transparent...) or LWA_ALPHA.
  */
 
-HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )   // hWnd, color, opacity, flag (LWA_COLORKEY or LWA_ALPHA)
+HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )          /* FUNCTION SetLayeredWindowAttributes( hWnd, color, opacity, [ LWA_COLORKEY | LWA_ALPHA ] ) -> lSuccess */
 {
    HWND hWnd = HWNDparam( 1 );
-   COLORREF crKey = ( COLORREF ) hb_parnl( 2 );
-   BYTE bAlpha = ( BYTE ) hb_parni( 3 );
+   COLORREF crKey = (COLORREF) hb_parnl( 2 );
+   BYTE bAlpha = (BYTE) hb_parni( 3 );
    DWORD dwFlags = ( DWORD ) hb_parnl( 4 );
 
 #if defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION )
@@ -1673,7 +1673,7 @@ static CALL_DLLGETVERSION pDllGetVersion = NULL;
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
 {
-   INT iResult = 0;
+   int iResult = 0;
    DLLVERSIONINFO dll;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
@@ -1685,7 +1685,7 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
    {
       if( pDllGetVersion == NULL )
       {
-         pDllGetVersion = ( CALL_DLLGETVERSION ) GetProcAddress( hDllComctl32, "DllGetVersion" );
+         pDllGetVersion = ( CALL_DLLGETVERSION ) _OOHG_GetProcAddress( hDllComctl32, "DllGetVersion" );
       }
       if( pDllGetVersion != NULL )
       {
@@ -1701,6 +1701,20 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
 
    hb_retni( iResult );
 }
+
+typedef HRESULT ( WINAPI * CALL_CLOSETHEMEDATA ) ( HTHEME );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, INT, INT, const RECT *, const RECT * );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, const RECT * );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, const RECT *, const DTTOPTS * pOptions );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, DWORD, const RECT * );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, INT, INT, const RECT *, RECT * );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEMARGINS ) ( HTHEME, HDC, INT, INT, INT, LPCRECT, MARGINS * );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, INT, INT, const RECT *, THEMESIZE, SIZE * );
+typedef BOOL    ( WINAPI * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, INT, INT );
+typedef HTHEME  ( WINAPI * CALL_OPENTHEMEDATA ) ( HWND, LPCWSTR );
+typedef HRESULT ( WINAPI * CALL_SETWINDOWTHEME ) ( HWND, LPCWSTR, LPCWSTR );
+typedef BOOL    ( WINAPI * CALL_ISTHEMEACTIVE ) ( VOID );
+typedef BOOL    ( WINAPI * CALL_ISAPPTHEMED ) ( VOID );
 
 static HMODULE hDllUxTheme = NULL;
 static CALL_CLOSETHEMEDATA pProcCloseThemeData = NULL;
@@ -1728,18 +1742,18 @@ HMODULE _UxTheme_Init( void )
 
       if( hDllUxTheme )
       {
-         pProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) GetProcAddress( hDllUxTheme, "CloseThemeData" );
-         pProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) GetProcAddress( hDllUxTheme, "DrawThemeBackground" );
-         pProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) GetProcAddress( hDllUxTheme, "DrawThemeParentBackground" );
-         pProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) GetProcAddress( hDllUxTheme, "DrawThemeText" );
-         pProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) GetProcAddress( hDllUxTheme, "DrawThemeTextEx" );
-         pProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) GetProcAddress( hDllUxTheme, "GetThemeBackgroundContentRect" );
-         pProcGetThemeMargins = ( CALL_GETTHEMEMARGINS ) GetProcAddress( hDllUxTheme, "GetThemeMargins" );
-         pProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) GetProcAddress( hDllUxTheme, "GetThemePartSize" );
-         pProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) GetProcAddress( hDllUxTheme, "IsThemeBackgroundPartiallyTransparent" );
-         pProcOpenThemeData = ( CALL_OPENTHEMEDATA ) GetProcAddress( hDllUxTheme, "OpenThemeData" );
-         pProcSetWindowTheme = ( CALL_SETWINDOWTHEME ) GetProcAddress( hDllUxTheme, "SetWindowTheme" );
-         pProcIsThemeActive = ( CALL_ISTHEMEACTIVE ) GetProcAddress( hDllUxTheme, "IsThemeActive" );
+         pProcCloseThemeData = ( CALL_CLOSETHEMEDATA ) _OOHG_GetProcAddress( hDllUxTheme, "CloseThemeData" );
+         pProcDrawThemeBackground = ( CALL_DRAWTHEMEBACKGROUND ) _OOHG_GetProcAddress( hDllUxTheme, "DrawThemeBackground" );
+         pProcDrawThemeParentBackground = ( CALL_DRAWTHEMEPARENTBACKGROUND ) _OOHG_GetProcAddress( hDllUxTheme, "DrawThemeParentBackground" );
+         pProcDrawThemeText = ( CALL_DRAWTHEMETEXT ) _OOHG_GetProcAddress( hDllUxTheme, "DrawThemeText" );
+         pProcDrawThemeTextEx = ( CALL_DRAWTHEMETEXTEX ) _OOHG_GetProcAddress( hDllUxTheme, "DrawThemeTextEx" );
+         pProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeBackgroundContentRect" );
+         pProcGetThemeMargins = ( CALL_GETTHEMEMARGINS ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeMargins" );
+         pProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemePartSize" );
+         pProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) _OOHG_GetProcAddress( hDllUxTheme, "IsThemeBackgroundPartiallyTransparent" );
+         pProcOpenThemeData = ( CALL_OPENTHEMEDATA ) _OOHG_GetProcAddress( hDllUxTheme, "OpenThemeData" );
+         pProcSetWindowTheme = ( CALL_SETWINDOWTHEME ) _OOHG_GetProcAddress( hDllUxTheme, "SetWindowTheme" );
+         pProcIsThemeActive = ( CALL_ISTHEMEACTIVE ) _OOHG_GetProcAddress( hDllUxTheme, "IsThemeActive" );
 
          if( ! ( pProcCloseThemeData &&
                  pProcDrawThemeBackground &&
@@ -1778,73 +1792,73 @@ HMODULE _UxTheme_Init( void )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcCloseThemeData( HTHEME hTheme )
+HRESULT ProcCloseThemeData( HTHEME hTheme )
 {
    return ( pProcCloseThemeData )( hTheme );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcDrawThemeBackground( HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect )
+HRESULT ProcDrawThemeBackground( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pRect, LPCRECT pClipRect )
 {
    return ( pProcDrawThemeBackground )( hTheme, hdc, iPartId, iStateId, pRect, pClipRect );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcDrawThemeParentBackground( HWND hwnd, HDC hdc, LPCRECT prc )
+HRESULT ProcDrawThemeParentBackground( HWND hWnd, HDC hdc, LPCRECT prc )
 {
-   return ( pProcDrawThemeParentBackground )( hwnd, hdc, prc );
+   return ( pProcDrawThemeParentBackground )( hWnd, hdc, prc );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcDrawThemeText( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect )
+HRESULT ProcDrawThemeText( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect )
 {
    return ( pProcDrawThemeText )( hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcDrawThemeTextEx( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS * pOptions )
+HRESULT ProcDrawThemeTextEx( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, LPRECT pRect, const DTTOPTS * pOptions )
 {
    return ( pProcDrawThemeTextEx )( hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, pRect, pOptions );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcGetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect )
+HRESULT ProcGetThemeBackgroundContentRect( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pBoundingRect, LPRECT pContentRect )
 {
    return ( pProcGetThemeBackgroundContentRect )( hTheme, hdc, iPartId, iStateId, pBoundingRect, pContentRect );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcGetThemeMargins( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPCRECT prc, MARGINS * pMargins )
+HRESULT ProcGetThemeMargins( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, int iPropId, LPCRECT prc, MARGINS * pMargins )
 {
    return ( pProcGetThemeMargins )( hTheme, hdc, iPartId, iStateId, iPropId, prc, pMargins );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE * psz )
+HRESULT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT prc, THEMESIZE eSize, SIZE * psz )
 {
    return ( pProcGetThemePartSize )( hTheme, hdc, iPartId, iStateId, prc, eSize, psz );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int iStateId )
+BOOL ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int iStateId )
 {
    return ( pProcIsThemeBackgroundPartiallyTransparent )( hTheme, iPartId, iStateId );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcOpenThemeData( HWND hwnd, LPCWSTR pszClassList )
+HTHEME ProcOpenThemeData( HWND hWnd, LPCWSTR pszClassList )
 {
-   return ( pProcOpenThemeData )( hwnd, pszClassList );
+   return ( pProcOpenThemeData )( hWnd, pszClassList );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcSetWindowTheme( HWND hwnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList )
+HRESULT ProcSetWindowTheme( HWND hWnd, LPCWSTR pszSubAppName, LPCWSTR pszSubIdList )
 {
-   return ( pProcSetWindowTheme )( hwnd, pszSubAppName, pszSubIdList );
+   return ( pProcSetWindowTheme )( hWnd, pszSubAppName, pszSubIdList );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcIsThemeActive( VOID )
+BOOL ProcIsThemeActive( void )
 {
    return ( pProcIsThemeActive )();
 }
@@ -1886,7 +1900,7 @@ HB_FUNC( ISXPTHEMEACTIVE )          /* FUNCTION IsXPThemeActive() -> lRet */
    {
       if( _UxTheme_Init() )
       {
-         bResult = ( BOOL ) ProcIsThemeActive();
+         bResult = (BOOL) ProcIsThemeActive();
       }
    }
 
@@ -1899,7 +1913,7 @@ HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
    BOOL bResult = FALSE;
    HMODULE hInstDLL;
    CALL_ISAPPTHEMED pIsAppThemed;
-   LONG lResult;
+   long lResult;
    OSVERSIONINFO os;
 
    os.dwOSVersionInfoSize = sizeof( os );
@@ -1909,7 +1923,7 @@ HB_FUNC( ISAPPTHEMED )          /* FUNCTION IsAppThemed() -> lRet */
       hInstDLL = _UxTheme_Init();
       if( hInstDLL )
       {
-         pIsAppThemed = ( CALL_ISAPPTHEMED ) GetProcAddress( hInstDLL, "IsAppThemed" );
+         pIsAppThemed = ( CALL_ISAPPTHEMED ) _OOHG_GetProcAddress( hInstDLL, "IsAppThemed" );
          if( pIsAppThemed )
          {
             lResult = ( pIsAppThemed )();
@@ -1942,16 +1956,23 @@ HB_FUNC( GETTASKBARHEIGHT )
    RECT rect;
 
    GetWindowRect( FindWindow( "Shell_TrayWnd", NULL ), &rect );
-   hb_retni( ( INT ) rect.bottom - rect.top );
+   hb_retni( (int) rect.bottom - rect.top );
 }
 
 HB_FUNC( LOADSTRING )
 {
    LPBYTE cBuffer;
 
-   cBuffer = GlobalAlloc( GPTR, 255 );
-   LoadString( GetModuleHandle( NULL ), hb_parni( 1 ), ( LPSTR ) cBuffer, 254 );
+   cBuffer = (LPBYTE) GlobalAlloc( GPTR, 255 );
+   LoadString( GetModuleHandle( NULL ), hb_parni( 1 ), (LPSTR) cBuffer, 254 );
 
-   hb_retc( ( char * ) cBuffer );
+   hb_retc( (char *) cBuffer );
    GlobalFree( cBuffer );
+}
+
+HB_PTRUINT _OOHG_GetProcAddress( HMODULE hmodule, LPCSTR lpProcName )
+{
+   FARPROC p = GetProcAddress( hmodule, lpProcName );
+
+   return (HB_PTRUINT) p;
 }
