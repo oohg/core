@@ -641,6 +641,8 @@ enum {
 #define BUTTON_IMAGELIST_ALIGN_BOTTOM 3
 #define BUTTON_IMAGELIST_ALIGN_CENTER 4
 
+HBITMAP _OOHG_CopyBitmap( HBITMAP, INT, INT, INT, INT );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TButton_lpfnOldWndProc( LONG_PTR lp )
 {
