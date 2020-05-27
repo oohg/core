@@ -746,7 +746,7 @@ HB_FUNC( WINVERSION )
                   szVersion = _TEXT( "Windows Vista " );
             else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
                szVersion = _TEXT( "Windows Server 2003 " );
-            else if (osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1)
+            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
                szVersion = _TEXT( "Windows XP " );
             else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
                szVersion = _TEXT( "Windows 2000 " );

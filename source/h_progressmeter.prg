@@ -273,7 +273,7 @@ HB_FUNC_STATIC( TPROGRESSMETER_EVENTS )          /* METHOD Events( hWnd, nMsg, w
             HDC         hdc;
             RECT        updateRect;
 
-            if ( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
+            if( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
             {
                hb_retni( 0 );
             }

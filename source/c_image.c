@@ -439,7 +439,7 @@ HANDLE _OOHG_LoadImage( const char *cImage, int iAttributes, int nWidth, int nHe
             else
             {
                /* black and white ICON */
-               if (IconInfo.hbmMask)
+               if( IconInfo.hbmMask )
                {
                   GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
                   iWidth  = bm.bmWidth;

@@ -361,7 +361,7 @@ HB_FUNC( REGOPENKEYEXA )
    HKEY phwHandle;
 
    lError = RegOpenKeyExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), 0, (REGSAM) HB_PARNL( 3 ), &phwHandle );
-   if ( lError == ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
       HB_STORNL2( (LONG_PTR) phwHandle, 4 );
    }
@@ -376,13 +376,13 @@ HB_FUNC( REGQUERYVALUEEXA )
    DWORD lpcbData = 0;
 
    lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, NULL, &lpcbData );
-   if ( lError == ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
       BYTE * lpData;
       lpData = (BYTE *) hb_xgrab( (int) lpcbData + 1 );
 
       lError = RegQueryValueExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), NULL, &lpType, (BYTE *) lpData, &lpcbData );
-      if ( lError == ERROR_SUCCESS )
+      if( lError == ERROR_SUCCESS )
       {
          HB_STORNL2( (long) lpType, 4 );
          hb_storc( (char *) lpData, 5 );
@@ -404,7 +404,7 @@ HB_FUNC( REGENUMKEYEXA )
    DWORD dwClass = 255;
 
    lError = RegEnumKeyEx( (HKEY) HB_PARNL( 1 ), (DWORD) hb_parnl( 2 ), (LPSTR) Buffer, &dwBuffSize, NULL, (LPSTR) Class, &dwClass, &ft );
-   if ( lError == ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
       HB_STORNL2( (long) dwBuffSize, 4 );
@@ -444,7 +444,7 @@ HB_FUNC( REGCREATEKEY )
    LSTATUS lError;
 
    lError = RegCreateKey( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), &hKey );
-   if ( lError == ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
       HB_STORNL2( (LONG_PTR) hKey, 3 );
    }
@@ -461,7 +461,7 @@ HB_FUNC( REGENUMVALUEA )
    LSTATUS lError;
 
    lError = RegEnumValueA( (HKEY) HB_PARNL( 1 ), hb_parnl( 2 ), Buffer, &dwBuffSize, NULL, &lpType, NULL, &dwClass );
-   if ( lError == ERROR_SUCCESS )
+   if( lError == ERROR_SUCCESS )
    {
       hb_storc( Buffer, 3 );
       HB_STORNL2( (long) dwBuffSize, 4 );

@@ -8141,7 +8141,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
    InitCommonControlsEx( &i );
 
    Style = WS_CHILD | LVS_REPORT | hb_parni( 12 );
-   if ( hb_parl( 10 ) )
+   if( hb_parl( 10 ) )
    {
       Style = Style | LVS_OWNERDATA;
    }
@@ -8168,15 +8168,15 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
                                HWNDparam( 1 ), HMENUparam( 2 ), GetModuleHandle( NULL ), NULL ) ;
 
    extStyle = hb_parni( 9 ) | LVS_EX_FULLROWSELECT | LVS_EX_HEADERDRAGDROP | LVS_EX_SUBITEMIMAGES;
-   if ( hb_parl( 14 ) )
+   if( hb_parl( 14 ) )
    {
       extStyle = extStyle | LVS_EX_CHECKBOXES;
    }
-   if ( hb_parl( 15 ) )
+   if( hb_parl( 15 ) )
    {
       extStyle = extStyle | LVS_EX_DOUBLEBUFFER;
    }
-   if ( hb_parl( 16 ) )
+   if( hb_parl( 16 ) )
    {
       extStyle = extStyle | LVS_EX_LABELTIP;
    }
@@ -8188,7 +8188,7 @@ HB_FUNC( INITLISTVIEW )          /* FUNCTION InitListView( hWnd, hMenu, nCol, nR
       MoveWindow( hlistview, iCol, iNewRow, iWidth, iHeight, TRUE );
    }
 
-   if ( hb_parl( 10 ) )
+   if( hb_parl( 10 ) )
    {
       ListView_SetItemCount( hlistview, hb_parni( 11 ) ) ;
    }
@@ -8328,7 +8328,7 @@ HB_FUNC( SETGRIDCOLUMNIMAGE )
 
    COL.fmt |= LVCFMT_IMAGE;
 
-   if ( hb_parl( 4 ) )
+   if( hb_parl( 4 ) )
    {
       COL.fmt |= LVCFMT_BITMAP_ON_RIGHT;
    }
@@ -8837,7 +8837,7 @@ HB_FUNC( GET_XY_LPARAM )
    HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
 }
 
-#if ( defined( __BORLANDC__ ) && ( __TURBOC__ <= 0x0551 ) ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
+#if( defined( __BORLANDC__ ) && ( __TURBOC__ <= 0x0551 ) ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
 typedef struct tagNMLVSCROLL {
    NMHDR hdr;
    int dx;
@@ -9386,7 +9386,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
       if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
       {
-         if ( LI.state & LVIS_FOCUSED )
+         if( LI.state & LVIS_FOCUSED )
          {
             if( ! bFocusRect )
             {

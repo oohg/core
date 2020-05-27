@@ -314,7 +314,7 @@ HB_FUNC( ADDSPLITBOXITEM )          /* FUNCTION AddSplitBoxItem( CtrlhWnd, ReBar
    rbBand.lpText     = (LPTSTR) HB_UNCONST( hb_parc( 5 ) );
    rbBand.hwndChild  = HWNDparam( 1 );
 
-   if ( ! hb_parl( 8 ) )   /* ! lInverted */
+   if( ! hb_parl( 8 ) )   /* ! lInverted */
    {
       rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
       rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;
@@ -400,7 +400,7 @@ HB_FUNC( SETSPLITBOXITEM )          /* FUNCTION SetSplitBoxItem( CtrlhWnd, ReBar
 
    GetWindowRect( HWNDparam( 1 ), &rc );
 
-   if ( ! hb_parl( 8 ) )   /* ! lInverted */
+   if( ! hb_parl( 8 ) )   /* ! lInverted */
    {
       rbBand.cxMinChild = hb_parni( 6 ) ? hb_parni( 6 ) : 0;
       rbBand.cyMinChild = hb_parni( 7 ) ? hb_parni( 7 ) : rc.bottom - rc.top ;

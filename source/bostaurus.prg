@@ -1080,7 +1080,7 @@ HBITMAP bt_LoadOLEPicture( TCHAR *FileName, const TCHAR *TypePictureResource, BO
        return NULL;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if (_bt_OleInitialize_Flag_ == FALSE)
+   if( _bt_OleInitialize_Flag_ == FALSE )
    {
       _bt_OleInitialize_Flag_ = TRUE;
       OleInitialize (NULL);

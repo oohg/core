@@ -287,7 +287,7 @@ BOOL SaveResourceToFile( const char * res, const char * filename, const char * t
 
    hInst = GetModuleHandle( NULL );
    hrsrc = FindResource( hInst, res, type );
-   if ( hrsrc == NULL )
+   if( hrsrc == NULL )
       return FALSE;
 
   size = SizeofResource( hInst, hrsrc );

@@ -635,7 +635,7 @@ HB_FUNC_STATIC( TTEXTARRAY_EVENTS )          /* METHOD Events( hWnd, nMsg, wPara
             HDC         hdc;
             RECT        updateRect;
 
-            if ( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
+            if( ! GetUpdateRect( hWnd, &updateRect, FALSE ) )
             {
                hb_retni( 0 );
             }

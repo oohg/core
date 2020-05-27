@@ -676,7 +676,7 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam,
             HDC         hdc;
             RECT        rect;
 
-            if ( ! GetUpdateRect( hWnd, &rect, FALSE ) )
+            if( ! GetUpdateRect( hWnd, &rect, FALSE ) )
             {
                hb_retni( 0 );
             }

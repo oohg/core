@@ -255,7 +255,7 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
    const char * lpData = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : NULL ;
    const char * lpFileName= hb_parc( 4 );
 
-   if ( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
+   if( WritePrivateProfileString( lpSection , lpEntry , lpData , lpFileName ) )
       hb_retl( TRUE ) ;
    else
       hb_retl(FALSE);

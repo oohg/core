@@ -2084,7 +2084,7 @@ HB_FUNC( _HMG_PRINTER_STARTDOC )          /* _HMG_PRINTER_StartDoc( hdcPrint ) -
       docInfo.lpszDocName = hb_parc( 2 );
 
       iRet = StartDoc( hdcPrint, &docInfo );
-      if ( iRet < 0 )
+      if( iRet < 0 )
       {
          iRet = 0;
       }

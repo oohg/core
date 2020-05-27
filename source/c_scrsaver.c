@@ -118,12 +118,12 @@ HB_FUNC( CHANGEPASSWORD )
    HWND hWnd = HWNDparam( 1 );
    HINSTANCE hmpr = LoadLibrary( "MPR.DLL" );
 
-   if ( hmpr == NULL )
+   if( hmpr == NULL )
       hb_retl( FALSE );
 
    PwdChangePassword = ( PWDCHANGEPASSWORD ) _OOHG_GetProcAddress( hmpr, "PwdChangePasswordA" );
 
-   if ( PwdChangePassword == NULL )
+   if( PwdChangePassword == NULL )
    {
       FreeLibrary( hmpr );
       hb_retl( FALSE );

@@ -476,9 +476,9 @@ METHOD SetKeybrd( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBa
    EndIf
 
    TTimer():Define(, Self, 400, ;
-      {|| SetStatusItemIcon( ::hWnd, nrItem1, if ( IsNumLockActive(), ::cLedOn, ::cLedOff ) ), ;
-          SetStatusItemIcon( ::hWnd, nrItem2, if ( IsCapsLockActive(), ::cLedOn, ::cLedOff ) ), ;
-          SetStatusItemIcon( ::hWnd, nrItem3, if ( IsInsertActive(), ::cLedOn, ::cLedOff ) ) } )
+      {|| SetStatusItemIcon( ::hWnd, nrItem1, iif( IsNumLockActive(), ::cLedOn, ::cLedOff ) ), ;
+          SetStatusItemIcon( ::hWnd, nrItem2, iif( IsCapsLockActive(), ::cLedOn, ::cLedOff ) ), ;
+          SetStatusItemIcon( ::hWnd, nrItem3, iif( IsInsertActive(), ::cLedOn, ::cLedOff ) ) } )
 
    Return Nil
 
@@ -685,7 +685,7 @@ HB_FUNC( INITITEMBAR )
       default : displayFlags = 0;
    }
 
-   if ( hb_parnl( 5 ) )
+   if( hb_parnl( 5 ) )
    {
       nrOfParts = SendMessage( hWndSB, SB_GETPARTS, 0, 0 );
       SendMessage( hWndSB, SB_GETPARTS, (WPARAM) NUM_OF_PARTS, (LPARAM) (LPINT) ptArray );

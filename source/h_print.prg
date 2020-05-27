@@ -6058,21 +6058,21 @@ HB_FUNC( GETPRINTERSINFO )          /* FUNCTION GetPrintersInfo() -> cBuffer */
    EnumPrinters( flags, NULL, level, NULL, 0, &dwSize, &dwPrinters );
 
    pBuffer = (char *) GlobalAlloc( GPTR, dwSize );
-   if ( pBuffer == NULL )
+   if( pBuffer == NULL )
    {
       hb_retc( ",," );
       return;
    }
    EnumPrinters( flags, NULL, level, (BYTE *) pBuffer, dwSize, &dwSize, &dwPrinters );
 
-   if ( dwPrinters == 0 )
+   if( dwPrinters == 0 )
    {
       hb_retc( ",," );
       return;
    }
    cBuffer = (char *) GlobalAlloc( GPTR, dwPrinters * 256 );
 
-   if ( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
+   if( osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
 
    {
       pInfo5 = (PRINTER_INFO_5 *) pBuffer;
@@ -6085,7 +6085,7 @@ HB_FUNC( GETPRINTERSINFO )          /* FUNCTION GetPrintersInfo() -> cBuffer */
 
          pInfo5++;
 
-         if ( i < dwPrinters - 1 )
+         if( i < dwPrinters - 1 )
             strcat( cBuffer, ",," );
       }
    }

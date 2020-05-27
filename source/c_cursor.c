@@ -183,7 +183,7 @@ HB_FUNC( SETWINDOWCURSOR )
    {
       ch = LoadCursor( GetModuleHandle( NULL ), hb_parc( 2 ) );
 
-      if ( ch == NULL )
+      if( ch == NULL )
       {
          ch = LoadCursorFromFile( (LPCTSTR) hb_parc( 2 ) );
       }

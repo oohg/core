@@ -609,27 +609,27 @@ HB_FUNC( INITTOOLBAR )
       StyleEx = StyleEx | WS_EX_CLIENTEDGE;
    }
 
-   if ( hb_parl( 10 ) )
+   if( hb_parl( 10 ) )
    {
       Style = Style | TBSTYLE_FLAT;
    }
 
-   if ( hb_parl( 11 ) )
+   if( hb_parl( 11 ) )
    {
       Style = Style | CCS_BOTTOM;
    }
 
-   if ( hb_parl( 12 ) )
+   if( hb_parl( 12 ) )
    {
       Style = Style | TBSTYLE_LIST;
    }
 
-   if ( hb_parl( 13 ) )
+   if( hb_parl( 13 ) )
    {
       Style = Style | CCS_NOPARENTALIGN | CCS_NODIVIDER | CCS_NORESIZE;
    }
 
-   if ( hb_parl( 17 ) )
+   if( hb_parl( 17 ) )
    {
       Style = Style | CCS_VERT;
    }
@@ -671,7 +671,7 @@ HB_FUNC( INITTOOLBUTTON )
 
    Style =  TBSTYLE_BUTTON;
 
-   if ( hb_parl( 11 ) )
+   if( hb_parl( 11 ) )
    {
       Style = Style | TBSTYLE_AUTOSIZE;
    }

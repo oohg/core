@@ -4280,7 +4280,7 @@ HB_FUNC( RR_MODIFYPEN )          /* FUNCTION RR_ModifyPen( hPen, nStyle, nWidth,
 
    memset( &ppn, 0, sizeof( LOGPEN ) );
    i = GetObject( ( HPEN ) HB_PARNL( 1 ), sizeof( LOGPEN ), &ppn );
-   if ( i > 0 )
+   if( i > 0 )
    {
       if( hb_parni( 2 ) >= 0 )
       {
@@ -4511,7 +4511,7 @@ HB_FUNC( RR_MODIFYFONT )          /* FUNCTION RR_CreateFont( hFont, cName, nSize
       }
 
       hf = CreateFontIndirect( &ppn );
-      if ( hf != NULL )
+      if( hf != NULL )
       {
          DeleteObject( (HFONT) HB_PARNL( 1 ) );
          HB_RETNL( (LONG_PTR) hf );

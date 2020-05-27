@@ -917,7 +917,7 @@ HB_FUNC( SETCLIPBOARDTEXT )
       EmptyClipboard();
 
       hglbCopy = GlobalAlloc( GMEM_DDESHARE, (nLen+1) * sizeof(TCHAR) );
-      if (hglbCopy != NULL)
+      if( hglbCopy != NULL )
       {
          lptstrCopy = (LPTSTR) GlobalLock( hglbCopy );
          memcpy( lptstrCopy, hb_parc( 1 ), nLen * sizeof(TCHAR));

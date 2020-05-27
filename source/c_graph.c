@@ -98,7 +98,7 @@ HB_FUNC( RECTDRAW )          /* FUNCTION RectDraw( hwnd, top, left, bottom, righ
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 7 ), RGB( (int) HB_PARNI( 6, 1 ), (int) HB_PARNI( 6, 2 ), (int) HB_PARNI( 6, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen );
-   if ( hb_parl( 9 ) )
+   if( hb_parl( 9 ) )
    {
       hbrush = CreateSolidBrush( RGB( (int) HB_PARNI( 8, 1 ), (int) HB_PARNI( 8, 2 ), (int) HB_PARNI( 8, 3 ) ) );
       hgdiobj2 = SelectObject( hdc1, hbrush );
@@ -129,7 +129,7 @@ HB_FUNC( ROUNDRECTDRAW )          /* FUNCTION RoundRectDraw( hwnd, top, left, bo
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 9 ), RGB( (int) HB_PARNI( 8, 1 ), (int) HB_PARNI( 8, 2 ), (int) HB_PARNI( 8, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen );
-   if ( hb_parl( 11 ) )
+   if( hb_parl( 11 ) )
    {
       hbrush = CreateSolidBrush( RGB( (int) HB_PARNI( 10, 1 ), (int) HB_PARNI( 10, 2 ), (int) HB_PARNI( 10, 3 ) ) ) ;
       hgdiobj2 = SelectObject( hdc1, hbrush );
@@ -160,7 +160,7 @@ HB_FUNC( ELLIPSEDRAW )          /* FUNCTION EllipseDraw( hwnd, top, left, bottom
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 7 ), RGB( (int) HB_PARNI( 6, 1 ), (int) HB_PARNI( 6, 2 ), (int) HB_PARNI( 6, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen );
-   if ( hb_parl( 9 ) )
+   if( hb_parl( 9 ) )
    {
       hbrush = CreateSolidBrush( RGB( (int) HB_PARNI( 8, 1 ), (int) HB_PARNI( 8, 2 ), (int) HB_PARNI( 8, 3 ) ) );
       hgdiobj2 = SelectObject( hdc1, hbrush );
@@ -208,7 +208,7 @@ HB_FUNC( PIEDRAW )          /* FUNCTION PieDraw( hwnd, top, left, bottom, right,
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 11 ), RGB( (int) HB_PARNI( 10, 1 ), (int) HB_PARNI( 10, 2 ), (int) HB_PARNI( 10, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen);
-   if ( hb_parl( 13 ) )
+   if( hb_parl( 13 ) )
    {
       hbrush = CreateSolidBrush( RGB( (int) HB_PARNI( 12, 1 ), (int) HB_PARNI( 12, 2 ), (int) HB_PARNI( 12, 3 ) ) );
       hgdiobj2 = SelectObject( hdc1, hbrush );
@@ -242,7 +242,7 @@ HB_FUNC( POLYGONDRAW )          /* FUNCTION PolygonDraw( hwnd, aCols, aRows, pen
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 5 ), RGB( (int) HB_PARNI( 4, 1 ), (int) HB_PARNI( 4, 2 ), (int) HB_PARNI( 4, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen );
-   if ( hb_parl( 7 ) )
+   if( hb_parl( 7 ) )
    {
       hbrush = CreateSolidBrush( RGB( (int) HB_PARNI( 6, 1 ), (int) HB_PARNI( 6, 2 ), (int) HB_PARNI( 6, 3 ) ) );
       hgdiobj2 = SelectObject( hdc1, hbrush );
@@ -456,11 +456,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
       case  2:      /* Rectangle */
          hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
          hgdiobj = SelectObject( hDC, hpen );
-         if ( pData->fill )
+         if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
-         else if ( pData->usenull )
+         else if( pData->usenull )
          {
             hbrush = (HBRUSH) GetStockObject( NULL_BRUSH );
          }
@@ -479,11 +479,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
       case  3:      /* RoundRect */
          hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
          hgdiobj = SelectObject( hDC, hpen );
-         if ( pData->fill )
+         if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
-         else if ( pData->usenull )
+         else if( pData->usenull )
          {
             hbrush = (HBRUSH) GetStockObject( NULL_BRUSH );
          }
@@ -502,11 +502,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
       case  4:      /* Ellipse */
          hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
          hgdiobj = SelectObject( hDC, hpen );
-         if ( pData->fill )
+         if( pData->fill )
          {
             hbrush = (HBRUSH) CreateSolidBrush( pData->fillrgb );
          }
-         else if ( pData->usenull )
+         else if( pData->usenull )
          {
             hbrush = (HBRUSH) GetStockObject( NULL_BRUSH );
          }
@@ -533,11 +533,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
       case  6:      /* Pie */
          hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
          hgdiobj = SelectObject( hDC, hpen );
-         if ( pData->fill )
+         if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
-         else if ( pData->usenull )
+         else if( pData->usenull )
          {
             hbrush = (HBRUSH) GetStockObject( NULL_BRUSH );
          }
@@ -567,11 +567,11 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
       case  8:      /* Polygon */
          hpen = CreatePen( PS_SOLID, pData->penwidth, pData->penrgb );
          hgdiobj = SelectObject( hDC, hpen );
-         if ( pData->fill )
+         if( pData->fill )
          {
             hbrush = CreateSolidBrush( pData->fillrgb );
          }
-         else if ( pData->usenull )
+         else if( pData->usenull )
          {
             hbrush = (HBRUSH) GetStockObject( NULL_BRUSH );
          }
@@ -622,7 +622,7 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
 
             FontColor = SetTextColor( hDC, pData->penrgb );
             BackColor = SetBkColor( hDC, pData->fillrgb );
-            if ( pData->fill )
+            if( pData->fill )
             {
                 SetBkMode( hDC, TRANSPARENT );
             }
@@ -640,7 +640,7 @@ void _OOHG_GraphCommand( HDC hDC, struct _OOHG_GraphData *pData )
             /* Draw string */
             cBuffer = &pData->points;
             cBuffer += pData->penwidth + 1;
-            if ( pData->fill )
+            if( pData->fill )
             {
                ExtTextOut( hDC, pData->left, pData->top, ETO_CLIPPED, &rct, cBuffer, (UINT) pData->height, NULL );
             }
@@ -681,17 +681,17 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )          /* FUNCTION _OOHG_GraphCommand( hwnd, aGr
    ULONG ulCount, ulPos;
 
    pArray = hb_param( 2, HB_IT_ARRAY );
-   if ( pArray )
+   if( pArray )
    {
       ulCount = hb_arrayLen( pArray );
-      if ( ulCount )
+      if( ulCount )
       {
          hWnd = HWNDparam( 1 );
          hDC = GetDC( hWnd );
          for ( ulPos = 1; ulPos <= ulCount; ulPos++ )
          {
             pItem = hb_arrayGetItemPtr( pArray, ulPos );
-            if ( HB_IS_STRING( pItem ) )
+            if( HB_IS_STRING( pItem ) )
             {
                _OOHG_GraphCommand( hDC, (struct _OOHG_GraphData *) HB_UNCONST( hb_itemGetCPtr( pItem ) ) );
             }
@@ -714,7 +714,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND )          /* FUNCTION _OOHG_NewGraphCommand( hWn
    POINT *pPoint;
 
    iType = hb_parni(  2 );
-   if ( iType == 8 || iType == 9 )
+   if( iType == 8 || iType == 9 )
    {
       lItems = (UINT) hb_parinfa( 3, 0 );
       lSize = (long) ( sizeof( pStruct ) + ( lItems * sizeof( POINT ) ) );
@@ -758,7 +758,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND )          /* FUNCTION _OOHG_NewGraphCommand( hWn
    pData->usenull  = hb_parl( 17 );
 
    hWnd = HWNDparam( 1 );
-   if ( ValidHandler( hWnd ) )
+   if( ValidHandler( hWnd ) )
    {
       hDC = GetDC( hWnd );
       _OOHG_GraphCommand( hDC, pData );
@@ -766,7 +766,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND )          /* FUNCTION _OOHG_NewGraphCommand( hWn
    }
 
    hb_retclen( (char *) pData, (HB_SIZE) lSize );
-   if ( bBuffer )
+   if( bBuffer )
    {
       hb_xfree( pData );
    }
@@ -809,7 +809,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND_TEXT )          /* FUNCTION _OOHG_NewGraphCommand
    memcpy( cBuffer, hb_parc( 8 ), (size_t) ( pData->height + 1 ) );
 
    hWnd = HWNDparam( 1 );
-   if ( ValidHandler( hWnd ) )
+   if( ValidHandler( hWnd ) )
    {
       hDC = GetDC( hWnd );
       _OOHG_GraphCommand( hDC, pData );

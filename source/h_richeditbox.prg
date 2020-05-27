@@ -476,7 +476,7 @@ ENM_MOUSEEVENTS
       }
    }
 
-   if ( classname != NULL )
+   if( classname != NULL )
    {
       hCtrl = CreateWindowEx( StyleEx, classname, (LPSTR) NULL, Style,
                               hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
