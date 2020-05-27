@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -95,13 +95,13 @@ HB_FUNC( _OOHG_STRETCHBLTMODE )          /* FUNCTION _OOHG_StretchBltMode( lNewV
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG lWidth2, LONG lHeight2, BOOL bIgnoreBkClr )
+HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, long lBackColor, long lWidth2, long lHeight2, BOOL bIgnoreBkClr )
 {
    HANDLE hImage = 0;
    IStream * iStream;
    IPicture * iPicture;
    IPicture ** iPictureRef = &iPicture;
-   LONG lWidth, lHeight;
+   long lWidth, lHeight;
    HDC hdc1, hdc2;
    RECT rect;
    HBRUSH hBrush;
@@ -120,23 +120,17 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG l
       iPicture->lpVtbl->get_Width( iPicture, &lWidth );
       iPicture->lpVtbl->get_Height( iPicture, &lHeight );
 
-      if( lWidth2 && lHeight2 )
+      if( ! lWidth2 || ! lHeight2 )
       {
-         // GetClientRect( hWnd, &rect );
-         // lWidth2 = rect.right;
-         // lHeight2 = rect.bottom;
-      }
-      else
-      {
-         // Takes "real" image size
+         /* Takes "real" image size */
          float fAux;
 
          iPicture->lpVtbl->get_CurDC( iPicture, &hdc1 );
          hdc1 = CreateCompatibleDC( hdc1 );
-         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + ( float ) 0.9999;
-         lWidth2 = ( LONG ) fAux;
-         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + ( float ) 0.9999;
-         lHeight2 = ( LONG ) fAux;
+         fAux = ( ( lWidth * GetDeviceCaps( hdc1, LOGPIXELSX ) ) / 2540 ) + ( float ) 0.9999f;
+         lWidth2 = (long) fAux;
+         fAux = ( ( lHeight * GetDeviceCaps( hdc1, LOGPIXELSY ) ) / 2540 ) + ( float ) 0.9999f;
+         lHeight2 = (long) fAux;
          DeleteDC( hdc1 );
       }
 
@@ -145,7 +139,7 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG l
       hdc1 = GetDC( hWnd );
       hdc2 = CreateCompatibleDC( hdc1 );
       hImage = CreateCompatibleBitmap( hdc1, lWidth2, lHeight2 );
-      hOld = SelectObject( hdc2, hImage );
+      hOld = (HBITMAP) SelectObject( hdc2, hImage );
 
       if( ! bIgnoreBkClr )
       {
@@ -173,12 +167,12 @@ HANDLE _OOHG_OleLoadPicture( HGLOBAL hGlobal, HWND hWnd, LONG lBackColor, LONG l
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, BOOL scale, LONG BackColor, BOOL bIgnoreBkColor, INT iHrzMrgn, INT iVrtMrgn )
+HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, long iWidth, long iHeight, BOOL scale, long BackColor, BOOL bIgnoreBkColor, int iHrzMrgn, int iVrtMrgn )
 {
    RECT fromRECT, toRECT;
    HBITMAP hOldTo, hOldFrom, hpic = 0;
    BITMAP bm;
-   LONG lWidth, lHeight;
+   long lWidth, lHeight;
    HDC imgDC, fromDC, toDC;
    HBRUSH hBrush;
 
@@ -194,10 +188,10 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
       }
       else
       {
-         hBrush = CreateSolidBrush( ( COLORREF ) BackColor );
+         hBrush = CreateSolidBrush( (COLORREF) BackColor );
       }
 
-      // FROM parameters
+      /* FROM parameters */
       GetObject( hImage, sizeof( BITMAP ), &bm );
       lWidth  = bm.bmWidth;
       lHeight = bm.bmHeight;
@@ -206,9 +200,9 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
       {
          FillRect( fromDC, &fromRECT, hBrush );
       }
-      hOldFrom = SelectObject( fromDC, hImage );
+      hOldFrom = (HBITMAP) SelectObject( fromDC, hImage );
 
-      // TO parameters
+      /* TO parameters */
       if( hWnd && ( iWidth == 0 || iHeight == 0 ) )
       {
          GetClientRect( hWnd, &toRECT );
@@ -218,11 +212,11 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
          {
             if( (int) ( lWidth * iHeight / lHeight ) <= iWidth )
             {
-               iWidth  = ( int ) ( lWidth  * iHeight / lHeight );
+               iWidth  = (int) ( lWidth  * iHeight / lHeight );
             }
             else
             {
-               iHeight = ( int ) ( lHeight * iWidth  / lWidth );
+               iHeight = (int) ( lHeight * iWidth  / lWidth );
             }
          }
       }
@@ -238,7 +232,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
       {
          FillRect( toDC, &toRECT, hBrush );
       }
-      hOldTo = SelectObject( toDC, hpic );
+      hOldTo = (HBITMAP) SelectObject( toDC, hpic );
 
       SetStretchBltMode( toDC, _OOHG_StretchBltMode );
       if( _OOHG_StretchBltMode == HALFTONE )
@@ -259,7 +253,7 @@ HBITMAP _OOHG_ScaleImage( HWND hWnd, HBITMAP hImage, LONG iWidth, LONG iHeight, 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegree )
+HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, long BackColor, int iDegree )
 {
    RECT rect;
    POINT point[ 3 ];
@@ -284,15 +278,15 @@ HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegre
          hBrush = CreateSolidBrush( BackColor );
       }
 
-      // FROM parameters
+      /* FROM parameters */
       GetObject( hImage, sizeof( BITMAP ), &bm );
       iWidth  = bm.bmWidth;
       iHeight = bm.bmHeight;
       SetRect( &rect, 0, 0, iWidth, iHeight );
       FillRect( fromDC, &rect, hBrush );
-      hOld1 = SelectObject( fromDC, hImage );
+      hOld1 = (HBITMAP) SelectObject( fromDC, hImage );
 
-      // TO parameters
+      /* TO parameters */
       iDegree = iDegree % 360;
       if( iDegree == 90 )
       {
@@ -334,11 +328,10 @@ HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegre
          point[ 2 ].y = iHeight;
          SetRect( &rect, 0, 0, iWidth, iHeight );
       }
+
       hpic = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
       FillRect( toDC, &rect, hBrush );
-      hOld2 = SelectObject( toDC, hpic );
-      // coordenadas!! angulo!!
-
+      hOld2 = (HBITMAP) SelectObject( toDC, hpic );
       SetStretchBltMode( toDC, _OOHG_StretchBltMode );
       if( _OOHG_StretchBltMode == HALFTONE )
       {
@@ -358,19 +351,19 @@ HBITMAP _OOHG_RotateImage( HWND hWnd, HBITMAP hImage, LONG BackColor, int iDegre
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, LONG lBackColor, BOOL bIgnoreBkClr )
+HANDLE _OOHG_LoadImage( const char *cImage, int iAttributes, int nWidth, int nHeight, HWND hWnd, long lBackColor, BOOL bIgnoreBkClr )
 {
    HANDLE hImage;
    HBRUSH hBrush;
    HINSTANCE hinstance = GetModuleHandle( NULL );
 
-   // Validate cImage parameter
+   /* Validate cImage parameter */
    if( ! cImage || ! *cImage )
    {
       return NULL;
    }
 
-   // Background color, for MENUs use COLOR_MENU (see h_menu.prg)
+   /* Background color, for MENUs use COLOR_MENU (see h_menu.prg) */
    if( lBackColor == -1 )
    {
       lBackColor = GetSysColor( COLOR_BTNFACE );
@@ -381,22 +374,22 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       hBrush = CreateSolidBrush( lBackColor );
    }
 
-   // Try to load BITMAP from EXE
+   /* Try to load BITMAP from EXE */
    hImage = LoadImage( hinstance, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes );
    if( ! hImage )
    {
-      // Try to load BITMAP from FILE
+      /* Try to load BITMAP from FILE */
       hImage = LoadImage( NULL, cImage, IMAGE_BITMAP, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
    }
    if( ! hImage )
    {
       if( bIgnoreBkClr )
       {
-         // Try to load ICON from EXE
+         /* Try to load ICON from EXE */
          hImage = LoadImage( hinstance, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
          if( ! hImage )
          {
-            // Try to load ICON from FILE
+            /* Try to load ICON from FILE */
             hImage = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
          }
       }
@@ -404,12 +397,12 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       {
          HICON hIcon;
 
-         // Try to load ICON from EXE
-         hIcon = LoadImage( hinstance, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
+         /* Try to load ICON from EXE */
+         hIcon = (HICON) LoadImage( hinstance, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes );
          if( ! hIcon )
          {
-            // Try to load ICON from FILE
-            hIcon = LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
+            /* Try to load ICON from FILE */
+            hIcon = (HICON) LoadImage( 0, cImage, IMAGE_ICON, nWidth, nHeight, iAttributes | LR_LOADFROMFILE );
          }
          if( hIcon )
          {
@@ -423,29 +416,29 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
 
             if( IconInfo.hbmColor )
             {
-               // color ICON
+               /* color ICON */
                GetObject( IconInfo.hbmColor, sizeof( BITMAP ), &bm );
                iWidth  = bm.bmWidth;
                iHeight = bm.bmHeight;
 
-               imgDC = GetDC( hWnd );                    // +1 gdi object
-               toDC = CreateCompatibleDC( imgDC );       // +1 gdi object
+               imgDC = GetDC( hWnd );
+               toDC = CreateCompatibleDC( imgDC );       
 
-               hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );       // +1 gdi object
-               hOldBmp = SelectObject( toDC, hImage );
+               hImage = CreateCompatibleBitmap( imgDC, iWidth, iHeight );      
+               hOldBmp = (HBITMAP) SelectObject( toDC, hImage );
 
                DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_NORMAL );
 
-               ReleaseDC( hWnd, imgDC );       // -1 gdi object
+               ReleaseDC( hWnd, imgDC );      
                hImage = SelectObject( toDC, hOldBmp );
-               DeleteDC( toDC );       // -1 gdi object
-               DestroyIcon( hIcon );       // -3 gdi object
-               DeleteObject( IconInfo.hbmColor );       // -1 gdi object
-               DeleteObject( IconInfo.hbmMask );       // -1 gdi object
+               DeleteDC( toDC );      
+               DestroyIcon( hIcon );       
+               DeleteObject( IconInfo.hbmColor );      
+               DeleteObject( IconInfo.hbmMask );     
             }
             else
             {
-               // black and white ICON
+               /* black and white ICON */
                if (IconInfo.hbmMask)
                {
                   GetObject( IconInfo.hbmMask, sizeof( BITMAP ), &bm );
@@ -456,11 +449,11 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
                   toDC = CreateCompatibleDC( imgDC );
 
                   hImage = CreateBitmap( iWidth, iHeight, 1, 1, NULL );
-                  hOldBmp = SelectObject( toDC, hImage );
+                  hOldBmp = (HBITMAP) SelectObject( toDC, hImage );
                   DrawIconEx( toDC, 0, 0, hIcon, iWidth, iHeight, 0, hBrush, DI_IMAGE );
 
                   ReleaseDC( hWnd, imgDC );
-                  hImage = SelectObject( toDC, hOldBmp );
+                  hImage = (HBITMAP) SelectObject( toDC, hOldBmp );
                   DeleteDC( toDC );
                   DestroyIcon( hIcon );
                   DeleteObject( IconInfo.hbmColor );
@@ -479,7 +472,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       }
    }
 
-   // Try to create from EXE, using OleLoadPicture
+   /* Try to create from EXE, using OleLoadPicture */
    if( ! hImage )
    {
       HRSRC hSource;
@@ -542,7 +535,7 @@ HANDLE _OOHG_LoadImage( char *cImage, int iAttributes, int nWidth, int nHeight, 
       }
    }
 
-   // Try to create from FILE, using OleLoadPicture
+   /* Try to create from FILE, using OleLoadPicture */
    if( ! hImage )
    {
       HANDLE hFile;
@@ -575,7 +568,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf
    POCTRL oSelf;
    HWND hWnd;
    HBITMAP hBitmap, hBitmap2;
-   LONG lWidth, lHeight, lBackColor;
+   long lWidth, lHeight, lBackColor;
    BOOL bAutoSize;
    RECT rect;
 
@@ -613,17 +606,16 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf
          GetClientRect( hWnd, &rect );
          lWidth = rect.right;
          lHeight = rect.bottom;
-         hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), lWidth, lHeight, hWnd, lBackColor, hb_parl( 5 ) );
+         hBitmap = (HBITMAP) _OOHG_LoadImage( hb_parc( 2 ), hb_parni( 3 ), lWidth, lHeight, hWnd, lBackColor, hb_parl( 5 ) );
          hBitmap2 = _OOHG_ScaleImage( hWnd, hBitmap, 0, 0, FALSE, lBackColor, hb_parl( 5 ), 0, 0 );
          DeleteObject( hBitmap );
-         HWNDret( hBitmap2 );
       }
       else
       {
          /* full size */
-         hBitmap = (HBITMAP) _OOHG_LoadImage( HB_UNCONST( hb_parc( 2 ) ), hb_parni( 3 ), 0, 0, hWnd, lBackColor, hb_parl( 5 ) );
-         HWNDret( hBitmap );
+         hBitmap2 = (HBITMAP) _OOHG_LoadImage( hb_parc( 2 ), hb_parni( 3 ), 0, 0, hWnd, lBackColor, hb_parl( 5 ) );
       }
+      HB_RETNL( (LONG_PTR) hBitmap2 );
    }
 }
 
@@ -637,7 +629,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )          /* FUNCTION _OOHG_SizeOfBitmapFro
 
    if( hb_parclen( 2 ) )
    {
-      hBitmap = ( HBITMAP ) _OOHG_LoadImage( HB_UNCONST( hb_parc( 1 ) ), LR_CREATEDIBSECTION, 0, 0, NULL, -1, TRUE );
+      hBitmap = (HBITMAP) _OOHG_LoadImage( hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, -1, TRUE );
 
       if( hBitmap )
       {
@@ -655,7 +647,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )          /* FUNCTION _OOHG_SizeOfBitmapFro
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_SIZEOFHBITMAP )           /* FUNCTION _OOHG_SizeOfHBitmap( hBitmap ) -> { nWidth, nHeight, nDepth } */
 {
-   HBITMAP hBitmap = ( HBITMAP ) HWNDparam( 1 );
+   HBITMAP hBitmap = (HBITMAP) HB_PARNL( 1 );
    BITMAP bm;
 
    memset( &bm, 0, sizeof( bm ) );
@@ -677,7 +669,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )           /* FUNCTION _OOHG_BitmapFromBuffer( 
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap = 0;
    HGLOBAL hGlobal;
-   LONG lWidth, lHeight;
+   long lWidth, lHeight;
 
    if( hb_parclen( 2 ) )
    {
@@ -701,7 +693,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )           /* FUNCTION _OOHG_BitmapFromBuffer( 
       }
    }
 
-   HWNDret( hBitmap );
+   HB_RETNL( (LONG_PTR) hBitmap );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -710,27 +702,27 @@ HB_FUNC( _OOHG_SETBITMAP )           /* FUNCTION _OOHG_SetBitmap( oSelf, hBitmap
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
    HBITMAP hBitmap1, hBitmap2 = 0;
 
-   hBitmap1 = ( HBITMAP ) HWNDparam( 2 );
+   hBitmap1 = (HBITMAP) HB_PARNL( 2 );
    if( hBitmap1 )
    {
-      if( hb_parl( 4 ) )           // Stretch
+      if( hb_parl( 4 ) )           /* Stretch */
       {
          hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, TRUE, oSelf->lBackColor, hb_parl( 6 ), 0, 0 );
       }
-      else if( hb_parl( 5 ) )      // AutoSize
+      else if( hb_parl( 5 ) )      /* AutoSize */
       {
          hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, 0, 0, FALSE, oSelf->lBackColor, hb_parl( 6 ), 0, 0 );
       }
-      else                         // No scale
+      else                         /* No scale */
       {
          BITMAP bm;
          GetObject( hBitmap1, sizeof( bm ), &bm );
          hBitmap2 = _OOHG_ScaleImage( oSelf->hWnd, hBitmap1, bm.bmWidth, bm.bmHeight, FALSE, oSelf->lBackColor, hb_parl( 6 ), 0, 0 );
       }
    }
-   SendMessage( oSelf->hWnd, hb_parni( 3 ), ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) hBitmap2 );
+   SendMessage( oSelf->hWnd, hb_parni( 3 ), (WPARAM) IMAGE_BITMAP, (LPARAM) hBitmap2 );
 
-   HWNDret( hBitmap2 );
+   HB_RETNL( (LONG_PTR) hBitmap2 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -740,7 +732,7 @@ HB_FUNC( _OOHG_BITMAPWIDTH )          /* FUNCTION _OOHG_BitmapWidth( hBitmap ) -
    HBITMAP hBmp;
 
    memset( &bm, 0, sizeof( bm ) );
-   hBmp = ( HBITMAP ) HWNDparam( 1 );
+   hBmp = (HBITMAP) HB_PARNL( 1 );
    if( hBmp )
    {
       GetObject( hBmp, sizeof( bm ), &bm );
@@ -755,7 +747,7 @@ HB_FUNC( _OOHG_BITMAPHEIGHT )          /* FUNCTION _OOHG_BitmapHeight( hBitmap )
    HBITMAP hBmp;
 
    memset( &bm, 0, sizeof( bm ) );
-   hBmp = ( HBITMAP ) HWNDparam( 1 );
+   hBmp = (HBITMAP) HB_PARNL( 1 );
    if( hBmp )
    {
       GetObject( hBmp, sizeof( bm ), &bm );
@@ -767,11 +759,8 @@ HB_FUNC( _OOHG_BITMAPHEIGHT )          /* FUNCTION _OOHG_BitmapHeight( hBitmap )
 HB_FUNC( _OOHG_ROTATEIMAGE )          /* FUNCTION _OOHG_RotateImage( oSelf, hBitMap, nDegree ) -> hBitmap */
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
-   HBITMAP hBitmap;
 
-   hBitmap = _OOHG_RotateImage( oSelf->hWnd, ( HBITMAP ) HWNDparam( 2 ), oSelf->lBackColor, hb_parni( 3 ) );
-
-   HWNDret( hBitmap );
+   HB_RETNL( (LONG_PTR) _OOHG_RotateImage( oSelf->hWnd, (HBITMAP) HB_PARNL( 2 ), oSelf->lBackColor, hb_parni( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -779,8 +768,7 @@ HB_FUNC( _OOHG_SCALEIMAGE )          /* FUNCTION _OOHG_ScaleImage( oSelf, hBitMa
 {
    POCTRL oSelf;
    HWND hWnd = NULL;
-   HBITMAP hBitmap;
-   LONG lColor = -1;
+   long lColor = -1;
 
    _OOHG_DetermineColor( hb_param( 6, HB_IT_ANY ), &lColor );
 
@@ -795,9 +783,7 @@ HB_FUNC( _OOHG_SCALEIMAGE )          /* FUNCTION _OOHG_ScaleImage( oSelf, hBitMa
       }
    }
 
-   hBitmap = _OOHG_ScaleImage( hWnd, ( HBITMAP ) HWNDparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ), lColor, hb_parl( 7 ), hb_parni( 8 ), hb_parni( 9 ) );
-
-   HWNDret( hBitmap );
+   HB_RETNL( (LONG_PTR) _OOHG_ScaleImage( hWnd, (HBITMAP) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ), lColor, hb_parl( 7 ), hb_parni( 8 ), hb_parni( 9 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -805,32 +791,32 @@ HB_FUNC( _OOHG_BLENDIMAGE )          /* FUNCTION _OOHG_BlendImage( hImage, nImgX
 {
    HBITMAP hImage, hSprite;
    int iSprX, iSprY, iSprW, iSprH, iImgX, iImgY, iImgW, iImgH;
-   LONG clrTransp = -1;
+   long clrTransp = -1;
    BITMAP bmSprite;
    HDC hdc, hdc_I, hdc_S;
    HBITMAP hOldI, hOldS;
    BOOL bResult = FALSE;
 
-   hImage = ( HBITMAP ) HWNDparam( 1 );
-   hSprite = ( HBITMAP ) HWNDparam( 6 );
+   hImage = (HBITMAP) HB_PARNL( 1 );
+   hSprite = (HBITMAP) HB_PARNL( 6 );
 
    if( ValidHandler( hImage ) && ValidHandler( hSprite ) )
    {
-      // Put images in DCs
+      /* Put images in DCs */
       hdc = GetDC( NULL );
       hdc_I = CreateCompatibleDC( hdc );
-      hOldI = SelectObject( hdc_I, hImage );
+      hOldI = (HBITMAP) SelectObject( hdc_I, hImage );
       hdc_S = CreateCompatibleDC( hdc );
-      hOldS = SelectObject( hdc_S, hSprite );
+      hOldS = (HBITMAP) SelectObject( hdc_S, hSprite );
 
-      // Get transparent color
+      /* Get transparent color */
       _OOHG_DetermineColor( hb_param( 7, HB_IT_ANY ), &clrTransp );
       if( clrTransp == -1 )
       {
          clrTransp = GetPixel( hdc_S, 0, 0 );
       }
 
-      // Set dimensions
+      /* Set dimensions */
       GetObject( hSprite, sizeof( BITMAP ), &bmSprite );
       iImgX = HB_ISNIL( 2 ) ? 0 : hb_parni( 2 );
       iImgY = HB_ISNIL( 3 ) ? 0 : hb_parni( 3 );
@@ -857,10 +843,10 @@ HB_FUNC( _OOHG_BLENDIMAGE )          /* FUNCTION _OOHG_BlendImage( hImage, nImgX
          iSprH = bmSprite.bmHeight;
       }
 
-      // Blend
+      /* Blend */
       bResult = TransparentBlt( hdc_I, iImgX, iImgY, iImgW, iImgH, hdc_S, iSprX, iSprY, iSprW, iSprH, clrTransp );
 
-      // Clean
+      /* Clean */
       SelectObject( hdc_I, hOldI );
       DeleteDC( hdc_I );
       SelectObject( hdc_S, hOldS );
@@ -871,7 +857,7 @@ HB_FUNC( _OOHG_BLENDIMAGE )          /* FUNCTION _OOHG_BlendImage( hImage, nImgX
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, INT x, INT y, INT width, INT height )
+HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, int x, int y, int width, int height )
 {
    HBITMAP hbmOldSrc, hbmOldDst, hBitmap_New = 0;
    HDC hdcSrc, hdcDst;
@@ -884,8 +870,8 @@ HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, INT x, INT y, INT width, INT height )
          GetObject( hBitmap, sizeof( bm ), &bm );
          hBitmap_New = CreateBitmap( width, height, bm.bmPlanes, bm.bmBitsPixel, NULL );
 
-         hbmOldSrc = SelectObject( hdcSrc, hBitmap );
-         hbmOldDst = SelectObject( hdcDst, hBitmap_New );
+         hbmOldSrc = (HBITMAP) SelectObject( hdcSrc, hBitmap );
+         hbmOldDst = (HBITMAP) SelectObject( hdcDst, hBitmap_New );
 
          BitBlt( hdcDst, 0, 0, width, height, hdcSrc, x, y, SRCCOPY );
 
@@ -902,41 +888,37 @@ HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, INT x, INT y, INT width, INT height )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_COPYBITMAP )          /* FUNCTION _OOHG_CopyBitmap( hBitmap, nCol, nRow, nWidth, nHeight ) -> hBitmap */
 {
-   HWNDret( _OOHG_CopyBitmap( (HBITMAP) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
+   HB_RETNL( (LONG_PTR) _OOHG_CopyBitmap( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_COPYIMAGE )          /* FUNCTION _OOHG_CopyImage( hWnd, nType, nWidth, nHeight, nAttributes ) -> hWnd */
 {
-   HANDLE hCopy;
-
-   hCopy = CopyImage( (HANDLE) HWNDparam( 1 ), (UINT) hb_parni( 2 ), (INT) hb_parni( 3 ), (INT) hb_parni( 4 ), (UINT) hb_parni( 5 ) );
-
-   HWNDret( hCopy );
+   HB_RETNL( (LONG_PTR) CopyImage( (HANDLE) HB_PARNL( 1 ), (UINT) hb_parni( 2 ), (int) hb_parni( 3 ), (int) hb_parni( 4 ), (UINT) hb_parni( 5 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, INT x, INT y, LONG lNewColor, LONG lOldColor )
+HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, int x, int y, long lNewColor, long lOldColor )
 {
    HDC hdcSrc, hdcDst;
-   INT nRow, nCol;
+   int nRow, nCol;
    HBITMAP hbmOldSrc, hbmOldDst, hbmNew = 0;
    BITMAP bm;
-   COLORREF clrOld, clrNew = ( COLORREF ) lNewColor;
+   COLORREF clrOld, clrNew = (COLORREF) lNewColor;
 
    if( ( hdcSrc = CreateCompatibleDC( NULL ) ) != NULL )
    {
       if( ( hdcDst = CreateCompatibleDC( NULL ) ) != NULL )
       {
          GetObject( hBitmap, sizeof( bm ), &bm );
-         hbmOldSrc = SelectObject( hdcSrc, hBitmap );
+         hbmOldSrc = (HBITMAP) SelectObject( hdcSrc, hBitmap );
          hbmNew = CreateBitmap( bm.bmWidth, bm.bmHeight, bm.bmPlanes, bm.bmBitsPixel, NULL );
-         hbmOldDst = SelectObject( hdcDst, hbmNew );
+         hbmOldDst = (HBITMAP) SelectObject( hdcDst, hbmNew );
          BitBlt( hdcDst, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY );
 
          if( x == -1 || y == -1 )
          {
-            clrOld = ( COLORREF ) lOldColor;
+            clrOld = (COLORREF) lOldColor;
          }
          else
          {
@@ -970,8 +952,8 @@ HBITMAP _OOHG_ReplaceColor( HBITMAP hBitmap, INT x, INT y, LONG lNewColor, LONG 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_REPLACECOLOR )          /* FUNCTION _OOHG_ReplaceColor( hBitmap, nCol, nRow, uNewColor, uOldColor ) -> hBitmap */
 {
-   LONG lNewColor = -1;
-   LONG lOldColor = -1;
+   long lNewColor = -1;
+   long lOldColor = -1;
 
    _OOHG_DetermineColor( hb_param( 4, HB_IT_ANY ), &lNewColor );
    if( lNewColor == -1 )
@@ -980,27 +962,27 @@ HB_FUNC( _OOHG_REPLACECOLOR )          /* FUNCTION _OOHG_ReplaceColor( hBitmap, 
    }
    _OOHG_DetermineColor( hb_param( 5, HB_IT_ANY ), &lOldColor );
 
-   HWNDret( _OOHG_ReplaceColor( ( HBITMAP ) HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), lNewColor, lOldColor ) );
+   HB_RETNL( (LONG_PTR) _OOHG_ReplaceColor( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), lNewColor, lOldColor ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_DRAWBITMAP )          /* FUNCTION _OOHG_DrawBitmap( hBitmap, nRow, nCol, nWidth, nHeight, lImageSize, nMode, lClrOnClr, lTransparent, nColor, hDC ) -> lSuccess */
 {
-   HBITMAP hBitmap = ( HBITMAP ) HWNDparam( 1 );
-   INT rF = hb_parni( 2 );
-   INT cF = hb_parni( 3 );
+   HBITMAP hBitmap = (HBITMAP) HB_PARNL( 1 );
+   int rF = hb_parni( 2 );
+   int cF = hb_parni( 3 );
    BOOL ImgSize = hb_parl( 6 );
-   INT Mode = hb_parni( 7 );
+   int Mode = hb_parni( 7 );
    BOOL ClrOnClr = hb_parl( 8 );
    BOOL Transparent = hb_parl( 9 );
-   COLORREF color_transp = ( COLORREF ) hb_parnl( 10 );
-   HDC hDC = ( HDC ) HB_PARNL( 11 );
+   COLORREF color_transp = (COLORREF) hb_parnl( 10 );
+   HDC hDC = (HDC) HB_PARNL( 11 );
    HDC memDC;
    HBITMAP hOld;
    BITMAP bm;
    POINT Point;
-   INT Width;
-   INT Height;
+   int Width;
+   int Height;
    BOOL bResult;
 
    memset( &bm, 0, sizeof( bm ) );
@@ -1018,21 +1000,21 @@ HB_FUNC( _OOHG_DRAWBITMAP )          /* FUNCTION _OOHG_DrawBitmap( hBitmap, nRow
    }
 
    memDC = CreateCompatibleDC( hDC );
-   hOld = SelectObject( memDC, hBitmap );
+   hOld = (HBITMAP) SelectObject( memDC, hBitmap );
 
    switch( Mode )
    {
-      case 1:   // STRETCH
+      case 1:   /* STRETCH */
          break;
-      case 3:   // COPY
+      case 3:   /* COPY */
          Width = bm.bmWidth = min( Width,  bm.bmWidth );
          Height = bm.bmHeight = min( Height, bm.bmHeight );
          break;
-      default:   // SCALE
-         if( (INT) ( bm.bmWidth * Height / bm.bmHeight ) <= Width )
-            Width = (INT) ( bm.bmWidth * Height / bm.bmHeight );
+      default:   /* SCALE */
+         if( (int) ( bm.bmWidth * Height / bm.bmHeight ) <= Width )
+            Width = (int) ( bm.bmWidth * Height / bm.bmHeight );
          else
-            Height = (INT) ( bm.bmHeight * Width / bm.bmWidth );
+            Height = (int) ( bm.bmHeight * Width / bm.bmWidth );
          break;
    }
 
@@ -1065,9 +1047,9 @@ HB_FUNC( _OOHG_DRAWBITMAP )          /* FUNCTION _OOHG_DrawBitmap( hBitmap, nRow
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GETPIXELCOLOR )          /* FUNCTION _OOHG_GetPixelColor( hBitmap, row, col ) -> nColor */
 {
-   HBITMAP hBmp = ( HBITMAP ) HWNDparam( 1 );
+   HBITMAP hBmp = (HBITMAP) HB_PARNL( 1 );
    HBITMAP hOld;
-   INT x, y;
+   int x, y;
    HDC memDC;
    COLORREF color;
 
@@ -1076,7 +1058,7 @@ HB_FUNC( _OOHG_GETPIXELCOLOR )          /* FUNCTION _OOHG_GetPixelColor( hBitmap
       x = hb_parni( 2 );
       y = hb_parni( 3 );
       memDC = CreateCompatibleDC( NULL );
-      hOld = SelectObject( memDC, hBmp );
+      hOld = (HBITMAP) SelectObject( memDC, hBmp );
       color = GetPixel( memDC, x, y );
       SelectObject( memDC, hOld );
       DeleteDC( memDC );
@@ -1085,5 +1067,5 @@ HB_FUNC( _OOHG_GETPIXELCOLOR )          /* FUNCTION _OOHG_GetPixelColor( hBitmap
    {
       color = -1;
    }
-   hb_retnl( ( LONG ) color );
+   hb_retnl( (long) color );
 }
