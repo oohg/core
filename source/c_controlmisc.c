@@ -33,7 +33,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -71,98 +71,99 @@
 #include "tchar.h"
 
 #ifdef HB_ITEM_NIL
-   #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
+   #define hb_dynsymSymbol( pDynSym ) ( ( pDynSym )->pSymbol )
 #endif
 
 static PHB_SYMB *s_Symbols = NULL;
 
-static char *s_SymbolNames[] = { "EVENTS_NOTIFY",
-                                 "GRIDFORECOLOR",
-                                 "GRIDBACKCOLOR",
-                                 "FONTCOLOR",
-                                 "BACKCOLOR",
-                                 "CONTAINER",
-                                 "PARENT",
-                                 "HCURSOR",
-                                 "EVENTS",
-                                 "EVENTS_COLOR",
-                                 "NAME",
-                                 "TYPE",
-                                 "TCONTROL",
-                                 "TLABEL",
-                                 "TGRID",
-                                 "CONTEXTMENU",
-                                 "ROWMARGIN",
-                                 "COLMARGIN",
-                                 "HWND",
-                                 "TTEXT",
-                                 "ADJUSTRIGHTSCROLL",
-                                 "ONMOUSEMOVE",
-                                 "ONMOUSEDRAG",
-                                 "DOEVENT",
-                                 "LOOKFORKEY",
-                                 "ACONTROLINFO",
-                                 "_ACONTROLINFO",
-                                 "EVENTS_DRAWITEM",
-                                 "_HWND",
-                                 "EVENTS_COMMAND",
-                                 "ONCHANGE",
-                                 "ONGOTFOCUS",
-                                 "ONLOSTFOCUS",
-                                 "ONCLICK",
-                                 "TRANSPARENT",
-                                 "EVENTS_MEASUREITEM",
-                                 "FONTHANDLE",
-                                 "TWINDOW",
-                                 "WNDPROC",
-                                 "OVERWNDPROC",
-                                 "HWNDCLIENT",
-                                 "REFRESH",
-                                 "AUXHANDLE",
-                                 "CONTAINERCOL",
-                                 "CONTAINERROW",
-                                 "LRTL",
-                                 "WIDTH",
-                                 "HEIGHT",
-                                 "VSCROLL",
-                                 "SCROLLBUTTON",
-                                 "VISIBLE",
-                                 "EVENTS_HSCROLL",
-                                 "EVENTS_VSCROLL",
-                                 "NTEXTHEIGHT",
-                                 "EVENTS_ENTER",
-                                 "ID",
-                                 "NESTEDCLICK",
-                                 "_NESTEDCLICK",
-                                 "TINTERNAL",
-                                 "_CONTEXTMENU",
-                                 "RELEASE",
-                                 "ACTIVATE",
-                                 "OOLE",
-                                 "RANGEHEIGHT",
-                                 "ONRCLICK",
-                                 "ONMCLICK",
-                                 "ONDBLCLICK",
-                                 "ONRDBLCLICK",
-                                 "ONMDBLCLICK",
-                                 "ONDROPFILES",
-                                 "LADJUSTIMAGES",
-                                 "ASELCOLOR",
-                                 "TABHANDLE",
-                                 "ITEMENABLED",
-                                 "HANDLETOITEM",
-                                 "GRIDSELECTEDCOLORS",
-                                 "TEDIT",
-                                 "OBKGRND",
-                                 "AEXCLUDEAREA",
-                                 "COMPAREITEMS",
-                                 "EVENTS_DRAG",
-                                 "EVENTS_MENUHILITED",
-                                 "EVENTS_INITMENUPOPUP",
-                                 "OMENU",
-                                 "EVENTS_TIMEOUT",
-                                 "RANGEWIDTH",
-                                 "LastSymbol" };
+static const char *s_SymbolNames[] = {
+   "EVENTS_NOTIFY",
+   "GRIDFORECOLOR",
+   "GRIDBACKCOLOR",
+   "FONTCOLOR",
+   "BACKCOLOR",
+   "CONTAINER",
+   "PARENT",
+   "HCURSOR",
+   "EVENTS",
+   "EVENTS_COLOR",
+   "NAME",
+   "TYPE",
+   "TCONTROL",
+   "TLABEL",
+   "TGRID",
+   "CONTEXTMENU",
+   "ROWMARGIN",
+   "COLMARGIN",
+   "HWND",
+   "TTEXT",
+   "ADJUSTRIGHTSCROLL",
+   "ONMOUSEMOVE",
+   "ONMOUSEDRAG",
+   "DOEVENT",
+   "LOOKFORKEY",
+   "ACONTROLINFO",
+   "_ACONTROLINFO",
+   "EVENTS_DRAWITEM",
+   "_HWND",
+   "EVENTS_COMMAND",
+   "ONCHANGE",
+   "ONGOTFOCUS",
+   "ONLOSTFOCUS",
+   "ONCLICK",
+   "TRANSPARENT",
+   "EVENTS_MEASUREITEM",
+   "FONTHANDLE",
+   "TWINDOW",
+   "WNDPROC",
+   "OVERWNDPROC",
+   "HWNDCLIENT",
+   "REFRESH",
+   "AUXHANDLE",
+   "CONTAINERCOL",
+   "CONTAINERROW",
+   "LRTL",
+   "WIDTH",
+   "HEIGHT",
+   "VSCROLL",
+   "SCROLLBUTTON",
+   "VISIBLE",
+   "EVENTS_HSCROLL",
+   "EVENTS_VSCROLL",
+   "NTEXTHEIGHT",
+   "EVENTS_ENTER",
+   "ID",
+   "NESTEDCLICK",
+   "_NESTEDCLICK",
+   "TINTERNAL",
+   "_CONTEXTMENU",
+   "RELEASE",
+   "ACTIVATE",
+   "OOLE",
+   "RANGEHEIGHT",
+   "ONRCLICK",
+   "ONMCLICK",
+   "ONDBLCLICK",
+   "ONRDBLCLICK",
+   "ONMDBLCLICK",
+   "ONDROPFILES",
+   "LADJUSTIMAGES",
+   "ASELCOLOR",
+   "TABHANDLE",
+   "ITEMENABLED",
+   "HANDLETOITEM",
+   "GRIDSELECTEDCOLORS",
+   "TEDIT",
+   "OBKGRND",
+   "AEXCLUDEAREA",
+   "COMPAREITEMS",
+   "EVENTS_DRAG",
+   "EVENTS_MENUHILITED",
+   "EVENTS_INITMENUPOPUP",
+   "OMENU",
+   "EVENTS_TIMEOUT",
+   "RANGEWIDTH",
+   "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
 {
@@ -209,12 +210,12 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
    {
       pString = (char *) hb_xgrab( _OOHG_Struct_Size );
 
-      // Initializes...
+      /* Initializes */
       memset( pString, 0, _OOHG_Struct_Size );
-      ( ( POCTRL ) pString )->lFontColor = -1;
-      ( ( POCTRL ) pString )->lBackColor = -1;
-      ( ( POCTRL ) pString )->lUseBackColor = -1;
-      ( ( POCTRL ) pString )->lOldBackColor = -1;
+      ( (POCTRL) pString )->lFontColor = -1;
+      ( (POCTRL) pString )->lBackColor = -1;
+      ( (POCTRL) pString )->lUseBackColor = -1;
+      ( (POCTRL) pString )->lOldBackColor = -1;
 
       if( HB_IS_STRING( hb_arrayGetItemPtr( pArray, 1 ) ) && hb_arrayGetCLen( pArray, 1 ) )
       {
@@ -224,17 +225,17 @@ POCTRL _OOHG_GetControlInfo( PHB_ITEM pSelf )
       hb_xfree( pString );
    }
 
-   pString = ( char * ) HB_UNCONST( hb_arrayGetCPtr( pArray, 1 ) );
+   pString = (char *) HB_UNCONST( hb_arrayGetCPtr( pArray, 1 ) );
 
    if( bRelease )
    {
       hb_itemRelease( pArray );
    }
 
-   return ( POCTRL ) pString;
+   return (POCTRL) pString;
 }
 
-void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char *cType, PHB_ITEM pArray )
+void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, const char *cType, PHB_ITEM pArray )
 {
    PHB_ITEM pSelf2;
 
@@ -257,7 +258,7 @@ void _OOHG_DoEvent( PHB_ITEM pSelf, int iSymbol, char *cType, PHB_ITEM pArray )
    hb_itemRelease( pSelf2 );
 }
 
-void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char *cType, LPARAM lParam )
+void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, const char *cType, LPARAM lParam )
 {
    PHB_ITEM pArray;
 
@@ -270,7 +271,7 @@ void _OOHG_DoEventMouseCoords( PHB_ITEM pSelf, int iSymbol, char *cType, LPARAM 
    hb_itemRelease( pArray );
 }
 
-BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
+BOOL _OOHG_DetermineColor( PHB_ITEM pColor, long *lColor )
 {
    BOOL bValid = 0;
 
@@ -302,7 +303,7 @@ BOOL _OOHG_DetermineColor( PHB_ITEM pColor, LONG *lColor )
    return bValid;
 }
 
-BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, LONG *lColor, BOOL fUpdate )
+BOOL _OOHG_DetermineColorReturn( PHB_ITEM pColor, long *lColor, BOOL fUpdate )
 {
    if( fUpdate )
    {
@@ -363,14 +364,9 @@ HB_FUNC( SETFOCUS )
 HB_FUNC( GETDLGITEMTEXT )
 {
    USHORT iLen = 32768;
-   char *cText = (char*) hb_xgrab( iLen+1 );
+   char *cText = (char*) hb_xgrab( iLen + 1 );
 
-   GetDlgItemText(
-        HWNDparam( 2 ),    // handle of dialog box
-   hb_parni(1),      // identifier of control
-   (LPTSTR) cText,         // address of buffer for text
-   iLen                    // maximum size of string
-   );
+   GetDlgItemText( HWNDparam( 2 ), hb_parni( 1 ), (LPTSTR) cText, iLen );
 
    hb_retc( cText );
    hb_xfree( cText );
@@ -383,55 +379,80 @@ HB_FUNC( ISDLGBUTTONCHECKED )
 
 HB_FUNC( SETSPINNERVALUE )
 {
-   SendMessage( HWNDparam( 1 ),
-      (UINT)UDM_SETPOS32 ,
-      (WPARAM)0,
-      (LPARAM) (INT) hb_parni (2)
-      ) ;
+   SendMessage( HWNDparam( 1 ), (UINT) UDM_SETPOS32, (WPARAM) 0, (LPARAM) hb_parni( 2 ) );
 }
 
 HB_FUNC( GETSPINNERVALUE )
 {
-   hb_retnl(
-             SendMessage( HWNDparam( 1 ),
-                          ( UINT ) UDM_GETPOS32,
-                          ( WPARAM ) 0,
-                          ( LPARAM ) 0 )
-           );
+   hb_retnl( SendMessage( HWNDparam( 1 ), (UINT) UDM_GETPOS32, (WPARAM) 0, (LPARAM) 0 ) );
+}
+
+HB_FUNC( KEYBD_EVENT )
+{
+   /* virtual-key code,
+    * hardware scan code,
+    * flags specifying various function options,
+    * additional data associated with keystroke
+    */
+   keybd_event( (BYTE) hb_parni( 1 ), (BYTE) MapVirtualKey( hb_parni( 1 ), 0 ), hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0, 0 );
 }
 
 HB_FUNC( INSERTTAB )
 {
-   keybd_event(
-      VK_TAB,          // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
+   keybd_event( VK_TAB, 0, 0, 0 );
 }
 
 HB_FUNC( INSERTSHIFTTAB )
 {
-   keybd_event(
-      VK_SHIFT,        // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
+   keybd_event( VK_SHIFT, 0, 0, 0 );
+   keybd_event( VK_TAB, 0, 0, 0 );
+   keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
+}
 
-   keybd_event(
-      VK_TAB,          // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
+HB_FUNC( INSERTBACKSPACE )
+{
+   keybd_event( VK_BACK, 0, 0, 0 );
+}
 
-   keybd_event(
-      VK_SHIFT,        // virtual-key code
-      0,               // hardware scan code
-      KEYEVENTF_KEYUP, // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
+HB_FUNC( INSERTPOINT )
+{
+   keybd_event( VK_DECIMAL, 0, 0, 0 );
+}
+
+HB_FUNC( INSERTRETURN )
+{
+   keybd_event( VK_RETURN, 0, 0, 0 );
+}
+
+#ifndef VK_A
+   #define VK_A 65
+#endif
+
+HB_FUNC( INSERT_ALT_A )
+{
+   keybd_event( VK_MENU, 0, 0, 0 );
+   keybd_event( VK_A, 0, 0, 0 );
+   keybd_event( VK_MENU, 0, KEYEVENTF_KEYUP, 0 );
+}
+
+HB_FUNC( INSERTUP )
+{
+   keybd_event( VK_UP, 0, 0, 0 );
+}
+
+HB_FUNC( INSERTDOWN )
+{
+   keybd_event( VK_DOWN, 0, 0, 0 );
+}
+
+HB_FUNC( INSERTPRIOR )
+{
+   keybd_event( VK_PRIOR, 0, 0, 0 );
+}
+
+HB_FUNC( INSERTNEXT )
+{
+   keybd_event( VK_NEXT, 0, 0, 0 );
 }
 
 HB_FUNC( RELEASECONTROL )
@@ -439,32 +460,13 @@ HB_FUNC( RELEASECONTROL )
    SendMessage( HWNDparam( 1 ), WM_SYSCOMMAND, SC_CLOSE, 0 );
 }
 
-HB_FUNC( INSERTBACKSPACE )
-{
-   keybd_event(
-      VK_BACK,         // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTPOINT )
-{
-   keybd_event(
-      VK_DECIMAL,      // virtual-key code
-      0,               // hardware scan code
-      0,               // flags specifying various function options
-      0                // additional data associated with keystroke
-   );
-}
-
 HB_FUNC( GETMODULEFILENAME )
 {
-   BYTE bBuffer[ MAX_PATH + 1 ] = { 0 } ;
+   TCHAR bBuffer[ MAX_PATH + 1 ] = { 0 };
 
-   GetModuleFileName( ( HMODULE ) HWNDparam( 1 ), ( char * ) bBuffer, 249 );
-   hb_retc( ( char * ) bBuffer );
+   GetModuleFileName( (HMODULE) HWNDparam( 1 ), (LPTSTR) bBuffer, MAX_PATH + 1 );
+
+   hb_retc( (char *) bBuffer );
 }
 
 HB_FUNC( SETCURSORPOS )
@@ -479,10 +481,7 @@ HB_FUNC( SHOWCURSOR )
 
 HB_FUNC( SYSTEMPARAMETERSINFO )
 {
-   if( SystemParametersInfoA( (UINT) hb_parni( 1 ),
-                              (UINT) hb_parni( 2 ),
-                              (VOID *) HB_UNCONST( hb_parc( 3 ) ),
-                              (UINT) hb_parni( 4 ) ) )
+   if( SystemParametersInfoA( (UINT) hb_parni( 1 ), (UINT) hb_parni( 2 ), (void *) hb_parc( 3 ), (UINT) hb_parni( 4 ) ) )
    {
       hb_retl( TRUE );
    }
@@ -492,12 +491,12 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
    }
 }
 
-HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
+HB_FUNC( GETTEXTWIDTH )  /* returns the width of a string in pixels */
 {
-   HDC   hDC = ( HDC ) HB_PARNL( 1 );
+   HDC   hDC = (HDC) HB_PARNL( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) HB_PARNL( 3 );
+   HFONT hFont = (HFONT) HB_PARNL( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -509,7 +508,7 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
    }
 
    if( hFont )
-      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+      hOldFont = (HFONT) SelectObject( hDC, hFont );
 
    GetTextExtentPoint32( hDC, hb_parc( 2 ), hb_parclen( 2 ), &sz );
 
@@ -522,12 +521,12 @@ HB_FUNC( GETTEXTWIDTH )  // returns the width of a string in pixels
    hb_retni( LOWORD( sz.cx ) );
 }
 
-HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
+HB_FUNC( GETTEXTHEIGHT )  /* returns the height of a string in pixels */
 {
-   HDC   hDC = ( HDC ) HB_PARNL( 1 );
+   HDC   hDC = (HDC) HB_PARNL( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = ( HFONT ) HB_PARNL( 3 );
+   HFONT hFont = (HFONT) HB_PARNL( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -539,7 +538,7 @@ HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
    }
 
    if( hFont )
-      hOldFont = ( HFONT ) SelectObject( hDC, hFont );
+      hOldFont = (HFONT) SelectObject( hDC, hFont );
 
    GetTextExtentPoint32( hDC, hb_parc( 2 ), hb_parclen( 2 ), &sz );
 
@@ -552,119 +551,26 @@ HB_FUNC( GETTEXTHEIGHT )  // returns the height of a string in pixels
    hb_retni( LOWORD( sz.cy ) );
 }
 
-HB_FUNC( KEYBD_EVENT )
-{
-   keybd_event(
-      ( BYTE ) hb_parni( 1 ),                       // virtual-key code
-      ( BYTE ) MapVirtualKey( hb_parni( 1 ), 0 ),   // hardware scan code
-      hb_parl( 2 ) ? KEYEVENTF_KEYUP : 0,           // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTRETURN )
-{
-
-   keybd_event(
-      VK_RETURN,                                    // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-#ifndef VK_A
-   #define VK_A 65
-#endif
-
-HB_FUNC( INSERT_ALT_A )
-{
-   keybd_event(
-      VK_MENU,                                      // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-
-   keybd_event(
-      VK_A,                                         // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-
-   keybd_event(
-      VK_MENU,                                      // virtual-key code
-      0,                                            // hardware scan code
-      KEYEVENTF_KEYUP,                              // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTUP )
-{
-   keybd_event(
-      VK_UP,                                        // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTDOWN )
-{
-   keybd_event(
-      VK_DOWN,                                      // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTPRIOR )
-{
-   keybd_event(
-      VK_PRIOR,                                     // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
-HB_FUNC( INSERTNEXT )
-{
-   keybd_event(
-      VK_NEXT,                                      // virtual-key code
-      0,                                            // hardware scan code
-      0,                                            // flags specifying various function options
-      0                                             // additional data associated with keystroke
-   );
-}
-
 HB_FUNC( GETSHOWCMD )
 {
-
    WINDOWPLACEMENT WP;
    HWND h;
-        int i;
+   int i;
 
-    h = HWNDparam( 1 );
-
-   WP.length = sizeof(WINDOWPLACEMENT) ;
-
-    GetWindowPlacement( h, &WP ) ;
-
-        i =  WP.showCmd;
-
-   hb_retni (i);
-
+   h = HWNDparam( 1 );
+   WP.length = sizeof( WINDOWPLACEMENT );
+   GetWindowPlacement( h, &WP );
+   i =  WP.showCmd;
+   hb_retni( i );
 }
 
 HB_FUNC( GETPROGRAMFILENAME )
 {
-   char Buffer [ MAX_PATH + 1 ] = { 0 } ;
-   GetModuleFileName( GetModuleHandle(NULL) , Buffer , MAX_PATH ) ;
-   hb_retc(Buffer);
+   TCHAR bBuffer[ MAX_PATH + 1 ] = { 0 };
+
+   GetModuleFileName( GetModuleHandle( NULL ), (LPTSTR) bBuffer, MAX_PATH + 1 );
+
+   hb_retc( (char *) bBuffer );
 }
 
 HB_FUNC( IMAGELIST_INIT )
@@ -681,17 +587,17 @@ HB_FUNC( IMAGELIST_INIT )
    hArray = hb_param( 1, HB_IT_ARRAY );
    if( iLen != 0 )
    {
-      clrDefault = ( COLORREF ) hb_parni( 2 );
+      clrDefault = (COLORREF) hb_parni( 2 );
       iStyle = hb_parni( 3 );
 
       for( s = 1; s <= iLen; s++ )
       {
-         caption = ( char * ) HB_UNCONST( hb_arrayGetCPtr( hArray, s ) );
+         caption = (char *) HB_UNCONST( hb_arrayGetCPtr( hArray, s ) );
 
-         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle );
+         hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle );
          if( hbmp == NULL )
          {
-            hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle | LR_LOADFROMFILE );
+            hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle | LR_LOADFROMFILE );
          }
 
          if( hbmp )
@@ -718,32 +624,33 @@ HB_FUNC( IMAGELIST_INIT )
    }
 
    hb_reta( 3 );
-   HB_STORVNL( ( LONG_PTR ) himl, -1, 1 );
+   HB_STORVNL( (LONG_PTR) himl, -1, 1 );
    HB_STORNI( cx, -1, 2 );
    HB_STORNI( cy, -1, 3 );
 }
 
 HB_FUNC( IMAGELIST_DESTROY )
 {
-   hb_retl( ImageList_Destroy( ( HIMAGELIST ) HB_PARNL( 1 ) ) );
+   HIMAGELIST himl = (HIMAGELIST) HB_PARNL( 1 );
+   hb_retl( ImageList_Destroy( himl ) );
 }
 
 HB_FUNC( IMAGELIST_ADD )
 {
-   HIMAGELIST himl = ( HIMAGELIST ) HWNDparam( 1 );
+   HIMAGELIST himl = (HIMAGELIST) HWNDparam( 1 );
    HBITMAP hbmp;
    int cx, cy, ic = 0;
    int iStyle = hb_parni( 3 );
-   COLORREF clrDefault = ( COLORREF ) hb_parni( 4 );
+   COLORREF clrDefault = (COLORREF) hb_parni( 4 );
 
    if( himl )
    {
       ImageList_GetIconSize( himl, &cx, &cy );
 
-      hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle );
+      hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle );
       if( ! hbmp )
       {
-         hbmp = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
+         hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), hb_parc( 2 ), IMAGE_BITMAP, cx, cy, iStyle | LR_LOADFROMFILE );
       }
 
       if( hbmp )
@@ -760,18 +667,19 @@ HB_FUNC( IMAGELIST_ADD )
 
 HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 {
-   hb_retni( ImageList_GetImageCount( ( HIMAGELIST ) HWNDparam( 1 ) ) );
+   hb_retni( ImageList_GetImageCount( (HIMAGELIST) HWNDparam( 1 ) ) );
 }
 
 HB_FUNC( IMAGELIST_DUPLICATE )
 {
-   HWNDret( ImageList_Duplicate( ( HIMAGELIST ) HWNDparam( 1 ) ) );
+   HIMAGELIST himl = (HIMAGELIST) HB_PARNL( 1 );
+   HWNDret( (HIMAGELIST) ImageList_Duplicate( himl ) );
 }
 
 HB_FUNC( IMAGELIST_SIZE )
 {
-   HIMAGELIST himl = ( HIMAGELIST ) HWNDparam( 1 ) ;
-   int cx, cy ;
+   HIMAGELIST himl = (HIMAGELIST) HWNDparam( 1 );
+   int cx, cy;
 
    if( himl )
    {
@@ -779,13 +687,13 @@ HB_FUNC( IMAGELIST_SIZE )
    }
    else
    {
-      cx = 0 ;
-      cy = 0 ;
+      cx = 0;
+      cy = 0;
    }
 
    hb_reta( 2 );
-   HB_STORNI( ( int )  cx,   -1, 1 );
-   HB_STORNI( ( int )  cy,   -1, 2 );
+   HB_STORNI( (int)  cx, -1, 1 );
+   HB_STORNI( (int)  cy, -1, 2 );
 }
 
 void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
@@ -848,7 +756,7 @@ int GetKeyFlagState( void )
 {
    return ( ( ( GetKeyState( VK_MENU )    & 0x8000 ) != 0 ) ? 1 : 0 ) +
           ( ( ( GetKeyState( VK_CONTROL ) & 0x8000 ) != 0 ) ? 2 : 0 ) +
-          ( ( ( GetKeyState( VK_SHIFT )   & 0x8000 ) != 0 ) ? 4 : 0 ) ;
+          ( ( ( GetKeyState( VK_SHIFT )   & 0x8000 ) != 0 ) ? 4 : 0 );
 }
 
 HB_FUNC( GETKEYFLAGSTATE )
@@ -856,20 +764,20 @@ HB_FUNC( GETKEYFLAGSTATE )
    hb_retni( GetKeyFlagState() );
 }
 
-// Thread safe, see _OOHG_INIT_C_VARS_CONTROLS_C_SIDE, GetControlObjectByHandle(), _OOHG_GetExistingObject() and GetControlObjectById()
+/* Thread safe, see _OOHG_INIT_C_VARS_CONTROLS_C_SIDE, GetControlObjectByHandle(), _OOHG_GetExistingObject() and GetControlObjectById() */
 static PHB_SYMB _ooHG_Symbol_TControl = 0;
 static PHB_ITEM _OOHG_aControlhWnd, _OOHG_aControlObjects, _OOHG_aControlIds;
 
 HB_FUNC( _OOHG_INIT_C_VARS_CONTROLS_C_SIDE )
 {
-   // See _OOHG_Init_C_Vars_Controls() at h_controlmisc.prg
+   /* See _OOHG_Init_C_Vars_Controls() at h_controlmisc.prg */
    _ooHG_Symbol_TControl = hb_dynsymSymbol( hb_dynsymFind( "TCONTROL" ) );
    _OOHG_aControlhWnd    = hb_itemNew( NULL );
    _OOHG_aControlObjects = hb_itemNew( NULL );
    _OOHG_aControlIds     = hb_itemNew( NULL );
-   hb_itemCopy( _OOHG_aControlhWnd,    hb_param( 1, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aControlhWnd, hb_param( 1, HB_IT_ARRAY ) );
    hb_itemCopy( _OOHG_aControlObjects, hb_param( 2, HB_IT_ARRAY ) );
-   hb_itemCopy( _OOHG_aControlIds,     hb_param( 3, HB_IT_ARRAY ) );
+   hb_itemCopy( _OOHG_aControlIds, hb_param( 3, HB_IT_ARRAY ) );
 }
 
 int _OOHG_SearchControlHandleInArray( HWND hWnd )
@@ -892,9 +800,9 @@ int _OOHG_SearchControlHandleInArray( HWND hWnd )
    for( ulCount = 1; ulCount <= hb_arrayLen( _OOHG_aControlhWnd ); ulCount++ )
    {
       #ifdef OOHG_HWND_POINTER
-         if( hWnd == ( HWND ) hb_arrayGetPtr( _OOHG_aControlhWnd, ulCount ) )
+         if( hWnd == (HWND) hb_arrayGetPtr( _OOHG_aControlhWnd, ulCount ) )
       #else
-         if( hWnd == ( HWND ) HB_ARRAYGETNL( _OOHG_aControlhWnd, ulCount ) )
+         if( hWnd == (HWND) HB_ARRAYGETNL( _OOHG_aControlhWnd, ulCount ) )
       #endif
       {
          ulPos = ulCount;
@@ -943,7 +851,7 @@ HB_FUNC( GETCONTROLOBJECTBYHANDLE )
    hb_itemRelease( pReturn );
 }
 
-PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
+PHB_ITEM GetControlObjectById( long lId, HWND hWnd )
 {
    PHB_ITEM pControl;
    ULONG ulCount;
@@ -966,7 +874,7 @@ PHB_ITEM GetControlObjectById( LONG lId, HWND hWnd )
 #ifdef OOHG_HWND_POINTER
                      hb_arrayGetPtr( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
 #else
-                     ( HWND ) HB_ARRAYGETNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
+                     (HWND) HB_ARRAYGETNL( hb_arrayGetItemPtr( _OOHG_aControlIds, ulCount ), 2 )
 #endif
            )
          {
