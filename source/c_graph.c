@@ -252,7 +252,7 @@ HB_FUNC( POLYGONDRAW )          /* FUNCTION PolygonDraw( hwnd, aCols, aRows, pen
       hbrush = GetSysColorBrush( COLOR_WINDOW );
       hgdiobj2 = SelectObject( hdc1, hbrush );
    }
-   for ( i = 0; i <= number-1; i++ )
+   for( i = 0; i <= number-1; i++ )
    {
       apoints[i].x = HB_PARNI( 2, i + 1 );
       apoints[i].y = HB_PARNI( 3, i + 1 );
@@ -280,7 +280,7 @@ HB_FUNC( POLYBEZIERDRAW )          /* FUNCTION PolyBezierDraw( hwnd, aCols, aRow
    hdc1 = GetDC( hWnd1 );
    hpen = CreatePen( (int) PS_SOLID, (int) hb_parni( 5 ), RGB( (int) HB_PARNI( 4, 1 ), (int) HB_PARNI( 4, 2 ), (int) HB_PARNI( 4, 3 ) ) );
    hgdiobj1 = SelectObject( hdc1, hpen );
-   for ( i = 0; i <= number-1; i++ )
+   for( i = 0; i <= number-1; i++ )
    {
       apoints[i].x = HB_PARNI( 2, i + 1 );
       apoints[i].y = HB_PARNI( 3, i + 1 );
@@ -688,7 +688,7 @@ HB_FUNC( _OOHG_GRAPHCOMMAND )          /* FUNCTION _OOHG_GraphCommand( hwnd, aGr
       {
          hWnd = HWNDparam( 1 );
          hDC = GetDC( hWnd );
-         for ( ulPos = 1; ulPos <= ulCount; ulPos++ )
+         for( ulPos = 1; ulPos <= ulCount; ulPos++ )
          {
             pItem = hb_arrayGetItemPtr( pArray, ulPos );
             if( HB_IS_STRING( pItem ) )
