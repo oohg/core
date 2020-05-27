@@ -6077,7 +6077,7 @@ HB_FUNC( GETPRINTERSINFO )          /* FUNCTION GetPrintersInfo() -> cBuffer */
    {
       pInfo5 = (PRINTER_INFO_5 *) pBuffer;
 
-      for ( i = 0; i < dwPrinters; i++ )
+      for( i = 0; i < dwPrinters; i++ )
       {
          strcat( cBuffer, pInfo5->pPrinterName );
          strcat( cBuffer, "," );
