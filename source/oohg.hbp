@@ -27,8 +27,11 @@
 
 # c compiler flags
 # to check for more warnings add "SET HG_CFLAGS=ON" before building
-{HG_CFLAGS}-cflag=-fdiagnostics-show-option
-{HG_CFLAGS}-cflag=-Wall
+-cflag=-fdiagnostics-show-option
+-cflag=-Wall
+-cflag=-Wstrict-prototypes
+-cflag=-Wundef
+-cflag=-Wunused
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloc-zero
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloca
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Warray-bounds=2
@@ -56,7 +59,6 @@
 {HG_CFLAGS}-cflag=-Winit-self
 {HG_CFLAGS}-cflag=-Winline
 {HG_CFLAGS}-cflag=-Winvalid-pch
-{HG_CFLAGS}-cflag=-Wno-long-long
 {HG_CFLAGS}-cflag=-Wmissing-format-attribute
 {HG_CFLAGS}-cflag=-Wmissing-include-dirs
 {HG_CFLAGS}-cflag=-Wmissing-noreturn
@@ -68,15 +70,12 @@
 {HG_CFLAGS}-cflag=-Woverlength-strings
 {HG_CFLAGS}-cflag=-Wpacked
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wshift-overflow=2
-{HG_CFLAGS}-cflag=-Wstrict-prototypes
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wstringop-overflow=4
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wstringop-truncation
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wtrampolines
-{HG_CFLAGS}-cflag=-Wundef
 {HG_CFLAGS}-cflag=-Wuninitialized
 {HG_CFLAGS}-cflag=-Wunused
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wunused-const-variable=1
-{HG_CFLAGS}-cflag=-Wunused-variable
 {HG_CFLAGS}-cflag=-Wwrite-strings
 
 #alerts on exit
