@@ -37,7 +37,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -141,7 +141,7 @@ enum EncoderValue
 
 typedef DWORD ARGB;
 
-#define ARGB( a, r, g, b )     ( ( ARGB ) ( ( ( DWORD ) ( a ) << 24 ) | ( ( DWORD ) ( r ) << 16 ) | ( ( DWORD ) ( g ) << 8 ) | ( ( DWORD ) ( b ) ) ) )
+#define ARGB( a, r, g, b )     ( (ARGB) ( ( (DWORD) ( a ) << 24 ) | ( (DWORD) ( r ) << 16 ) | ( (DWORD) ( g ) << 8 ) | ( (DWORD) ( b ) ) ) )
 
 #define COLORREFtoARGB( rgb )  ( ARGB( 0xFF, GetRValue( rgb ), GetGValue( rgb ), GetBValue( rgb ) ) )
 
@@ -165,20 +165,15 @@ typedef long ( __stdcall * GDIPLOADIMAGEFROMFILE )( const unsigned short *, void
 typedef long ( __stdcall * GDIPGETIMAGEWIDTH )( void *, UINT * );
 typedef long ( __stdcall * GDIPGETIMAGEHEIGHT )( void *, UINT * );
 
-BOOL InitDeinitGdiPlus( BOOL );
-LONG LoadImageFromFile( const char *, void ** );
-BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT Height, const char * MimeType, ULONG JpgQuality, ULONG ColorDepth );
-
 static gPlusImagePtr hb_pargPlusImage( int );
-static void hb_retgPlusImage( gPlusImagePtr );
 static BOOL LoadGdiPlusDll( void );
 
 /*
  * Module static vars
  */
 
-static void * GdiPlusHandle = NULL;
-static ULONG  GdiPlusToken  = 0;
+static HMODULE GdiPlusHandle = NULL;
+static ULONG GdiPlusToken  = 0;
 static BOOL GDIP_InitOK = FALSE;
 static int _OOHG_GdiPlus = 2;
 static unsigned char * MimeTypeOld = NULL;
@@ -203,7 +198,7 @@ static GDIPGETIMAGEHEIGHT          GdipGetImageHeight;
 static HB_GARBAGE_FUNC( hb_gPlusImage_Destructor )
 {
    /* Retrieve image pointer holder */
-   gPlusImagePtr * imPtr = ( gPlusImagePtr * ) Cargo;
+   gPlusImagePtr *imPtr = (gPlusImagePtr *) Cargo;
 
    /* Check if pointer is not NULL to avoid multiple freeing */
    if( *imPtr )
@@ -218,7 +213,7 @@ static HB_GARBAGE_FUNC( hb_gPlusImage_Destructor )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static gPlusImagePtr hb_pargPlusImage( int iParam )
 {
-   gPlusImagePtr * imPtr = ( gPlusImagePtr * ) hb_parptrGC( hb_gPlusImage_Destructor, iParam );
+   gPlusImagePtr *imPtr = (gPlusImagePtr *) hb_parptrGC( hb_gPlusImage_Destructor, iParam );
 
    if( imPtr )
       return *imPtr;
@@ -229,11 +224,11 @@ static gPlusImagePtr hb_pargPlusImage( int iParam )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static void hb_retgPlusImage( gPlusImagePtr image )
 {
-   gPlusImagePtr * imPtr;
+   gPlusImagePtr *imPtr;
 
-   imPtr  = ( gPlusImagePtr * ) hb_gcAlloc( sizeof( gPlusImagePtr ), hb_gPlusImage_Destructor );
+   imPtr  = (gPlusImagePtr *) hb_gcAlloc( sizeof( gPlusImagePtr ), hb_gPlusImage_Destructor );
    *imPtr = image;
-   hb_retptrGC( ( void * ) imPtr );
+   hb_retptrGC( (void *) imPtr );
 }
 
 #else
@@ -248,7 +243,7 @@ static const HB_GC_FUNCS s_gcPlusImageFuncs =
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static gPlusImagePtr hb_pargPlusImage( int iParam )
 {
-   gPlusImagePtr * imPtr = ( gPlusImagePtr * ) hb_parptrGC( &s_gcPlusImageFuncs, iParam );
+   gPlusImagePtr *imPtr = (gPlusImagePtr *) hb_parptrGC( &s_gcPlusImageFuncs, iParam );
 
    if( imPtr )
       return *imPtr;
@@ -259,11 +254,11 @@ static gPlusImagePtr hb_pargPlusImage( int iParam )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static void hb_retgPlusImage( gPlusImagePtr image )
 {
-   gPlusImagePtr * imPtr;
+   gPlusImagePtr *imPtr;
 
-   imPtr  = ( gPlusImagePtr * ) hb_gcAllocate( sizeof( gPlusImagePtr ), &s_gcPlusImageFuncs );
+   imPtr  = (gPlusImagePtr *) hb_gcAllocate( sizeof( gPlusImagePtr ), &s_gcPlusImageFuncs );
    *imPtr = image;
-   hb_retptrGC( ( void * ) imPtr );
+   hb_retptrGC( (void *) imPtr );
 }
 
 #endif
@@ -271,18 +266,6 @@ static void hb_retgPlusImage( gPlusImagePtr image )
 /*
  * Load and unload library
  */
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GPLUSINIT )
-{
-   hb_retl( InitDeinitGdiPlus( TRUE ) );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GPLUSDEINIT )
-{
-   hb_retl( InitDeinitGdiPlus( FALSE ) );
-}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL InitDeinitGdiPlus( BOOL OnOff )
@@ -348,103 +331,115 @@ BOOL InitDeinitGdiPlus( BOOL OnOff )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcGdipLoadImageFromStream( IStream * istream, void ** image )
+HB_FUNC( GPLUSINIT )
 {
-   return ( INT ) GdipLoadImageFromStream( istream, image );
+   hb_retl( InitDeinitGdiPlus( TRUE ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GPLUSDEINIT )
+{
+   hb_retl( InitDeinitGdiPlus( FALSE ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+int ProcGdipLoadImageFromStream( IStream * istream, void ** image )
+{
+   return (int) GdipLoadImageFromStream( istream, image );
 }
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-INT ProcGdipSaveImageToFile( void * gbitmap, const unsigned short * wfilename, const CLSID * clsid, const ENCODER_PARAMETERS * params )
+int ProcGdipSaveImageToFile( void * gbitmap, const unsigned short * wfilename, const CLSID * clsid, const ENCODER_PARAMETERS * params )
 {
-   return ( INT ) GdipSaveImageToFile( gbitmap, wfilename, clsid, params );
+   return (int) GdipSaveImageToFile( gbitmap, wfilename, clsid, params );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static BOOL LoadGdiPlusDll( void )
 {
-   void * GdiPlusHandle_pre;
+   HMODULE GdiPlusHandle_pre;
 
    if( ( GdiPlusHandle_pre = LoadLibrary( "GDIPLUS.DLL" ) ) == NULL )
       return FALSE;
 
-   if( ( GdiPlusStartup = ( GDIPLUSSTARTUP ) GetProcAddress( GdiPlusHandle_pre, "GdiplusStartup" ) ) == NULL )
+   if( ( GdiPlusStartup = (GDIPLUSSTARTUP) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdiplusStartup" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdiPlusShutdown = ( GDIPLUSSHUTDOWN ) GetProcAddress( GdiPlusHandle_pre, "GdiplusShutdown" ) ) == NULL )
+   if( ( GdiPlusShutdown = (GDIPLUSSHUTDOWN) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdiplusShutdown" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipLoadImageFromStream = ( GDIPLOADIMAGEFROMSTREAM ) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
+   if( ( GdipLoadImageFromStream = (GDIPLOADIMAGEFROMSTREAM) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromStream" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipCreateBitmapFromStream = ( GDIPCREATEBITMAPFROMSTREAM ) GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromStream" ) ) == NULL )
+   if( ( GdipCreateBitmapFromStream = (GDIPCREATEBITMAPFROMSTREAM) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromStream" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipCreateHBITMAPFromBitmap = ( GDIPCREATEHBITMAPFROMBITMAP ) GetProcAddress( GdiPlusHandle_pre, "GdipCreateHBITMAPFromBitmap" ) ) == NULL )
+   if( ( GdipCreateHBITMAPFromBitmap = (GDIPCREATEHBITMAPFROMBITMAP) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipCreateHBITMAPFromBitmap" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipCreateBitmapFromHBITMAP = ( GDIPCREATEBITMAPFROMHBITMAP ) GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromHBITMAP" ) ) == NULL )
+   if( ( GdipCreateBitmapFromHBITMAP = (GDIPCREATEBITMAPFROMHBITMAP) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipCreateBitmapFromHBITMAP" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageEncodersSize = ( GDIPGETIMAGEENCODERSSIZE ) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncodersSize" ) ) == NULL )
+   if( ( GdipGetImageEncodersSize = (GDIPGETIMAGEENCODERSSIZE) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncodersSize" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageEncoders = ( GDIPGETIMAGEENCODERS ) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncoders" ) ) == NULL )
+   if( ( GdipGetImageEncoders = (GDIPGETIMAGEENCODERS) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipGetImageEncoders" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipSaveImageToFile = ( GDIPSAVEIMAGETOFILE ) GetProcAddress( GdiPlusHandle_pre, "GdipSaveImageToFile" ) ) == NULL )
+   if( ( GdipSaveImageToFile = (GDIPSAVEIMAGETOFILE) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipSaveImageToFile" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipDisposeImage = ( GDIPDISPOSEIMAGE ) GetProcAddress( GdiPlusHandle_pre, "GdipDisposeImage" ) ) == NULL )
+   if( ( GdipDisposeImage = (GDIPDISPOSEIMAGE) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipDisposeImage" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageThumbnail = ( GDIPGETIMAGETHUMBNAIL ) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageThumbnail" ) ) == NULL )
+   if( ( GdipGetImageThumbnail = (GDIPGETIMAGETHUMBNAIL) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipGetImageThumbnail" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipLoadImageFromFile = ( GDIPLOADIMAGEFROMFILE ) GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromFile" ) ) == NULL )
+   if( ( GdipLoadImageFromFile = (GDIPLOADIMAGEFROMFILE) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipLoadImageFromFile" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageWidth = ( GDIPGETIMAGEWIDTH ) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageWidth" ) ) == NULL )
+   if( ( GdipGetImageWidth = (GDIPGETIMAGEWIDTH) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipGetImageWidth" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
    }
 
-   if( ( GdipGetImageHeight = ( GDIPGETIMAGEHEIGHT ) GetProcAddress( GdiPlusHandle_pre, "GdipGetImageHeight" ) ) == NULL )
+   if( ( GdipGetImageHeight = (GDIPGETIMAGEHEIGHT) _OOHG_GetProcAddress( GdiPlusHandle_pre, "GdipGetImageHeight" ) ) == NULL )
    {
       FreeLibrary( GdiPlusHandle_pre );
       return FALSE;
@@ -502,7 +497,7 @@ HB_FUNC( GPLUSGETENCODERS )
       #endif
    }
 
-   pImageCodecInfo = ( IMAGE_CODEC_INFO * ) hb_xalloc( size );
+   pImageCodecInfo = (IMAGE_CODEC_INFO *) hb_xalloc( size );
    if( pImageCodecInfo == NULL )
    {
       /* Return an empty array */
@@ -513,7 +508,7 @@ HB_FUNC( GPLUSGETENCODERS )
       #endif
    }
 
-   RecvMimeType = LocalAlloc( LPTR, size );
+   RecvMimeType = (char *) LocalAlloc( LPTR, size );
    if( RecvMimeType == NULL )
    {
       hb_xfree( pImageCodecInfo );
@@ -553,14 +548,6 @@ HB_FUNC( GPLUSGETENCODERS )
  */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
-{
-   HBITMAP hbmp = ( HBITMAP ) HB_PARNL( 1 );
-
-   hb_retl( SaveHBitmapToFile( ( void * ) hbmp, hb_parc( 2 ), ( UINT ) hb_parnl( 3 ), ( UINT ) hb_parnl( 4 ), hb_parc( 5 ), ( ULONG ) hb_parnl( 6 ), ( ULONG ) hb_parnl( 7 ) ) );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
 {
    UINT num  = 0;
@@ -578,7 +565,7 @@ BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
    if( GdipGetImageEncodersSize( &num, &size ) )
       return FALSE;
 
-   if( ( ImageCodecInfo = hb_xalloc( size ) ) == NULL )
+   if( ( ImageCodecInfo = (IMAGE_CODEC_INFO *) hb_xalloc( size ) ) == NULL )
       return FALSE;
 
    hb_xmemset( ImageCodecInfo, 0, sizeof( IMAGE_CODEC_INFO ) );
@@ -590,7 +577,7 @@ BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
       return FALSE;
    }
 
-   if( ( RecvMimeType = LocalAlloc( LPTR, size ) ) == NULL )
+   if( ( RecvMimeType = (char *) LocalAlloc( LPTR, size ) ) == NULL )
    {
       hb_xfree( ImageCodecInfo );
 
@@ -632,42 +619,42 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
       return FALSE;
    }
 
-   if ( MimeTypeOld == NULL )
+   if( MimeTypeOld == NULL )
    {
       if( ! GetEnCodecClsid( MimeType, &Clsid ) )
       {
-         // Wrong MimeType
+         /* Wrong MimeType */
          return FALSE;
       }
 
-      MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
+      MimeTypeOld = (unsigned char *) LocalAlloc( LPTR, strlen( MimeType ) + 1 );
       if( MimeTypeOld == NULL )
       {
-         // LocalAlloc Error
+         /* LocalAlloc Error */
          return FALSE;
       }
 
-      strcpy( ( char * ) MimeTypeOld, MimeType );
+      strcpy( (char *) MimeTypeOld, MimeType );
    }
    else
    {
-      if( strcmp( ( char * ) MimeTypeOld, MimeType ) != 0 )
+      if( strcmp( (char *) MimeTypeOld, MimeType ) != 0 )
       {
          LocalFree( MimeTypeOld );
 
          if( ! GetEnCodecClsid( MimeType, &Clsid ) )
          {
-            // Wrong MimeType
+            /* Wrong MimeType */
             return FALSE;
          }
 
-         MimeTypeOld = LocalAlloc( LPTR, strlen( MimeType ) + 1 );
+         MimeTypeOld = (unsigned char *) LocalAlloc( LPTR, strlen( MimeType ) + 1 );
          if( MimeTypeOld == NULL )
          {
-            // LocalAlloc Error
+            /* LocalAlloc Error */
             return FALSE;
          }
-         strcpy( ( char * ) MimeTypeOld, MimeType );
+         strcpy( (char *) MimeTypeOld, MimeType );
       }
    }
 
@@ -679,7 +666,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
       return FALSE;
    }
 
-   WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
+   WFileName = (LPWSTR) LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
    if( WFileName == NULL )
    {
       /* WFile LocalAlloc Error */
@@ -707,7 +694,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
    /* Build parameters and save */
    if( strcmp( MimeType, "image/jpeg" ) == 0 )
    {
-      EncoderParameters = ( ENCODER_PARAMETERS * ) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 1 * sizeof( ENCODER_PARAMETER ) );
+      EncoderParameters = (ENCODER_PARAMETERS *) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 1 * sizeof( ENCODER_PARAMETER ) );
       ZeroMemory( EncoderParameters, sizeof( ENCODER_PARAMETERS ) + 1 * sizeof( ENCODER_PARAMETER ) );
       EncoderParameters->Count = 1;
 
@@ -732,7 +719,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
       EncoderParameters->Parameter[ 0 ].Guid.Data4[ 7 ] = 0xeb;
       EncoderParameters->Parameter[ 0 ].NumberOfValues  = 1;
       EncoderParameters->Parameter[ 0 ].Type            = 4;
-      EncoderParameters->Parameter[ 0 ].Value           = ( void * ) &JpgQuality;
+      EncoderParameters->Parameter[ 0 ].Value           = (void *) &JpgQuality;
 
       /* Colordepth for JPEG images is always 24 bpp */
 
@@ -749,7 +736,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
    }
    else if( strcmp( MimeType, "image/tiff" ) == 0 )
    {
-      EncoderParameters = ( ENCODER_PARAMETERS * ) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 2 * sizeof( ENCODER_PARAMETER ) );
+      EncoderParameters = (ENCODER_PARAMETERS *) hb_xgrab( sizeof( ENCODER_PARAMETERS ) + 2 * sizeof( ENCODER_PARAMETER ) );
       ZeroMemory( EncoderParameters, sizeof( ENCODER_PARAMETERS ) + 2 * sizeof( ENCODER_PARAMETER ) );
       EncoderParameters->Count = 2;
 
@@ -768,7 +755,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
       EncoderParameters->Parameter[ 0 ].Guid.Data4[ 7 ] = 0x58;
       EncoderParameters->Parameter[ 0 ].NumberOfValues  = 1;
       EncoderParameters->Parameter[ 0 ].Type            = 4;
-      EncoderParameters->Parameter[ 0 ].Value           = ( void * ) &quality;
+      EncoderParameters->Parameter[ 0 ].Value           = (void *) &quality;
 
       /* ColorDepth: 66087055-ad66-4c7c-9a18-38a2310b8337
        * Valid values for TIFF images are 1, 4, 8, 24, 32 bpp
@@ -791,7 +778,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
       EncoderParameters->Parameter[ 1 ].Guid.Data4[ 7 ] = 0x37;
       EncoderParameters->Parameter[ 1 ].NumberOfValues  = 1;
       EncoderParameters->Parameter[ 1 ].Type            = 4;
-      EncoderParameters->Parameter[ 1 ].Value           = ( void * ) &ColorDepth;
+      EncoderParameters->Parameter[ 1 ].Value           = (void *) &ColorDepth;
 
       /* Save */
       if( GdipSaveImageToFile( GBitmap, WFileName, &Clsid, EncoderParameters ) != 0 )
@@ -824,28 +811,25 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
    return TRUE;
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
+{
+   HBITMAP hbmp = (HBITMAP) HB_PARNL( 1 );
+
+   hb_retl( SaveHBitmapToFile( (void *) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
+}
+
 /*
  * Load an image from a file
  */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GPLUSLOADIMAGEFROMFILE )
-{
-   gPlusImage gImage;
-
-   if( LoadImageFromFile( hb_parc( 1 ), &gImage ) == 0 )
-      hb_retgPlusImage( gImage );
-   else
-      hb_ret();
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-LONG LoadImageFromFile( const char * FileName, gPlusImagePtr gImage )
+long LoadImageFromFile( const char * FileName, gPlusImagePtr gImage )
 {
    LPWSTR WFileName;
-   LONG result;
+   long result;
 
-   WFileName = LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
+   WFileName = (LPWSTR) LocalAlloc( LPTR, ( strlen( FileName ) * sizeof( WCHAR ) ) + 1 );
    if( WFileName == NULL )
       return -1L;
 
@@ -856,6 +840,17 @@ LONG LoadImageFromFile( const char * FileName, gPlusImagePtr gImage )
    LocalFree( WFileName );
 
    return result;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GPLUSLOADIMAGEFROMFILE )
+{
+   gPlusImage gImage;
+
+   if( LoadImageFromFile( hb_parc( 1 ), &gImage ) == 0 )
+      hb_retgPlusImage( (gPlusImagePtr) &gImage );
+   else
+      hb_ret();
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -885,7 +880,7 @@ HB_FUNC( GPLUSLOADIMAGEFROMBUFFER )
 
    if( gImage )
    {
-      hb_retgPlusImage( gImage );
+      hb_retgPlusImage( &gImage );
    }
    else
    {
@@ -1021,8 +1016,8 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, long lBackColor, long 
       return 0;
    }
    iStream->lpVtbl->Release( iStream );
-   GdipGetImageWidth(  gImage, ( UINT * ) &uiWidth );
-   GdipGetImageHeight( gImage, ( UINT * ) &uiHeight );
+   GdipGetImageWidth(  gImage, (UINT *) &uiWidth );
+   GdipGetImageHeight( gImage, (UINT *) &uiHeight );
 
    /* BackColor */
    if( bIgnoreBkClr )
@@ -1063,7 +1058,7 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, long lBackColor, long 
          lHeight2 = uiHeight;
       }
 
-      if( lWidth2 != ( long ) uiWidth || lHeight2 != ( long ) uiHeight )
+      if( lWidth2 != (long) uiWidth || lHeight2 != (long) uiHeight )
       {
          hOldImage = hImage;
          hImage    = _OOHG_ScaleImage( hWnd, hOldImage, lWidth2, lHeight2, FALSE, lBackColor, bIgnoreBkClr, 0, 0 );
@@ -1071,5 +1066,5 @@ HANDLE _OOHG_GDIPLoadPicture( HGLOBAL hGlobal, HWND hWnd, long lBackColor, long 
       }
    }
 
-   return ( HANDLE ) hImage;
+   return (HANDLE) hImage;
 }
