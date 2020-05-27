@@ -12,7 +12,7 @@
  * TActiveX for [x]Harbour Minigui by Marcelo Torres and Fernando Santolin
  * Copyright 2006 <lichitorres@yahoo.com.ar> and <CarozoDeQuilmes@gmail.com>
  * TActiveX_FreeWin class for Fivewin programmed by Oscar Joel Lira Lira Oscar
- * Copyright 2006 [oSkAr] <oscarlira78@hotmail.com>
+ * Copyright 2006-2007 [oSkAr] <oscarlira78@hotmail.com>
  *
  * Portions of this project are based upon:
  *    "Harbour MiniGUI Extended Edition Library"
@@ -39,7 +39,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -68,6 +68,10 @@
  */
 
 
+/*
+ * This source must not be included in any .PRG file because it won't compile.
+ */
+
 #ifndef CINTERFACE
    #define CINTERFACE 1
 #endif
@@ -76,64 +80,26 @@
    #define NONAMELESSUNION
 #endif
 
-#ifndef _HB_API_INTERNAL_
-   #define _HB_API_INTERNAL_
-#endif
-
-#include "oohg.h"
+#include <windows.h>
+#include <commctrl.h>
+#include <ocidl.h>
+#include <hbvmopt.h>      /* this must preceed other harbour #includes */
+#include <hbapiitm.h>
 #include <hbvm.h>
 #include <hbstack.h>
-#include <hbapiitm.h>
-#include <hbvmopt.h>
-#include <ocidl.h>
+#include "oohg.h"         /* this must come last */
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
-/*
-PHB_SYMB s___GetMessage = NULL;   // Thread safe
 
-HB_FUNC( TACTIVEX___ERROR )
-{
-   PHB_ITEM pSelf = hb_stackSelfItem();
-   PHB_SYMB sMessage;
-   int iPCount;
-
-   if( ! s___GetMessage )
-   {
-      s___GetMessage = hb_dynsymSymbol( hb_dynsymFind( "__GETMESSAGE" ) );
-   }
-
-   hb_vmPushSymbol( s___GetMessage );
-   hb_vmPushNil();
-   hb_vmDo( 0 );
-   sMessage = hb_dynsymSymbol( hb_dynsymFind( hb_parc( -1 ) ) );
-
-   _OOHG_Send( pSelf, s_oOle );
-   hb_vmSend( 0 );
-
-   hb_vmPushSymbol( sMessage );
-   hb_vmPush( hb_param( -1, HB_IT_ANY ) );
-   for( iPCount = 1; iPCount <= hb_pcount() ; iPCount++ )
-   {
-      hb_vmPush( hb_param( iPCount, HB_IT_ANY ) );
-   }
-   hb_vmSend( (USHORT) hb_pcount() );
-}
-*/
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
 typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );
-/*
-typedef HRESULT ( WINAPI *LPAtlAxCreateControl ) ( LPCOLESTR, HWND, IStream*, IUnknown** );
-*/
 
-static HMODULE hAtl = NULL;                 // Thread safe, see _Ax_Init() and _Ax_DeInit()
-static LPAtlAxGetControl AtlAxGetControl;   // Thread safe, see _Ax_Init() and _Ax_DeInit()
-/*
-LPAtlAxCreateControl AtlAxCreateControl;
-*/
+static HMODULE hAtl = NULL;                 /* Thread safe, see _Ax_Init() and _Ax_DeInit() */
+static LPAtlAxGetControl AtlAxGetControl;   /* Thread safe, see _Ax_Init() and _Ax_DeInit() */
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static void _Ax_Init( void )
 {
    LPAtlAxWinInit AtlAxWinInit;
@@ -143,17 +109,15 @@ static void _Ax_Init( void )
    if( ! hAtl )
    {
       hAtl = LoadLibrary( "ATL.DLL" );
-      AtlAxWinInit       = ( LPAtlAxWinInit ) GetProcAddress( hAtl, "AtlAxWinInit" );
-      AtlAxGetControl    = ( LPAtlAxGetControl ) GetProcAddress( hAtl, "AtlAxGetControl" );
-      /*
-      AtlAxCreateControl = ( LPAtlAxCreateControl ) GetProcAddress( hAtl, "AtlAxCreateControl" );
-      */
+      AtlAxWinInit       = (LPAtlAxWinInit) _OOHG_GetProcAddress( hAtl, "AtlAxWinInit" );
+      AtlAxGetControl    = (LPAtlAxGetControl) _OOHG_GetProcAddress( hAtl, "AtlAxGetControl" );
       ( AtlAxWinInit )();
    }
 
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 void _Ax_DeInit( void )
 {
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
@@ -167,14 +131,14 @@ void _Ax_DeInit( void )
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-//------------------------------------------------------------------------------
-HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId -> hActiveXWnd */
 {
    HWND hControl;
    int iStyle, iStyleEx;
 
    iStyle = WS_CHILD | WS_CLIPCHILDREN | hb_parni( 7 );
-   iStyleEx = 0; // | WS_EX_CLIENTEDGE
+   iStyleEx = 0;
 
    _Ax_Init();
    hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle,
@@ -183,47 +147,27 @@ HB_FUNC( INITACTIVEX ) // hWnd, cProgId -> hActiveXWnd
 
    HWNDret( hControl );
 }
-/*
-      IUnknown*  pUnk;
-      BSTR wString;
-      UINT uLen;
-      HWND hContainer = HWNDparam( 1 );
-      char *Caption   = hb_parc( 2 );
 
-      uLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, Caption, strlen(Caption)+1, NULL, 0 );
-      wString = (BSTR) hb_xgrab( ( uLen * sizeof(WCHAR) ) + 1 );
-      MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, Caption, strlen(Caption)+1, wString, uLen );
-
-      AtlAxCreateControl( wString, hContainer, NULL, &pUnk );
-
-      hb_xfree( wString );
-*/
-
-//------------------------------------------------------------------------------
-HB_FUNC( ATLAXGETDISP ) // hWnd -> pDisp
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ATLAXGETDISP )          /* FUNCTION AtlAxGetDisp( hWnd ) -> pDisp */
 {
    IUnknown *pUnk;
    IDispatch *pDisp;
+
    _Ax_Init();
    AtlAxGetControl( HWNDparam( 1 ), &pUnk );
-   pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) ( void * ) &pDisp );
+   pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, (void **) (void *) &pDisp );
    pUnk->lpVtbl->Release( pUnk );
    HWNDret( pDisp );
 }
-
-/*
- *   oskar 20070829
- *   Soporte de Eventos :)
- */
 
 #ifdef __USEHASHEVENTS
    #include <hashapi.h>
 #endif
 
-//------------------------------------------------------------------------------
 HRESULT hb_oleVariantToItem( PHB_ITEM pItem, VARIANT *pVariant );
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM** pItems )
 {
    PHB_ITEM itmRef;
@@ -233,7 +177,7 @@ static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM
    {
       itmRef = hb_itemNew( NULL );
 
-      // initialize the reference item
+      /* initialize the reference item */
       itmRef->type = HB_IT_BYREF;
       itmRef->item.asRefer.offset = -1;
       itmRef->item.asRefer.BasePtr.itemsbasePtr = pItems;
@@ -241,9 +185,10 @@ static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM
       {
          if( ulRefMask & ( 1L << ulParam ) )
          {
-            // when item is passed by reference then we have to put
-            // the reference on the stack instead of the item itself
-            itmRef->item.asRefer.value = ulParam+1;
+            /* when item is passed by reference then we have to put
+             * the reference on the stack instead of the item itself
+             */
+            itmRef->item.asRefer.value = ulParam + 1;
             hb_vmPush( itmRef );
          }
          else
@@ -256,176 +201,173 @@ static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM
    }
 }
 
-//------------------------------------------------------------------------------
-//self is a macro which defines our IEventHandler struct as so:
-//
-// typedef struct {
-//    IEventHandlerVtbl  *lpVtbl;
-// } IEventHandler;
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/* self is a macro which defines our IEventHandler struct as:
+ * typedef struct {
+ *    IEventHandlerVtbl *lpVtbl;
+ * } IEventHandler;
+ */
 #undef  INTERFACE
 #define INTERFACE IEventHandler
 
 DECLARE_INTERFACE_ ( INTERFACE, IDispatch )
 {
-   // IUnknown functions
+   /* IUnknown functions */
    STDMETHOD  ( QueryInterface          ) ( THIS_ REFIID, void **                                                          ) PURE;
    STDMETHOD_ ( ULONG, AddRef           ) ( THIS                                                                           ) PURE;
    STDMETHOD_ ( ULONG, Release          ) ( THIS                                                                           ) PURE;
-   // IDispatch functions
+   /* IDispatch functions */
    STDMETHOD_ ( ULONG, GetTypeInfoCount ) ( THIS_ UINT *                                                                   ) PURE;
    STDMETHOD_ ( ULONG, GetTypeInfo      ) ( THIS_ UINT, LCID, ITypeInfo **                                                 ) PURE;
    STDMETHOD_ ( ULONG, GetIDsOfNames    ) ( THIS_ REFIID, LPOLESTR *, UINT, LCID, DISPID *                                 ) PURE;
    STDMETHOD_ ( ULONG, Invoke           ) ( THIS_ DISPID, REFIID, LCID, WORD, DISPPARAMS *, VARIANT *, EXCEPINFO *, UINT * ) PURE;
 };
 
-// In other words, it defines our IEventHandler to have nothing
-// but a pointer to its VTable. And of course, every COM object must
-// start with a pointer to its VTable.
-//
-// But we actually want to add some more members to our IEventHandler.
-// We just don't want any app to be able to know about, and directly
-// access, those members. So here we'll define a MyRealIEventHandler that
-// contains those extra members. The app doesn't know that we're
-// really allocating and giving it a MyRealIEventHAndler object. We'll
-// lie and tell it we're giving a plain old IEventHandler. That's ok
-// because a MyRealIEventHandler starts with the same VTable pointer.
-//
-// We add a DWORD reference count so that self IEventHandler
-// can be allocated (which we do in our IClassFactory object's
-// CreateInstance()) and later freed. And, we have an extra
-// BSTR (pointer) string, which is used by some of the functions we'll
-// add to IEventHandler
+/* In other words, it defines our IEventHandler to have nothing
+ * but a pointer to its VTable. And of course, every COM object must
+ * start with a pointer to its VTable.
+ *
+ * But we actually want to add some more members to our IEventHandler.
+ * We just don't want any app to be able to know about, and directly
+ * access, those members. So here we'll define a MyRealIEventHandler that
+ * contains those extra members. The app doesn't know that we're
+ * really allocating and giving it a MyRealIEventHAndler object. We'll
+ * lie and tell it we're giving a plain old IEventHandler. That's ok
+ * because a MyRealIEventHandler starts with the same VTable pointer.
+ *
+ * We add a DWORD reference count so that self IEventHandler
+ * can be allocated (which we do in our IClassFactory object's
+ * CreateInstance()) and later freed. And, we have an extra
+ * BSTR (pointer) string, which is used by some of the functions we'll
+ * add to IEventHandler
+ */
 
 typedef struct {
 
-   IEventHandler*          lpVtbl;
-   DWORD                   count;
-   IConnectionPoint*       pIConnectionPoint;  // Ref counted of course.
-   DWORD                   dwEventCookie;
-   IID                     device_event_interface_iid;
-   PHB_ITEM                pEvents;
+   IEventHandler    *lpVtbl;
+   DWORD            count;
+   IConnectionPoint *pIConnectionPoint;  /* Ref counted of course. */
+   DWORD            dwEventCookie;
+   IID              device_event_interface_iid;
+   PHB_ITEM         pEvents;
 
 #ifndef __USEHASHEVENTS
-   PHB_ITEM                pEventsExec;
+   PHB_ITEM         pEventsExec;
 #endif
 
 } MyRealIEventHandler;
 
-//------------------------------------------------------------------------------
-// Here are IEventHandler's functions.
-//------------------------------------------------------------------------------
-// Every COM object's interface must have the 3 functions QueryInterface(),
-// AddRef(), and Release().
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/* IEventHandler's functions.
+ * Every COM object's interface must have the 3 functions QueryInterface(), AddRef(), and Release().
+ */
 
-// IEventHandler's QueryInterface()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 static HRESULT STDMETHODCALLTYPE QueryInterface( IEventHandler *self, REFIID vTableGuid, void **ppv )
 {
-   // Check if the GUID matches IEvenetHandler VTable's GUID. We gave the C variable name
-   // IID_IEventHandler to our VTable GUID. We can use an OLE function called
-   // IsEqualIID to do the comparison for us. Also, if the caller passed a
-   // IUnknown GUID, then we'll likewise return the IEventHandler, since it can
-   // masquerade as an IUnknown object too. Finally, if the called passed a
-   // IDispatch GUID, then we'll return the IExample3, since it can masquerade
-   // as an IDispatch too
+   /* Check if the GUID matches IEvenetHandler VTable's GUID. We gave the C variable name
+    * IID_IEventHandler to our VTable GUID. We can use an OLE function called
+    * IsEqualIID to do the comparison for us. Also, if the caller passed a
+    * IUnknown GUID, then we'll likewise return the IEventHandler, since it can
+    * masquerade as an IUnknown object too. Finally, if the called passed a
+    * IDispatch GUID, then we'll return the IExample3, since it can masquerade
+    * as an IDispatch too
+    */
 
-   if ( IsEqualIID( vTableGuid, &IID_IUnknown ) )
+   if( IsEqualIID( vTableGuid, &IID_IUnknown ) )
    {
-      *ppv = (IUnknown*) self;
-      // Increment the count of callers who have an outstanding pointer to self object
+      *ppv = (IUnknown *) self;
+      /* Increment the count of callers who have an outstanding pointer to self object */
       self->lpVtbl->AddRef( self );
       return S_OK;
    }
 
-   if ( IsEqualIID( vTableGuid, &IID_IDispatch ) )
+   if( IsEqualIID( vTableGuid, &IID_IDispatch ) )
    {
-      *ppv = (IDispatch*) self;
+      *ppv = (IDispatch *) self;
       self->lpVtbl->AddRef( self );
       return S_OK;
    }
 
-   if ( IsEqualIID( vTableGuid, &(((MyRealIEventHandler*) self)->device_event_interface_iid ) ) )
+   if( IsEqualIID( vTableGuid, &( ((MyRealIEventHandler *) self)->device_event_interface_iid ) ) )
    {
-      *ppv = (IDispatch*) self;
+      *ppv = (IDispatch *) self;
       self->lpVtbl->AddRef( self );
       return S_OK;
    }
 
-   // We don't recognize the GUID passed to us. Let the caller know self,
-   // by clearing his handle, and returning E_NOINTERFACE.
+   /* We don't recognize the GUID passed to us. Let the caller know self,
+    * by clearing his handle, and returning E_NOINTERFACE.
+    */
    *ppv = 0;
-   return(E_NOINTERFACE);
+   return E_NOINTERFACE;
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's AddRef()
-static ULONG STDMETHODCALLTYPE AddRef(IEventHandler *self)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static ULONG STDMETHODCALLTYPE AddRef( IEventHandler *self )
 {
-   // Increment IEventHandler's reference count, and return the updated value.
-   // NOTE: We have to typecast to gain access to any data members. These
-   // members are not defined  (so that an app can't directly access them).
-   // Rather they are defined only above in our MyRealIEventHandler
-   // struct. So typecast to that in order to access those data members
-   return(++((MyRealIEventHandler *) self)->count);
+   /* Increment IEventHandler's reference count, and return the updated value.
+    * NOTE: We have to typecast to gain access to any data members. These
+    * members are not defined  (so that an app can't directly access them).
+    * Rather they are defined only above in our MyRealIEventHandler
+    * struct. So typecast to that in order to access those data members
+    */
+   return ( ++( (MyRealIEventHandler *) self )->count );
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's Release()
-static ULONG STDMETHODCALLTYPE Release(IEventHandler *self)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static ULONG STDMETHODCALLTYPE Release( IEventHandler *self )
 {
-   if (--((MyRealIEventHandler *) self)->count == 0)
+   if( --( (MyRealIEventHandler *) self )->count == 0 )
    {
-      GlobalFree(self);
-      return(0);
+      GlobalFree( self );
+      return ( 0 );
    }
-   return(((MyRealIEventHandler *) self)->count);
+   return( ( (MyRealIEventHandler *) self )->count );
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's GetTypeInfoCount()
-static ULONG STDMETHODCALLTYPE GetTypeInfoCount(IEventHandler *self, UINT *pCount)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static ULONG STDMETHODCALLTYPE GetTypeInfoCount( IEventHandler *self, UINT *pCount )
 {
-   HB_SYMBOL_UNUSED(self);
-   HB_SYMBOL_UNUSED(pCount);
+   HB_SYMBOL_UNUSED( self );
+   HB_SYMBOL_UNUSED( pCount );
    return E_NOTIMPL;
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's GetTypeInfo()
-static ULONG STDMETHODCALLTYPE GetTypeInfo(IEventHandler *self, UINT itinfo, LCID lcid, ITypeInfo **pTypeInfo)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static ULONG STDMETHODCALLTYPE GetTypeInfo( IEventHandler *self, UINT itinfo, LCID lcid, ITypeInfo **pTypeInfo )
 {
-   HB_SYMBOL_UNUSED(self);
-   HB_SYMBOL_UNUSED(itinfo);
-   HB_SYMBOL_UNUSED(lcid);
-   HB_SYMBOL_UNUSED(pTypeInfo);
+   HB_SYMBOL_UNUSED( self );
+   HB_SYMBOL_UNUSED( itinfo );
+   HB_SYMBOL_UNUSED( lcid );
+   HB_SYMBOL_UNUSED( pTypeInfo );
    return E_NOTIMPL;
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's GetIDsOfNames()
-static ULONG STDMETHODCALLTYPE GetIDsOfNames(IEventHandler *self, REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgdispid)
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static ULONG STDMETHODCALLTYPE GetIDsOfNames( IEventHandler *self, REFIID riid, LPOLESTR *rgszNames, UINT cNames, LCID lcid, DISPID *rgdispid )
 {
-   HB_SYMBOL_UNUSED(self);
-   HB_SYMBOL_UNUSED(riid);
-   HB_SYMBOL_UNUSED(rgszNames);
-   HB_SYMBOL_UNUSED(cNames);
-   HB_SYMBOL_UNUSED(lcid);
-   HB_SYMBOL_UNUSED(rgdispid);
+   HB_SYMBOL_UNUSED( self );
+   HB_SYMBOL_UNUSED( riid );
+   HB_SYMBOL_UNUSED( rgszNames );
+   HB_SYMBOL_UNUSED( cNames );
+   HB_SYMBOL_UNUSED( lcid );
+   HB_SYMBOL_UNUSED( rgdispid );
    return E_NOTIMPL;
 }
 
-//------------------------------------------------------------------------------
-// IEventHandler's Invoke()
-// self is where the action happens
-// self function receives events (by their ID number) and distributes the processing
-// or them or ignores them
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/* self is where the action happens
+ * self function receives events (by their ID number) and distributes the processing
+ * or them or ignores them
+ */
 static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFIID riid,
    LCID lcid, WORD wFlags, DISPPARAMS *params, VARIANT *result, EXCEPINFO *pexcepinfo,
    UINT *puArgErr )
 {
    PHB_ITEM pItem;
-   int iArg, i;
-   PHB_ITEM pItemArray[32]; // max 32 parameters?
+   UINT iArg, i;
+   PHB_ITEM pItemArray[32]; /* max 32 parameters? */
    PHB_ITEM *pItems;
    ULONG ulRefMask = 0;
    ULONG ulPos;
@@ -433,43 +375,41 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
 
    Key = hb_itemNew( NULL );
 
-   // We implement only a "default" interface
-   if ( !IsEqualIID( riid, &IID_NULL ) )
+   /* We implement only a "default" interface */
+   if( ! IsEqualIID( riid, &IID_NULL ) )
       return( DISP_E_UNKNOWNINTERFACE );
 
-   HB_SYMBOL_UNUSED(lcid);
-   HB_SYMBOL_UNUSED(wFlags);
-   HB_SYMBOL_UNUSED(result);
-   HB_SYMBOL_UNUSED(pexcepinfo);
-   HB_SYMBOL_UNUSED(puArgErr);
+   HB_SYMBOL_UNUSED( lcid );
+   HB_SYMBOL_UNUSED( wFlags );
+   HB_SYMBOL_UNUSED( result );
+   HB_SYMBOL_UNUSED( pexcepinfo );
+   HB_SYMBOL_UNUSED( puArgErr );
 
-   // delegate work to somewhere else in PRG
-   //***************************************
+   /* delegate work to somewhere else in PRG */
 
 #ifdef __USEHASHEVENTS
 
-   if ( hb_hashScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ),
-      &ulPos ) )
+   if( hb_hashScan( ( (MyRealIEventHandler *) self )->pEvents, hb_itemPutNL( Key, dispid ), &ulPos ) )
    {
-      PHB_ITEM pArray = hb_hashGetValueAt( ((MyRealIEventHandler* ) self)->pEvents, ulPos );
+      PHB_ITEM pArray = hb_hashGetValueAt( ( (MyRealIEventHandler *) self )->pEvents, ulPos );
 
 #else
 
    #ifdef __XHARBOUR__
-      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0, 0 );
+      ulPos = hb_arrayScan( ( (MyRealIEventHandler *) self )->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0, 0 );
    #else
-      ulPos = hb_arrayScan( ((MyRealIEventHandler* ) self)->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0 );
+      ulPos = hb_arrayScan( ( (MyRealIEventHandler *) self )->pEvents, hb_itemPutNL( Key, dispid ), NULL, NULL, 0 );
    #endif
 
-   if ( ulPos )
+   if( ulPos )
    {
-      PHB_ITEM pArray = hb_arrayGetItemPtr( ((MyRealIEventHandler* ) self)->pEventsExec, ulPos );
+      PHB_ITEM pArray = hb_arrayGetItemPtr( ( (MyRealIEventHandler *) self )->pEventsExec, ulPos );
 
 #endif
 
-      PHB_ITEM pExec  = hb_arrayGetItemPtr( pArray, 01 );
+      PHB_ITEM pExec  = hb_arrayGetItemPtr( pArray, 1 );
 
-      if ( pExec )
+      if( pExec )
       {
          hb_vmRequestReenter();
 
@@ -486,7 +426,7 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
                PHB_ITEM pObject = hb_arrayGetItemPtr( pArray, 2 );
                hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName( hb_itemGetCPtr( pExec ) ) ) );
 
-               if ( HB_IS_OBJECT( pObject ) )
+               if( HB_IS_OBJECT( pObject ) )
                   hb_vmPush( pObject );
                else
                   hb_vmPushNil();
@@ -494,19 +434,21 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
             }
             case HB_IT_POINTER:
             {
-               hb_vmPushSymbol( hb_dynsymSymbol( ( (PHB_SYMB) pExec ) -> pDynSym ) );
+               hb_vmPushSymbol( hb_dynsymSymbol( ( (PHB_SYMB) pExec )->pDynSym ) );
                hb_vmPushNil();
                break;
             }
+            default:
+               break;
          }
 
          iArg = params->cArgs;
          for( i = 1; i<= iArg; i++ )
          {
-            pItem = hb_itemNew(NULL);
-            hb_oleVariantToItem( pItem, &(params->rgvarg[iArg-i]) );
+            pItem = hb_itemNew( NULL );
+            hb_oleVariantToItem( pItem, &( params->rgvarg[iArg-i] ) );
             pItemArray[i-1] = pItem;
-            // set bit i
+            /* set bit i */
             ulRefMask |= ( 1L << (i-1) );
          }
 
@@ -516,67 +458,72 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
             hb_itemPushList( ulRefMask, iArg, &pItems );
          }
 
-         // execute
+         /* execute */
          hb_vmDo( (USHORT) iArg );
 
-         // En caso de que los parametros sean pasados por referencia
-         for( i=iArg; i > 0; i-- )
+         /* En caso de que los parametros sean pasados por referencia */
+         for( i = iArg; i > 0; i-- )
          {
-            if( ( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF ) == VT_BYREF )
+            if( ( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt & VT_BYREF ) == VT_BYREF )
             {
-               switch( (&(params->rgvarg[iArg-i]))->n1.n2.vt )
+               switch( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt )
                {
-                  //case VT_UI1|VT_BYREF:
-                  //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbVal) = va_arg(argList,unsigned char*);  //pItemArray[i-1]
-                  //   break;
+               /* case VT_UI1|VT_BYREF:
+                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pbVal ) = va_arg( argList, unsigned char * );  // pItemArray[i-1]
+                *    break;
+                */
                   case VT_I2|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.piVal)    = (short)          hb_itemGetNI(pItemArray[i-1]);
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.piVal )    = (short) hb_itemGetNI( pItemArray[i-1] );
                      break;
                   case VT_I4|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.plVal)    = ( LONG )           hb_itemGetNL(pItemArray[i-1]);
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.plVal )    = (long) hb_itemGetNL( pItemArray[i-1] );
                      break;
                   case VT_R4|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pfltVal)  = (float)          hb_itemGetND(pItemArray[i-1]);
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pfltVal )  = (float) hb_itemGetND( pItemArray[i-1] );
                      break;
                   case VT_R8|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pdblVal)  = (double)         hb_itemGetND(pItemArray[i-1]);
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pdblVal )  = (double) hb_itemGetND( pItemArray[i-1] );
                      break;
                   case VT_BOOL|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pboolVal) =  (VARIANT_BOOL)  ( hb_itemGetL( pItemArray[i-1] ) ? 0xFFFF : 0 );
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pboolVal ) = (VARIANT_BOOL) ( hb_itemGetL( pItemArray[i-1] ) ? 0xFFFF : 0 );
                      break;
-                  //case VT_ERROR|VT_BYREF:
-                  //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pscode) = va_arg(argList, SCODE*);
-                  //   break;
+               /* case VT_ERROR|VT_BYREF:
+                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pscode ) = va_arg( argList, SCODE * );
+                *    break;
+                */
                   case VT_DATE|VT_BYREF:
-                     *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pdate)    = (DATE) (double) (hb_itemGetDL(pItemArray[i-1])-2415019 );
+                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pdate ) = (DATE) (double) ( hb_itemGetDL( pItemArray[i-1] ) - 2415019 );
                      break;
-                  //case VT_CY|VT_BYREF:
-                  //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pcyVal) = va_arg(argList, CY*);
-                  //   break;
-                  //case VT_BSTR|VT_BYREF:
-                  //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbstrVal = va_arg(argList, BSTR*);
-                  //   break;
-                  //case VT_UNKNOWN|VT_BYREF:
-                  //   pArg->ppunkVal = va_arg(argList, LPUNKNOWN*);
-                  //   break;
-                  //case VT_DISPATCH|VT_BYREF:
-                  //   pArg->ppdispVal = va_arg(argList, LPDISPATCH*);
-                  //   break;
-               } // EOF switch( (&(params->rgvarg[iArg-i]))->n1.n2.vt )
-            } // EOF if( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF == VT_BYREF )
-         } // EOF for( i=iArg; i > 0; i-- )
+               /* case VT_CY|VT_BYREF:
+                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pcyVal ) = va_arg( argList, CY * );
+                *    break;
+                * case VT_BSTR|VT_BYREF:
+                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pbstrVal ) = va_arg( argList, BSTR * );
+                *    break;
+                * case VT_UNKNOWN|VT_BYREF:
+                *    pArg->ppunkVal = va_arg( argList, LPUNKNOWN * );
+                *    break;
+                * case VT_DISPATCH|VT_BYREF:
+                *    pArg->ppdispVal = va_arg( argList, LPDISPATCH * );
+                *    break;
+                */
+                  default:
+                     break;
+               } /* EOF switch( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt ) */
+            } /* EOF if( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt & VT_BYREF == VT_BYREF ) */
+         } /* EOF for( i = iArg; i > 0; i-- ) */
 
          hb_vmRequestRestore();
-      } // EOF if ( pExec )
-   }  // EOF If Scan
+      } /* EOF if( pExec ) */
+   }  /* EOF if( hb_hashScan ) */
 
    hb_itemRelease( Key );
 
    return S_OK;
-}  // EOF invoke
+}
 
-//------------------------------------------------------------------------------
-// Here's IEventHandler's VTable. It never changes so we can declare it static
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/* IEventHandler's VTable. It never changes so we can declare it static */
 static const IEventHandlerVtbl IEventHandler_Vtbl = {
    QueryInterface,
    AddRef,
@@ -587,113 +534,113 @@ static const IEventHandlerVtbl IEventHandler_Vtbl = {
    Invoke
 };
 
-//------------------------------------------------------------------------------
-// constructor
-// params:
-// device_interface        - refers to the interface type of the COM object (whose event we are trying to receive).
-// device_event_interface  - indicates the interface type of the outgoing interface supported by the COM object.
-//                           This will be the interface that must be implemented by the Sink object.
-//                           is essentially derived from IDispatch, our Sink object (self IEventHandler)
-//                           is also derived from IDispatch.
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+/* constructor
+ * params:
+ * device_interface        - refers to the interface type of the COM object (whose event we are trying to receive).
+ * device_event_interface  - indicates the interface type of the outgoing interface supported by the COM object.
+ *                           This will be the interface that must be implemented by the Sink object.
+ *                           is essentially derived from IDispatch, our Sink object (self IEventHandler)
+ *                           is also derived from IDispatch.
+ */
 typedef IEventHandler device_interface;
 
-// Hash  // SetupConnectionPoint( oOle:hObj, @hSink, hEvents )             -> nError
-// Array // SetupConnectionPoint( oOle:hObj, @hSink, aEvents, aExecEvent ) -> nError
-
+/* Hash:  SetupConnectionPoint( oOle:hObj, @hSink, hEvents )             -> nError
+ * Array: SetupConnectionPoint( oOle:hObj, @hSink, aEvents, aExecEvent ) -> nError
+ */
 HB_FUNC( SETUPCONNECTIONPOINT )
 {
-   IConnectionPointContainer*  pIConnectionPointContainerTemp = NULL;
-   IUnknown*                   pIUnknown = NULL;
-   IConnectionPoint*           m_pIConnectionPoint = NULL;
-   IEnumConnectionPoints*      m_pIEnumConnectionPoints;
-   HRESULT                     hr; //,r;
-   IID                         rriid = IID_NULL;
-   register IEventHandler *    selfobj;
-   DWORD                       dwCookie = 0;
+   IConnectionPointContainer *pIConnectionPointContainerTemp = NULL;
+   IUnknown                  *pIUnknown = NULL;
+   IConnectionPoint          *m_pIConnectionPoint = NULL;
+   IEnumConnectionPoints     *m_pIEnumConnectionPoints;
+   HRESULT                   hr;
+   IID                       rriid = IID_NULL;
+   register IEventHandler    *selfobj;
+   DWORD                     dwCookie = 0;
+   device_interface          *pdevice_interface = (device_interface*) HB_PARNL( 1 );
+   MyRealIEventHandler       *pThis;
 
-   device_interface*           pdevice_interface = (device_interface*) HB_PARNL( 1 );
-   MyRealIEventHandler*        pThis;
+   /* Allocate our IEventHandler object (actually a MyRealIEventHandler)
+    * intentional misrepresentation of size
+    */
+   selfobj = (IEventHandler *) GlobalAlloc( GMEM_FIXED, sizeof( MyRealIEventHandler ) );
 
-   // Allocate our IEventHandler object (actually a MyRealIEventHandler)
-   // intentional misrepresentation of size
-
-   selfobj = ( IEventHandler *) GlobalAlloc( GMEM_FIXED, sizeof( MyRealIEventHandler ) );
-
-   if ( ! selfobj )
+   if( ! selfobj )
    {
       hr = E_OUTOFMEMORY;
    }
    else
    {
-      // Store IEventHandler's VTable in the object
+      /* Store IEventHandler's VTable in the object */
       selfobj->lpVtbl = (IEventHandlerVtbl *) HB_UNCONST( &IEventHandler_Vtbl );
 
-      // Increment the reference count so we can call Release() below and
-      // it will deallocate only if there is an error with QueryInterface()
-      ((MyRealIEventHandler *) selfobj)->count = 0;
+      /* Increment the reference count so we can call Release() below and
+       * it will deallocate only if there is an error with QueryInterface() */
+      ( (MyRealIEventHandler *) selfobj )->count = 0;
 
-      //((MyRealIEventHandler *) selfobj)->device_event_interface_iid = &riid;
-      ((MyRealIEventHandler *) selfobj)->device_event_interface_iid = IID_IDispatch;
+      /* ((MyRealIEventHandler *) selfobj)->device_event_interface_iid = &riid; */
+      ( (MyRealIEventHandler *) selfobj )->device_event_interface_iid = IID_IDispatch;
 
-      // Query self object itself for its IUnknown pointer which will be used
-      // later to connect to the Connection Point of the device_interface object.
-      hr = selfobj->lpVtbl->QueryInterface( selfobj, &IID_IUnknown, (void**) (void *) &pIUnknown );
-      if ( hr == S_OK && pIUnknown )
+      /* Query self object itself for its IUnknown pointer which will be used
+       * later to connect to the Connection Point of the device_interface object.
+       */
+      hr = selfobj->lpVtbl->QueryInterface( selfobj, &IID_IUnknown, (void **) (void *) &pIUnknown );
+      if( hr == S_OK && pIUnknown )
       {
-         // Query the pdevice_interface for its connection point.
+         /* Query the pdevice_interface for its connection point. */
          hr = pdevice_interface->lpVtbl->QueryInterface( pdevice_interface,
-            &IID_IConnectionPointContainer, (void**) (void *) &pIConnectionPointContainerTemp );
+            &IID_IConnectionPointContainer, (void **) (void *) &pIConnectionPointContainerTemp );
 
-         if ( hr == S_OK && pIConnectionPointContainerTemp )
+         if( hr == S_OK && pIConnectionPointContainerTemp )
          {
-            // start uncomment
             hr = pIConnectionPointContainerTemp->lpVtbl->EnumConnectionPoints( pIConnectionPointContainerTemp, &m_pIEnumConnectionPoints );
 
-            if ( hr == S_OK && m_pIEnumConnectionPoints )
+            if( hr == S_OK && m_pIEnumConnectionPoints )
             {
                do
                {
                   hr = m_pIEnumConnectionPoints->lpVtbl->Next( m_pIEnumConnectionPoints, 1, &m_pIConnectionPoint , NULL);
                   if( hr == S_OK )
                   {
-                     if ( m_pIConnectionPoint->lpVtbl->GetConnectionInterface( m_pIConnectionPoint, &rriid ) == S_OK )
+                     if( m_pIConnectionPoint->lpVtbl->GetConnectionInterface( m_pIConnectionPoint, &rriid ) == S_OK )
                      {
                         break;
                      }
                   }
 
-               } while( hr == S_OK );
-               m_pIEnumConnectionPoints->lpVtbl->Release(m_pIEnumConnectionPoints);
+               }
+               while( hr == S_OK );
+               m_pIEnumConnectionPoints->lpVtbl->Release( m_pIEnumConnectionPoints );
             }
-            // end uncomment
 
-            //hr = pIConnectionPointContainerTemp ->lpVtbl->FindConnectionPoint(pIConnectionPointContainerTemp ,  &IID_IDispatch, &m_pIConnectionPoint);
+            /* hr = pIConnectionPointContainerTemp ->lpVtbl->FindConnectionPoint(pIConnectionPointContainerTemp ,  &IID_IDispatch, &m_pIConnectionPoint); */
             pIConnectionPointContainerTemp->lpVtbl->Release( pIConnectionPointContainerTemp );
             pIConnectionPointContainerTemp = NULL;
          }
 
-         if ( hr == S_OK && m_pIConnectionPoint )
+         if( hr == S_OK && m_pIConnectionPoint )
          {
-            //OutputDebugString("getting iid");
-            //Returns the IID of the outgoing interface managed by self connection point.
-            //hr = m_pIConnectionPoint->lpVtbl->GetConnectionInterface(m_pIConnectionPoint, &rriid );
-            //OutputDebugString("called");
+            /* OutputDebugString("getting iid");
+             * Returns the IID of the outgoing interface managed by self connection point.
+             * hr = m_pIConnectionPoint->lpVtbl->GetConnectionInterface(m_pIConnectionPoint, &rriid );
+             * OutputDebugString("called");
+             */
 
             if( hr == S_OK )
             {
-               ((MyRealIEventHandler *) selfobj)->device_event_interface_iid = rriid;
+               ( (MyRealIEventHandler *) selfobj )->device_event_interface_iid = rriid;
             }
             else
-               OutputDebugString("error getting iid");
+               OutputDebugString( "error getting iid" );
 
-            //OutputDebugString("calling advise");
+            /* OutputDebugString("calling advise"); */
             hr = m_pIConnectionPoint->lpVtbl->Advise( m_pIConnectionPoint, pIUnknown, &dwCookie );
-            ((MyRealIEventHandler *) selfobj)->pIConnectionPoint = m_pIConnectionPoint;
-            ((MyRealIEventHandler *) selfobj)->dwEventCookie = dwCookie;
+            ( (MyRealIEventHandler *) selfobj )->pIConnectionPoint = m_pIConnectionPoint;
+            ( (MyRealIEventHandler *) selfobj )->dwEventCookie = dwCookie;
          }
 
-         pIUnknown->lpVtbl->Release(pIUnknown);
+         pIUnknown->lpVtbl->Release( pIUnknown );
          pIUnknown = NULL;
       }
    }
@@ -713,10 +660,10 @@ HB_FUNC( SETUPCONNECTIONPOINT )
    HWNDret( hr );
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *self = ( MyRealIEventHandler * ) HB_PARNL( 1 );
+   MyRealIEventHandler *self = (MyRealIEventHandler *) HB_PARNL( 1 );
    if( self->pIConnectionPoint )
    {
       self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );
@@ -726,10 +673,10 @@ HB_FUNC( SHUTDOWNCONNECTIONPOINT )
    }
 }
 
-//------------------------------------------------------------------------------
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( RELEASEDISPATCH )
 {
-   IDispatch * pObj;
-   pObj = ( IDispatch * ) HWNDparam( 1 );
+   IDispatch *pObj;
+   pObj = (IDispatch *) HWNDparam( 1 );
    pObj->lpVtbl->Release( pObj );
 }
