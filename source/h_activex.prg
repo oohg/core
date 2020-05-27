@@ -73,24 +73,23 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TActiveX FROM TControl
 
-   DATA Type      INIT "ACTIVEX" READONLY
-   DATA nWidth    INIT nil
-   DATA nHeight   INIT nil
-   DATA oOle      INIT nil
-   DATA cProgId   INIT ""
-   DATA hSink     INIT nil
-   DATA hAtl      INIT nil
+   DATA aAxEv                     INIT {}
+   DATA aAxExec                   INIT {}
+   DATA cProgId                   INIT ""
+   DATA hAtl                      INIT NIL
+   DATA hSink                     INIT NIL
+   DATA nHeight                   INIT NIL
+   DATA nWidth                    INIT NIL
+   DATA oOle                      INIT NIL
+   DATA Type                      INIT "ACTIVEX" READONLY
 
    METHOD Define
    METHOD Release
+   METHOD EventMap( nMsg, xExec, oSelf )
 
    DELEGATE Set TO oOle
    DELEGATE Get TO oOle
    ERROR HANDLER __Error
-
-   DATA aAxEv        INIT {}              // oSkAr 20070829
-   DATA aAxExec      INIT {}              // oSkAr 20070829
-   METHOD EventMap( nMsg, xExec, oSelf )  // oSkAr 20070829
 
    ENDCLASS
 
@@ -100,10 +99,10 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
 
    LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
 
-   ASSIGN ::nCol    VALUE nCol    TYPE "N"
-   ASSIGN ::nRow    VALUE nRow    TYPE "N"
-   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
-   ASSIGN ::nHeight VALUE nHeight TYPE "N"
+   ASSIGN ::nCol    VALUE nCol      TYPE "N"
+   ASSIGN ::nRow    VALUE nRow      TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth    TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight   TYPE "N"
 
    ::SetForm( ControlName, ParentForm )
 
@@ -137,49 +136,16 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
    SetupConnectionPoint( ::hAtl, @hSink, ::aAxEv, ::aAxExec )
    ::hSink := hSink
 
-   RETURN SELF
+   RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TActiveX
 
-   ::oOle := Nil
-   SHUTDOWNCONNECTIONPOINT( ::hSink )
+   ::oOle := NIL
+   ShutdownConnectionPoint( ::hSink )
    ReleaseDispatch( ::hAtl )
 
    RETURN ::Super:Release()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-/*
- * oSkAr 20070829
- * Soporte de eventos para los controles ActiveX
- *
- * PARAMETROS
- * nMsg  == Numero de eventos
- * xExec == Puede ser un bloque de codigo, el nombre de una funcion o metodo, o un puntero a una funcion
- * oSelf == En caso de ser el nombre de un metodo se debe de pasar el objeto con el cual se va a ejecutar
- *
- * Ejemplos
-
-   // Codeblock
-   oActiveX:EventMap( 103, { |cTitle| oWnd:Title := cTitle } )
-
-   // Nombre de funcion
-   oActiveX:EventMap( 103, "ONCHANGETITLE" )
-
-   // Metodo
-   oActiveX:EventMap( 103, "ONCHANGETITLE", oMiObjeto )
-
-   // Puntero a Funcion
-   oActiveX:EventMap( 103, @OnChangeTitle )
-
-   Function OnChangeTitle( cTitle )
-      oWnd:Title := cTitle
-      Return NIL
-
-   Method OnChangeTitle( cTitle ) From MiClase
-      ::oWnd:Title := cTitle
-      Return NIL
-*/
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EventMap( nMsg, xExec, oSelf ) CLASS TActiveX
@@ -203,8 +169,4 @@ METHOD __Error( ... ) CLASS TActiveX
 
    cMessage := __GetMessage()
 
-   //   IF SubStr( cMessage, 1, 1 ) == "_"
-   //      cMessage := SubStr( cMessage, 2 )
-   //   ENDIF
-
-   RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
+   RETURN hb_ExecFromArray( ::oOle, cMessage, hb_AParams() )
