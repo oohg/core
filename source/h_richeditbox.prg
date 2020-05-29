@@ -418,9 +418,7 @@ HB_FUNC( INITRICHEDITBOX )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol,
    Mask = ENM_CHANGE | ENM_SELCHANGE | ENM_SCROLL | ENM_DRAGDROPDONE;
 /*
 ENM_DROPFILES
-ENM_KEYEVENTS
 ENM_LINK
-ENM_MOUSEEVENTS
 */
    InitCommonControls();
 
@@ -1199,5 +1197,25 @@ HB_FUNC( TEDITRICH_SELECTIONTYPE )          /* FUNCTION TEditRich_SelectionType(
 
    hb_retni( nMode );
 }
+
+/*
+To use with EN_MSGFILTER notification codes for events.
+In the mask sent with the EM_SETEVENTMASK, use one or more of these: ENM_KEYEVENTS, ENM_MOUSEEVENTS, ENM_SCROLLEVENTS.
+
+HB_FUNC( GETMSKTEXTMESSAGE )
+{
+   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->msg ) );
+}
+
+HB_FUNC( GETMSKTEXTWPARAM )
+{
+   HB_RETNL( (UINT_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->wParam) );
+}
+
+HB_FUNC( GETMSKTEXTLPARAM )
+{
+   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->lParam) );
+}
+*/
 
 #pragma ENDDUMP
