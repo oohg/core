@@ -133,7 +133,7 @@ METHOD Picture( cPicture ) CLASS TNotifyIcon
    IF VALTYPE( cPicture ) $ "CM"
       DeleteObject( ::hImage )
       ::cPicture := cPicture
-      ::hImage := LoadTrayIcon( GETINSTANCE(), cPicture )
+      ::hImage := LoadTrayIcon( GetInstance(), cPicture )
       // If ! ValidHandler( ::hImage )
       //    ::hImage := _OOHG_BitmapFromFile( Self, cPicture, 0, .F., .T. )
       //    If ! ValidHandler( ::hImage )
