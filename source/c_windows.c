@@ -511,7 +511,7 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( SENDMESSAGE )
 {
-    HB_RETNL( (LONG_PTR) SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( UPDATEWINDOW )
@@ -586,7 +586,7 @@ HB_FUNC( SETWINDOWBACKCOLOR )
          hb_vmSend( 1 );
 
          oSelf = _OOHG_GetControlInfo( pSelf );
-         HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+         HBRUSHret( oSelf->BrushHandle );
       }
    }
 
@@ -605,12 +605,12 @@ HB_FUNC( SETWINDOWBACKCOLOR )
 
    RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
 
-   HB_RETNL( (LONG_PTR) hBrush );
+   HBRUSHret( hBrush );
 }
 
 HB_FUNC( GETWINDOWBACKCOLOR )
 {
-   HB_RETNL( (LONG_PTR) GetClassLongPtr( HWNDparam( 1 ), GCLP_HBRBACKGROUND ) );
+   HB_RETNL( GetClassLongPtr( HWNDparam( 1 ), GCLP_HBRBACKGROUND ) );
 }
 
 HB_FUNC( GETDESKTOPWIDTH )
@@ -837,22 +837,7 @@ HB_FUNC( C_SETPOLYWINDOWRGN )
 
 HB_FUNC( GETHELPDATA )
 {
-   HB_RETNL( (LONG_PTR) ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
-}
-
-HB_FUNC( GETMSKTEXTMESSAGE )
-{
-   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->msg ) );
-}
-
-HB_FUNC( GETMSKTEXTWPARAM )
-{
-   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->wParam) );
-}
-
-HB_FUNC( GETMSKTEXTLPARAM )
-{
-   HB_RETNL( (LONG_PTR) ( ( (MSGFILTER FAR *) HB_PARNL( 1 ) )->lParam) );
+   HANDLEret( ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
 }
 
 HB_FUNC( GETWINDOW )
@@ -1041,7 +1026,7 @@ HB_FUNC( _GETBITMAP )          /* FUNCTION _GetBitmap( hWnd, bAll ) -> hBitmap *
    {
       ReleaseDC( hWnd, hDC );
    }
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 HB_FUNC( _SAVEBITMAP )          /* FUNCTION _SaveBitmap( hBitmap, cFile ) -> NIL */
