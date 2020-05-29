@@ -250,7 +250,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
 
    if( HB_ISARRAY( 1 ) && hb_parinfa( 1, 0 ) >= 2 )
    {
-      HB_STORPTR( (void *) &iSwitch , 1, 2 );     /* ::ActivateCount[2] */
+      HB_STORPTR3( (void *) &iSwitch , 1, 2 );     /* ::ActivateCount[2] */
    }
 
    iSwitch = 1;
