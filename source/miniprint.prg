@@ -2489,7 +2489,7 @@ HB_FUNC( _HMG_PRINTER_PRINTDIALOG )          /* _HMG_PRINTER_PrintDialog() -> { 
       pDevMode = ( LPDEVMODE ) GlobalLock( pd.hDevMode );
 
       hb_reta( 5 );
-      HB_STORNL3( (LONG_PTR) pd.hDC, -1, 1 );
+      HDCstor3( pd.hDC, -1, 1 );
       HB_STORC( (char *) pDevMode->dmDeviceName, -1, 2 );
       HB_STORNI( pDevMode->dmCopies, -1, 3 );
       HB_STORNI( pDevMode->dmCollate, -1, 4 );
@@ -3555,7 +3555,7 @@ HB_FUNC( _HMG_PRINTER_C_SETPRINTERPROPERTIES )          /* _HMG_PRINTER_C_SetPri
    }
 
    hb_reta( 14 );
-   HB_STORNL3( (LONG_PTR) hdcPrint, -1, 1 );
+   HDCstor3( hdcPrint, -1, 1 );
    HB_STORC( hb_parc( 1 ), -1, 2 );
    HB_STORNI( (int) pi2->pDevMode->dmCopies, -1, 3 );
    HB_STORNI( (int) pi2->pDevMode->dmCollate, -1, 4 );
@@ -3686,14 +3686,11 @@ HB_FUNC( _HMG_PRINTER_C_GETSTATUS )          /* _HMG_PRINTER_C_GetStatus( cPrint
 HB_FUNC( _HMG_PRINTER_STARTPAGE_PREVIEW )          /* _HMG_PRINTER_StartPage_Preview( hdcPrint, cName ) -> hdcEmf */
 {
    HDC hdcPrint = (HDC) HB_PARNL( 1 );
-   HDC hdcEmf;
    RECT emfrect;
 
    SetRect( &emfrect, 0, 0, GetDeviceCaps( hdcPrint, HORZSIZE ) * 100, GetDeviceCaps( hdcPrint, VERTSIZE) * 100 );
 
-   hdcEmf = CreateEnhMetaFile( hdcPrint, hb_parc( 2 ), &emfrect, "" );
-
-   HB_RETNL( (LONG_PTR) hdcEmf );
+   HDCret( CreateEnhMetaFile( hdcPrint, hb_parc( 2 ), &emfrect, "" ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
