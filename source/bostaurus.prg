@@ -4054,7 +4054,7 @@ HB_FUNC( BT_REGIONCOMBINE )    // ( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode 
       }
       else
       {
-         HRGNstor2( hRgnDest, 1 );
+         HRGNstor( hRgnDest, 1 );
       }
       hb_retni( ret );
    }
