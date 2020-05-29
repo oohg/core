@@ -65,77 +65,75 @@
  */
 
 
-EXTERN PtrStr
-
 #pragma BEGINDUMP
 
 #include "oohg.h"
 
-#define MAX_PARAMS  9
+#define MAX_PARAMS 9
 
-static HINSTANCE HB_DllStore[ 256 ];
-HINSTANCE HB_LoadDll( const CHAR * );
-VOID      HB_UnloadDll( VOID );
-typedef   LONG_PTR ( CALLBACK * DYNACALL0 ) ( VOID );
-typedef   LONG_PTR ( CALLBACK * DYNACALL1 ) ( LONG_PTR d1 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL2 ) ( LONG_PTR d1, LONG_PTR d2 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL3 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL4 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL5 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL6 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL7 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL8 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8 );
-typedef   LONG_PTR ( CALLBACK * DYNACALL9 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8, LONG_PTR d9 );
+typedef LONG_PTR ( CALLBACK * DYNACALL0 ) ( void );
+typedef LONG_PTR ( CALLBACK * DYNACALL1 ) ( LONG_PTR d1 );
+typedef LONG_PTR ( CALLBACK * DYNACALL2 ) ( LONG_PTR d1, LONG_PTR d2 );
+typedef LONG_PTR ( CALLBACK * DYNACALL3 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3 );
+typedef LONG_PTR ( CALLBACK * DYNACALL4 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4 );
+typedef LONG_PTR ( CALLBACK * DYNACALL5 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5 );
+typedef LONG_PTR ( CALLBACK * DYNACALL6 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6 );
+typedef LONG_PTR ( CALLBACK * DYNACALL7 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7 );
+typedef LONG_PTR ( CALLBACK * DYNACALL8 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8 );
+typedef LONG_PTR ( CALLBACK * DYNACALL9 ) ( LONG_PTR d1, LONG_PTR d2, LONG_PTR d3, LONG_PTR d4, LONG_PTR d5, LONG_PTR d6, LONG_PTR d7, LONG_PTR d8, LONG_PTR d9 );
 
-HINSTANCE HB_LoadDll( const CHAR * DllName )
+static HINSTANCE _OOHG_DllStore[ 256 ];
+
+void _OOHG_UnloadDll( void )
 {
-   static INT DllCnt = 0;
-   static INT RegUnload = 0;
+   register int i;
+
+   for( i = 255; i >= 0; i-- )
+   {
+      if( _OOHG_DllStore[ i ] )
+      {
+         FreeLibrary( _OOHG_DllStore[ i ] );
+      }
+   }
+}
+
+HINSTANCE _OOHG_LoadDLL( const char *DllName )
+{
+   static int DllCnt = 0;
+   static int RegUnload = 0;
    HINSTANCE ret;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( ! RegUnload )
    {
-      RegUnload = ! atexit( HB_UnloadDll );
-      memset( HB_DllStore, 0 , sizeof( HB_DllStore ) );
+      RegUnload = ! atexit( _OOHG_UnloadDll );
+      memset( _OOHG_DllStore, 0 , sizeof( _OOHG_DllStore ) );
    }
    DllCnt = ( DllCnt + 1 ) & 255;
-   if( HB_DllStore[ DllCnt ] )
+   if( _OOHG_DllStore[ DllCnt ] )
    {
-      FreeLibrary( HB_DllStore[ DllCnt ] );
+      FreeLibrary( _OOHG_DllStore[ DllCnt ] );
    }
-   ret = HB_DllStore[ DllCnt ] = LoadLibrary( DllName );
+   ret = _OOHG_DllStore[ DllCnt ] = LoadLibrary( DllName );
    ReleaseMutex( _OOHG_GlobalMutex() );
    return ret;
 }
 
 HB_FUNC( UNLOADALLDLL )
 {
-   HB_UnloadDll();
-}
-
-void HB_UnloadDll( void )
-{
-   register INT i;
-   for( i = 255; i >= 0; i-- )
-   {
-      if( HB_DllStore[ i ] )
-      {
-         FreeLibrary( HB_DllStore[ i ] );
-      }
-   }
+   _OOHG_UnloadDll();
 }
 
 HB_FUNC( OOHG_CALLDLL32 )
 {
-   register INT i;
+   register int i;
    HINSTANCE hInst;
    DYNACALL1 lpAddr;
    LONG_PTR result = -2000;
-   CHAR buff[ 256 ];
-   const CHAR * FuncName = hb_parc( 1 );
-   const CHAR * DllName = hb_parc( 2 );
-   INT nArgs;
+   char buff[ 256 ];
+   const char *FuncName = hb_parc( 1 );
+   const char *DllName = hb_parc( 2 );
+   int nArgs;
    LONG_PTR dd[ MAX_PARAMS ];
    void *p;
 
@@ -150,23 +148,23 @@ HB_FUNC( OOHG_CALLDLL32 )
    hInst = GetModuleHandle( DllName );
    if( hInst == NULL )
    {
-      hInst = HB_LoadDll( DllName );
+      hInst = _OOHG_LoadDLL( DllName );
    }
    if( ! hInst )
    {
       hb_retnl( 0 );
       return;
    }
-   lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, FuncName );
+   lpAddr = (DYNACALL1) GetProcAddress( hInst, FuncName );
    if( lpAddr == NULL )
    {
       sprintf( buff, "%s%s", FuncName, "A" );
-      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff );
+      lpAddr = (DYNACALL1) GetProcAddress( hInst, buff );
    }
    if( lpAddr == NULL )
    {
       sprintf( buff, "%s%s", "_", FuncName );
-      lpAddr = ( DYNACALL1 ) GetProcAddress( hInst, buff );
+      lpAddr = (DYNACALL1) GetProcAddress( hInst, buff );
    }
    if( lpAddr )
    {
@@ -183,67 +181,66 @@ HB_FUNC( OOHG_CALLDLL32 )
          }
          else
          {
-            dd[ i ] = (LONG_PTR) hb_parnl( i + 3 );
+            dd[ i ] = (LONG_PTR) HB_PARNL( i + 3 );
          }
       }
 
       switch( nArgs )
       {
          case 0:
-            result = (LONG_PTR) ( ( DYNACALL0 ) ( FARPROC ) lpAddr )();
+            result = (LONG_PTR) ( (DYNACALL0) (FARPROC) lpAddr )();
             break;
 
          case 1:
-            result = (LONG_PTR) ( ( DYNACALL1 ) ( FARPROC ) lpAddr )( dd[ 0 ] );
+            result = (LONG_PTR) ( (DYNACALL1) (FARPROC) lpAddr )( dd[ 0 ] );
             break;
 
          case 2:
-            result = (LONG_PTR) ( ( DYNACALL2 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ] );
+            result = (LONG_PTR) ( (DYNACALL2) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ] );
             break;
 
          case 3:
-            result = (LONG_PTR) ( ( DYNACALL3 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
+            result = (LONG_PTR) ( (DYNACALL3) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ] );
             break;
 
          case 4:
-            result = (LONG_PTR) ( ( DYNACALL4 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
+            result = (LONG_PTR) ( (DYNACALL4) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ] );
             break;
 
          case 5:
-            result = (LONG_PTR) ( ( DYNACALL5 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
+            result = (LONG_PTR) ( (DYNACALL5) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ] );
             break;
 
          case 6:
-            result = (LONG_PTR) ( ( DYNACALL6 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
+            result = (LONG_PTR) ( (DYNACALL6) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ] );
             break;
 
          case 7:
-            result = (LONG_PTR) ( ( DYNACALL7 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
+            result = (LONG_PTR) ( (DYNACALL7) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ] );
             break;
 
          case 8:
-            result = (LONG_PTR) ( ( DYNACALL8 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
+            result = (LONG_PTR) ( (DYNACALL8) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ] );
             break;
 
          default:
-            result = (LONG_PTR) ( ( DYNACALL9 ) ( FARPROC ) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
+            result = (LONG_PTR) ( (DYNACALL9) (FARPROC) lpAddr )( dd[ 0 ], dd[ 1 ], dd[ 2 ], dd[ 3 ], dd[ 4 ], dd[ 5 ], dd[ 6 ], dd[ 7 ], dd[ 8 ] );
             break;
 
       }
    }
 
-   hb_retnl( result );
+   HB_RETNL( result );
 }
 
 HB_FUNC( STRPTR )
 {
-   const CHAR * cString = hb_parc( 1 );
-   HB_RETNL( ( LONG_PTR ) cString );
+   HANDLEret( hb_parc( 1 ) );
 }
 
 HB_FUNC( PTRSTR )
 {
-   hb_retc( ( LPSTR ) HB_PARNL( 1 ) );
+   hb_retc( HANDLEparam( 1 ) );
 }
 
 #pragma ENDDUMP
