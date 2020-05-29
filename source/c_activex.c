@@ -654,7 +654,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 #endif
 
       pThis->pEvents = hb_itemNew( hb_param( 3, HB_IT_ANY ) );
-      HB_STORNL2( (LONG_PTR) pThis, 2 );
+      HANDLEstor2( pThis, 2 );
    }
 
    HWNDret( hr );

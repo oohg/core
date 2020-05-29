@@ -2277,7 +2277,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )          /* METHOD Imagelist( handle ) CLASS
       oSelf->ImageList = hImageList;
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->ImageList );
+   HIMAGELISTret( oSelf->ImageList );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2297,7 +2297,7 @@ HB_FUNC_STATIC( TWINDOW_ICONHANDLE )          /* METHOD IconHandle( hIcon ) CLAS
       oSelf->IconHandle = hIcon;
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->IconHandle );
+   HICONret( oSelf->IconHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2317,7 +2317,7 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )          /* METHOD BrushHandle( hBrush ) C
       oSelf->BrushHandle = hBrush;
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+   HBRUSHret( oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2337,7 +2337,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )          /* METHOD FontHandle( hFont ) CLAS
       oSelf->hFontHandle = hFont;
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->hFontHandle );
+   HFONTret( oSelf->hFontHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2467,7 +2467,7 @@ HB_FUNC_STATIC( TWINDOW_BACKBITMAP )          /* METHOD BackBitmap( hBitmap ) CL
       oSelf->BrushHandle = CreatePatternBrush( hBitmap );
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+   HBRUSHret( oSelf->BrushHandle );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

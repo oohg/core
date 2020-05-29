@@ -1370,21 +1370,21 @@ HB_FUNC( BT_DC_CREATE )    // ( Type, [ hWnd | hBitmap ] ) ---> Return array = {
 
    hb_reta( 50 );    // Return array = { Type, hWnd, hBitmap, hDC, PaintStruct ... }
 
-   HB_STORNI( (int)      BT.Type, -1, 1 );    // Type
-   HB_STORNL3( (LONG_PTR) BT.hWnd, -1, 2 );    // hWnd
-   HB_STORNL3( (LONG_PTR) BT.hDC,  -1, 3 );    // hDC
+   HB_STORNI( (int)BT.Type, -1, 1 );    // Type
+   HWNDstor3( BT.hWnd,      -1, 2 );    // hWnd
+   HDCstor3(  BT.hDC,       -1, 3 );    // hDC
 
    // PAINTSTRUCT
-   HB_STORNL3( (LONG_PTR) BT.PaintStruct.hdc,            -1,  4 );        // HDC  hdc;
-   HB_STORNI( (int)      BT.PaintStruct.fErase,         -1,  5 );        // BOOL fErase;
-   HB_STORNL3( (long)     BT.PaintStruct.rcPaint.left,   -1,  6 );        // RECT rcPaint.left;
-   HB_STORNL3( (long)     BT.PaintStruct.rcPaint.top,    -1,  7 );        // RECT rcPaint.top;
-   HB_STORNL3( (long)     BT.PaintStruct.rcPaint.right,  -1,  8 );        // RECT rcPaint.right;
-   HB_STORNL3( (long)     BT.PaintStruct.rcPaint.bottom, -1,  9 );        // RECT rcPaint.bottom;
-   HB_STORNI( (int)      BT.PaintStruct.fRestore,       -1, 10 );        // BOOL fRestore;
-   HB_STORNI( (int)      BT.PaintStruct.fIncUpdate,     -1, 11 );        // BOOL fIncUpdate;
+   HDCstor3(         BT.PaintStruct.hdc,            -1,  4 );         // HDC  hdc
+   HB_STORNI(  (int) BT.PaintStruct.fErase,         -1,  5 );         // BOOL fErase
+   HB_STORNL3(       BT.PaintStruct.rcPaint.left,   -1,  6 );         // long rcPaint.left
+   HB_STORNL3(       BT.PaintStruct.rcPaint.top,    -1,  7 );         // long rcPaint.top
+   HB_STORNL3(       BT.PaintStruct.rcPaint.right,  -1,  8 );         // long rcPaint.right
+   HB_STORNL3(       BT.PaintStruct.rcPaint.bottom, -1,  9 );         // long rcPaint.bottom
+   HB_STORNI(  (int) BT.PaintStruct.fRestore,       -1, 10 );         // BOOL fRestore
+   HB_STORNI(  (int) BT.PaintStruct.fIncUpdate,     -1, 11 );         // BOOL fIncUpdate
    for( i = 0; i < 32; i++ )
-      HB_STORNI( (int) BT.PaintStruct.rgbReserved[ i ], -1, 12 + i );     // BYTE rgbReserved[ 32 ];
+      HB_STORNI( (int) BT.PaintStruct.rgbReserved[ i ], -1, 12 + i ); // BYTE rgbReserved[ 32 ]
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2334,7 +2334,7 @@ HB_FUNC( BT_BMP_CREATE )    // ( Width, Height, Color_Fill_Bk )
    DeleteObject( hBrush );
    DeleteDC( memDC );
 
-   HB_RETNL( (LONG_PTR) hBitmap_New );
+   HBITMAPret( hBitmap_New );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2392,7 +2392,7 @@ HB_FUNC( BT_BMP_LOADFILE )    // ( cFileBMP, ClrOnClr )
       return;
    }
 
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2434,7 +2434,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    // If fail load from Resource and Disk return Null
    if( hEMF == NULL )
    {
-      HB_RETNL( (LONG_PTR) NULL );
+      HBITMAPret(  NULL );
       return;
    }
 
@@ -2444,7 +2444,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    if( GetEnhMetaFileHeader( hEMF, sizeof( ENHMETAHEADER ), &emh ) == 0 )
    {
       DeleteEnhMetaFile( hEMF );
-      HB_RETNL( (LONG_PTR) NULL );
+      HBITMAPret( NULL );
       return;
    }
 
@@ -2483,7 +2483,7 @@ HB_FUNC( BT_BITMAPLOADEMF )    // ( cFileName, [ aRGBBackgroundColor ], [ nNewWi
    DeleteDC( memDC );
    DeleteObject( hBrush );
 
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 /*
@@ -2695,7 +2695,7 @@ HB_FUNC( BT_BMP_CLONE )    // ( hBitmap, x1, y1, Width1, Height1 )
    SelectObject( memDC2, hOld2 );
    DeleteDC( memDC2 );
 
-   HB_RETNL( (LONG_PTR) hBitmap_New );
+   HBITMAPret( hBitmap_New );
 }
 
 typedef struct {
@@ -2904,7 +2904,7 @@ HB_FUNC( BT_BMP_COPYANDRESIZE )    // ( hBitmap, New_Width, New_Height, Mode_Str
    if( nAlgorithm == BT_RESIZE_BILINEAR )
       hBitmap_New = bt_BiLinearInterpolation( hBitmap1, New_Width, New_Height );
 
-   HB_RETNL( (LONG_PTR) hBitmap_New );
+   HBITMAPret( hBitmap_New );
 }
 
 /*
@@ -3090,7 +3090,7 @@ HB_FUNC( BT_BMP_CAPTURESCR )    // ( hWnd, x1, y1, Width1, Height1, Mode )
          break;
    }
 
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 /*
@@ -3654,7 +3654,7 @@ HB_FUNC( BT_BMP_TRANSFORM )    // ( hBitmap, Mode, Angle, Color_Fill_Bk, ClrOnCl
    DeleteDC( memDC2 );
    DeleteObject( hBrush );
 
-   HB_RETNL( (LONG_PTR) hBitmap_D );
+   HBITMAPret( hBitmap_D );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -3757,7 +3757,7 @@ HB_FUNC( BT_BMP_GET_CLIPBOARD )    // ( hWnd )
    GlobalUnlock( hClipboard ) ;
    CloseClipboard() ;
 
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -4021,27 +4021,19 @@ HB_FUNC( BT_MATHCIRCUMFERENCEARCANGLE )    // ( Radius, Arc ) --> AngleInDegrees
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( BT_SELECTOBJECT )    // ( hDC, hGDIobj )
 {
-   HDC hDC            = (HDC)     HB_PARNL( 1 );
-   HGDIOBJ hGDIobj    = (HGDIOBJ) HB_PARNL( 2 );
-   HGDIOBJ hGDIobjOld = SelectObject( hDC, hGDIobj );
-
-   HB_RETNL( (LONG_PTR) hGDIobjOld );
+  HGDIOBJret( SelectObject( (HDC) HB_PARNL( 1 ), (HGDIOBJ) HB_PARNL( 2 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( BT_DELETEOBJECT )    // ( hGDIobj )
 {
-   HGDIOBJ hGDIobj = (HGDIOBJ) HB_PARNL( 1 );
-
-   hb_retl( (BOOL) DeleteObject( hGDIobj ) );
+   hb_retl( (BOOL) DeleteObject( (HGDIOBJ) HB_PARNL( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( BT_REGIONCREATEELLIPTIC )    // ( nCol1, nRow1, nCol2, nRow2 )
 {
-   HRGN hRgn = CreateEllipticRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) );
-
-   HB_RETNL( (LONG_PTR) hRgn );
+   HRGNret( CreateEllipticRgn( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -4062,7 +4054,7 @@ HB_FUNC( BT_REGIONCOMBINE )    // ( @hRgnDest, hRgnSrc1, hRgnSrc2, nCombineMode 
       }
       else
       {
-         HB_STORNL2( (LONG_PTR) hRgnDest, 1 );
+         HRGNstor2( hRgnDest, 1 );
       }
       hb_retni( ret );
    }
@@ -4119,19 +4111,15 @@ HB_FUNC( BT_IMAGELISTGETSYSTEMICON )    // ( [ lLargeIcon ] ) --> hImageList( NE
 
    win_Shell_GetImageLists( &himlLarge, &himlSmall );
    if( lLargeIcon )
-      HB_RETNL( (LONG_PTR) himlLarge );
+      HIMAGELISTret( himlLarge );
    else
-      HB_RETNL( (LONG_PTR) himlSmall );
+      HIMAGELISTret( himlSmall );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( BT_IMAGELISTEXTRACTICON )    // ( hImagelist, nIndex )
 {
-   HIMAGELIST himl   = (HIMAGELIST) HB_PARNL( 1 );
-   int        nIndex = (int)        hb_parni( 2 );
-   HICON      hIcon  = ImageList_ExtractIcon( 0, himl, nIndex );
-
-   HB_RETNL( (LONG_PTR) hIcon );
+   HIMAGELISTret( ImageList_ExtractIcon( 0, (HIMAGELIST) HB_PARNL( 1 ), hb_parni( 2 ) ) );
 }
 
 TCHAR * _LocalDateTimeToDateTimeANSI( TCHAR * );

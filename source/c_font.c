@@ -120,7 +120,7 @@ HB_FUNC( INITFONT )          /* FUNCTION InitFont( cFontName, nFontSize, lBold, 
    int advanced    = hb_parl( 11 ) ? 1 : 0;
 
    HFONT font = PrepareFont( hb_parc( 1 ), hb_parni( 2 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
-   HB_RETNL( (LONG_PTR) font );
+   HFONTret( font );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -138,7 +138,7 @@ HB_FUNC( _SETFONT )          /* FUNCTION _SetFont( hWnd, cFontName, nFontSize, l
 
    HFONT font = PrepareFont( hb_parc( 2 ), hb_parni( 3 ), bold, italic, underline, strikeout, angle, charset, width, orientation, advanced );
    SendMessage( HWNDparam( 1 ), (UINT) WM_SETFONT, (WPARAM) font, MAKELPARAM( TRUE, 0 ) );
-   HB_RETNL( (LONG_PTR) font );
+   HFONTret( font );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

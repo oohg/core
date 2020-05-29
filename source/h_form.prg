@@ -3395,9 +3395,9 @@ HB_FUNC( REGISTERWINDOW )
    }
 
    hb_reta( 3 );
-   HB_STORNL3( (LONG_PTR) hbrush, -1, 1 );
+   HBRUSHstor3( hbrush, -1, 1 );
    HB_STORL( (int) bError, -1, 2 );
-   HB_STORNL3( (LONG_PTR) hicon, -1, 3 );
+   HICONstor3( hicon, -1, 3 );
 }
 
 HB_FUNC( UNREGISTERWINDOW )

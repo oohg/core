@@ -615,7 +615,7 @@ HB_FUNC( _OOHG_BITMAPFROMFILE )          /* FUNCTION _OOHG_BitmapFromFile( oSelf
          /* full size */
          hBitmap2 = (HBITMAP) _OOHG_LoadImage( hb_parc( 2 ), hb_parni( 3 ), 0, 0, hWnd, lBackColor, hb_parl( 5 ) );
       }
-      HB_RETNL( (LONG_PTR) hBitmap2 );
+      HBITMAPret( hBitmap2 );
    }
 }
 
@@ -693,7 +693,7 @@ HB_FUNC( _OOHG_BITMAPFROMBUFFER )           /* FUNCTION _OOHG_BitmapFromBuffer( 
       }
    }
 
-   HB_RETNL( (LONG_PTR) hBitmap );
+   HBITMAPret( hBitmap );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -722,7 +722,7 @@ HB_FUNC( _OOHG_SETBITMAP )           /* FUNCTION _OOHG_SetBitmap( oSelf, hBitmap
    }
    SendMessage( oSelf->hWnd, hb_parni( 3 ), (WPARAM) IMAGE_BITMAP, (LPARAM) hBitmap2 );
 
-   HB_RETNL( (LONG_PTR) hBitmap2 );
+   HBITMAPret( hBitmap2 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -760,7 +760,7 @@ HB_FUNC( _OOHG_ROTATEIMAGE )          /* FUNCTION _OOHG_RotateImage( oSelf, hBit
 {
    POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
 
-   HB_RETNL( (LONG_PTR) _OOHG_RotateImage( oSelf->hWnd, (HBITMAP) HB_PARNL( 2 ), oSelf->lBackColor, hb_parni( 3 ) ) );
+   HBITMAPret( _OOHG_RotateImage( oSelf->hWnd, (HBITMAP) HB_PARNL( 2 ), oSelf->lBackColor, hb_parni( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -783,7 +783,7 @@ HB_FUNC( _OOHG_SCALEIMAGE )          /* FUNCTION _OOHG_ScaleImage( oSelf, hBitMa
       }
    }
 
-   HB_RETNL( (LONG_PTR) _OOHG_ScaleImage( hWnd, (HBITMAP) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ), lColor, hb_parl( 7 ), hb_parni( 8 ), hb_parni( 9 ) ) );
+   HBITMAPret( _OOHG_ScaleImage( hWnd, (HBITMAP) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parl( 5 ), lColor, hb_parl( 7 ), hb_parni( 8 ), hb_parni( 9 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -888,13 +888,13 @@ HBITMAP _OOHG_CopyBitmap( HBITMAP hBitmap, int x, int y, int width, int height )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_COPYBITMAP )          /* FUNCTION _OOHG_CopyBitmap( hBitmap, nCol, nRow, nWidth, nHeight ) -> hBitmap */
 {
-   HB_RETNL( (LONG_PTR) _OOHG_CopyBitmap( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
+   HBITMAPret( _OOHG_CopyBitmap( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_COPYIMAGE )          /* FUNCTION _OOHG_CopyImage( hWnd, nType, nWidth, nHeight, nAttributes ) -> hWnd */
+HB_FUNC( _OOHG_COPYIMAGE )          /* FUNCTION _OOHG_CopyImage( hWnd, nType, nWidth, nHeight, nAttributes ) -> handle */
 {
-   HB_RETNL( (LONG_PTR) CopyImage( (HANDLE) HB_PARNL( 1 ), (UINT) hb_parni( 2 ), (int) hb_parni( 3 ), (int) hb_parni( 4 ), (UINT) hb_parni( 5 ) ) );
+   HANDLEret( CopyImage( (HANDLE) HB_PARNL( 1 ), (UINT) hb_parni( 2 ), (int) hb_parni( 3 ), (int) hb_parni( 4 ), (UINT) hb_parni( 5 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -962,7 +962,7 @@ HB_FUNC( _OOHG_REPLACECOLOR )          /* FUNCTION _OOHG_ReplaceColor( hBitmap, 
    }
    _OOHG_DetermineColor( hb_param( 5, HB_IT_ANY ), &lOldColor );
 
-   HB_RETNL( (LONG_PTR) _OOHG_ReplaceColor( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), lNewColor, lOldColor ) );
+   HBITMAPret( _OOHG_ReplaceColor( (HBITMAP) HB_PARNL( 1 ), hb_parni( 2 ), hb_parni( 3 ), lNewColor, lOldColor ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

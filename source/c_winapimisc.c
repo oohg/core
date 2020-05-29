@@ -427,32 +427,22 @@ HB_FUNC( POSTMESSAGE )
 
 HB_FUNC( DEFWINDOWPROC )
 {
-   HB_RETNL( (LONG_PTR) DefWindowProc( HWNDparam( 1 ),
-                                         (UINT) hb_parni( 2 ),
-                                         (WPARAM) HB_PARNL( 3 ),
-                                         (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( DefWindowProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( DEFFRAMEPROC )
 {
-   HB_RETNL( (LONG_PTR) DefFrameProc( HWNDparam( 1 ),
-                                        HWNDparam( 2 ),
-                                        (UINT) hb_parni( 3 ),
-                                        (WPARAM) HB_PARNL( 4 ),
-                                        (LPARAM) HB_PARNL( 5 ) ) );
+   LRESULTret( DefFrameProc( HWNDparam( 1 ), HWNDparam( 2 ), (UINT) hb_parni( 3 ), (WPARAM) HB_PARNL( 4 ), (LPARAM) HB_PARNL( 5 ) ) );
 }
 
 HB_FUNC( DEFMDICHILDPROC )
 {
-   HB_RETNL( (LONG_PTR) DefMDIChildProc( HWNDparam( 1 ),
-                                           (UINT) hb_parni( 2 ),
-                                           (WPARAM) HB_PARNL( 3 ),
-                                           (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( DefMDIChildProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( GETSTOCKOBJECT )
 {
-   HB_RETNL( (LONG_PTR) GetStockObject( hb_parni( 1 ) ) );
+   HGDIOBJret( GetStockObject( hb_parni( 1 ) ) );
 }
 
 HB_FUNC( SETBKMODE )
@@ -467,12 +457,12 @@ HB_FUNC( GETNEXTDLGTABITEM )
 
 HB_FUNC( SHELLEXECUTE )
 {
-   HB_RETNL( (LONG_PTR) (HINSTANCE) ShellExecute( HWNDparam( 1 ),
-                                                  HB_ISNIL( 2 ) ? NULL : (LPCSTR) hb_parc( 2 ),
-                                                  (LPCSTR) hb_parc( 3 ),
-                                                  HB_ISNIL( 4 ) ? NULL : (LPCSTR) hb_parc( 4 ),
-                                                  HB_ISNIL( 5 ) ? NULL : (LPCSTR) hb_parc( 5 ),
-                                                  hb_parni( 6 ) ) );
+   HINSTANCEret( ShellExecute( HWNDparam( 1 ),
+                 HB_ISNIL( 2 ) ? NULL : (LPCSTR) hb_parc( 2 ),
+                 (LPCSTR) hb_parc( 3 ),
+                 HB_ISNIL( 4 ) ? NULL : (LPCSTR) hb_parc( 4 ),
+                 HB_ISNIL( 5 ) ? NULL : (LPCSTR) hb_parc( 5 ),
+                 hb_parni( 6 ) ) );
 }
 
 HB_FUNC( WAITRUN )
@@ -604,7 +594,7 @@ HB_FUNC( CREATEMUTEX )
       sa = ( SECURITY_ATTRIBUTES * ) HB_UNCONST( hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) ) );
    }
 
-   HB_RETNL( (LONG_PTR) CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
+   HANDLEret( CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
 }
 
 HB_FUNC( _OOHG_GETLASTERROR )
@@ -636,7 +626,7 @@ HB_FUNC( GETCURRENTFOLDER )
 
 HB_FUNC( CREATESOLIDBRUSH )
 {
-   HB_RETNL( (LONG_PTR) CreateSolidBrush( (COLORREF) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
+   HBRUSHret( CreateSolidBrush( (COLORREF) RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) ) );
 }
 
 HB_FUNC( SETTEXTCOLOR )

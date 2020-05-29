@@ -79,7 +79,7 @@ HB_FUNC( LOADCURSOR )
    HINSTANCE hInstance = ( HB_ISNIL( 1 ) ? NULL : (HINSTANCE) HB_PARNL( 1 ) );
    LPCTSTR lpCursorName = ( hb_parinfo( 2 ) == HB_IT_STRING ? hb_parc( 2 ): MAKEINTRESOURCE( hb_parnl( 2 ) ) );
 
-   HB_RETNL( (LONG_PTR) LoadCursor( hInstance, lpCursorName ) );
+   HCURSORret( LoadCursor( hInstance, lpCursorName ) );
 }
 
 HB_FUNC( LOADCURSORFROMFILE )
@@ -87,91 +87,91 @@ HB_FUNC( LOADCURSORFROMFILE )
    /* file with cursor picture or anims (.cur .ani) */
    LPCTSTR lpFileName = (LPCTSTR) hb_parc( 1 );
 
-   HB_RETNL( (LONG_PTR) LoadCursorFromFile( lpFileName ) );
+   HCURSORret( LoadCursorFromFile( lpFileName ) );
 }
 
 HB_FUNC( SETRESCURSOR )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( (HCURSOR) HB_PARNL( 1 ) ) );
+   HCURSORret( SetCursor( (HCURSOR) HB_PARNL( 1 ) ) );
 }
 
 HB_FUNC( FILECURSOR )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursorFromFile( hb_parc( 1 ) ) ) );
+   HCURSORret( SetCursor( LoadCursorFromFile( hb_parc( 1 ) ) ) );
 }
 
 HB_FUNC( CURSORHAND )
 {
 #if ( WINVER >= 0x0500 )
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_HAND ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_HAND ) ) );
 #else
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( GetModuleHandle( NULL ), "MINIGUI_FINGER" ) ) );
+   HCURSORret( SetCursor( LoadCursor( GetModuleHandle( NULL ), "MINIGUI_FINGER" ) ) );
 #endif
 }
 
 HB_FUNC( CURSORARROW )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_ARROW ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_ARROW ) ) );
 }
 
 HB_FUNC( CURSORHELP )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_HELP ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_HELP ) ) );
 }
 
 HB_FUNC( CURSORWAIT )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_WAIT ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_WAIT ) ) );
 }
 
 HB_FUNC( CURSORCROSS )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_CROSS ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_CROSS ) ) );
 }
 
 HB_FUNC( CURSORIBEAM )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_IBEAM ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_IBEAM ) ) );
 }
 
 HB_FUNC( CURSORAPPSTARTING )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_APPSTARTING ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_APPSTARTING ) ) );
 }
 
 HB_FUNC( CURSORNO )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_NO ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_NO ) ) );
 }
 
 HB_FUNC( CURSORSIZEALL )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_SIZEALL ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_SIZEALL ) ) );
 }
 
 HB_FUNC( CURSORSIZENESW )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_SIZENESW ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_SIZENESW ) ) );
 }
 
 HB_FUNC( CURSORSIZENWSE )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_SIZENWSE ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_SIZENWSE ) ) );
 }
 
 HB_FUNC( CURSORSIZENS )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_SIZENS ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_SIZENS ) ) );
 }
 
 HB_FUNC( CURSORSIZEWE )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_SIZEWE ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_SIZEWE ) ) );
 }
 
 HB_FUNC( CURSORUPARROW )
 {
-   HB_RETNL( (LONG_PTR) SetCursor( LoadCursor( NULL, IDC_UPARROW ) ) );
+   HCURSORret( SetCursor( LoadCursor( NULL, IDC_UPARROW ) ) );
 }
 
 HB_FUNC( SETWINDOWCURSOR )

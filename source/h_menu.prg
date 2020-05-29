@@ -1478,7 +1478,7 @@ HB_FUNC( CREATEMENUITEMDATA )          /* FUNCTION CreateMenuItemData( nId ) -> 
 
    lpItem->id = hb_parnl( 1 );         /* used by WM_DRAWITEM and WM_MEASUREITEM handlers in h_windows.prg */
 
-   HB_RETNL( (LONG_PTR) lpItem );
+   HANDLEret( lpItem );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1756,8 +1756,8 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
       SetMenuItemBitmaps( hMenu, iItem, MF_BYCOMMAND, himage1, himage2 );
 
    hb_reta( 2 );
-   HB_STORNL3( (LONG_PTR) himage1, -1, 1 );
-   HB_STORNL3( (LONG_PTR) himage2, -1, 2 );
+   HBITMAPstor3( himage1, -1, 1 );
+   HBITMAPstor3( himage2, -1, 2 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

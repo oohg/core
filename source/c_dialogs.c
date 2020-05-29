@@ -408,7 +408,7 @@ HB_FUNC( CHOOSECOLOR )
       {
          for( i = 0; i < 16; i++ )
          {
-            HB_STORVNL( (long) crCustClr[ i ], 3, i + 1 );
+            HB_STORNL3( (long) crCustClr[ i ], 3, i + 1 );
          }
       }
       hb_retnl( (long) cc.rgbResult );

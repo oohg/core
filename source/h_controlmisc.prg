@@ -2144,7 +2144,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
       OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
       DeleteObject( OldBrush );
-      HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+      HBRUSHret( oSelf->BrushHandle );
       return;
    }
 
@@ -2205,7 +2205,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       }
    }
 
-   HB_RETNL( (LONG_PTR) oSelf->BrushHandle );
+   HBRUSHret( oSelf->BrushHandle );
 }
 
 #pragma ENDDUMP

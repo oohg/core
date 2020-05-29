@@ -363,7 +363,7 @@ HB_FUNC( REGOPENKEYEXA )
    lError = RegOpenKeyExA( (HKEY) HB_PARNL( 1 ), (LPCTSTR) hb_parc( 2 ), 0, (REGSAM) HB_PARNL( 3 ), &phwHandle );
    if( lError == ERROR_SUCCESS )
    {
-      HB_STORNL2( (LONG_PTR) phwHandle, 4 );
+      HKEYstor2( phwHandle, 4 );
    }
    HB_RETNL( lError );
 }
@@ -446,7 +446,7 @@ HB_FUNC( REGCREATEKEY )
    lError = RegCreateKey( (HKEY) HB_PARNL( 1 ), (LPCSTR) hb_parc( 2 ), &hKey );
    if( lError == ERROR_SUCCESS )
    {
-      HB_STORNL2( (LONG_PTR) hKey, 3 );
+      HKEYstor2( hKey, 3 );
    }
    HB_RETNL( lError );
 }
@@ -495,7 +495,7 @@ HB_FUNC( REGCONNECTREGISTRY )
 
    if( lError == ERROR_SUCCESS )
    {
-      HB_STORNL2( (LONG_PTR) phwHandle, 3 );
+      HKEYstor2( phwHandle, 3 );
    }
    HB_RETNL( lError );
 }

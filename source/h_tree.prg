@@ -2816,7 +2816,7 @@ HB_FUNC( TREEVIEW_GETIMAGELIST )          /* FUNCTION TreeView_GetImageList( hWn
  * application-defined item states. A state image is displayed to the left
  * of an item's selected or nonselected image.
  */
-   HB_RETNL( (LONG_PTR) TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) );
+   HIMAGELISTret( TreeView_GetImageList( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2968,7 +2968,7 @@ HB_FUNC( TREEVIEW_BEGINDRAG )          /* FUNCTION TreeView_BeginDrag( hWnd, lPa
       SetCapture( hTree );
    }
 
-   HB_RETNL( (LONG_PTR) himl );
+   HIMAGELISTret( himl );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
