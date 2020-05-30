@@ -80,14 +80,20 @@
    #define NONAMELESSUNION
 #endif
 
+/* this must come before any #include */
+#ifndef _HB_API_INTERNAL_
+   #define _HB_API_INTERNAL_
+#endif
+
+/* do not change the order */
 #include <windows.h>
 #include <commctrl.h>
 #include <ocidl.h>
-#include <hbvmopt.h>      /* this must preceed other harbour #includes */
-#include <hbapiitm.h>
 #include <hbvm.h>
 #include <hbstack.h>
-#include "oohg.h"         /* this must come last */
+#include <hbapiitm.h>
+#include <hbvmopt.h>
+#include "oohg.h"         
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
