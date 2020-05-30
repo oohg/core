@@ -209,4 +209,4 @@
 
 #xtranslate OOHGVersion() ;
    => ;
-      ( "OOHG Ver. " + OOHG_VER_DATE + iif( IsExe64(), " (64 bits)", " (32 bits)" ) )
+      ( "OOHG Ver. " + OOHG_VER_DATE + "." + OOHG_VER_STATUS + iif( IsExe64(), " (64 bits)", " (32 bits)" ) )
