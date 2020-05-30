@@ -481,7 +481,7 @@ HB_FUNC( SHOWCURSOR )
 
 HB_FUNC( SYSTEMPARAMETERSINFO )
 {
-   if( SystemParametersInfoA( (UINT) hb_parni( 1 ), (UINT) hb_parni( 2 ), (void *) hb_parc( 3 ), (UINT) hb_parni( 4 ) ) )
+   if( SystemParametersInfoA( (UINT) hb_parni( 1 ), (UINT) hb_parni( 2 ), (void *) HB_UNCONST( hb_parc( 3 ) ), (UINT) hb_parni( 4 ) ) )
    {
       hb_retl( TRUE );
    }
