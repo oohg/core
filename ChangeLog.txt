@@ -12,7 +12,24 @@
  *   '-' Removed: ...           ';' Comment
  */
 
-2020-05-30 10:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2020-05-30 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\oohg_license_template.txt
+   * core\include\*.ch
+   * core\include\*.h
+   * core\source\*.c
+   * core\source\*.prg
+     * Copyright updated.
+
+2020-05-30 11:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohgversion.h
+     * Updated version info to next intended one.
+     ! Unused OOHG_VER_PROD_VER define.
+
+2020-05-30 11:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_pseudofunc.h
+     + Lib's build status to version.
+
+2020-05-30 10:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\c_active.c
      ! Wrong order of #include breaks app building with message
        "hb_stack not defined".

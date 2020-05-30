@@ -5,19 +5,19 @@
  * ooHG source code:
  * ActiveX control definition
  *
- * Copyright 2007-2019 Vicente Guerra <vicente@guerra.com.mx> and contributors of
+ * Copyright 2007-2020 Vicente Guerra <vicente@guerra.com.mx> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
  *
  * Portions of this project are based upon:
  *    "Harbour MiniGUI Extended Edition Library"
- *       Copyright 2005-2019 MiniGUI Team, http://hmgextended.com
+ *       Copyright 2005-2020 MiniGUI Team, http://hmgextended.com
  *    "Harbour GUI framework for Win32"
  *       Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
  *       Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *    "Harbour MiniGUI"
  *       Copyright 2002-2016 Roberto Lopez <mail.box.hmg@gmail.com>
  *    "Harbour Project"
- *       Copyright 1999-2019 Contributors, https://harbour.github.io/
+ *       Copyright 1999-2020 Contributors, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
