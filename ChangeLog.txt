@@ -12,6 +12,21 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-05-31 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg_dyns.hbx
+     * Updated.
+
+2020-05-31 20:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     * Use new macros to get parameters without explicity using
+       HB_PARNL macro. This enables future use of pointers.
+     * Some casting.
+     * Parameters type of function bt_bmp_SaveFile.
+
+2020-05-31 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_gdiplus.c
+     * Parameters type of function SaveHBitmapToFile.
+
 2020-05-31 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohg.h
      + Macros HB_PARPTR3, DRAWITEMSTRUCTparam, HBPRINTERDATAparam,
