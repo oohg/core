@@ -12,6 +12,75 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-05-31 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohg.h
+     + Macros HB_PARPTR3, DRAWITEMSTRUCTparam, HBPRINTERDATAparam,
+       HSINKparam, MEASUREITEMSTRUCTparam, MSGFILTERparam,
+       NMTBGETINFOTIPparam, NMTOOLBARparam, TOOLTIPTEXTparam,
+       HIMAGELISTparam3, HBITMAPparam2, HDCparam2, HGDIOBJparam2.
+
+2020-05-31 20:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_active.c
+   * core\source\c_controlmisc.c
+   * core\source\c_cursor.c
+   * core\source\c_font.c
+   * core\source\c_graph.c
+   * core\source\c_image.c
+   * core\source\c_msgbox.c
+   * core\source\c_resource.c
+   * core\source\c_winapimisc.c
+   * core\source\h_combo.prg
+   * core\source\h_controlmisc.prg
+   * core\source\h_media.prg
+   * core\source\h_listbox.prg
+   * core\source\h_menu.prg
+   * core\source\h_notify.prg
+   * core\source\h_registry.prg
+   * core\source\h_richeditbox.prg
+   * core\source\h_toolbar.prg
+   * core\source\h_windows.prg
+   * core\source\miniprint.prg
+   * core\source\winprint.prg
+     * Use new macros to get parameters without explicity using
+       HB_PARNL macro. This enables future use of pointers.
+
+2020-05-31 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.prg
+     * TEXT macro replace by _TEXT.
+
+2020-05-31 16:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\compile.bat
+     + Lib rddads from HB_ADDLIBS default list.
+       Set it explicitly or use compile.bat /A switch to include it.
+
+2020-05-31 16:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\i_altsyntax.ch
+     * Some format.
+
+2020-05-31 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_grid.prg
+     ! Dynamic colors of grid, browse and xbrowse controls
+       are lost after scrolling.
+
+2020-05-31 16:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+   * core\source\c_winapimisc.c
+   * core\source\c_windows.c
+   * core\source\h_richeditbox.prg
+   * core\source\h_textbox.prg
+     * Some clang warnings pacified.
+
+2020-05-31 16:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+     * Some warnings for clang compiler.
+
+2020-05-30 18:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\c_controlmisc.c
+     + Casting to pacify C compiler warning.
+
 2020-05-30 12:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\oohg_license_template.txt
    * core\include\*.ch
