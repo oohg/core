@@ -700,7 +700,7 @@ FRAME
       _OOHG_ActiveControlEdit := <edit>
 
 /*---------------------------------------------------------------------------
-LIST BOX
+LISTBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE LISTBOX <name> ;
@@ -861,7 +861,7 @@ CHECKLIST
             _OOHG_ActiveControlAction )
 
 /*---------------------------------------------------------------------------
-ANIMATEBOX COMMANDS
+ANIMATEBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE ANIMATEBOX <name> ;
@@ -987,7 +987,7 @@ ANIMATEBOX COMMANDS
             _OOHG_ActiveControlRtl )
 
 /*---------------------------------------------------------------------------
-PROGRESS BAR
+PROGRESSBAR
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE PROGRESSBAR <name> ;
@@ -1043,7 +1043,7 @@ PROGRESS BAR
             _OOHG_ActiveControlSpeed )
 
 /*---------------------------------------------------------------------------
-RADIO GROUP
+RADIOGROUP
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE RADIOGROUP <name> ;
@@ -1176,7 +1176,7 @@ SLIDER
             _OOHG_ActiveControlDisabled )
 
 /*---------------------------------------------------------------------------
-TEXT BOX
+TEXTBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE TEXTBOX <name> ;
@@ -1350,7 +1350,7 @@ TEXT BOX
             _OOHG_ActiveControlAction2TT ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*---------------------------------------------------------------------------
-MONTH CALENDAR
+MONTHCALENDAR
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE MONTHCALENDAR <name> ;
@@ -2399,7 +2399,7 @@ DATEPICKER
             _OOHG_ActiveControlValid )
 
 /*---------------------------------------------------------------------------
-EDIT BOX
+EDITBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE EDITBOX <name> ;
@@ -2489,7 +2489,7 @@ EDIT BOX
             _OOHG_ActiveControlInsertType )
 
 /*---------------------------------------------------------------------------
-RICH EDIT BOX
+RICHEDITBOX
 ---------------------------------------------------------------------------*/
 
 #xcommand DEFINE RICHEDITBOX <name> ;
