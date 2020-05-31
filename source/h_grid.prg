@@ -3727,6 +3727,8 @@ METHOD InsertBlank( nItem ) CLASS TGrid
    ENDIF
    IF Len( aGrid ) < nItem
       ASize( aGrid, nItem )
+   ELSE
+      _OOHG_InsertArrayItem( aGrid, nItem, NIL, .T. )
    ENDIF
 
    aGrid := ::GridBackColor
@@ -3735,6 +3737,8 @@ METHOD InsertBlank( nItem ) CLASS TGrid
    ENDIF
    IF Len( aGrid ) < nItem
       ASize( aGrid, nItem )
+   ELSE
+      _OOHG_InsertArrayItem( aGrid, nItem, NIL, .T. )
    ENDIF
 
    ::DoEvent( ::OnBeforeInsert, "BEFOREINSERT", { nItem } )
@@ -8364,6 +8368,7 @@ HB_FUNC( ADDLISTVIEWITEMS )
    HWND h;
    int c;
    int nItem;
+   char empty[1] = "\0";
 
    hArray = hb_param( 2, HB_IT_ARRAY );
    if( ! hArray || hb_arrayLen( hArray ) == 0 )
@@ -8379,7 +8384,7 @@ HB_FUNC( ADDLISTVIEWITEMS )
    LI.stateMask = 0;
    LI.iItem = c;
    LI.iSubItem = 0;
-   LI.pszText = "";
+   LI.pszText = empty;
    LI.iImage = -1;
    nItem = ListView_InsertItem( h, &LI );
 
@@ -8398,6 +8403,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
    HWND h;
    int c;
    int nItem;
+   char empty[1] = "\0";
 
    hArray = hb_param( 2, HB_IT_ARRAY );
    if( ! hArray || hb_arrayLen( hArray ) == 0 )
@@ -8413,7 +8419,7 @@ HB_FUNC( INSERTLISTVIEWITEM )
    LI.stateMask = 0;
    LI.iItem = c;
    LI.iSubItem = 0;
-   LI.pszText = "";
+   LI.pszText = empty;
    LI.iImage = -1;
    nItem = ListView_InsertItem( h, &LI );
 
@@ -8486,6 +8492,7 @@ HB_FUNC( FILLGRIDFROMARRAY )
    PHB_ITEM pScreen = hb_param( 2, HB_IT_ARRAY );
    ULONG iLen = hb_arrayLen( pScreen );
    LV_ITEM LI;
+   char empty[1] = "\0";
 
    while( iCount > iLen )
    {
@@ -8499,7 +8506,7 @@ HB_FUNC( FILLGRIDFROMARRAY )
       LI.stateMask = 0;
       LI.iItem = iCount;
       LI.iSubItem = 0;
-      LI.pszText = "";
+      LI.pszText = empty;
       LI.iImage = -1;
       ListView_InsertItem( hwnd, &LI );
       iCount++;
