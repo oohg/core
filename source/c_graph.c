@@ -333,7 +333,7 @@ HB_FUNC( WNDBOXIN )          /* FUNCTION WndBoxIn( hdc, top, left, bottom, right
    rct.bottom = hb_parni( 4 );
    rct.right  = hb_parni( 5 );
 
-   WindowBoxIn( (HDC) HB_PARNL( 1 ), &rct );
+   WindowBoxIn( HDCparam( 1 ), &rct );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -378,7 +378,7 @@ HB_FUNC( WNDBOXRAISED )          /* FUNCTION WndBoxRaised( hdc, top, left, botto
    rct.bottom = hb_parni( 4 );
    rct.right  = hb_parni( 5 );
 
-   WindowRaised( (HDC) HB_PARNL( 1 ), &rct );
+   WindowRaised( HDCparam( 1 ), &rct );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -410,7 +410,7 @@ HB_FUNC( GETDC )          /* FUNCTION GetDC( hwnd ) -> hdc */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( RELEASEDC )          /* FUNCTION ReleaseDC( hwnd, hdc ) -> lSuccess */
 {
-   hb_retl( ReleaseDC( HWNDparam( 1 ), (HDC) HB_PARNL(2) ) ) ;
+   hb_retl( ReleaseDC( HWNDparam( 1 ), HDCparam(2) ) ) ;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

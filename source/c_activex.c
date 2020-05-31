@@ -669,7 +669,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
-   MyRealIEventHandler *self = (MyRealIEventHandler *) HB_PARNL( 1 );
+   MyRealIEventHandler *self = HSINKparam( 1 );
    if( self->pIConnectionPoint )
    {
       self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );

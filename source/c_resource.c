@@ -65,7 +65,7 @@
 
 HB_FUNC( LOADICON )
 {
-   HWNDret( LoadIcon( (HINSTANCE) HB_PARNL( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
+   HWNDret( LoadIcon( HINSTANCEparam( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
 }
 
 HB_FUNC( EXTRACTICON )
@@ -75,15 +75,15 @@ HB_FUNC( EXTRACTICON )
 
 HB_FUNC( LOADRESOURCE )
 {
-   HWNDret( LoadResource( (HMODULE) HB_PARNL( 1 ), (HRSRC) HB_PARNL( 2 ) ) );
+   HWNDret( LoadResource( HMODULEparam( 1 ), HRSRCparam( 2 ) ) );
 }
 
 HB_FUNC( FINDRESOURCE )
 {
-   HWNDret( FindResource( (HMODULE) HB_PARNL( 1 ), hb_parc( 2 ), (LPCTSTR) MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
+   HWNDret( FindResource( HMODULEparam( 1 ), hb_parc( 2 ), (LPCTSTR) MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
 }
 
 HB_FUNC( RESOURCEFREE )
 {
-   FreeResource( (HGLOBAL) HB_PARNL( 1 ) );
+   FreeResource( HGLOBALparam( 1 ) );
 }

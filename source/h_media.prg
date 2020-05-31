@@ -234,12 +234,12 @@ EXTERN MCIFUNC
 /* This fixes a warning over dwICValue */
 HB_FUNC( ICGETDEFAULTQUALITY )
 {
-   HB_RETNL( ICGetDefaultQuality( (HIC) HB_PARNL( 1 ) ) );
+   HB_RETNL( ICGetDefaultQuality( HICparam( 1 ) ) );
 }
 
 HB_FUNC( ICGETDEFAULTKEYFRAMERATE )
 {
-   hb_retnl( ICGetDefaultKeyFrameRate( (HIC) HB_PARNL( 1 ) ) );
+   hb_retnl( ICGetDefaultKeyFrameRate( HICparam( 1 ) ) );
 }
 
 HB_FUNC( INITANIMATE )

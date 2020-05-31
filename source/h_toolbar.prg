@@ -879,7 +879,7 @@ HB_FUNC( GETBUTTONBARRECT )
 
 HB_FUNC( GETBUTTONPOS )
 {
-   hb_retnl( (long) ( ( (NMTOOLBAR FAR *) HB_PARNL( 1 ) )->iItem ) );
+   hb_retnl( (long) ( NMTOOLBARparam( 1 )->iItem ) );
 }
 
 HB_FUNC( GETBUTTONBARCOUNT)
@@ -895,7 +895,7 @@ HB_FUNC( SETBUTTONID )
 HB_FUNC( SHOWTOOLBUTTONTIP )
 {
    LPTOOLTIPTEXT lpttt;
-   lpttt = (LPTOOLTIPTEXT) HB_PARNL( 1 );
+   lpttt = TOOLTIPTEXTparam( 1 );
    lpttt->hinst = GetModuleHandle( NULL );
    lpttt->lpszText = (LPTSTR) HB_UNCONST( hb_parc( 2 ) );
 }
@@ -903,18 +903,18 @@ HB_FUNC( SHOWTOOLBUTTONTIP )
 HB_FUNC( GETTOOLBUTTONID )
 {
    LPTOOLTIPTEXT lpttt;
-   lpttt = (LPTOOLTIPTEXT) HB_PARNL( 1 ) ;
+   lpttt = TOOLTIPTEXTparam( 1 );
    hb_retni ( lpttt->hdr.idFrom ) ;
 }
 
 HB_FUNC( _TOOLBARGETINFOTIP )
 {
-   hb_retni( ( (LPNMTBGETINFOTIP) HB_PARNL( 1 ) )->iItem );
+   hb_retni( NMTBGETINFOTIPparam( 1 )->iItem );
 }
 
 HB_FUNC( _TOOLBARSETINFOTIP )
 {
-   LPNMTBGETINFOTIP lpInfo = (LPNMTBGETINFOTIP) HB_PARNL( 1 );
+   LPNMTBGETINFOTIP lpInfo = NMTBGETINFOTIPparam( 1 );
    int iLen;
 
    iLen = hb_parclen( 2 );

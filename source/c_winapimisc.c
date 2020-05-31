@@ -361,7 +361,7 @@ HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue *
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), (HICON) HB_PARNL(3) );
+   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), HICONparam(3) );
 }
 
 HB_FUNC( PAINTBKGND )
@@ -378,9 +378,7 @@ HB_FUNC( PAINTBKGND )
 
    if( ( hb_pcount() > 1 ) && ( ! HB_ISNIL( 2 ) ) )
    {
-      brush = CreateSolidBrush( RGB( HB_PARNI( 2, 1 ),
-                                     HB_PARNI( 2, 2 ),
-                                     HB_PARNI( 2, 3 ) ) );
+      brush = CreateSolidBrush( RGB( HB_PARNI( 2, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 3 ) ) );
       FillRect( hdc, &recClie, brush );
       DeleteObject( brush );
    }
@@ -419,10 +417,7 @@ HB_FUNC( GETTEMPDIR )
 
 HB_FUNC( POSTMESSAGE )
 {
-   hb_retl( (BOOL) PostMessage( HWNDparam( 1 ),
-                                  (UINT) hb_parni( 2 ),
-                                  (WPARAM) HB_PARNL( 3 ),
-                                  (LPARAM) HB_PARNL( 4 ) ) );
+   hb_retl( (BOOL) PostMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
 }
 
 HB_FUNC( DEFWINDOWPROC )
@@ -447,7 +442,7 @@ HB_FUNC( GETSTOCKOBJECT )
 
 HB_FUNC( SETBKMODE )
 {
-   hb_retni( SetBkMode( (HDC) HB_PARNL( 1 ), hb_parni( 2 ) ) );
+   hb_retni( SetBkMode( HDCparam( 1 ), hb_parni( 2 ) ) );
 }
 
 HB_FUNC( GETNEXTDLGTABITEM )
@@ -631,12 +626,12 @@ HB_FUNC( CREATESOLIDBRUSH )
 
 HB_FUNC( SETTEXTCOLOR )
 {
-   hb_retnl( (long) SetTextColor( (HDC) HB_PARNL( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
+   hb_retnl( (long) SetTextColor( HDCparam( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
 }
 
 HB_FUNC( SETBKCOLOR )
 {
-   hb_retnl( (long) SetBkColor( (HDC) HB_PARNL( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
+   hb_retnl( (long) SetBkColor( HDCparam( 1 ), (COLORREF) RGB( hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ) ) ) );
 }
 
 HB_FUNC( GETSYSCOLOR )
@@ -1101,7 +1096,7 @@ LPWSTR AnsiToWide( const char * szString )
 
 HB_FUNC( CLOSEHANDLE )
 {
-   CloseHandle( ( HANDLE ) HB_PARNL( 1 ) );
+   CloseHandle( HANDLEparam( 1 ) );
 }
 
 typedef HRESULT ( WINAPI * STRRETTOBUFA )( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );

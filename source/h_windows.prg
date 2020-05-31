@@ -2268,7 +2268,7 @@ HB_FUNC_STATIC( TWINDOW_IMAGELIST )          /* METHOD Imagelist( handle ) CLASS
 
    if( hb_pcount() >= 1 )
    {
-      HIMAGELIST hImageList = ( HIMAGELIST ) HB_PARNL( 1 );
+      HIMAGELIST hImageList = HIMAGELISTparam( 1 );
 
       if( oSelf->ImageList )
       {
@@ -2288,7 +2288,7 @@ HB_FUNC_STATIC( TWINDOW_ICONHANDLE )          /* METHOD IconHandle( hIcon ) CLAS
 
    if( hb_pcount() >= 1 )
    {
-      HICON hIcon = (HICON) HB_PARNL( 1 );
+      HICON hIcon = HICONparam( 1 );
 
       if( oSelf->IconHandle )
       {
@@ -2308,7 +2308,7 @@ HB_FUNC_STATIC( TWINDOW_BRUSHHANDLE )          /* METHOD BrushHandle( hBrush ) C
 
    if( hb_pcount() >= 1 )
    {
-      HBRUSH hBrush = ( HBRUSH ) HB_PARNL( 1 );
+      HBRUSH hBrush = HBRUSHparam( 1 );
 
       if( oSelf->BrushHandle )
       {
@@ -2328,7 +2328,7 @@ HB_FUNC_STATIC( TWINDOW_FONTHANDLE )          /* METHOD FontHandle( hFont ) CLAS
 
    if( hb_pcount() >= 1 )
    {
-      HFONT hFont = (HFONT) HB_PARNL( 1 );
+      HFONT hFont = HFONTparam( 1 );
 
       if( oSelf->hFontHandle )
       {
@@ -3122,7 +3122,7 @@ HB_FUNC( C_LINE )          /* FUNCTION C_Line( ... ) -> NIL */
    int toy = hb_parni( 4 );
    int width = 0;
    int nStyle;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
@@ -3188,7 +3188,7 @@ HB_FUNC( C_FILL )          /* FUNCTION C_Fill( ... ) -> NIL */
    int tox = hb_parnl( 5 );
    int toy = hb_parnl( 4 );
    RECT rect;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HBRUSH hBrush;
 
@@ -3258,7 +3258,7 @@ HB_FUNC( C_RECTANGLE )          /* FUNCTION C_Rectangle( ... ) -> NIL */
    int bb;
    int nBr;
    long nBh;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3384,7 +3384,7 @@ HB_FUNC( C_ROUNDRECTANGLE )          /* FUNCTION C_RoundRectangle( ... ) -> NIL 
    int bb;
    int nBr;
    long nBh;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3511,7 +3511,7 @@ HB_FUNC( C_ELLIPSE )          /* FUNCTION C_Ellipse( ... ) -> NIL */
    int bb;
    int nBr;
    long nBh;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3630,7 +3630,7 @@ HB_FUNC( C_ARC )          /* FUNCTION C_Arc( ... ) -> NIL */
    int y2 = hb_parni( 8 );
    int width = 0;
    int nStyle;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
@@ -3705,7 +3705,7 @@ HB_FUNC( C_ARCTO )          /* FUNCTION C_ArcTo( ... ) -> NIL */
    int y2 = hb_parni( 8 );
    int width = 0;
    int nStyle;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
 
@@ -3791,7 +3791,7 @@ HB_FUNC( C_PIE )          /* FUNCTION C_Pie( ... ) -> NIL */
    int bb;
    int nBr;
    long nBh;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;
@@ -3895,7 +3895,7 @@ HB_FUNC( C_POLYBEZIER )          /* FUNCTION C_PolyBezier( ... ) -> NIL */
    int b;
    int width = 0;
    int nStyle;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
    DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
@@ -3967,7 +3967,7 @@ HB_FUNC( C_POLYBEZIERTO )          /* FUNCTION C_PolyBezierTo( ... ) -> NIL */
    int b;
    int width = 0;
    int nStyle;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj;
    HPEN hpen;
    DWORD i, number = ( DWORD ) hb_parinfa( 2, 0 );
@@ -4059,7 +4059,7 @@ HB_FUNC( C_POLYGON )          /* FUNCTION C_Polygon( ... ) -> NIL */
    POINT apoints[ 1024 ];
    int oldFillMode;
    int newFillMode;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
 
    if( hdc != 0 )
    {
@@ -4204,7 +4204,7 @@ HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
    int bb;
    int nBr;
    long nBh;
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HGDIOBJ hgdiobj, hgdiobj2;
    HPEN hpen;
    LOGBRUSH pbr;

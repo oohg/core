@@ -76,7 +76,7 @@
 
 HB_FUNC( LOADCURSOR )
 {
-   HINSTANCE hInstance = ( HB_ISNIL( 1 ) ? NULL : (HINSTANCE) HB_PARNL( 1 ) );
+   HINSTANCE hInstance = ( HB_ISNIL( 1 ) ? NULL : HINSTANCEparam( 1 ) );
    LPCTSTR lpCursorName = ( hb_parinfo( 2 ) == HB_IT_STRING ? hb_parc( 2 ): MAKEINTRESOURCE( hb_parnl( 2 ) ) );
 
    HCURSORret( LoadCursor( hInstance, lpCursorName ) );
@@ -92,7 +92,7 @@ HB_FUNC( LOADCURSORFROMFILE )
 
 HB_FUNC( SETRESCURSOR )
 {
-   HCURSORret( SetCursor( (HCURSOR) HB_PARNL( 1 ) ) );
+   HCURSORret( SetCursor( HCURSORparam( 1 ) ) );
 }
 
 HB_FUNC( FILECURSOR )

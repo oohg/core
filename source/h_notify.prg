@@ -249,8 +249,8 @@ METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
 HB_FUNC( LOADTRAYICON )
 {
    HICON hImage;
-   HINSTANCE hInstance = (HINSTANCE) HB_PARNL( 1 );  /* handle to application instance */
-   LPCTSTR lpIconName = (LPCTSTR) hb_parc( 2 );                   /* name string or resource identifier */
+   HINSTANCE hInstance = HINSTANCEparam( 1 );     /* handle to application instance */
+   LPCTSTR lpIconName = (LPCTSTR) hb_parc( 2 );   /* name string or resource identifier */
 
    hImage = LoadIcon( hInstance, lpIconName );
 

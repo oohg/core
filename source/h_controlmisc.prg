@@ -2089,7 +2089,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   HDC hdc = (HDC) HB_PARNL( 1 );
+   HDC hdc = HDCparam( 1 );
    HBRUSH OldBrush, NewBrush;
    long lBackColor;
    RECT rc;

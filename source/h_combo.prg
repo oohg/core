@@ -1419,7 +1419,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_DRAWITEM )          /* METHOD Events_DrawItem( lPa
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) HB_PARNL( 1 );
+   LPDRAWITEMSTRUCT lpdis = DRAWITEMSTRUCTparam( 1 );
    COLORREF FontColor, BackColor;
    TEXTMETRIC lptm;
    char cBuffer[ 2048 ];
@@ -1519,7 +1519,7 @@ HB_FUNC_STATIC( TCOMBO_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureIte
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
-   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) (LPARAM) HB_PARNL( 1 );
+   LPMEASUREITEMSTRUCT lpmis = MEASUREITEMSTRUCTparam( 1 );
 
    HWND hWnd = GetActiveWindow();
    HDC hDC = GetDC( hWnd );

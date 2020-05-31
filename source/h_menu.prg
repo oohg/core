@@ -1867,7 +1867,7 @@ HB_FUNC( TMENUITEMSETITEMSCOLOR )          /* FUNCTION TMenuItemSetItemsColor( o
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TMENUITEMMEASURE )          /* FUNCTION TMenuItemMeasure( lParam, nWidth, nHeight ) -> NIL */
 {
-   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) (LPARAM) HB_PARNL( 1 );
+   LPMEASUREITEMSTRUCT lpmis = MEASUREITEMSTRUCTparam( 1 );
    lpmis->itemWidth = hb_parnl( 2 );
    lpmis->itemHeight = hb_parnl( 3 );
 }
@@ -1875,7 +1875,7 @@ HB_FUNC( TMENUITEMMEASURE )          /* FUNCTION TMenuItemMeasure( lParam, nWidt
 /*
 HB_FUNC( TMENUITEMMEASURE )          // FUNCTION TMenuItemMeasure( lParam, lIsSeparator, lCheckMark, nWidth, nHeight ) -> NIL //
 {
-   LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT) (LPARAM) HB_PARNL( 1 );
+   LPMEASUREITEMSTRUCT lpmis = MEASUREITEMSTRUCTparam( 1 );
    int cy, cx;
 
    if( hb_parl( 2 ) )
@@ -2347,12 +2347,12 @@ static void DrawMenuSeparator( HDC hDC, RECT r, int iXDelta, int iBmpSize, BOOL 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, hFont, aMenuParams, lIsSeparator, lCheckMark, aBitmaps ) -> .T. */
 {
-   LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT) (LPARAM) HB_PARNL( 1 );
-   HFONT hFont = (HFONT) HB_PARNL( 3 );
+   LPDRAWITEMSTRUCT lpdis = DRAWITEMSTRUCTparam( 1 );
+   HFONT hFont = HFONTparam( 3 );
    BOOL bSeparator = hb_parl( 5 );
    BOOL bCheckMark = hb_parl( 6 );
-   HBITMAP hBmpUnchecked = (HBITMAP) HB_PARNL2( 7, 1 );
-   HBITMAP hBmpChecked = (HBITMAP) HB_PARNL2( 7, 2 );
+   HBITMAP hBmpUnchecked = HBITMAPparam2( 7, 1 );
+   HBITMAP hBmpChecked = HBITMAPparam2( 7, 2 );
    COLORREF clrText, clrBackground;
    UINT bkMode;
    HPEN pen, pen1, oldPen;

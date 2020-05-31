@@ -190,8 +190,8 @@ HB_FUNC( ENUMFONTSEX )
 
    memset( &lf, 0, sizeof( LOGFONT ) );
 
-   if( GetObjectType( (HGDIOBJ) HB_PARNL( 1 ) ) == OBJ_DC )
-      hdc = (HDC) HB_PARNL( 1 );
+   if( GetObjectType( HGDIOBJparam( 1 ) ) == OBJ_DC )
+      hdc = HDCparam( 1 );
    else
    {
       hdc = GetDC( NULL );

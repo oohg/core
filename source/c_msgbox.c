@@ -239,7 +239,7 @@ HB_FUNC( MESSAGEBOXINDIRECT )
 
    mbp.cbSize             = sizeof( MSGBOXPARAMS );
    mbp.hwndOwner          = HB_ISNIL( 1 ) ? GetActiveWindow() : HWNDparam( 1 );
-   mbp.hInstance          = HB_ISNIL( 6 ) ? GetModuleHandle( NULL ) : (HINSTANCE) HB_PARNL( 6 );
+   mbp.hInstance          = HB_ISNIL( 6 ) ? GetModuleHandle( NULL ) : HINSTANCEparam( 6 );
    mbp.lpszText           = HB_ISCHAR( 2 ) ? hb_parc( 2 ) : ( HB_ISNIL( 2 ) ? NULL : MAKEINTRESOURCE( hb_parni( 2 ) ) );
    mbp.lpszCaption        = HB_ISCHAR( 3 ) ? hb_parc( 3 ) : ( HB_ISNIL( 3 ) ? "" : MAKEINTRESOURCE( hb_parni( 3 ) ) );
    mbp.dwStyle            = (DWORD) hb_parni( 4 );

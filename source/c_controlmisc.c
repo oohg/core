@@ -493,10 +493,10 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
 
 HB_FUNC( GETTEXTWIDTH )  /* returns the width of a string in pixels */
 {
-   HDC   hDC = (HDC) HB_PARNL( 1 );
+   HDC   hDC = HDCparam( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = (HFONT) HB_PARNL( 3 );
+   HFONT hFont = HFONTparam( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -523,10 +523,10 @@ HB_FUNC( GETTEXTWIDTH )  /* returns the width of a string in pixels */
 
 HB_FUNC( GETTEXTHEIGHT )  /* returns the height of a string in pixels */
 {
-   HDC   hDC = (HDC) HB_PARNL( 1 );
+   HDC   hDC = HDCparam( 1 );
    HWND  hWnd = 0;
    BOOL  bDestroyDC = FALSE;
-   HFONT hFont = (HFONT) HB_PARNL( 3 );
+   HFONT hFont = HFONTparam( 3 );
    HFONT hOldFont = 0;
    SIZE sz;
 
@@ -631,13 +631,13 @@ HB_FUNC( IMAGELIST_INIT )
 
 HB_FUNC( IMAGELIST_DESTROY )
 {
-   HIMAGELIST himl = (HIMAGELIST) HB_PARNL( 1 );
+   HIMAGELIST himl = HIMAGELISTparam( 1 );
    hb_retl( ImageList_Destroy( himl ) );
 }
 
 HB_FUNC( IMAGELIST_ADD )
 {
-   HIMAGELIST himl = (HIMAGELIST) HWNDparam( 1 );
+   HIMAGELIST himl = HIMAGELISTparam( 1 );
    HBITMAP hbmp;
    int cx, cy, ic = 0;
    int iStyle = hb_parni( 3 );
@@ -672,7 +672,7 @@ HB_FUNC( IMAGELIST_GETIMAGECOUNT )
 
 HB_FUNC( IMAGELIST_DUPLICATE )
 {
-   HIMAGELIST himl = (HIMAGELIST) HB_PARNL( 1 );
+   HIMAGELIST himl = HIMAGELISTparam( 1 );
    HWNDret( (HIMAGELIST) ImageList_Duplicate( himl ) );
 }
 
