@@ -25,9 +25,6 @@
 # this define is needed to handle GT_GUI in Harbour builds
 -n -q0 -w3 -es2 -D_OOHG_CONSOLEMODE_
 
-#alerts on exit
--beep
-
 # c compiler flags
 # to check for more warnings add "SET HG_CFLAGS=ON" before building
 -cflag=-fdiagnostics-show-option
@@ -35,6 +32,8 @@
 -cflag=-Wstrict-prototypes
 -cflag=-Wundef
 -cflag=-Wunused
+{clang}-cflag=-Wno-used-but-marked-unused
+{clang}-cflag=-Wno-extra-semi-stmt
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloc-zero
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloca
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Warray-bounds=2
@@ -80,6 +79,9 @@
 {HG_CFLAGS}-cflag=-Wunused
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Wunused-const-variable=1
 {HG_CFLAGS}-cflag=-Wwrite-strings
+
+#alerts on exit
+-beep
 
 # uncomment the following line to build .ppo files
 #-p.\ppo\
