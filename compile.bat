@@ -193,7 +193,7 @@ rem
    if "%LIB_HRB%"    == "" set LIB_HRB=lib
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM30.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
@@ -208,7 +208,7 @@ rem
    if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM32.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
@@ -223,7 +223,7 @@ rem
    if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw64
    if "%BIN_HRB%"    == "" set BIN_HRB=bin
    if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lrddads
+   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
