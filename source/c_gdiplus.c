@@ -605,7 +605,7 @@ BOOL GetEnCodecClsid( const char * MimeType, CLSID * Clsid )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT Height, const char * MimeType, ULONG JpgQuality, ULONG ColorDepth )
+BOOL SaveHBitmapToFile( HBITMAP HBitmap, const TCHAR *FileName, UINT Width, UINT Height, TCHAR *MimeType, ULONG JpgQuality, ULONG ColorDepth )
 {
    void *       GBitmap;
    void *       GBitmapThumbnail;
@@ -814,9 +814,7 @@ BOOL SaveHBitmapToFile( void * HBitmap, const char * FileName, UINT Width, UINT 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GPLUSSAVEHBITMAPTOFILE )
 {
-   HBITMAP hbmp = (HBITMAP) HB_PARNL( 1 );
-
-   hb_retl( SaveHBitmapToFile( (void *) hbmp, hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), hb_parc( 5 ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
+   hb_retl( SaveHBitmapToFile( HBITMAPparam( 1 ), hb_parc( 2 ), (UINT) hb_parnl( 3 ), (UINT) hb_parnl( 4 ), HB_UNCONST( hb_parc( 5 ) ), (ULONG) hb_parnl( 6 ), (ULONG) hb_parnl( 7 ) ) );
 }
 
 /*
