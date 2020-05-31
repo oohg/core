@@ -177,6 +177,9 @@ void _OOHG_ProcessMessage( PMSG Msg )
                break;
             }
          }
+      #ifdef __clang__
+         __attribute__((fallthrough));
+      #endif
          /* FALLTHRU */
 
       default:
@@ -231,7 +234,7 @@ HB_FUNC( _DOMESSAGELOOP )
    }
 }
 
-DWORD ShowLastError( char * caption )
+DWORD ShowLastError( const char *caption )
 {
    LPVOID lpMsgBuf;
    DWORD dwError = GetLastError();
@@ -260,7 +263,7 @@ HB_FUNC( _OOHG_DOMESSAGELOOP )
 
       if( iStatus == -1 )  /* error */
       {
-         ExitProcess( ShowLastError( TEXT( "_OOHG_DOMESSAGELOOP" ) ) );
+         ExitProcess( ShowLastError( _TEXT( "_OOHG_DOMESSAGELOOP" ) ) );
       }
       else
       {

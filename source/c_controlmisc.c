@@ -698,6 +698,8 @@ HB_FUNC( IMAGELIST_SIZE )
 
 void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
 {
+   char empty[1] = "\0";
+
    if( pString && HB_IS_STRING( pString ) )
    {
       pResult->cString = hb_itemGetC( pString );
@@ -706,13 +708,13 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
    }
    else if( pString && HB_IS_NUMERIC( pString ) )
    {
-      pResult->cString = "";
+      pResult->cString = empty;
       pResult->iImage1 = hb_itemGetNI( pString );
       pResult->iImage2 = pResult->iImage1;
    }
    else if( pString && HB_IS_LOGICAL( pString ) )
    {
-      pResult->cString = "";
+      pResult->cString = empty;
       pResult->iImage1 = ( hb_itemGetL( pString ) ? 1 : 0 );
       pResult->iImage2 = pResult->iImage1;
    }
@@ -724,7 +726,7 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
       }
       else
       {
-         pResult->cString = "";
+         pResult->cString = empty;
       }
       if( hb_arrayLen( pString ) > 1 && HB_IS_NUMERIC( hb_arrayGetItemPtr( pString, 2 ) ) )
       {
@@ -746,7 +748,7 @@ void ImageFillParameter( struct IMAGE_PARAMETER *pResult, PHB_ITEM pString )
    }
    else
    {
-      pResult->cString = "";
+      pResult->cString = empty;
       pResult->iImage1 = -1;
       pResult->iImage2 = -1;
    }

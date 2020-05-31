@@ -756,13 +756,13 @@ HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) 
       }
       case 5:
       {
-         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF; ;
+         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
          lMode = TM_RICHTEXT;
          break;
       }
       case 6:
       {
-         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT; ;
+         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          lMode = TM_PLAINTEXT;
          break;
       }
@@ -889,6 +889,9 @@ HB_FUNC_STATIC( TEDITRICH_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam
             HB_FUNCNAME( TEDITRICH_EVENTS2 )();
             break;
          }
+      #ifdef __clang__
+         __attribute__((fallthrough));
+      #endif
          /* FALLTHRU */
 
       default:

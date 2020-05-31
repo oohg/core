@@ -891,7 +891,10 @@ HB_FUNC_STATIC( TTEXT_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
             break;
          }
       }
-      /* FALLTHRU */
+      #ifdef __clang__
+         __attribute__((fallthrough));
+      #endif
+         /* FALLTHRU */
 
       default:
          _OOHG_Send( pSelf, s_Super );
@@ -1489,6 +1492,9 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wPa
             HB_FUNCNAME( TTEXTPICTURE_EVENTS2 )();
             break;
          }
+      #ifdef __clang__
+         __attribute__((fallthrough));
+      #endif
          /* FALLTHRU */
 
       default:
