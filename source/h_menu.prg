@@ -1484,7 +1484,7 @@ HB_FUNC( CREATEMENUITEMDATA )          /* FUNCTION CreateMenuItemData( nId ) -> 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DELETEMENUITEMDATA )          /* FUNCTION DeleteMenuItemData( hStruct ) -> NIL */
 {
-   LPMYITEM lpItem = (MYITEM *) HB_PARNL( 1 );
+   LPMYITEM lpItem = MYITEMparam( 1 );
 
    hb_xfree( lpItem );
 }
@@ -1594,31 +1594,105 @@ HB_FUNC( FINDPOPUPPOSITION )          /* FUNCTION FindPopUpPosition( hWndMenu, h
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INSERTMENU )          /* FUNCTION InsertMenu( hMenu, hMenu/nId, uData/cCaption, nStyle, nPos ) -> NIL */
 {
-   UINT style = (UINT) hb_parni( 4 );
+   HMENU hMenu;
+   UINT uPosition;
+   UINT uFlags;
+   UINT_PTR uIDNewItem;
+   LPCSTR lpNewItem;
 
-   if( ( style & MF_OWNERDRAW ) == MF_OWNERDRAW )
+   hMenu     = HMENUparam( 1 );
+   uPosition = (UINT) hb_parni( 5 );
+   uFlags    = (UINT) hb_parni( 4 );
+
+   if( ( uFlags & MF_POPUP ) == MF_POPUP )
    {
-      hb_retl( InsertMenu( HMENUparam( 1 ), (UINT) hb_parni( 5 ), (UINT) hb_parni( 4 ), (UINT_PTR) HB_PARNL( 2 ), (LPCSTR) HB_PARNL( 3 ) ) );
+      if( ( uFlags & MF_OWNERDRAW ) == MF_OWNERDRAW )
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) MYITEMparam( 3 );
+      }
+      else if( ( uFlags & MF_BITMAP ) == MF_BITMAP )
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) HBITMAPparam( 3 );
+      }
+      else
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) hb_parc( 3 );
+      }
    }
    else
    {
-      hb_retl( InsertMenu( HMENUparam( 1 ), (UINT) hb_parni( 5 ), (UINT) hb_parni( 4 ), (UINT_PTR) HB_PARNL( 2 ), (LPCSTR) hb_parc( 3 ) ) );
+      if( ( uFlags & MF_OWNERDRAW ) == MF_OWNERDRAW )
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) MYITEMparam( 3 );
+      }
+      else if( ( uFlags & MF_BITMAP ) == MF_BITMAP )
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) HBITMAPparam( 3 );
+      }
+      else
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) hb_parc( 3 );
+      }
    }
+
+   hb_retl( InsertMenu( hMenu, uPosition, uFlags, uIDNewItem, lpNewItem ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( APPENDMENU )          /* FUNCTION AppendMenu( hMenu, hMenu/nId, uData/cCaption, nStyle ) -> NIL */
 {
-   UINT style = (UINT) hb_parni( 4 );
+   HMENU hMenu;
+   UINT uFlags;
+   UINT_PTR uIDNewItem;
+   LPCSTR lpNewItem;
 
-   if( ( style & MF_OWNERDRAW ) == MF_OWNERDRAW )
+   hMenu  = HMENUparam( 1 );
+   uFlags = (UINT) hb_parni( 4 );
+
+   if( ( uFlags & MF_POPUP ) == MF_POPUP )
    {
-      hb_retl( AppendMenu( HMENUparam( 1 ), style, (UINT_PTR) HB_PARNL( 2 ), (LPCSTR) HB_PARNL( 3 ) ) );
+      if( ( uFlags & MF_OWNERDRAW ) == MF_OWNERDRAW )
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) MYITEMparam( 3 );
+      }
+      else if( ( uFlags & MF_BITMAP ) == MF_BITMAP )
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) HBITMAPparam( 3 );
+      }
+      else
+      {
+         uIDNewItem = (UINT_PTR) HMENUparam( 2 );
+         lpNewItem  = (LPCSTR) hb_parc( 3 );
+      }
    }
    else
    {
-      hb_retl( AppendMenu( HMENUparam( 1 ), style, (UINT_PTR) HB_PARNL( 2 ), (LPCSTR) hb_parc( 3 ) ) );
+      if( ( uFlags & MF_OWNERDRAW ) == MF_OWNERDRAW )
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) MYITEMparam( 3 );
+      }
+      else if( ( uFlags & MF_BITMAP ) == MF_BITMAP )
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) HBITMAPparam( 3 );
+      }
+      else
+      {
+         uIDNewItem = (UINT) hb_parni( 2 );
+         lpNewItem  = (LPCSTR) hb_parc( 3 );
+      }
    }
+
+   hb_retl( AppendMenu( hMenu, uFlags, uIDNewItem, lpNewItem ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
