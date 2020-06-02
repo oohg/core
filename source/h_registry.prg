@@ -360,7 +360,7 @@ HB_FUNC( REGOPENKEYEXA )
    LSTATUS lError;
    HKEY phwHandle;
 
-   lError = RegOpenKeyExA( HKEYparam( 1 ), (LPCTSTR) hb_parc( 2 ), 0, (REGSAM) HB_PARNL( 3 ), &phwHandle );
+   lError = RegOpenKeyExA( HKEYparam( 1 ), (LPCTSTR) hb_parc( 2 ), 0, REGSAMparam( 3 ), &phwHandle );
    if( lError == ERROR_SUCCESS )
    {
       HKEYstor( phwHandle, 4 );

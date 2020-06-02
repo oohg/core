@@ -214,8 +214,8 @@ HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT) hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf   = _OOHG_GetControlInfo( pSelf );
    POINT pt;

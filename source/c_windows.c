@@ -514,7 +514,7 @@ HB_FUNC( GETWINDOWTEXT )
 
 HB_FUNC( SENDMESSAGE )
 {
-   LRESULTret( SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
 }
 
 HB_FUNC( UPDATEWINDOW )
@@ -524,17 +524,17 @@ HB_FUNC( UPDATEWINDOW )
 
 HB_FUNC( GETNOTIFYCODE )
 {
-   hb_retni( (int) ( (NMHDR FAR *) HB_PARNL( 1 ) )->code );
+   hb_retni( (int) ( NMHDRparam( 1 ) )->code );
 }
 
 HB_FUNC( GETHWNDFROM )
 {
-   HWNDret( ( (NMHDR FAR *) HB_PARNL( 1 ) )->hwndFrom );
+   HWNDret( ( NMHDRparam( 1 ) )->hwndFrom );
 }
 
 HB_FUNC( GETDRAWITEMHANDLE )
 {
-   HWNDret( ( (DRAWITEMSTRUCT FAR *) HB_PARNL( 1 ) )->hwndItem );
+   HWNDret( ( DRAWITEMSTRUCTparam( 1 ) )->hwndItem );
 }
 
 HB_FUNC( GETFOCUS )
@@ -763,7 +763,7 @@ HB_FUNC( GETCURSORPOS )
 
 HB_FUNC( GETITEMPOS )
 {
-   hb_retnl( (long) ( ( (NMMOUSE FAR *) HB_PARNL( 1 ) )->dwItemSpec ) );
+   hb_retnl( (long) ( NMMOUSEparam( 1 ) )->dwItemSpec );
 }
 
 HB_FUNC( GETWINDOWSTATE )
@@ -840,7 +840,7 @@ HB_FUNC( C_SETPOLYWINDOWRGN )
 
 HB_FUNC( GETHELPDATA )
 {
-   HANDLEret( ( ( (HELPINFO FAR *) HB_PARNL( 1 ) )->hItemHandle ) );
+   HANDLEret( ( HELPINFOparam( 1 ) )->hItemHandle );
 }
 
 HB_FUNC( GETWINDOW )
@@ -1396,24 +1396,24 @@ HB_FUNC( GETWINDOWSTYLE )
 
 HB_FUNC( SETWINDOWEXSTYLE )
 {
-   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE, HB_PARNL( 2 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE, hb_parnl( 2 ) ) );
 }
 
 HB_FUNC( SETWINDOWSTYLE )
 {
-   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE, HB_PARNL( 2 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE, hb_parnl( 2 ) ) );
 }
 
 HB_FUNC( ISWINDOWSTYLE )
 {
-   LONG_PTR ulRequest = HB_PARNL( 2 );
+   LONG_PTR ulRequest = (LONG_PTR) hb_parnl( 2 );
 
    hb_retl( ( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) & ulRequest ) == ulRequest );
 }
 
 HB_FUNC( ISWINDOWEXSTYLE )
 {
-   LONG_PTR ulRequest = HB_PARNL( 2 );
+   LONG_PTR ulRequest = (LONG_PTR) hb_parnl( 2 );
 
    hb_retl( ( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & ulRequest ) == ulRequest );
 }
@@ -1424,14 +1424,14 @@ HB_FUNC( WINDOWSTYLEFLAG )
    LONG_PTR lMask;
 
    hWnd = HWNDparam( 1 );
-   lMask = HB_PARNL( 2 );
+   lMask = (LONG_PTR) hb_parnl( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLongPtr( hWnd, GWL_STYLE, ( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( HB_PARNL( 3 ) & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_STYLE, ( ( GetWindowLongPtr( hWnd, GWL_STYLE ) & ( ~ lMask ) ) | ( (LONG_PTR) hb_parnl( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
-   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) & HB_PARNL( 2 ) );
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_STYLE ) & lMask );
 }
 
 HB_FUNC( WINDOWEXSTYLEFLAG )
@@ -1440,14 +1440,14 @@ HB_FUNC( WINDOWEXSTYLEFLAG )
    LONG_PTR lMask;
 
    hWnd = HWNDparam( 1 );
-   lMask = HB_PARNL( 2 );
+   lMask = (LONG_PTR) hb_parnl( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( HB_PARNL( 3 ) & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( (LONG_PTR) hb_parnl & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
-   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & HB_PARNL( 2 ) );
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & lMask );
 }
 
 HB_FUNC( ANIMATEWINDOW )          /* FUNCTION AnimateWindow( hWnd, nTime, nFlags, lHide ) -> NIL */

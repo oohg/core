@@ -833,8 +833,8 @@ HB_FUNC_STATIC( TTEXT_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -1024,7 +1024,7 @@ HB_FUNC_STATIC( TTEXT_GETLINE )          /* METHOD GetLine( nLine ) CLASS TText 
    LPWORD pBuffer;
    LRESULT lResult;
 
-   nChar = SendMessage( oSelf->hWnd, EM_LINEINDEX, (WPARAM) hb_parnl( 1 ), 0 );
+   nChar = SendMessage( oSelf->hWnd, EM_LINEINDEX, WPARAMparam( 1 ), 0 );
    if( nChar < 0 )
    {
       hb_retc( "" );
@@ -1038,7 +1038,7 @@ HB_FUNC_STATIC( TTEXT_GETLINE )          /* METHOD GetLine( nLine ) CLASS TText 
          pBuffer = ( LPWORD ) strBuffer;
          pBuffer[0] = LenBuff;
          strBuffer[LenBuff] = ( TCHAR ) 0;
-         lResult = SendMessage( oSelf->hWnd, EM_GETLINE, (WPARAM) hb_parnl( 1 ), (LPARAM) strBuffer );
+         lResult = SendMessage( oSelf->hWnd, EM_GETLINE, WPARAMparam( 1 ), (LPARAM) strBuffer );
          if( lResult )
          {
             hb_retc( strBuffer );
@@ -1476,8 +1476,8 @@ HB_FUNC_STATIC( TTEXTPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wPa
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )

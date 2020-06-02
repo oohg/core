@@ -2601,7 +2601,7 @@ HB_FUNC( TREEVIEW_SETINDENT )          /* FUNCTION TreeView_SetIndent( hWnd, nIn
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_GETKEYDOWN )          /* FUNCTION TreeView_GetKeyDown( lParam ) -> nKey */
 {
-   LPNMLVKEYDOWN ptvkd = (LPNMLVKEYDOWN) (LPARAM) HB_PARNL( 1 );
+   LPNMLVKEYDOWN ptvkd = (LPNMLVKEYDOWN) LPARAMparam( 1 );
 
    hb_retni( ptvkd->wVKey );
 }
@@ -2609,7 +2609,7 @@ HB_FUNC( TREEVIEW_GETKEYDOWN )          /* FUNCTION TreeView_GetKeyDown( lParam 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_LABELVALUE )          /* FUNCTION TreeView_LabelValue( lParam ) -> cText */
 {
-   LPNMTVDISPINFO lptvdi = (LPNMTVDISPINFO) (LPARAM) HB_PARNL( 1 );
+   LPNMTVDISPINFO lptvdi = (LPNMTVDISPINFO) LPARAMparam( 1 );
 
    if( lptvdi->item.pszText )
       hb_retc( lptvdi->item.pszText );
@@ -2697,13 +2697,13 @@ int Treeview_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL lOnDrag )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_NOTIFY_CUSTOMDRAW )          /* FUNCTION TreeView_NotifyCustomDraw( Self, lParam, lHasDragFocus ) -> nRet */
 {
-   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ) ) );
+   hb_retni( Treeview_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), LPARAMparam( 2 ), hb_parl( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_GETITEMHIT )          /* FUNCTION TreeView_GetItemHit( lParam ) -> hWnd */
 {
-   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) LPARAMparam( 1 );
    TVHITTESTINFO ht;
 
    DWORD dwpos = GetMessagePos();
@@ -2721,7 +2721,7 @@ HB_FUNC( TREEVIEW_GETITEMHIT )          /* FUNCTION TreeView_GetItemHit( lParam 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_HITISONSTATEICON )          /* FUNCTION TreeView_HitOnStateIcon( lParam ) -> lRet */
 {
-   LPNMHDR lpnmh = (LPNMHDR) (LPARAM) HB_PARNL( 1 );
+   LPNMHDR lpnmh = (LPNMHDR) LPARAMparam( 1 );
    TVHITTESTINFO ht;
    BOOL bRet;
 
@@ -2898,7 +2898,7 @@ HB_FUNC( TREEVIEW_GETEXPANDEDSTATE )          /* FUNCTION TreeView_GetExpandedSt
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ITEMEXPANDINGITEM )          /* FUNCTION TreeView_ItemExpandingItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) LPARAMparam( 1 );
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
@@ -2906,7 +2906,7 @@ HB_FUNC( TREEVIEW_ITEMEXPANDINGITEM )          /* FUNCTION TreeView_ItemExpandin
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ITEMEXPANDINGACTION )          /* FUNCTION TreeView_ItemExpandingAction( lParam ) -> nAction */
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) LPARAMparam( 1 );
 
    hb_retni( lpnmtv->action );
 }
@@ -2914,7 +2914,7 @@ HB_FUNC( TREEVIEW_ITEMEXPANDINGACTION )          /* FUNCTION TreeView_ItemExpand
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )          /* FUNCTION TreeView_PreviousSelectedItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) LPARAMparam( 1 );
 
    HTREEret( lpnmtv->itemOld.hItem );
 }
@@ -2922,7 +2922,7 @@ HB_FUNC( TREEVIEW_PREVIOUSSELECTEDITEM )          /* FUNCTION TreeView_PreviousS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )          /* FUNCTION TreeView_ActualSelectedItem( lParam ) -> hWnd */
 {
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 1 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) LPARAMparam( 1 );
 
    HTREEret( lpnmtv->itemNew.hItem );
 }
@@ -2931,7 +2931,7 @@ HB_FUNC( TREEVIEW_ACTUALSELECTEDITEM )          /* FUNCTION TreeView_ActualSelec
 HB_FUNC( TREEVIEW_BEGINDRAG )          /* FUNCTION TreeView_BeginDrag( hWnd, lParam ) -> hWnd */
 {
    HWND hTree = HWNDparam( 1 );
-   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) (LPARAM) HB_PARNL( 2 );
+   LPNMTREEVIEW lpnmtv = (LPNMTREEVIEW) LPARAMparam( 2 );
    HIMAGELIST himl;
    HFONT oldFont, newFont;
    UINT iIndent;
@@ -3044,7 +3044,7 @@ HB_FUNC( TREEVIEW_ONMOUSEDRAG )          /* FUNCTION TreeView_OnMouseDrag( hWnd,
 
             if( hb_parl( -1 ) )
             {
-               SetDragCursorARROW( ( ( (WPARAM) HB_PARNL( 4 ) & MK_CONTROL ) == MK_CONTROL ) );
+               SetDragCursorARROW( ( ( WPARAMparam( 4 ) & MK_CONTROL ) == MK_CONTROL ) );
             }
             else
             {
@@ -3550,7 +3550,7 @@ HB_FUNC( INITEDITTREE )          /* FUNCTION InitEditTree( hWnd ) -> NIL */
 HB_FUNC( TREEVIEW_PROCESSEDITMSG )          /* FUNCTION TreeView_ProcessEditMsg( hWnd, nMsg ) -> nWanted */
 {
    HWND hWndTV = HWNDparam( 1 );
-   LPMSG msg = (LPMSG) (LPARAM) HB_PARNL( 2 );
+   LPMSG msg = (LPMSG) LPARAMparam( 2 );
 
    if( msg && msg->message == WM_KEYDOWN )
    {

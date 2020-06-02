@@ -845,7 +845,7 @@ HB_FUNC( GETMONTHCALRANGE )
 
 HB_FUNC( GETVIEWCHANGEDATA )
 {
-   LPNMVIEWCHANGE pData = (NMVIEWCHANGE *) HB_PARNL( 1 );
+   LPNMVIEWCHANGE pData = NMVIEWCHANGEparam( 1 );
 
    hb_reta( 2 );
    HB_STORNI( (int) pData->dwOldView, -1, 1 );
@@ -901,7 +901,7 @@ HB_FUNC( C_RETDAYSTATE )
 {
    int i, j, iSize;
    LPMONTHDAYSTATE rgMonths;
-   LPNMDAYSTATE pData = (NMDAYSTATE *) HB_PARNL( 1 );
+   LPNMDAYSTATE pData = NMDAYSTATEparam( 1 );
    int iCount = hb_parni( 2 );
    PHB_ITEM hArray = hb_param( 3, HB_IT_ARRAY );
 
@@ -926,7 +926,7 @@ HB_FUNC( C_RETDAYSTATE )
 
 HB_FUNC( GETDAYSTATEDATA )
 {
-   LPNMDAYSTATE pData = (NMDAYSTATE *) HB_PARNL( 1 );
+   LPNMDAYSTATE pData = NMDAYSTATEparam( 1 );
 
    hb_reta( 2 );
    HB_STORNI( (int) pData->cDayState, -1, 1 );

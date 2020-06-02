@@ -934,7 +934,7 @@ HB_FUNC_STATIC( TLIST_EVENTS_MEASUREITEM )          /* METHOD Events_MeasureItem
 
 HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
 {
-   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
+   LPARAM lParam = LPARAMparam( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
 
    hb_retni( lpdli->uNotification );
@@ -943,7 +943,7 @@ HB_FUNC( GET_DRAG_LIST_NOTIFICATION_CODE )
 HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 {
    int nDragItem;
-   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
+   LPARAM lParam = LPARAMparam( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
 
    nDragItem = LBItemFromPt( lpdli->hWnd, lpdli->ptCursor, TRUE );
@@ -954,7 +954,7 @@ HB_FUNC( GET_DRAG_LIST_DRAGITEM )
 HB_FUNC( DRAG_LIST_DRAWINSERT )
 {
    HWND hWnd = HWNDparam( 1 );
-   LPARAM lParam = (LPARAM) HB_PARNL( 2 );
+   LPARAM lParam = LPARAMparam( 2 );
    int nItem = hb_parni( 3 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    int nItemCount;
@@ -969,7 +969,7 @@ HB_FUNC( DRAG_LIST_DRAWINSERT )
 
 HB_FUNC( DRAG_LIST_MOVE_ITEMS )
 {
-   LPARAM lParam = (LPARAM) HB_PARNL( 1 );
+   LPARAM lParam = LPARAMparam( 1 );
    LPDRAGLISTINFO lpdli = (LPDRAGLISTINFO) lParam;
    char string[ 1024 ];
    int result;

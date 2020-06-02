@@ -487,7 +487,7 @@ HB_FUNC( _SETTOOLTIPFORECOLOR )
 HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )          /* FUNCTION _GetToolTipGetDispInfoHWND( lParam ) -> hWnd */
 {
    NMTTDISPINFO *notify;
-   notify = (NMTTDISPINFO *) HB_PARNL( 1 );
+   notify = NMTTDISPINFOparam( 1 );
    HWNDret( notify->hdr.idFrom );
 }
 
@@ -511,7 +511,7 @@ HB_FUNC( _SETTOOLTIPGETDISPINFO )          /* FUNCTION _SetToolTipGetDispInfo( l
    }
    _OOHG_ToolTipBuffer[ iLen ] = 0;
 
-   notify = (NMTTDISPINFO *) HB_PARNL( 1 );
+   notify = NMTTDISPINFOparam( 1 );
    notify->lpszText = (LPSTR) _OOHG_ToolTipBuffer;
    notify->szText[ 0 ] = 0;
    notify->hinst = NULL;

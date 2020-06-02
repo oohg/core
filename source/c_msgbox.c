@@ -245,7 +245,7 @@ HB_FUNC( MESSAGEBOXINDIRECT )
    mbp.dwStyle            = (DWORD) hb_parni( 4 );
    mbp.lpszIcon           = HB_ISCHAR( 5 ) ? hb_parc( 5 ) : ( HB_ISNIL( 5 ) ? NULL : MAKEINTRESOURCE( hb_parni( 5 ) ) );
    mbp.dwContextHelpId    = HB_ISNIL( 7 ) ? 0 : (DWORD) hb_parni( 7 );
-   mbp.lpfnMsgBoxCallback = HB_ISNIL( 8 ) ? NULL : ( MSGBOXCALLBACK ) HB_PARNL( 8 );
+   mbp.lpfnMsgBoxCallback = HB_ISNIL( 8 ) ? NULL : MSGBOXCALLBACKparam( 8 );
    mbp.dwLanguageId       = HB_ISNIL( 9 ) ? MAKELANGID( LANG_NEUTRAL, SUBLANG_NEUTRAL ) : (DWORD) hb_parni( 9 );
 
    hb_retni( (int) MessageBoxIndirect( &mbp ) );

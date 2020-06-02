@@ -1137,7 +1137,7 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomD
    rect.bottom = hb_arrayGetNL( pArrayRect, 3 );
    rect.right  = hb_arrayGetNL( pArrayRect, 4 );
 
-   hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ), hb_parl( 4 ),
+   hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), LPARAMparam( 2 ), hb_parl( 3 ), hb_parl( 4 ),
                                         (LPCSTR) hb_parc( 5 ), hb_parl( 6 ), hb_parl( 7 ), &rect, hb_parl( 9 ) ) );
 }
 

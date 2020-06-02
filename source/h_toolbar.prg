@@ -873,7 +873,7 @@ HB_FUNC( CHECKBUTTONBAR )
 HB_FUNC( GETBUTTONBARRECT )
 {
    RECT rc;
-   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT, (WPARAM) hb_parnl(2), (LPARAM) &rc);
+   SendMessage( HWNDparam( 1 ), TB_GETITEMRECT, WPARAMparam(2), (LPARAM) &rc);
    hb_retnl( MAKELONG( rc.left, rc.bottom ) );
 }
 

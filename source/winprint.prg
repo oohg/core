@@ -4372,7 +4372,7 @@ HB_FUNC( RR_MODIFYBRUSH )          /* FUNCTION RR_ModifyBrush( hBrush, nStyle, n
       }
       if( hb_parnl( 4 ) >= 0 )
       {
-         ppn.lbHatch = (ULONG_PTR) HB_PARNL( 4 );
+         ppn.lbHatch = ULONG_PTRparam( 4 );
       }
 
       hb = CreateBrushIndirect( &ppn );

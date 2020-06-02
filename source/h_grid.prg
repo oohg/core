@@ -7874,8 +7874,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
 {
    HWND hwnd = HWNDparam( 1 );
    UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
    static PHB_SYMB s_Events2 = 0;  
    static PHB_SYMB s_Notify2 = 0;  
@@ -8128,7 +8128,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TGRID_EXECOLDWNDPROC )          /* FUNCTION TGrid_ExecOldWndProc( hWnd, nMsg, wParam, lParam ) -> uRetVal */
 {
-   HB_RETNL( (LRESULT) CallWindowProc( _OOHG_TGrid_lpfnOldWndProc( 0 ), HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   HB_RETNL( (LRESULT) CallWindowProc( _OOHG_TGrid_lpfnOldWndProc( 0 ), HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -8639,27 +8639,27 @@ HB_FUNC( LISTVIEW_SORTITEMSEX_USER )
 
 HB_FUNC( NMCUSTOMDRAW_IITEM )
 {
-   hb_retni( ( (NMCUSTOMDRAW *) HB_PARNL( 1 ) )->dwItemSpec + 1 );
+   hb_retni( ( NMCUSTOMDRAWparam( 1 ) )->dwItemSpec + 1 );
 }
 
 HB_FUNC( NMHEADER_IITEM )
 {
-   hb_retni( ( (NMHEADER *) HB_PARNL( 1 ) )->iItem + 1 );
+   hb_retni( ( NMHEADERparam( 1 ) )->iItem + 1 );
 }
 
 HB_FUNC( HDITEM_CXY )
 {
-   hb_retni( ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->cxy );
+   hb_retni( ( ( NMHEADERparam( 1 ) )->pitem )->cxy );
 }
 
 HB_FUNC( SET_HDITEM_CXY )
 {
-   ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->cxy = hb_parni( 2 );
+   ( ( NMHEADERparam( 1 ) )->pitem )->cxy = hb_parni( 2 );
 }
 
 HB_FUNC( HDITEM_IORDER )
 {
-   hb_retni( ( ( (NMHEADER *) HB_PARNL( 1 ) )->pitem )->iOrder + 1 );
+   hb_retni( ( ( NMHEADERparam( 1 ) )->pitem )->iOrder + 1 );
 }
 
 HB_FUNC( LISTVIEW_SETITEMCOUNT )
@@ -8794,7 +8794,7 @@ HB_FUNC( LISTVIEW_REDRAWITEMS )
 
 HB_FUNC( LISTVIEW_ITEMACTIVATE )
 {
-   LPNMITEMACTIVATE pData = (NMITEMACTIVATE *) HB_PARNL( 1 );
+   LPNMITEMACTIVATE pData = NMITEMACTIVATEparam( 1 );
 
    hb_reta( 3 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -8804,7 +8804,7 @@ HB_FUNC( LISTVIEW_ITEMACTIVATE )
 
 HB_FUNC( LISTVIEW_LISTVIEW )
 {
-   LPNMLISTVIEW pData = ( NMLISTVIEW * ) HB_PARNL( 1 );
+   LPNMLISTVIEW pData = NMLISTVIEWparam( 1 );
 
    hb_reta( 2 );
    HB_STORNI( pData->iItem + 1, -1, 1 );
@@ -8840,8 +8840,8 @@ HB_FUNC( LISTVIEW_HITTEST )
 HB_FUNC( GET_XY_LPARAM )
 {
    hb_reta( 2 );
-   HB_STORNI( GET_Y_LPARAM( HB_PARNL( 1 ) ), -1, 1 );
-   HB_STORNI( GET_X_LPARAM( HB_PARNL( 1 ) ), -1, 2 );
+   HB_STORNI( GET_Y_LPARAM( LPARAMparam( 1 ) ), -1, 1 );
+   HB_STORNI( GET_X_LPARAM( LPARAMparam( 1 ) ), -1, 2 );
 }
 
 #if( defined( __BORLANDC__ ) && ( __TURBOC__ <= 0x0551 ) ) || ( defined ( __MINGW32__ ) && defined ( __MINGW32_VERSION ) ) || defined ( __XCC__ )
@@ -8855,8 +8855,8 @@ typedef struct tagNMLVSCROLL {
 HB_FUNC( GET_DXDY_LPARAM )
 {
    hb_reta( 2 );
-   HB_STORNI( ( (LPNMLVSCROLL) HB_PARNL( 1 ) )->dx, -1, 1 );
-   HB_STORNI( ( (LPNMLVSCROLL) HB_PARNL( 1 ) )->dy, -1, 2 );
+   HB_STORNI( ( NMLVSCROLLparam( 1 ) )->dx, -1, 1 );
+   HB_STORNI( ( NMLVSCROLLparam( 1 ) )->dy, -1, 2 );
 }
 
 HB_FUNC( HEADER_HITTEST )
@@ -9180,12 +9180,12 @@ HB_FUNC( LISTVIEW_DELETECOLUMN )
 
 HB_FUNC( GETGRIDVKEY )
 {
-   hb_retnl( ( (LV_KEYDOWN *) (LPARAM) HB_PARNL( 1 ) )->wVKey );
+   hb_retnl( ( LV_KEYDOWNparam( 1 ) )->wVKey );
 }
 
 HB_FUNC( GETGRIDVKEYASCHAR )
 {
-   hb_retni( MapVirtualKey( (UINT) ( ( (LV_KEYDOWN *) (LPARAM) HB_PARNL( 1 ) )->wVKey ), 2 ) );
+   hb_retni( MapVirtualKey( (UINT) ( ( LV_KEYDOWNparam( 1 ) )->wVKey ), 2 ) );
 }
 
 static int TGrid_Notify_CustomDraw_GetColor( PHB_ITEM pSelf, UINT x, UINT y, int sGridColor, int sObjColor, int iDefaultColor )
@@ -9248,7 +9248,7 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
 
 HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
 {
-   LPNMCUSTOMDRAW lpnmcd = ( LPNMCUSTOMDRAW ) HB_PARNL( 1 );
+   LPNMCUSTOMDRAW lpnmcd = NMCUSTOMDRAWparam( 1 );
    long lColor;
 
    if( lpnmcd->dwDrawStage == CDDS_PREPAINT )
@@ -9565,7 +9565,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
 
 HB_FUNC( TGRID_NOTIFY_CUSTOMDRAW )
 {
-   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) HB_PARNL( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
+   hb_retni( TGrid_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), LPARAMparam( 2 ), hb_parl( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parl( 6 ), hb_parl( 7 ), hb_parl( 8 ), hb_parl( 9 ) ) );
 }
 
 HB_FUNC( LISTVIEW_GETCHECKSTATE )
@@ -9612,22 +9612,22 @@ HB_FUNC( HB_MILLISECONDS )
 
 HB_FUNC( GETGRIDCOLUMN )
 {
-   hb_retni( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->iSubItem );
+   hb_retni( ( NMLISTVIEWparam( 1 ) )->iSubItem );
 }
 
 HB_FUNC( GETGRIDOLDSTATE )
 {
-   hb_retni( (int) ( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->uOldState ) );
+   hb_retni( (int) ( ( NMLISTVIEWparam( 1 ) )->uOldState ) );
 }
 
 HB_FUNC( GETGRIDNEWSTATE )
 {
-   hb_retni( (int) ( ( (NMLISTVIEW *) HB_PARNL( 1 ) )->uNewState ) );
+   hb_retni( (int) ( ( NMLISTVIEWparam( 1 ) )->uNewState ) );
 }
 
 HB_FUNC( GETGRIDDISPINFOINDEX )
 {
-   NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
+   NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
    int iItem = pDispInfo->item.iItem;
    int iSubItem = pDispInfo->item.iSubItem;
 
@@ -9639,14 +9639,14 @@ HB_FUNC( GETGRIDDISPINFOINDEX )
 HB_FUNC( SETGRIDQUERYDATA )
 {
    PHB_ITEM pValue = hb_itemNew( NULL );
-   NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
+   NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    pDispInfo->item.pszText = (LPTSTR) HB_UNCONST( hb_itemGetCPtr( pValue ) );
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )
 {
-    NMLVDISPINFO *pDispInfo = (NMLVDISPINFO *) HB_PARNL( 1 );
+    NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
     pDispInfo->item.iImage = hb_parni( 2 );
 }
 

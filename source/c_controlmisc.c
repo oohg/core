@@ -997,7 +997,7 @@ HB_FUNC( GENERIC_ONMOUSEDRAG )
    if( ImageList_DragMove( pnt.x, pnt.y ) )
    {
       /* set drag cursor */
-      SetDragCursorARROW( ( ( (WPARAM) hb_parnl( 1 ) & MK_CONTROL) == MK_CONTROL ) );
+      SetDragCursorARROW( ( ( WPARAMparam( 1 ) & MK_CONTROL) == MK_CONTROL ) );
 
       /* hide the dragged image so the background can be refreshed */
       ImageList_DragShowNolock( FALSE );

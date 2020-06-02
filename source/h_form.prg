@@ -1370,8 +1370,8 @@ HB_FUNC_STATIC( TFORM_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) 
 
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
 
    switch( message )
@@ -1824,7 +1824,7 @@ FUNCTION _OOHG_TForm_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TForm
 
 #pragma BEGINDUMP
 
-BOOL _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
+BOOL _OOHG_AdjustSize( int iBorder, LPRECT rect, int iMinWidth, int iMaxWidth, int iMinHeight, int iMaxHeight )
 {
    int iWidth, iHeight;
    BOOL bChanged = FALSE;
@@ -1879,10 +1879,10 @@ BOOL _OOHG_AdjustSize( int iBorder, RECT * rect, int iMinWidth, int iMaxWidth, i
 
 HB_FUNC_STATIC( _TFORM_SIZING )          /* FUNCTION _TForm_Sizing( wParam, lParam, nMinWidth, nMaxWidth, nMinHeight, nMaxHeight ) -> lChanged */
 {
-   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), ( RECT * ) HB_PARNL( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
+   hb_retl( _OOHG_AdjustSize( hb_parni( 1 ), LPRECTparam( 2 ), hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) ) );
 }
 
-BOOL _OOHG_AdjustPosition( RECT * rect, int iForceRow, int iForceCol )
+BOOL _OOHG_AdjustPosition( LPRECT rect, int iForceRow, int iForceCol )
 {
    BOOL bChanged = FALSE;
 
@@ -1925,7 +1925,7 @@ HB_FUNC_STATIC( _TFORM_MOVING )          /* FUNCTION _TForm_Moving( lParam, nFor
       iForceCol = -1;
    }
 
-   hb_retl( _OOHG_AdjustPosition( ( RECT * ) HB_PARNL( 1 ), iForceRow, iForceCol ) );
+   hb_retl( _OOHG_AdjustPosition( LPRECTparam( 1 ), iForceRow, iForceCol ) );
 }
 
 #pragma ENDDUMP

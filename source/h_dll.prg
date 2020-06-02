@@ -181,7 +181,7 @@ HB_FUNC( OOHG_CALLDLL32 )
          }
          else
          {
-            dd[ i ] = (LONG_PTR) HB_PARNL( i + 3 );
+            dd[ i ] = LONG_PTRparam( i + 3 );
          }
       }
 

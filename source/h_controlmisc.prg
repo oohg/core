@@ -2012,20 +2012,20 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT)   hb_parni( 2 );
-   WPARAM wParam  = (WPARAM) HB_PARNL( 3 );
-   LPARAM lParam  = (LPARAM) HB_PARNL( 4 );
+   WPARAM wParam  = WPARAMparam( 3 );
+   LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   ULONG_PTR lData;
+   HCURSOR lData;
 
    switch( message )
    {
       case WM_MOUSEMOVE:
          _OOHG_Send( pSelf, s_hCursor );
          hb_vmSend( 0 );
-         lData = HB_PARNL( -1 );
+         lData = HCURSORparam( -1 );
          if( lData )
          {
-            SetCursor( ( HCURSOR ) lData );
+            SetCursor( lData );
          }
          if( wParam == MK_LBUTTON )
          {
