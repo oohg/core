@@ -417,22 +417,22 @@ HB_FUNC( GETTEMPDIR )
 
 HB_FUNC( POSTMESSAGE )
 {
-   hb_retl( (BOOL) PostMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   hb_retl( (BOOL) PostMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
 }
 
 HB_FUNC( DEFWINDOWPROC )
 {
-   LRESULTret( DefWindowProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( DefWindowProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
 }
 
 HB_FUNC( DEFFRAMEPROC )
 {
-   LRESULTret( DefFrameProc( HWNDparam( 1 ), HWNDparam( 2 ), (UINT) hb_parni( 3 ), (WPARAM) HB_PARNL( 4 ), (LPARAM) HB_PARNL( 5 ) ) );
+   LRESULTret( DefFrameProc( HWNDparam( 1 ), HWNDparam( 2 ), (UINT) hb_parni( 3 ), WPARAMparam( 4 ), LPARAMparam( 5 ) ) );
 }
 
 HB_FUNC( DEFMDICHILDPROC )
 {
-   LRESULTret( DefMDIChildProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) HB_PARNL( 3 ), (LPARAM) HB_PARNL( 4 ) ) );
+   LRESULTret( DefMDIChildProc( HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
 }
 
 HB_FUNC( GETSTOCKOBJECT )
@@ -644,9 +644,19 @@ HB_FUNC( GETWINDOWLONG )
    HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ) ) );
 }
 
+HB_FUNC( GETWINDOWLONGPTR )
+{
+   HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ) ) );
+}
+
 HB_FUNC( SETWINDOWLONG )
 {
-   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ), HB_PARNL( 3 ) ) );
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ), LONG_PTRparam( 3 ) ) );
+}
+
+HB_FUNC( SETWINDOWLONGPTR )
+{
+   HB_RETNL( SetWindowLongPtr( HWNDparam( 1 ), hb_parni( 2 ), LONG_PTRparam( 3 ) ) );
 }
 
 /**************************************************************************************/
