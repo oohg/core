@@ -104,11 +104,13 @@ typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );
 
 static HMODULE hAtl = NULL;                 /* Thread safe, see _Ax_Init() and _Ax_DeInit() */
 static LPAtlAxGetControl AtlAxGetControl;   /* Thread safe, see _Ax_Init() and _Ax_DeInit() */
+static HRESULT res = 0xFFFFFFFF;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static void _Ax_Init( void )
+static BOOL _Ax_Init( void )
 {
    LPAtlAxWinInit AtlAxWinInit;
+   BOOL bSuccess;
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
@@ -117,10 +119,20 @@ static void _Ax_Init( void )
       hAtl = LoadLibrary( "ATL.DLL" );
       AtlAxWinInit       = (LPAtlAxWinInit) _OOHG_GetProcAddress( hAtl, "AtlAxWinInit" );
       AtlAxGetControl    = (LPAtlAxGetControl) _OOHG_GetProcAddress( hAtl, "AtlAxGetControl" );
-      ( AtlAxWinInit )();
+      bSuccess = ( AtlAxWinInit )();
+      if( bSuccess )
+      {
+         res = S_OK;
+      }
+      else
+      {
+         res = E_FAIL;
+      }
    }
 
    ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return ( hAtl != NULL );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -140,30 +152,41 @@ void _Ax_DeInit( void )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId -> hActiveXWnd */
 {
-   HWND hControl;
+   HWND hControl = NULL;
    int iStyle, iStyleEx;
 
    iStyle = WS_CHILD | WS_CLIPCHILDREN | hb_parni( 7 );
    iStyleEx = 0;
 
-   _Ax_Init();
-   hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle,
-                              hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
-                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+   if( _Ax_Init() )
+   {
+      hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle,
+                                 hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
+                                 HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+   }
 
    HWNDret( hControl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( ATLAXHRESULT )          /* FUNCTION AtlAxHResult() -> res */
+{
+   hb_retnl( res );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ATLAXGETDISP )          /* FUNCTION AtlAxGetDisp( hWnd ) -> pDisp */
 {
    IUnknown *pUnk;
-   IDispatch *pDisp;
+   IDispatch *pDisp = NULL;
 
-   _Ax_Init();
-   AtlAxGetControl( HWNDparam( 1 ), &pUnk );
-   pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, (void **) (void *) &pDisp );
-   pUnk->lpVtbl->Release( pUnk );
+   if( _Ax_Init() )
+   {
+      res = AtlAxGetControl( HWNDparam( 1 ), &pUnk );
+      pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, (void **) (void *) &pDisp );
+      pUnk->lpVtbl->Release( pUnk );
+   }
+
    HWNDret( pDisp );
 }
 
