@@ -179,6 +179,8 @@ CLASS TPrintBase
    DATA oParent                   INIT NIL                   READONLY
    DATA oWinReport                INIT NIL                   READONLY
 
+   DESTRUCTOR Destroy
+
    METHOD BeginDoc
    METHOD BeginDocX               BLOCK { || NIL }
    METHOD BeginPage
@@ -332,6 +334,11 @@ METHOD SetCpl( nCpl ) CLASS TPrintBase
    ENDIF
 
    RETURN ::nFontSize
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Destroy() CLASS TPrintBase
+
+   RETURN ::Release()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TPrintBase
