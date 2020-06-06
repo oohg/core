@@ -1841,11 +1841,13 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
       If HB_IsLogical( lValid ) .AND. ! lValid
          lRet := .F.
          cValidMessage := aEditControls[ nItem ]:cValidMessage
-         cValidMessage := _OOHG_Eval( cValidMessage, _OOHG_ThisItemCellValue )
+         IF HB_ISBLOCK( cValidMessage )
+            cValidMessage := _OOHG_Eval( cValidMessage, _OOHG_ThisItemCellValue )
+         ENDIF
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
-            MsgExclamation( cValidMessage )                                        // TODO: Add title
+            MsgExclamation( cValidMessage, _OOHG_Messages( MT_MISCELL, 9 ) )
          Else
-            MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ) )                              // TODO: Add title
+            MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          EndIf
          aEditControls[ nItem ]:SetFocus()
       EndIf
@@ -6478,9 +6480,9 @@ METHOD Valid() CLASS TGridControl
          cValidMessage := Eval( cValidMessage, uValue )
       EndIf
       If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
-         MsgExclamation( cValidMessage )                                        // TODO: Add title
+         MsgExclamation( cValidMessage, _OOHG_Messages( MT_MISCELL, 9 ) )
       Else
-         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ) )                              // TODO: Add title
+         MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       EndIf
       ::oControl:SetFocus()
    EndIf
