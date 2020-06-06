@@ -36,42 +36,35 @@ rem
    set HG_FILE=%1
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
-   set HG_USE_ADS=FALSE
-   set HG_USE_MYSQL=FALSE
-   set HG_USE_ODBC=FALSE
+   set HG_SEARCH=
    set HG_USE_RC=TRUE
-   set HG_USE_ZLIB=FALSE
    set HG_W_LIBS=
 
 :LOOP_START
 
-   if    "%2" == ""    goto LOOP_END
-   if /I "%2" == "/D"  goto SW_DEBUG
-   if /I "%2" == "-D"  goto SW_DEBUG
-   if /I "%2" == "/C"  goto SW_CONSOLE
-   if /I "%2" == "-C"  goto SW_CONSOLE
-   if /I "%2" == "/I"  goto SW_NORC
-   if /I "%2" == "-I"  goto SW_NORC
-   if /I "%2" == "-P"  goto SW_PPO
-   if /I "%2" == "/P"  goto SW_PPO
-   if /I "%2" == "-W3" goto SW_W3
-   if /I "%2" == "/W3" goto SW_W3
-   if /I "%2" == "-NR" goto SW_NORUN
-   if /I "%2" == "/NR" goto SW_NORUN
-   if /I "%2" == "/L"  goto SW_USELOG
-   if /I "%2" == "-L"  goto SW_USELOG
-   if /I "%2" == "/O"  goto SW_ODBC
-   if /I "%2" == "-O"  goto SW_ODBC
-   if /I "%2" == "/Z"  goto SW_ZLIB
-   if /I "%2" == "-Z"  goto SW_ZLIB
-   if /I "%2" == "/A"  goto SW_ADS
-   if /I "%2" == "-A"  goto SW_ADS
-   if /I "%2" == "/M"  goto SW_MYSQL
-   if /I "%2" == "-M"  goto SW_MYSQL
-   if /I "%2" == "/S"  goto SW_SILENT
-   if /I "%2" == "-S"  goto SW_SILENT
-   if /I "%2" == "/V"  goto SW_VERBOSE
-   if /I "%2" == "-V"  goto SW_VERBOSE
+   if    "%2" == ""      goto LOOP_END
+   if /I "%2" == "/D"    goto SW_DEBUG
+   if /I "%2" == "-D"    goto SW_DEBUG
+   if /I "%2" == "/C"    goto SW_CONSOLE
+   if /I "%2" == "-C"    goto SW_CONSOLE
+   if /I "%2" == "/NORC" goto SW_NORC
+   if /I "%2" == "-NORC" goto SW_NORC
+   if /I "%2" == "-P"    goto SW_PPO
+   if /I "%2" == "/P"    goto SW_PPO
+   if /I "%2" == "-W3"   goto SW_W3
+   if /I "%2" == "/W3"   goto SW_W3
+   if /I "%2" == "-NR"   goto SW_NORUN
+   if /I "%2" == "/NR"   goto SW_NORUN
+   if /I "%2" == "-NRUN" goto SW_NORUN
+   if /I "%2" == "/NRUN" goto SW_NORUN
+   if /I "%2" == "/L"    goto SW_USELOG
+   if /I "%2" == "-L"    goto SW_USELOG
+   if /I "%2" == "/LOG"  goto SW_USELOG
+   if /I "%2" == "-LOG"  goto SW_USELOG
+   if /I "%2" == "/S"    goto SW_SILENT
+   if /I "%2" == "-S"    goto SW_SILENT
+   if /I "%2" == "/V"    goto SW_VERBOSE
+   if /I "%2" == "-V"    goto SW_VERBOSE
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -135,37 +128,16 @@ rem
    shift
    goto LOOP_START
 
-:SW_ODBC
-
-   set HG_USE_ODBC=TRUE
-   shift
-   goto LOOP_START
-
-:SW_ZLIB
-
-   set HG_USE_ZLIB=TRUE
-   shift
-   goto LOOP_START
-
-:SW_ADS
-
-   set HG_USE_ADS=TRUE
-   shift
-   goto LOOP_START
-
-:SW_MYSQL
-
-   set HG_USE_MYSQL=TRUE
-   shift
-   goto LOOP_START
-
 :LOOP_END
+
+   set HG_SEARCH=-i%HG_ROOT%\resources;%HG_ROOT%\include;
+   if not "%HG_INC_RC%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_RC%
 
    if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc                _temp.rc %HG_C_LOG%
-   "%HG_BCC%\bin\brc32.exe" -r -i%HG_ROOT%\resources;%HG_ROOT%\include _temp.rc %HG_C_LOG%
+   "%HG_BCC%\bin\brc32.exe" -r %HG_SEARCH% _temp.rc %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
    goto COMPILE_PRG
 
@@ -174,20 +146,23 @@ rem
    if not exist %HG_FILE%.rc goto COMPILE_PRG
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   %HG_BCC%\bin\brc32.exe -r _temp.rc %HG_C_LOG%
+   %HG_BCC%\bin\brc32.exe -r %HG_SEARCH% _temp.rc %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_PRG
 
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
-   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_DEFINES% %HG_PRG_LOG%
+   set HG_SEARCH=-i%HG_HRB%\include;%HG_ROOT%\include;.
+   if not "%HG_INC_HRB%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_HRB%
+   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% %HG_SEARCH% %HG_DEFINES% %HG_PRG_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_C
 
-   %HG_BCC%\bin\bcc32 -c -O2 -tW -tWM -M -w -I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include; -L%HG_BCC%\lib; %HG_FILE%.c %HG_C_LOG%
+   set HG_SEARCH=-I%HG_HRB%\include;%HG_BCC%\include;%HG_ROOT%\include;%HG_INC_CCOMP%
+   %HG_BCC%\bin\bcc32 -c -O2 -tW -tWM -M -w %HG_SEARCH% -L%HG_BCC%\lib; %HG_FILE%.c %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling %HG_FILE%.c! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -203,10 +178,6 @@ rem
    set HG_C_LIBS=%HG_C_LIBS% filemem libmisc hbmzip tip hbzebra
    set HG_C_LIBS=%HG_C_LIBS% hbzip rddsql sevenzip
    set HG_C_LIBS=%HG_C_LIBS% hbhpdf libharu png
-   if "%HG_USE_ODBC%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% hbodbc odbc32 sddodbc
-   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% zlib
-   if "%HG_USE_ADS%"   == "TRUE" set HG_C_LIBS=%HG_C_LIBS% rddads ace32
-   if "%HG_USE_MYSQL%" == "TRUE" set HG_C_LIBS=%HG_C_LIBS% mysql libmysqldll
    goto LIBS_WINDOWS
 
 :LIBS_HARBOUR
@@ -220,10 +191,6 @@ rem
    set HG_C_LIBS=%HG_C_LIBS% rddsql hbziparc minizip
    rem hbhpdf must precede hbwin png xhb
    set HG_C_LIBS=%HG_C_LIBS% hbhpdf hpdf hbwin png xhb
-   if "%HG_USE_ODBC%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% hbodbc sddodbc
-   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% hbzlib            
-   if "%HG_USE_ADS%"   == "TRUE" set HG_C_LIBS=%HG_C_LIBS% rddads ace32
-   if "%HG_USE_MYSQL%" == "TRUE" set HG_C_LIBS=%HG_C_LIBS% mysql libmysqldll
 
 :LIBS_WINDOWS
 
@@ -246,9 +213,10 @@ rem
 
 :LINK
 
+   set HG_SEARCH=-L%HG_BCC%\lib;%HG_BCC%\lib\psdk;
    if not "%HG_COMP_TYPE%" == "DEBUG" set HG_C_FLAGS=-Gn -Tpe -aa %HG_C_FLAGS%
    if     "%HG_COMP_TYPE%" == "DEBUG" set HG_C_FLAGS=-Gn -Tpe -ap %HG_C_FLAGS%
-   %HG_BCC%\bin\ilink32.exe %HG_C_FLAGS% -L%HG_BCC%\lib;%HG_BCC%\lib\psdk; @b32.bc %HG_C_LOG%
+   %HG_BCC%\bin\ilink32.exe %HG_C_FLAGS% %HG_SEARCH% @b32.bc %HG_C_LOG%
 
 :CLEANUP
 
@@ -265,11 +233,8 @@ rem
    set HG_DEFINES=
    set HG_EXTRA=
    set HG_PRG_LOG=
-   set HG_USE_ADS=
-   set HG_USE_MYSQL=
-   set HG_USE_ODBC=
+   set HG_SEARCH=
    set HG_USE_RC=
-   set HG_USE_ZLIB=
    set HG_W_LIBS=
 
    rem *** Run ***

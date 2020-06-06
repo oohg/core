@@ -185,106 +185,127 @@ rem
 
 :COMPILE_HM30
 
-   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb30
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\hb30
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"    == "" set LIB_GUI=lib
-   if "%LIB_HRB%"    == "" set LIB_HRB=lib
-   if "%BIN_HRB%"    == "" set BIN_HRB=bin
-   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM30.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM30.o
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_HM32
 
-   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb32
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\hb32
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb\mingw
-   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw
-   if "%BIN_HRB%"    == "" set BIN_HRB=bin
-   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM32.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\hb\mingw
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\mingw
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM32.o
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_HM3264
 
-   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb3264
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\hb3264
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb\mingw64
-   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\mingw64
-   if "%BIN_HRB%"    == "" set BIN_HRB=bin
-   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\hb\mingw64
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\mingw64
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_HM34
 
-   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb34
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\hb34
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb34\mingw
-   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\clang
-   if "%BIN_HRB%"    == "" set BIN_HRB=bin
-   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM34.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\hb34\mingw
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\clang
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM34.o
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_HM3464
 
-   if "%HG_HRB%"     == "" set HG_HRB=%HG_ROOT%\hb3464
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%"   == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\hb3464
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"    == "" set LIB_GUI=lib\hb34\mingw64
-   if "%LIB_HRB%"    == "" set LIB_HRB=lib\win\clang64
-   if "%BIN_HRB%"    == "" set BIN_HRB=bin
-   if "%HG_RC%"      == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3464.o
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\hb34\mingw64
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\clang64
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3464.o
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_XB
 
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhbcc
-   if "%HG_BCC%"   == "" set HG_BCC=%HG_CCOMP%
-   if "%HG_BCC%"   == "" if /I "%1" == "XB58" set HG_BCC=c:\Borland\BCC58
-   if "%HG_BCC%"   == "" set HG_BCC=c:\Borland\BCC55
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\xhbcc
+   if "%HG_BCC%"       == "" set HG_BCC=%HG_CCOMP%
+   if "%HG_BCC%"       == "" if /I "%1" == "XB58" set HG_BCC=c:\Borland\BCC58
+   if "%HG_BCC%"       == "" set HG_BCC=c:\Borland\BCC55
    set HG_CCOMP=%HG_BCC%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\bcc
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=pcrepos hbhpdf libharu
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\xhb\bcc
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\oohg.res
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=pcrepos hbhpdf libharu
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-i%HG_ROOT%\resources
    set HG_FLAVOR=XHARBOUR
    call "%HG_ROOT%\compile_bcc.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
 :COMPILE_XM
 
-   if "%HG_HRB%"   == "" set HG_HRB=%HG_ROOT%\xhmingw
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_CCOMP%
-   if "%HG_MINGW%" == "" set HG_MINGW=%HG_HRB%\comp\mingw
+   if "%HG_HRB%"       == "" set HG_HRB=%HG_ROOT%\xhmingw
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_CCOMP%
+   if "%HG_MINGW%"     == "" set HG_MINGW=%HG_HRB%\comp\mingw
    set HG_CCOMP=%HG_MINGW%
-   if "%LIB_GUI%"  == "" set LIB_GUI=lib\xhb\mingw
-   if "%LIB_HRB%"  == "" set LIB_HRB=lib
-   if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   if "%HG_RC%"    == "" set HG_RC=%HG_ROOT%\resources\oohg.res
-   if "%HG_ADDLIBS%" == "" set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
+   if "%LIB_GUI%"      == "" set LIB_GUI=lib\xhb\mingw
+   if "%LIB_HRB%"      == "" set LIB_HRB=lib
+   if "%BIN_HRB%"      == "" set BIN_HRB=bin
+   if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\oohg.res
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lpcrepos -lhbhpdf -llibharu
+   if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
+   if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=%HG_INC_HRB%
+   if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=XHARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END

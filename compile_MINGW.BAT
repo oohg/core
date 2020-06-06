@@ -45,42 +45,35 @@ rem
    set HG_FILE=%1
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
-   set HG_USE_ADS=FALSE
-   set HG_USE_MYSQL=FALSE
-   set HG_USE_ODBC=FALSE
+   set HG_SEARCH=
    set HG_USE_RC=TRUE
-   set HG_USE_ZLIB=FALSE
    set HG_W_LIBS=
 
 :LOOP_START
 
-   if    "%2" == ""    goto LOOP_END
-   if /I "%2" == "/D"  goto SW_DEBUG
-   if /I "%2" == "-D"  goto SW_DEBUG
-   if /I "%2" == "/C"  goto SW_CONSOLE
-   if /I "%2" == "-C"  goto SW_CONSOLE
-   if /I "%2" == "/I"  goto SW_NORC
-   if /I "%2" == "-I"  goto SW_NORC
-   if /I "%2" == "-P"  goto SW_PPO
-   if /I "%2" == "/P"  goto SW_PPO
-   if /I "%2" == "-W3" goto SW_W3
-   if /I "%2" == "/W3" goto SW_W3
-   if /I "%2" == "-NR" goto SW_NORUN
-   if /I "%2" == "/NR" goto SW_NORUN
-   if /I "%2" == "/L"  goto SW_USELOG
-   if /I "%2" == "-L"  goto SW_USELOG
-   if /I "%2" == "/O"  goto SW_ODBC
-   if /I "%2" == "-O"  goto SW_ODBC
-   if /I "%2" == "/Z"  goto SW_ZLIB
-   if /I "%2" == "-Z"  goto SW_ZLIB
-   if /I "%2" == "/A"  goto SW_ADS
-   if /I "%2" == "-A"  goto SW_ADS
-   if /I "%2" == "/M"  goto SW_MYSQL
-   if /I "%2" == "-M"  goto SW_MYSQL
-   if /I "%2" == "/S"  goto SW_SILENT
-   if /I "%2" == "-S"  goto SW_SILENT
-   if /I "%2" == "/V"  goto SW_VERBOSE
-   if /I "%2" == "-V"  goto SW_VERBOSE
+   if    "%2" == ""      goto LOOP_END
+   if /I "%2" == "/D"    goto SW_DEBUG
+   if /I "%2" == "-D"    goto SW_DEBUG
+   if /I "%2" == "/C"    goto SW_CONSOLE
+   if /I "%2" == "-C"    goto SW_CONSOLE
+   if /I "%2" == "/NORC" goto SW_NORC
+   if /I "%2" == "-NORC" goto SW_NORC
+   if /I "%2" == "-P"    goto SW_PPO
+   if /I "%2" == "/P"    goto SW_PPO
+   if /I "%2" == "-W3"   goto SW_W3
+   if /I "%2" == "/W3"   goto SW_W3
+   if /I "%2" == "-NR"   goto SW_NORUN
+   if /I "%2" == "/NR"   goto SW_NORUN
+   if /I "%2" == "-NRUN" goto SW_NORUN
+   if /I "%2" == "/NRUN" goto SW_NORUN
+   if /I "%2" == "/L"    goto SW_USELOG
+   if /I "%2" == "-L"    goto SW_USELOG
+   if /I "%2" == "/LOG"  goto SW_USELOG
+   if /I "%2" == "-LOG"  goto SW_USELOG
+   if /I "%2" == "/S"    goto SW_SILENT
+   if /I "%2" == "-S"    goto SW_SILENT
+   if /I "%2" == "/V"    goto SW_VERBOSE
+   if /I "%2" == "-V"    goto SW_VERBOSE
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -143,30 +136,6 @@ rem
    shift
    goto LOOP_START
 
-:SW_ODBC
-
-   set HG_USE_ODBC=TRUE
-   shift
-   goto LOOP_START
-
-:SW_ZLIB
-
-   set HG_USE_ZLIB=TRUE
-   shift
-   goto LOOP_START
-
-:SW_ADS
-
-   set HG_USE_ADS=TRUE
-   shift
-   goto LOOP_START
-
-:SW_MYSQL
-
-   set HG_USE_MYSQL=TRUE
-   shift
-   goto LOOP_START
-
 :LOOP_END
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
@@ -177,6 +146,7 @@ rem
 
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
+REM add search path with -I
    windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
@@ -199,13 +169,16 @@ rem
 
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
-   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% -i%HG_HRB%\include;%HG_ROOT%\include;. %HG_DEFINES% %HG_PRG_LOG%
+   set HG_SEARCH=-i%HG_HRB%\include;%HG_ROOT%\include;.
+   if not "%HG_INC_HRB%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_HRB%
+   %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% %HG_SEARCH% %HG_DEFINES% %HG_PRG_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 goto CLEANUP
 
 :COMPILE_C
 
-   gcc -I. -I%HG_HRB%\include -I%HG_ROOT%\include -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_C_LOG%
+   set HG_SEARCH=-I. -I%HG_HRB%\include -I%HG_ROOT%\include %HG_INC_CCOMP%
+   gcc %HG_SEARCH% -Wall -c %HG_FILE%.c -o %HG_FILE%.o %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling %HG_FILE%.c! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -238,10 +211,6 @@ rem
    set HG_C_LIBS=%HG_C_LIBS% -lfilemem -llibmisc -lhbmzip -ltip -lhbzebra
    set HG_C_LIBS=%HG_C_LIBS% -lhbzip -lrddsql -lsevenzip
    set HG_C_LIBS=%HG_C_LIBS% -lhbhpdf -llibharu -lpng
-   if "%HG_USE_ODBC%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lhbodbc -lsddodbc
-   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lzlib
-   if "%HG_USE_ADS%"   == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lrddads
-   if "%HG_USE_MYSQL%" == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lmysql -llibmysqldll
 
    goto OTHER_LIBS
 
@@ -256,10 +225,6 @@ rem
    set HG_C_LIBS=%HG_C_LIBS% -lrddsql -lhbziparc -lminizip
    rem hbhpdf must precede hbwin, png and xhb
    set HG_C_LIBS=%HG_C_LIBS% -lhbhpdf -llibhpdf -lhbwin -lpng -lxhb
-   if "%HG_USE_ODBC%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lhbodbc -lsddodbc
-   if "%HG_USE_ZLIB%"  == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lhbzlib
-   if "%HG_USE_ADS%"   == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lrddads
-   if "%HG_USE_MYSQL%" == "TRUE" set HG_C_LIBS=%HG_C_LIBS% -lmysql -lmysqldll
 
 :OTHER_LIBS
 
@@ -295,10 +260,6 @@ rem
    set "PATH=%HG_PATH%"
    set HG_PATH=
    set HG_STATIC_LIBS=
-   set HG_USE_ADS=
-   set HG_USE_MYSQL=
-   set HG_USE_ODBC=
-   set HG_USE_ZLIB=
    set HG_W_LIBS=
 
    rem *** Run ***
