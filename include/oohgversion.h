@@ -74,7 +74,7 @@
 #if defined(__RELEASE__)
    #define OOHG_VER_STATUS "stable"      /* Build status (all lowercase) */
 #else
-   #define OOHG_VER_STATUS "beta"
+   #define OOHG_VER_STATUS "rc1"
 #endif
 
 #define OOHG_VER_MAJOR        20
