@@ -352,7 +352,6 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
       nStyleEx += WS_EX_CONTROLPARENT
    ELSEIF ::nVirtualWidth > 0 .OR. ::nVirtualHeight > 0
       nStyle += WS_CLIPSIBLINGS + WS_CLIPCHILDREN
-      nStyleEx += WS_EX_COMPOSITED
    ENDIF
 
    ASSIGN ::nRow    VALUE y TYPE "N"
@@ -1131,6 +1130,8 @@ METHOD Events_Destroy() CLASS TForm
       ::ReleaseAttached()
       ::lReleased := .T.
    ENDIF
+
+   ::AcceptFiles := .F.
 
    // Update Form Index Variable
    IF ! Empty( ::Name )
