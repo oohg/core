@@ -621,6 +621,7 @@ HTHEME           ProcOpenThemeData( HWND, LPCWSTR );
 HRESULT          ProcSetWindowTheme( HWND, LPCWSTR, LPCWSTR );
 BOOL             SaveHBitmapToFile( HBITMAP, const TCHAR *, UINT, UINT, TCHAR *, ULONG, ULONG );
 void             _oohg_calldump( char *, char * );
+BOOL             _OOHG_ChangeWindowMessageFilter( UINT, DWORD );
 BOOL             _OOHG_DetermineColor( PHB_ITEM, LONG * );
 BOOL             _OOHG_DetermineColorReturn( PHB_ITEM, LONG *, BOOL );
 BOOL             _OOHG_UseGDIP( void );
