@@ -278,19 +278,20 @@ HB_FUNC( C_GETSPECIALFOLDER )
    hb_xfree( lpBuffer );
 }
 
-typedef BOOL ( WINAPI * GlobalMemoryStatusEx_ptr )( MEMORYSTATUSEX * );
+typedef BOOL ( WINAPI * CALL_GLOBALMEMORYSTATUSEX )( MEMORYSTATUSEX * );
 
 HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue */
 {
-   GlobalMemoryStatusEx_ptr fn_GlobalMemoryStatusEx = ( GlobalMemoryStatusEx_ptr ) _OOHG_GetProcAddress( GetModuleHandle( "KERNEL32.DLL" ), "GlobalMemoryStatusEx" );
+   CALL_GLOBALMEMORYSTATUSEX fGlobalMemoryStatusEx;
 
-   if( fn_GlobalMemoryStatusEx )
+   fGlobalMemoryStatusEx = (CALL_GLOBALMEMORYSTATUSEX) _OOHG_GetProcAddress( GetModuleHandle( "KERNEL32.DLL" ), "GlobalMemoryStatusEx" );
+   if( fGlobalMemoryStatusEx )
    {
       MEMORYSTATUSEX mstex;
 
       mstex.dwLength = sizeof( mstex );
 
-      if( fn_GlobalMemoryStatusEx( &mstex ) )
+      if( fGlobalMemoryStatusEx( &mstex ) )
       {
          if( HB_ISNUM( 1 ) && hb_parni( 1 ) >= 0 && hb_parni( 1 ) <= 6 )
          {
@@ -1046,9 +1047,9 @@ void _ShlWAPI_DeInit( void )
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-typedef BOOL ( WINAPI * PathCompactPathExA_Ptr )( LPTSTR pszOut, LPTSTR pszSrc, int cchMax, DWORD dwFlags );
+typedef BOOL ( WINAPI * CALL_PATHCOMPACTPATHEXA )( LPTSTR pszOut, LPTSTR pszSrc, int cchMax, DWORD dwFlags );
 
-static PathCompactPathExA_Ptr pPathCompactPathExA = NULL;
+static CALL_PATHCOMPACTPATHEXA fPathCompactPathExA = NULL;
 
 HB_FUNC( GETCOMPACTPATH )
 {
@@ -1061,13 +1062,13 @@ HB_FUNC( GETCOMPACTPATH )
    }
    if( hDllShlWAPI != NULL )
    {
-      if( pPathCompactPathExA == NULL )
+      if( fPathCompactPathExA == NULL )
       {
-         pPathCompactPathExA = ( PathCompactPathExA_Ptr ) _OOHG_GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
+         fPathCompactPathExA = (CALL_PATHCOMPACTPATHEXA) _OOHG_GetProcAddress( hDllShlWAPI, "PathCompactPathExA" );
       }
-      if( pPathCompactPathExA != NULL )
+      if( fPathCompactPathExA != NULL )
       {
-         bRet = pPathCompactPathExA( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), (LPTSTR) HB_UNCONST( hb_parc( 2 ) ), (int) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
+         bRet = fPathCompactPathExA( (LPTSTR) HB_UNCONST( hb_parc( 1 ) ), (LPTSTR) HB_UNCONST( hb_parc( 2 ) ), (int) hb_parni( 3 ), ( DWORD ) hb_parnl( 4 ) );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1109,9 +1110,9 @@ HB_FUNC( CLOSEHANDLE )
    CloseHandle( HANDLEparam( 1 ) );
 }
 
-typedef HRESULT ( WINAPI * STRRETTOBUFA )( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
+typedef HRESULT ( WINAPI * CALL_STRRETTOBUFA )( STRRET *, LPCITEMIDLIST, LPTSTR, UINT );
 
-static STRRETTOBUFA pStrRetToBufA = NULL;
+static CALL_STRRETTOBUFA fStrRetToBufA = NULL;
 
 HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf, UINT cchBuf )
 {
@@ -1124,13 +1125,13 @@ HRESULT WINAPI win_StrRetToBuf( STRRET *pstr, LPCITEMIDLIST pidl, LPTSTR pszBuf,
    }
    if( hDllShlWAPI != NULL )
    {
-      if( pStrRetToBufA == NULL )
+      if( fStrRetToBufA == NULL )
       {
-         pStrRetToBufA = ( STRRETTOBUFA ) _OOHG_GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
+         fStrRetToBufA = (CALL_STRRETTOBUFA) _OOHG_GetProcAddress( hDllShlWAPI, "StrRetToBufA" );
       }
-      if( pStrRetToBufA != NULL )
+      if( fStrRetToBufA != NULL )
       {
-         hRet = ( pStrRetToBufA ) ( pstr, pidl, pszBuf, cchBuf );
+         hRet = ( fStrRetToBufA ) ( pstr, pidl, pszBuf, cchBuf );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1485,9 +1486,9 @@ void _ProcessLib_DeInit( void )
 #define PROCESS_QUERY_LIMITED_INFORMATION 0x1000
 #endif
 
-typedef BOOL ( WINAPI * Func_EmptyWorkingSet )( HANDLE );
+typedef BOOL ( WINAPI * CALL_EMPTYWORKINGSET )( HANDLE );
 
-static Func_EmptyWorkingSet pEmptyWorkingSet = NULL;
+static CALL_EMPTYWORKINGSET fEmptyWorkingSet = NULL;
 
 HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] ) -> lSuccess */
 {
@@ -1496,7 +1497,7 @@ HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] )
     * This operation is useful primarily for testing and tuning.
     */
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-   if( pEmptyWorkingSet == NULL )
+   if( fEmptyWorkingSet == NULL )
    {
       if( hDllProcess == NULL )
       {
@@ -1508,16 +1509,16 @@ HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] )
       }
       if( hDllProcess != NULL )
       {
-         pEmptyWorkingSet = ( Func_EmptyWorkingSet ) _OOHG_GetProcAddress( hDllProcess, "K32EmptyWorkingSet" );
+         fEmptyWorkingSet = (CALL_EMPTYWORKINGSET) _OOHG_GetProcAddress( hDllProcess, "K32EmptyWorkingSet" );
       }
    }
-   if( ( hDllProcess != NULL ) && ( pEmptyWorkingSet == NULL ) )
+   if( ( hDllProcess != NULL ) && ( fEmptyWorkingSet == NULL ) )
    {
-      pEmptyWorkingSet = ( Func_EmptyWorkingSet ) _OOHG_GetProcAddress( hDllProcess, "EmptyWorkingSet" );
+      fEmptyWorkingSet = (CALL_EMPTYWORKINGSET) _OOHG_GetProcAddress( hDllProcess, "EmptyWorkingSet" );
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
-   if( pEmptyWorkingSet == NULL )
+   if( fEmptyWorkingSet == NULL )
    {
       hb_retl( FALSE );
    }
@@ -1532,7 +1533,7 @@ HB_FUNC( EMPTYWORKINGSET )          /* FUNCTION EmptyWorkingSet( [ ProcessID ] )
       }
       else
       {
-         hb_retl( ( BOOL) pEmptyWorkingSet( hProcess ) );
+         hb_retl( fEmptyWorkingSet( hProcess ) );
          CloseHandle( hProcess );
       }
    }
@@ -1551,13 +1552,33 @@ void _User32_DeInit( void )
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-typedef int ( WINAPI * PMessageBoxTimeout )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
-static PMessageBoxTimeout pMessageBoxTimeout = NULL;
+typedef BOOL ( WINAPI * CALL_CHANGEWINDOWMESSAGEFILTER )( UINT message, DWORD dwFlag );
+static CALL_CHANGEWINDOWMESSAGEFILTER fChangeWindowMessageFilter = NULL;
 
-#if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
-typedef BOOL ( WINAPI * PSetLayeredWindowAttributes )( HWND, COLORREF, BYTE, DWORD );
-static PSetLayeredWindowAttributes pSetLayeredWindowAttributes = NULL;
-#endif
+BOOL _OOHG_ChangeWindowMessageFilter( UINT message, DWORD dwFlag )
+{
+   BOOL bRet = FALSE;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+   if( hDllUser32 == NULL )
+   {
+      hDllUser32 = LoadLibrary( "USER32.DLL" );
+      if( hDllUser32 != NULL )
+      {
+         fChangeWindowMessageFilter = (CALL_CHANGEWINDOWMESSAGEFILTER) _OOHG_GetProcAddress( hDllUser32, "ChangeWindowMessageFilter" );
+      }
+   }
+   if( fChangeWindowMessageFilter != NULL )
+   {
+      bRet = fChangeWindowMessageFilter( message, dwFlag );
+   }
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   return bRet;
+}
+
+typedef int ( WINAPI * CALL_MESSAGEBOXTIMEOUT )( HWND, LPCSTR, LPCSTR, UINT, WORD, DWORD );
+static CALL_MESSAGEBOXTIMEOUT fMessageBoxTimeout = NULL;
 
 int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType, WORD wLanguageId, DWORD dwMilliseconds )
 {
@@ -1569,16 +1590,16 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
       hDllUser32 = LoadLibrary( "USER32.DLL" );
       if( hDllUser32 != NULL )
       {
-         pMessageBoxTimeout = ( PMessageBoxTimeout ) _OOHG_GetProcAddress( hDllUser32, "MessageBoxTimeoutA" );
+         fMessageBoxTimeout = (CALL_MESSAGEBOXTIMEOUT) _OOHG_GetProcAddress( hDllUser32, "MessageBoxTimeoutA" );
       }
    }
-   if( pMessageBoxTimeout == NULL )
+   if( fMessageBoxTimeout == NULL )
    {
       iRet = 0;
    }
    else
    {
-      iRet = pMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
+      iRet = fMessageBoxTimeout( hWnd, lpText, lpCaption, uType, wLanguageId, dwMilliseconds );
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
 
@@ -1598,6 +1619,11 @@ int WINAPI MessageBoxTimeout( HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT u
  * - dwFlags   Specifies an action to take. This parameter can be LWA_COLORKEY
  *    (When making a certain color transparent...) or LWA_ALPHA.
  */
+
+#if ! ( defined ( __MINGW32__ ) && ! defined ( __MINGW32_VERSION ) )
+typedef BOOL ( WINAPI * CALL_SETLAYEREDWINDOWATTRIBUTES )( HWND, COLORREF, BYTE, DWORD );
+static CALL_SETLAYEREDWINDOWATTRIBUTES fSetLayeredWindowAttributes = NULL;
+#endif
 
 HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )          /* FUNCTION SetLayeredWindowAttributes( hWnd, color, opacity, [ LWA_COLORKEY | LWA_ALPHA ] ) -> lSuccess */
 {
@@ -1627,18 +1653,18 @@ HB_FUNC( SETLAYEREDWINDOWATTRIBUTES )          /* FUNCTION SetLayeredWindowAttri
    }
    else
    {
-      if( pSetLayeredWindowAttributes == NULL )
+      if( fSetLayeredWindowAttributes == NULL )
       {
-         pSetLayeredWindowAttributes = ( PSetLayeredWindowAttributes ) GetProcAddress( hDllUser32, "SetLayeredWindowAttributes" );
+         fSetLayeredWindowAttributes = (CALL_SETLAYEREDWINDOWATTRIBUTES) GetProcAddress( hDllUser32, "SetLayeredWindowAttributes" );
       }
-      if( pSetLayeredWindowAttributes == NULL )
+      if( fSetLayeredWindowAttributes == NULL )
       {
          bRet = FALSE;
       }
       else
       {
          SetWindowLongPtr( hWnd, GWL_EXSTYLE, GetWindowLongPtr( hWnd, GWL_EXSTYLE ) | WS_EX_LAYERED );
-         bRet = ( pSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
+         bRet = ( fSetLayeredWindowAttributes )( hWnd, crKey, bAlpha, dwFlags );
       }
    }
    ReleaseMutex( _OOHG_GlobalMutex() );
@@ -1661,9 +1687,9 @@ void _ComCtl32_DeInit( void )
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-typedef HRESULT ( CALLBACK * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
+typedef HRESULT ( WINAPI * CALL_DLLGETVERSION )( DLLVERSIONINFO * );
 
-static CALL_DLLGETVERSION pDllGetVersion = NULL;
+static CALL_DLLGETVERSION fDllGetVersion = NULL;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVersion */
@@ -1678,15 +1704,15 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
    }
    if( hDllComctl32 != NULL )
    {
-      if( pDllGetVersion == NULL )
+      if( fDllGetVersion == NULL )
       {
-         pDllGetVersion = ( CALL_DLLGETVERSION ) _OOHG_GetProcAddress( hDllComctl32, "DllGetVersion" );
+         fDllGetVersion = (CALL_DLLGETVERSION) _OOHG_GetProcAddress( hDllComctl32, "DllGetVersion" );
       }
-      if( pDllGetVersion != NULL )
+      if( fDllGetVersion != NULL )
       {
          memset( &dll, 0, sizeof( dll ) );
          dll.cbSize = sizeof( dll );
-         if( ( pDllGetVersion )( &dll ) == S_OK )
+         if( ( fDllGetVersion )( &dll ) == S_OK )
          {
             iResult = dll.dwMajorVersion;
          }
