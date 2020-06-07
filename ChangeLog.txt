@@ -12,6 +12,13 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-07 14:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\bostaurus.hbp
+   * core\source\hbprinter.hbp
+   * core\source\miniprint.hbp
+   * core\source\oohg.hbp
+     * Some warnings for clang64 compiler.
+
 2020-06-06 00:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\oohgversion.h
      * Version bumped to release candidate 1 instead of beta.
