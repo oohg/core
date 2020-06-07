@@ -43,6 +43,7 @@ rem
    set HG_RUNEXE=-run
    set HG_EXTRA=
    set HG_COMP_TYPE=STD
+   set HG_USE_HBC=%HG_ROOT%\oohg.hbc
 
 :LOOP_START
 
@@ -52,6 +53,9 @@ rem
    if /I "%2" == "-NR"    goto SUPPRESS_RUN
    if /I "%2" == "/NR"    goto SUPPRESS_RUN
    if /I "%2" == "-GTWIN" goto SW_CONSOLE
+   if /I "%2" == "/GTWIN" goto SW_CONSOLE
+   if /I "%2" == "-NOHBC" goto SW_NOHBC
+   if /I "%2" == "/NOHBC" goto SW_NOHBC
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -75,6 +79,12 @@ rem
    shift
    goto LOOP_START
 
+:SW_NOHBC
+
+   set HG_USE_HBC=
+   shift
+   goto LOOP_START
+
 :LOOP_END
 
    if     "%HG_COMP_TYPE%" == "CONSOLE" set HG_EXTRA=-GTWIN %HG_EXTRA%
@@ -92,8 +102,8 @@ rem
 :BUILD
 
    rem *** Compile and Link ***
-   if     "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_ROOT%\oohg.hbc %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA%
-   if not "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_ROOT%\oohg.hbc %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% >> output.log 2>&1
+   if     "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA%
+   if not "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% >> output.log 2>&1
    if exist output.log type output.log
 
 :CLEANUP
