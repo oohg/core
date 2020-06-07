@@ -2598,7 +2598,7 @@ BOOL bt_bmp_SaveFile( HBITMAP hBitmap, const TCHAR* FileName, int nTypePicture )
 HB_FUNC( BT_BMP_SAVEFILE )    // ( hBitmap, cFileName, nType )
 {
    HBITMAP hBitmap = HBITMAPparam( 1 );
-   const TCHAR *FileName = (TCHAR *) hb_parc( 2 );
+   const TCHAR *FileName = hb_parc( 2 );
    int nTypePicture = (int) hb_parnl( 3 );
 
    hb_retl( (BOOL) bt_bmp_SaveFile( hBitmap, FileName, nTypePicture ) );
