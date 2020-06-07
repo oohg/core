@@ -1900,7 +1900,7 @@ FUNCTION _HMG_PRINTER_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, 
 
    LOCAL aResult
 
-   aResult := _HMG_PRINTER_C_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, .F., lIgnore, lGlobal )
+   aResult := _HMG_PRINTER_C_SetPrinterProperties( cPrinter, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nCopies, nDefaultSource, nQuality, nColor, nDuplex, nCollate, nScale, .T., lIgnore, lGlobal )
    ASize( aResult, 14 )
 /*
  * { hdcPrint, cPrinter, nCopies, nCollate, nError, nOrientation, nPaperSize, nPaperLength, nPaperWidth, nDefaultSource, nQuality, nColor, nDuplex, nScale }

@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\miniprint.prg
+     ! Lib shows an error message when a printer option is not
+       supported by it's drivers even if warnings were disabled.
+
 2020-06-07 14:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\bostaurus.hbp
    * core\source\hbprinter.hbp
