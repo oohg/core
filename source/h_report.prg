@@ -73,7 +73,7 @@
 FUNCTION EasyReport( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
       lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
       lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
-      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cDocName )
 
    LOCAL nPrevious
 
@@ -83,21 +83,21 @@ FUNCTION EasyReport( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nL
    TReport():EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
       lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
       lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
-      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cDocName )
 
    SetInteractiveClose( nPrevious )
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION ExtReport( cFileRep, cHeader )
+FUNCTION ExtReport( cFileRep, cHeader, cDocName )
 
    LOCAL nPrevious
 
    nPrevious := SetInteractiveClose()
    SET INTERACTIVECLOSE ON
 
-   TReport():ExtReport1( cFilerep, cHeader )
+   TReport():ExtReport1( cFilerep, cHeader, cDocName )
 
    SetInteractiveClose( nPrevious )
 
@@ -151,7 +151,7 @@ CLASS TReport FROM TPRINTBASE
 METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
       lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
       lSelect, cAlias, nLLMargin, aFormats, nPapersize, cHeader, lNoProp, lGroupEject, ;
-      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth ) CLASS TReport
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cDocName ) CLASS TReport
 
    LOCAL nFieldsCount, i, lHasTotals, aResul, nOldArea, nLin, cRompe, nCount
    LOCAL cLinea, aLenMemo, aValues, nCantLin, cField, uValue, cType, j
@@ -343,7 +343,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
 
    nOldArea := Select( cAlias )
 
-   ::oPrint:BeginDoc()
+   ::oPrint:BeginDoc( cDocName )
    ::oPrint:BeginPage()
    ::nPageNumber := 0
 
@@ -664,7 +664,7 @@ METHOD Headers( aHeaders1, aHeaders2, aWidths, nLin, cTitle, lMode, cGrpBy, cHdr
    RETURN nLin
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
+METHOD ExtReport1( cFileRep, cHeader, cDocName ) CLASS TReport
 
    LOCAL nCount, i, cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, aFormats, lGroupEject
    LOCAL nLPP, nCPL, nLLMargin, cAlias, lDos, lPreview, lSelect, cGraphic, lMul, nFI, nCI, cData
@@ -887,7 +887,7 @@ METHOD ExtReport1( cFileRep, cHeader ) CLASS TReport
    ::EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLPP, lDos, ;
       lPreview, cGraphic, nFI, nCI, nFF, nCF, lMul, cGrpBy, cHdrGrp, lLandscape, nCPL, ;
       lSelect, cAlias, nLLMargin, aFormats, nPaperSize, cHeader, lNoProp, lGroupEject, ;
-      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
+      nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cDocName )
 
    RETURN NIL
 
@@ -1173,7 +1173,7 @@ METHOD LeaColI( nPar ) CLASS TReport
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION __ReportFormWin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth )
+      nCopies, lColor, nScale, nLength, nWidth, cDocName )
 
    LOCAL nPrevious
 
@@ -1182,7 +1182,7 @@ FUNCTION __ReportFormWin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile
 
    TReportFormWin():DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth )
+      nCopies, lColor, nScale, nLength, nWidth, cDocName )
 
    SetInteractiveClose( nPrevious )
 
@@ -1221,7 +1221,7 @@ CLASS TReportFormWin FROM TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth ) CLASS TReportFormWin
+      nCopies, lColor, nScale, nLength, nWidth, cDocName ) CLASS TReportFormWin
 
    LOCAL oError, lSale := .F., nCol, nGroup, lAnySubTotals, sAuxST, lAnyTotals, xBreakVal, lBroke := .F.
 
@@ -1290,7 +1290,7 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
       ::nPageNumber := 1
       ::nLinesLeft := ::aReportData[ RP_LINES ]
 
-      ::oPrint:BeginDoc()
+      ::oPrint:BeginDoc( cDocName )
       ::oPrint:BeginPage()
 
       ::nPosRow := _RF_FIRSTROW

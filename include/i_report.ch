@@ -93,13 +93,15 @@
       [ SCALE <nscale> ] ;
       [ PAPERLENGTH <nlength> ] ;
       [ PAPERWIDTH <nwidth> ] ;
+      [ NAME <cname> ] ;
    => ;
       EasyReport( <ctitle>, <aheaders1>, <aheaders2>, <a>, <awidths>, <ato>, ;
             <nlpp>, <.ldos.>, <.lpreview.>, <cgraphic>, <nfi>, <nci>, <nff>, ;
             <ncf>, <.lmul.>, <"cgrpby">, <chdrgrp>, <.llandscape.>, <ncpl>, ;
             <.lselect.>, <(calias)>, <nllmargin>, <aformats>, <npapersize>, ;
             <cheader>, <.lnoprop.>, <.lgroupeject.>, <nres>, <nbin>, <nduplex>, ;
-            <.lcollate.>, <ncopies>, <.lcolor.>, <nscale>, <nlength>, <nwidth> )
+            <.lcollate.>, <ncopies>, <.lcolor.>, <nscale>, <nlength>, <nwidth>, ;
+            <cname> )
 
 #command REPORTFORMWIN <frm> ;
       [ HEADING <head> ] ;
@@ -128,17 +130,19 @@
       [ SCALE <nscale> ] ;
       [ PAPERLENGTH <nlength> ] ;
       [ PAPERWIDTH <nwidth> ] ;
+      [ NAME <cname> ] ;
    => ;
       __ReportFormWin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, <{for}>, <{while}>, ;
             <next>, <rec>, <.rest.>, <.plain.>, <head>, <.noej.>, <.sum.>, ;
             <.nosep.>, <.lselect.>, <.lpreview.>, <.llandscape.>, <npapersize>, ;
             <nres>, <nbin>, <nduplex>, <.lcollate.>, <ncopies>, <.lcolor.>, ;
-            <nscale>, <nlength>, <nwidth> )
+            <nscale>, <nlength>, <nwidth>, <cname> )
 
 #xcommand DO REPORT FORM <cfilerep> ;
       [ HEADING <cheading> ] ;
+      [ NAME <cname> ] ;
    => ;
-      ExtReport( <"cfilerep">, <cheading> )
+      ExtReport( <"cfilerep">, <cheading>, <cname> )
 
 /*---------------------------------------------------------------------------
 PREDEFINED VALUES FOR SETMODE PAPERSIZE
