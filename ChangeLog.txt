@@ -12,11 +12,17 @@
  *   '-' Removed: ...           ';' Comment
  */
 
-2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2020-06-07 14:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_print.prg
+     ! Compilation error under xHarbour because destroyer must be
+       a Procedure instead of Method.
+
+2020-06-07 14:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\h_windows.prg
      * Some format.
      ! Method AcceptFile is not working because WM_DROPFILES
        messages are blocked by User Interface Privilege Isolation.
+     ! Memory leak at WM_DROPFILES handler.
 
 2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\miniprint.prg

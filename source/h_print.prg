@@ -336,9 +336,11 @@ METHOD SetCpl( nCpl ) CLASS TPrintBase
    RETURN ::nFontSize
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Destroy() CLASS TPrintBase
+PROCEDURE Destroy() CLASS TPrintBase
 
-   RETURN ::Release()
+   ::Release()
+
+   RETURN
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TPrintBase
@@ -2822,7 +2824,7 @@ METHOD BeginDocX() CLASS TDosPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ParseName( cName, cExt, lInvSlash )
 
-   LOCAL i, cLongName, lExt
+   LOCAL i, cLongName
 
    ASSIGN lInvSlash VALUE lInvSlash TYPE "L" DEFAULT .F.
    cExt := Lower( cExt )
@@ -2833,19 +2835,19 @@ FUNCTION ParseName( cName, cExt, lInvSlash )
       cName := SubStr( cName, 1, i - 1 )
    ENDIF
 
-   // if name is not full qualified asume MyDocuments folder
    i := RAt( "\", cName )
    IF i == 0
+      // if name is not full qualified assume MyDocuments folder
       cLongName := GetMyDocumentsFolder() + "\" + cName
+   ELSEIF Right( cName, 1 ) == "\"
+      // if name is a folder assume default name
+      cLongName := cName + "list"
    ELSE
       cLongName := cName
    ENDIF
 
    // assign the specified extension
-   lExt := Len( cExt )
-   IF Right( cLongName, lExt) <> "." + cExt
-      cLongName := cLongName + "." + cExt
-   ENDIF
+   cLongName := cLongName + "." + cExt
 
    // if specified change backslashes to slashes
    IF lInvSlash
@@ -6007,40 +6009,6 @@ FUNCTION ArrayIsValidColor( aColor )
 
 #pragma BEGINDUMP
 
-#ifndef WINVER
-   #define WINVER 0x0400
-#endif
-#if ( WINVER < 0x0400 )
-   #undef WINVER
-   #define WINVER 0x0400
-#endif
-
-#ifndef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-#if ( _WIN32_IE < 0x0500 )
-   #undef _WIN32_IE
-   #define _WIN32_IE 0x0500
-#endif
-
-#ifndef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-#if ( _WIN32_WINNT < 0x0400 )
-   #undef _WIN32_WINNT
-   #define _WIN32_WINNT 0x0400
-#endif
-
-#include <windows.h>
-#include <winuser.h>
-#include <wingdi.h>
-#include "hbapi.h"
-#include "hbvm.h"
-#include "hbstack.h"
-#include "hbapiitm.h"
-#include <olectl.h>
-#include <ocidl.h>
-#include <commctrl.h>
 #include "oohg.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
