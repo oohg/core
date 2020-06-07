@@ -13,6 +13,12 @@
  */
 
 2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\h_windows.prg
+     * Some format.
+     ! Method AcceptFile is not working because WM_DROPFILES
+       messages are blocked by User Interface Privilege Isolation.
+
+2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\source\miniprint.prg
      ! Lib shows an error message when a printer option is not
        supported by it's drivers even if warnings were disabled.

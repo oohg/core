@@ -1359,26 +1359,26 @@ METHOD DebugMessageQuery( nMsg, wParam, lParam ) CLASS TWindow
    LOCAL cValue, oControl
 
    IF nMsg == WM_COMMAND
-      oControl := GetControlObjectById( LOWORD( wParam  ) )
+      oControl := GetControlObjectById( LOWORD( wParam ) )
       IF oControl:Id == 0
          oControl := GetControlObjectByHandle( lParam )
       ENDIF
       cValue := ::Name + "." + oControl:Name + ": WM_COMMAND." + ;
-                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
    ELSEIF nMsg == WM_NOTIFY
       cValue := GetControlObjectByHandle( GethWndFrom( lParam ) ):DebugMessageQueryNotify( ::Name, wParam, lParam )
    ELSEIF nMsg == WM_CTLCOLORBTN
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORBTN   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
    ELSEIF nMsg == WM_CTLCOLORSTATIC
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORSTATIC   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
    ELSEIF nMsg == WM_CTLCOLOREDIT
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLOREDIT   0x" + _OOHG_HEX( wParam, 8 )
-                oControl:DebugMessageNameCommand( HIWORD( wParam  ) )
+                oControl:DebugMessageNameCommand( HIWORD( wParam ) )
    ELSEIF nMsg == WM_CTLCOLORLISTBOX
       oControl := GetControlObjectByHandle( lParam )
       cValue := ::Name + "." + oControl:Name + ": WM_CTLCOLORLISTBOX   0x" + _OOHG_HEX( wParam, 8 )
@@ -1445,7 +1445,7 @@ METHOD DebugMessageQueryNotify( cParentName, wParam, lParam ) CLASS TWindow
 
    LOCAL cValue
 
-   HB_SYMBOL_UNUSED( wParam  )
+   HB_SYMBOL_UNUSED( wParam )
    cValue := cParentName + "." + ;
              iif( Empty( ::Name ), _OOHG_HEX( GethWndFrom( lParam ), 8 ), ::Name ) + ;
              ": WM_NOTIFY." + ::DebugMessageNameNotify( GetNotifyCode( lParam ) )
@@ -2124,6 +2124,16 @@ METHOD Error( xParam ) CLASS TDynamicValues
    #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )
 #endif
 
+#ifndef MSGFLT_ADD
+   #define MSGFLT_ADD 1
+#endif
+#ifndef MSGFLT_REMOVE
+   #define MSGFLT_REMOVE 2
+#endif
+#ifndef WM_COPYGLOBALDATA
+   #define WM_COPYGLOBALDATA 0x0049
+#endif
+
 static int _OOHG_ShowContextMenus = 1;      /* TODO: Thread safe ? */
 static BOOL _OOHG_NestedSameEvent = FALSE;  /* TRUE allows event nesting */
 static int _OOHG_MouseCol = 0;              /* TODO: Thread safe ? */
@@ -2499,6 +2509,18 @@ HB_FUNC_STATIC( TWINDOW_ACCEPTFILES )          /* METHOD AcceptFiles( lOnOff ) C
    if( HB_ISLOG( 1 ) )
    {
       DragAcceptFiles( oSelf->hWnd, hb_parl( 1 ) );
+      if( hb_parl( 1 ) )
+      {
+         _OOHG_ChangeWindowMessageFilter( WM_DROPFILES, MSGFLT_ADD );
+         _OOHG_ChangeWindowMessageFilter( WM_COPYDATA, MSGFLT_ADD );
+         _OOHG_ChangeWindowMessageFilter( WM_COPYGLOBALDATA, MSGFLT_ADD );
+      }
+      else
+      {
+         _OOHG_ChangeWindowMessageFilter( WM_DROPFILES, MSGFLT_REMOVE );
+         _OOHG_ChangeWindowMessageFilter( WM_COPYDATA, MSGFLT_REMOVE );
+         _OOHG_ChangeWindowMessageFilter( WM_COPYGLOBALDATA, MSGFLT_REMOVE );
+      }
    }
 
    hb_retl( ( GetWindowLongPtr( oSelf->hWnd, GWL_EXSTYLE ) & WS_EX_ACCEPTFILES ) == WS_EX_ACCEPTFILES );
@@ -2519,7 +2541,7 @@ HB_FUNC( _GETDDLMESSAGE )          /* FUNCTION _GetDDLMessage() -> NIL */
 HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TWindow -> nRet */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = (UINT)   hb_parni( 2 );
+   UINT message   = (UINT) hb_parni( 2 );
    WPARAM wParam  = WPARAMparam( 3 );
    LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
@@ -2529,7 +2551,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CTLCOLORBTN:
       case WM_CTLCOLORSTATIC:
          _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushNumInt( wParam  );
+         hb_vmPushNumInt( wParam );
          hb_vmPushLong( COLOR_3DFACE );
          hb_vmPushNil();
          hb_vmSend( 3 );
@@ -2538,15 +2560,15 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CTLCOLOREDIT:
       case WM_CTLCOLORLISTBOX:
          _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
-         hb_vmPushNumInt( wParam  );
+         hb_vmPushNumInt( wParam );
          hb_vmPushLong( COLOR_WINDOW );
          hb_vmPushNil();
          hb_vmSend( 3 );
          break;
 
       case WM_NOTIFY:
-         _OOHG_Send( GetControlObjectByHandle( ( ( NMHDR FAR * ) lParam )->hwndFrom, TRUE ), s_Events_Notify );
-         hb_vmPushNumInt( wParam  );
+         _OOHG_Send( GetControlObjectByHandle( ( (NMHDR FAR *) lParam )->hwndFrom, TRUE ), s_Events_Notify );
+         hb_vmPushNumInt( wParam );
          hb_vmPushNumInt( lParam );
          hb_vmSend( 2 );
          break;
@@ -2565,7 +2587,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
             {
                /* From control by handle */
                _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Command );
-               hb_vmPushNumInt( wParam  );
+               hb_vmPushNumInt( wParam );
                hb_vmSend( 1 );
             }
             else
@@ -2573,7 +2595,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                PHB_ITEM pControl, pOnClick;
 
                pControl = hb_itemNew( NULL );
-               hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam  ), hWnd ) );
+               hb_itemCopy( pControl, GetControlObjectById( LOWORD( wParam ), hWnd ) );
                _OOHG_Send( pControl, s_Id );
                hb_vmSend( 0 );
                if( hb_parni( -1 ) != 0 )
@@ -2623,13 +2645,13 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_TIMER:
-         _OOHG_Send( GetControlObjectById( LOWORD( wParam  ), hWnd ), s_Events_TimeOut );
+         _OOHG_Send( GetControlObjectById( LOWORD( wParam ), hWnd ), s_Events_TimeOut );
          hb_vmSend( 0 );
          hb_ret();
          break;
 
       case WM_DRAWITEM:
-         if( wParam  )
+         if( wParam )
          {
             /* ComboBox and ListBox */
             _OOHG_Send( GetControlObjectByHandle( ( (LPDRAWITEMSTRUCT) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
@@ -2644,7 +2666,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_MEASUREITEM:
-         if( wParam  )
+         if( wParam )
          {
             /* ComboBox and ListBox */
             _OOHG_Send( GetControlObjectById( (long) ( ( (LPMEASUREITEMSTRUCT) lParam )->CtlID ), hWnd ), s_Events_MeasureItem );
@@ -2713,11 +2735,11 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_MENUSELECT:
-         if( ( HIWORD( wParam  ) & MF_SYSMENU ) != MF_SYSMENU )
+         if( ( HIWORD( wParam ) & MF_SYSMENU ) != MF_SYSMENU )
          {
-            if( ( HIWORD( wParam  ) & MF_HILITE ) == MF_HILITE )
+            if( ( HIWORD( wParam ) & MF_HILITE ) == MF_HILITE )
             {
-               if( ( HIWORD( wParam  ) & MF_POPUP ) == MF_POPUP )
+               if( ( HIWORD( wParam ) & MF_POPUP ) == MF_POPUP )
                {
                   MENUITEMINFO MenuItemInfo;
                   PHB_ITEM pMenu = hb_itemNew( NULL );
@@ -2729,7 +2751,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                      memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                      MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                      MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                     GetMenuItemInfo( (HMENU) lParam, LOWORD( wParam  ), MF_BYPOSITION, &MenuItemInfo );
+                     GetMenuItemInfo( (HMENU) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
                      if( MenuItemInfo.hSubMenu )
                      {
                         hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
@@ -2746,7 +2768,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                else
                {
                   PHB_ITEM pControl = hb_itemNew( NULL );
-                  hb_itemCopy( pControl, GetControlObjectById( (long) LOWORD( wParam  ), hWnd ) );
+                  hb_itemCopy( pControl, GetControlObjectById( (long) LOWORD( wParam ), hWnd ) );
                   _OOHG_Send( pControl, s_ContextMenu );
                   hb_vmSend( 0 );
                   if( hb_param( -1, HB_IT_OBJECT ) )
@@ -2806,13 +2828,13 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          if( lParam )
          {
             _OOHG_Send( GetControlObjectByHandle( (HWND) lParam, TRUE ), s_Events_HScroll );
-            hb_vmPushNumInt( wParam  );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_HScroll );
-            hb_vmPushNumInt( wParam  );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          break;
@@ -2821,13 +2843,13 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          if( lParam )
          {
             _OOHG_Send( GetControlObjectByHandle( (HWND) lParam, TRUE ), s_Events_VScroll );
-            hb_vmPushNumInt( wParam  );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          else
          {
             _OOHG_Send( pSelf, s_Events_VScroll );
-            hb_vmPushNumInt( wParam  );
+            hb_vmPushNumInt( wParam );
             hb_vmSend( 1 );
          }
          break;
@@ -2840,8 +2862,8 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
             UINT iCount, iPos, iLen, iLen2;
             BYTE *pBuffer;
 
-            hDrop = ( HDROP ) wParam;
-            DragQueryPoint( hDrop, ( LPPOINT ) &mouse );
+            hDrop = (HDROP) wParam;
+            DragQueryPoint( hDrop, (LPPOINT) &mouse );
             iCount = DragQueryFile( hDrop, ~0, NULL, 0 );
             iLen = 0;
             for( iPos = 0; iPos < iCount; iPos++ )
@@ -2866,6 +2888,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                hb_itemPutCL( hb_arrayGetItemPtr( pFiles, iPos + 1 ), (char *) pBuffer, iLen2 );
             }
             hb_xfree( pBuffer );
+            DragFinish( hDrop );
             _OOHG_DoEvent( pSelf, s_OnDropFiles, "DROPFILES", pArray );
             hb_itemRelease( pArray );
          }
@@ -2892,7 +2915,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                hb_vmPush( hb_param( -1, HB_IT_BLOCK ) );
                HWNDpush( hWnd );
                hb_vmPushLong( message );
-               hb_vmPushNumInt( wParam  );
+               hb_vmPushNumInt( wParam );
                hb_vmPushNumInt( lParam );
                hb_vmPush( pSelf );
                hb_vmDo( 5 );
