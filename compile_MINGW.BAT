@@ -255,7 +255,6 @@ REM add search path with -I
    set HG_PRG_LOG=
    set HG_USE_RC=
    set HG_EXTRA=
-   set HG_COMP_TYPE=
    set HG_DEFINES=
    set "PATH=%HG_PATH%"
    set HG_PATH=
@@ -263,8 +262,10 @@ REM add search path with -I
    set HG_W_LIBS=
 
    rem *** Run ***
-   if "%HG_NO_RUN%" == "FALSE" start %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" if     "%HG_COMP_TYPE%" == "CONSOLE" %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" if not "%HG_COMP_TYPE%" == "CONSOLE" start %HG_FILE%
 
+   set HG_COMP_TYPE=
    set HG_FILE=
    set HG_NO_RUN=
    if exist init.cld del init.cld

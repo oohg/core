@@ -229,7 +229,6 @@ rem
    set HG_C_FLAGS=
    set HG_C_LIBS=
    set HG_C_LOG=
-   set HG_COMP_TYPE=
    set HG_DEFINES=
    set HG_EXTRA=
    set HG_PRG_LOG=
@@ -239,8 +238,10 @@ rem
 
    rem *** Run ***
    if errorlevel 1 set HG_NO_RUN=TRUE
-   if "%HG_NO_RUN%" == "FALSE" start %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" if     "%HG_COMP_TYPE%" == "CONSOLE" %HG_FILE%
+   if "%HG_NO_RUN%" == "FALSE" if not "%HG_COMP_TYPE%" == "CONSOLE" start %HG_FILE%
 
+   set HG_COMP_TYPE=
    set HG_FILE=
    set HG_NO_RUN=
    if exist init.cld del init.cld
