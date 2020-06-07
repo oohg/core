@@ -3309,6 +3309,9 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
    ElseIf nNotify == NM_CUSTOMDRAW
       // Function NMCUSTOMDRAW_IITEM() returns column number
       nColumn := NMCustomDraw_iItem( lParam )
+      IF nColumn < 1 .OR. nColumn > Len( ::aHeaderColors )
+         RETURN 0   // CDRF_DODEFAULT
+      ENDIF
       uColor := iif( HB_ISBLOCK( ::aHeaderColors[ nColumn ] ), Eval( ::aHeaderColors[ nColumn ], nColumn ), ::aHeaderColors[ nColumn ] )
       RETURN TGrid_Header_CustomDraw( lParam, uColor )
 
