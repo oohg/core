@@ -150,21 +150,21 @@ HB_FUNC( OOHG_CALLDLL32 )
    {
       hInst = _OOHG_LoadDLL( DllName );
    }
-   if( ! hInst )
+   if( hInst == NULL )
    {
       hb_retnl( 0 );
       return;
    }
-   lpAddr = (DYNACALL1) GetProcAddress( hInst, FuncName );
+   lpAddr = (DYNACALL1) _OOHG_GetProcAddress( hInst, FuncName );
    if( lpAddr == NULL )
    {
       sprintf( buff, "%s%s", FuncName, "A" );
-      lpAddr = (DYNACALL1) GetProcAddress( hInst, buff );
+      lpAddr = (DYNACALL1) _OOHG_GetProcAddress( hInst, buff );
    }
    if( lpAddr == NULL )
    {
       sprintf( buff, "%s%s", "_", FuncName );
-      lpAddr = (DYNACALL1) GetProcAddress( hInst, buff );
+      lpAddr = (DYNACALL1) _OOHG_GetProcAddress( hInst, buff );
    }
    if( lpAddr )
    {
