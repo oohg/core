@@ -229,13 +229,25 @@ CLASS OOHG_TErrorHtml
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD New( cLang ) CLASS OOHG_TErrorHtml
 
+   LOCAL nAt
+
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
-      cLang := _OOHG_GetLanguage()
+      IF Empty( ::cLang )
+         cLang := _OOHG_GetLanguage()
+      ELSE
+         cLang := Upper( AllTrim( ::cLang ) )
+      ENDIF
+   ELSE
+      IF ( nAt := At( ".", cLang ) ) > 0
+         cLang := Left( cLang, nAt - 1 )
+      ENDIF
+      cLang := Upper( AllTrim( cLang ) )
    ENDIF
 
    DO CASE
-   CASE ::cLang == "HR852"                            // Croatian
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "HR852" .OR. ;
+        cLang == "HR"                               // Croatian
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -248,8 +260,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "EU"                               // Basque
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "EU"                               // Basque
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -262,8 +274,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "FR"                               // French
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "FR"                               // French
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -276,9 +288,9 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "DEWIN" .OR. ;
-        ::cLang == "DE"                               // German
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "DEWIN" .OR. ;
+        cLang == "DE"                               // German
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -291,8 +303,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "IT"                               // Italian
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "IT"                               // Italian
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -305,11 +317,11 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "PLWIN" .OR. ;
-        ::cLang == "PL852" .OR. ;
-        ::cLang == "PLISO" .OR. ;
-        ::cLang == "PLMAZ"                            // Polish
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "PLWIN" .OR. ;
+        cLang == "PL852" .OR. ;
+        cLang == "PLISO" .OR. ;
+        cLang == "PLMAZ"                            // Polish
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -322,8 +334,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "PT"                               // Portuguese
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "PT"                               // Portuguese
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -336,10 +348,11 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "RUKOI8" .OR. ;
-        ::cLang == "RU866"  .OR. ;
-        ::cLang == "RUWIN"                            // Russian
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "RUKOI8" .OR. ;
+        cLang == "RU866"  .OR. ;
+        cLang == "RUWIN"  .OR. ;
+        cLang == "RU"                               // Russian
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -352,9 +365,9 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "ESWIN" .OR. ;
-        ::cLang == "ES"                               // Spanish
-      ::aMessages := { "Registro de Errores de ooHG", ;
+   CASE cLang == "ESWIN" .OR. ;
+        cLang == "ES"                               // Spanish
+      ::aMessages := { "Registro de Errores de OOHG", ;
                        "Aplicación: ", ;
                        "Fecha: ", ;
                        "Hora: ", ;
@@ -367,8 +380,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Eventos:", ;
                        "Error de Programa" }
 
-   CASE ::cLang == "FI"                               // Finnish
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "FI"                               // Finnish
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -381,8 +394,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "NL"                               // Dutch
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "NL"                               // Dutch
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -395,11 +408,12 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "SLWIN" .OR. ;
-        ::cLang == "SLISO" .OR. ;
-        ::cLang == "SL852" .OR. ;
-        ::cLang == "SL437"                            // Slovenian
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "SLWIN" .OR. ;
+        cLang == "SLISO" .OR. ;
+        cLang == "SL852" .OR. ;
+        cLang == "SL437" .OR. ;
+        cLang == "SL"                               // Slovenian
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -412,8 +426,9 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   CASE ::cLang == "TR"                               // Turkish
-      ::aMessages := { "ooHG Errors Log", ;
+   CASE cLang == "TRWIN" .OR. ;
+        cLang == "TR"                               // Turkish
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
@@ -426,8 +441,8 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Events:", ;
                        "Program Error" }
 
-   OTHERWISE                                          // Default to English
-      ::aMessages := { "ooHG Errors Log", ;
+   OTHERWISE                                        // Default to English
+      ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
                        "Time: ", ;
