@@ -444,6 +444,11 @@ FUNCTION ooHG_Messages_EN // English (default)
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ooHG_Messages_HR // Croatian
+
+   RETURN ooHG_Messages_HR852()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ooHG_Messages_HR852 // Croatian
 
    LOCAL acMisc
@@ -1242,6 +1247,11 @@ FUNCTION ooHG_Messages_IT // Italian
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ooHG_Messages_PL // Polish
+
+   RETURN ooHG_Messages_PLWIN()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ooHG_Messages_PL852 // Polish
 
    RETURN ooHG_Messages_PLWIN()
@@ -1673,6 +1683,11 @@ FUNCTION ooHG_Messages_PT // Portuguese
    acPrint          := {}
 
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ooHG_Messages_RU // Russian
+
+   RETURN ooHG_Messages_RUWIN()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ooHG_Messages_RU866 // Russian
@@ -2493,6 +2508,11 @@ FUNCTION ooHG_Messages_NL // Dutch
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ooHG_Messages_SL // Slovenian
+
+   RETURN ooHG_Messages_SLWIN()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ooHG_Messages_SLISO // Slovenian
 
    RETURN ooHG_Messages_SLWIN()
@@ -2717,7 +2737,12 @@ FUNCTION ooHG_Messages_SLWIN // Slovenian
    RETURN { acMisc, acBrowseButton, acBrowseError, acBrowseMessages, acABMUser, acABMLabel, acABMButton, acABMError, acButton, acLabel, acUser, acPrint }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION ooHG_Messages_TR
+FUNCTION ooHG_Messages_TR // Turkish
+
+   RETURN ooHG_Messages_TRWIN()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION ooHG_Messages_TRWIN // Turkish
 
    LOCAL acMisc
    LOCAL acBrowseButton, acBrowseError, acBrowseMessages
