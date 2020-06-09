@@ -2302,10 +2302,12 @@ METHOD ColumnBetterAutoFit( nColIndex ) CLASS Tgrid
 
    If HB_IsNumeric( nColIndex )
       If nColindex > 0
-         nh := ::ColumnAutoFitH( nColIndex )
-         n := ::ColumnAutoFit( nColIndex )
-         If nh > n
-            ::ColumnAutoFitH( nColIndex )
+         If AScan( ::aHiddenCols, nColIndex ) == 0
+            nh := ::ColumnAutoFitH( nColIndex )
+            n := ::ColumnAutoFit( nColIndex )
+            If nh > n
+               ::ColumnAutoFitH( nColIndex )
+            EndIf
          EndIf
       EndIf
    EndIf
@@ -2330,8 +2332,8 @@ METHOD ColumnShow( nColIndex ) CLASS TGrid
       If nColindex > 0
          i := AScan( ::aHiddenCols, nColIndex )
          If i > 0
-            ::ColumnBetterAutoFit ( nColIndex )
             _OOHG_DeleteArrayItem( ::aHiddenCols, i )
+            ::ColumnBetterAutoFit ( nColIndex )
          EndIf
       EndIf
    EndIf
@@ -4243,12 +4245,16 @@ METHOD ColumnAutoFit( nColumn ) CLASS TGrid
    Local nWidth
 
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
-      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
-      If nColumn == ::FirstColInOrder
-         nWidth := nWidth + 6
-         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      If AScan( ::aHiddenCols, nColumn ) == 0
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
+         If nColumn == ::FirstColInOrder
+            nWidth := nWidth + 6
+            nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+         EndIf
+         ::aWidths[ nColumn ] := nWidth
+      Else
+         nWidth := 0
       EndIf
-      ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
    EndIf
@@ -4260,12 +4266,16 @@ METHOD ColumnAutoFitH( nColumn ) CLASS TGrid
    Local nWidth
 
    If HB_IsNumeric( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aHeaders )
-      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
-      If nColumn == ::FirstColInOrder
-         nWidth := nWidth + 6
-         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+      If AScan( ::aHiddenCols, nColumn ) == 0
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
+         If nColumn == ::FirstColInOrder
+            nWidth := nWidth + 6
+            nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, nWidth )
+         EndIf
+         ::aWidths[ nColumn ] := nWidth
+      Else
+         nWidth := 0
       EndIf
-      ::aWidths[ nColumn ] := nWidth
    Else
       nWidth := 0
    EndIf
@@ -4287,8 +4297,10 @@ METHOD ColumnsAutoFit() CLASS TGrid
    Local nColumn, nWidth
 
    For nColumn := 1 To Len( ::aHeaders )
-      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
-      ::aWidths[ nColumn ] := nWidth
+      If AScan( ::aHiddenCols, nColumn ) == 0
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE )
+         ::aWidths[ nColumn ] := nWidth
+      EndIf
    Next
 
    Return nWidth
@@ -4298,8 +4310,10 @@ METHOD ColumnsAutoFitH() CLASS TGrid
    Local nColumn, nWidth
 
    For nColumn := 1 To Len( ::aHeaders )
-      nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
-      ::aWidths[ nColumn ] := nWidth
+      If AScan( ::aHiddenCols, nColumn ) == 0
+         nWidth := ListView_SetColumnWidth( ::hWnd, nColumn - 1, LVSCW_AUTOSIZE_USEHEADER )
+         ::aWidths[ nColumn ] := nWidth
+      EndIf
    Next
 
    Return nWidth
