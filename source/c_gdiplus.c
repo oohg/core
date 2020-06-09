@@ -846,7 +846,7 @@ HB_FUNC( GPLUSLOADIMAGEFROMFILE )
    gPlusImage gImage;
 
    if( LoadImageFromFile( hb_parc( 1 ), &gImage ) == 0 )
-      hb_retgPlusImage( (gPlusImagePtr) &gImage );
+      hb_retgPlusImage( (gPlusImagePtr) gImage );
    else
       hb_ret();
 }
