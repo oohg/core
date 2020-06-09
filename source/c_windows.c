@@ -1443,7 +1443,7 @@ HB_FUNC( WINDOWEXSTYLEFLAG )
    lMask = (LONG_PTR) hb_parnl( 2 );
    if( HB_ISNUM( 3 ) )
    {
-      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( (LONG_PTR) hb_parnl & lMask ) ) );
+      SetWindowLongPtr( hWnd, GWL_EXSTYLE, ( ( GetWindowLongPtr( hWnd, GWL_EXSTYLE ) & ( ~ lMask ) ) | ( (LONG_PTR) hb_parnl( 3 ) & lMask ) ) );
       RedrawWindow( hWnd, 0, 0, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
    }
 
