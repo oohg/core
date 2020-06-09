@@ -152,6 +152,7 @@ CLASS TGrid FROM TControl
    DATA nEditRow                  INIT 0 PROTECTED
    DATA nHeight                   INIT 120
    DATA nRowPos                   INIT 0 PROTECTED
+   DATA nTimeOut                  INIT Nil
    DATA nVisibleItems             INIT 0
    DATA nWidth                    INIT 240
    DATA OnAbortEdit               INIT Nil
@@ -302,7 +303,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors ) CLASS TGrid
+               aHeaderColors, nTimeOut ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -317,7 +318,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors )
+              aHeadDblClick, aHeaderColors, nTimeOut )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -341,7 +342,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
-                lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors ) CLASS TGrid
+                lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -439,6 +440,10 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 
    If ownerdata .AND. ( ! HB_IsNumeric( itemcount ) .OR. itemcount < 1 )
       itemcount := Max( Len( aRows ), 1 )
+   EndIf
+
+   If HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
    EndIf
 
    /*
@@ -1642,9 +1647,9 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
          cPicture := GetPictureFromArray( Self, i )
          IF ValType( cPicture ) $ "CM"
             // Picture-based
-            EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, i ), NIL, NIL, NIL, Self )
+            EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, i ), NIL, NIL, NIL, Self, NIL, NIL, NIL, NIL, NIL )
          ELSEIF ValType( cPicture ) == "L" .AND. cPicture
-            EditControl := TGridControlImageList():New( Self )
+            EditControl := TGridControlImageList():New( Self, NIL, NIL, NIL, NIL )
          ELSE
             // Derive from data type
             EditControl := GridControlObjectByType( aItemValues[ i ], Self )
@@ -2636,9 +2641,9 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       cPicture := GetPictureFromArray( Self, nCol )
       IF ValType( cPicture ) $ "CM"
          // Picture-based
-         EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nCol ), NIL, NIL, NIL, Self )
+         EditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nCol ), NIL, NIL, NIL, Self, NIL, NIL, NIL, NIL, NIL )
       ELSEIF ValType( cPicture ) == "L" .AND. cPicture
-         EditControl := TGridControlImageList():New( Self )
+         EditControl := TGridControlImageList():New( Self, NIL, NIL, NIL, NIL )
       ELSE
          // Derive from data type
          EditControl := GridControlObjectByType( uValue, Self )
@@ -3856,9 +3861,9 @@ FUNCTION TGrid_SetArray( Self, uValue )
          IF ! HB_ISOBJECT( oEditControl )
             cPicture := GetPictureFromArray( Self, nColumn )
             IF ValType( cPicture ) $ "CM"
-               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self )
+               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self, NIL, NIL, NIL, NIL, NIL )
             ELSEIF ValType( cPicture ) == "L" .AND. cPicture
-               oEditControl := TGridControlImageList():New( Self )
+               oEditControl := TGridControlImageList():New( Self, NIL, NIL, NIL, NIL )
             ELSE
                oEditControl := GridControlObjectByType( uValue, Self )
             ENDIF
@@ -3878,9 +3883,9 @@ FUNCTION TGrid_SetArray( Self, uValue )
          IF ! HB_ISOBJECT( oEditControl )
             cPicture := GetPictureFromArray( Self, nColumn )
             IF ValType( cPicture ) $ "CM"
-               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self )
+               oEditControl := TGridControlTextBox():New( cPicture, NIL, GetColTypeFromArray( Self, nColumn ), NIL, NIL, NIL, Self, NIL, NIL, NIL, NIL, NIL )
             ELSEIF ValType( cPicture ) == "L" .AND. cPicture
-               oEditControl := TGridControlImageList():New( Self )
+               oEditControl := TGridControlImageList():New( Self, NIL, NIL, NIL, NIL )
             ELSE
                oEditControl := GridControlObjectByType( uValue, Self )
             ENDIF
@@ -4542,7 +4547,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors ) CLASS TGridMulti
+               aHeaderColors, nTimeOut ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4561,7 +4566,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors )
+              aHeadDblClick, aHeaderColors, nTimeOut )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4731,7 +4736,7 @@ CLASS TGridByCell FROM TGrid
    METHOD PageDown
    METHOD PageUp
    METHOD Right
-   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| If( nCol == NIL, nCol := 1, ), ::Value := { nRow, nCol } }
+   METHOD SetControlValue         BLOCK { |Self, nRow, nCol| iif( nCol == NIL, nCol := 1, NIL ), ::Value := { nRow, nCol } }
    METHOD SetSelectedColors
    METHOD Up
    METHOD Value                   SETGET
@@ -4756,7 +4761,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors ) CLASS TGridByCell
+               aHeaderColors, nTimeOut ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4775,7 +4780,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors )
+              aHeadDblClick, aHeaderColors, nTimeOut )
 
    // Search the current column
    ::SearchCol := -1
@@ -6238,31 +6243,31 @@ FUNCTION GridControlObject( aEditControl, oGrid )
    oGridControl := Nil
    If HB_IsArray( aEditControl ) .AND. Len( aEditControl ) >= 1 .AND. ValType( aEditControl[ 1 ] ) $ "CM"
       aEdit2 := AClone( aEditControl )
-      ASize( aEdit2, 11 )
+      ASize( aEdit2, 13 )
       cControl := Upper( AllTrim( aEditControl[ 1 ] ) )
       Do Case
       Case cControl == "MEMO"
-         oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid, aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+         oGridControl := TGridControlMemo():New( aEdit2[ 2 ], aEdit2[ 3 ], oGrid, aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], aEdit2[ 8 ] )
       Case cControl == "DATEPICKER"
-         oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+         oGridControl := TGridControlDatePicker():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ], aEdit2[ 7 ] )
       Case cControl == "COMBOBOX"
-         oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+         oGridControl := TGridControlComboBox():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], aEdit2[ 8 ] )
       Case cControl == "COMBOBOXTEXT"
-         oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ] )
+         oGridControl := TGridControlComboBoxText():New( aEdit2[ 2 ], oGrid, aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], aEdit2[ 8 ] )
       Case cControl == "SPINNER"
-         oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+         oGridControl := TGridControlSpinner():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ], aEdit2[ 7 ] )
       Case cControl == "CHECKBOX"
-         oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+         oGridControl := TGridControlCheckBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ], aEdit2[ 7 ] )
       Case cControl == "TEXTBOX"
-         oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ] )
+         oGridControl := TGridControlTextBox():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ], aEdit2[ 12 ] )
       Case cControl == "TEXTBOXACTION"
-         oGridControl := TGridControlTextBoxAction():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ], aEdit2[ 12 ] )
+         oGridControl := TGridControlTextBoxAction():New( aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 2 ], aEdit2[ 5 ], aEdit2[ 6 ], aEdit2[ 7 ], oGrid, aEdit2[ 8 ], aEdit2[ 9 ], aEdit2[ 10 ], aEdit2[ 11 ], aEdit2[ 12 ], aEdit2[ 13 ] )
       Case cControl == "IMAGELIST"
-         oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ] )
+         oGridControl := TGridControlImageList():New( oGrid, aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
       Case cControl == "IMAGEDATA"
-         oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ] )
+         oGridControl := TGridControlImageData():New( oGrid, GridControlObject( aEdit2[ 2 ], oGrid ), aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], aEdit2[ 6 ] )
       Case cControl == "LCOMBOBOX"
-         oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ] )
+         oGridControl := TGridControlLComboBox():New( aEdit2[ 2 ], aEdit2[ 3 ], aEdit2[ 4 ], aEdit2[ 5 ], oGrid, aEdit2[ 6 ], aEdit2[ 7 ] )
       EndCase
    EndIf
 
@@ -6280,17 +6285,17 @@ FUNCTION GridControlObjectByType( uValue, oGrid )
       If nPos != 0
          cMask := Left( cMask, nPos - 1 ) + "." + SubStr( cMask, nPos + 1 )
       EndIf
-      oGridControl := TGridControlTextBox():New( cMask, , "N", , , , oGrid )
+      oGridControl := TGridControlTextBox():New( cMask, NIL, "N", NIL, NIL, NIL, oGrid, NIL, NIL, NIL, NIL, NIL )
    Case HB_IsLogical( uValue )
       // oGridControl := TGridControlCheckBox():New( ".T.", ".F.", oGrid )
-      oGridControl := TGridControlLComboBox():New( ".T.", ".F.", , , oGrid )
+      oGridControl := TGridControlLComboBox():New( ".T.", ".F.", NIL, NIL, oGrid, NIL, NIL )
    Case HB_IsDate( uValue )
       // oGridControl := TGridControlDatePicker():New( .T., , oGrid )
-      oGridControl := TGridControlTextBox():New( "@D", , "D", , , , oGrid )
+      oGridControl := TGridControlTextBox():New( "@D", NIL, "D", NIL, NIL, NIL, oGrid, NIL, NIL, NIL, NIL, NIL )
    Case ValType( uValue ) == "M"
-      oGridControl := TGridControlMemo():New( , , oGrid )
+      oGridControl := TGridControlMemo():New( NIL, NIL, oGrid, NIL, NIL, NIL, NIL, NIL )
    Case ValType( uValue ) == "C"
-      oGridControl := TGridControlTextBox():New( , , "C", , , , oGrid )
+      oGridControl := TGridControlTextBox():New( NIL, NIL, "C", NIL, NIL, NIL, oGrid, NIL, NIL, NIL, NIL, NIL )
    OtherWise
       // Unimplemented data type!!!
    EndCase
@@ -6381,6 +6386,7 @@ CLASS TGridControl
    DATA lLikeExcel                INIT .F.
    DATA nOnFocusPos               INIT Nil
    DATA lNoModal                  INIT .F.
+   DATA nTimeOut                  INIT 0
 
    METHOD New                     BLOCK { | Self | _OOHG_Eval( _OOHG_InitTGridControlDatas, Self ) }
    METHOD CreateWindow
@@ -6396,13 +6402,18 @@ CLASS TGridControl
 
    ENDCLASS
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControl
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControl
 
    Local lRet := .F., i, nSize
 
    If HB_IsObject( oGrid )
       ::oGrid := oGrid
    EndIf
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
 
    If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal )
 
@@ -6437,8 +6448,12 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 
    EndIf
 
-      ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
-      ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+      ON KEY RETURN OF ( ::oWindow ) ACTION Eval( ::bOk, -1 )
+      ON KEY ESCAPE OF ( ::oWindow ) ACTION Eval( ::bCancel )
+
+      IF HB_ISNUMERIC( ::nTimeOut ) .AND. ::nTimeOut > 0
+         DEFINE TIMER 0 INTERVAL ::nTimeOut ACTION Eval( ::bCancel )
+      ENDIF
 
       If HB_IsArray( aKeys )
          For i := 1 To Len( aKeys )
@@ -6550,9 +6565,9 @@ CLASS TGridControlTextBox FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal, lAutoSkip}
+{'TEXTBOX', cType, cPicture, cFunction, nOnFocusPos, lButtons, aImages, lLikeExcel, cEditKey, lNoModal, lAutoSkip, nTimeOut}
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, lAutoSkip ) CLASS TGridControlTextBox
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, lAutoSkip, nTimeOut ) CLASS TGridControlTextBox
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -6607,15 +6622,26 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, lButtons, aImages, oGrid, l
       ::lForceModal := .T.
    EndIf
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlTextBox
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlTextBox
 
    Local lRet := .F., i, aPos, nPos1, nPos2, cText, nPos
 
    If HB_IsObject( oGrid )
       ::oGrid := oGrid
    EndIf
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
 
    If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lNoModal .OR. ::oGrid:lNoModal ) .AND. ! ::lForceModal
 
@@ -6652,6 +6678,10 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 
       ON KEY RETURN OF ( ::oWindow ) ACTION EVAL( ::bOk, -1 )
       ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+      IF HB_ISNUMERIC( ::nTimeOut ) .AND. ::nTimeOut > 0
+         DEFINE TIMER 0 INTERVAL ::nTimeOut ACTION Eval( ::bCancel )
+      ENDIF
 
       If HB_IsArray( aKeys )
          For i := 1 To Len( aKeys )
@@ -6864,9 +6894,9 @@ CLASS TGridControlTextBoxAction FROM TGridControlTextBox
 
 /*
 COLUMNCONTROLS syntax:
-{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip }
+{'TEXTBOXACTION', cType, cPicture, cFunction, nOnFocusPos, aImages, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip, nTimeOut}
 */
-METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip ) CLASS TGridControlTextBoxAction
+METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel, cEditKey, lNoModal, bAction, bAction2, lAutoSkip, nTimeOut ) CLASS TGridControlTextBoxAction
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -6921,6 +6951,12 @@ METHOD New( cPicture, cFunction, cType, nOnFocusPos, aImages, oGrid, lLikeExcel,
    If HB_IsBlock( ::bAction ) .OR. HB_IsBlock( ::bAction2 )
       ::lForceModal := .T.
    EndIf
+
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
 
    Return Self
 
@@ -7063,9 +7099,9 @@ CLASS TGridControlMemo FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'MEMO', cTitle, lCleanCRLF, nWidth, nHeight, lSize, lNoHScroll}
+{'MEMO', cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll, nTimeOut}
 */
-METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll ) CLASS TGridControlMemo
+METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll, nTimeOut ) CLASS TGridControlMemo
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7089,9 +7125,15 @@ METHOD New( cTitle, lCleanCRLF, oGrid, nWidth, nHeight, lSize, lNoHScroll ) CLAS
       ::lNoHScroll := lNoHScroll
    EndIf
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlMemo
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlMemo
 
    Local lRet := .F., i, oBut1, oBut2
 
@@ -7139,8 +7181,17 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
          ::bOk := { || lRet := ::Valid() }
          ::bCancel := { || ::oWindow:Release() }
       EndIf
+      IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+         ::nTimeOut := nTimeOut
+      ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+         ::nTimeOut := oGrid:nTimeOut
+      ENDIF
 
       ON KEY ESCAPE OF ( ::oWindow ) ACTION EVAL( ::bCancel )
+
+      IF HB_ISNUMERIC( ::nTimeOut ) .AND. ::nTimeOut > 0
+         DEFINE TIMER 0 INTERVAL ::nTimeOut ACTION Eval( ::bCancel )
+      ENDIF
 
       If HB_IsArray( aKeys )
          For i := 1 To Len( aKeys )
@@ -7214,9 +7265,9 @@ CLASS TGridControlDatePicker FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal}
+{'DATEPICKER', lUpDown, lShowNone, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlDatePicker
+METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal, nTimeOut ) CLASS TGridControlDatePicker
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7243,11 +7294,17 @@ METHOD New( lUpDown, lShowNone, lButtons, aImages, oGrid, lNoModal ) CLASS TGrid
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlDatePicker
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlDatePicker
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlDatePicker
 
@@ -7292,9 +7349,9 @@ CLASS TGridControlComboBox FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal}
+{'COMBOBOX', aItems, aValues, cRetValType, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) CLASS TGridControlComboBox              // TODO: Add delayedload
+METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal, nTimeOut ) CLASS TGridControlComboBox              // TODO: Add delayedload
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7335,6 +7392,12 @@ METHOD New( aItems, oGrid, aValues, cRetValType, lButtons, aImages, lNoModal ) C
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
 METHOD Refresh CLASS TGridControlComboBox
@@ -7369,9 +7432,9 @@ METHOD Refresh CLASS TGridControlComboBox
 
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlComboBox
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlComboBox
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBox
 
@@ -7433,9 +7496,9 @@ CLASS TGridControlComboBoxText FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal}
+{'COMBOBOXTEXT', aItems, lIncremental, lWinSize, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal ) CLASS TGridControlComboBoxText
+METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal, nTimeOut ) CLASS TGridControlComboBoxText
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7458,11 +7521,17 @@ METHOD New( aItems, oGrid, lIncremental, lWinSize, lButtons, aImages, lNoModal )
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlComboBoxText
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlComboBoxText
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlComboBoxText
 
@@ -7524,9 +7593,9 @@ CLASS TGridControlSpinner FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal}
+{'SPINNER', nRangeMin, nRangeMax, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlSpinner
+METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal, nTimeOut ) CLASS TGridControlSpinner
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7550,11 +7619,17 @@ METHOD New( nRangeMin, nRangeMax, lButtons, aImages, oGrid, lNoModal ) CLASS TGr
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlSpinner
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlSpinner
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlSpinner
 
@@ -7582,9 +7657,9 @@ CLASS TGridControlCheckBox FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+{'CHECKBOX', cTrue, cFalse, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlCheckBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal, nTimeOut ) CLASS TGridControlCheckBox
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7608,11 +7683,17 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridContr
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlCheckBox
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlCheckBox
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlCheckBox
 
@@ -7639,9 +7720,9 @@ CLASS TGridControlImageList FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'IMAGELIST', lButtons, aImages, lNoModal}
+{'IMAGELIST', lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
+METHOD New( oGrid, lButtons, aImages, lNoModal, nTimeOut ) CLASS TGridControlImageList
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7661,11 +7742,17 @@ METHOD New( oGrid, lButtons, aImages, lNoModal ) CLASS TGridControlImageList
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlImageList
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlImageList
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlImageList
 
@@ -7710,15 +7797,15 @@ CLASS TGridControlImageData FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'IMAGEDATA', oData, lButtons, aImages, lNoModal}
+{'IMAGEDATA', oData, lButtons, aImages, lNoModal, nTimeOut}
 */
-METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageData
+METHOD New( oGrid, oData, lButtons, aImages, lNoModal, nTimeOut ) CLASS TGridControlImageData
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    ::oGrid := oGrid
    If oData == Nil
-      oData := TGridControlTextBox():New
+      oData := TGridControlTextBox():New( NIL, NIL, NIL, NIL, NIL, NIL, oGrid, NIL, NIL, NIL, NIL, nTimeOut )
    EndIf
    ::oData := oData
 
@@ -7733,11 +7820,17 @@ METHOD New( oGrid, oData, lButtons, aImages, lNoModal ) CLASS TGridControlImageD
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlImageData
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlImageData
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlImageData
 
@@ -7813,9 +7906,9 @@ CLASS TGridControlLComboBox FROM TGridControl
 
 /*
 COLUMNCONTROLS syntax:
-{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, lNoModal}
+{'LCOMBOBOX', cTrue, cFalse, lButtons, aImages, oGrid, lNoModal, nTimeOut}
 */
-METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridControlLComboBox
+METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal, nTimeOut ) CLASS TGridControlLComboBox
 
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
@@ -7839,11 +7932,17 @@ METHOD New( cTrue, cFalse, lButtons, aImages, oGrid, lNoModal ) CLASS TGridContr
 
    ASSIGN ::lNoModal VALUE lNoModal TYPE "L"
 
+   IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
+      ::nTimeOut := nTimeOut
+   ELSEIF HB_ISOBJECT( oGrid ) .AND. HB_ISNUMERIC( oGrid:nTimeOut ) .AND. oGrid:nTimeOut >= 0
+      ::nTimeOut := oGrid:nTimeOut
+   ENDIF
+
    Return Self
 
-METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid ) CLASS TGridControlLComboBox
+METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, aKeys, oGrid, nTimeOut ) CLASS TGridControlLComboBox
 
-   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid )
+   Return ::Super:CreateWindow( uValue, nRow - 3, nCol - 3, nWidth + 6, nHeight + 6, cFontName, nFontSize, aKeys, oGrid, nTimeOut )
 
 METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGridControlLComboBox
 
