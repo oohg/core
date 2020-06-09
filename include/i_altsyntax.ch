@@ -3487,7 +3487,8 @@ XBROWSE
       _OOHG_ActiveControlKeysLikeClipper  := .F. ;;
       _OOHG_ActiveControlCellToolTip      := .F. ;;
       _OOHG_ActiveControlNoHScroll        := .F. ;;
-      _OOHG_ActiveControlOnHeadDblClick   := NIL
+      _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
+      _OOHG_ActiveControlHeaderColors     := NIL
 
 #xcommand END XBROWSE ;
    => ;
