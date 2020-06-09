@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlTimeOut                => _OOHG_ActiveControlInfo \( \) \[  57 \]
 #xtranslate _OOHG_ActiveControlHeaderColors           => _OOHG_ActiveControlInfo \( \) \[  58 \]
 #xtranslate _OOHG_ActiveControlValueIs                => _OOHG_ActiveControlInfo \( \) \[  59 \]
 #xtranslate _OOHG_ActiveControlNoClone                => _OOHG_ActiveControlInfo \( \) \[  60 \]
@@ -2802,7 +2803,12 @@ GRID
       _OOHG_ActiveControlNoVScroll        := .F. ;;
       _OOHG_ActiveControlOnBeforeInsert   := NIL ;;
       _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
-      _OOHG_ActiveControlHeaderColors     := NIL
+      _OOHG_ActiveControlHeaderColors     := NIL ;;
+      _OOHG_ActiveControlTimeOut          := NIL
+
+#xcommand TIMEOUT <timeout> ;
+   => ;
+      _OOHG_ActiveControlTimeOut := <timeout>
 
 #xcommand SILENT <silent> ;
    => ;
@@ -3103,7 +3109,8 @@ GRID
             _OOHG_ActiveControlNoVScroll, ;
             _OOHG_ActiveControlOnBeforeInsert, ;
             _OOHG_ActiveControlOnHeadDblClick, ;
-            _OOHG_ActiveControlHeaderColors )
+            _OOHG_ActiveControlHeaderColors, ;
+            _OOHG_ActiveControlTimeOut )
 
 /*---------------------------------------------------------------------------
 BROWSE
@@ -3199,7 +3206,8 @@ BROWSE
       _OOHG_ActiveControlCellToolTip      := .F. ;;
       _OOHG_ActiveControlNoHScroll        := .F. ;;
       _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
-      _OOHG_ActiveControlHeaderColors     := NIL
+      _OOHG_ActiveControlHeaderColors     := NIL ;;
+      _OOHG_ActiveControlTimeOut          := NIL
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3398,7 +3406,8 @@ BROWSE
             _OOHG_ActiveControlCellToolTip, ;
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlOnHeadDblClick, ;
-            _OOHG_ActiveControlHeaderColors )
+            _OOHG_ActiveControlHeaderColors, ;
+            _OOHG_ActiveControlTimeOut )
 
 /*---------------------------------------------------------------------------
 XBROWSE
@@ -3488,7 +3497,8 @@ XBROWSE
       _OOHG_ActiveControlCellToolTip      := .F. ;;
       _OOHG_ActiveControlNoHScroll        := .F. ;;
       _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
-      _OOHG_ActiveControlHeaderColors     := NIL
+      _OOHG_ActiveControlHeaderColors     := NIL ;;
+      _OOHG_ActiveControlTimeOut          := NIL
 
 #xcommand END XBROWSE ;
    => ;
@@ -3595,7 +3605,8 @@ XBROWSE
             _OOHG_ActiveControlCellToolTip, ;
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlOnHeadDblClick, ;
-            _OOHG_ActiveControlHeaderColors )
+            _OOHG_ActiveControlHeaderColors, ;
+            _OOHG_ActiveControlTimeOut )
 
 /*---------------------------------------------------------------------------
 HYPERLINK

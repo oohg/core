@@ -172,6 +172,7 @@
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
       [ HEADERCOLORS <aHeadClrs> ] ;
+      [ TIMEOUT <nTime> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
@@ -203,7 +204,7 @@
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
-            <aHeadClrs> )
+            <aHeadClrs>, <nTime> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;
