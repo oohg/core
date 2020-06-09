@@ -4547,28 +4547,32 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TXBrowseByCell
 
    Return aSelectedColors
 
-METHOD SetControlValue( uValue ) CLASS TXBrowseByCell
+METHOD SetControlValue( uRow, uCol ) CLASS TXBrowseByCell
 
    Local nRow := 0, nCol := 0
 
    If ! ::lLocked .AND. ::FirstVisibleColumn # 0
-      If HB_IsArray( uValue )
-         If Len( uValue ) == 1
-            If HB_IsNumeric( uValue[ 1 ] ) .AND. uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount
-               nRow := uValue[ 1 ]
+      If HB_IsArray( uRow )
+         If Len( uRow ) == 1
+            If HB_IsNumeric( uRow[ 1 ] ) .AND. uRow[ 1 ] >= 1 .AND. uRow[ 1 ] <= ::ItemCount
+               nRow := uRow[ 1 ]
                nCol := 1
             EndIf
-         ElseIf Len( uValue ) >= 2
-            If ( HB_IsNumeric( uValue[ 1 ] ) .AND. HB_IsNumeric( uValue[ 2 ] ) .AND. ;
-                 uValue[ 1 ] >= 1 .AND. uValue[ 1 ] <= ::ItemCount .AND. ;
-                 uValue[ 2 ] >= 1 .AND. uValue[ 2 ] <= Len( ::aHeaders ) )
-               nRow := uValue[ 1 ]
-               nCol := uValue[ 2 ]
+         ElseIf Len( uRow ) >= 2
+            If ( HB_IsNumeric( uRow[ 1 ] ) .AND. HB_IsNumeric( uRow[ 2 ] ) .AND. ;
+                 uRow[ 1 ] >= 1 .AND. uRow[ 1 ] <= ::ItemCount .AND. ;
+                 uRow[ 2 ] >= 1 .AND. uRow[ 2 ] <= Len( ::aHeaders ) )
+               nRow := uRow[ 1 ]
+               nCol := uRow[ 2 ]
             EndIf
          EndIf
-      ElseIf HB_IsNumeric( uValue ) .AND. uValue >= 1 .AND. uValue <= ::ItemCount
-         nRow := uValue
-         nCol := 1
+      ElseIf HB_IsNumeric( uRow ) .AND. uRow >= 1 .AND. uRow <= ::ItemCount
+         nRow := uRow
+         If uCol >= 1 .AND. uCol <= Len( ::aHeaders )
+            nCol := uCol
+         Else
+            nCol := 1
+         EndIf
       EndIf
    EndIf
 
