@@ -34,7 +34,7 @@
      * Use defines instead of values.
 
 2020-06-08 22:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\source\c_gdiplues.c
+   * core\source\c_gdiplus.c
      ! Function GPlusLoadImageFromFile is not working properly
        and generates a RTE.
 
