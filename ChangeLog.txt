@@ -27,7 +27,7 @@
 
 2020-06-08 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
-     ! HeaderColors is no reseted before defining and XBrowse.
+     ! HeaderColors is not reseted before defining an XBrowse.
 
 2020-06-08 22:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_window.ch
