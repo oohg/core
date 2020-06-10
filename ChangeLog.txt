@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-10 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\ChangeLog_006.txt
+     ! Typo.
+
 2020-06-08 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
    * core\include\i_browse.ch
@@ -24,6 +28,7 @@
        By default the common timeout is set to NIL meaning that the
        edit controls without a specific timeout will default to
        the value set by class TGridControl.
+   * Tagged as v20.06.08.rc1
 
 2020-06-08 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\i_altsyntax.ch
