@@ -747,7 +747,7 @@
     * Some changes for 64 bits support.
   * core\source\h_label.prg
     ! Autosize is not working properly when the control's value
-      if a multiline text.
+      is a multiline text.
     * METHOD SetFont of TLabel now returns the font handle.
   * core\source\h_menu.prg
     - STATIC _OOHG_xMenuActive.
