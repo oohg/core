@@ -167,9 +167,41 @@ MEMVAR HBPRN
       iif( __DYNSISFUN( "TAPPLICATION" ) .AND. _OOHG_ActiveFrame # NIL, Do( "_EndTabPage" ), hbprn:EndPage() )
 #endif
 
-#xcommand END DOC [ <nowait: NOWAIT> ] [ <size: SIZE> ] [ <dummy: OF, PARENT> <parent> ] ;
+#xcommand END DOC [ <dummy: OF, PARENT> <parent> ] ;
    => ;
-      hbprn:EndDoc( <(parent)>, ! <.nowait.>, <.size.> )
+      hbprn:EndDoc( <(parent)>, NIL, NIL )
+
+#xcommand END DOC NOWAIT [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .F., NIL )
+
+#xcommand END DOC WAIT [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .T., NIL )
+
+#xcommand END DOC SIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, NIL, .T. )
+
+#xcommand END DOC NOSIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, NIL, .F. )
+
+#xcommand END DOC NOWAIT SIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .F., .T. )
+
+#xcommand END DOC NOWAIT NOSIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .F., .F. )
+
+#xcommand END DOC WAIT SIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .T., .T. )
+
+#xcommand END DOC WAIT NOSIZE [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      hbprn:EndDoc( <(parent)>, .T., .F. )
 
 #xcommand RELEASE PRINTSYS ;
    => ;

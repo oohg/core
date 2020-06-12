@@ -237,7 +237,11 @@ CLASS HBPrinter
    DATA Pens                      INIT { {}, {} }
    DATA PolyFillMode              INIT POLYFILL_ALTERNATE
    DATA Ports                     INIT {}
+#ifndef NO_GUI
    DATA PreviewMode               INIT .F.
+#else
+   DATA PreviewMode               INIT .F. PROTECTED
+#endif
    DATA PreviewRect               INIT { 0, 0, 0, 0 }
    DATA PreviewScale              INIT 1
    DATA PrinterDefault            INIT ""
@@ -405,11 +409,7 @@ METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
    ENDIF
    IF HB_ISLOGICAL( lPrev )
       #ifndef NO_GUI
-         IF lprev
-            ::PreviewMode := .T.
-         ENDIF
-      #else
-         ::PreviewMode := .F.
+         ::PreviewMode := lPrev
       #endif
    ENDIF
    IF ::hDC == 0
@@ -566,10 +566,11 @@ METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
+   IF ::PreviewMode
 #ifndef NO_GUI
-   ::Preview( cParent, lWait, lSize )
+      ::Preview( cParent, lWait, lSize )
 #endif
-   IF ! ::PreviewMode
+   ELSE
       IF lWait
          MsgInfo( ::aOpisy[ 31 ], "" )
       ENDIF
