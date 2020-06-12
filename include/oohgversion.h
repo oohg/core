@@ -87,6 +87,6 @@
 #define OOHG_NAME             "Object Oriented (x)Harbour GUI"
 #define OOHG_COMPANY_NAME     "OOHG Project"
 
-#define __OOHG__              0x13021B   /* Three bytes: Major + Minor + Build. */
+#define __OOHG__              0x140608   /* Three bytes: Major + Minor + Build. */
 
 #endif /* OOHG_VER_H_ */
