@@ -12,7 +12,7 @@
  *   '-' Removed: ...           ';' Comment
  */
 
-2020-06-12 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2020-06-12 09:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\include\winprint.ch
    * core\source\winprint.prg
      * Data PreviewMode is now PROTECTED when NO_GUI is defined.
