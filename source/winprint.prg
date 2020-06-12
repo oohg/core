@@ -3145,13 +3145,13 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
 
    LOCAL i, cName, oSplit, oPages, oImg
 
-   ::IloscStron := Len( ::MetaFiles )
-   IF ::IloscStron < 1
-      MsgStop( ::aOpisy[ 51 ], "" )
+   IF ! ::PreviewMode
       RETURN NIL
    ENDIF
 
-   IF ! ::PreviewMode
+   ::IloscStron := Len( ::MetaFiles )
+   IF ::IloscStron < 1
+      MsgStop( ::aOpisy[ 51 ], "" )
       RETURN NIL
    ENDIF
 
