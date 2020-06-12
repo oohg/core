@@ -12,11 +12,37 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-12 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\winprint.ch
+   * core\source\winprint.prg
+     * Data PreviewMode is now PROTECTED when NO_GUI is defined.
+     ! Command END DOC.
+       When PREVIEW is OFF the execution is paused with a message
+       thus breaking the expected behaviour. This commit reserves
+       the changes made at 2019-01-18 19:12 UTC-0300.
+       The new syntax for the command is
+       END DOC [WAIT|NOWAIT] [SIZE|NOSIZE] [OF|PARENT]
+       Note that:
+       - SIZE and NOSIZE are ignored if PREVIEW is OFF.
+       - if SIZE and NOSIZE clauses are omitted, SIZE is assumed
+         when WAIT is set (explicitly or assumed).
+       - WAIT is assumed when PREVIEW is ON.
+       - NOWAIT is assumed when PREVIEW is OFF.
+
+2020-06-11 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\source\winprint.prg
+     ! When PREVIEW is OFF a message pops up indicating that the
+       report is empty.
+
+2020-06-11 23:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\include\oohgversion.h
+     ! __OOHG__ has wrong value.
+
 2020-06-11 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + core\.github\ISSUE_TEMPLATE\config.yml
      ; Contact information.
 
-2020-06-11 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2020-06-11 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * core\resources\_oohg_resconfig.h
      ! Wrong path.
 
