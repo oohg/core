@@ -220,7 +220,9 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
 
    IF HB_ISLOGICAL( lDrawBy )
       ::lLibDraw := lDrawBy
-   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver .OR. ::lSolid .OR. ValType( aTextMargin ) $ "AN"
+   ELSEIF ::lNoFocusRect .OR. ::lNoHotLight .OR. ::lFitTxt .OR. ::lNoPrintOver
+      ::lLibDraw := .T.
+   ELSEIF uFontColor # NIL .OR. ::lSolid .OR. ValType( aTextMargin ) $ "AN"
       ::lLibDraw := .T.
    ELSE
       ::lLibDraw := _OOHG_UseLibraryDraw
