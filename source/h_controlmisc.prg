@@ -1267,8 +1267,9 @@ CLASS TControl FROM TWindow
    DATA OldValue             INIT nil
    DATA OldColor
    DATA OldBackColor
-   DATA oBkGrnd              INIT NIL
+   DATA BackgroundObject     INIT NIL
 
+   METHOD oBkGrnd            SETGET
    METHOD Row                SETGET
    METHOD Col                SETGET
    METHOD Width              SETGET
@@ -1322,6 +1323,24 @@ CLASS TControl FROM TWindow
    METHOD Cursor             SETGET
 
    ENDCLASS
+
+METHOD oBkGrnd( oCtrl ) CLASS TControl
+
+   IF PCount() > 0
+      IF oCtrl == NIL
+         ::BrushHandle := NIL
+         ::BackgroundObject := NIL
+         ::Redraw()
+      ELSEIF HB_ISOBJECT( oCtrl )
+         ::BrushHandle := NIL
+         ::BackgroundObject := oCtrl
+         ::Visible := .F.
+         ::Visible := .T.
+//         ::Redraw()
+      ENDIF
+   ENDIF
+
+   RETURN ::BackgroundObject
 
 METHOD Cursor( hCursor ) CLASS TControl
 
@@ -2134,16 +2153,26 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    }
    if( bPaint )
    {
-        /* Paint using a brush derived from the BACKGROUND object or the TAB */
-      SetBkMode( hdc, TRANSPARENT );
-      DeleteObject( oSelf->BrushHandle );
-      oSelf->BrushHandle = GetTabBrush( hWnd );
-      oSelf->lOldBackColor = -1;
-      pt.x = 0; pt.y = 0;
-      MapWindowPoints( oSelf->hWnd, hWnd, &pt, 1 );
-      SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
-      OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
-      DeleteObject( OldBrush );
+      if( oSelf-> BrushHandle )
+      {
+         SetBkMode( hdc, TRANSPARENT );
+         pt.x = 0; pt.y = 0;
+         MapWindowPoints( oSelf->hWnd, hWnd, &pt, 1 );
+         SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
+         SelectObject( hdc, oSelf->BrushHandle );
+      }
+      else
+      {
+         /* Paint using a brush derived from the BACKGROUND object or the TAB */
+         oSelf->BrushHandle = GetTabBrush( hWnd );
+         oSelf->lOldBackColor = -1;
+         SetBkMode( hdc, TRANSPARENT );
+         pt.x = 0; pt.y = 0;
+         MapWindowPoints( oSelf->hWnd, hWnd, &pt, 1 );
+         SetBrushOrgEx( hdc, -pt.x, -pt.y, NULL );
+         OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
+         DeleteObject( OldBrush );
+      }
       HBRUSHret( oSelf->BrushHandle );
       return;
    }

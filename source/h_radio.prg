@@ -100,6 +100,7 @@ CLASS TRadioGroup FROM TLabel
    METHOD ItemReadOnly
    METHOD ItemToolTip
    METHOD Limit                    SETGET
+   METHOD oBkGrnd                  SETGET
    METHOD ReadOnly                 SETGET
    METHOD RePaint
    METHOD RowMargin                BLOCK { |Self| - ::Row }
@@ -141,6 +142,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
       ::lLibDraw := lDrawBy
    ELSEIF ::lNoFocusRect
       ::lLibDraw := .T.
+   ELSEIF uFontColor # NIL
+      ::lLibDraw := .T.
+   ELSE
+      ::lLibDraw := _OOHG_UseLibraryDraw
    ENDIF
 
    IF HB_ISNUMERIC( nSpacing )
@@ -208,18 +213,26 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Background( oBkGrnd ) CLASS TRadioGroup
+METHOD Background( oCtrl ) CLASS TRadioGroup
+
+   RETURN ::oBkGrnd( oCtrl )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD oBkGrnd( oCtrl ) CLASS TRadioGroup
 
    LOCAL i
 
-   IF HB_ISOBJECT( oBkGrnd )
-      ::oBkGrnd := oBkGrnd
-      FOR i := 1 TO Len( ::aOptions )
-         ::aOptions[ i ]:Background := oBkGrnd
-      NEXT
+   IF PCount() > 0
+      IF oCtrl == NIL .OR. HB_ISOBJECT( oCtrl )
+         ::BrushHandle := NIL
+         ::BackgroundObject := oCtrl
+         FOR i := 1 TO Len( ::aOptions )
+            ::aOptions[ i ]:oBkGrnd := oCtrl
+         NEXT
+      ENDIF
    ENDIF
 
-   RETURN ::oBkGrnd
+   RETURN ::BackgroundObject
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GroupHeight() CLASS TRadioGroup
@@ -825,6 +838,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, cCaption,
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Background( oCtrl ) CLASS TRadioItem
+
+   RETURN ::oBkGrnd( oCtrl )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( lValue ) CLASS TRadioItem
 
    LOCAL lOldValue
@@ -837,16 +855,6 @@ METHOD Value( lValue ) CLASS TRadioItem
    ENDIF
 
    RETURN ( SendMessage( ::hWnd, BM_GETCHECK, 0, 0 ) == BST_CHECKED )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Background( oBkGrnd ) CLASS TRadioItem
-
-   IF HB_ISOBJECT( oBkGrnd )
-      ::oBkGrnd := oBkGrnd
-      ::Redraw()
-   ENDIF
-
-   RETURN ::oBkGrnd
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TRadioItem

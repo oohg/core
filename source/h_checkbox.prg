@@ -111,6 +111,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
       ::lLibDraw := lDrawBy
    ELSEIF ::lNoFocusRect
       ::lLibDraw := .T.
+   ELSEIF ::lNoFocusRect .OR. uFontColor # NIL
+      ::lLibDraw := .T.
+   ELSE
+      ::lLibDraw := _OOHG_UseLibraryDraw
    ENDIF
 
    ::SetForm( cControlName, uParentForm, cFontName, cFontSize, uFontColor, uBackColor, NIL, lRtl )
@@ -156,7 +160,7 @@ METHOD Value( uValue ) CLASS TCheckBox
    Local uState
 
    IF HB_ISLOGICAL( uValue )
-      SendMessage( ::hWnd, BM_SETCHECK, if( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
+      SendMessage( ::hWnd, BM_SETCHECK, iif( uValue, BST_CHECKED, BST_UNCHECKED ), 0 )
       ::DoChange()
    ELSEIF ::ThreeState .AND. PCount() > 0 .AND. uValue == NIL
       SendMessage( ::hWnd, BM_SETCHECK, BST_INDETERMINATE, 0 )
@@ -203,7 +207,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
       IF ::lLibDraw .AND. ::IsVisualStyled
          RETURN TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ;
                                              ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ), ;
-                                             ::LeftAlign, ::lNoFocusRect )
+                                             ::LeftAlign, ::lNoFocusRect)
       ENDIF
    ENDIF
 

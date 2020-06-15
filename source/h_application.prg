@@ -65,6 +65,8 @@
 #include "oohg.ch"
 #include "i_init.ch"
 
+#define MAX_OBJ_NUMBER   9999999999
+
 #define HOTKEY_ID        1
 #define HOTKEY_MOD       2
 #define HOTKEY_KEY       3
@@ -1975,8 +1977,8 @@ METHOD Value_Pos50( cValue ) CLASS TApplication
       // Caller must verify this name doesn't exists
       uRet := "NULL" + StrZero( ::aVars[ NDX_OOHG_GETNULLNAME ], 10 )
       ::aVars[ NDX_OOHG_GETNULLNAME ] ++
-      IF ::aVars[ NDX_OOHG_GETNULLNAME ] > 9999999999
-         ::aVars[ NDX_OOHG_GETNULLNAME ] := 0
+      IF ::aVars[ NDX_OOHG_GETNULLNAME ] > MAX_OBJ_NUMBER
+         MsgOOHGError( "APPLICATION: Can't assign a new NULL name." )
       ENDIF
    ENDIF
    ::MutexUnlock()
