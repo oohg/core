@@ -1,8 +1,8 @@
 ---
 name: Help request
-about: How to request help
+about: Ask for specialized help
 title: Please, I humbly request your help
-labels: ''
+labels: 'support'
 assignees: ''
 
 ---
