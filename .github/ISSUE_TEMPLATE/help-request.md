@@ -2,7 +2,7 @@
 name: Help request
 about: Ask for specialized help
 title: Please, I humbly request your help
-labels: 'support'
+labels: support
 assignees: ''
 
 ---
