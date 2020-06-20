@@ -23,6 +23,7 @@
       error message. If your app is going to create more than
       10.000.000.000 objects you must modify the value of the
       constant MAX_OBJ_NUMBER and recompile OOHG libraries.
+  #260-PR
 
 2020-06-14 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
@@ -37,6 +38,7 @@
       the background by passing NIL as parameter.
     * Method Background of classes TRadioGroup and TRadioItem
       now just call method oBkGrnd.
+  #260-PR
 
 2020-06-14 19:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_controlmisc.prg
@@ -48,17 +50,19 @@
     + Data BackgroundObject to class TControl.
     - Data oBkGrnd from class TControl.
     + Method oBkGrnd to class TControl.
-    ; This changes allow to remove or replace the background object
+    ; These changes allow to remove or replace the background object
       of a control after its creation.
     ! Method Events_Color of class TControl: a control which has
       a background object assigned shows a focus rectangle after
       loosing the focus.
+   #259
 
 2020-06-14 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
     * If neither WINDRAW nor OOHGDRAW clauses are present then
       the first one will be assumed when FONTCOLOR clause is
       specified and the app is themed.
+  #260-PR
 
 2020-06-14 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_checkbox.prg
@@ -67,6 +71,7 @@
       clauses are specified and the app is themed.
     * DATA lLibDraw now defaults to _OOHG_UseLibraryDraw
       instead of .F.
+  #260-PR
 
 2020-06-12 09:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\winprint.ch
@@ -74,7 +79,7 @@
     * Data PreviewMode is now PROTECTED when NO_GUI is defined.
     ! Command END DOC.
       When PREVIEW is OFF the execution is paused with a message
-      thus breaking the expected behaviour. This commit reserves
+      thus breaking the expected behaviour. This commit reverses
       the changes made at 2019-01-18 19:12 UTC-0300.
       The new syntax for the command is
       END DOC [WAIT|NOWAIT] [SIZE|NOSIZE] [OF|PARENT]
@@ -84,15 +89,18 @@
       when WAIT is set (explicitly or assumed).
       WAIT is assumed when PREVIEW is ON.
       NOWAIT is assumed when PREVIEW is OFF.
+  #262
 
 2020-06-11 23:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\winprint.prg
     ! When PREVIEW is OFF a message pops up indicating that the
       report is empty.
+  #258
 
 2020-06-11 23:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohgversion.h
     ! __OOHG__ has wrong value.
+  #215-PR
 
 2020-06-11 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   + core\.github\ISSUE_TEMPLATE\config.yml
@@ -101,10 +109,12 @@
 2020-06-11 17:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\resources\_oohg_resconfig.h
     ! Wrong path.
+  #215-PR
 
 2020-06-10 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\ChangeLog_006.txt
     ! Typo.
+  #215-PR
 
 2020-06-08 22:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_altsyntax.ch
@@ -118,11 +128,11 @@
       By default the common timeout is set to NIL meaning that the
       edit controls without a specific timeout will default to
       the value set by class TGridControl.
-  * Tagged as v20.06.08.rc1
+  * RELEASE: TAG v20.06.08.rc1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 2020-06-08 22:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_altsyntax.ch
-    ! HeaderColors is not reseted before defining an XBrowse.
+    ! HeaderColors array is not reseted before defining an XBrowse.
 
 2020-06-08 22:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
@@ -132,6 +142,7 @@
   * core\source\c_gdiplus.c
     ! Function GPlusLoadImageFromFile is not working properly
       and generates a RTE.
+  #257
 
 2020-06-08 22:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_windows.c
@@ -153,11 +164,13 @@
     ! Hidden column becames visible after executing methods
       ColumnAutoFit, ColumnAutoFitH, ColumnBetterAutofit,
       ColumnsBetterAutofit, ColumnsAutoFit and ColumnsAutofitH.
+  #256
 
 2020-06-08 21:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     ! In a TXBroseByCell, after editing cell in column 2 the
       same cell is edited again.
+  #255
 
 2020-06-08 00:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_dll.prg
@@ -185,11 +198,13 @@
   * core\compile.bat
     ! Wrong syntax in the content of var HG_INC_CCOMP breaks
       compilation.
+  #254
 
 2020-06-07 15:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_MINGW.BAT
   * core\compile_bcc.bat
     ! Console programs don't show output when started.
+  #253
 
 2020-06-07 15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.h
@@ -213,6 +228,7 @@
   * core\source\h_grid.prg
     ! App freezes when a grid, xbrowse or browse control is
       defined without columns.
+  #252
 
 2020-06-07 14:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_report.ch
@@ -228,6 +244,7 @@
     * Function ParseName now accepts a path if it's ended with
       a backslash char. In such a case 'list' is set as filename.
     - Unneeded defines and includes at C level.
+  #251
 
 2020-06-07 14:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
@@ -235,11 +252,13 @@
     ! Method AcceptFile is not working because WM_DROPFILES
       messages are blocked by User Interface Privilege Isolation.
     ! Memory leak at WM_DROPFILES handler.
+  #250
 
 2020-06-07 14:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\miniprint.prg
     ! Lib shows an error message when a printer option is not
       supported by it's drivers even if warnings were disabled.
+  #249
 
 2020-06-07 14:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\bostaurus.hbp
@@ -250,7 +269,7 @@
 
 2020-06-06 00:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohgversion.h
-    * Version bumped to release candidate 1 instead of beta.
+    * Version bumped to RC1 instead of beta.
 
 2020-06-06 00:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
