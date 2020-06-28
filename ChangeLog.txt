@@ -12,6 +12,23 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-28 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    ! RTE "Bound error: array access" at method GetCellType
+      when adding a column with method AddColumn.
+
+2020-06-28 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp.bat
+    ! Options message.
+
+2020-06-28 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+    ! Support for /NORC switch.
+
+2020-06-28 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! oWinMH:Release is not executed when count reaches zero.
+
 2020-06-14 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     + MAX_OBJ_NUMBER constant.
