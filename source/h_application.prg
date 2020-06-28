@@ -2270,10 +2270,13 @@ METHOD WinMHRelease CLASS TApplication
          ENDIF
          ::oWinMHCount --
       ELSE
+         ::oWinMH:Release()
          ::oWinMH := NIL
+         ::oWinMHCount := 0
       ENDIF
    ELSE
       ::oWinMH := NIL
+      ::oWinMHCount := 0
    ENDIF
 
    RETURN ( ::oWinMH )
