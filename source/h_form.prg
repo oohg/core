@@ -2923,8 +2923,9 @@ FUNCTION _ReleaseWindowList( aWindows )
       FOR i := 1 TO Len( aWindows )
          oWnd := aWindows[ i ]
 
-         IF ! oWnd:lReleased
+         IF ! oWnd:lReleased .AND. ! oWnd:lNoRecurse
             oWnd:lReleasing := .T.
+            oWnd:lNoRecurse := .T.
 
             IF oWnd:Active
                oWnd:DoEvent( oWnd:OnRelease, "WINDOW_RELEASE" )
@@ -2956,8 +2957,9 @@ FUNCTION _ReleaseWindowList( aWindows )
       FOR i := Len( aWindows ) TO 1 STEP -1
          oWnd := aWindows[ i ]
 
-         IF ! oWnd:lReleased
+         IF ! oWnd:lReleased .AND. ! oWnd:lNoRecurse
             oWnd:lReleasing := .T.
+            oWnd:lNoRecurse := .T.
 
             // Release child windows
             _ReleaseWindowList( oWnd:aChildPopUp )
