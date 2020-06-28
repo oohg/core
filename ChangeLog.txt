@@ -12,6 +12,17 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + Data lNoRecurse.
+  * core\source\h_form.prg
+    ! Infinite loop when the app calls function ReleaseAllWindows
+      from the MAIN window's method OnRelease.
+
+2020-06-28 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    ! Semi-oop syntax translation of method RePaint.
+
 2020-06-28 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     ! RTE "Bound error: array access" at method GetCellType
