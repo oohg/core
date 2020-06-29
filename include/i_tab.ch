@@ -101,6 +101,7 @@
       [ <ll: LABELLEFT> ] ;
       [ <rj: RIGHTJUST> ] ;
       [ <so: SCROLLOP> ] ;
+      [ BACKCOLOR <backcolor> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
@@ -109,7 +110,7 @@
             <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
             <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.>, ;
             <.right.>, <.bottom.>, <{rclick}>, <.ragged.>, <.fwidth.>, NIL, ;
-            <nw>, <nh>, <min>, <hor>, <ver>, NIL, <.il.>, <.ll.>, <.rj.>, <.so.>, ;
+            <nw>, <nh>, <min>, <hor>, <ver>, <backcolor>, <.il.>, <.ll.>, <.rj.>, <.so.>, ;
             <{click}> )
 
 #command PAGE <caption> ;
