@@ -65,285 +65,274 @@
 #include "common.ch"
 #include "i_windefs.ch"
 
-STATIC _OOHG_StationName := ""
+STATIC _OOHG_StationName   := ""
 STATIC _OOHG_SendDataCount := 0
-STATIC _OOHG_CommPath := ""
+STATIC _OOHG_CommPath      := ""
 
-Function GetData()
+FUNCTION GetData()
 
-   Local PacketNames [ aDir ( _OOHG_CommPath + _OOHG_StationName + '.*'  ) ] , i , Rows , Cols , RetVal := Nil , bd , aItem , aTemp := {} , r , c
-   Local DataValue, DataType, DataLenght, Packet
+   LOCAL PacketNames, i, Rows, Cols, RetVal := NIL, bd, aItem, aTemp := {}, r, c
+   LOCAL DataValue, DataType, DataLenght, Packet, cph, stn
 
-   aDir ( _OOHG_CommPath + _OOHG_StationName + '.*' , PacketNames )
+   App.MutexLock
+   cph := _OOHG_CommPath
+   stn := _OOHG_StationName
+   App.MutexUnLock
 
-   If Len ( PacketNames ) == 0
-      Return Nil
-   EndIf
+   PacketNames := Array( ADir( cph + stn + '.*' ) )
 
-   bd = Set (_SET_DATEFORMAT )
+   ADir( cph + stn + '.*', PacketNames )
+
+   IF Len ( PacketNames ) == 0
+      RETURN NIL
+   ENDIF
+
+   bd = Set( _SET_DATEFORMAT )
 
    SET DATE TO ANSI
 
-   Packet := MemoRead ( _OOHG_CommPath + PacketNames [1] )
+   Packet := MemoRead( cph + PacketNames[ 1 ] )
 
-   Rows := Val ( SubStr ( Memoline ( Packet , , 1 ) , 11 , 99 ) )
-   Cols := Val ( SubStr ( Memoline ( Packet , , 2 ) , 11 , 99 )   )
+   Rows := Val( SubStr( MemoLine( Packet, NIL, 1 ), 11, 99 ) )
+   Cols := Val( SubStr( MemoLine( Packet, NIL, 2 ), 11, 99 ) )
 
-   Do Case
+   DO CASE
+   CASE Rows == 0 .AND. Cols == 0
+      // Single Data
 
-   // Single Data
+      DataType   := SubStr( MemoLine( Packet, NIL, 3 ), 12, 1 )
+      DataLenght := Val( SubStr( MemoLine( Packet, NIL, 3 ), 14, 99 ) )
+      DataValue  := MemoLine( Packet, 254, 4 )
 
-   Case Rows == 0 .And. Cols == 0
+      DO CASE
+      CASE DataType == 'C'
+         RetVal := Left( DataValue, DataLenght )
+      CASE DataType == 'N'
+         RetVal := Val( DataValue )
+      CASE DataType == 'D'
+         RetVal := CToD( DataValue )
+      CASE DataType == 'L'
+         RetVal := iif( AllTrim( DataValue ) == 'T', .T., .F. )
+      CASE DataType == 'T'
+         RetVal := CToT( DataValue )
+      END CASE
 
-      DataType := SubStr ( Memoline ( Packet ,  , 3 ) , 12 , 1 )
-      DataLenght := Val ( SubStr ( Memoline ( Packet , , 3 ) , 14 , 99 ) )
-
-      DataValue := Memoline ( Packet , 254 , 4 )
-
-      Do Case
-      Case DataType == 'C'
-         RetVal := Left ( DataValue , DataLenght )
-      Case DataType == 'N'
-         RetVal := Val ( DataValue )
-      Case DataType == 'D'
-         RetVal := CTOD ( DataValue )
-      Case DataType == 'L'
-         RetVal := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-      Case DataType == 'T'
-         RetVal := CTOT ( DataValue )
-      End Case
-
+   CASE Rows != 0 .AND. Cols == 0
       // One Dimension Array Data
 
-   Case Rows != 0 .And. Cols == 0
+      i := 3
+      DO WHILE i < MLCount( Packet )
+         DataType   := SubStr( MemoLine( Packet, NIL, i ), 12, 1 )
+         DataLenght := Val( SubStr( MemoLine( Packet, NIL, i ), 14, 99 ) )
+         i++
 
-            i := 3
+         DataValue := MemoLine( Packet, 254, i )
 
-            Do While i < MlCount ( Packet )
+         DO CASE
+         CASE DataType == 'C'
+            aItem := Left( DataValue, DataLenght )
+         CASE DataType == 'N'
+            aItem := Val( DataValue )
+         CASE DataType == 'D'
+            aItem := CToD( DataValue )
+         CASE DataType == 'L'
+            aItem := iif( AllTrim( DataValue ) == 'T', .T., .F. )
+         CASE DataType == 'T'
+            aItem := CToT( DataValue )
+         END CASE
 
-               DataType   := SubStr ( Memoline ( Packet , , i ) , 12 , 1 )
-               DataLenght := Val ( SubStr ( Memoline ( Packet , , i ) , 14 , 99 ) )
+         AAdd( aTemp, aItem )
+         i++
+      ENDDO
 
-               i++
+      RetVal := aTemp
 
-               DataValue  := Memoline ( Packet , 254 , i )
+   CASE Rows != 0 .AND. Cols != 0
+      // Two Dimension Array Data
 
-               Do Case
-                  Case DataType == 'C'
-                     aItem := Left ( DataValue , DataLenght )
-                  Case DataType == 'N'
-                     aItem := Val ( DataValue )
-                  Case DataType == 'D'
-                     aItem := CTOD ( DataValue )
-                  Case DataType == 'L'
-                     aItem := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-                  Case DataType == 'T'
-                     aItem := CTOT ( DataValue )
-               End Case
+      i := 3
+      aTemp := Array( Rows, Cols )
+      r := 1
+      c := 1
 
-               aAdd ( aTemp , aItem )
+      DO WHILE i < MLCount( Packet )
+         DataType   := SubStr( MemoLine( Packet, NIL, i ), 12, 1 )
+         DataLenght := Val( SubStr( MemoLine( Packet, NIL, i ), 14, 99 ) )
+         i++
 
-               i++
+         DataValue  := MemoLine( Packet, 254, i )
 
-            EndDo
+         DO CASE
+         CASE DataType == 'C'
+            aItem := Left( DataValue, DataLenght )
+         CASE DataType == 'N'
+            aItem := Val( DataValue )
+         CASE DataType == 'D'
+            aItem := CToD( DataValue )
+         CASE DataType == 'L'
+            aItem := iif( AllTrim( DataValue ) == 'T', .T., .F. )
+         CASE DataType == 'T'
+            aItem := CToT( DataValue )
+         END CASE
 
-            RetVal := aTemp
+         aTemp[ r, c ] := aItem
+         c++
+         IF c > Cols
+            r++
+            c := 1
+         ENDIF
+         i++
+      ENDDO
 
-         // Two Dimension Array Data
+      RetVal := aTemp
 
-         Case Rows != 0 .And. Cols != 0
+   END CASE
 
-            i := 3
+   DELETE FILE ( cph + PacketNames[ 1 ] )
 
-            aTemp := Array ( Rows , Cols )
+   Set( _SET_DATEFORMAT, bd )
 
-            r := 1
-                           c := 1
+   RETURN ( RetVal )
 
-            Do While i < MlCount ( Packet )
+FUNCTION SendData( cDest, Data )
 
-               DataType   := SubStr ( Memoline ( Packet , , i ) , 12 , 1 )
-               DataLenght := Val ( SubStr ( Memoline ( Packet , , i ) , 14 , 99 ) )
-
-               i++
-
-               DataValue  := Memoline ( Packet , 254 , i )
-
-               Do Case
-                  Case DataType == 'C'
-                     aItem := Left ( DataValue , DataLenght )
-                  Case DataType == 'N'
-                     aItem := Val ( DataValue )
-                  Case DataType == 'D'
-                     aItem := CTOD ( DataValue )
-                  Case DataType == 'L'
-                     aItem := iif ( Alltrim(DataValue) == 'T' , .t. , .f. )
-                  Case DataType == 'T'
-                     aItem := CTOT ( DataValue )
-               End Case
-
-               aTemp [r] [c] := aItem
-
-               c++
-               if c > Cols
-                  r++
-                  c := 1
-               EndIf
-
-               i++
-
-            EndDo
-
-            RetVal := aTemp
-
-      End Case
-
-   Delete File ( _OOHG_CommPath + PacketNames [1] )
-
-   Set (_SET_DATEFORMAT ,bd)
-
-   Return ( RetVal )
-
-Function SendData ( cDest , Data )
-
-   Local cData, i, j
+   LOCAL cData, i, j, cph, stn, sdc
    LOCAL pData, cLen, cType, FileName, Rows, Cols
 
+   App.MutexLock
+   cph := _OOHG_CommPath
+   stn := _OOHG_StationName
    _OOHG_SendDataCount++
+   sdc := _OOHG_SendDataCount
+   App.MutexUnLock
 
-   FileName := _OOHG_CommPath + cDest + '.' + _OOHG_StationName + '.' + Alltrim ( Str ( _OOHG_SendDataCount ) )
+   FileName := cph + cDest + '.' + stn + '.' + AllTrim( Str( sdc ) )
 
-   If ValType ( Data ) == 'A'
+   IF ValType( Data ) == 'A'
+      IF ValType( Data[ 1 ] ) != 'A'
+         cData := '#DataRows=' +  AllTrim( Str( Len( Data ) ) ) + CRLF
+         cData := cData + '#DataCols=0' + CRLF
 
-      If ValType ( Data [1] ) != 'A'
+         FOR i := 1 TO Len( Data )
+            cType := ValType( Data[ i ] )
 
-         cData := '#DataRows=' +   Alltrim(Str(Len(Data)))   + chr(13) + chr(10)
-         cData := cData + '#DataCols=0'   + chr(13) + chr(10)
-
-         For i := 1 To Len ( Data )
-
-            cType := ValType ( Data [i] )
-
-            If cType == 'D'
-               pData := alltrim(str(year(data[i]))) + '.' + alltrim(str(month(data[i]))) + '.' + alltrim(str(day(data[i])))
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'L'
-               If Data [i] == .t.
+            IF cType == 'D'
+               pData := AllTrim( Str( Year( Data[ i ] ) ) ) + '.' + AllTrim( Str( Month( Data[ i ] ) ) ) + '.' + AllTrim( Str( Day( Data[ i ] ) ) )
+               cLen := AllTrim( Str( Len( pData ) ) )
+            ELSEIF cType == 'L'
+               IF Data[ i ] == .T.
                   pData := 'T'
-               Else
+               ELSE
                   pData := 'F'
-               EndIf
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'N'
-               pData := str ( Data [i] )
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'C'
-               pData := Data [i]
-               cLen := Alltrim(Str(Len(pData)))
-            Else
-               MsgOOHGError('SendData: Type Not Suported. Program terminated.')
-            EndIf
+               ENDIF
+               cLen := AllTrim( Str( Len( pData ) ) )
+            ELSEIF cType == 'N'
+               pData := Str( Data[ i ] )
+               cLen := AllTrim( Str( Len( pData ) ) )
+            ELSEIF cType == 'C'
+               pData := Data[ i ]
+               cLen := AllTrim( Str( Len( pData ) ) )
+            ELSE
+               MsgOOHGError( 'SendData: Type Not Suported. Program terminated.' )
+            ENDIF
 
-            cData := cData + '#DataBlock='   + cType   + ',' + cLen + chr(13) + chr(10)
-            cData := cData + pData      + chr(13) + chr(10)
+            cData := cData + '#DataBlock=' + cType + ',' + cLen + CRLF
+            cData := cData + pData + CRLF
+         NEXT i
 
-         Next i
+         MemoWrit( FileName, cData )
+      ELSE
+         Rows := Len( Data )
+         Cols := Len( Data[ 1 ] )
 
-         MemoWrit ( FileName , cData )
+         cData := '#DataRows=' + AllTrim( Str( Rows ) ) + CRLF
+         cData := cData + '#DataCols=' + AllTrim( Str( Cols ) ) + CRLF
 
-      Else
+         FOR i := 1 TO Rows
+            FOR j := 1 TO Cols
+               cType := ValType( Data[ i, j ] )
 
-         Rows := Len ( Data )
-         Cols := Len ( Data [1] )
+               IF cType == 'D'
+                  pData := AllTrim( Str( Year( Data[ i, j ] ) ) ) + '.' + AllTrim( Str( Month( Data[ i, j ] ) ) ) + '.' + AllTrim( Str( Day( Data[ i, j ] ) ) )
+                  cLen := AllTrim( Str( Len( pData ) ) )
+               ELSEIF cType == 'L'
+                  IF Data[ i, j ] == .T.
+                     pData := 'T'
+                  ELSE
+                     pData := 'F'
+                  ENDIF
+                  cLen := AllTrim( Str( Len( pData ) ) )
+               ELSEIF cType == 'N'
+                  pData := Str( Data[ i, j ] )
+                  cLen := AllTrim( Str( Len(pData ) ) )
+               ELSEIF cType == 'C'
+                  pData := Data[ i, j ]
+                  cLen := AllTrim( Str( Len( pData ) ) )
+               ELSE
+                  MsgOOHGError( 'SendData: Type Not Suported. Program terminated.' )
+               ENDIF
 
-         cData := '#DataRows=' +   Alltrim(Str(Rows))   + chr(13) + chr(10)
-         cData := cData + '#DataCols=' +   Alltrim(Str(Cols)) + chr(13) + chr(10)
+               cData := cData + '#DataBlock=' + cType + ',' + cLen + CRLF
+               cData := cData + pData + CRLF
+            NEXT j
+         NEXT i
 
-         For i := 1 To Rows
-
-            For j := 1 To Cols
-
-            cType := ValType ( Data [i] [j] )
-
-            If cType == 'D'
-               pData := alltrim(str(year(data[i][j]))) + '.' + alltrim(str(month(data[i][j]))) + '.' + alltrim(str(day(data[i][j])))
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'L'
-               If Data [i] [j] == .t.
-                  pData := 'T'
-               Else
-                  pData := 'F'
-               EndIf
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'N'
-               pData := str ( Data [i] [j] )
-               cLen := Alltrim(Str(Len(pData)))
-            ElseIf cType == 'C'
-               pData := Data [i] [j]
-               cLen := Alltrim(Str(Len(pData)))
-            Else
-               MsgOOHGError('SendData: Type Not Suported. Program terminated.')
-            EndIf
-
-            cData := cData + '#DataBlock='   + cType   + ',' + cLen+ chr(13) + chr(10)
-            cData := cData + pData      + chr(13) + chr(10)
-
-            Next j
-         Next i
-
-         MemoWrit ( FileName , cData )
-
-      EndIf
-
-   Else
-
+         MemoWrit ( FileName, cData )
+      ENDIF
+   ELSE
       cType := ValType ( Data )
 
-      If cType == 'D'
-         pData := alltrim(str(year(data))) + '.' + alltrim(str(month(data))) + '.' + alltrim(str(day(data)))
-         cLen := Alltrim(Str(Len(pData)))
-      ElseIf cType == 'L'
-         If Data == .t.
+      IF cType == 'D'
+         pData := AllTrim( Str( Year( Data ) ) ) + '.' + AllTrim( Str( Month( data ) ) ) + '.' + AllTrim( Str( Day( Data ) ) )
+         cLen := AllTrim( Str( Len( pData ) ) )
+      ELSEIF cType == 'L'
+         IF Data == .T.
             pData := 'T'
-         Else
+         ELSE
             pData := 'F'
-         EndIf
-         cLen := Alltrim(Str(Len(pData)))
-      ElseIf cType == 'N'
-         pData := str ( Data )
-         cLen := Alltrim(Str(Len(pData)))
-      ElseIf cType == 'C'
+         ENDIF
+         cLen := AllTrim( Str( Len( pData ) ) )
+      ELSEIF cType == 'N'
+         pData := Str( Data )
+         cLen := AllTrim( Str( Len( pData ) ) )
+      ELSEIF cType == 'C'
          pData := Data
-         cLen := Alltrim(Str(Len(pData)))
-      Else
+         cLen := AllTrim( Str( Len( pData ) ) )
+      ELSE
          MsgOOHGError( "SendData: Type Not Suported. Program terminated." )
-      EndIf
+      ENDIF
 
-      cData := '#DataRows=0'      + chr(13) + chr(10)
-      cData := cData + '#DataCols=0'   + chr(13) + chr(10)
+      cData := '#DataRows=0'+ CRLF
+      cData := cData + '#DataCols=0' + CRLF
+      cData := cData + '#DataBlock=' + cType + ',' + cLen + CRLF
+      cData := cData + pData + CRLF
 
-      cData := cData + '#DataBlock='   + cType + ',' + cLen+ chr(13) + chr(10)
-      cData := cData + pData      + chr(13) + chr(10)
+      MemoWrit( FileName, cData )
+   ENDIF
 
-      MemoWrit ( FileName , cData )
+   RETURN NIL
 
-   EndIf
+FUNCTION SetCommStationName( stn )
 
-   Return Nil
-
-Function SetCommStationName( st )
-
-   If ValType( st ) $ "CM" .AND. ! Empty( st )
-      _OOHG_StationName   := st
+   App.MutexLock
+   IF ValType( stn ) $ "CM" .AND. ! Empty( stn )
+      _OOHG_StationName   := stn
       _OOHG_SendDataCount := 0
-   EndIf
+   ELSE
+      stn := _OOHG_StationName
+   ENDIF
+   App.MutexUnlock
 
-   Return _OOHG_StationName
+   RETURN stn
 
-Function SetCommPath( cph )
+FUNCTION SetCommPath( cph )
 
-   If ValType( cph ) $ "CM"
+   App.MutexLock
+   IF ValType( cph ) $ "CM"
       _OOHG_CommPath := cph
-   EndIf
+   ELSE
+      cph := _OOHG_CommPath
+   ENDIF
+   App.MutexUnlock
 
-   Return _OOHG_CommPath
+   RETURN cph
