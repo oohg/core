@@ -18,27 +18,33 @@
   * core\source\h_form.prg
     ! Infinite loop when the app calls function ReleaseAllWindows
       from the MAIN window's method OnRelease.
+  #281
 
 2020-06-28 19:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
     ! Semi-oop syntax translation of method RePaint.
+  #280
 
 2020-06-28 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     ! RTE "Bound error: array access" at method GetCellType
       when adding a column with method AddColumn.
+  #279
 
 2020-06-28 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\buildapp.bat
     ! Options message.
+  #271
 
 2020-06-28 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
     ! Support for /NORC switch.
+  #272
 
 2020-06-28 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     ! oWinMH:Release is not executed when count reaches zero.
+  #278
 
 2020-06-14 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
