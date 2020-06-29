@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! Browse control with EDIT but without INPLACE is edited
+      as if INPLACE is present.
+
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data lNoRecurse.
