@@ -12,6 +12,16 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-28 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.ch
+    + Methods BACKCOLOR, BACKCOLORCODE and EVENTS_DRAWITEM
+      to class TTabRaw.
+    ; TODO: implement method Events_DrawItem at C level.
+
+2020-06-28 20:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tab.ch
+    + Clause BACKCOLOR.
+
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data lNoRecurse.
