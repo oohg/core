@@ -1939,7 +1939,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
       aPos := Get_XY_LPARAM( lParam )
       aPos := ListView_HitTest( ::hWnd, aPos[ 1 ], aPos[ 2 ] )
 
-      aCellData := _GetGridCellData( Self, aPos )
+      aCellData := _GetGridCellData( Self, aPos, wParam )
+      // aCellData[ 3 ] -> MK_CONTROL, MK_SHIFT
+
       _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
       _OOHG_ThisItemColIndex   := aCellData[ 2 ]
       _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -1950,27 +1952,54 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
 
       IF ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
          IF HB_ISBLOCK( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-         ENDIF
-      ELSEIF ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
-         // Cell is readonly
-         IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-         ENDIF
-      ELSEIF ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
-         // Not a valid WHEN
-         IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
-         ENDIF
-      ELSEIF AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
-         // Cell is in a hidden column
-         IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          ENDIF
       ELSEIF ::FullMove
-         ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         IF ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+            // Cell is readonly
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+               // WHEN returned .F.
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+            // Cell is in a hidden column
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+         ELSE
+            ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         ENDIF
+      ELSEIF ::InPlace
+         IF ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+            // Cell is readonly
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+               // WHEN returned .F.
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+            // Cell is in a hidden column
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+            ENDIF
+         ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
+         ELSE
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+         ENDIF
+      ELSEIF ! _OOHG_SameEnterDblClick .AND. ::lExtendDblClick .AND. HB_ISBLOCK( ::OnDblClick, aCellData )
+         ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
       ELSE
-         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+         ::EditItem()
       ENDIF
 
       _ClearThisCellInfo()

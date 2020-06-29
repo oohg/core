@@ -597,12 +597,10 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
-   ASSIGN ::OnDblClick       VALUE dblclick       TYPE "B"
    ASSIGN ::OnGotFocus       VALUE gotfocus       TYPE "B"
    ASSIGN ::OnLostFocus      VALUE lostfocus      TYPE "B"
    ASSIGN ::OnDispInfo       VALUE ondispinfo     TYPE "B"
    ASSIGN ::OnEditCell       VALUE editcell       TYPE "B"
-   ASSIGN ::OnEnter          VALUE onenter        TYPE "B"
    ASSIGN ::OnCheckChange    VALUE oncheck        TYPE "B"
    ASSIGN ::OnAbortEdit      VALUE abortedit      TYPE "B"
    ASSIGN ::OnClick          VALUE click          TYPE "B"
@@ -621,6 +619,9 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
    ASSIGN ::OnBeforeInsert   VALUE bbeforeinsert  TYPE "B"
    ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
+   // Must precede ::OnEnter assignment to honor _OOHG_SameEnterDblClick
+   ASSIGN ::OnDblClick       VALUE dblclick       TYPE "B"
+   ASSIGN ::OnEnter          VALUE onenter        TYPE "B"
 
    Return Self
 
@@ -2929,6 +2930,8 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
+            ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             Else
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
@@ -2948,9 +2951,13 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
                If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
                   ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
                EndIf
+            ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             Else
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
+         ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          Else
             ::EditItem()
          EndIf
@@ -5699,6 +5706,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
             If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             EndIf
+         ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
+            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          Else
             ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          EndIf
