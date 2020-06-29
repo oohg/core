@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_comm.prg
+    * Protect all static vars with mutex so they are thread safe.
+
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data lNoRecurse.
