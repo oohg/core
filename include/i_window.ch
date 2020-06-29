@@ -81,7 +81,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
       #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, Spacing, ;
             FontColor, Picture, ToolTip, FontName, FontSize, FontBold, Col, ;
-            FontUnderline, FontItalic, FontStrikeOut, Caption, Row, RePaint, ;
+            FontUnderline, FontItalic, FontStrikeOut, Caption, Row, ;
             Width, Height, Visible, Enabled, Checked, ItemCount, RangeMin, ;
             RangeMax, CaretPos, ForeColor, ScrollCaret, GetEditSel, Stretch, ;
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
@@ -123,7 +123,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Release, Show, Hide, Play, Stop, Close, Pause, Eject, OpenDialog, ;
             Resume, ColumnsAutoFit, ColumnsAutoFitH, ColumnsBetterAutoFit, ;
             EditLabel, Up, Down, Left, Right, PageDown, PageUp, GoTop, ;
-            GoBottom, Redraw\> \[()\] ;
+            GoBottom, Redraw, RePaint\> \[()\] ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\>() ;;
       #xtranslate <w> . \<c\> . \<p: Save\> \[()\] ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;

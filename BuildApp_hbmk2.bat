@@ -44,6 +44,7 @@ rem
    set HG_EXTRA=
    set HG_COMP_TYPE=STD
    set HG_USE_HBC=%HG_ROOT%\oohg.hbc
+   set HG_USE_RC=TRUE
 
 :LOOP_START
 
@@ -56,6 +57,8 @@ rem
    if /I "%2" == "/GTWIN" goto SW_CONSOLE
    if /I "%2" == "-NOHBC" goto SW_NOHBC
    if /I "%2" == "/NOHBC" goto SW_NOHBC
+   if /I "%2" == "/NORC"  goto SW_NORC
+   if /I "%2" == "-NORC"  goto SW_NORC
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -85,25 +88,44 @@ rem
    shift
    goto LOOP_START
 
+:SW_NORC
+
+   set HG_USE_RC=FALSE
+   shift
+   goto LOOP_START
+
 :LOOP_END
 
    if     "%HG_COMP_TYPE%" == "CONSOLE" set HG_EXTRA=-GTWIN %HG_EXTRA%
    if not "%HG_COMP_TYPE%" == "CONSOLE" set HG_EXTRA=-GTGUI %HG_EXTRA%
 
-   rem *** Process Resource File ***
-   echo Compiling %HG_FILE% ...
+   if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
+
+   rem *** Process oohg + app resource files ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
    echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
    copy /b "%HG_ROOT%\resources\oohg.rc" + "%HG_FILE%.rc" _temp.rc > nul
    if exist _temp.rc goto BUILD
    copy /b %HG_FILE%.rc _temp.rc > nul
    if not exist _temp.rc goto ERROR6
+   set HG_USE_RC=_temp.rc
+   goto BUILD
+
+:WITHOUT_HG_RC
+
+   set HG_USE_RC=
+   if not exist %HG_FILE%.rc goto BUILD
+
+   rem *** Process app resource file ***
+   copy /b %HG_FILE%.rc _temp.rc > nul
+   if not exist _temp.rc goto ERROR6
+   set HG_USE_RC=_temp.rc
 
 :BUILD
 
    rem *** Compile and Link ***
-   if     "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA%
-   if not "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% _temp.rc %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% >> output.log 2>&1
+   if     "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA%
+   if not "%HG_NOLOG%" == "YES" hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% >> output.log 2>&1
    if exist output.log type output.log
 
 :CLEANUP
@@ -117,6 +139,7 @@ rem
    set HG_RUNEXE=
    set HG_NOLOG=
    set HG_EXTRA=
+   set HG_USE_RC=
    goto END
 
 :ERROR1

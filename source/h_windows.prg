@@ -124,6 +124,7 @@ CLASS TWindow
    DATA lfixwidth                 INIT .F.
    DATA lForm                     INIT .F.
    DATA lInternal                 INIT .T.
+   DATA lNoRecurse                INIT .F.
    DATA lProcMsgsOnVisible        INIT .T.
    DATA lRedraw                   INIT .T.
    DATA lReleased                 INIT .F.

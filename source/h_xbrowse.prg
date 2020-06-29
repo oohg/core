@@ -2567,6 +2567,10 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
       nColIndex := 1
    EndIf
 
+   aSize( ::aFields, nColumns )
+   aIns( ::aFields, nColIndex )
+   ::aFields[ nColIndex ] := xField
+
    nRet := ::Super:AddColumn( nColIndex, cHeader, nWidth, nJustify, uForeColor, ;
                               uBackColor, lNoDelete, uPicture, uEditControl, uHeadClick, ;
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
@@ -2574,10 +2578,6 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
    If nRet # nColIndex
       MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
    EndIf
-
-   aSize( ::aFields, nColumns )
-   aIns( ::aFields, nColIndex )
-   ::aFields[ nColIndex ] := xField
 
    // Update before calling ::ColumnBlock
    aSize( ::aDefaultValues, nColumns )
