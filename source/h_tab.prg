@@ -1362,10 +1362,13 @@ CLASS TTabRaw FROM TControl
    DATA Type                      INIT "TAB" READONLY
 
    METHOD AdjustRect              BLOCK { |Self, lFlag| TabCtrl_AdjustRect( ::hWnd, lFlag ) }
+   METHOD BackColor               SETGET
+   METHOD BackColorCode           SETGET
    METHOD Caption
    METHOD Define
    METHOD DeleteItem
    METHOD Events
+   METHOD Events_DrawItem
    METHOD Events_Notify
    METHOD InsertItem
    METHOD ItemAtPos( y, x )       BLOCK { |Self, y, x| TabCtrl_HitTest( ::hWnd, y, x ) }
@@ -1454,6 +1457,15 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidht, nHeight, aCaptions
       lVertical := .T.
    ENDIF
 
+   IF ( ! ::IsVisualStyled .OR. lButtons .OR. lVertical )
+      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_BTNFACE )
+   ELSEIF ISXPTHEMEACTIVE()
+      // XP uses a color gradient to paint the tab so this is useless
+      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT RGB( 252, 252, 254 )
+   ELSE
+      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
+   ENDIF
+
    nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
              iif( lBottom,   TCS_BOTTOM,         0 ) + ;
              iif( lButtons,  TCS_BUTTONS,        0 ) + ;
@@ -1467,12 +1479,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidht, nHeight, aCaptions
              iif( lRight,    TCS_RIGHT,          0 ) + ;
              iif( lRightJus, TCS_RIGHTJUSTIFY,   0 ) + ;
              iif( lScrollOp, TCS_SCROLLOPPOSITE, 0 ) + ;
-             iif( lVertical, TCS_VERTICAL,       0 )
-/*
-TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper right unused rectangle.
-*/
+             iif( lVertical, TCS_VERTICAL,       0 ) + ;
+             TCS_OWNERDRAWFIXED
 
    cControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, nValue, nStyle, ::lRtl )
+   ::BackColor := uBackColor
 
    IF ValType( cToolTip ) $ "CM" .OR. HB_ISBLOCK( cToolTip )
       ::DefaultToolTip := cToolTip
@@ -1481,17 +1492,6 @@ TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper 
 
    ::Register( cControlHandle, cControlName, NIL, NIL, bToolTip )
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
-
-   // Since we still can't set the TabPage's backcolor lets assume it's the system's default
-   IF ( ! ::IsVisualStyled .OR. lButtons .OR. lVertical )
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_BTNFACE )
-   ELSEIF ISXPTHEMEACTIVE()
-      // XP uses a color gradient to paint the tab so this is useless
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT RGB( 252, 252, 254 )
-   ELSE
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
-   ENDIF
-   ::BackColor := uBackColor
 
    ::MinTabWidth( nMinW )       // win10 returns 42
    IF nHPad >= 0 .AND. nVPad >= 0
@@ -1667,6 +1667,11 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTabRaw
    ENDIF
 
    RETURN ::Super:Events( hWnd, nMsg, wParam, lParam )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Events_DrawItem( lParam ) CLASS TTabRaw
+
+   RETURN TTabRawItemDraw( lParam )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Notify( wParam, lParam ) CLASS TTabRaw
@@ -1878,6 +1883,7 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
 #pragma BEGINDUMP
 
 #include "oohg.h"
+#include "hbstack.h"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TTabRaw_lpfnOldWndProc( LONG_PTR lp )
@@ -2081,4 +2087,182 @@ HB_FUNC ( TABCTRL_ADJUSTRECT )
    HB_STORNI( rect.bottom, -1, 4 );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTABRAW_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS TTabRaw -> aColor */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HBRUSH hOld;
+
+   if( _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor, ( hb_pcount() >= 1 ) ) )
+   {
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = ( oSelf->lBackColor == -1 ) ? 0 : CreateSolidBrush( oSelf->lBackColor );
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         hOld = (HBRUSH) SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) oSelf->BrushHandle );
+         if( hOld )
+         {
+            DeleteObject( hOld );
+         }
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   /* Return value was set in _OOHG_DetermineColorReturn() */
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TTABRAW_BACKCOLORCODE )          /* METHOD BackColorCode( uColor ) CLASS TTabRaw -> nColor */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   HBRUSH hOld;
+
+   if( hb_pcount() >= 1 )
+   {
+      if( ! _OOHG_DetermineColor( hb_param( 1, HB_IT_ANY ), &oSelf->lBackColor ) )
+      {
+         oSelf->lBackColor = -1;
+      }
+      if( oSelf->BrushHandle )
+      {
+         DeleteObject( oSelf->BrushHandle );
+      }
+      oSelf->BrushHandle = ( oSelf->lBackColor == -1 ) ? 0 : CreateSolidBrush( oSelf->lBackColor );
+      if( ValidHandler( oSelf->hWnd ) )
+      {
+         hOld = (HBRUSH) SetClassLongPtr( oSelf->hWnd, GCLP_HBRBACKGROUND, (LONG_PTR) oSelf->BrushHandle );
+         if( hOld )
+         {
+            DeleteObject( hOld );
+         }
+         RedrawWindow( oSelf->hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+      }
+   }
+
+   hb_retnl( oSelf->lBackColor );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTABRAWITEMDRAW )
+
+   LPDRAWITEMSTRUCT lpdis = DRAWITEMSTRUCTparam( 1 );
+
+/*
+   LOCAL hDC, hBrush, hOldFont, hImage
+   LOCAL aBkColor, aForeColor, aInactiveColor, aBmp, aMetr, aBtnRc
+   LOCAL oldTextColor, nTextColor, bkColor
+   LOCAL i, nItemId, oldBkMode
+   LOCAL x1, y1, x2, y2, xp1, yp1, xp2, yp2
+   LOCAL lSelected, lBigFsize, lBigFsize2
+
+   hDC := GETOWNBTNDC( lParam )
+
+   i := AScan( _HMG_aControlHandles, GETOWNBTNHANDLE( lParam ) )
+
+   IF Empty( hDC ) .OR. i == 0
+      RETURN( 1 )
+   ENDIF
+
+   nItemId    := GETOWNBTNITEMID( lParam ) + 1
+   aBtnRc     := GETOWNBTNRECT( lParam )
+   lSelected  := AND( GETOWNBTNSTATE( lParam ), ODS_SELECTED ) == ODS_SELECTED
+   lBigFsize  := ( _HMG_aControlFontSize [i] > 12 )
+   lBigFsize2 := ( _HMG_aControlFontSize [i] > 18 )
+   _HMG_aControlMiscData1 [i] [1] := aBtnRc[ 4 ] - aBtnRc[ 2 ]  // store a bookmark height
+
+   hOldFont := SelectObject( hDC, _HMG_aControlFontHandle [i] )
+   aMetr := GetTextMetric( hDC )
+   oldBkMode := SetBkMode( hDC, TRANSPARENT )
+   nTextColor := GetSysColor( COLOR_BTNTEXT )
+   oldTextColor := SetTextColor( hDC, GetRed( nTextColor ), GetGreen( nTextColor ), GetBlue( nTextColor ) )
+
+   IF ISARRAY( _HMG_aControlMiscData2 [i] ) .AND. nItemId <= Len( _HMG_aControlMiscData2 [i] ) .AND. ;
+      IsArrayRGB( _HMG_aControlMiscData2 [i] [nItemId] )
+      aBkColor := _HMG_aControlMiscData2 [i] [nItemId]
+   ELSE
+      aBkColor := _HMG_aControlBkColor [i]
+   ENDIF
+   hBrush := CreateSolidBrush( aBkColor [1], aBkColor [2], aBkColor [3] )
+   FillRect( hDC, aBtnRc[ 1 ], aBtnRc[ 2 ], aBtnRc[ 3 ], aBtnRc[ 4 ], hBrush )
+   DeleteObject( hBrush )
+
+   bkColor := RGB( aBkColor [1], aBkColor [2], aBkColor [3] )
+   SetBkColor( hDC, bkColor )
+
+   x1 := aBtnRc[ 1 ]
+   y1 := Round( aBtnRc[ 4 ] / 2, 0 ) - ( aMetr[ 1 ] - 10 )
+   x2 := aBtnRc[ 3 ] - 2
+   y2 := y1 + aMetr[ 1 ]
+
+   IF _HMG_aControlMiscData1 [i] [2]  // ImageFlag
+      nItemId := Min( nItemId, Len( _HMG_aControlPicture [i] ) )
+      hImage := LoadBitmap( _HMG_aControlPicture [i] [nItemId] )
+      aBmp := GetBitmapSize( hImage )
+
+      xp1 := 4
+      xp2 := aBmp[ 1 ]
+      yp2 := aBmp[ 2 ]
+      yp1 := Round( aBtnRc[ 4 ] / 2 - yp2 / 2, 0 )
+      x1 += 2 * xp1 + xp2
+
+      IF _HMG_aControlMiscData1 [i] [4]  // Bottom Tab
+         IF lSelected
+            DrawGlyph( hDC, aBtnRc[ 1 ] + 2 * xp1, 2 * yp1 - iif( lBigFsize, 8, 5 ), xp2, 2 * yp2 - iif( lBigFsize, 8, 5 ), hImage, bkColor, .F., .F. )
+         ELSE
+            DrawGlyph( hDC, aBtnRc[ 1 ] + xp1, 2 * yp1 - iif( lBigFsize, 8, 5 ), xp2, 2 * yp2 - iif( lBigFsize, 8, 5 ), hImage, bkColor, .F., .F. )
+         ENDIF
+      ELSE
+         IF lSelected
+            DrawGlyph( hDC, aBtnRc[ 1 ] + 2 * xp1, yp1 - 2, xp2, yp2, hImage, bkColor, .F., .F. )
+         ELSE
+            DrawGlyph( hDC, aBtnRc[ 1 ] + xp1, yp1 + 2, xp2, yp2, hImage, bkColor, .F., .F. )
+         ENDIF
+      ENDIF
+
+      DeleteObject( hImage )
+   ENDIF
+
+   IF lSelected
+      IF _HMG_aControlMiscData1 [i] [5]  // HotTrack
+         aForeColor := _HMG_aControlMiscData1 [i] [6]
+         IF IsArrayRGB ( aForeColor )
+            SetTextColor( hDC, aForeColor [1], aForeColor [2], aForeColor [3] )
+         ELSEIF bkColor == GetSysColor( COLOR_BTNFACE )
+            SetTextColor( hDC, 0, 0, 128 )
+         ELSE
+            SetTextColor( hDC, 255, 255, 255 )
+         ENDIF
+      ENDIF
+   ELSE
+      aInactiveColor := _HMG_aControlMiscData1 [i] [7]
+      IF IsArrayRGB ( aInactiveColor )
+         SetTextColor( hDC, aInactiveColor [1], aInactiveColor [2], aInactiveColor [3] )
+      ENDIF
+   ENDIF
+
+   IF _HMG_aControlMiscData1 [i] [4]  // Bottom Tab
+      IF lSelected
+         DrawText( hDC, _HMG_aControlCaption [i] [nItemId], x1, 2 * y1 - iif( lBigFsize2, -3, iif( lBigFsize, 6, 12 ) ), x2, 2 * y2 - iif( lBigFsize2, -3, iif( lBigFsize, 6, 12 ) ), DT_CENTER )
+      ELSE
+         DrawText( hDC, _HMG_aControlCaption [i] [nItemId], x1, 2 * y1 - iif( lBigFsize2, -6, iif(lBigFsize, 2, 8 ) ), x2, 2 * y2 - iif( lBigFsize2, -6, iif( lBigFsize, 2, 8 ) ), DT_CENTER )
+      ENDIF
+   ELSE
+      IF lSelected
+         DrawText( hDC, _HMG_aControlCaption [i] [nItemId], x1, y1 - iif( lBigFsize2, -5, iif( lBigFsize, 0, 4 ) ), x2, y2 - iif( lBigFsize2, -5, iif( lBigFsize, 0, 4 ) ), DT_CENTER )
+      ELSE
+         DrawText( hDC, _HMG_aControlCaption [i] [nItemId], x1, y1 + iif( lBigFsize2, 8, iif( lBigFsize, 4, 0 ) ), x2, y2 + iif( lBigFsize2, 8, iif( lBigFsize, 4, 0 ) ), DT_CENTER )
+      ENDIF
+   ENDIF
+
+   SelectObject( hDC, hOldFont )
+   SetBkMode( hDC, oldBkMode )
+   SetTextColor( hDC, oldTextColor )
+
+RETURN( 0 )
+*/
 #pragma ENDDUMP
