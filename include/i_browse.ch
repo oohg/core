@@ -187,6 +187,7 @@ STANDARD VERSION
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
       [ HEADERCOLORS <aHeadClrs> ] ;
       [ TIMEOUT <nTime> ] ;
+      [ NEWATROW <nRowAt> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
@@ -221,7 +222,7 @@ STANDARD VERSION
             <.none.>, <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
-            <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime> )
+            <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, <nRowAt> )
 
 #command SET BROWSESYNC ON ;
    => ;
