@@ -1999,7 +1999,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
       ELSEIF ::FullMove
          ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
       ELSE
-         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+         ::EditItem()
       ENDIF
 
       _ClearThisCellInfo()
