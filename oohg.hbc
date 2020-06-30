@@ -3,7 +3,7 @@
 #
 
 # oohg paths
-incpaths=include
+incpaths=${HG_ROOT}\include
 
 # c compiler will search this folder for OOHG's libs
 libpaths=${HG_ROOT}\${LIB_GUI}
