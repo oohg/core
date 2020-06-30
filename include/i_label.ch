@@ -95,6 +95,8 @@
       [ <disabled: DISABLED> ] ;
       [ <vcntralign: VCENTERALIGN> ] ;
       [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
+      [ <dummy4: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
+      [ <dummy5: ON MOUSELEAVE, ONMOUSELEAVE> <onmouseleave> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
@@ -103,4 +105,5 @@
             <fontcolor>, <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
-            <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}> )
+            <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}>, ;
+            <{onmousemove}>, <{onmouseleave}> )
