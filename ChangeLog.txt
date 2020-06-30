@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.prg
+    + Clause NEWATROW.
+
 2020-06-29 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.prg
   * core\source\h_browse.prg
