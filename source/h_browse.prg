@@ -97,7 +97,6 @@ CLASS TOBrowse FROM TXBrowse
    METHOD EditCell
    METHOD EditGrid
    METHOD EditItem
-   METHOD EditItem_B              BLOCK { || NIL }
    METHOD End
    METHOD Events
    METHOD Events_Notify
