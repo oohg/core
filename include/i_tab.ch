@@ -63,7 +63,7 @@
 
 #command DEFINE TAB <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
+      [ <dummy01: OF, PARENT, DIALOG> <parent> ] ;
       AT <row>, <col> ;
       WIDTH <w> ;
       HEIGHT <h> ;
@@ -102,6 +102,9 @@
       [ <rj: RIGHTJUST> ] ;
       [ <so: SCROLLOP> ] ;
       [ BACKCOLOR <backcolor> ] ;
+      [ HTFORECOLOR <htfclr> ] ;
+      [ HTINACTIVECOLOR <hticlr> ] ;
+      [ ON INIT <bInit> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
@@ -111,7 +114,7 @@
             <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.>, ;
             <.right.>, <.bottom.>, <{rclick}>, <.ragged.>, <.fwidth.>, NIL, ;
             <nw>, <nh>, <min>, <hor>, <ver>, <backcolor>, <.il.>, <.ll.>, <.rj.>, <.so.>, ;
-            <{click}> )
+            <{click}>, <htfclr>, <hticlr>, bInit )
 
 #command PAGE <caption> ;
       [ IMAGE <image> ] ;
