@@ -343,6 +343,7 @@ EDIT AND RICHEDIT CONTROLS
 #define EM_REDO                       1108
 #define EM_CANREDO                    1109
 #define EM_AUTOURLDETECT              1115
+#define EM_SETCUEBANNER	              0x1501
 #define EN_MSGFILTER                  1792
 #define EN_SETFOCUS                   256
 #define EN_KILLFOCUS                  512

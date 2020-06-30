@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlCueBanner              => _OOHG_ActiveControlInfo \( \) \[  55 \]
 #xtranslate _OOHG_ActiveControlTimeOut                => _OOHG_ActiveControlInfo \( \) \[  57 \]
 #xtranslate _OOHG_ActiveControlHeaderColors           => _OOHG_ActiveControlInfo \( \) \[  58 \]
 #xtranslate _OOHG_ActiveControlValueIs                => _OOHG_ActiveControlInfo \( \) \[  59 \]
@@ -1210,7 +1211,16 @@ TEXTBOX
       _OOHG_ActiveControlCtrlAtLeft   := .F.   ;;
       _OOHG_ActiveControlContextMenu  := NIL   ;;
       _OOHG_ActiveControlActionTT     := NIL   ;;
-      _OOHG_ActiveControlAction2TT    := NIL
+      _OOHG_ActiveControlAction2TT    := NIL   ;;
+      _OOHG_ActiveControlCueBanner    := NIL
+
+#xcommand CUEBANNER <text>;
+   =>;
+   _OOHG_ActiveControlCueBanner := <text>
+
+#xcommand PLACEHOLDER <text>;
+   =>;
+   _OOHG_ActiveControlCueBanner := <text>
 
 #xcommand CTRLSATLEFT <atleft> ;
    => ;
@@ -1348,7 +1358,8 @@ TEXTBOX
             _OOHG_ActiveControlCtrlAtLeft, ;
             _OOHG_ActiveControlContextMenu, ;
             _OOHG_ActiveControlActionTT, ;
-            _OOHG_ActiveControlAction2TT ), NIL, _OOHG_ActiveControlAssignObject )
+            _OOHG_ActiveControlAction2TT, ;
+            _OOHG_ActiveControlCueBanner ), NIL, _OOHG_ActiveControlAssignObject )
 
 /*---------------------------------------------------------------------------
 MONTHCALENDAR
@@ -2098,7 +2109,8 @@ COMBOBOX
       _OOHG_ActiveControlNoLoadTransparent := .F.  ;;
       _OOHG_ActiveControlCancel            := NIL  ;;
       _OOHG_ActiveControlValueIs           := NIL  ;;
-      _OOHG_ActiveControlAutoSize          := .F.
+      _OOHG_ActiveControlAutoSize          := .F.  ;;
+      _OOHG_ActiveControlCueBanner         := NIL
 
 #xcommand INDEXISVALUE <index> ;
    => ;
@@ -2280,7 +2292,8 @@ COMBOBOX
             _OOHG_ActiveControlNoLoadTransparent, ;
             _OOHG_ActiveControlCancel, ;
             _OOHG_ActiveControlValueIs, ;
-            _OOHG_ActiveControlAutoSize )
+            _OOHG_ActiveControlAutoSize, ;
+            _OOHG_ActiveControlCueBanner )
 
 /*---------------------------------------------------------------------------
 DATEPICKER
@@ -3674,7 +3687,8 @@ SPINNER
       _OOHG_ActiveControlReadOnly     := .F.   ;;
       _OOHG_ActiveControlIncrement    := NIL   ;;
       _OOHG_ActiveControlNoBorder     := .F.   ;;
-      _OOHG_ActiveControlOnTextFilled := .F.
+      _OOHG_ActiveControlOnTextFilled := .F.   ;;
+      _OOHG_ActiveControlCueBanner    := NIL
 
 #xcommand WRAP <wrap> ;
    => ;
@@ -3721,7 +3735,8 @@ SPINNER
             _OOHG_ActiveControlRtl, ;
             _OOHG_ActiveControlNoBorder, ;
             _OOHG_ActiveControlDisabled, ;
-            _OOHG_ActiveControlOnTextFilled )
+            _OOHG_ActiveControlOnTextFilled, ;
+            _OOHG_ActiveControlCueBanner )
 
 /*---------------------------------------------------------------------------
 ACTIVEX

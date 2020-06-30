@@ -68,95 +68,115 @@
 
 CLASS TSpinner FROM TControl
 
-   DATA Type      INIT "SPINNER" READONLY
-   DATA nRangeMin   INIT 1
-   DATA nRangeMax   INIT 100
-   DATA nWidth      INIT 120
-   DATA nHeight     INIT 24
-   DATA nIncrement  INIT 1
-   DATA lBoundText  INIT .F.
+   DATA cCue                      INIT ""
+   DATA lBoundText                INIT .F.
+   DATA nHeight                   INIT 24
+   DATA nIncrement                INIT 1
+   DATA nRangeMax                 INIT 100
+   DATA nRangeMin                 INIT 1
+   DATA nWidth                    INIT 120
+   DATA Type                      INIT "SPINNER" READONLY
 
+   METHOD CueBanner               SETGET
    METHOD Define
-   METHOD SizePos
-   METHOD Visible             SETGET
-   METHOD Value               SETGET
-   METHOD Enabled             SETGET
-   METHOD ForceHide           BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
-   METHOD Release
-   METHOD RangeMin            SETGET
-   METHOD RangeMax            SETGET
-   METHOD Increment           SETGET
+   METHOD Enabled                 SETGET
    METHOD Events_Command
+   METHOD ForceHide               BLOCK { |Self| HideWindow( ::AuxHandle ) , ::Super:ForceHide() }
+   METHOD Increment               SETGET
+   METHOD RangeMax                SETGET
+   METHOD RangeMin                SETGET
+   METHOD Release
+   METHOD SizePos
+   METHOD Value                   SETGET
+   METHOD Visible                 SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, value, fontname, fontsize, ;
-               rl, rh, tooltip, change, lostfocus, gotfocus, h, HelpId, ;
-               invisible, notabstop, bold, italic, underline, strikeout, ;
-               wrap, readonly, increment, backcolor, fontcolor, lRtl, ;
-               lNoBorder, lDisabled, lBndTxt ) CLASS TSpinner
+METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname, nFontsize, ;
+               nMin, nMax, cTooltip, bChange, bLostFocus, bGotFocus, nHeight, nHelpId, ;
+               lInvisible, lNoTabStop, lBold, lItalic, lUnderline, lStrikeout, ;
+               lWrap, lReadonly, nIncrement, uBackColor, uFontColor, lRtl, ;
+               lNoBorder, lDisabled, lBndTxt, cCue ) CLASS TSpinner
 
-   Local nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
-   Local ControlHandle
+   LOCAL nStyle, nStyleEx, nControlHandle
 
-   ASSIGN ::nWidth       VALUE w         TYPE "N"
-   ASSIGN ::nHeight      VALUE h         TYPE "N"
-   ASSIGN ::nRow         VALUE y         TYPE "N"
-   ASSIGN ::nCol         VALUE x         TYPE "N"
-   ASSIGN ::nRangeMin    VALUE rl        TYPE "N"
-   ASSIGN ::nRangeMax    VALUE rh        TYPE "N"
-   ASSIGN ::nIncrement   VALUE increment TYPE "N"
-   ASSIGN ::lBoundText   VALUE lBndTxt   TYPE "L"
-   ASSIGN wrap           VALUE wrap      TYPE "L" DEFAULT .F.
-   ASSIGN readonly       VALUE readonly  TYPE "L" DEFAULT .F.
-   ASSIGN invisible      VALUE invisible TYPE "L" DEFAULT .F.
-   DEFAULT value TO rl
+   ASSIGN ::nWidth       VALUE nWidth     TYPE "N"
+   ASSIGN ::nHeight      VALUE nHeight    TYPE "N"
+   ASSIGN ::nRow         VALUE nRow       TYPE "N"
+   ASSIGN ::nCol         VALUE nCol       TYPE "N"
+   ASSIGN ::nRangeMin    VALUE nMin       TYPE "N"
+   ASSIGN ::nRangeMax    VALUE nMax       TYPE "N"
+   ASSIGN ::nIncrement   VALUE nIncrement TYPE "N"
+   ASSIGN cCue           VALUE cCue       TYPE "C" DEFAULT ""
+   ASSIGN ::lBoundText   VALUE lBndTxt    TYPE "L"
+   ASSIGN lWrap          VALUE lWrap      TYPE "L" DEFAULT .F.
+   ASSIGN lReadonly      VALUE lReadonly  TYPE "L" DEFAULT .F.
+   ASSIGN lNoBorder      VALUE lNoborder  TYPE "L" DEFAULT .F.
+   ASSIGN lInvisible     VALUE lInvisible TYPE "L" DEFAULT .F.
+   ASSIGN nValue         VALUE nValue     TYPE "N" DEFAULT ::nRangeMin
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
-   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled ) + ;
-             iif( HB_ISLOGICAL( readonly ) .AND. readonly, ES_READONLY, 0 )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
+             iif( lReadonly, ES_READONLY, 0 ) + ES_NUMBER + ES_AUTOHSCROLL
 
-   nStyleEx += IF( !HB_IsLogical( lNoBorder ) .OR. ! lNoBorder, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx := iif( lNoBorder, 0, WS_EX_CLIENTEDGE )
 
-   ControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, 0, ::lRtl, nStyleEx )
+   nControlHandle := InitTextBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, 0, ::lRtl, nStyleEx )
 
-   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, ::ContainerCol + ::nWidth, ::ContainerRow, 15, ::nHeight, ::nRangeMin, ::nRangeMax, invisible, wrap, ControlHandle, ::lRtl )
+   ::AuxHandle := InitSpinner( ::ContainerhWnd, 0, ::ContainerCol + ::nWidth, ::ContainerRow, 15, ::nHeight, ::nRangeMin, ::nRangeMax, lInvisible, lWrap, nControlHandle, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
-   ::Value := value
-
-   If ::nIncrement <> 1
+   IF ::nIncrement <> 1
       ::Increment := ::nIncrement
-   EndIf
+   ENDIF
 
-   ASSIGN ::OnLostFocus VALUE lostfocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE gotfocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE Change    TYPE "B"
+   IF Empty( cCue )
+      ::Value := nValue
+   ELSE
+      ::CueBanner := cCue
+   ENDIF
 
-   Return Self
+   ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE bChange    TYPE "B"
 
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CueBanner( cCue ) CLASS TSpinner
+
+   IF HB_ISSTRING( cCue )
+      SendMessage( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      ::cCue := cCue
+   ENDIF
+
+   RETURN ::cCue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release CLASS TSpinner
 
    DestroyWindow( ::AuxHandle )
 
-   Return ::Super:Release()
+   RETURN ::Super:Release()
 
-METHOD SizePos( Row, Col, Width, Height ) CLASS TSpinner
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TSpinner
 
-   Local uRet
+   LOCAL uRet
 
-   uRet := ::Super:SizePos( Row, Col, Width, Height )
+   uRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
    MoveWindow( ::hWnd, ::ContainerCol, ::ContainerRow, ::Width - 15, ::Height , .T. )
    MoveWindow( ::AuxHandle, ::ContainerCol + ::Width - 15, ::ContainerRow, 15, ::Height , .T. )
 
-   Return uRet
+   RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Visible( lVisible ) CLASS TSpinner
 
-   IF HB_IsLogical( lVisible )
+   IF HB_ISLOGICAL( lVisible )
       ::Super:Visible := lVisible
       IF lVisible .AND. ::ContainerVisible
          CShowControl( ::AuxHandle )
@@ -165,20 +185,22 @@ METHOD Visible( lVisible ) CLASS TSpinner
       ENDIF
    ENDIF
 
-   Return ::lVisible
+   RETURN ::lVisible
 
-METHOD Value( uValue ) CLASS TSpinner
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value( nValue ) CLASS TSpinner
 
-   IF HB_IsNumeric ( uValue )
-      SetSpinnerValue( ::AuxHandle, uValue )
+   IF HB_ISNUMERIC( nValue )
+      SetSpinnerValue( ::AuxHandle, nValue )
       ::DoChange()
    ENDIF
 
-   Return GetSpinnerValue( ::AuxHandle )
+   RETURN GetSpinnerValue( ::AuxHandle )
 
-METHOD Events_Command( wParam  ) CLASS TSpinner
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Events_Command( wParam ) CLASS TSpinner
 
-   Local Hi_wParam := HIWORD( wParam  ), cValue
+   LOCAL Hi_wParam := HIWORD( wParam ), cValue
 
    IF Hi_wParam == EN_CHANGE
       IF ::lBoundText .AND. Val( ::Caption ) # ::Value
@@ -187,14 +209,15 @@ METHOD Events_Command( wParam  ) CLASS TSpinner
          SendMessage( ::hWnd, EM_SETSEL, Len( cValue ), Len( cValue ) )
       ENDIF
       ::DoChange()
-      Return Nil
+      RETURN NIL
    ENDIF
 
-   Return ::Super:Events_Command( wParam  )
+   RETURN ::Super:Events_Command( wParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Enabled( lEnabled ) CLASS TSpinner
 
-   IF HB_IsLogical( lEnabled )
+   IF HB_ISLOGICAL( lEnabled )
       ::Super:Enabled := lEnabled
       IF ::Super:Enabled
          EnableWindow( ::AuxHandle )
@@ -203,36 +226,39 @@ METHOD Enabled( lEnabled ) CLASS TSpinner
       ENDIF
    ENDIF
 
-   Return ::Super:Enabled
+   RETURN ::Super:Enabled
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RangeMin( nValue ) CLASS TSpinner
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       ::nRangeMin := nValue
       SetSpinnerRange( ::AuxHandle, ::nRangeMin, ::nRangeMax )
    ENDIF
 
-   Return ::nRangeMin
+   RETURN ::nRangeMin
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RangeMax( nValue ) CLASS TSpinner
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       ::nRangeMax := nValue
       SetSpinnerRange( ::AuxHandle, ::nRangeMin, ::nRangeMax )
    ENDIF
 
-   Return ::nRangeMax
+   RETURN ::nRangeMax
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Increment( nValue ) CLASS TSpinner
 
-   IF HB_IsNumeric( nValue )
+   IF HB_ISNUMERIC( nValue )
       ::nIncrement := nValue
       SetSpinnerIncrement( ::AuxHandle, nValue )
    ENDIF
 
-   Return ::nIncrement
+   RETURN ::nIncrement
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
@@ -312,6 +338,18 @@ HB_FUNC( SETSPINNERINCREMENT )          /* FUNCTION SetSpinnerIncrement( hWndUpD
    inc.nSec = 0;
    inc.nInc = hb_parnl( 2 );
    SendMessage ( HWNDparam( 1 ), UDM_SETACCEL, (WPARAM) 1 , (LPARAM) &inc ) ;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETSPINNERVALUE )          /* FUNCTION SetSpinnerValue( hWndUpDown, nValue ) -> NIL */
+{
+   SendMessage( HWNDparam( 1 ), (UINT) UDM_SETPOS32, (WPARAM) 0, (LPARAM) hb_parni( 2 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETSPINNERVALUE )          /* FUNCTION GetSpinnerValue( hWndUpDown ) -> nValue */
+{
+   hb_retnl( SendMessage( HWNDparam( 1 ), (UINT) UDM_GETPOS32, (WPARAM) 0, (LPARAM) 0 ) );
 }
 
 #pragma ENDDUMP

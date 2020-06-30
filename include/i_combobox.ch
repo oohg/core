@@ -118,6 +118,7 @@ STANDARD VERSION
       [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
       [ <index: INDEXISVALUE, SOURCEISVALUE> ] ;
       [ <autosize: AUTOSIZE> ] ;
+      [ <cuebanner: CUEBANNER, PLACEHOLDER> <cuetext> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <w>, <rows>, <value>, ;
@@ -135,7 +136,7 @@ STANDARD VERSION
             <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}>, ;
             iif( Upper( #<index> ) == "INDEXISVALUE", .T., ;
             iif( Upper( #<index> ) == "SOURCEISVALUE", .F., NIL ) ), ;
-            <.autosize.> )
+            <.autosize.>, <cuetext> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -196,6 +197,7 @@ SPLITBOX VERSION
       [ <dummy10: ONCANCEL, ON CANCEL> <cancel> ] ;
       [ <index: INDEXISVALUE, SOURCEISVALUE> ] ;
       [ <autosize: AUTOSIZE> ] ;
+      [ <cuebanner: CUEBANNER, PLACEHOLDER> <cuetext> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCombo(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, , , <w>, <rows>, <value>, ;
@@ -213,7 +215,7 @@ SPLITBOX VERSION
             <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}>, ;
             iif( Upper( #<index> ) == "INDEXISVALUE", .T., ;
             iif( Upper( #<index> ) == "SOURCEISVALUE", .F., NIL ) ), ;
-            <.autosize.> )
+            <.autosize.>, <cuetext> )
 
 #command SET COMBOREFRESH ON ;
    => ;
