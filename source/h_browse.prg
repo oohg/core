@@ -96,7 +96,7 @@ CLASS TOBrowse FROM TXBrowse
    METHOD EditAllCells
    METHOD EditCell
    METHOD EditGrid
-   METHOD EditItem_B
+   METHOD EditItem
    METHOD End
    METHOD Events
    METHOD Events_Notify
@@ -135,7 +135,6 @@ CLASS TOBrowse FROM TXBrowse
       Define4
       DeleteAllItems
       DeleteColumn
-      EditItem
       Enabled
       FixBlocks
       FixControls
@@ -1034,12 +1033,15 @@ METHOD DeleteItem( nItem ) CLASS TOBrowse
 
    RETURN ListViewDeleteString( ::hWnd, nItem )
 
-METHOD EditItem_B( lAppend ) CLASS TOBrowse
+METHOD EditItem( lAppend, lOneRow ) CLASS TOBrowse
 
-   LOCAL _RecNo, nItem, cWorkArea, lRet, nNewRec
+   LOCAL lSomethingEdited := .F., cWorkArea, nRow, _RecNo, nNewRec
 
-   IF ::FirstVisibleColumn == 0
-      RETURN .F.
+   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
+   ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
+
+   IF ::InPlace
+      RETURN ::EditAllCells( NIL, NIL, lAppend, lOneRow )
    ENDIF
 
    cWorkArea := ::WorkArea
@@ -1047,30 +1049,56 @@ METHOD EditItem_B( lAppend ) CLASS TOBrowse
       RETURN .F.
    ENDIF
 
-   ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
-
-   nItem := ::CurrentRow
-   IF nItem == 0 .AND. ! lAppend
-      RETURN .F.
-   ENDIF
-
-   _RecNo := ( cWorkArea )->( RecNo() )
-
-   IF ! lAppend
-      ::DbGoTo( ::aRecMap[ nItem ] )
-   ENDIF
-
-   lRet := ::Super:EditItem_B( lAppend )
-
-   IF lRet .AND. lAppend
-      nNewRec := ( cWorkArea )->( RecNo() )
-      ::DbGoTo( _RecNo )
-      ::Value := nNewRec
+   IF lAppend
+      IF ::lAppendMode
+         RETURN .F.
+      ENDIF
+      ::lAppendMode := .T.
+      ::oWorkArea:GoTo( 0 )
    ELSE
-      ::DbGoTo( _RecNo )
+      nRow := ::CurrentRow
+      IF nRow == 0
+         RETURN .F.
+      ENDIF
    ENDIF
 
-   RETURN lRet
+   IF ! ::lNoVSB
+      IF ::VScroll:Enabled
+         // Kill scrollbar's events...
+         ::VScroll:Enabled := .F.
+         ::VScroll:Enabled := .T.
+      ENDIF
+   ENDIF
+
+   DO WHILE .T.
+      _RecNo := ( cWorkArea )->( RecNo() )
+
+      IF ! lAppend
+         ::DbGoTo( ::aRecMap[ nRow ] )
+      ENDIF
+
+      IF ! ::EditItem_B( lAppend )
+         ::DbGoTo( _RecNo )
+         EXIT
+      ENDIF
+
+      IF lAppend
+         nNewRec := ( cWorkArea )->( RecNo() )
+         ::DbGoTo( _RecNo )
+         ::Value := nNewRec
+         ::DoChange()
+      ENDIF
+
+      lSomethingEdited := .T.
+      IF lOneRow
+         EXIT
+      ENDIF
+      IF ! ::Down( .F. )
+         EXIT
+      ENDIF
+   ENDDO
+
+   RETURN lSomethingEdited
 
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowse
 
@@ -1970,7 +1998,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
       ELSEIF ::FullMove
          ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
       ELSE
-         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+         ::EditItem()
       ENDIF
 
       _ClearThisCellInfo()
