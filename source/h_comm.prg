@@ -69,6 +69,7 @@ STATIC _OOHG_StationName   := ""
 STATIC _OOHG_SendDataCount := 0
 STATIC _OOHG_CommPath      := ""
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION GetData()
 
    LOCAL PacketNames, i, Rows, Cols, RetVal := NIL, bd, aItem, aTemp := {}, r, c
@@ -194,6 +195,7 @@ FUNCTION GetData()
 
    RETURN ( RetVal )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SendData( cDest, Data )
 
    LOCAL cData, i, j, cph, stn, sdc
@@ -312,6 +314,7 @@ FUNCTION SendData( cDest, Data )
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SetCommStationName( stn )
 
    App.MutexLock
@@ -325,6 +328,7 @@ FUNCTION SetCommStationName( stn )
 
    RETURN stn
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SetCommPath( cph )
 
    App.MutexLock
