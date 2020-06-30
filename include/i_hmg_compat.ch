@@ -596,18 +596,6 @@ TODO: implement this clauses:
 #xtranslate ID <nId> [ <x> ] ;
    => [ <x> ]
 
-#xtranslate DEFINE TAB [ <x> ] BACKCOLOR <backcolor> ;
-   => DEFINE TAB [ <x> ]
-
-#xtranslate DEFINE TAB [ <x> ] HTFORECOLOR <htforecolor> ;
-   => DEFINE TAB [ <x> ]
-
-#xtranslate DEFINE TAB [ <x> ] HTINACTIVECOLOR <htinactivecolor> ;
-   => DEFINE TAB [ <x> ]
-
-#xtranslate DEFINE TAB [ <x> ] BOTTOM ;
-   => DEFINE TAB [ <x> ]
-
 #command @ <row>, <col> DATEPICKER [ <x> ] BACKCOLOR <backcolor> ;
    => ;
       @ <row>, <col> DATEPICKER [ <x> ]
