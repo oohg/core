@@ -61,43 +61,51 @@
  */
 
 
-#xcommand SET TOOLTIPCLOSE <x: ON, OFF> ;
+#xcommand SET TOOLTIPCLOSE [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipClose( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIP CLOSE <x: ON, OFF> ;
+#xcommand SET TOOLTIP CLOSE [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipClose( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIPSTYLE CLOSE ;
+#xcommand SET TOOLTIPSTYLE [ TO ] CLOSE ;
    => ;
       _SetToolTipClose( .T. )
 
-#xcommand SET TOOLTIPSTYLE NOCLOSE ;
+#xcommand SET TOOLTIPSTYLE [ TO ] NOCLOSE ;
    => ;
       _SetToolTipClose( .F. )
 
-#xcommand SET TOOLTIPMULTILINE <x: ON, OFF> ;
+#xcommand SET TOOLTIPMULTILINE [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipMultiLine( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIP MULTILINE <x: ON, OFF> ;
+#xcommand SET TOOLTIP MULTILINE [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipMultiLine( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIPBALLOON <x: ON, OFF> ;
+#xcommand SET TOOLTIPBALLOON [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipBalloon( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIP BALLOON <x: ON, OFF> ;
+#xcommand SET TOOLTIP BALLOON [ TO ] <x: ON, OFF> ;
    => ;
       _SetToolTipBalloon( Upper( <(x)> ) == "ON" )
 
-#xcommand SET TOOLTIPSTYLE BALLOON ;
+#xcommand SET TOOLTIPSTYLE [ TO ] BALLOON ;
    => ;
       _SetToolTipBalloon( .T. )
 
-#xcommand SET TOOLTIPSTYLE STANDARD ;
+#xcommand SET TOOLTIPSTYLE [ TO ] STANDARD ;
+   => ;
+      _SetToolTipBalloon( .F. )
+
+#xcommand SET TOOLTIP STYLE [ TO ] BALLOON ;
+   => ;
+      _SetToolTipBalloon( .T. )
+
+#xcommand SET TOOLTIP STYLE [ TO ] STANDARD ;
    => ;
       _SetToolTipBalloon( .F. )
 
@@ -105,22 +113,100 @@
    => ;
       _SetToolTipBalloon()
 
-#xcommand SET TOOLTIPBACKCOLOR <aColor> ;
+#xcommand SET TOOLTIPBACKCOLOR [ TO ] <aColor> ;
    => ;
       _SetToolTipBackColor( <aColor> )
 
-#xcommand SET TOOLTIPFORECOLOR <aColor> ;
+#xcommand SET TOOLTIP BACKCOLOR [ TO ] <aColor> ;
+   => ;
+      _SetToolTipBackColor( <aColor> )
+
+#xcommand SET TOOLTIPFORECOLOR [ TO ] <aColor> ;
    => ;
       _SetToolTipForeColor( <aColor> )
 
-#xcommand SET TOOLTIPINITIALTIME TO <nMilliSec> ;
+#xcommand SET TOOLTIP FORECOLOR [ TO ] <aColor> ;
+   => ;
+      _SetToolTipForeColor( <aColor> )
+
+#xcommand SET TOOLTIPTEXTCOLOR [ TO ] <aColor> ;
+   => ;
+      _SetToolTipForeColor( <aColor> )
+
+#xcommand SET TOOLTIP TEXTCOLOR [ TO ] <aColor> ;
+   => ;
+      _SetToolTipForeColor( <aColor> )
+
+#xcommand SET TOOLTIPINITIALTIME [ TO ] <nMilliSec> ;
    => ;
       _SetToolTipInitialTime( <nMilliSec> )
 
-#xcommand SET TOOLTIPAUTOPOPTIME TO <nMilliSec> ;
+#xcommand SET TOOLTIP INITIALTIME [ TO ] <nMilliSec> ;
+   => ;
+      _SetToolTipInitialTime( <nMilliSec> )
+
+#xcommand SET TOOLTIPAUTOPOPTIME [ TO ] <nMilliSec> ;
    => ;
       _SetToolTipAutoPopTime( <nMilliSec> )
 
-#xcommand SET TOOLTIPRESHOWTIME TO <nMilliSec> ;
+#xcommand SET TOOLTIP AUTOPOPTIME [ TO ] <nMilliSec> ;
+   => ;
+      _SetToolTipAutoPopTime( <nMilliSec> )
+
+#xcommand SET TOOLTIP VISIBLETIME [ TO ] <nMilliSec> ;
+   => ;
+      _SetToolTipAutoPopTime( <nMilliSec> )
+
+#xcommand SET TOOLTIPRESHOWTIME [ TO ] <nMilliSec> ;
    => ;
       _SetToolTipReShowTime( <nMilliSec> )
+
+#xcommand SET TOOLTIP RESHOWTIME [ TO ] <nMilliSec> ;
+   => ;
+      _SetToolTipReShowTime( <nMilliSec> )
+
+#xcommand SET TOOLTIPMAXWIDTH [ TO ] <w> ;
+   => ;
+      _SetToolTipMaxWidth ( <w> )
+
+#xcommand SET TOOLTIP MAXWIDTH [ TO ] <w> ;
+   => ;
+      _SetToolTipMaxWidth ( <w> )
+
+#xcommand ADD TOOLTIP ICON <x> ;
+   => ;
+      ADD TOOLTIPICON <x>
+
+#xcommand ADD TOOLTIPICON <icon> WITH <dummy1: MESSAGE, TITLE> <title> <dummy2: TO, OF> <form> ;
+   => ;
+      WITH OBJECT GetExistingFormObject( <(form)> ) ;;
+         :ToolTipIcon( icon ) ;;
+         :ToolTipTitle( title ) ;;
+      END OBJECT
+
+#xcommand ADD TOOLTIPICON <icon: ERROR, ERROR_LARGE, INFO, INFO_LARGE, WARNING, WARNING_LARGE> ;
+      WITH <dummy1: MESSAGE, TITLE> <title> <dummy2: TO, OF> <form> ;
+   => ;
+      WITH OBJECT GetExistingFormObject( <(form)> ) ;;
+         :ToolTipIcon( TTI_<icon> ) ;;
+         :ToolTipTitle( <title> ) ;;
+      END OBJECT
+
+#xcommand CLEAR TOOLTIPICON OF <form> ;
+   => ;
+      WITH OBJECT GetExistingFormObject( <(form)> ) ;;
+         :ToolTipIcon( TTI_NONE ) ;;
+         :ToolTipTitle( "" ) ;;
+      END OBJECT
+
+#xcommand SET TOOLTIP [ACTIVATE] <x: ON, OFF> OF <form> ;
+   => ;
+      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd(), Upper( <(x)> ) == "ON" )
+
+#xcommand SET TOOLTIP [ACTIVATE] TO <t> OF <form> ;
+   => ;
+      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd(), <t> )
+
+#xcommand SET TOOLTIP [ACTIVATE] <x: ON, OFF> ;
+   => ;
+      _SetToolTipActivate( Upper( <(x)> ) == "ON" )
