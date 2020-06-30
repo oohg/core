@@ -2652,15 +2652,15 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          break;
 
       case WM_DRAWITEM:
-         if( wParam )
-         {
-            /* ComboBox and ListBox */
-            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAWITEMSTRUCT) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
-         }
-         else
+         if( (UINT) ( (LPDRAWITEMSTRUCT) lParam )->CtlType == ODT_MENU )
          {
             /* Menu */
             _OOHG_Send( GetControlObjectById( ( (MYITEM *) ( ( (LPDRAWITEMSTRUCT) lParam )->itemData ) )->id, hWnd ), s_Events_DrawItem );
+         }
+         else
+         {
+            /* ComboBox, ListBox, Tab */
+            _OOHG_Send( GetControlObjectByHandle( ( (LPDRAWITEMSTRUCT) lParam )->hwndItem, TRUE ), s_Events_DrawItem );
          }
          hb_vmPushNumInt( lParam );
          hb_vmSend( 1 );
