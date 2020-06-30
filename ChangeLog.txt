@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    ! Unimplemented parameters.
+
 2020-06-29 22:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_label.ch
   * core\source\h_label.prg
