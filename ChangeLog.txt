@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-30 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_comm.prg
+    + Comments to separate functions.
+
 2020-06-30 17:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! RTE "Argument error: conditional" at TOBROWSE:EDITITEM (1081).
