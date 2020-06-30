@@ -12,6 +12,18 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 22:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+  * core\include\i_tooltip.ch
+  * core\include\i_windefs.ch
+  * core\source\h_form.prg
+  * core\source\h_tooltip.prg
+    * Syntax was synchronized with HMG Extended.
+    + Clause SET TOOLTIP to enable/disable tooltips.
+    + Clause ADD TOOLTIPICON to set icon and/or message.
+    + Clause DEL TOOLTIPICON to clear icon and/or message.
+    + Clause SET TOOLTIPMAXWIDTH.
+
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data lNoRecurse.
