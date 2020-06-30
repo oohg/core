@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 22:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.ch
+    + Support for Tab control at WM_DRAWITEM handler of class TWindow.
+
 2020-06-28 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.ch
     + Methods BACKCOLOR, BACKCOLORCODE and EVENTS_DRAWITEM
