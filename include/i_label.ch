@@ -95,6 +95,7 @@
       [ <disabled: DISABLED> ] ;
       [ <vcntralign: VCENTERALIGN> ] ;
       [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
+      [ CURSOR <cursor> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;
@@ -103,4 +104,5 @@
             <fontcolor>, <{action}>, <tooltip>, <helpid>, <.invisible.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
-            <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}> )
+            <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}>, ;
+            <cursor> )
