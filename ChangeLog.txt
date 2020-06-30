@@ -12,6 +12,31 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-29 22:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Clause ON MOUSEHOVER.
+  * core\include\i_hmg_compat.ch
+    + Clauses ON MOUSEHOVER and ON MOUSELEAVE to BUTTONEX.
+  * core\include\i_image.ch
+    + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
+  * core\include\i_label.ch
+    + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
+    + Clauses ON MOUSELEAVE.
+  * core\include\oohg.h
+  * core\source\c_controlmisc.c
+    + OnMouseLeave to symbols table.
+  * core\source\h_controlmisc.prg
+    + Clear data OnMouseLeave at method Release of class TControl.
+    + Handler for WM_MOUSELEAVE at method Event of class TControl.
+    - Remove commented out code.
+    * Case of two function names.
+  * core\source\h_image.prg
+    + Support for ON MOUSEMOVE.
+  * core\source\h_label.prg
+    + Support for ON MOUSEMOVE and ON MOUSELEAVE.
+  * core\source\h_windows.prg
+    + Data OnMouseLeave to class TWindow.
+
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data lNoRecurse.
