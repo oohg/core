@@ -12,6 +12,14 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-06-30 17:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! RTE "Argument error: conditional" at TOBROWSE:EDITITEM (1081).
+
+2020-06-30 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+   * core\oohg.hbc
+     * Path to include files is now absolute.
+
 2020-06-29 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
   * core\source\h_browse.prg
@@ -22,6 +30,17 @@
       event was ignored and edition process was started.
       To keep the previous behavior DBLCLICK event must be empty.
       INCOMPATIBLE
+
+2020-06-29 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! Browse control with EDIT but without INPLACE is edited
+      as if INPLACE is present when a row is doubleclicked.
+  #283
+
+2020-06-29 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! Browse control with EDIT but without INPLACE is edited
+      as if INPLACE is present
 
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
