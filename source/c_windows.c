@@ -70,6 +70,12 @@
 #include "winreg.h"
 #include "tchar.h"
 
+#ifndef __XHARBOUR__
+#include "hbwinuni.h"
+#else
+typedef wchar_t HB_WCHAR;
+#endif
+
 /* Handle to a DIB */
 #define HDIB HANDLE
 
@@ -515,6 +521,37 @@ HB_FUNC( GETWINDOWTEXT )
 HB_FUNC( SENDMESSAGE )
 {
    LRESULTret( SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), WPARAMparam( 3 ), LPARAMparam( 4 ) ) );
+}
+
+HB_FUNC( SENDMESSAGESTRINGW )
+{
+   HB_WCHAR * lpWCStr = (HB_WCHAR *) ( ( hb_parclen( 4 ) == 0 ) ? NULL : hb_mbtowc( hb_parc( 4 ) ) );
+
+   LRESULTret( SendMessage( HWNDparam( 1 ), (UINT) hb_parni( 2 ), (WPARAM) hb_parl( 3 ), (LPARAM) (LPCWSTR) lpWCStr ) );
+   if( NULL != lpWCStr )
+   {
+      hb_xfree( lpWCStr );
+   }
+}
+
+HB_FUNC( GETCUEBANNERTEXT )
+{
+   HB_WCHAR *lpWCStr = (HB_WCHAR *) hb_xgrab( 256 * sizeof( HB_WCHAR ) );
+
+   if( SendMessage( HWNDparam( 1 ), EM_GETCUEBANNER, (WPARAM) (LPWSTR) lpWCStr, (LPARAM) 256 ) )
+   {
+   #ifdef __XHARBOUR__
+      hb_retc( (const char *) hb_wctomb( lpWCStr ) );
+   #else
+      hb_retstrlen_u16( HB_CDP_ENDIAN_NATIVE, lpWCStr, 256 );
+   #endif
+   }
+   else
+   {
+      hb_retc_null();
+   }
+
+   hb_xfree( lpWCStr );
 }
 
 HB_FUNC( UPDATEWINDOW )
