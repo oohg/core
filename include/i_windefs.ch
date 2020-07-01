@@ -868,6 +868,7 @@ COMBOBOX CONTROL
 #define CB_SETITEMHEIGHT              0x0153
 #define CB_GETITEMHEIGHT              0x0154
 #define CB_GETMINVISIBLE              0x1702
+#define CB_SETCUEBANNER               0x1703
 #define CBN_EDITCHANGE                5
 #define CBN_KILLFOCUS                 4
 #define CBN_SETFOCUS                  3
