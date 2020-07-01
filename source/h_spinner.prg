@@ -133,11 +133,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
       ::Increment := ::nIncrement
    ENDIF
 
-   IF Empty( cCue )
-      ::Value := nValue
-   ELSE
+   IF ! Empty( cCue )
       ::CueBanner := cCue
    ENDIF
+
+   ::Value := nValue
 
    ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
@@ -149,7 +149,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
 METHOD CueBanner( cCue ) CLASS TSpinner
 
    IF HB_ISSTRING( cCue )
-      SendMessage( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      SendMessageWideString( ::hWnd, EM_SETCUEBANNER, .T., cCue )
       ::cCue := cCue
    ENDIF
 
