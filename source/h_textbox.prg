@@ -242,7 +242,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
    ELSE
       aAux := { aBitmap, NIL }
    ENDIF
-   ::aBitmap := aBitmap
+   ::aBitmap := aAux
 
    ::DefineAction( bAction1, aAux[ 1 ], cTTipB1 )
    ::DefineAction2( bAction2, aAux[ 2 ], cTTipB2 )
