@@ -3630,7 +3630,7 @@ METHOD InitX( cLang ) CLASS TSpreadsheetPrint
 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AddPage()
+METHOD AddPage() CLASS TSpreadsheetPrint
 
    LOCAL i
 
