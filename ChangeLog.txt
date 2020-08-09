@@ -12,6 +12,27 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-09 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+  * core\compile_MINGW.BAT
+  * core\resources\_oohg_resconfig.h
+  * core\resources\CompileRes_bcc.bat
+  * core\resources\CompileRes_mingw.bat
+  * core\resources\oohg.rc
+  * core\resources\oohg_bcc.rc
+    + Default VERSIONINFO data to resource file.
+      ; If use OOHG resources and you want to add your own
+        VERSIONINFO data you must add "#define __VERSION_INFO"
+        before the inclusion of OOHG resources.
+        To do that when using compile.bat add /NOVER switch.
+        To build with hbmk2 add at the bottom of your RC file
+        the define followed by #include "oohg.rc."
+
+2020-08-09 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tooltip.prg
+    ! Unused value breaks BCC compilation.
+  #320
+
 2020-08-09 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_pseudofunc.prg
   * core\source\h_crypt.prg
