@@ -96,6 +96,7 @@
       [ <dummy8: ONMDBLCLICK, ON MDBLCLICK> <mdblclk> ] ;
       [ <nocheck: NOCHECKDEPTH> ] ;
       [ <noredraw: NOPARENTREDRAW> ] ;
+      [ <dummy9: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <move> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
@@ -104,4 +105,4 @@
             ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
             <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
             <area>, <.disabled.>, <{change}>, <{rclk}>, <{mclk}>, <{dblclk}>, ;
-            <{rdblclk}>, <{mdblclk}>, <.nocheck.>, <.noredraw.> )
+            <{rdblclk}>, <{mdblclk}>, <.nocheck.>, <.noredraw.>, <{move}> )

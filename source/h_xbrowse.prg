@@ -3958,31 +3958,57 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
       _OOHG_ThisItemCellHeight := aCellData[ 6 ]
       _OOHG_ThisItemCellValue  := ::Cell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
 
-      If ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
-         If HB_IsBlock( ::OnDblClick )
+      IF ! ::AllowEdit .OR. _OOHG_ThisItemRowIndex < 1 .OR. _OOHG_ThisItemRowIndex > ::ItemCount .OR. _OOHG_ThisItemColIndex < 1 .OR. _OOHG_ThisItemColIndex > Len( ::aHeaders )
+         IF HB_ISBLOCK( ::OnDblClick )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
-         EndIf
-      ElseIf ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
-         // Cell is readonly
-         If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+         ENDIF
+      ELSEIF ::FullMove
+         IF ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+            // Cell is readonly
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+               // WHEN returned .F.
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+            // Cell is in a hidden column
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
-         EndIf
-      ElseIf ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
-         // Not a valid WHEN
-         If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
+         ELSE
+            ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
+         ENDIF
+      ELSEIF ::InPlace
+         IF ::IsColumnReadOnly( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+            // Cell is readonly
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF ! ::IsColumnWhen( _OOHG_ThisItemColIndex, _OOHG_ThisItemRowIndex )
+               // WHEN returned .F.
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF AScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
+            // Cell is in a hidden column
+            IF ::lExtendDblClick .and. HB_ISBLOCK( ::OnDblClick )
+               ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+            ENDIF
+         ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
-         EndIf
-      ElseIf aScan( ::aHiddenCols, _OOHG_ThisItemColIndex ) > 0
-         // Cell is in a hidden column
-         If ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick )
-            ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
-         EndIf
-      ElseIf ::FullMove
-         ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
-      Else
-         ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, , , , , , , .F. )
-
-      EndIf
+         ELSE
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+         ENDIF
+      ELSEIF ! _OOHG_SameEnterDblClick .AND. ::lExtendDblClick .AND. HB_ISBLOCK( ::OnDblClick, aCellData )
+         ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
+      ELSE
+         ::EditItem()
+      ENDIF
 
       _ClearThisCellInfo()
       _PopEventInfo()

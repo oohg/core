@@ -229,6 +229,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
+      [ ROW <row> ] ;
+      [ COL <col> ] ;
       [ WIDTH <wi> ] ;
       [ HEIGHT <h> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;
@@ -404,6 +406,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
+      [ ROW <row> ] ;
+      [ COL <col> ] ;
       [ WIDTH <wi> ] ;
       [ HEIGHT <h> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;

@@ -715,6 +715,9 @@ TOOLTIP CONTROL
 #define TTI_INFO                      1
 #define TTI_WARNING                   2
 #define TTI_ERROR                     3
+#define TTI_INFO_LARGE                4
+#define TTI_WARNING_LARGE             5
+#define TTI_ERROR_LARGE               6
 #define TTN_NEEDTEXT                  ( -520 )
 #define TTN_GETDISPINFO               ( -520 )
 

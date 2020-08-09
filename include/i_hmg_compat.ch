@@ -235,8 +235,8 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       [ <flat: FLAT> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy02: ON GOTFOCUS,ON MOUSEHOVER> <gotfocus> ] ;
+      [ <dummy04: ON LOSTFOCUS,ON MOUSELEAVE>> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -666,5 +666,21 @@ TODO: implement this clauses:
 #xtranslate BUTTON [ <x> ] DEFAULT ;
    => ;
       BUTTON [ <x> ]
+
+#xtranslate SET TOOLTIP TEXTCOLOR TO <color> OF <form> ;
+   => ;
+      SET TOOLTIP TEXTCOLOR TO <color>
+
+#xtranslate SET TOOLTIP BACKCOLOR TO <color> OF <form> ;
+   => ;
+      SET TOOLTIP BACKCOLOR TO <color>
+
+#xtranslate SET TOOLTIP MAXWIDTH TO <w> OF <form> ;
+   => ;
+      SET TOOLTIP MAXWIDTH TO <w>
+
+#xtranslate SET TOOLTIP VISIBLETIME TO <t> OF <form> ;
+   => ;
+      SET TOOLTIP VISIBLETIME TO <t>
 
 #endif

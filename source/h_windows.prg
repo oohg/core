@@ -157,6 +157,7 @@ CLASS TWindow
    DATA OnMClick                  INIT NIL
    DATA OnMDblClick               INIT NIL
    DATA OnMouseDrag               INIT NIL
+   DATA OnMouseLeave              INIT NIL
    DATA OnMouseMove               INIT NIL
    DATA OnRClick                  INIT NIL
    DATA OnRDblClick               INIT NIL

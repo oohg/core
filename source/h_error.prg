@@ -234,6 +234,7 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
       IF Empty( ::cLang )
          cLang := _OOHG_GetLanguage()
+         ::cLang := cLang
       ELSE
          cLang := Upper( AllTrim( ::cLang ) )
       ENDIF
@@ -242,11 +243,13 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
          cLang := Left( cLang, nAt - 1 )
       ENDIF
       cLang := Upper( AllTrim( cLang ) )
+      ::cLang := cLang
    ENDIF
 
    DO CASE
    CASE cLang == "HR852" .OR. ;
         cLang == "HR"                               // Croatian
+      ::cLang := cLang
       ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
@@ -261,6 +264,7 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Program Error" }
 
    CASE cLang == "EU"                               // Basque
+      ::cLang := cLang
       ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
@@ -275,6 +279,7 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Program Error" }
 
    CASE cLang == "FR"                               // French
+      ::cLang := cLang
       ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
@@ -442,6 +447,7 @@ METHOD New( cLang ) CLASS OOHG_TErrorHtml
                        "Program Error" }
 
    OTHERWISE                                        // Default to English
+      ::cLang := "EN"
       ::aMessages := { "OOHG Errors Log", ;
                        "Application: ", ;
                        "Date: ", ;
