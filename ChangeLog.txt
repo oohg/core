@@ -12,8 +12,25 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-09 10:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\miniprint.prg
+    + Function _HMG_PRINTER_TEXTMETRICS.
+  #298
+   ! Function _HMG_PRINTER_GETMAXCOL return value.
+  #297
+
+2020-08-09 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\common_make.bat
+    ! Typo.
+  #299
+
+2020-08-09 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Clauses ROW and COL to synchronize with Extended.
+  #300
+
 2020-08-09 09:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\h_print
+  * core\source\h_print.prg
     ! Rectangles are filled with black when painted.
   #296
     ! Default TPrint object is not selected by function
@@ -21,11 +38,6 @@
   #303
 
 2020-08-08 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\include\oohgversion.h
-    ! Error compiling resource file (value out of range).
-  #295
-
-2020-08-09 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohgversion.h
     ! Error compiling resource file (value out of range).
   #295
