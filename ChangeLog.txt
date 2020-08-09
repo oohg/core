@@ -72,6 +72,10 @@
    * core\oohg.hbc
      * Path to include files is now absolute.
 
+2020-06-29 23:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.prg
+    + Clause NEWATROW.
+
 2020-06-29 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Browse control with EDIT but without INPLACE is edited
@@ -82,6 +86,11 @@
   * core\source\h_browse.prg
     ! Browse control with EDIT but without INPLACE is edited
       as if INPLACE is present
+
+2020-06-29 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.prg
+  * core\source\h_browse.prg
+    + Clause NEWATROW. Sets where the just added record is shown.
 
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
