@@ -96,7 +96,7 @@ CLASS TLabel FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
                lClientEdge, lHScroll, lVScroll, lTransparent, uBackColor, uFontColor, bOnClick, cToolTip, nHelpId, lInvisible, ;
                lItalic, lUnderline, lStrikeout, lAutoSize, lRightAlign, lHorzCenter, lRtl, lNoWordWrap, lNoPrefix, cPicture, ;
-               lDisabled, lVertCenter, bOnDblClk uCursor, bOnMove, bOnLeave ) CLASS TLabel
+               lDisabled, lVertCenter, bOnDblClk, uCursor, bOnMove, bOnLeave ) CLASS TLabel
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
