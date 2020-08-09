@@ -64,9 +64,6 @@
 #include "oohg.ch"
 #include "i_init.ch"
 
-#define DOUBLE_QUOTATION_MARK '"'
-#define DQM( x )              ( DOUBLE_QUOTATION_MARK + x + DOUBLE_QUOTATION_MARK )
-
 STATIC _OOHG_Messages := { {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} }
 STATIC _OOHG_Language := NIL
 

@@ -61,6 +61,18 @@
  */
 
 
+#xtranslate DQM( <x> ) ;
+   => ;
+      ( '"' + <x> + '"' )
+
+#xtranslate SQM( <x> ) ;
+   => ;
+      ( "'" + <x> + "'" )
+
+#xtranslate BKT( <x> ) ;
+   => ;
+      ( "[" + <x> + "]")
+
 #xtranslate SendMessageWideString( <h>, <n>, <wp>, <lp> ) ;
    => ;
       SendMessageStringW( <h>, <n>, <wp>, <lp> )
