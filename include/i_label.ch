@@ -95,6 +95,7 @@
       [ <disabled: DISABLED> ] ;
       [ <vcntralign: VCENTERALIGN> ] ;
       [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
+      [ CURSOR <cursor> ] ;
       [ <dummy4: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
       [ <dummy5: ON MOUSELEAVE, ONMOUSELEAVE> <onmouseleave> ] ;
    => ;
@@ -106,4 +107,4 @@
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
             <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}>, ;
-            <{onmousemove}>, <{onmouseleave}> )
+            <cursor>, <{onmousemove}>, <{onmouseleave}> )
