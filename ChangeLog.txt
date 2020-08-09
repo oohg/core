@@ -12,21 +12,45 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-09 09:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print
+    ! Rectangles are filled with black when painted.
+  #296
+    ! Default TPrint object is not selected by function
+      TPrint when the parameter is an empty string.
+  #303
+
+2020-08-08 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohgversion.h
+    ! Error compiling resource file (value out of range).
+  #295
+
+2020-08-09 10:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohgversion.h
+    ! Error compiling resource file (value out of range).
+  #295
+
+2020-07-20 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_report.prg
+    ! Wrong parsing of DO REPORT's clause "IMAGE ... AT ...".
+    ! Reports with "DEFINE REPORT" are not parsed correctly.
+    * Method LeaImage of class TReport now returns an array.
+      INCOMPATIBLE.
+
+2020-07-18 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+  * Data cLang of class OOHG_TErrorHtml is not updated by method New.
+  #291
+
+2020-07-06 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    * Added missing class declaration.
+
 2020-07-05 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_textbox.prg
     ! The button of a textbox with PASSWORD clause looses its image
        after removing the PASSWORD style.
-
-2020-07-01 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\h_report.prg
-    ! Wrong parsing of DO REPORT's clause "IMAGE ... AT ...".
-    ! Clause "IMAGE ... AT" only accepts literals.
-    ! Clause HEADRGRP only accepts literals.
-    ! Clause HEADING only accepts literals.
-    ! Clause NAME only accepts literals.
-    ! Reports with "DEFINE REPORT" are not parsed correctly.
-    * Method LeaImage of class TReport now returns an array.
-      INCOMPATIBLE.
+  #289
 
 2020-06-30 17:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg

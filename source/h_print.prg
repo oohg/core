@@ -81,7 +81,7 @@ FUNCTION TPrint( cLibX )
 
    LOCAL oPrint
 
-   IF cLibX == NIL .OR. ! ValType( cLibX ) == "C"
+   IF Empty( cLibX ) .OR. ! ValType( cLibX ) == "C"
       IF Type( "_OOHG_PrintLibrary" ) == "C"
          cLibX := _OOHG_PrintLibrary
       ELSE
@@ -207,6 +207,8 @@ CLASS TPrintBase
    METHOD IsDocOpenX              INLINE ::lDocIsOpen
    METHOD Mat25
    METHOD MaxCol                  INLINE ::nMaxCol
+   METHOD MaxFontSize
+   METHOD MaxFontSizeX            BLOCK { || NIL }
    METHOD MaxRow                  INLINE ::nMaxRow
    METHOD NormalDos               BLOCK { || NIL }
    METHOD NormalDosX              BLOCK { || NIL }
@@ -241,6 +243,8 @@ CLASS TPrintBase
    METHOD SetFontX                BLOCK { || NIL }
    METHOD SetIndentation
    METHOD SetLMargin
+   METHOD SetPageOrientation
+   METHOD SetPageOrientationX     INLINE ::lLandscape
    METHOD SetPreviewSize
    METHOD SetPreviewSizeX         BLOCK { |Self| ::nPreviewSize }
    METHOD SetProp
@@ -260,6 +264,7 @@ CLASS TPrintBase
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetIndentation( lIndentAll ) CLASS TPrintBase
+
    IF HB_ISLOGICAL( lIndentAll )
       ::lIndentAll := lIndentAll
    ENDIF
@@ -298,6 +303,15 @@ METHOD SetShowErrors( lShow ) CLASS TPrintBase
    RETURN ::lShowErrors
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetPageOrientation( lLandscape ) CLASS TPrintBase
+
+   IF HB_ISLOGICAL( lLandscape )
+      ::lLandscape := lLandscape
+   ENDIF
+
+   RETURN ::SetPageOrientationX()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetPreviewSize( nSize ) CLASS TPrintBase
 
    RETURN ::SetPreviewSizeX( nSize )
@@ -317,14 +331,22 @@ METHOD SetCpl( nCpl ) CLASS TPrintBase
    IF HB_ISNUMERIC( nCpl )
       DO CASE
       CASE nCpl <= 60
+         ::nFontSize := 16
+      CASE nCpl <= 64
+         ::nFontSize := 15
+      CASE nCpl <= 68
          ::nFontSize := 14
+      CASE nCpl <= 73
+         ::nFontSize := 13
       CASE nCpl <= 80
          ::nFontSize := 12
       CASE nCpl <= 96
          ::nFontSize := 10
+      CASE nCpl <= 106
+         ::nFontSize := 9
       CASE nCpl <= 120
          ::nFontSize := 8
-      CASE nCpl <= 140
+      CASE nCpl <= 137
          ::nFontSize := 7
       CASE nCpl <= 160
          ::nFontSize := 6
@@ -334,6 +356,11 @@ METHOD SetCpl( nCpl ) CLASS TPrintBase
    ENDIF
 
    RETURN ::nFontSize
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxFontSize( nWidth ) CLASS TPrintBase
+
+   RETURN ::MaxFontSizeX( nWidth )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE Destroy() CLASS TPrintBase
@@ -687,17 +714,22 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
       cText := DToC( uData )
    CASE cType == 'L'
       cText := iif( uData, 'T', 'F' )
-   /*
-      TODO: use setted language
-   */
    CASE cType == 'M'
       cText := uData
    CASE cType == 'T'
-      cText := TToC( uData )
+      cText := hb_TSToStr( uData, .T. )
    CASE cType == 'O'
-      cText := "< Object >"
+      cText := "<Object>"
    CASE cType == 'A'
-      cText := "< Array >"
+      cText := "<Array>"
+   CASE cType == "H"
+      cText := "<Hash>"
+   CASE cType == "P"
+      cText := "<Pointer>"
+   CASE cType == "S"
+      cText := "<Symbol>"
+   CASE cType == "U"
+      cText := "<NIL>"
    OTHERWISE
       cText := ""
    ENDCASE
@@ -1147,6 +1179,7 @@ CLASS TMiniPrint FROM TPrintBase
    METHOD InitX
    METHOD IsDocOpenX
    METHOD MaxCol
+   METHOD MaxFontSizeX
    METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintBitmapX
@@ -1171,12 +1204,36 @@ METHOD MaxCol() CLASS TMiniPrint
    IF hdcPrint == 0
       nCol := 0
    ELSEIF ::cUnits == "MM"
-      nCol := _HMG_PRINTER_GETPAGEWIDTH() - 1
+      nCol := OpenPrinterGetPageWidth()
    ELSE
-      nCol := _HMG_PRINTER_GETMAXCOL( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+      nCol := _HMG_PRINTER_GETMAXCOL( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout ) + 1
    ENDIF
 
    RETURN nCol
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxFontSizeX( nWidth ) CLASS TMiniPrint
+
+   LOCAL hdcPrint, nSize, nMaxCol
+
+   hdcPrint := OpenPrinterGetDC()
+
+   IF hdcPrint == 0 .OR. ! HB_ISNUMERIC( nWidth )
+      RETURN 5
+   ENDIF
+
+   FOR nSize := 16 TO 5.25 STEP -0.25
+      IF ::cUnits == "MM"
+         nMaxCol := OpenPrinterGetPageWidth()
+      ELSE
+         nMaxCol := _HMG_PRINTER_GETMAXCOL( hdcPrint, ::cFontName, nSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout ) + 1
+      ENDIF
+      IF nWidth <= nMaxCol
+         EXIT
+      ENDIF
+   NEXT nSize
+
+   RETURN nSize
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MaxRow() CLASS TMiniPrint
@@ -1188,9 +1245,9 @@ METHOD MaxRow() CLASS TMiniPrint
    IF hdcPrint == 0
       nRow := 0
    ELSEIF ::cUnits == "MM"
-      nRow := _HMG_PRINTER_GETPAGEHEIGHT() - 1
+      nRow := _HMG_PRINTER_GETPAGEHEIGHT()
    ELSE
-      nRow := _HMG_PRINTER_GETMAXROW( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout )
+      nRow := _HMG_PRINTER_GETMAXROW( hdcPrint, ::cFontName, ::nFontSize, ::nFontWidth, ::nFontAngle, ::lFontBold, ::lFontItalic, ::lFontUnderline, ::lFontStrikeout ) + 1
    ENDIF
 
    RETURN nRow
@@ -1199,7 +1256,7 @@ METHOD MaxRow() CLASS TMiniPrint
 METHOD SetPreviewSizeX( nSize ) CLASS TMiniPrint
 
    IF _HMG_PRINTER_Preview
-      IF nSize == NIL .OR. nSize < -9.99 .OR. nSize > 99.99
+      IF nSize == NIL .OR. ! HB_ISNUMERIC( nSize ) .OR. nSize < -9.99 .OR. nSize > 99.99
          nSize := 0
       ENDIF
       ::nPreviewSize := nSize
@@ -1734,12 +1791,32 @@ METHOD PrintRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, arCol
 
    IF ::cUnits == "MM"
       IF Empty( arColor )
-         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH )
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            NOBRUSH
       ELSE
-         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) BRUSHCOLOR arColor
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            BRUSHCOLOR arColor
       ENDIF
    ELSE
-      @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 COLOR atColor PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) BRUSHCOLOR arColor
+      IF Empty( arColor )
+         @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            NOBRUSH
+      ELSE
+         @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            BRUSHCOLOR arColor
+      ENDIF
    ENDIF
 
    RETURN .T.
@@ -1751,12 +1828,37 @@ METHOD PrintRoundRectangleX( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, 
 
    IF ::cUnits == "MM"
       IF Empty( arColor )
-         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor ROUNDED
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            NOBRUSH ;
+            ROUNDED
       ELSE
-         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor BRUSHCOLOR arColor ROUNDED
+         @ nLin, nCol PRINT RECTANGLE TO nLinF, nColF ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            BRUSHCOLOR arColor ;
+            ROUNDED
       ENDIF
    ELSE
-      @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 PENWIDTH ntwPen STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) COLOR atColor BRUSHCOLOR arColor ROUNDED
+      IF Empty( arColor )
+         @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            BRUSHCOLOR arColor ;
+            NOBRUSH ;
+            ROUNDED
+      ELSE
+         @ nLin * ::nmVer * nVDispl + ::nvFij, nCol * ::nmHor + ::nhFij * 2 PRINT RECTANGLE TO nLinF * ::nmVer * nVDispl + ::nvFij, nColF * ::nmHor + ::nhFij * 2 ;
+            COLOR atColor ;
+            PENWIDTH ntwPen ;
+            STYLE iif( lSolid, PEN_SOLID, PEN_DASH ) ;
+            BRUSHCOLOR arColor ;
+            ROUNDED
+      ENDIF
    ENDIF
 
    RETURN .T.
@@ -2141,6 +2243,7 @@ CLASS THBPrinter FROM TPrintBase
    METHOD InitX
    METHOD IsDocOpenX
    METHOD MaxCol
+   METHOD MaxFontSizeX
    METHOD MaxRow
    METHOD PrintBarcodeX
    METHOD PrintDataX
@@ -2193,6 +2296,30 @@ METHOD MaxRow() CLASS THBPrinter
    ENDIF
 
    RETURN nRow
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxFontSizeX( nWidth ) CLASS THBPrinter
+
+   LOCAL nSize
+
+   IF ! HB_ISNUMERIC( nWidth )
+      RETURN 5
+   ENDIF
+
+   FOR nSize := 16 TO 5.25 STEP -0.25
+      CHANGE FONT "F0" NAME ::cFontName SIZE nSize
+      IF ::lLandscape
+         SET PAGE ORIENTATION DMORIENT_LANDSCAPE FONT "F0"
+      ELSE
+         SET PAGE ORIENTATION DMORIENT_PORTRAIT  FONT "F0"
+      ENDIF
+      SELECT FONT 'F0'
+      IF nWidth <= ::MaxCol()
+         EXIT
+      ENDIF
+   NEXT nSize
+
+   RETURN nSize
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitX( cLang ) CLASS THBPrinter
