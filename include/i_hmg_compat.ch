@@ -667,4 +667,20 @@ TODO: implement this clauses:
    => ;
       BUTTON [ <x> ]
 
+#xtranslate SET TOOLTIP TEXTCOLOR TO <color> OF <form> ;
+   => ;
+      SET TOOLTIP TEXTCOLOR TO <color>
+
+#xtranslate SET TOOLTIP BACKCOLOR TO <color> OF <form> ;
+   => ;
+      SET TOOLTIP BACKCOLOR TO <color>
+
+#xtranslate SET TOOLTIP MAXWIDTH TO <w> OF <form> ;
+   => ;
+      SET TOOLTIP MAXWIDTH TO <w>
+
+#xtranslate SET TOOLTIP VISIBLETIME TO <t> OF <form> ;
+   => ;
+      SET TOOLTIP VISIBLETIME TO <t>
+
 #endif
