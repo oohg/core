@@ -1513,6 +1513,14 @@ BUTTON
    => ;
       _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
 
+#xcommand ONMOUSEHOVER <onmousemove> ;
+   => ;
+      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
+#xcommand ON MOUSEHOVER <onmousemove> ;
+   => ;
+      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
 #xcommand ONGOTFOCUS <ongotfocus> ;
    => ;
       _OOHG_ActiveControlOnGotFocus := <{ongotfocus}>

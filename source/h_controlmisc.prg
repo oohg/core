@@ -70,11 +70,11 @@
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
 
-Function _Getvalue( ControlName, ParentForm )
+Function _GetValue( ControlName, ParentForm )
 
    Return GetControlObject( ControlName, ParentForm ):Value
 
-Function _Setvalue( ControlName, ParentForm, Value )
+Function _SetValue( ControlName, ParentForm, Value )
 
    Return ( GetControlObject( ControlName, ParentForm ):Value := Value )
 
@@ -1646,6 +1646,7 @@ METHOD Release() CLASS TControl
    ::OnMClick       := NIL
    ::OnMDblClick    := NIL
    ::OnMouseDrag    := NIL
+   ::OnMouseLeave   := NIL
    ::OnMouseMove    := NIL
    ::OnRClick       := NIL
    ::OnRDblClick    := NIL
@@ -2057,13 +2058,10 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam
          hb_ret();
          break;
 
-      /*
-       * Commented for use current behaviour.
-       * case WM_LBUTTONUP:
-       *    _OOHG_DoEventMouseCoords( pSelf, s_OnClick, "CLICK", lParam );
-       *    hb_ret();
-       *    break;
-       */
+      case WM_MOUSELEAVE:
+         _OOHG_DoEvent( pSelf, s_OnMouseLeave, "MOUSELEAVE", NULL );
+         hb_ret();
+         break;
 
       case WM_LBUTTONDBLCLK:
          _OOHG_DoEventMouseCoords( pSelf, s_OnDblClick, "DBLCLICK", lParam );

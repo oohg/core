@@ -118,7 +118,7 @@ CLASS TImage FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
       lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
       lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange, bOnDblClick, ;
-      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth, lNoRedraw ) CLASS TImage
+      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth, lNoRedraw, bOnMove ) CLASS TImage
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -175,6 +175,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
    ASSIGN ::OnMDblClick VALUE bOnMDblClick TYPE "B"
    ASSIGN ::OnRClick    VALUE bOnRClick    TYPE "B"
    ASSIGN ::OnRDblClick VALUE bOnRDblClick TYPE "B"
+   ASSIGN ::OnMouseMove VALUE bOnMove      TYPE "B"
 
    RETURN Self
 

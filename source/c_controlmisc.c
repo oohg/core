@@ -163,6 +163,7 @@ static const char *s_SymbolNames[] = {
    "OMENU",
    "EVENTS_TIMEOUT",
    "RANGEWIDTH",
+   "ONMOUSELEAVE",
    "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
