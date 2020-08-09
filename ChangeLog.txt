@@ -12,6 +12,15 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-09 19:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.prg
+  * core\source\h_crypt.prg
+  * core\source\h_help.prg
+  * core\source\h_ini.prg
+  * core\source\h_init.prg
+    * Remove multiple definitions of some pseudo-functions.
+  #319
+
 2020-08-09 19:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_label.prg
     ! Syntax error at line 99 compiling h_label.prg
