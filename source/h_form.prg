@@ -198,6 +198,7 @@ CLASS TForm FROM TWindow
    METHOD ToolTipReshowTime( nMilliSec )  BLOCK { | Self, nMilliSec | ::oToolTip:ReshowTime( nMilliSec ) }
    METHOD ToolTipIcon( nIcon )            BLOCK { | Self, nIcon | ::oToolTip:Icon( nIcon ) }
    METHOD ToolTipTitle( cTitle )          BLOCK { | Self, cTitle | ::oToolTip:Title( cTitle ) }
+   METHOD ToolTiphWnd()                   INLINE ::oToolTip:hWnd
 
    METHOD GetWindowState
 

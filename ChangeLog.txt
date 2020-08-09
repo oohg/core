@@ -15,14 +15,177 @@
 2020-06-30 19:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_comm.prg
     + Comments to separate functions.
+    
+2020-06-30 23:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    + Data cCue to class TText.
+    + Method CueBanner to class TText.
+
+2020-06-30 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_spinner.prg
+    ! The cue is not being shown.
+
+2020-06-30 23:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    + Data cCue to classes TCombo and TEditCombo.
+    + Method CueBanner to classes TCombo and TEditCombo.
+
+2020-06-30 23:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2020-06-30 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    + SendMessageWideString
+
+2020-06-30 23:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    + Functions SENDMESSAGESTRINGW and GETCUEBANNERTEXT.
+    ; Borrowed from HMG Extended.
+
+2020-06-30 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + CB_SETCUEBANNER
+    
+2020-08-09 11:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+  * core\include\i_tooltip.ch
+  * core\include\i_windefs.ch
+  * core\source\h_form.prg
+  * core\source\h_tooltip.prg
+    * Syntax was synchronized with HMG Extended.
+    + Clause SET TOOLTIP to enable/disable tooltips.
+    + Clause ADD TOOLTIPICON to set icon and/or message.
+    + Clause DEL TOOLTIPICON to clear icon and/or message.
+    + Clause SET TOOLTIPMAXWIDTH.
+  #275
+  #316-PR
+
+2020-08-09 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Clause ON MOUSEHOVER.
+  * core\include\i_hmg_compat.ch
+    + Clauses ON MOUSEHOVER and ON MOUSELEAVE to BUTTONEX.
+  * core\include\i_image.ch
+    + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
+  * core\include\i_label.ch
+    + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
+    + Clauses ON MOUSELEAVE.
+  * core\include\oohg.h
+  * core\source\c_controlmisc.c
+    + OnMouseLeave to symbols table.
+  * core\source\h_controlmisc.prg
+    + Clear data OnMouseLeave at method Release of class TControl.
+    + Handler for WM_MOUSELEAVE at method Event of class TControl.
+    - Remove commented out code.
+    * Case of two function names.
+  * core\source\h_image.prg
+    + Support for ON MOUSEMOVE.
+  * core\source\h_label.prg
+    + Support for ON MOUSEMOVE and ON MOUSELEAVE.
+  * core\source\h_windows.prg
+    + Data OnMouseLeave to class TWindow.
+  #274
+  #315-PR
+
+2020-08-09 11:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+    * For controls with clause EDIT, do not ignore DBLCLICK event
+      if it's defined and _OOHG_SameEnterDblClick is .F. and
+      ::lExtendDblClick is .T. Until now, in such a case the
+      event was ignored and edition process was started.
+      To keep the previous behavior DBLCLICK event must be empty.
+      INCOMPATIBLE
+  #313-PR
+  #314
+
+2020-08-09 10:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    ! Unimplemented parameters.
+  #311-PR
+  #312
+
+2020-08-09 10:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_label.ch
+  * core\source\h_label.prg
+    + Clause CURSOR.
+  #311-PR
+  #312
+
+2020-08-09 10:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.prg
+  * core\source\h_browse.prg
+    + Clause NEWATROW. Sets where the just added record is shown.
+  #273
+  #310-PR
+
+2020-08-09 10:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.prg
+    + Clause NEWATROW.
+  #273
+  #310-PR
+
+2020-08-09 10:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\miniprint.prg
+    + Function _HMG_PRINTER_TEXTMETRICS.
+  #298
+   ! Function _HMG_PRINTER_GETMAXCOL return value.
+  #297
+
+2020-08-09 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\common_make.bat
+    ! Typo.
+  #299
+
+2020-08-09 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Clauses ROW and COL to synchronize with Extended.
+  #300
+
+2020-08-09 09:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! Rectangles are filled with black when painted.
+  #296
+    ! Default TPrint object is not selected by function
+      TPrint when the parameter is an empty string.
+  #303
+
+2020-08-08 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohgversion.h
+    ! Error compiling resource file (value out of range).
+  #295
+
+2020-07-20 23:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_report.prg
+    ! Wrong parsing of DO REPORT's clause "IMAGE ... AT ...".
+    ! Reports with "DEFINE REPORT" are not parsed correctly.
+    * Method LeaImage of class TReport now returns an array.
+      INCOMPATIBLE.
+
+2020-07-18 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+  * Data cLang of class OOHG_TErrorHtml is not updated by method New.
+  #291
+
+2020-07-06 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    * Added missing class declaration.
+
+2020-07-05 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    ! The button of a textbox with PASSWORD clause looses its image
+       after removing the PASSWORD style.
+  #289
 
 2020-06-30 17:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! RTE "Argument error: conditional" at TOBROWSE:EDITITEM (1081).
 
 2020-06-30 17:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-   * core\oohg.hbc
-     * Path to include files is now absolute.
+  * core\oohg.hbc
+    * Path to include files is now absolute.
 
 2020-06-29 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_comm.prg
@@ -38,6 +201,21 @@
   * core\source\h_browse.prg
     ! Browse control with EDIT but without INPLACE is edited
       as if INPLACE is present
+
+2020-06-28 21:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_combobox.ch
+  * core\include\i_spinner.ch
+  * core\include\i_textbox.ch
+  * core\include\i_windefs.ch
+  * core\include\i_window.ch
+    + Clause CUEBANNER and its alias PLACEHOLDER.
+  * core\include\c_controlmisc.c
+    * Functions SETSPINNERVALUE and GETSPINNERVALUE were
+      moved to h_spinner.prg
+  * core\include\h_combo.prg
+  * core\include\h_spinner.prg
+    + Support for new clause.
 
 2020-06-28 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg

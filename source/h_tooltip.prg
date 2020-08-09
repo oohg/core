@@ -65,24 +65,25 @@
 #include "i_windefs.ch"
 #include "hbclass.ch"
 
-
 STATIC _OOHG_ToolTipInitialTime := 0
 STATIC _OOHG_ToolTipAutoPopTime := 0
-STATIC _OOHG_ToolTipReShowTime := 0
-STATIC _OOHG_ToolTipMultiLine := .F.
-STATIC _OOHG_ToolTipBalloon := .F.
-STATIC _OOHG_ToolTipClose := .F.
+STATIC _OOHG_ToolTipReShowTime  := 0
+STATIC _OOHG_ToolTipMultiLine   := .F.
+STATIC _OOHG_ToolTipBalloon     := .F.
+STATIC _OOHG_ToolTipClose       := .F.
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TToolTip FROM TControl
 
    DATA cIcon                     INIT ''
    DATA cTitle                    INIT ''
+   DATA lActive                   INIT .F.
    DATA lMultiLine                INIT .F.
    DATA nIcon                     INIT TTI_NONE
    DATA nWindowWidth              INIT -1
    DATA Type                      INIT "TOOLTIP" READONLY
 
+   METHOD Activate                SETGET
    METHOD AutoPopTime             SETGET
    METHOD Define
    METHOD Events_Notify
@@ -97,187 +98,245 @@ CLASS TToolTip FROM TControl
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose ) CLASS TToolTip
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Activate( lOnOff ) CLASS TToolTip
+
+   IF HB_ISLOGICAL( lOnOff )
+      TTM_Activate( ::hWnd, lOnOff )
+      ::lActive := lOnOff
+   ENDIF
+
+   RETURN ::lActive
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose, nMaxWidth ) CLASS TToolTip
 
    LOCAL ControlHandle
 
-   ASSIGN nInitial VALUE nInitial TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
-   ASSIGN nAutoPop VALUE nAutoPop TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
-   ASSIGN nReShow  VALUE nReShow  TYPE "N" DEFAULT _OOHG_ToolTipReshowTime
-   ASSIGN lMulti   VALUE lMulti   TYPE "L" DEFAULT _OOHG_ToolTipMultiLine
-   ASSIGN lBalloon VALUE lBalloon TYPE "N" DEFAULT _OOHG_ToolTipBalloon
-   ASSIGN lClose   VALUE lClose   TYPE "L" DEFAULT _OOHG_ToolTipClose
+   ASSIGN nInitial  VALUE nInitial  TYPE "N" DEFAULT _OOHG_ToolTipInitialTime
+   ASSIGN nAutoPop  VALUE nAutoPop  TYPE "N" DEFAULT _OOHG_ToolTipAutoPopTime
+   ASSIGN nReShow   VALUE nReShow   TYPE "N" DEFAULT _OOHG_ToolTipReshowTime
+   ASSIGN lMulti    VALUE lMulti    TYPE "L" DEFAULT _OOHG_ToolTipMultiLine
+   ASSIGN lBalloon  VALUE lBalloon  TYPE "N" DEFAULT _OOHG_ToolTipBalloon
+   ASSIGN lClose    VALUE lClose    TYPE "L" DEFAULT _OOHG_ToolTipClose
+   ASSIGN nMaxWidth VALUE nMaxWidth TYPE "L" DEFAULT _SetToolTipMaxWidth()
 
    ::SetForm( ControlName, ParentForm )
    ControlHandle := InitToolTip( ::ContainerhWnd, lBalloon, lClose )
    ::Register( ControlHandle, ControlName )
-   If nInitial > 0
+   IF nInitial > 0
       ::InitialTime := nInitial
-   EndIf
-   If nAutoPop > 0
+   ENDIF
+   IF nAutoPop > 0
       ::AutoPopTime := nAutoPop
-   EndIf
-   If nReShow > 0
+   ENDIF
+   IF nReShow > 0
       ::ReshowTime := nReShow
-   EndIf
+   ENDIF
+   ::WindowWidth := nMaxWidth
    ::MultiLine := lMulti
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Item( hWnd, cToolTip ) CLASS TToolTip
 
-   If VALTYPE( cToolTip ) $ "CM" .OR. HB_IsBlock( cToolTip )
+   IF ValType( cToolTip ) $ "CM" .OR. HB_ISBLOCK( cToolTip )
       SetToolTip( hWnd, cToolTip, ::hWnd )
-   EndIf
+   ENDIF
 
    RETURN GetToolTip( hWnd, ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Notify( wParam, lParam ) CLASS TToolTip
 
-   Local nNotify := GetNotifyCode( lParam )
-   Local oControl, cToolTip
+   LOCAL nNotify := GetNotifyCode( lParam )
+   LOCAL oControl, cToolTip
 
    HB_SYMBOL_UNUSED( wParam  )
 
    IF nNotify == TTN_GETDISPINFO
       oControl := GetControlObjectByHandle( _GetToolTipGetDispInfoHWnd( lParam ) )
       cToolTip := oControl:cToolTip
-      IF HB_IsBlock( cToolTip )
-         oControl:DoEvent( { || cToolTip := EVAL( cToolTip, oControl ) }, "TOOLTIP" )
-      EndIf
+      IF HB_ISBLOCK( cToolTip )
+         oControl:DoEvent( { || cToolTip := Eval( cToolTip, oControl ) }, "TOOLTIP" )
+      ENDIF
       _SetToolTipGetDispInfo( lParam, cToolTip )
    ENDIF
 
    RETURN ::Super:Events_Notify( wParam, lParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD WindowWidth( nWidth ) CLASS TToolTip
 
-   If HB_IsNumeric( nWidth )
+   IF HB_ISNUMERIC( nWidth )
       SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, nWidth )
       ::nWindowWidth := nWidth
       ::lMultiLine := ( nWidth >= 0 )
-   EndIf
+   ENDIF
 
-   Return ::nWindowWidth
+   RETURN ::nWindowWidth
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD MultiLine( lMultiLine ) CLASS TToolTip
 
-   If HB_IsLogical( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
+   IF HB_ISLOGICAL( lMultiLine ) .AND. ! lMultiLine == ::lMultiLine
       ::lMultiLine := lMultiLine
-      If lMultiLine
-         If ::nWindowWidth >= 0
+      IF lMultiLine
+         IF ::nWindowWidth >= 0
             SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, ::nWindowWidth )
-         Else
+         ELSE
             SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, 200 )   // Any "default" value
-         Endif
-      Else
+         ENDIF
+      ELSE
          SendMessage( ::hWnd, TTM_SETMAXTIPWIDTH, 0, -1 )
-      Endif
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return ::lMultiLine
+   RETURN ::lMultiLine
 
-Function _SetToolTipBalloon( lNewBalloon )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipBalloon( lNewBalloon )
 
-   Local oReg, lYesNo := Nil, lOldBalloon := _OOHG_ToolTipBalloon
+   LOCAL oReg, lYesNo := NIL, lOldBalloon
 
-   If HB_IsLogical( lNewBalloon )
-      If lNewBalloon
+   App.MutexLock
+
+   lOldBalloon := _OOHG_ToolTipBalloon
+
+   IF HB_ISLOGICAL( lNewBalloon )
+      IF lNewBalloon
          oReg := TReg32():New( HKEY_CURRENT_USER, "Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", .F. )
          oReg:Get( "EnableBalloonTips", lYesNo )
          oReg:Close()
-      EndIf
+      ENDIF
       _OOHG_ToolTipBalloon := lNewBalloon
-   Endif
+   ENDIF
 
-   return lOldBalloon
+   App.MutexUnlock
 
-Function _SetToolTipClose( lNewClose )
+   RETURN lOldBalloon
 
-   Local lOldClose := _OOHG_ToolTipClose
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipClose( lNewClose )
 
-   If HB_IsLogical( lNewClose )
+   LOCAL lOldClose
+
+   App.MutexLock
+
+   lOldClose := _OOHG_ToolTipClose
+   IF HB_ISLOGICAL( lNewClose )
       _OOHG_ToolTipClose := lNewClose
-   Endif
+   ENDIF
 
-   return lOldClose
+   App.MutexUnlock
 
-Function _SetToolTipInitialTime( nMilliSec )
+   RETURN lOldClose
 
-   Local lOldInitialTime := _OOHG_ToolTipInitialTime
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipInitialTime( nMilliSec )
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   LOCAL lOldInitialTime
+
+   App.MutexLock
+
+   lOldInitialTime := _OOHG_ToolTipInitialTime
+   IF HB_ISNUMERIC( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipInitialTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldInitialTime
+   App.MutexUnlock
 
-Function _SetToolTipAutoPopTime( nMilliSec )
+   RETURN lOldInitialTime
 
-   Local lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipAutoPopTime( nMilliSec )
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   LOCAL lOldAutoPopTime
+
+   App.MutexLock
+
+   lOldAutoPopTime := _OOHG_ToolTipAutoPopTime
+   IF HB_ISNUMERIC( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipAutoPopTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldAutoPopTime
+   App.MutexUnlock
 
-Function _SetToolTipReShowTime( nMilliSec )
+   RETURN lOldAutoPopTime
 
-   Local lOldReShowTime := _OOHG_ToolTipReShowTime
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipReShowTime( nMilliSec )
 
-   If HB_IsNumeric( nMilliSec ) .AND. nMilliSec > 0
+   LOCAL lOldReShowTime
+
+   App.MutexLock
+
+   lOldReShowTime := _OOHG_ToolTipReShowTime
+   IF HB_ISNUMERIC( nMilliSec ) .AND. nMilliSec > 0
       _OOHG_ToolTipReShowTime := nMilliSec
-   EndIf
+   ENDIF
 
-   Return lOldReShowTime
+   App.MutexUnlock
 
-Function _SetToolTipMultiLine( lNewMultiLine )
+   RETURN lOldReShowTime
 
-   Local lOldMultiLine := _OOHG_ToolTipMultiLine
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipMultiLine( lNewMultiLine )
 
-   If HB_IsLogical( lNewMultiLine )
+   LOCAL lOldMultiLine
+
+   App.MutexLock
+
+   lOldMultiLine := _OOHG_ToolTipMultiLine
+   IF HB_ISLOGICAL( lNewMultiLine )
       _OOHG_ToolTipMultiLine := lNewMultiLine
-   EndIf
+   ENDIF
 
-   Return lOldMultiLine
+   App.MutexUnlock
 
+   RETURN lOldMultiLine
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitialTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the initial time (amount of time the mouse
          must remain stationary on a control before the tooltip appears) to
          its default value = GetDoubleClickTime()
       */
       SetInitialTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetInitialTime( ::hWnd )
+   RETURN GetInitialTime( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AutoPopTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the autopop time (amount of time a tooltip
          remains visible if the mouse is stationary on the control) to its
          default value = GetDoubleClickTime() * 10
       */
       SetAutoPopTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetAutoPopTime( ::hWnd )
+   RETURN GetAutoPopTime( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReshowTime( nMilliSecs ) CLASS TToolTip
 
-   If PCount() > 0
+   IF PCount() > 0
       /* nMilliSec := -1 returns the reshow time (amount of time it takes for
          subsequent tooltip windows to appear as the mouse moves from one
          control to another) to its default value = GetDoubleClickTime() / 5
       */
       SetReshowTime( ::hWnd, nMilliSecs )
-   EndIf
+   ENDIF
 
-   Return GetReshowTime( ::hWnd )
+   RETURN GetReshowTime( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
 
    /* Sets all three delay times to default proportions. The autopop time will
@@ -287,13 +346,14 @@ METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
       Use 0 to retain the current initial time.
    */
    ASSIGN nMilliSecs VALUE nMilliSecs TYPE "N" DEFAULT -1
-   If nMilliSecs == 0
+   IF nMilliSecs == 0
      nMilliSecs := ::InitialTime()
-   EndIf
+   ENDIF
    SetDelayTime( ::hWnd, nMilliSecs )
 
-   Return Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Icon( uIcon ) CLASS TToolTip
 
    /*
@@ -305,44 +365,66 @@ METHOD Icon( uIcon ) CLASS TToolTip
     * a resource name
     * a filename
     */
-   If HB_IsNumeric( uIcon )
-      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+   IF HB_ISNUMERIC( uIcon )
+      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
          DeleteObject( ::nIcon )
-      EndIf
+      ENDIF
       ::cIcon := ''
       ::nIcon := uIcon
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   ElseIf ValType( uIcon ) $ "CM"
-      If ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+   ELSEIF ValType( uIcon ) $ "CM"
+      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
          DeleteObject( ::nIcon )
-      EndIf
+      ENDIF
       ::cIcon := uIcon
       ::nIcon := LoadIcon( GetInstance(), uIcon )
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   EndIf
+   ENDIF
 
    RETURN TToolTip_GetIcon( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Title( cTitle ) CLASS TToolTip
 
-   If ValType( cTitle ) $ "CM"
+   IF ValType( cTitle ) $ "CM"
       ::cTitle := cTitle
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   EndIf
+   ENDIF
 
    RETURN TToolTip_GetTitle( ::hWnd )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
-
-static long _OOHG_TooltipBackcolor = -1;     /* Tooltip's backcolor */
-static long _OOHG_TooltipForecolor = -1;     /* Tooltip's forecolor */
+#include "hbapiitm.h"
+#include "hbapicdp.h"
 
 #ifndef TTS_CLOSE
    #define TTS_CLOSE 0x80
 #endif
+
+#ifndef TTM_GETTITLE
+   #define TTM_GETTITLE ( WM_USER + 35 )
+
+   typedef struct _TTGETTITLE
+   {
+       DWORD dwSize;
+       UINT uTitleBitmap;
+       UINT cch;
+       WCHAR *pszTitle;
+   } TTGETTITLE, *PTTGETTITLE;
+#endif
+
+#ifndef TTM_SETTITLE
+   #define TTM_SETTITLE ( WM_USER + 32 )
+#endif
+
+static long _OOHG_TooltipBackcolor = -1;
+static long _OOHG_TooltipForecolor = -1;   
+static long _OOHG_ToolTipMaxWidth  = -1;
+static BOOL _OOHG_ToolTipActivate  = TRUE;
+static char _OOHG_ToolTipBuffer[ 10001 ];
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( LONG_PTR lp )
@@ -366,9 +448,10 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITTOOLTIP )
+HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose ) -> hWnd */
 {
-   HWND htooltip;
+   INITCOMMONCONTROLSEX i;
+   HWND hwndToolTip;
    int Style = TTS_ALWAYSTIP;
 
    if( hb_parl( 2 ) )
@@ -381,46 +464,69 @@ HB_FUNC( INITTOOLTIP )
       }
    }
 
-   InitCommonControls();
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC = ICC_BAR_CLASSES;
+   InitCommonControlsEx( &i );
 
-   htooltip = CreateWindowEx( 0, "tooltips_class32", "", Style,
-                              0, 0, 0, 0,
-                              HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+   hwndToolTip = CreateWindowEx( 0, TOOLTIPS_CLASS, "", Style,
+                                 0, 0, 0, 0,
+                                 HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
 
    if( ( _OOHG_TooltipBackcolor != -1 ) || ( _OOHG_TooltipForecolor != -1 ) )
    {
       if( _UxTheme_Init() )
       {
-         if( ProcSetWindowTheme( htooltip, L" ", L" " ) == S_OK )
+         if( ProcSetWindowTheme( hwndToolTip, L" ", L" " ) == S_OK )
          {
             if( _OOHG_TooltipBackcolor != -1 )
             {
-               SendMessage( htooltip, TTM_SETTIPBKCOLOR, (WPARAM) _OOHG_TooltipBackcolor, 0 );
+               SendMessage( hwndToolTip, TTM_SETTIPBKCOLOR, (WPARAM) _OOHG_TooltipBackcolor, 0 );
             }
 
             if( _OOHG_TooltipForecolor != -1 )
             {
-               SendMessage( htooltip, TTM_SETTIPTEXTCOLOR, (WPARAM) _OOHG_TooltipForecolor, 0 );
+               SendMessage( hwndToolTip, TTM_SETTIPTEXTCOLOR, (WPARAM) _OOHG_TooltipForecolor, 0 );
             }
          }
       }
    }
 
-   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( htooltip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
-   HWNDret( htooltip );
+   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( hwndToolTip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+
+   HWNDret( hwndToolTip );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _SETTOOLTIPACTIVATE )          /* FUNCTION _SetToolTipActivate( lOnOf ) -> lOnOff */
+{
+   BOOL bOldActivate;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   bOldActivate = _OOHG_ToolTipActivate;
+   if( HB_ISLOG( 1 ) )
+   {
+      _OOHG_ToolTipActivate = hb_parl( 1 );
+   }
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bOldActivate );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolTip ) -> 0 */
 {
-   TOOLINFO  ti;
-
+   TOOLINFO ti;
    HWND hWnd;
-   HWND hWnd_ToolTip;
+   HWND hWndToolTip;
 
    hWnd = HWNDparam( 1 );
-   hWnd_ToolTip = HWNDparam( 3 );
+   hWndToolTip = HWNDparam( 3 );
 
    memset( &ti, 0, sizeof( ti ) );
 
@@ -428,17 +534,13 @@ HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolT
 /* TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK */
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT_PTR ) hWnd;
+   ti.uId = (UINT_PTR) hWnd;
 
-   if( SendMessage( hWnd_ToolTip, (UINT) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
+   if( SendMessage( hWndToolTip, (UINT) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
    {
-      SendMessage( hWnd_ToolTip, (UINT) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
+      SendMessage( hWndToolTip, (UINT) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
    }
 
-   ti.cbSize = sizeof( ti );
-   ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
-   ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT_PTR ) hWnd;
    if( HB_ISBLOCK( 2 ) )
    {
       ti.lpszText = LPSTR_TEXTCALLBACK;
@@ -448,42 +550,62 @@ HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolT
       ti.lpszText = (LPTSTR) HB_UNCONST( hb_parc( 2 ) );
    }
 
-   SendMessage( hWnd_ToolTip, (UINT) TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti );
+   hb_retl( SendMessage( hWndToolTip, TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti ) ? HB_TRUE : HB_FALSE );
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   SendMessage( hWndToolTip, TTM_ACTIVATE, (WPARAM) _OOHG_ToolTipActivate, 0 );
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_ACTIVATE )          /* FUNCTION TTM_Activate( hWnd, lOnOff ) -> NIL */
+{
+   SendMessage( HWNDparam( 1 ), TTM_ACTIVATE, (WPARAM) hb_parl( 2 ), 0 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETTOOLTIP )          /* FUNCTION GetToolTip( hWnd, hWndToolTip ) -> cText */
 {
    TOOLINFO ti;
-   HWND hWnd_ToolTip;
+   HWND hWndToolTip;
    char cText[ 1024 ];
    HWND hWnd;
 
    hWnd = HWNDparam( 1 );
-   hWnd_ToolTip = HWNDparam( 2 );
+   hWndToolTip = HWNDparam( 2 );
 
    memset( &ti, 0, sizeof( ti ) );
    ti.cbSize = sizeof( ti );
    ti.uFlags = TTF_IDISHWND;
    ti.hwnd = GetParent( hWnd );
-   ti.uId = ( UINT_PTR ) hWnd;
+   ti.uId = (UINT_PTR) hWnd;
    ti.lpszText = (LPTSTR) &cText;
    cText[ 0 ] = 0;
 
-   SendMessage( hWnd_ToolTip, TTM_GETTOOLINFO, 0, (LPARAM) &ti );
+   SendMessage( hWndToolTip, TTM_GETTOOLINFO, 0, (LPARAM) &ti );
 
    hb_retc( (char *) &cText );
 }
 
-HB_FUNC( _SETTOOLTIPBACKCOLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _SETTOOLTIPBACKCOLOR )          /* FUNCTION _SetToolTipBackColor( uColor ) -> uColor */
 {
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipBackcolor, ( hb_pcount() >= 1 ) );
+   ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-HB_FUNC( _SETTOOLTIPFORECOLOR )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _SETTOOLTIPFORECOLOR )          /* FUNCTION _SetToolTipForeColor( uColor ) -> uColor */
 {
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    _OOHG_DetermineColorReturn( hb_param( 1, HB_IT_ANY ), &_OOHG_TooltipForecolor, ( hb_pcount() >= 1 ) );
+   ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )          /* FUNCTION _GetToolTipGetDispInfoHWND( lParam ) -> hWnd */
 {
    NMTTDISPINFO *notify;
@@ -491,8 +613,7 @@ HB_FUNC( _GETTOOLTIPGETDISPINFOHWND )          /* FUNCTION _GetToolTipGetDispInf
    HWNDret( notify->hdr.idFrom );
 }
 
-static char _OOHG_ToolTipBuffer[ 10001 ];      
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _SETTOOLTIPGETDISPINFO )          /* FUNCTION _SetToolTipGetDispInfo( lParam, cToolTip ) -> NIL */
 {
    NMTTDISPINFO *notify;
@@ -519,58 +640,61 @@ HB_FUNC( _SETTOOLTIPGETDISPINFO )          /* FUNCTION _SetToolTipGetDispInfo( l
    ReleaseMutex( _OOHG_GlobalMutex() );
 }
 
-HB_FUNC( GETINITIALTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETDELAYTIME )          /* FUNCTION TTM_GetDelayTime( hWnd, nFlag ) -> nDuration */
+{
+   hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) ( HB_ISNUM( 2 ) ? hb_parni( 2 ) : TTDT_AUTOPOP ), 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETINITIALTIME )          /* FUNCTION GetInitialTime( hWnd ) -> nDuration */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_INITIAL, 0 ) );
 }
 
-HB_FUNC( GETAUTOPOPTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETAUTOPOPTIME )          /* FUNCTION GetAutoPopTime( hWnd ) -> nDuration */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_AUTOPOP, 0 ) );
 }
 
-HB_FUNC( GETRESHOWTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETRESHOWTIME )          /* FUNCTION GetShowTime( hWnd ) -> nDuration */
 {
    hb_retni( SendMessage( HWNDparam( 1 ), TTM_GETDELAYTIME, (WPARAM) TTDT_RESHOW, 0 ) );
 }
 
-HB_FUNC( SETINITIALTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETINITIALTIME )          /* FUNCTION SetInitialTime( hWnd, nDuration ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_INITIAL, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC( SETAUTOPOPTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETAUTOPOPTIME )          /* FUNCTION SetAutoPopTime( hWnd, nDuration ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_AUTOPOP, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC( SETRESHOWTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETRESHOWTIME )          /* FUNCTION SetShowTime( hWnd, nDuration ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_RESHOW, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC( SETDELAYTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SETDELAYTIME )          /* FUNCTION SetDelayTime( hWnd, nDuration ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_AUTOMATIC, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
 }
 
-HB_FUNC( GETDOUBLECLICKTIME )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETDOUBLECLICKTIME )          /* FUNCTION GetDoubleClickTime() -> nTime */
 {
    hb_retni( GetDoubleClickTime() );
 }
 
-#ifndef TTM_GETTITLE
-   #define TTM_GETTITLE ( WM_USER + 35 ) /* wParam = 0, lParam = TTGETTITLE* */
-
-   typedef struct _TTGETTITLE
-   {
-       DWORD dwSize;
-       UINT uTitleBitmap;
-       UINT cch;
-       WCHAR *pszTitle;
-   } TTGETTITLE, *PTTGETTITLE;
-#endif
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TTOOLTIP_GETICON )          /* FUNCTION TToolTip_GetIcon( hWnd ) -> nIcon */
 {
    TTGETTITLE gt;
@@ -583,6 +707,7 @@ HB_FUNC( TTOOLTIP_GETICON )          /* FUNCTION TToolTip_GetIcon( hWnd ) -> nIc
    hb_retni( (int) gt.uTitleBitmap );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TTOOLTIP_GETTITLE )          /* FUNCTION TToolTip_GetTitle( hWnd ) -> cTitle */
 {
    TTGETTITLE gt;
@@ -606,14 +731,527 @@ HB_FUNC( TTOOLTIP_GETTITLE )          /* FUNCTION TToolTip_GetTitle( hWnd ) -> c
    }
 }
 
-#ifndef TTM_SETTITLE
-   #define TTM_SETTITLE ( WM_USER + 32 )
-#endif
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TTOOLTIP_SETICONANDTITLE )          /* FUNCTION TToolTip_SetIconAndTitle( hWnd, nIcon, cTitle ) -> lSuccess */
 {
    hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) hb_parni( 2 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) );
 
 }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SHOWBALLOONTIP )          /* FUNCTION ShowBalloonTip( hWnd, cText, cTitle, nTypeIcon ) -> NIL */
+{
+   WCHAR Text[ 512 ];
+   WCHAR Title[ 512 ];
+   EDITBALLOONTIP bl;
+   const char * s;
+   int i, k;
+
+#ifdef __XHARBOUR__
+   PHB_CODEPAGE s_cdpHost = hb_cdppage();
+#else
+   PHB_CODEPAGE s_cdpHost = hb_vmCDP();
+#endif
+
+   HWND hWnd = HWNDparam( 1 );
+
+   bl.cbStruct = sizeof( EDITBALLOONTIP );
+   bl.pszTitle = NULL;
+   bl.pszText  = NULL;
+   bl.ttiIcon  = HB_ISNUM( 4 ) ? hb_parni( 4 ) : TTI_NONE;
+
+   if( HB_ISCHAR( 2 ) )
+   {
+      ZeroMemory( Text, sizeof( Text ) );
+      k = (int) hb_parclen( 2 );
+      s = (const char *) hb_parc( 2 );
+#ifdef __XHARBOUR__
+      for( i = 0; i < k; i++ )
+         Text[ i ] = hb_cdpGetU16( s_cdpHost, TRUE, s[ i ] );
+#else
+      for( i = 0; i < k; i++ )
+         Text[ i ] = hb_cdpGetU16( s_cdpHost, s[ i ] );
+#endif
+      bl.pszText = Text;
+   }
+
+   if( HB_ISCHAR( 3 ) )
+   {
+      ZeroMemory( Title, sizeof( Title ) );
+      k = (int) hb_parclen( 3 );
+      s = (const char *) hb_parc( 3 );
+#ifdef __XHARBOUR__
+      for( i = 0; i < k; i++ )
+         Title[ i ] = hb_cdpGetU16( s_cdpHost, TRUE, s[ i ] );
+#else
+      for( i = 0; i < k; i++ )
+         Title[ i ] = hb_cdpGetU16( s_cdpHost, s[ i ] );
+#endif
+      bl.pszTitle = Title;
+   }
+
+   Edit_ShowBalloonTip( hWnd, &bl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( HIDEBALLOONTIP )          /* FUNCTION HideBalloonTip( hWnd ) -> NIL */
+{
+   Edit_HideBalloonTip( HWNDparam( 1 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _SETTOOLTIPMAXWIDTH )          /* FUNCTION _SetToolTipMaxWidth( nWidth ) -> nWidth */
+{
+   int nOldMaxWidth;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   nOldMaxWidth = _OOHG_ToolTipMaxWidth;
+   if( HB_ISNUM( 1 ) )
+   {
+      _OOHG_ToolTipMaxWidth = hb_parni( 1 );
+   }
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retni( nOldMaxWidth );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+BOOL Array2Rect( PHB_ITEM aRect, RECT *rc )
+{
+   if( HB_IS_ARRAY( aRect ) && hb_arrayLen( aRect ) == 4 )
+   {
+      rc->left   = hb_arrayGetNI( aRect, 1 );
+      rc->top    = hb_arrayGetNI( aRect, 2 );
+      rc->right  = hb_arrayGetNI( aRect, 3 );
+      rc->bottom = hb_arrayGetNI( aRect, 4 );
+
+      return TRUE;
+   }
+
+   return FALSE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+BOOL Array2Point( PHB_ITEM aPoint, POINT *pt )
+{
+   if( HB_IS_ARRAY( aPoint ) && hb_arrayLen( aPoint ) == 2 )
+   {
+      pt->x = hb_arrayGetNI( aPoint, 1 );
+      pt->y = hb_arrayGetNI( aPoint, 2 );
+
+      return TRUE;
+   }
+
+   return FALSE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_EXPORT PHB_ITEM Rect2Array( RECT *rc )
+{
+   PHB_ITEM aRect = hb_itemArrayNew( 4 );
+
+   HB_ARRAYSETNL( aRect, 1, rc->left );
+   HB_ARRAYSETNL( aRect, 2, rc->top );
+   HB_ARRAYSETNL( aRect, 3, rc->right );
+   HB_ARRAYSETNL( aRect, 4, rc->bottom );
+
+   return aRect;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_EXPORT PHB_ITEM Point2Array( POINT *pt )
+{
+   PHB_ITEM aPoint = hb_itemArrayNew( 2 );
+
+   HB_ARRAYSETNL( aPoint, 1, pt->x );
+   HB_ARRAYSETNL( aPoint, 2, pt->y );
+
+   return aPoint;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+BOOL Array2ColorRef( PHB_ITEM aCRef, COLORREF *cr )
+{
+   if( HB_IS_ARRAY( aCRef ) && hb_arrayLen( aCRef ) == 3 )
+   {
+      USHORT r, g, b;
+
+      r = (USHORT) HB_ARRAYGETNL( aCRef, 1 );
+      g = (USHORT) HB_ARRAYGETNL( aCRef, 2 );
+      b = (USHORT) HB_ARRAYGETNL( aCRef, 3 );
+
+      *cr = RGB( r, g, b );
+
+      return TRUE;
+   }
+
+   return FALSE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolTip, cTitle, nIcon, nStyle, nFlags ) -> hWnd */
+{
+   HWND hwndParent = HWNDparam( 1 );
+   PHB_ITEM aRect = hb_param( 2, HB_IT_ANY );
+   RECT rect;
+   LPTSTR lpszText = (LPTSTR) NULL;
+   LPTSTR lpszTitle = (LPTSTR) ( HB_ISCHAR( 4 ) ? hb_parc( 4 ) : NULL );
+   int nIcon = HB_ISNUM( 5 ) ? hb_parni( 5 ) : TTI_NONE;
+   DWORD dwStyle = WS_POPUP;
+   HWND hwndToolTip;
+   TOOLINFO ti = { 0 };
+   UINT uFlags = 0;
+   INITCOMMONCONTROLSEX i;
+
+   i.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   i.dwICC = ICC_BAR_CLASSES;
+   InitCommonControlsEx( &i );
+
+   if( ! Array2Rect( aRect, &rect ) )
+   {
+      GetClientRect( hwndParent, &rect );
+   }
+
+   if( hb_parclen( 3 ) > 0 )
+   {
+      lpszText = (LPTSTR) hb_parc( 3 );
+   }
+   else if( HB_ISNUM( 3 ) )
+   {
+      lpszText = (LPTSTR) MAKEINTRESOURCE( hb_parni( 3 ) );
+   }
+
+   if( HB_ISNUM( 6 ) )
+   {
+      dwStyle |= (DWORD) hb_parnl( 6 );
+   }
+
+   if( HB_ISNUM( 7 ) )
+   {
+      uFlags = (UINT) hb_parni( 7 );
+   }
+
+   /* Create a tooltip */
+   hwndToolTip = CreateWindowEx( WS_EX_TOPMOST, TOOLTIPS_CLASS, "", dwStyle,
+                                 0, 0, 0, 0,
+                                 hwndParent, NULL, GetModuleHandle( NULL ), NULL );
+
+   SetWindowPos( hwndToolTip, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE );
+
+   /* Set up "tool" information. In this case, the "tool" is the entire parent window. */
+   ti.cbSize   = sizeof( ti );
+   ti.uFlags   = uFlags;
+   ti.hwnd     = hwndParent;
+   ti.uId      = (UINT_PTR) hwndParent;
+   ti.rect     = rect;
+   ti.hinst    = GetModuleHandle( NULL );
+   ti.lpszText = lpszText;
+
+   // Associate the tooltip with the "tool" window.
+   SendMessage( hwndToolTip, TTM_ADDTOOL, 0, (LPARAM) (LPTOOLINFO) &ti );
+
+   if( NULL != lpszTitle )
+   {
+      SendMessage( hwndToolTip, TTM_SETTITLE, nIcon, (LPARAM) lpszTitle );
+   }
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   if( _OOHG_ToolTipMaxWidth != -1 )
+   {
+      SendMessage( hwndToolTip, TTM_SETMAXTIPWIDTH, 0, (LPARAM) _OOHG_ToolTipMaxWidth );
+   }
+
+   SendMessage( hwndToolTip, TTM_ACTIVATE, (WPARAM) _OOHG_ToolTipActivate, 0 );
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( hwndToolTip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+
+
+   HWNDret( hwndToolTip );
+}
+
+/*
+ * Retrieves  the  top,  left,  bottom, and right margins set for a tooltip
+ * window.  A margin is the distance, in pixels, between the tooltip window
+ * border and the text contained within the tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETMARGIN )          /* FUNCTION TTM_GetMargin( hWnd ) -> aRect */
+{
+   RECT rect;
+
+   SendMessage( HWNDparam( 1 ), TTM_GETMARGIN, 0, (LPARAM) &rect );
+
+   hb_itemReturnRelease( Rect2Array( &rect ) );
+}
+
+/*
+ * Retrieves the maximum width for a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETMAXTIPWIDTH )          /* FUNCTION TTM_GetMaxTipWidth( hWnd ) -> nWidth */
+{
+   hb_retni( (int) SendMessage( HWNDparam( 1 ), TTM_GETMAXTIPWIDTH, 0, 0 ) );
+}
+
+/*
+ * Retrieves the background color in a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETTIPBKCOLOR )          /* FUNCTION TTM_GetTipBkColor( hWnd ) -> nColor */
+{
+   hb_retni( (int) SendMessage( HWNDparam( 1 ), TTM_GETTIPBKCOLOR, 0, 0 ) );
+}
+
+/*
+ * Retrieves the text color in a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETTIPTEXTCOLOR )          /* FUNCTION TTM_GetTipTextColor( hWnd ) -> nColor */
+{
+   hb_retni( (int) SendMessage( HWNDparam( 1 ), TTM_GETTIPTEXTCOLOR, 0, 0 ) );
+}
+
+/*
+ * Retrieves a count of the tools maintained by a tooltip control.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_GETTOOLCOUNT )          /* FUNCTION TTM_GetToolCount( hWnd ) -> nCount */
+{
+   hb_retni( (int) SendMessage( HWNDparam( 1 ), TTM_GETTOOLCOUNT, 0, 0 ) );
+}
+
+/*
+ * Removes a displayed tooltip window from view.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_POP )          /* FUNCTION TTM_Pop( hWnd ) -> NIL */
+{
+   SendMessage( HWNDparam( 1 ), TTM_POP, (WPARAM) 0, (LPARAM) 0 );
+}
+
+/*
+ * Causes the tooltip to display at the coordinates of the last mouse message.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_POPUP )          /* FUNCTION TTM_PopUp( hWnd ) -> NIL */
+{
+   SendMessage( HWNDparam( 1 ), TTM_POPUP, 0, 0 );
+}
+
+/*
+ * Sets the initial, pop-up, and reshow durations for a tooltip control.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_SETDELAYTIME )          /* FUNCTION TTM_SetDelayTime( hWnd, nFlag, nTime ) -> NIL */
+{
+   int nMilliSec = HB_ISNUM( 3 ) ? hb_parni( 3 ) : -1;
+
+   if( ! HB_ISNUM( 3 ) )
+   {
+      nMilliSec = -1;
+   }
+   else if( hb_parni( 3 ) < 0 )
+   {
+      nMilliSec = -1;
+   }
+   else
+   {
+      nMilliSec = hb_parni( 3 );
+   }
+
+   SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, ( HB_ISNUM( 2 ) ? hb_parni( 2 ) : TTDT_AUTOPOP ), (LPARAM) (DWORD) nMilliSec );
+}
+
+/*
+ * Sets  the  top,  left, bottom, and right margins for a tooltip window.
+ * A margin is the distance, in pixels, between the tooltip window border
+ * and the text contained within the tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_SETMARGIN )          /* FUNCTION TTM_SetMargin( hWnd, aRect ) -> NIL */
+{
+   RECT rect;
+
+   if( Array2Rect( hb_param( 2, HB_IT_ANY ), &rect ) )
+   {
+      SendMessage( HWNDparam( 1 ), TTM_SETMARGIN, 0, (LPARAM) &rect );
+   }
+}
+
+/*
+ * Sets the maximum width for a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_SETMAXTIPWIDTH )          /* FUNCTION TTM_SetMaxTipWidth( hWnd, nWidth ) -> nWidth */
+{
+   hb_retni( (int) SendMessage( HWNDparam( 1 ), TTM_SETMAXTIPWIDTH, 0, (LPARAM) ( HB_ISNUM( 2 ) ? hb_parni( 2 ) : _OOHG_ToolTipMaxWidth ) ) );
+}
+
+/*
+ * Sets the background color in a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_SETTIPBKCOLOR )          /* FUNCTION TTM_SetTipBkColor( hWnd, uColor ) -> NIL */
+{
+   COLORREF cr = (COLORREF) 0;
+
+   if( HB_ISNUM( 2 ) || Array2ColorRef( hb_param( 2, HB_IT_ARRAY ), &cr ) )
+   {
+      if( HB_ISNUM( 2 ) )
+      {
+         cr = (COLORREF) HB_PARNL( 2 );
+      }
+
+      SendMessage( HWNDparam( 1 ), TTM_SETTIPBKCOLOR, (WPARAM) cr, 0 );
+   }
+}
+
+/*
+ * Sets the text color in a tooltip window.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_SETTIPTEXTCOLOR )          /* FUNCTION TTM_SetTipTextColor( hWnd, uColor ) -> NIL */
+{
+   COLORREF cr = (COLORREF) 0;
+
+   if( HB_ISNUM( 2 ) || Array2ColorRef( hb_param( 2, HB_IT_ANY ), &cr ) )
+   {
+      if( HB_ISNUM( 2 ) )
+      {
+         cr = (COLORREF) HB_PARNL( 2 );
+      }
+
+      SendMessage( HWNDparam( 1 ), TTM_SETTIPTEXTCOLOR, (WPARAM) cr, 0 );
+   }
+}
+
+/*
+ * Activates or deactivates a tracking tooltip.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_TRACKACTIVATE )          /* FUNCTION TTM_TrackActivate( hWnd, hWnd ) -> NIL */
+{
+   HWND hwndTool = HWNDparam( 2 );
+   TOOLINFO ti = { 0 };
+
+   ti.cbSize = sizeof( ti );
+   ti.hwnd   = hwndTool;
+   ti.uId    = (UINT_PTR) hwndTool;
+
+   SendMessage( HWNDparam( 1 ), TTM_TRACKACTIVATE, (WPARAM) hb_parl( 3 ), (LPARAM) (LPTOOLINFO) &ti );
+}
+
+/*
+ * Sets the position of a tracking tooltip.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_TRACKPOSITION )          /* FUNCTION TTM_TrackPosition( hWnd, hWnd, aPoint ) -> NIL */
+{
+   POINT point;
+
+   if( Array2Point( hb_param( 3, HB_IT_ARRAY ), &point ) )
+   {
+      ClientToScreen( HWNDparam( 2 ), &point );
+
+      SendMessage( HWNDparam( 1 ), TTM_TRACKPOSITION, 0, (LPARAM) MAKELONG( point.x, point.y ) );
+   }
+}
+
+/*
+ * Forces the current tooltip to be redrawn.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_UPDATE )          /* FUNCTION TTM_Update( hWnd ) -> NIL */
+{
+   SendMessage( HWNDparam( 1 ), TTM_UPDATE, 0, 0 );
+}
+
+/*
+ * Sets the tooltip text for a tool.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_UPDATETIPTEXT )          /* FUNCTION TTM_UpdateTipText( hWnd, hWnd, cText ) -> NIL */
+{
+   HWND hwndTool = HWNDparam( 2 );
+   TOOLINFO ti = { 0 };
+
+   if( hb_parclen( 3 ) > 0 )
+   {
+      ti.cbSize   = sizeof( ti );
+      ti.hinst    = (HINSTANCE) 0;
+      ti.hwnd     = hwndTool;
+      ti.uId      = (UINT_PTR) hwndTool;
+      ti.lpszText = (LPTSTR) hb_parc( 3 );
+
+      SendMessage( HWNDparam( 1 ), TTM_UPDATETIPTEXT, 0, (LPARAM) (LPTOOLINFO) &ti );
+   }
+}
+
+/*
+ * Allows  a  subclass  procedure to cause a tooltip to display text for a
+   window other than the one beneath the mouse cursor.
+ */
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TTM_WINDOWFROMPOINT )          /* FUNCTION TTM_WindowFromPoint( hWnd, hWnd, aPoint ) -> hWnd */
+{
+   POINT point;
+
+   if( Array2Point( hb_param( 3, HB_IT_ARRAY ), &point ) )
+   {
+      ClientToScreen( HWNDparam( 2 ), &point );
+
+      HWNDret( SendMessage( HWNDparam( 1 ), TTM_WINDOWFROMPOINT, 0, (LPARAM) MAKELONG( point.x, point.y  ) ) );
+   }
+}
+
+/* TODO:
+
+   TTM_GETTEXT
+   retrieves the information a tooltip control maintains about a tool
+
+   TTM_HITTEST
+   tests  a  point to determine whether it is within the bounding rectangle
+   of  the  specified  tool  and, if it is, retrieves information about the
+   tool
+
+   TTM_NEWTOOLRECT
+   sets a new bounding rectangle for a tool
+
+   TTM_RELAYEVENT
+   passes a mouse message to a tooltip control for processing
+
+   TTM_ADDTOOL
+   registers a tool with a tooltip control
+
+   TTM_ADJUSTRECT
+   calculates   a   tooltip  control's  text  display  rectangle  from  its
+   window  rectangle,    or   the   tooltip   window  rectangle  needed  to
+   display a specified text display rectangle.
+
+   TTM_DELTOOL
+   removes a tool from a tooltip control
+
+   TTM_ENUMTOOLS
+   retrieves  the  information  that  a tooltip control maintains about the
+   current  tool—that  is,  the  tool  for  which  the tooltip is currently
+   displaying text.
+
+   TTM_GETBUBBLESIZE
+   returns the width and height of a tooltip control
+
+   TTM_GETCURRENTTOOL
+   retrieves the information for the current tool in a tooltip control
+
+   TTM_SETTOOLINFO
+   sets the information that a tooltip control maintains for a tool
+
+   TTM_SETWINDOWTHEME
+   sets the visual style of a tooltip control
+ */
 
 #pragma ENDDUMP

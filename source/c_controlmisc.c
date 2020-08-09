@@ -163,6 +163,7 @@ static const char *s_SymbolNames[] = {
    "OMENU",
    "EVENTS_TIMEOUT",
    "RANGEWIDTH",
+   "ONMOUSELEAVE",
    "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
@@ -375,16 +376,6 @@ HB_FUNC( GETDLGITEMTEXT )
 HB_FUNC( ISDLGBUTTONCHECKED )
 {
    hb_retl( ( IsDlgButtonChecked( HWNDparam( 2 ), hb_parni( 1 ) ) == BST_CHECKED ) );
-}
-
-HB_FUNC( SETSPINNERVALUE )
-{
-   SendMessage( HWNDparam( 1 ), (UINT) UDM_SETPOS32, (WPARAM) 0, (LPARAM) hb_parni( 2 ) );
-}
-
-HB_FUNC( GETSPINNERVALUE )
-{
-   hb_retnl( SendMessage( HWNDparam( 1 ), (UINT) UDM_GETPOS32, (WPARAM) 0, (LPARAM) 0 ) );
 }
 
 HB_FUNC( KEYBD_EVENT )

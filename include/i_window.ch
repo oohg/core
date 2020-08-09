@@ -88,7 +88,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
             HBitMap, Handle, oBkGrnd, Transparent, Parent, Container, ;
-            OnRClick, BackColorCode, Cursor\> ;
+            OnRClick, BackColorCode, Cursor, CueBanner\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
@@ -229,6 +229,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
+      [ ROW <row> ] ;
+      [ COL <col> ] ;
       [ WIDTH <wi> ] ;
       [ HEIGHT <h> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;
@@ -404,6 +406,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
+      [ ROW <row> ] ;
+      [ COL <col> ] ;
       [ WIDTH <wi> ] ;
       [ HEIGHT <h> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;
@@ -474,7 +478,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ BACKIMAGE <backimage> [ <stretch: STRETCH> ] ] ;
       [ <nodwp: NODWP> ] ;
       [ INTERACTIVECLOSE <icl: OFF, ON, QUERY> ] ;
-=> ;
+   => ;
       [ <obj> := ] DefineWindow(, <title>, <col>, <row>, <wi>, <h>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
             <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
