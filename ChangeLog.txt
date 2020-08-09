@@ -12,7 +12,7 @@
  *   '-' Removed: ...           ';' Comment
  */
 
-2020-06-29 22:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2020-08-09 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_altsyntax.ch
     + Clause ON MOUSEHOVER.
   * core\include\i_hmg_compat.ch
@@ -36,8 +36,10 @@
     + Support for ON MOUSEMOVE and ON MOUSELEAVE.
   * core\source\h_windows.prg
     + Data OnMouseLeave to class TWindow.
-    
-2020-06-29 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  #274
+  #315-PR
+
+2020-08-09 11:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
   * core\source\h_browse.prg
   * core\source\h_xbrowse.prg
