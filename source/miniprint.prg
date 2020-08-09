@@ -4585,7 +4585,7 @@ HB_FUNC( _HMG_PRINTER_GETMAXCOL )          /* _HMG_PRINTER_GetMaxCol( hdcPrint, 
 
    GetTextMetrics( hdcPrint, &tm );
 
-   hb_retni( (int) ( GetDeviceCaps( hdcPrint, HORZRES ) / tm.tmAveCharWidth - 1 ) );
+   hb_retni( (int) ( GetDeviceCaps( hdcPrint, HORZRES ) / tm.tmAveCharWidth ) );
 
    SelectObject( hdcPrint, hgdiobj );
 
@@ -4698,7 +4698,144 @@ HB_FUNC( _HMG_PRINTER_GETMAXROW )          /* _HMG_PRINTER_GetMaxRow( hdcPrint, 
 
    GetTextMetrics( hdcPrint, &tm );
 
-   hb_retni( (int) ( ( GetDeviceCaps( HDCparam( 1 ), VERTRES ) - tm.tmAscent ) / tm.tmHeight - 1 ) );
+   hb_retni( (int) ( ( GetDeviceCaps( HDCparam( 1 ), VERTRES ) - tm.tmAscent ) / tm.tmHeight ) );
+
+   SelectObject( hdcPrint, hgdiobj );
+
+   DeleteObject( hfont );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _HMG_PRINTER_TEXTMETRICS )          /* _HMG_PRINTER_TextMetrics( hdcPrint, cFontName, nFontSize, nWidth, nAngle, lBold, lItalic, lUnderLine, lStrikeOut ) -> aRet */
+{
+   HDC hdcPrint;
+   char FontName[ 32 ];
+   int FontSize;
+   int nWidth;
+   int nAngle;
+   int fnWeight;
+   DWORD fdwItalic;
+   DWORD fdwUnderline;
+   DWORD fdwStrikeOut;
+   int FontHeight;
+   HFONT hfont;
+   HGDIOBJ hgdiobj;
+   TEXTMETRIC tm;
+
+   hdcPrint = HDCparam( 1 );
+
+   // FontName
+   if( hb_parclen( 2 ) )
+   {
+      strcpy( FontName, hb_parc( 2 ) );
+   }
+   else
+   {
+      strcpy( FontName, "Arial" );
+   }
+
+   // FontSize
+   if( hb_parni( 3 ) > 0 )
+   {
+      FontSize = hb_parni( 3 );
+   }
+   else
+   {
+      FontSize = 10;
+   }
+
+   // Width
+   nWidth = hb_parni( 4 );
+
+   // Angle
+   nAngle = hb_parni( 5 );
+
+   // Bold
+   if( hb_parl( 6 ) )
+   {
+      fnWeight = FW_BOLD;
+   }
+   else
+   {
+      fnWeight = FW_NORMAL;
+   }
+
+   // Italic
+   if( hb_parl( 7 ) )
+   {
+      fdwItalic = TRUE;
+   }
+   else
+   {
+      fdwItalic = FALSE;
+   }
+
+   // UnderLine
+   if( hb_parl( 8 ) )
+   {
+      fdwUnderline = TRUE;
+   }
+   else
+   {
+      fdwUnderline = FALSE;
+   }
+
+   // StrikeOut
+   if( hb_parl( 9 ) )
+   {
+      fdwStrikeOut = TRUE;
+   }
+   else
+   {
+      fdwStrikeOut = FALSE;
+   }
+
+   FontHeight = -MulDiv( FontSize, GetDeviceCaps( hdcPrint, LOGPIXELSY ), 72 );
+
+   hfont = CreateFont( FontHeight,
+                       nWidth,
+                       nAngle,
+                       nAngle,
+                       fnWeight,
+                       fdwItalic,
+                       fdwUnderline,
+                       fdwStrikeOut,
+                       s_charset,
+                       OUT_TT_PRECIS,
+                       CLIP_DEFAULT_PRECIS,
+                       DEFAULT_QUALITY,
+                       FF_DONTCARE,
+                       FontName );
+
+   hgdiobj = SelectObject( hdcPrint, hfont );
+
+   GetTextMetrics( hdcPrint, &tm );
+
+   hb_reta( 24 );
+   HB_STORNL3( tm.tmHeight, -1, 1 );
+   HB_STORNL3( tm.tmAscent, -1, 2 );
+   HB_STORNL3( tm.tmDescent, -1, 3 );
+   HB_STORNL3( tm.tmInternalLeading, -1, 4 );
+   HB_STORNL3( tm.tmExternalLeading, -1, 5 );
+   HB_STORNL3( tm.tmAveCharWidth, -1, 6 );
+   HB_STORNL3( tm.tmMaxCharWidth, -1, 7 );
+   HB_STORNL3( tm.tmWeight, -1, 8 );
+   HB_STORNL3( tm.tmOverhang, -1, 9 );
+   HB_STORNL3( tm.tmDigitizedAspectX, -1, 10 );
+   HB_STORNL3( tm.tmDigitizedAspectY, -1, 11 );
+   HB_STORNL3( tm.tmFirstChar, -1, 12 );
+   HB_STORNL3( tm.tmLastChar, -1, 13 );
+   HB_STORNL3( tm.tmDefaultChar, -1, 14 );
+   HB_STORNL3( tm.tmBreakChar, -1, 15 );
+   HB_STORL( tm.tmItalic, -1, 16 );
+   HB_STORL( tm.tmUnderlined, -1, 17 );
+   HB_STORL( tm.tmStruckOut, -1, 18 );
+   HB_STORL( tm.tmPitchAndFamily & TMPF_FIXED_PITCH, -1, 19 );
+   HB_STORL( tm.tmPitchAndFamily & TMPF_VECTOR, -1, 20 );
+   HB_STORL( tm.tmPitchAndFamily & TMPF_TRUETYPE, -1, 21 );
+   HB_STORL( tm.tmPitchAndFamily & TMPF_DEVICE, -1, 22 );
+   HB_STORNI( tm.tmPitchAndFamily & 0xF0, -1, 23 );
+   HB_STORNI( tm.tmCharSet, -1, 24 );
 
    SelectObject( hdcPrint, hgdiobj );
 

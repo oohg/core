@@ -737,7 +737,8 @@ void             _UxTheme_DeInit( void );
 #define s_oMenu                 83
 #define s_Events_TimeOut        84
 #define s_RangeWidth            85
-#define s_LastSymbol            86
+#define s_OnMouseLeave          86
+#define s_LastSymbol            87
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */

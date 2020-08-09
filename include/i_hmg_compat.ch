@@ -235,8 +235,8 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       [ <flat: FLAT> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy02: ON GOTFOCUS,ON MOUSEHOVER> <gotfocus> ] ;
+      [ <dummy04: ON LOSTFOCUS,ON MOUSELEAVE>> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;

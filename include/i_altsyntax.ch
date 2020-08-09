@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlNewAtRow               => _OOHG_ActiveControlInfo \( \) \[  56 \]
 #xtranslate _OOHG_ActiveControlTimeOut                => _OOHG_ActiveControlInfo \( \) \[  57 \]
 #xtranslate _OOHG_ActiveControlHeaderColors           => _OOHG_ActiveControlInfo \( \) \[  58 \]
 #xtranslate _OOHG_ActiveControlValueIs                => _OOHG_ActiveControlInfo \( \) \[  59 \]
@@ -1509,6 +1510,14 @@ BUTTON
       _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
 
 #xcommand ON MOUSEMOVE <onmousemove> ;
+   => ;
+      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
+#xcommand ONMOUSEHOVER <onmousemove> ;
+   => ;
+      _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
+
+#xcommand ON MOUSEHOVER <onmousemove> ;
    => ;
       _OOHG_ActiveControlOnMouseMove := <{onmousemove}>
 
@@ -3207,7 +3216,12 @@ BROWSE
       _OOHG_ActiveControlNoHScroll        := .F. ;;
       _OOHG_ActiveControlOnHeadDblClick   := NIL ;;
       _OOHG_ActiveControlHeaderColors     := NIL ;;
-      _OOHG_ActiveControlTimeOut          := NIL
+      _OOHG_ActiveControlTimeOut          := NIL ;;
+      _OOHG_ActiveControlNewAtRow         := NIL
+
+#xcommand NEWATROW <nRow> ;
+   => ;
+      _OOHG_ActiveControlNewAtRow := <nRow>
 
 #xcommand DELETEWHEN <delwhen> ;
    => ;
@@ -3407,7 +3421,8 @@ BROWSE
             _OOHG_ActiveControlNoHScroll, ;
             _OOHG_ActiveControlOnHeadDblClick, ;
             _OOHG_ActiveControlHeaderColors, ;
-            _OOHG_ActiveControlTimeOut )
+            _OOHG_ActiveControlTimeOut, ;
+            _OOHG_ActiveControlNewAtRow )
 
 /*---------------------------------------------------------------------------
 XBROWSE
