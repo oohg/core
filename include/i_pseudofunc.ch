@@ -61,6 +61,10 @@
  */
 
 
+#xtranslate SendMessageWideString( <h>, <n>, <wp>, <lp> ) ;
+   => ;
+      SendMessageStringW( <h>, <n>, <wp>, <lp> )
+
 #xtranslate hb_osIsWin10() ;
    => ;
       '10' $ WindowsVersion() \[ 1 ]
@@ -125,7 +129,7 @@
 
 #xtranslate LB_String2Array( <cData> [, <Sep> ] ) ;
    => ;
-      hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ) , <Sep> , Chr(9) ) )
+      hb_ATokens( <cData>, iif( HB_ISSTRING( <Sep> ), <Sep>, Chr(9) ) )
 
 #xtranslate IsWinXPOrLater() ;
    => ;

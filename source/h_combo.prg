@@ -70,6 +70,7 @@ CLASS TCombo FROM TLabel
 
    DATA aValues                   INIT {}
    DATA aValueSource              INIT NIL
+   DATA cCue                      INIT ""
    DATA cText                     INIT ""
    DATA ImageListColor            INIT CLR_DEFAULT
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
@@ -107,6 +108,7 @@ CLASS TCombo FROM TLabel
    METHOD Autosize                SETGET
    METHOD AutosizeDropDown
    METHOD CaretPos                SETGET
+   METHOD CueBanner               SETGET
    METHOD Define
    METHOD DeleteAllItems
    METHOD DeleteItem
@@ -162,7 +164,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemImgNum, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
                sourceorder, onrefresh, nLapse, nMaxLen, EditHeight, OptHeight, ;
-               lNoHScroll, lNoClone, lNoTrans, bOnCancel, lIndex, lAutosize ) CLASS TCombo
+               lNoHScroll, lNoClone, lNoTrans, bOnCancel, lIndex, lAutosize, cCue ) CLASS TCombo
 
    LOCAL ControlHandle, WorkArea, uField, nStyle, nId
 
@@ -287,10 +289,15 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
 
    ::oListBox := TListCombo():Define( Self, ComboBoxGetListhWnd( ::hWnd ) )
    IF displaychange
-      ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ) )
+      ::oEditBox := TEditCombo():Define( Self, GetWindow( ::hWnd, GW_CHILD ), cCue )
       IF HB_ISNUMERIC( nMaxLen ) .AND. nMaxLen > 0
          ::oEditBox:MaxLength := nMaxLen
       ENDIF
+      IF ! Empty( cCue )
+         ::oEditBox:CueBanner := cCue
+      ENDIF
+   ELSEIF ! Empty( cCue )
+      ::CueBanner := cCue
    ENDIF
 
    ::Value := Value
@@ -305,6 +312,16 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
    ASSIGN ::OnCancel      VALUE bOnCancel                TYPE "B"
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CueBanner( cCue ) CLASS TCombo
+
+   IF HB_ISSTRING( cCue )
+      SendMessageWideString( ::hWnd, CB_SETCUEBANNER, .T., cCue )
+      ::cCue := cCue
+   ENDIF
+
+   RETURN ::cCue
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD WorkArea( uWorkArea ) CLASS TCombo
@@ -1826,10 +1843,12 @@ HB_FUNC( INITLISTCOMBO )          /* FUNCTION InitListCombo( hWnd ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TEditCombo FROM TControl
 
+   DATA cCue                      INIT ""
    DATA LastKey                   INIT 0
    DATA nMaxLength                INIT 0
    DATA Type                      INIT "EDITCOMBO"
 
+   METHOD CueBanner               SETGET
    METHOD Define
    METHOD Events
    METHOD Events_Enter            BLOCK { |Self| ::Parent:Events_Enter() }
@@ -1851,6 +1870,16 @@ METHOD Define( Parent, hWnd ) CLASS TEditCombo
    InitEditCombo( hWnd )
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CueBanner( cCue ) CLASS TEditCombo
+
+   IF HB_ISSTRING( cCue )
+      SendMessageWideString( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      ::cCue := cCue
+   ENDIF
+
+   RETURN ::cCue
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TEditCombo
