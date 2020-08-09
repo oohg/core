@@ -85,6 +85,15 @@
    * core\oohg.hbc
      * Path to include files is now absolute.
 
+2020-06-29 23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    ! Unimplemented parameters.
+
+2020-06-29 22:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_label.ch
+  * core\source\h_label.prg
+    + Clause CURSOR.
+
 2020-06-29 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Browse control with EDIT but without INPLACE is edited

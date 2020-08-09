@@ -96,7 +96,7 @@ CLASS TLabel FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
                lClientEdge, lHScroll, lVScroll, lTransparent, uBackColor, uFontColor, bOnClick, cToolTip, nHelpId, lInvisible, ;
                lItalic, lUnderline, lStrikeout, lAutoSize, lRightAlign, lHorzCenter, lRtl, lNoWordWrap, lNoPrefix, cPicture, ;
-               lDisabled, lVertCenter, bOnDblClk ) CLASS TLabel
+               lDisabled, lVertCenter, bOnDblClk, uCursor ) CLASS TLabel
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -136,13 +136,15 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight,
 
    ::Value := cCaption
 
+   ::Cursor := uCursor
+
    IF ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
    ENDIF
 
    // OnClick takes precedence over OnDblClick
-   ASSIGN ::OnClick    VALUE bOnClick  TYPE "B"
-   ASSIGN ::OnDblClick VALUE bOnDblClk TYPE "B"
+   ASSIGN ::OnClick      VALUE bOnClick   TYPE "B"
+   ASSIGN ::OnDblClick   VALUE bOnDblClk  TYPE "B"
 
    RETURN Self
 
