@@ -5,10 +5,6 @@
 
 #include "_oohg_resconfig.h"
 
-// MANIFEST ALLOW THE STYLING OF CONTROLS BY THE OS
-
-1 24 oohgpath\Windows.Manifest
-
 // CURSORS
 
 MINIGUI_FINGER          CURSOR          oohgpath\finger.cur
@@ -269,3 +265,67 @@ STRINGTABLE
 
 EDIT_OK_16              BITMAP          oohgpath\edit_ok_16.bmp
 EDIT_CANCEL_16          BITMAP          oohgpath\edit_cancel_16.bmp
+
+// MANIFEST ALLOW THE STYLING OF CONTROLS BY THE OS
+
+#include <winuser.h>
+
+#ifndef RT_MANIFEST
+#define RT_MANIFEST 24
+#define CREATEPROCESS_MANIFEST_RESOURCE_ID  1
+#endif /* RT_MANIFEST */
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST oohgpath\Windows.Manifest
+
+// VERSIONINFO
+
+#ifdef RT_VERSION
+
+#ifndef __VERSION_INFO
+
+/* NOTE: BCC 5.5 has an RC preprocessor bug that in certain cases will append
+         a trash byte to the return value of this macro. Such trash byte
+         will result in a broken manifest record and the executable rejected
+         by the OS (f.e. Windows 10) to run. It can be "fixed" by using
+         a macro name shorter or longer by one character. But, instead of
+         such non-zero-cost hacks, please switch to a modern compiler. */
+#define OOHG_MACRO2STRING( macro )   MACRO2STR( macro )
+#define MACRO2STR( macro )           #macro
+
+#include "oohgversion.h"
+
+#define OOHG_VER_PROD_STR            OOHG_MACRO2STRING( OOHG_VER_MAJOR ) "." OOHG_MACRO2STRING( OOHG_VER_MINOR ) "." OOHG_MACRO2STRING( OOHG_VER_RELEASE ) ".0"
+#define OOHG_VER_FILE                OOHG_VER_PROD
+#define OOHG_VER_FILE_STR            OOHG_VER_PROD_STR
+
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     OOHG_VER_FILE
+PRODUCTVERSION  OOHG_VER_PROD
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       0
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_APP
+BEGIN
+   BLOCK "StringFileInfo"
+   BEGIN
+      BLOCK "040904B0"  /* LANGUAGE: US English (0x0409), ENCODING: Unicode (1200/0x04B0) */
+      BEGIN
+         VALUE "Comments",         "See LICENSE.txt for licensing terms." "\0"
+         VALUE "CompanyName",      OOHG_COMPANY_NAME "\0"
+         VALUE "FileDescription",  OOHG_NAME "\0"
+         VALUE "FileVersion",      OOHG_VER_FILE_STR "\0"
+         VALUE "LegalCopyright",   "© 2005-2020 OOHG Development Team" "\0"
+         VALUE "ProductName",      OOHG_NAME "\0"
+         VALUE "ProductVersion",   OOHG_VER_PROD_STR "\0"
+      END
+   END
+   BLOCK "VarFileInfo"
+   BEGIN
+      VALUE "Translation", 0x0409, 0x04B0  /* LANGUAGE: US English (0x0409), ENCODING: Unicode (1200/0x04B0) */
+   END
+END
+
+#endif /* __VERSION_INFO */
+
+#endif /* RT_VERSION */

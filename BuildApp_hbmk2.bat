@@ -45,6 +45,7 @@ rem
    set HG_COMP_TYPE=STD
    set HG_USE_HBC=%HG_ROOT%\oohg.hbc
    set HG_USE_RC=TRUE
+   set HG_NOVER=NO
 
 :LOOP_START
 
@@ -59,6 +60,8 @@ rem
    if /I "%2" == "/NOHBC" goto SW_NOHBC
    if /I "%2" == "/NORC"  goto SW_NORC
    if /I "%2" == "-NORC"  goto SW_NORC
+   if /I "%2" == "-NOVER" goto SW_NOVER
+   if /I "%2" == "/NOVER" goto SW_NOVER
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -88,6 +91,12 @@ rem
    shift
    goto LOOP_START
 
+:SW_NOVER
+
+   set HG_NOVER=YES
+   shift
+   goto LOOP_START
+
 :SW_NORC
 
    set HG_USE_RC=FALSE
@@ -103,10 +112,8 @@ rem
 
    rem *** Process oohg + app resource files ***
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
+   if "%HG_NOVER%" == "YES" echo #define __VERSION_INFO >> _oohg_resconfig.h
    copy /b "%HG_ROOT%\resources\oohg.rc" + "%HG_FILE%.rc" _temp.rc > nul
-   if exist _temp.rc goto BUILD
-   copy /b %HG_FILE%.rc _temp.rc > nul
    if not exist _temp.rc goto ERROR6
    set HG_USE_RC=_temp.rc
    goto BUILD

@@ -92,18 +92,17 @@ rem
    if exist _oohg_resconfig.h goto ERROR2
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
    if not exist _oohg_resconfig.h goto ERROR3
 
    set "HG_PATH=%PATH%"
    set "PATH=%HG_MINGW%\bin"
 
-   if /I "%1"=="HM30"   ( windres -i oohg.rc -o ooHG_HM30.o )
-   if /I "%1"=="HM32"   ( windres -i oohg.rc -o ooHG_HM32.o )
-   if /I "%1"=="HM3264" ( windres -i oohg.rc -o ooHG_HM3264.o )
-   if /I "%1"=="HM34"   ( windres -i oohg.rc -o ooHG_HM34.o )
-   if /I "%1"=="HM3464" ( windres -i oohg.rc -o ooHG_HM3464.o )
-   if /I "%1"=="XM"     ( windres -i oohg.rc -o oohg_xm.o )
+   if /I "%1"=="HM30"   ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o ooHG_HM30.o )
+   if /I "%1"=="HM32"   ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o ooHG_HM32.o )
+   if /I "%1"=="HM3264" ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o ooHG_HM3264.o )
+   if /I "%1"=="HM34"   ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o ooHG_HM34.o )
+   if /I "%1"=="HM3464" ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o ooHG_HM3464.o )
+   if /I "%1"=="XM"     ( windres -I %HG_ROOT%\INCLUDE -i oohg.rc -o oohg_xm.o )
 
    set "PATH=%HG_PATH%"
    set HG_PATH=

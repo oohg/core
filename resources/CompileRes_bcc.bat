@@ -1,7 +1,4 @@
 @echo off
-rem
-rem $Id: CompileRes_bcc.bat $
-rem
 
 :COMPILERES_BCC
 
@@ -23,7 +20,7 @@ rem
    if exist oohg.res del oohg.res
    if exist oohg.res goto ERROR1
 
-   "%HG_BCC%\bin\brc32.exe" -i..\include -r -fooohg.res oohg_bcc.rc > nul
+   "%HG_BCC%\bin\brc32.exe" -i..\include -i%HG_BCC%\include -r -fooohg.res oohg_bcc.rc
 
    if exist oohg.res echo Done.
    if not exist oohg.res echo Not done.

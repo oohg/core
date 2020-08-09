@@ -139,15 +139,13 @@ rem
 :LOOP_END
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
-   echo #include "%HG_ROOT%\INCLUDE\oohgversion.h" >> _oohg_resconfig.h
 
    set HG_OBJS=%HG_FILE%.o
    if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
    if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
    if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
-REM add search path with -I
-   windres.exe -i _temp.rc -o _temp.o %HG_C_LOG%
+   windres.exe -I %HG_ROOT%\INCLUDE -i _temp.rc -o _temp.o %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
@@ -159,7 +157,7 @@ REM add search path with -I
    if not exist %HG_FILE%.rc goto COMPILE_PRG
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   windres -i _temp.rc -o _temp.o %HG_C_LOG%
+   windres.exe -I %HG_ROOT%\INCLUDE -i _temp.rc -o _temp.o %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
    if errorlevel 1 goto CLEANUP
