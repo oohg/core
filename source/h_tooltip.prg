@@ -1049,7 +1049,7 @@ HB_FUNC( TTM_POPUP )          /* FUNCTION TTM_PopUp( hWnd ) -> NIL */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( TTM_SETDELAYTIME )          /* FUNCTION TTM_SetDelayTime( hWnd, nFlag, nTime ) -> NIL */
 {
-   int nMilliSec = HB_ISNUM( 3 ) ? hb_parni( 3 ) : -1;
+   int nMilliSec;
 
    if( ! HB_ISNUM( 3 ) )
    {
