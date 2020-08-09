@@ -98,6 +98,17 @@
    * core\oohg.hbc
      * Path to include files is now absolute.
 
+2020-06-29 19:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+    * For controls with clause EDIT, do not ignore DBLCLICK event
+      if it's defined and _OOHG_SameEnterDblClick is .F. and
+      ::lExtendDblClick is .T. Until now, in such a case the
+      event was ignored and edition process was started.
+      To keep the previous behavior DBLCLICK event must be empty.
+      INCOMPATIBLE
+
 2020-06-29 19:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Browse control with EDIT but without INPLACE is edited
