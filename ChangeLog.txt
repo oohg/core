@@ -21,12 +21,11 @@
   * core\resources\oohg.rc
   * core\resources\oohg_bcc.rc
     + Default VERSIONINFO data to resource file.
-      ; If use OOHG resources and you want to add your own
+      ; If you use OOHG resources and you want to add your own
         VERSIONINFO data you must add "#define __VERSION_INFO"
         before the inclusion of OOHG resources.
         To do that when using compile.bat add /NOVER switch.
-        To build with hbmk2 add at the bottom of your RC file
-        the define followed by #include "oohg.rc."
+        For another way of using it see file core\fmt\ofmt.rc
 
 2020-08-09 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tooltip.prg
