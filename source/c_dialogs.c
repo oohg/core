@@ -67,7 +67,7 @@
 #include "hbstack.h"
 #include "hbapiitm.h"
 #include "winreg.h"
-#include "tchar.h"
+#include <tchar.h>
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( CHOOSEFONT )
