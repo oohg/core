@@ -1060,6 +1060,21 @@ INTERNET EXPLORER EVENTS
 #define AX_SE2_WINDOWSTATECHANGED         283
 
 /*---------------------------------------------------------------------------
+STANDARD ICONS
+---------------------------------------------------------------------------*/
+
+#define IDI_APPLICATION                   32512
+#define IDI_HAND                          32513
+#define IDI_QUESTION                      32514
+#define IDI_EXCLAMATION                   32515
+#define IDI_ASTERISK                      32516
+#define IDI_WINLOGO                       32517
+#define IDI_SHIELD                        32518
+#define IDI_WARNING                       IDI_EXCLAMATION
+#define IDI_ERROR                         IDI_HAND
+#define IDI_INFORMATION                   IDI_ASTERISK
+
+/*---------------------------------------------------------------------------
 KNOWN FOLDERS
 ---------------------------------------------------------------------------*/
 
