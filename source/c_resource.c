@@ -63,27 +63,64 @@
 
 #include "oohg.h"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( LOADICON )
 {
-   HWNDret( LoadIcon( HINSTANCEparam( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
+   HICONret( LoadIcon( HINSTANCEparam( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( EXTRACTICON )
 {
-   HWNDret( ExtractIcon( GetModuleHandle( NULL ), hb_parc( 1 ), hb_parni( 2 ) ) );
+   HICONret( ExtractIcon( GetModuleHandle( NULL ), hb_parc( 1 ), hb_parni( 2 ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( LOADRESOURCE )
 {
-   HWNDret( LoadResource( HMODULEparam( 1 ), HRSRCparam( 2 ) ) );
+   HGLOBALret( LoadResource( HMODULEparam( 1 ), HRSRCparam( 2 ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( FINDRESOURCE )
 {
-   HWNDret( FindResource( HMODULEparam( 1 ), hb_parc( 2 ), (LPCTSTR) MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
+   HRSRCret( FindResource( HMODULEparam( 1 ), hb_parc( 2 ), (LPCTSTR) MAKEINTRESOURCE( hb_parni( 3 ) ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( RESOURCEFREE )
 {
    FreeResource( HGLOBALparam( 1 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+BOOL SaveResourceToFile( const char * res, const char * filename, const char * type )
+{
+   HRSRC     hrsrc;
+   HINSTANCE hInst;
+   DWORD     size, writ;
+   HGLOBAL   hglob;
+   LPVOID    rdata;
+   HANDLE    hFile;
+
+   hInst = GetModuleHandle( NULL );
+   hrsrc = FindResource( hInst, res, type );
+   if( hrsrc == NULL )
+      return FALSE;
+
+  size = SizeofResource( hInst, hrsrc );
+  hglob = LoadResource( hInst, hrsrc );
+  rdata = LockResource( hglob );
+
+  hFile = CreateFile( filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+  WriteFile( hFile, rdata, size, &writ, NULL );
+  CloseHandle( hFile );
+
+  return TRUE;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( SAVERESOURCETOFILE )
+{
+   hb_retl( SaveResourceToFile( hb_parc( 1 ), hb_parc( 2 ), hb_parc( 3 ) ) );
 }
