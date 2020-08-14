@@ -79,7 +79,9 @@ CLASS TMessageBar FROM TControl
    DATA cLedOn      INIT "zzz_led_on"
    DATA cLedOff     INIT "zzz_led_off"
    DATA aAligns     INIT {}
-   DATA oTimer      INIT NIL
+   DATA oTimerOut   INIT NIL
+   DATA oTimerClock INIT NIL
+   DATA oTimerKeyb  INIT NIL
 
    METHOD Define
    METHOD EndStatus                      BLOCK { || _EndMessageBar() }
@@ -376,21 +378,27 @@ METHOD InitTimeout( nLapse, nItem ) CLASS TMessageBar
    IF ! HB_ISNUMERIC( nItem ) .OR. nItem < 1 .OR. nItem > ::ItemCount
       nItem := 1
    ENDIF
-   IF HB_ISOBJECT( ::oTimer )
-      ::oTimer:Enabled := .F.
-      ::oTimer:Value   := nLapse
-      ::oTimer:OnClick := {|| ::oTimer:Enabled := .F., ::Item( nItem, "" ) }
-      ::oTimer:Enabled := .T.
+   IF HB_ISOBJECT( ::oTimerOut )
+      ::oTimerOut:Enabled := .F.
+      ::oTimerOut:Value   := nLapse
+      ::oTimerOut:OnClick := {|| ::oTimerOut:Enabled := .F., ::Item( nItem, "" ) }
+      ::oTimerOut:Enabled := .T.
    ELSE
-      DEFINE TIMER 0 OBJ ::oTimer PARENT ( Self ) INTERVAL nLapse ACTION {|| ::oTimer:Enabled := .F., ::Item( nItem, "" ) }
+      DEFINE TIMER 0 OBJ ::oTimerOut PARENT ( Self ) INTERVAL nLapse ACTION {|| ::oTimerOut:Enabled := .F., ::Item( nItem, "" ) }
    ENDIF
 
    RETURN NIL
 
 METHOD Release() CLASS TMessageBar
 
-   IF HB_ISOBJECT( ::oTimer )
-      ::oTimer:Release()
+   IF HB_ISOBJECT( ::oTimerOut )
+      ::oTimerOut:Release()
+   ENDIF
+   IF HB_ISOBJECT( ::oTimerClock)
+      ::oTimerClock:Release()
+   ENDIF
+   IF HB_ISOBJECT( ::oTimerKeyb )
+      ::oTimerKeyb:Release()
    ENDIF
 
    RETURN ::Super:Release()
@@ -411,10 +419,10 @@ METHOD SetClock( Width, ToolTip, action, lAmPm, icon, cstyl, cAlign ) CLASS TMes
 
    If ! lAmPm
       nrItem := ::AddItem( Time(), Width, action, ToolTip, icon, cstyl, cAlign )
-      TTimer():Define(, Self, 1000, { || ::Item( nrItem, Time(), Nil ) } )
+      ::oTimerClock := TTimer():Define(, Self, 1000, { || ::Item( nrItem, Time(), Nil ) } )
    Else
       nrItem := ::AddItem( TMessageBar_AmPmClock(), Width, action, ToolTip, icon, cstyl, cAlign )
-      TTimer():Define(, Self, 1000, { || ::Item( nrItem, TMessageBar_AmPmClock(), Nil ) } )
+      ::oTimerClock := TTimer():Define(, Self, 1000, { || ::Item( nrItem, TMessageBar_AmPmClock(), Nil ) } )
    Endif
 
    Return Nil
@@ -475,7 +483,7 @@ METHOD SetKeybrd( Width, ToolTip, action, icon, cstyl, cAlign ) CLASS TMessageBa
       ::aClicks[ nrItem3 ] := Action
    EndIf
 
-   TTimer():Define(, Self, 400, ;
+   ::oTimerKeyb := TTimer():Define(, Self, 400, ;
       {|| SetStatusItemIcon( ::hWnd, nrItem1, iif( IsNumLockActive(), ::cLedOn, ::cLedOff ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem2, iif( IsCapsLockActive(), ::cLedOn, ::cLedOff ) ), ;
           SetStatusItemIcon( ::hWnd, nrItem3, iif( IsInsertActive(), ::cLedOn, ::cLedOff ) ) } )
