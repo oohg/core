@@ -1997,3 +1997,68 @@ HB_PTRUINT _OOHG_GetProcAddress( HMODULE hmodule, LPCSTR lpProcName )
 
    return (HB_PTRUINT) p;
 }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETKNOWNFOLDER )          /* FUNCTION C_GETKNOWNFOLDER( nFOLDERID ) -> cPath */
+{
+   PWSTR path = NULL;
+   char *cBuffer;
+   int size;
+   static const REFKNOWNFOLDERID id[ 110 ] =
+   { &FOLDERID_AccountPictures,        &FOLDERID_AddNewPrograms,        &FOLDERID_AdminTools,            &FOLDERID_AppsFolder,
+     &FOLDERID_ApplicationShortcuts,   &FOLDERID_AppUpdates,            &FOLDERID_CDBurning,             &FOLDERID_ChangeRemovePrograms,
+     &FOLDERID_CommonAdminTools,       &FOLDERID_CommonOEMLinks,        &FOLDERID_CommonPrograms,        &FOLDERID_CommonStartMenu,
+     &FOLDERID_CommonStartup,          &FOLDERID_CommonTemplates,       &FOLDERID_ComputerFolder,        &FOLDERID_ConflictFolder,
+     &FOLDERID_ConnectionsFolder,      &FOLDERID_Contacts,              &FOLDERID_ControlPanelFolder,    &FOLDERID_Cookies,
+     &FOLDERID_Desktop,                &FOLDERID_DeviceMetadataStore,   &FOLDERID_Documents,             &FOLDERID_DocumentsLibrary,
+     &FOLDERID_Downloads,              &FOLDERID_Favorites,             &FOLDERID_Fonts,                 &FOLDERID_Games,
+     &FOLDERID_GameTasks,              &FOLDERID_History,               &FOLDERID_HomeGroup,             &FOLDERID_HomeGroupCurrentUser,
+     &FOLDERID_ImplicitAppShortcuts,   &FOLDERID_InternetCache,         &FOLDERID_InternetFolder,        &FOLDERID_Libraries,
+     &FOLDERID_Links,                  &FOLDERID_LocalAppData,          &FOLDERID_LocalAppDataLow,       &FOLDERID_LocalizedResourcesDir,
+     &FOLDERID_Music,                  &FOLDERID_MusicLibrary,          &FOLDERID_NetHood,               &FOLDERID_NetworkFolder,
+     &FOLDERID_OriginalImages,         &FOLDERID_PhotoAlbums,           &FOLDERID_Pictures,              &FOLDERID_PicturesLibrary,
+     &FOLDERID_Playlists,              &FOLDERID_PrintHood,             &FOLDERID_PrintersFolder,        &FOLDERID_Profile,
+     &FOLDERID_ProgramData,            &FOLDERID_ProgramFiles,          &FOLDERID_ProgramFilesX64,       &FOLDERID_ProgramFilesX86,
+     &FOLDERID_ProgramFilesCommon,     &FOLDERID_ProgramFilesCommonX64, &FOLDERID_ProgramFilesCommonX86, &FOLDERID_Programs,
+     &FOLDERID_Public,                 &FOLDERID_PublicDesktop,         &FOLDERID_PublicDocuments,       &FOLDERID_PublicDownloads,
+     &FOLDERID_PublicGameTasks,        &FOLDERID_PublicLibraries,       &FOLDERID_PublicMusic,           &FOLDERID_PublicPictures,
+     &FOLDERID_PublicRingtones,        &FOLDERID_PublicUserTiles,       &FOLDERID_PublicVideos,          &FOLDERID_QuickLaunch,
+     &FOLDERID_Recent,                 &FOLDERID_RecordedTVLibrary,     &FOLDERID_RecycleBinFolder,      &FOLDERID_ResourceDir,
+     &FOLDERID_Ringtones,              &FOLDERID_RoamingAppData,        &FOLDERID_RoamingTiles,          &FOLDERID_RoamedTileImages,
+     &FOLDERID_SampleMusic,            &FOLDERID_SamplePictures,        &FOLDERID_SamplePlaylists,       &FOLDERID_SampleVideos,
+     &FOLDERID_SavedGames,             &FOLDERID_SavedSearches,         &FOLDERID_Screenshots,           &FOLDERID_SEARCH_MAPI,
+     &FOLDERID_SEARCH_CSC,             &FOLDERID_SearchHome,            &FOLDERID_SendTo,                &FOLDERID_SidebarDefaultParts,
+     &FOLDERID_SidebarParts,           &FOLDERID_StartMenu,             &FOLDERID_Startup,               &FOLDERID_SyncManagerFolder,
+     &FOLDERID_SyncResultsFolder,      &FOLDERID_SyncSetupFolder,       &FOLDERID_System,                &FOLDERID_SystemX86,
+     &FOLDERID_Templates,              &FOLDERID_UserPinned,            &FOLDERID_UserProfiles,          &FOLDERID_UserProgramFiles,
+     &FOLDERID_UserProgramFilesCommon, &FOLDERID_UsersFiles,            &FOLDERID_UsersLibraries,        &FOLDERID_Videos,
+     &FOLDERID_VideosLibrary,          &FOLDERID_Windows };
+
+   if( SUCCEEDED( SHGetKnownFolderPath( id[ hb_parni( 1 ) - 1 ], 0, NULL, &path ) ) )
+   {
+      size = WideCharToMultiByte( CP_ACP, 0, path, -1, NULL, 0, NULL, NULL );
+      if( size > 0 )
+      {
+         cBuffer = (char *) hb_xgrab( size );
+         if( WideCharToMultiByte( CP_ACP, 0, path, -1, cBuffer, size, NULL, NULL ) > 0 )
+         {
+            hb_retc( cBuffer );
+         }
+         else
+         {
+            hb_retc( "" );
+         }
+         hb_xfree( cBuffer );
+      }
+      else
+      {
+         hb_retc( "" );
+      }
+   }
+   else
+   {
+      hb_retc( "" );
+   }
+
+   CoTaskMemFree( path );
+}
