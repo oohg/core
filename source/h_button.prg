@@ -183,7 +183,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
           lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
           lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, ;
-          lNoImgLst, lNoDestroy ) CLASS TButton
+          lNoImgLst, lNoDestroy, lHand ) CLASS TButton
 
    LOCAL nControlHandle, nStyle, lBitMap, i, nAlign
 
@@ -362,6 +362,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
       IF ! ValidHandler( ::hImage )
          ::HBitMap := hBitMap
       ENDIF
+   ENDIF
+
+   IF HB_ISLOGICAL( lHand ) .AND. lHand
+      ::Cursor := IDC_HAND
    ENDIF
 
    ASSIGN ::OnClick     VALUE bAction    TYPE "B"

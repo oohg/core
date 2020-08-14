@@ -77,7 +77,7 @@
       [ <flat: FLAT> ] ;
       [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy4: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy5: ONMOUSEMOVE, ON MOUSEMOVE> <onmousemove> ] ;
+      [ <dummy5: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -113,6 +113,7 @@
       [ <ltransp: TRANSPARENT> ] ;
       [ <lnofocus: NOFOCUSRECT> ] ;
       [ <lnoimglst: NOIMAGELIST> ] ;
+      [ <lhand: HANDCURSOR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
@@ -125,7 +126,7 @@
             <aimagemargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.ldib.>, <backcolor>, <.nohotlight.>, <.solidbk.>, <fontcolor>, ;
             {<"txth">, <"txtv">}, <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, ;
-            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.> )
+            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, <.lhand.> )
 
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
@@ -164,7 +165,7 @@
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ IMAGEMARGIN <aimagemargin> ] ;
       [ <fitimg: FITIMG> ] ;
-      [ <dummy6: ONMOUSEMOVE, ON MOUSEMOVE> <onmousemove> ] ;
+      [ <dummy6: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
       [ [ <dummy7: IMAGEALIGN> ] <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ] ;
       [ <multiline: MULTILINE> ] ;
       [ <flat: FLAT> ] ;
