@@ -78,12 +78,16 @@ COMMON (THIS)
 WINDOWS (THIS)
 ---------------------------------------------------------------------------*/
 
-#xtranslate This . <p: Title, NotifyIcon, NotifyTooltip, FocusedControl, ;
-      MinWidth, MaxWidth, MinHeight, MaxHeight, Cargo> ;
+#xtranslate This . <p: BackColor, BackColorCode, Cargo, ClientHeight, ;
+      ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
+      HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
+      NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
+      VirtualHeight, VirtualWidth, Width, Cargo> ;
    => ;
       _OOHG_ThisForm:<p>
 
-#xtranslate This . <p: Activate, Center, Maximize, Minimize, Restore> [ () ] ;
+#xtranslate This . <p: Activate, Center, Hide, Maximize, Minimize, ;
+      Object, Print, Redraw, Release, Restore, SetFocus, Show> [ () ] ;
    => ;
       _OOHG_ThisForm:<p>()
 
@@ -91,7 +95,7 @@ WINDOWS (THIS)
 WINDOWS (THISWINDOW)
 ---------------------------------------------------------------------------*/
 
-#xtranslate ThisWindow . <p: BackColor, BackColorCode, ClientHeight, ;
+#xtranslate ThisWindow . <p: BackColor, BackColorCode, Cargo, ClientHeight, ;
       ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
       HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
       NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
@@ -252,3 +256,7 @@ EVENT PROCEDURES
 #xtranslate LastControl : <x> ;
    => ;
       _OOHG_LastDefinedControl:<x>
+
+#xtranslate LastForm . LastControl . <y> ;
+   => ;
+      _OOHG_LastDefinedForm:LastControl():<y>
