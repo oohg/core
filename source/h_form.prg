@@ -189,7 +189,7 @@ CLASS TForm FROM TWindow
    METHOD DefWindowProc( nMsg, wParam, lParam) BLOCK { | Self, nMsg, wParam, lParam | iif( ValidHandler( ::hWndClient ), ;
                                                                                            DefFrameProc( ::hWnd, ::hWndClient, nMsg, wParam, lParam ), ;
                                                                                            DefWindowProc( ::hWnd, nMsg, wParam, lParam ) ) }
-
+   METHOD LastControl
    METHOD ToolTipWidth( nWidth )          BLOCK { | Self, nWidth | ::oToolTip:WindowWidth( nWidth ) }
    METHOD ToolTipMultiLine( lMultiLine )  BLOCK { | Self, lMultiLine | ::oToolTip:MultiLine( lMultiLine ) }
    METHOD ToolTipAutoPopTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:AutoPopTime( nMilliSec ) }
@@ -857,6 +857,19 @@ METHOD VirtualHeight( nSize ) CLASS TForm
    EndIf
 
    Return ::nVirtualHeight
+
+METHOD LastControl CLASS TForm
+
+   LOCAL i, aControls := _OOHG_RegisteredControls, oCtrl
+
+   FOR i := Len( aControls ) TO 1 STEP -1
+      oCtrl := aControls[ i ]
+      IF oCtrl:Parent == Self .AND. oCtrl:Container == NIL
+         RETURN oCtrl
+      ENDIF
+   NEXT i
+
+   RETURN NIL
 
 METHOD FocusedControl() CLASS TForm
 
