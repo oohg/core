@@ -65,11 +65,11 @@
 #include "oohgversion.h"
 
 #ifndef WINVER
-   #define WINVER 0x0501   // Win XP
+   #define WINVER 0x0600   // Win Vista
 #endif
-#if ( WINVER < 0x0501 )
+#if ( WINVER < 0x0600 )
    #undef WINVER
-   #define WINVER 0x0501
+   #define WINVER 0x0600
 #endif
 
 #ifndef _WIN32_WINNT
