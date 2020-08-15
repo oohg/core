@@ -12,6 +12,149 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-15 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\oohg.rc
+  * core\resources\oohg_bcc.rc
+  + core\resources\finger_v2.cur
+      * New finger cursor borrowed from HMG Extended
+      ; To use the old one add "#define __OOHG_USE_V1_RESOURCES"
+        before processing oohg's resource file.
+  #340
+
+2020-08-15 11:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\oohg.rc
+  * core\resources\oohg_bcc.rc
+    * Default icon for forms borrowed from HMG Extended
+  #340
+
+2020-08-15 10:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  + core\resources\window_v2.ico
+      * New default icon for forms.
+      ; To use the old one add "#define __OOHG_USE_V1_RESOURCES"
+        before processing oohg's resource file.
+  #340
+
+2020-08-15 10:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\Windows.Manifest
+    * Add support for SegmentHeap heaptype.
+  #341
+
+2020-08-15 00:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\oohg.rc
+  * core\resources\oohg_bcc.rc
+  + core\resources\hp_back_v20.bmp
+  + core\resources\hp_close_v2.bmp
+  + core\resources\hp_end_v2.bmp
+  + core\resources\hp_glass_v2.cur
+  + core\resources\hp_gopage_v2.bmp
+  + core\resources\hp_next_v2.bmp
+  + core\resources\hp_print_v2.bmp
+  + core\resources\hp_save_v2.bmp
+  + core\resources\hp_thumbnail_v2.bmp
+  + core\resources\hp_top_v2.bmp
+  + core\resources\hp_zoom_v2.bmp
+    * New set of MINIPRINT resources borrowed from HMG Extended.
+    ; To use the old ones add "#define __MINIPRINT_USE_V1_RESOURCES"
+      before processing oohg's resource file.
+  #340
+
+2020-08-14 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + Data uToolTipIcon to class TControl.
+    + Data cToolTipTitle to class TControl.
+    + Method ToolTipTitle to class TControl.
+      * Set/get the title of the control's tooltip.
+    + Method ToolTipIcon to class TControl.
+      * Set/get the icon of the control's tooltip.
+  #339
+    ! Method ToolTip of class TControl.
+      If the method is called with an invalid parameter then
+      the tooltip is not cleared as intended.
+  #338
+    * Method Register of class TControl now sets the
+      tooltip's title and icon if ToolTip parameter is
+      an array {tooltip, title, icon}.
+  #337
+  * core\source\h_tooltip.prg
+    + NIL clears the tooltip's icon.
+  #336
+    ! Method Title of class TToolTip doesn't return the current title.
+    - Function TTOOLTIP_GETTITLE because it wasn't working.
+  #335
+      ! Function TTOOLTIP_SETICONANDTITLE doesn't work when the icon
+      parameter is a handle.
+  #334
+
+2020-08-14 20:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_status.prg
+    ! CLOCK and KEYBOAD timers are not released on statusbar release.
+    * Data oTimer renamed to oTimerOut.
+      INCOMPATIBLE.
+  #333
+
+2020-08-14 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_resource.c
+    ! Casting of resource related functions.
+  #332
+    + C function SaveResourceToFile.
+    + PRG function SaveResourceToFile.
+  #331
+  * core\source\c_anigif.c
+    - C function SaveResourceToFile.
+    - PRG function SaveResourceToFile.
+  #331
+
+2020-08-14 20:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_dialogs.c
+    ! #include of a system header.
+  #330
+
+2020-08-14 20:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Defines for Windows standard icons.
+  #329
+
+2020-08-14 20:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    + Method LastControl to class TForm.
+      Returns the last control added to a form that is not contained in
+      another control. Note that is not equal to 'LastControl' semi-object
+      (see i_this.ch) which returns the last defined control in the app.
+      For example, after defining a STATUSBAR with TIMER clause,
+      LastControl returns the TIMER object but Form:LastControl() returns
+      the STATUSBAR object.
+  #328
+
+2020-08-14 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Defines for 'Known Folders'.
+  * core\source\c_winapimisc.c
+    + Function GetKnownFolder.
+  #327
+
+2020-08-14 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+    * Change minimum required Windows version to VISTA.
+    ; From now ON Windows XP is no longer supported.
+      INCOMPATIBLE
+  #326
+
+2020-08-14 19:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_this.ch
+    ! This and ThisWindow don't support the same properties and methods.
+  #323
+    + Support for Cargo property.
+  #324
+    + Translate for LastForm.LastControl.<data or method>
+  #325
+
+2020-08-14 19:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_button.ch
+  * core\source\h_button.prg
+    + Clauses HANDCURSOR and ON MOUSEHOVER.
+  #321
+  #322
+
 2020-08-09 20:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
   * core\compile_MINGW.BAT
@@ -191,7 +334,7 @@
 
 2020-08-09 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
-    + Clauses ROW and COL to synchronize with Extended.
+    + Clauses ROW and COL to synchronize with HMG Extended.
   #300
 
 2020-08-09 09:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -320,7 +463,7 @@
       nor OOHGDRAW clauses are present then the first one will
       be assumed when FONTCOLOR clause is specified and the
       app is themed.
-    * DATA lLibDraw of class TRadioGroup now defaults to
+    * Data lLibDraw of class TRadioGroup now defaults to
       _OOHG_UseLibraryDraw instead of .F.
     + Method oBkGrnd to class TRadioGroup. It's an improved
       version of older method Background: you can now remove
@@ -358,7 +501,7 @@
     * If neither WINDRAW nor OOHGDRAW clauses are present then
       the first one will be assumed when NOFOCUSRECT of FONTCOLOR
       clauses are specified and the app is themed.
-    * DATA lLibDraw now defaults to _OOHG_UseLibraryDraw
+    * Data lLibDraw now defaults to _OOHG_UseLibraryDraw
       instead of .F.
   #260-PR
 
@@ -663,7 +806,7 @@
 
 2020-05-31 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.h
-    + Macros HB_PARPTR3, DRAWITEMSTRUCTparam, HBPRINTERDATAparam,
+    + Macros HB_PARPTR3, DRAWITEMSTRUCTparam, HBPRINTERDataparam,
       HSINKparam, MEASUREITEMSTRUCTparam, MSGFILTERparam,
       NMTBGETINFOTIPparam, NMTOOLBARparam, TOOLTIPTEXTparam,
       HIMAGELISTparam3, HBITMAPparam2, HDCparam2, HGDIOBJparam2.
@@ -1717,8 +1860,8 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Global var _OOHG_ComboIndexIsValueDbf.
     ; Defaults to .F.
   * core\source\h_combo.prg
-    * DATA lUseIndexVal now defaults to NIL.
-    * DATA lUseIndexVal is set according to the data source.
+    * Data lUseIndexVal now defaults to NIL.
+    * Data lUseIndexVal is set according to the data source.
    ; This changes add the ability to change globaly only the combo's
      based on DBFs or only the ones based on arrays.
 
@@ -1783,7 +1926,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
     At PRG level:
     * Some comments, cosmetic changes, minor optimizations and defines
       to improve source readability.
-    + DATA lReturnRGB INIT .T.
+    + Data lReturnRGB INIT .T.
       This forces method DxColors and pseudofunction HBPRNCOLOR to
       return a COLORREF instead of an ARGB color.
       INCOMPATIBLE.
@@ -1857,7 +2000,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
       and RR_DRAWBITMAP now return 1 on error or 0 on success.
     * Added one item to devcaps array in order to use the same
       indexes used at PRG level.
-    - Members preview and hbmp from structure HBPRINTERDATA.
+    - Members preview and hbmp from structure HBPRINTERData.
     + Function EnumFontsCallBack.
     + Function RR_GETFONTNAMES.
     * Function RR_PRINTDIALOG:
@@ -1877,7 +2020,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
       * Now it only processes DMPAPER_USER property.
       * Now returns NIL when change fails.
     * Function RR_GETDEFAULTPRINTER:
-      ! Member PrinterDefault of structure HBPRINTERDATA wasn't updated
+      ! Member PrinterDefault of structure HBPRINTERData wasn't updated
         when no default printer was found.
       ! Return value was wrong when no default printer wasn't found.
     * Function RR_SETPOLYFILLMODE:
@@ -2120,9 +2263,9 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Support for _OOHG_ActiveTree var.
   * core\source\h_tree.prg
     - Static PRG var _OOHG_ActiveTree.
-    - DATA hWndEditCtrl from TTree class.
-    + DATA oEditCtrl to TTree class.
-    + DATA PreviousItem to TTree class.
+    - Data hWndEditCtrl from TTree class.
+    + Data oEditCtrl to TTree class.
+    + Data PreviousItem to TTree class.
     * Function TTree_OnMouseDrag now updates data PreviousItem
       of the target tree control.
     ! Return value of function TREEVIEW_GETSELECTION.
@@ -2182,7 +2325,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
   * core\include\i_windefs.ch
     + Define for CBN_SELENDCANCEL.
   * core\source\h_combobox.prg
-    + DATA OnCancel.
+    + Data OnCancel.
       This block is executed when the user selects an item
       but then selects another control or closes the form.
     + Parameters lNoTrans and bOnCancel to method Define
@@ -2804,7 +2947,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-10-15 18:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\winprint.prg
-    + DATA lReportError. Set to .T. to show printer configuration
+    + Data lReportError. Set to .T. to show printer configuration
       errors. Defaults to .F.
     * Method SetDevMode now handles printer configuration errors
       and returns .T./.F. on success/failure.
@@ -2900,15 +3043,15 @@ C:\GitOOHG\core\compile_MINGW.BAT
       41 for newer versions (class MSFTEDIT_CLASS from Msftedit.dll).
       Defaults to 41 if present or to 30 if not.
   * core\source\h_richeditbox.prg
-    + DATA Version.
+    + Data Version.
     + New parameter to method Define and function InitRichEditBox.
     + Logic handle both versions at function InitRichEditBox.
 
 2019-10-06 21:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print.prg
     - No longer needed memvar declarations at module level.
-    * DATA lIgnorePropertyError is no longer READONLY.
-    * DATA lNoErrMsg is no longer READONLY.
+    * Data lIgnorePropertyError is no longer READONLY.
+    * Data lNoErrMsg is no longer READONLY.
     + Language parameter to methods Init and SelPrinter of
       class TPrint. This parameter is only supported by methods
       InitX and SelPrinterX of subclasses TMiniPrint and THBPrinter.
@@ -2919,8 +3062,8 @@ C:\GitOOHG\core\compile_MINGW.BAT
     * Public vars at method InitX of class TMiniPrint were replaced
       by a call to function _HMG_PRINTER_InitUserMessages.
     ! Typo in var name.
-    ! Value of DATA lLandscape of class TPrint.
-    - DATA cPageOrient of class TPdfPrint.
+    ! Value of Data lLandscape of class TPrint.
+    - Data cPageOrient of class TPdfPrint.
 
 2019-10-06 21:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\miniprint_dyns.hbx
@@ -2933,7 +3076,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + ifndef to avoid compiler error caused by duplicated defines.
     + Translates for _HMG_PRINTER_* variables.
     + Support for language setting to SELECT PRINTER commands.
-    + Alignment options to PRINT DATA command.
+    + Alignment options to PRINT Data command.
     + Some commands and options to support some HMG Extended features.
     + Defines for brush styles, text alignment, and printer
       status codes.
@@ -2995,20 +3138,20 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + GET TEXT EXTENT IN MM command.
     + ifndef to avoid compiler error caused by duplicated defines.
   * core\source\winprint.prg
-    + DATA ClsPreview.
-    * DATA CurPage is now PROTECTED.
-    * DATA Error is now READONLY.
-    * DATA hDCRef is now PROTECTED.
-    * DATA MetaFiles is now PROTECTED.
-    * DATA PrintingEMF is now PROTECTED.
-    * DATA PrintOpt is now PROTECTED.
-    + DATA lEscaped.
-    + DATA Version.
-    + METHOD BasePageName.
-    + METHOD CleanOnPrevClose.
-    + METHOD GetTextExtent_MM.
-    + METHOD SetUserMode.
-    + METHOD Version.
+    + Data ClsPreview.
+    * Data CurPage is now PROTECTED.
+    * Data Error is now READONLY.
+    * Data hDCRef is now PROTECTED.
+    * Data MetaFiles is now PROTECTED.
+    * Data PrintingEMF is now PROTECTED.
+    * Data PrintOpt is now PROTECTED.
+    + Data lEscaped.
+    + Data Version.
+    + Method BasePageName.
+    + Method CleanOnPrevClose.
+    + Method GetTextExtent_MM.
+    + Method SetUserMode.
+    + Method Version.
     * Some format.
     ! Base folder for docs.
     ! Variable initialization at method SelectPrinter.
@@ -3156,11 +3299,11 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-22 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
-    + DATA lReleased.
+    + Data lReleased.
   * core\source\h_form.prg
     ! After closing a TGridControl's input window the focus is
       not returned to its parent.
-    + METHOD ReleaseAttached.
+    + Method ReleaseAttached.
     * Method Events_Destroy moved to WM_DESTROY handler.
 
 2019-09-18 19:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -3183,7 +3326,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-18 18:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\winprint.prg
-    + DATA NotifyOnSave to class HBPrinter. Defaults to .F.
+    + Data NotifyOnSave to class HBPrinter. Defaults to .F.
       When .T. a "Done!" message will be displayed after
       saving the page to a file.
     % Messages definition.
@@ -3372,7 +3515,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-10 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_report.prg
-    ! Missing READONLY property at DATA Type.
+    ! Missing READONLY property at Data Type.
 
 2019-09-10 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
@@ -3449,7 +3592,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
   * core\source\h_form.prg
     - Static var _OOHG_InteractiveClose.
     - Function SetInteractiveClose.
-    + DATA InteractiveClose to TForm CLASS.
+    + Data InteractiveClose to TForm CLASS.
       Use it to establish a specific value on per form basis.
       On form's close this data will be checked first, if
       it's value is -1 (default value) then the global
@@ -3463,7 +3606,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-08 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_form.prg
-    + ToolTip release at METHOD Events_Destroy.
+    + ToolTip release at Method Events_Destroy.
     + Set form's hWnd to NIL after window destruction.
     * Some format.
 
@@ -3474,27 +3617,27 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Defines for EM_SETPASSWORDCHAR and EM_GETPASSWORDCHAR.
   * core\source\h_textbox.prg
     * Some format.
-    + DATA aBitmap to hold buttons bitmaps.
-    + DATA bAction1 to hold button1 action.
-    + DATA bAction2 to hold button2 action.
-    + DATA cToolTipBut1 to hold button1 tooltip.
-    + DATA cToolTipBut2 to hold button2 tooltip.
-    + DATA nBtnWidth to hold button's width.
-    + DATA lRecreateOnReset. For textbox with PASSWORD
+    + Data aBitmap to hold buttons bitmaps.
+    + Data bAction1 to hold button1 action.
+    + Data bAction2 to hold button2 action.
+    + Data cToolTipBut1 to hold button1 tooltip.
+    + Data cToolTipBut2 to hold button2 tooltip.
+    + Data nBtnWidth to hold button's width.
+    + Data lRecreateOnReset. For textbox with PASSWORD
       clause, .T. forces control recreation to reset
       password CHAR to windows default. .F. means use
       an '*' as password CHAR instead.
-    + METHOD Release.
-    + METHOD ReleaseAction.
-    + METHOD ReleaseAction2.
-    + METHOD DefineAction.
-    + METHOD DefineAction2.
-    + METHOD RedefinePasswordStyle.
-    + METHOD PasswordChar.
+    + Method Release.
+    + Method ReleaseAction.
+    + Method ReleaseAction2.
+    + Method DefineAction.
+    + Method DefineAction2.
+    + Method RedefinePasswordStyle.
+    + Method PasswordChar.
 
 2019-09-08 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_menu.prg
-    + METHOD Enabled to TMenu CLASS.
+    + Method Enabled to TMenu CLASS.
     * Use stock brushes to reduce resource usage.
 
 2019-09-08 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -3557,34 +3700,34 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Events_TimeOut to s_SymbolNames array.
 
   * core\source\h_controlmisc.prg
-    ! Resource leak at METHOD Release of TControl CLASS
+    ! Resource leak at Method Release of TControl CLASS
       caused by the release of the control before the
-      execution of METHOD Release of TWindow CLASS.
-    ! Resource leak at METHOD SetFont of TControl CLASS.
-    ! Resource leak at METHOD ClearBitmaps of TControl CLASS.
-    ! Resource leak at METHOD Events_Color of TControl CLASS.
-    + METHOD PosAddToCtrlsArrays to TControl CLASS.
+      execution of Method Release of TWindow CLASS.
+    ! Resource leak at Method SetFont of TControl CLASS.
+    ! Resource leak at Method ClearBitmaps of TControl CLASS.
+    ! Resource leak at Method Events_Color of TControl CLASS.
+    + Method PosAddToCtrlsArrays to TControl CLASS.
 
   * core\source\h_timer.prg
     * Some format.
-    + DATA lOnce. Defaults to .F.
-    + METHOD Events_TimeOut to executed the associated action.
+    + Data lOnce. Defaults to .F.
+    + Method Events_TimeOut to executed the associated action.
 
   * core\source\h_windows.prg
-    + METHOD Events_Timeout to CLASS TWindow.
+    + Method Events_Timeout to CLASS TWindow.
     ! RTE at function ExitProcess when Application object
       is not defined.
-    ! Resouce leak at METHOD Release of TWindow CLASS.
-    * METHOD Release of TWindow CLASS no longer sets
+    ! Resouce leak at Method Release of TWindow CLASS.
+    * Method Release of TWindow CLASS no longer sets
       ::hWnd to NIL.
     ; For forms it's done by WM_CLOSE handler.
-    ; For controls it's done by METHOD Release of
+    ; For controls it's done by Method Release of
         TControl CLASS.
     * WM_CTLCOLORSTATIC and WM_CTLCOLORLISTBOX handlers
-      at METHOD Events of TWindow CLASS now send a color
-      constant to METHOD Events_Color instead of sending
+      at Method Events of TWindow CLASS now send a color
+      constant to Method Events_Color instead of sending
       a COLORREF.
-    * WM_TIMER handler now calls METHOD Events_TimeOut
+    * WM_TIMER handler now calls Method Events_TimeOut
       instead of executing OnClick event.
 
 2019-09-08 20:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -3596,7 +3739,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + NODESTROY clause.
       It prevents the destruction of the hbitmap at release.
   * core\source\h_button.prg
-    + DATA lNoDestroy. Defaults to .F.
+    + Data lNoDestroy. Defaults to .F.
     ! Missing parameters at method DefineImage.
     ! Resource leak.
 
@@ -3907,7 +4050,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Support for a global modal hidden window.
 
   * core\source\h_windows.prg
-    + DATA NoDefWinProc.
+    + Data NoDefWinProc.
       Defaults to .F.
       When set to .T., the WM_PAINT handler will not call
       function DefWindowProc at it's beginning but at it's end.
