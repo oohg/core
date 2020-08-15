@@ -33,7 +33,11 @@ MINIGUI_EDIT_UNDO       BITMAP          oohgpath\edit_undo.bmp
 // MISCELANEOUS
 
 ZZZ_AAAOOHG             ICON            oohgpath\oohg.ico
+#ifdef __OOHG_USE_V1_RESOURCES
 ZZZ_AAAWINDOW           ICON            oohgpath\window.ico
+#else
+ZZZ_AAAWINDOW           ICON            oohgpath\window_v2.ico
+#endif
 ZZZ_LED_ON              ICON            oohgpath\led_on.ico
 ZZZ_LED_OFF             ICON            oohgpath\led_off.ico
 
