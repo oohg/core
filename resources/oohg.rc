@@ -7,7 +7,11 @@
 
 // CURSORS
 
+#ifdef __OOHG_USE_V1_RESOURCES
 MINIGUI_FINGER          CURSOR          oohgpath\finger.cur
+#else
+MINIGUI_FINGER          CURSOR          oohgpath\finger_v2.cur
+#endif
 MINIGUI_DRAGUP          CURSOR          oohgpath\dragup.cur
 MINIGUI_DRAGDOWN        CURSOR          oohgpath\dragdown.cur
 DRAG_NO                 CURSOR          oohgpath\dragno.cur
