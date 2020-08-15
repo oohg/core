@@ -361,24 +361,29 @@ METHOD Icon( uIcon ) CLASS TToolTip
     * TTI_NONE    - no icon
     * TTI_INFO    - info icon
     * TTI_WARNING - warning icon
-    * a handle to icon
+    * a handle to an icon
     * a resource name
     * a filename
     */
-   IF HB_ISNUMERIC( uIcon )
-      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
-         DeleteObject( ::nIcon )
+   IF PCount() > 0
+      IF Empty( uIcon )
+         uIcon := TTI_NONE
       ENDIF
-      ::cIcon := ''
-      ::nIcon := uIcon
-      TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
-   ELSEIF ValType( uIcon ) $ "CM"
-      IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
-         DeleteObject( ::nIcon )
+      IF HB_ISNUMERIC( uIcon )
+         IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+            DeleteObject( ::nIcon )
+         ENDIF
+         ::cIcon := ''
+         ::nIcon := uIcon
+         TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
+      ELSEIF ValType( uIcon ) $ "CM"
+         IF ::nIcon > TTI_ERROR .AND. ValidHandler( ::nIcon )
+            DeleteObject( ::nIcon )
+         ENDIF
+         ::cIcon := uIcon
+         ::nIcon := LoadIcon( GetInstance(), uIcon )
+         TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
       ENDIF
-      ::cIcon := uIcon
-      ::nIcon := LoadIcon( GetInstance(), uIcon )
-      TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
    ENDIF
 
    RETURN TToolTip_GetIcon( ::hWnd )
@@ -391,7 +396,7 @@ METHOD Title( cTitle ) CLASS TToolTip
       TToolTip_SetIconAndTitle( ::hWnd, ::nIcon, Left( ::cTitle, 99 ) )
    ENDIF
 
-   RETURN TToolTip_GetTitle( ::hWnd )
+   RETURN ::cTitle
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
@@ -708,34 +713,16 @@ HB_FUNC( TTOOLTIP_GETICON )          /* FUNCTION TToolTip_GetIcon( hWnd ) -> nIc
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TTOOLTIP_GETTITLE )          /* FUNCTION TToolTip_GetTitle( hWnd ) -> cTitle */
+HB_FUNC( TTOOLTIP_SETICONANDTITLE )          /* FUNCTION TToolTip_SetIconAndTitle( hWnd, nIcon, cTitle ) -> lSuccess */
 {
-   TTGETTITLE gt;
-   char *cBuffer;
-
-   memset( &gt, 0, sizeof( gt ) );
-   gt.dwSize = sizeof( gt );
-
-   SendMessage( HWNDparam( 1 ), TTM_GETTITLE, (WPARAM) 0, (LPARAM) &gt );
-
-   if( gt.cch > 0 )
+   if( HB_PARNL( 2 ) > TTI_ERROR )
    {
-      cBuffer = (char *) hb_xgrab( gt.cch );
-      WideCharToMultiByte( CP_ACP, 0, gt.pszTitle, -1, cBuffer, gt.cch, NULL, NULL );
-      hb_retc( cBuffer );
-      hb_xfree( cBuffer );
+      hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) HICONparam( 2 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) );
    }
    else
    {
-      hb_retc( "" );
+      hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) HB_PARNL( 2 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) );
    }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TTOOLTIP_SETICONANDTITLE )          /* FUNCTION TToolTip_SetIconAndTitle( hWnd, nIcon, cTitle ) -> lSuccess */
-{
-   hb_retl( SendMessage( HWNDparam( 1 ), TTM_SETTITLE, (WPARAM) hb_parni( 2 ), (LPARAM) HB_UNCONST( hb_parc( 3 ) ) ) );
-
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

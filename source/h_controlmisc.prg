@@ -1250,6 +1250,8 @@ CLASS TControl FROM TWindow
 
    DATA oToolTipCtrl         INIT Nil
    DATA cToolTip             INIT ""
+   DATA uToolTipIcon         INIT TTI_NONE
+   DATA cToolTipTitle        INIT ""
    DATA AuxHandle            INIT 0
    DATA Transparent          INIT .F.
    DATA HelpId               INIT 0
@@ -1275,6 +1277,8 @@ CLASS TControl FROM TWindow
    METHOD Width              SETGET
    METHOD Height             SETGET
    METHOD ToolTip            SETGET
+   METHOD ToolTipTitle       SETGET
+   METHOD ToolTipIcon        SETGET
    METHOD SetForm
    METHOD InitStyle
    METHOD Register
@@ -1417,11 +1421,45 @@ METHOD ToolTip( cToolTip ) CLASS TControl
          ::cToolTip := ""
       EndIf
       If HB_IsObject( oCtrl := ::oToolTip )
-         oCtrl:Item( ::hWnd, cToolTip )
+         oCtrl:Item( ::hWnd, ::cToolTip )
       EndIf
    EndIf
 
    Return ::cToolTip
+
+METHOD ToolTipTitle( cTitle ) CLASS TControl
+
+   LOCAL oCtrl
+
+   If PCount() > 0
+      If ValType( cTitle ) $ "CM"
+         ::cToolTipTitle := cTitle
+      ELSE
+         ::cToolTipTitle := ""
+      EndIf
+      If HB_IsObject( oCtrl := ::oToolTip )
+         oCtrl:Title( ::cToolTipTitle )
+      EndIf
+   EndIf
+
+   Return ::cToolTipTitle
+
+METHOD ToolTipIcon( uIcon ) CLASS TControl
+
+   LOCAL oCtrl
+
+   IF PCount() > 0
+      IF ValType( uIcon ) $ "CMN"
+         ::uToolTipIcon := uIcon
+      ELSE
+         ::uToolTipIcon := TTI_NONE
+      ENDIF
+      If HB_IsObject( oCtrl := ::oToolTip )
+         oCtrl:Icon( ::uToolTipIcon )
+      EndIf
+   EndIf
+
+   Return ::uToolTipIcon
 
 METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
                 BkColor, lEditBox, lRtl, xAnchor, lNoProc ) CLASS TControl
@@ -1567,7 +1605,14 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
       ::Visible := Visible
    ENDIF
 
-   ::ToolTip := ToolTip
+   IF HB_ISARRAY( ToolTip )
+      ASize( ToolTip, 3 )
+      ::ToolTip      := ToolTip[ 1 ]
+      ::ToolTipTitle := ToolTip[ 2 ]
+      ::ToolTipIcon  := ToolTip[ 3 ]
+   ELSE
+      ::ToolTip := ToolTip
+   ENDIF
 
    IF HB_ISNUMERIC( Id ) .AND. Id # 0
       ::Id := Id
