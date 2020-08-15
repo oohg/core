@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
    <assemblyIdentity
       name="oohg.App"
       processorArchitecture="*"
@@ -28,9 +28,13 @@
             <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>
          <!--The ID below indicates application support for Windows Vista and Windows Server 2008 -->
             <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
-         <!--Windows XP ignores this section -->
       </application>
    </compatibility>
+  <asmv3:application>
+    <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2020/WindowsSettings">
+      <heapType>SegmentHeap</heapType>
+    </asmv3:windowsSettings>
+  </asmv3:application>
    <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
       <security>
          <requestedPrivileges>
