@@ -168,17 +168,31 @@ STRINGTABLE
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
-HP_END                  BITMAP          oohgpath\hp_end.bmp
-HP_TOP                  BITMAP          oohgpath\hp_top.bmp
-HP_NEXT                 BITMAP          oohgpath\hp_next.bmp
-HP_BACK                 BITMAP          oohgpath\hp_back.bmp
-HP_PRINT                BITMAP          oohgpath\hp_print.bmp
-HP_ZOOM                 BITMAP          oohgpath\hp_zoom.bmp
-HP_GOPAGE               BITMAP          oohgpath\hp_gopage.bmp
-HP_CLOSE                BITMAP          oohgpath\hp_close.bmp
-HP_SAVE                 BITMAP          oohgpath\hp_save.bmp
-HP_THUMBNAIL            BITMAP          oohgpath\hp_thumbnail.bmp
-HP_GLASS                CURSOR          oohgpath\hp_glass.cur
+#ifdef __MINIPRINT_USE_V1_RESOURCES
+   HP_BACK                 BITMAP          oohgpath\hp_back.bmp
+   HP_CLOSE                BITMAP          oohgpath\hp_close.bmp
+   HP_END                  BITMAP          oohgpath\hp_end.bmp
+   HP_GLASS                CURSOR          oohgpath\hp_glass.cur
+   HP_GOPAGE               BITMAP          oohgpath\hp_gopage.bmp
+   HP_NEXT                 BITMAP          oohgpath\hp_next.bmp
+   HP_PRINT                BITMAP          oohgpath\hp_print.bmp
+   HP_SAVE                 BITMAP          oohgpath\hp_save.bmp
+   HP_THUMBNAIL            BITMAP          oohgpath\hp_thumbnail.bmp
+   HP_TOP                  BITMAP          oohgpath\hp_top.bmp
+   HP_ZOOM                 BITMAP          oohgpath\hp_zoom.bmp
+#else
+   HP_BACK                 BITMAP          oohgpath\hp_back_v2.bmp
+   HP_CLOSE                BITMAP          oohgpath\hp_close_v2.bmp
+   HP_END                  BITMAP          oohgpath\hp_end_v2.bmp
+   HP_GLASS                CURSOR          oohgpath\hp_glass_v2.cur
+   HP_GOPAGE               BITMAP          oohgpath\hp_gopage_v2.bmp
+   HP_NEXT                 BITMAP          oohgpath\hp_next_v2.bmp
+   HP_PRINT                BITMAP          oohgpath\hp_print_v2.bmp
+   HP_SAVE                 BITMAP          oohgpath\hp_save_v2.bmp
+   HP_THUMBNAIL            BITMAP          oohgpath\hp_thumbnail_v2.bmp
+   HP_TOP                  BITMAP          oohgpath\hp_top_v2.bmp
+   HP_ZOOM                 BITMAP          oohgpath\hp_zoom_v2.bmp
+#endif
 
 // MINIPRINT REPLACE STRINGS
 // define one or more if these items to replace the value for the current language

@@ -168,17 +168,31 @@ STRINGTABLE
 
 // MINIPRINT PRINT PREVIEW IMAGE BUTTONS
 
-HP_END                  BITMAP         hp_end.bmp
-HP_TOP                  BITMAP         hp_top.bmp
-HP_NEXT                 BITMAP         hp_next.bmp
-HP_BACK                 BITMAP         hp_back.bmp
-HP_PRINT                BITMAP         hp_print.bmp
-HP_ZOOM                 BITMAP         hp_zoom.bmp
-HP_GOPAGE               BITMAP         hp_gopage.bmp
-HP_CLOSE                BITMAP         hp_close.bmp
-HP_SAVE                 BITMAP         hp_save.bmp
-HP_THUMBNAIL            BITMAP         hp_thumbnail.bmp
-HP_GLASS                CURSOR         hp_glass.cur
+#ifdef __MINIPRINT_USE_V1_RESOURCES
+   HP_BACK                 BITMAP          hp_back.bmp
+   HP_CLOSE                BITMAP          hp_close.bmp
+   HP_END                  BITMAP          hp_end.bmp
+   HP_GLASS                CURSOR          hp_glass.cur
+   HP_GOPAGE               BITMAP          hp_gopage.bmp
+   HP_NEXT                 BITMAP          hp_next.bmp
+   HP_PRINT                BITMAP          hp_print.bmp
+   HP_SAVE                 BITMAP          hp_save.bmp
+   HP_THUMBNAIL            BITMAP          hp_thumbnail.bmp
+   HP_TOP                  BITMAP          hp_top.bmp
+   HP_ZOOM                 BITMAP          hp_zoom.bmp
+#else
+   HP_BACK                 BITMAP          hp_back_v2.bmp
+   HP_CLOSE                BITMAP          hp_close_v2.bmp
+   HP_END                  BITMAP          hp_end_v2.bmp
+   HP_GLASS                CURSOR          hp_glass_v2.cur
+   HP_GOPAGE               BITMAP          hp_gopage_v2.bmp
+   HP_NEXT                 BITMAP          hp_next_v2.bmp
+   HP_PRINT                BITMAP          hp_print_v2.bmp
+   HP_SAVE                 BITMAP          hp_save_v2.bmp
+   HP_THUMBNAIL            BITMAP          hp_thumbnail_v2.bmp
+   HP_TOP                  BITMAP          hp_top_v2.bmp
+   HP_ZOOM                 BITMAP          hp_zoom_v2.bmp
+#endif
 
 // MINIPRINT REPLACE STRINGS
 // define one or more if these items to replace the value for the current language
