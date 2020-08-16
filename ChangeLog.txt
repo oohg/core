@@ -12,6 +12,39 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-08-15 22:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.BAT
+    ! The build switches are not the same.
+    ; Common supported switches are:
+      /C = create a console or mixed mode app (also /GTWIN).
+      /D | to include (x)Harbour's debugger in your app.
+      /L | to send output to oohglog.txt file (also /LOG).
+      /NORC | to exclude OOHG's resource file
+      /NR | to build without running (also /NORUN).
+      /P | to create a preprocessor's output file (.ppo file).
+      /S | to run silently (also /SL).
+      /V | to run verbosely.
+      /W3 | to set (x)Harbour warning level to its maximum.
+  #343
+    ! The name of log files are not the same.
+      ; Log files are now named 'oohglog.txt'.
+  #343
+    ! Error messages are not the same.
+  #343
+    ! Error compiling RC: VERSIONINFO resource already defined.
+    ; The order of the RC files was inverted to allow the
+      use of switches at project's RC file that change the
+      way that OOHG's RC file is compiled. Now the project's
+      RC file is placed before OOHG's RC file.
+  #344
+    * Reinstated the use of a 'filler' file to safely build
+      the compound RC file.
+  #345
+    ! Missing console define for debug mode.
+  #346
+
 2020-08-15 11:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\resources\oohg.rc
   * core\resources\oohg_bcc.rc
@@ -169,6 +202,7 @@
         before the inclusion of OOHG resources.
         To do that when using compile.bat add /NOVER switch.
         For another way of using it see file core\fmt\ofmt.rc
+  #301
 
 2020-08-09 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tooltip.prg
