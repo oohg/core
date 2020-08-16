@@ -42,29 +42,31 @@ rem
 
 :LOOP_START
 
-   if    "%2" == ""      goto LOOP_END
-   if /I "%2" == "/D"    goto SW_DEBUG
-   if /I "%2" == "-D"    goto SW_DEBUG
-   if /I "%2" == "/C"    goto SW_CONSOLE
-   if /I "%2" == "-C"    goto SW_CONSOLE
-   if /I "%2" == "/NORC" goto SW_NORC
-   if /I "%2" == "-NORC" goto SW_NORC
-   if /I "%2" == "-P"    goto SW_PPO
-   if /I "%2" == "/P"    goto SW_PPO
-   if /I "%2" == "-W3"   goto SW_W3
-   if /I "%2" == "/W3"   goto SW_W3
-   if /I "%2" == "-NR"   goto SW_NORUN
-   if /I "%2" == "/NR"   goto SW_NORUN
-   if /I "%2" == "-NRUN" goto SW_NORUN
-   if /I "%2" == "/NRUN" goto SW_NORUN
-   if /I "%2" == "/L"    goto SW_USELOG
-   if /I "%2" == "-L"    goto SW_USELOG
-   if /I "%2" == "/LOG"  goto SW_USELOG
-   if /I "%2" == "-LOG"  goto SW_USELOG
-   if /I "%2" == "/S"    goto SW_SILENT
-   if /I "%2" == "-S"    goto SW_SILENT
-   if /I "%2" == "/V"    goto SW_VERBOSE
-   if /I "%2" == "-V"    goto SW_VERBOSE
+   if    "%2" == ""       goto LOOP_END
+   if /I "%2" == "/C"     goto SW_CONSOLE
+   if /I "%2" == "/D"     goto SW_DEBUG
+   if /I "%2" == "/GTWIN" goto SW_CONSOLE
+   if /I "%2" == "/L"     goto SW_USELOG
+   if /I "%2" == "/LOG"   goto SW_USELOG
+   if /I "%2" == "/NORC"  goto SW_NORC
+   if /I "%2" == "/NR"    goto SW_NORUN
+   if /I "%2" == "/P"     goto SW_PPO
+   if /I "%2" == "/S"     goto SW_SILENT
+   if /I "%2" == "/SL"    goto SW_SILENT
+   if /I "%2" == "/V"     goto SW_VERBOSE
+   if /I "%2" == "/W3"    goto SW_W3
+   if /I "%2" == "-C"     goto SW_CONSOLE
+   if /I "%2" == "-D"     goto SW_DEBUG
+   if /I "%2" == "-GTWIN" goto SW_CONSOLE
+   if /I "%2" == "-L"     goto SW_USELOG
+   if /I "%2" == "-LOG"   goto SW_USELOG
+   if /I "%2" == "-NORC"  goto SW_NORC
+   if /I "%2" == "-NR"    goto SW_NORUN
+   if /I "%2" == "-P"     goto SW_PPO
+   if /I "%2" == "-S"     goto SW_SILENT
+   if /I "%2" == "-SL"    goto SW_SILENT
+   if /I "%2" == "-V"     goto SW_VERBOSE
+   if /I "%2" == "-W3"    goto SW_W3
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -72,6 +74,7 @@ rem
 :SW_DEBUG
 
    set HG_COMP_TYPE=DEBUG
+   set HG_DEFINES=-D_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
@@ -133,10 +136,15 @@ rem
    set HG_SEARCH=-i%HG_ROOT%\resources;%HG_ROOT%\include;
    if not "%HG_INC_RC%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_RC%
 
+   echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
+
    if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
-   if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc                _temp.rc %HG_C_LOG%
+   echo. > %HG_ROOT%\resources\filler
+   if     exist %HG_FILE%.rc copy /b %HG_FILE%.rc + %HG_ROOT%\resources\filler + %HG_ROOT%\resources\oohg_bcc.rc _temp.rc %HG_C_LOG%
+   if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg_bcc.rc _temp.rc %HG_C_LOG%
+   if not exist _temp.rc echo COMPILE ERROR: Error creating file _temp.rc !!!
+   if not exist _temp.rc goto CLEANUP
    "%HG_BCC%\bin\brc32.exe" -r %HG_SEARCH% _temp.rc %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
    goto COMPILE_PRG
@@ -146,6 +154,8 @@ rem
    if not exist %HG_FILE%.rc goto COMPILE_PRG
 
    copy /b %HG_FILE%.rc _temp.rc %HG_C_LOG%
+   if not exist _temp.rc echo COMPILE ERROR: Error creating file _temp.rc !!!
+   if not exist _temp.rc goto CLEANUP
    %HG_BCC%\bin\brc32.exe -r %HG_SEARCH% _temp.rc %HG_C_LOG%
    if errorlevel 1 goto CLEANUP
 

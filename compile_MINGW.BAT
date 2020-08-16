@@ -51,29 +51,31 @@ rem
 
 :LOOP_START
 
-   if    "%2" == ""      goto LOOP_END
-   if /I "%2" == "/D"    goto SW_DEBUG
-   if /I "%2" == "-D"    goto SW_DEBUG
-   if /I "%2" == "/C"    goto SW_CONSOLE
-   if /I "%2" == "-C"    goto SW_CONSOLE
-   if /I "%2" == "/NORC" goto SW_NORC
-   if /I "%2" == "-NORC" goto SW_NORC
-   if /I "%2" == "-P"    goto SW_PPO
-   if /I "%2" == "/P"    goto SW_PPO
-   if /I "%2" == "-W3"   goto SW_W3
-   if /I "%2" == "/W3"   goto SW_W3
-   if /I "%2" == "-NR"   goto SW_NORUN
-   if /I "%2" == "/NR"   goto SW_NORUN
-   if /I "%2" == "-NRUN" goto SW_NORUN
-   if /I "%2" == "/NRUN" goto SW_NORUN
-   if /I "%2" == "/L"    goto SW_USELOG
-   if /I "%2" == "-L"    goto SW_USELOG
-   if /I "%2" == "/LOG"  goto SW_USELOG
-   if /I "%2" == "-LOG"  goto SW_USELOG
-   if /I "%2" == "/S"    goto SW_SILENT
-   if /I "%2" == "-S"    goto SW_SILENT
-   if /I "%2" == "/V"    goto SW_VERBOSE
-   if /I "%2" == "-V"    goto SW_VERBOSE
+   if    "%2" == ""       goto LOOP_END
+   if /I "%2" == "/C"     goto SW_CONSOLE
+   if /I "%2" == "/D"     goto SW_DEBUG
+   if /I "%2" == "/GTWIN" goto SW_CONSOLE
+   if /I "%2" == "/L"     goto SW_USELOG
+   if /I "%2" == "/LOG"   goto SW_USELOG
+   if /I "%2" == "/NORC"  goto SW_NORC
+   if /I "%2" == "/NR"    goto SW_NORUN
+   if /I "%2" == "/P"     goto SW_PPO
+   if /I "%2" == "/S"     goto SW_SILENT
+   if /I "%2" == "/SL"    goto SW_SILENT
+   if /I "%2" == "/V"     goto SW_VERBOSE
+   if /I "%2" == "/W3"    goto SW_W3
+   if /I "%2" == "-C"     goto SW_CONSOLE
+   if /I "%2" == "-D"     goto SW_DEBUG
+   if /I "%2" == "-GTWIN" goto SW_CONSOLE
+   if /I "%2" == "-L"     goto SW_USELOG
+   if /I "%2" == "-LOG"   goto SW_USELOG
+   if /I "%2" == "-NORC"  goto SW_NORC
+   if /I "%2" == "-NR"    goto SW_NORUN
+   if /I "%2" == "-P"     goto SW_PPO
+   if /I "%2" == "-S"     goto SW_SILENT
+   if /I "%2" == "-SL"    goto SW_SILENT
+   if /I "%2" == "-V"     goto SW_VERBOSE
+   if /I "%2" == "-W3"    goto SW_W3
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
@@ -81,6 +83,7 @@ rem
 :SW_DEBUG
 
    set HG_COMP_TYPE=DEBUG
+   set HG_DEFINES=-d_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
@@ -143,8 +146,9 @@ rem
    set HG_OBJS=%HG_FILE%.o
    if "%HG_USE_RC%" == "FALSE" goto WITHOUT_HG_RC
 
-   if     exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc + %HG_FILE%.rc _temp.rc %HG_C_LOG%
-   if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc                _temp.rc %HG_C_LOG%
+   echo. > %HG_ROOT%\resources\filler
+   if     exist %HG_FILE%.rc copy /b %HG_FILE%.rc + %HG_ROOT%\resources\filler + %HG_ROOT%\resources\oohg.rc _temp.rc %HG_C_LOG%
+   if not exist %HG_FILE%.rc copy /b %HG_ROOT%\resources\oohg.rc _temp.rc %HG_C_LOG%
    windres.exe -I %HG_ROOT%\INCLUDE -i _temp.rc -o _temp.o %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error compiling resources! %HG_PRG_LOG%
