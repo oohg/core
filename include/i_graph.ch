@@ -175,8 +175,12 @@
 #translate RGB( <nRed>, <nGreen>, <nBlue> ) ;
    => ;
       ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#ifndef ArrayRGB_TO_COLORREF
 #define ArrayRGB_TO_COLORREF( aRGB ) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#endif
+#ifndef COLORREF_TO_ArrayRGB
 #define COLORREF_TO_ArrayRGB( nRGB ) { hb_bitAnd( nRGB, 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -8 ), 0xFF ), hb_bitAnd( hb_bitShift( nRGB, -16 ), 0xFF ) }
+#endif
 #endif
 #endif
 

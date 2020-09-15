@@ -12,14 +12,14 @@
 # name of output file
 # do not use absolute or relative fixed paths
 # path depends on Harbour/xHarbour and C compiler
--o${HG_ROOT}\${LIB_GUI}\${hb_name}
+-o../lib/${hb_plat}/${hb_comp}/${hb_name}
 
 # generate list of functions
 # the file name must be unique
--hbx=..\include\${hb_name}_dyns.hbx
+-hbx=../include/${hb_name}_dyns.hbx
 
 # path to headers files (.ch)
--i..\include
+-i../include
 
 # harbour compiler flags
 # this define is needed to handle GT_GUI in Harbour builds

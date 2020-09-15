@@ -3,17 +3,13 @@
 #
 
 # oohg paths
-incpaths=${HG_ROOT}\include
+incpaths=include
 
 # c compiler will search this folder for OOHG's libs
-libpaths=${HG_ROOT}\${LIB_GUI}
+libpaths=lib/${hb_plat}/${hb_comp}
 
 # libs must be statically linked to avoid "missing lib" runtime errors
 fullstatic=YES
-
-# add harbour contrib folder to search for additional include files
-incpaths=${HG_HRB}\contrib\hbzebra
-incpaths=${HG_HRB}\contrib\hbhpdf
 
 # add app folder to search for additional include files
 incpaths=${hb_curdir}
@@ -28,10 +24,11 @@ prgflags=-n -q0 -w3 -es2
 libs=oohg hbprinter miniprint bostaurus
 
 # harbour libs
-libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbzebra hbhpdf hbmemio rddsql hbodbc sddodbc hbwin png xhb
+{!xhb}libs=hbzebra.hbc hbhpdf.hbc hbct.hbc hbmisc.hbc hbtip.hbc hbziparc.hbc hbwin.hbc
+#libs=hbmemio rddsql hbodbc sddodbc png xhb
+
+#optional harbour libraries
 {HB30}libs=libhpdf
-{HB32}libs=libhpdf
-{HB34}libs=hpdf
 
 # additional harbour libs not autodetected by hbmk2
 # for example: to add librddads remove the # from the next line
