@@ -22,8 +22,7 @@
 -i../include
 
 # harbour compiler flags
-# this define is needed to handle GT_GUI in Harbour builds
--n -q0 -w3 -es2 -D_OOHG_CONSOLEMODE_
+-n -q0 -w3 -es2
 
 # c compiler flags
 # to check for more warnings add "SET HG_CFLAGS=ON" before building
