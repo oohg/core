@@ -137,9 +137,10 @@ STATIC FUNCTION DefError( oError )
    _KillAllTimers()
    _KillAllKeys()
 
-   // "Quit" selected
-
+   // Log error
    OwnErrorHandler():ErrorMessage( cMessage, 2 )
+
+   ExitProcess( Max( ErrorLevel(), 1 ) )
 
    RETURN .F.
 
