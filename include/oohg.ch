@@ -140,7 +140,7 @@ One of these constants must be defined when building libraries that
 include oohg.ch to avoid forcing the request on every app.
 */
 #ifndef _OOHG_CONSOLEMODE_
-#ifndef GUI_REMOVE
+#ifndef GTGUI_REMOVE
 REQUEST HB_GT_GUI_DEFAULT
 #endif
 #endif
