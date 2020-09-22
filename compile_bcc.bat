@@ -133,7 +133,7 @@ rem
 
 :LOOP_END
 
-   set HG_SEARCH=-i%HG_ROOT%\resources;%HG_ROOT%\include;
+   set HG_SEARCH=-i%HG_ROOT%\resources;%HG_ROOT%\include;%HG_BCC%\include;
    if not "%HG_INC_RC%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_RC%
 
    echo #define oohgpath %HG_ROOT%\RESOURCES > _oohg_resconfig.h
