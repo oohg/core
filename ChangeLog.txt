@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-09-22 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.ch
+    ! GUI_REMOVE replace by GTGUI_REMOVE.
+
 2020-09-22 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_bcc.bat
     ! Missing include folder.
@@ -22,7 +26,7 @@
 
 2020-09-22 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.ch
-    + GUI_REMOVE as an alias of _OOHG_CONSOLEMODE_.
+    + GTGUI_REMOVE as an alias of _OOHG_CONSOLEMODE_.
 
 2020-09-22 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
