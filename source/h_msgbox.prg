@@ -311,7 +311,7 @@ FUNCTION AutoMsgBox( uMessage, cTitle, nMode )
    DEFAULT cTitle TO _OOHG_MsgDefaultTitle
    DEFAULT nMode  TO _OOHG_MsgDefaultMode
 
-   uMessage :=  AutoType( uMessage )
+   uMessage := AutoType( uMessage )
    C_MSGBOX( uMessage, cTitle, nMode )
 
    RETURN NIL
@@ -345,7 +345,6 @@ FUNCTION AutoMsgInfo( uMessage, cTitle, nMode )
    C_MSGINFO( uMessage, cTitle, nMode )
 
    RETURN NIL
-
 
 FUNCTION AutoType( Message )
 
