@@ -1999,7 +1999,7 @@ HB_PTRUINT _OOHG_GetProcAddress( HMODULE hmodule, LPCSTR lpProcName )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETKNOWNFOLDER )          /* FUNCTION C_GETKNOWNFOLDER( nFOLDERID ) -> cPath */
+HB_FUNC( GETKNOWNFOLDER )          /* FUNCTION GETKNOWNFOLDER( nFOLDERID ) -> cPath */
 {
    PWSTR path = NULL;
    char *cBuffer;
