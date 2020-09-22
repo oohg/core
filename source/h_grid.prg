@@ -3577,7 +3577,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
                      MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
-            EndIf
+                  EndIf
 // end TODO:
                   _PushEventInfo()
                   _OOHG_ThisForm           := ::Parent
@@ -3594,7 +3594,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   _ClearThisCellInfo()
                   _PopEventInfo()
                   ::NestedClick := .F.
-         EndIf
+               EndIf
             EndIf
          EndIf
 
