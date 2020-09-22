@@ -12,6 +12,35 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-09-22 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_bcc.bat
+    ! Missing include folder.
+
+2020-09-22 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.BAT
+    ! Casing of #define switch.
+
+2020-09-22 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.ch
+    + GUI_REMOVE as an alias of _OOHG_CONSOLEMODE_.
+
+2020-09-22 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * A comment.
+
+2020-09-22 18:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+    ! Missing ExitProcess at the end of function DefError
+      prevents the setting of ErrorLevel on exit.
+
+2020-09-22 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Some format.
+
+2020-09-22 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_msgbox.prg
+    * Some format.
+
 2020-08-15 22:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
   * core\compile_bcc.bat
@@ -493,8 +522,8 @@
 
 2020-06-14 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
-    * Classes TRadioGroup and TRadioItem: if neither WINDRAW
-      nor OOHGDRAW clauses are present then the first one will
+    * Classes TRadioGroup and TRadioItem: if neither OOHGDRAW
+      nor WINDRAW clauses are present then the first one will
       be assumed when FONTCOLOR clause is specified and the
       app is themed.
     * Data lLibDraw of class TRadioGroup now defaults to
@@ -525,14 +554,14 @@
 
 2020-06-14 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
-    * If neither WINDRAW nor OOHGDRAW clauses are present then
+    * If neither OOHGDRAW nor WINDRAW clauses are present then
       the first one will be assumed when FONTCOLOR clause is
       specified and the app is themed.
   #260-PR
 
 2020-06-14 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_checkbox.prg
-    * If neither WINDRAW nor OOHGDRAW clauses are present then
+    * If neither OOHGDRAW nor WINDRAW clauses are present then
       the first one will be assumed when NOFOCUSRECT of FONTCOLOR
       clauses are specified and the app is themed.
     * Data lLibDraw now defaults to _OOHG_UseLibraryDraw
@@ -2439,7 +2468,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 2019-11-20 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_misc.ch
     + SET MIXEDMODE command.
-      It equals REQUEST HB_GET_WIN_DEFAULT.
+      It equals REQUEST HB_GT_WIN_DEFAULT.
 
 2019-11-20 17:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\bostaurus.hbp
