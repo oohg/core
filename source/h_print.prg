@@ -379,7 +379,9 @@ METHOD Release() CLASS TPrintBase
    IF HB_ISOBJECT( ::oWinReport )
       ::oWinReport:Release()
    ENDIF
-   _OOHG_AppObject():WinMHRelease()
+   IF HB_ISOBJECT( _OOHG_AppObject() )
+      _OOHG_AppObject():WinMHRelease()
+   ENDIF
 
    RETURN .T.
 
