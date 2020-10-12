@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-10-11 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print
+    ! RTE "No exported method: WINMHRELEASE".
+  #348
+
 2020-09-22 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.ch
     ! GUI_REMOVE replace by GTGUI_REMOVE.
