@@ -119,7 +119,6 @@ CLASS TForm FROM TWindow
    DATA lRefreshDataOnActivate    INIT .T.
    DATA hParent                   INIT 0
    DATA OnRelease                 INIT NIL
-   DATA OnInit                    INIT NIL
    DATA OnMove                    INIT NIL
    DATA OnSize                    INIT NIL
    DATA OnPaint                   INIT NIL
@@ -692,12 +691,13 @@ METHOD SetActivationFocus() CLASS TForm
 
 METHOD ProcessInitProcedure() CLASS TForm
 
-   if HB_IsBlock( ::OnInit )
+   IF HB_ISBLOCK( ::OnInit )
       ::DoEvent( ::OnInit, "WINDOW_INIT" )
-   EndIf
-   AEVAL( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
+   ENDIF
+   AEval( ::aControls, { |o| o:ProcessInitProcedure() } )
+   AEval( ::SplitChildList, { |o| o:ProcessInitProcedure() } )
 
-   Return nil
+   RETURN NIL
 
 METHOD NotifyIconObject() CLASS TForm
 

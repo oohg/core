@@ -153,6 +153,7 @@ CLASS TWindow
    DATA OnDblClick                INIT NIL
    DATA OnDropFiles               INIT NIL
    DATA OnGotFocus                INIT NIL
+   DATA OnInit                    INIT NIL
    DATA OnLostFocus               INIT NIL
    DATA OnMClick                  INIT NIL
    DATA OnMDblClick               INIT NIL
@@ -250,6 +251,7 @@ CLASS TWindow
    METHOD PolyBezierTo
    METHOD Polygon
    METHOD PreRelease
+   METHOD ProcessInitProcedure
    METHOD Print
    METHOD Property                                                            // Pseudo-properties
    METHOD ReDraw                  BLOCK { |Self| RedrawWindow( ::hWnd ) }
@@ -306,6 +308,15 @@ METHOD DisableVisualStyle CLASS TWindow
          ::lVisualStyled := .F.
          ::Redraw()
       ENDIF
+   ENDIF
+
+   RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ProcessInitProcedure() CLASS TWindow
+
+   IF HB_ISBLOCK( ::OnInit )
+      ::DoEvent( ::OnInit, "CONTROL_INIT" )
    ENDIF
 
    RETURN NIL
