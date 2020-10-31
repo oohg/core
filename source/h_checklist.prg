@@ -263,7 +263,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TCheckList
          EndIf
       EndIf
       Return 1
- EndIf
+
+   EndIf
 
    Return ::Super:Events( hWnd, nMsg, wParam, lParam )
 
