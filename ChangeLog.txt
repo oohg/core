@@ -12,6 +12,17 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-10-31 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + Data OnInit.
+    + Method ProcessInitProcedure.
+    ; This method evaluates the OnInit block when the form's
+      ProcessInitProcedure method is evaluated.
+  * core\source\h_form.prg
+    - Data OnInit.
+    + Method ProcessInitProcedure of TForm now calls method
+      ProcessInitProcedure of each control in the form.
+
 2020-10-11 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print
     ! RTE "No exported method: WINMHRELEASE".
