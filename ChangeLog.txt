@@ -12,6 +12,16 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-11-02 12:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    * Data nFirstValue now defaults to 1.
+    * Replace oPage:Visible := .T. by oPage:Show()
+    ! Tab is not showing properly after adding a page.
+    ! Tab is not showing properly when a checklist control is
+      placed inside a page.
+    ! RTE at method ContainerValue of class TMultiPage when
+      no container is defined.
+
 2020-10-31 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     + Data OnInit.
