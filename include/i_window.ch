@@ -133,7 +133,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<c\> . \<p: AddItem, DeleteItem, Open, DeletePage, ;
             DeleteColumn, Expand, Collapse, ColumnAutoFit, ColumnAutoFitH, ;
             ColumnBetterAutoFit, GetParent, GetChildren, HandleToItem, Action, ;
-            OnClick, TabStop, HeaderImage, OnDblClick, OnRClick\>( \<a\> ) ;
+            OnClick, TabStop, HeaderImage, OnDblClick, OnRClick, HidePage, ;
+            ShowPage\>( \<a\> ) ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ( \<a\> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, Item, ItemReadonly, ItemEnabled, ;
             ItemDraggable, CheckItem, BoldItem, HeaderImage\>( \<arg1\>, ;
@@ -210,7 +211,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             OnDblClick\> \[()\] ;
             => <w> . \<c\> . \<p\> () ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: AddItem, DeleteItem, ;
-            Open, DeletePage, DeleteColumn, Expand, Collapse, Seek\>( \<a\> ) ;
+            Open, DeletePage, DeleteColumn, Expand, Collapse, Seek, HidePage, ;
+            ShowPage\>( \<a\> ) ;
             => <w> . \<c\> . \<p\> ( \<a\> ) ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: AddItem, ;
             AddPage\>( \<a1\>, \<a2\> ) ;

@@ -146,7 +146,7 @@ CONTROLS
 
 // Method with 1 argument
 #xtranslate This . <p: AddItem, DeleteItem, Open, Seek, DeletePage, ;
-      DeleteColumn, Expand, Collapse> (<arg>) ;
+      DeleteColumn, Expand, Collapse, HidePage, ShowPage> (<arg>) ;
    => ;
       DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg> )
 
