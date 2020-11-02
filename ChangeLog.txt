@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-11-02 16:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_this.ch
+  * core\include\i_window.ch
+    + Support for HidePage and ShowPage methods.
+
 2020-11-02 12:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.prg
     * Data nFirstValue now defaults to 1.
