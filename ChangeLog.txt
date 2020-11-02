@@ -16,11 +16,14 @@
   * core\source\h_tab.prg
     * Data nFirstValue now defaults to 1.
     * Replace oPage:Visible := .T. by oPage:Show()
-    ! Tab is not showing properly after adding a page.
-    ! Tab is not showing properly when a checklist control is
+    ! Tab is not drawn properly after adding a page.
+    ! Tab is not drawn properly when a checklist control is
       placed inside a page.
     ! RTE at method ContainerValue of class TMultiPage when
       no container is defined.
+  #353
+  #354
+  #355
 
 2020-10-31 16:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
@@ -32,27 +35,34 @@
     - Data OnInit.
     + Method ProcessInitProcedure of TForm now calls method
       ProcessInitProcedure of each control in the form.
+  #353
+  #354
+  #355
 
 2020-10-11 21:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\h_print
+  * core\source\h_print.prg
     ! RTE "No exported method: WINMHRELEASE".
   #348
 
 2020-09-22 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.ch
     ! GUI_REMOVE replace by GTGUI_REMOVE.
+  #350
 
 2020-09-22 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_bcc.bat
     ! Missing include folder.
+  #352
 
 2020-09-22 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_MINGW.BAT
     ! Casing of #define switch.
+  #351
 
 2020-09-22 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.ch
     + GTGUI_REMOVE as an alias of _OOHG_CONSOLEMODE_.
+  #350
 
 2020-09-22 18:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
@@ -62,6 +72,7 @@
   * core\source\h_error.prg
     ! Missing ExitProcess at the end of function DefError
       prevents the setting of ErrorLevel on exit.
+  #349
 
 2020-09-22 18:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
