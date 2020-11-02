@@ -75,7 +75,7 @@ CLASS TTabDirect FROM TTabRaw
 
    DATA aPages                    INIT {}
    DATA lInternals                INIT .F.
-   DATA nFirstValue               INIT NIL
+   DATA nFirstValue               INIT 1
 // DATA Type                      INIT "TAB" READONLY
 
    METHOD AddControl
@@ -201,9 +201,7 @@ METHOD EndTab() CLASS TTabDirect
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
-      ::Value := ::nFirstValue
-   ENDIF
+   ::Value := ::nFirstValue
    ::SizePos()
 
    RETURN NIL
@@ -303,7 +301,7 @@ METHOD Visible( lVisible ) CLASS TTabDirect
       aPages := ::aPages
       IF nPos <= Len( aPages ) .AND. nPos >= 1
          IF lVisible .AND. aPages[ nPos ]:Visible
-            aPages[ nPos ]:Visible := .T.
+            aPages[ nPos ]:Show()
          ELSE
             aPages[ nPos ]:ForceHide()
          ENDIF
@@ -404,11 +402,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( cCaption, nPos + 1, 1 ) ACTION ::DoEvent( bMnemonic, "CHANGE" )
    ENDIF
 
-   IF ::Value == nPosition
-      ::Refresh()
-   ELSE
-      oPage:ForceHide()
-   ENDIF
+   ::Refresh()
 
    oPage:nFixedHeightUsed := ::TabsAreaHeight()
 
@@ -768,7 +762,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
 CLASS TMultiPage FROM TControlGroup
 
    DATA aPages                    INIT {}
-   DATA nFirstValue               INIT NIL
+   DATA nFirstValue               INIT 1
    DATA oContainerBase            INIT NIL
    DATA oPageClass                INIT TTabPage()
    DATA Type                      INIT "MULTIPAGE" READONLY
@@ -789,6 +783,7 @@ CLASS TMultiPage FROM TControlGroup
    METHOD HidePage
    METHOD ItemCount               BLOCK { |Self| Len( ::aPages ) }
    METHOD Picture
+   METHOD ProcessInitProcedure
    METHOD RealPosition
    METHOD Refresh
    METHOD RefreshData
@@ -841,6 +836,16 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uFontColo
    // ::oContainerBase:OnChange := { || ::Refresh(), ::DoChange() }
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ProcessInitProcedure() CLASS TMultiPage
+
+   IF HB_ISBLOCK( ::OnInit )
+      ::DoEvent( ::OnInit, "CONTROL_INIT" )
+   ENDIF
+//   ::Refresh()   // This ugly hack fixes the incomplete drawing of the checklist controls placed at the first tabpage
+
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uColor ) CLASS TMultiPage
@@ -923,6 +928,7 @@ METHOD Refresh() CLASS TMultiPage
    AEval( ::aPages, { |p,i| p:Position := i, p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= Len( ::aPages )
       ::aPages[ nPage ]:Show()
+      ::aPages[ nPage ]:Events_Size()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
       ENDIF
@@ -1009,7 +1015,7 @@ METHOD Visible( lVisible ) CLASS TMultiPage
       aPages := ::aPages
       IF nPos <= Len( aPages ) .AND. nPos >= 1
          IF lVisible .AND. aPages[ nPos ]:Visible
-            aPages[ nPos ]:Visible := .T.
+            aPages[ nPos ]:Show()
          ELSE
             aPages[ nPos ]:ForceHide()
          ENDIF
@@ -1108,11 +1114,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( cCaption, nPos + 1, 1 ) ACTION ::DoEvent( bMnemonic, "CHANGE" )
    ENDIF
 
-   IF ::Value == nPosition
-      ::Refresh()
-   ELSE
-      oPage:ForceHide()
-   ENDIF
+   ::Refresh()
 
    RETURN oPage
 
@@ -1283,11 +1285,7 @@ METHOD EndTab() CLASS TMultiPage
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
-      ::Value := ::nFirstValue
-   ELSEIF ::Value == 0
-      ::Value := 1
-   ENDIF
+   ::Value := ::nFirstValue
    ::SizePos()
 
    RETURN NIL
@@ -1295,11 +1293,16 @@ METHOD EndTab() CLASS TMultiPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ContainerValue( nValue ) CLASS TMultiPage
 
-   IF HB_ISNUMERIC( nValue )
-      ::oContainerBase:Value := nValue
+   LOCAL nRet := 0
+
+   IF ::oContainerBase # NIL
+      IF HB_ISNUMERIC( nValue )
+         ::oContainerBase:Value := nValue
+      ENDIF
+      nRet := ::oContainerBase:Value
    ENDIF
 
-   RETURN iif( ::oContainerBase == NIL, 0, ::oContainerBase:Value )
+   RETURN nRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeleteItem( nItem ) CLASS TMultiPage
@@ -1734,7 +1737,7 @@ METHOD Events_Size() CLASS TTabPage
    LOCAL oTab
 
    oTab := ::Container
-   ::SizePos(,, oTab:Width, oTab:Height )
+   ::SizePos( NIL, NIL, oTab:Width, oTab:Height )
    ::Parent:Redraw()
 
    RETURN NIL
