@@ -201,7 +201,9 @@ METHOD EndTab() CLASS TTabDirect
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   ::Value := ::nFirstValue
+   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
+      ::Value := ::nFirstValue
+   ENDIF
    ::SizePos()
 
    RETURN NIL
@@ -1285,7 +1287,11 @@ METHOD EndTab() CLASS TMultiPage
       ::EndPage()
    ENDIF
    _OOHG_DeleteFrame( ::Type )
-   ::Value := ::nFirstValue
+   IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
+      ::Value := ::nFirstValue
+   ELSEIF ::Value == 0
+      ::Value := 1
+   ENDIF
    ::SizePos()
 
    RETURN NIL
