@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-12-03 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    ! ON CHANGE event is wrongly fired at END TAB.
+
 2020-11-02 16:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_this.ch
   * core\include\i_window.ch
