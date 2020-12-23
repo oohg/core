@@ -1,0 +1,15 @@
+[submodule "samples"]
+	path = samples
+	url = ../oohg_samples
+[submodule "ide"]
+	path = ide
+	url = ../oohg_ide
+[submodule "fmt"]
+	path = fmt
+	url = ../oohg_fmt
+[submodule "doc"]
+	path = doc
+	url = ../oohg_doc
+[submodule "distros"]
+	path = distros
+	url = ../oohg_distros

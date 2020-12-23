@@ -1,0 +1,12 @@
+#
+# $Id: oohg_bostaurus.hbp $
+#
+
+-q
+-hblib
+-o../lib/${hb_plat}/${hb_comp}/oohg_bostaurus
+-hbx=../include/oohg_bostaurus_dyns.hbx
+
+../oohg.hbc
+
+bostaurus.prg

@@ -1,0 +1,12 @@
+#
+# $Id: oohg_hbprinter.hbp $
+#
+
+-q
+-hblib
+-o../lib/${hb_plat}/${hb_comp}/oohg_hbprinter
+-hbx=../include/oohg_dyns.hbx
+
+../oohg.hbc
+
+winprint.prg

@@ -1,0 +1,80 @@
+name: oohg x hb 3.4 x mingw 7.3
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'hb34_oohg_0703'
+        default: 'hb34_oohg_0703'
+        required: true
+
+jobs:
+  BuildMingw:
+    runs-on: windows-latest
+    steps:
+
+    - name: mingw 7.3 Install
+      run: |
+         c:
+         md \harbour
+         md \harbour\addons
+         git clone https://github.com/JoseQuintas/bin_mingw0703 c:\temp\harbour\comp --depth 1
+         git clone https://github.com/vszakats/hb         c:\temp\harbour34 --depth 1
+         git clone https://github.com/JoseQuintas/core    c:\temp\harbour\addons\oohg
+         git clone https://github.com/JoseQuintas/ide     c:\temp\harbour\addons\oohg\ide
+         git clone https://github.com/JoseQuintas/samples c:\temp\harbour\addons\oohg\samples
+         git clone https://github.com/JoseQuintas/fmt     c:\temp\harbour\addons\oohg\fmt
+         git clone https://github.com/JoseQuintas/doc     c:\temp\harbour\addons\oohg\doc
+
+    - name: Harbour 3.4 Build 32bits
+      env:
+         HB_BUILD_CONTRIB: No
+         HB_BUILD_DYN: no
+         HB_BUILD_SHARED: no
+         HB_BUILD_STRIP: no
+         HB_COMPILER: mingw
+         HB_INSTALL_PREFIX: c:\temp\harbour
+         PATH: c:\temp\harbour\comp\mingw64\bin
+      run: |
+         c:
+         cd c:\temp\harbour34
+         mingw32-make clean install
+
+    - name: Harbour 3.4 Build 64bits
+      env:
+         HB_BUILD_CONTRIB: No
+         HB_BUILD_DYN: no
+         HB_BUILD_SHARED: no
+         HB_BUILD_STRIP: no
+         HB_COMPILER: mingw64
+         HB_INSTALL_PREFIX: c:\temp\harbour
+         PATH: c:\temp\harbour\comp\mingw64\bin
+      run: |
+         c:
+         cd \temp\harbour34
+         mingw32-make clean install
+
+
+    - name: Build OOHG
+      env:
+         HB_INSTALL_PREFIX: c:\temp\harbour
+         PATH: c:\temp\harbour\bin;c:\temp\harbour\comp\mingw64\bin
+      run: |
+         c:
+         cd \temp\harbour\addons\oohg
+         hbmk2 *.hbp -workdir=c:\temp -comp=mingw
+         hbmk2 *.hbp -workdir=c:\temp -comp=mingw64
+
+    - name: Zip OOHG
+      env:
+         PATH: c:\program files\7-zip
+      run: |
+         c:
+         cd \temp\harbour
+         7z a -r c:\temp\oohg_hb34_mingw0703.7z c:\temp\harbour\
+
+    - name: Save OOHG
+      uses: actions/upload-artifact@v2
+      with:
+         name: mingw_0703_hb34_all
+         path: c:\temp\oohg_hb34_mingw0703.7z

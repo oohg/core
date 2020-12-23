@@ -1,0 +1,12 @@
+#
+# $Id: oohg_miniprint.hbp $
+#
+
+-q
+-hblib
+-o../lib/${hb_plat}/${hb_comp}/oohg_miniprint
+-hbx=../include/oohg_dyns.hbx
+
+../oohg.hbc
+
+miniprint.prg

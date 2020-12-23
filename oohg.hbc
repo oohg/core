@@ -2,40 +2,28 @@
 # $Id: oohg.hbc $
 #
 
-# oohg paths
-incpaths=${HG_ROOT}\include
+#oohg
 
-# c compiler will search this folder for OOHG's libs
-libpaths=${HG_ROOT}\${LIB_GUI}
-
-# libs must be statically linked to avoid "missing lib" runtime errors
-fullstatic=YES
-
-# add harbour contrib folder to search for additional include files
-incpaths=${HG_HRB}\contrib\hbzebra
-incpaths=${HG_HRB}\contrib\hbhpdf
-
-# add app folder to search for additional include files
+incpaths=include
+libpaths=lib/${hb_plat}/${hb_comp}
 incpaths=${hb_curdir}
-
-# Multithread support
 mt=yes
+gt=gtgui
+{!hblib}libs=oohg_core oohg_hbprinter oohg_miniprint oohg_bostaurus
 
-#Harbour flags
+#harbour
+
+libs=hbct.hbc hbmisc.hbc hbtip.hbc hbhpdf.hbc hbzebra.hbc
+
+#prg
+
 prgflags=-n -q0 -w3 -es2
 
-# oohg libs
-libs=oohg hbprinter miniprint bostaurus
+#other
 
-# harbour libs
-libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbzebra hbhpdf hbmemio rddsql hbodbc sddodbc hbwin png xhb
-{HB30}libs=libhpdf
-{HB32}libs=libhpdf
-{HB34}libs=hpdf
-
-# additional harbour libs not autodetected by hbmk2
-# for example: to add librddads remove the # from the next line
+#libs=hbwin.hbc
+#incpaths=${hb_root}/contrib/hbzebra
+#incpaths=${hb_root}/contrib/hbhpdf
+#libs=hbziparc hbmzip minizip hbmemio rddsql hbodbc sddodbc png xhb
 #libs=rddads
-
-# optional libs
 #libs=socket mysqldll dll hbmysql rddleto
