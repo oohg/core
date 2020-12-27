@@ -69,7 +69,6 @@ CLASS TFrame FROM TControl
    DATA Type           INIT "FRAME" READONLY
    DATA nWidth         INIT 140
    DATA nHeight        INIT 140
-   DATA TabHandle      INIT 0
    DATA aExcludeArea   INIT {}
 
    METHOD Caption      SETGET
@@ -123,7 +122,6 @@ METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
 
    IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := _OOHG_ActiveFrame
-
       IF oTab:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd
       ENDIF
