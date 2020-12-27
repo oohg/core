@@ -845,7 +845,7 @@ METHOD ProcessInitProcedure() CLASS TMultiPage
    IF HB_ISBLOCK( ::OnInit )
       ::DoEvent( ::OnInit, "CONTROL_INIT" )
    ENDIF
-//   ::Refresh()   // This ugly hack fixes the incomplete drawing of the checklist controls placed at the first tabpage
+   ::Refresh()   // This ugly hack fixes the incomplete drawing of the checklist controls placed at the first tabpage
 
    RETURN NIL
 
