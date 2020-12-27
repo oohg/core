@@ -98,6 +98,7 @@ CLASS TButton FROM TControl
    METHOD Buffer                  SETGET
    METHOD Define
    METHOD DefineImage
+   METHOD Events_Enter
    METHOD Events_Notify
    METHOD HBitMap                 SETGET
    METHOD ImageList               BLOCK { || NIL }
@@ -183,9 +184,9 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
           lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
           lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, ;
-          lNoImgLst, lNoDestroy, lHand ) CLASS TButton
+          lNoImgLst, lNoDestroy, lHand, lDefault ) CLASS TButton
 
-   LOCAL nControlHandle, nStyle, lBitMap, i, nAlign
+   LOCAL nControlHandle, nStyle, lBitMap, i, nAlign, oTab
 
    ASSIGN ::nCol           VALUE nCol         TYPE "N"
    ASSIGN ::nRow           VALUE nRow         TYPE "N"
@@ -282,7 +283,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, NIL, lRtl )
 
    nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled ) + ;
-                BS_PUSHBUTTON + ;
+                iif( HB_ISLOGICAL( lDefault ) .AND. lDefault .AND. ! _OOHG_ExtendedNavigation, BS_DEFPUSHBUTTON, BS_PUSHBUTTON ) + ;
                 iif( ValType( lFlat ) == "L" .AND. lFlat, BS_FLAT, 0 ) + ;
                 iif( ! lBitMap .AND. ! IsVistaOrLater() .AND. ValType( lNoPrefix ) == "L" .AND. lNoPrefix, SS_NOPREFIX, 0 ) + ;   // for buttons SS_NOPREFIX is the same as BS_BITMAP, this used to work on XP so I leave it here.
                 iif( lBitMap, BS_BITMAP, 0 ) + ;
@@ -294,6 +295,13 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
    ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
 
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeOut )
+
+   IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
+      oTab := _OOHG_ActiveFrame
+      IF oTab:Parent:hWnd == ::Parent:hWnd
+         ::TabHandle := ::Container:Container:hWnd
+      ENDIF
+   ENDIF
 
    ::Caption := cCaption
 
@@ -382,7 +390,7 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nW
           lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
           lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
           lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, lNoImgLst, ;
-          lNoDestroy ) CLASS TButton
+          lNoDestroy, lHand, lDefault ) CLASS TButton
 
    IF Empty( cBuffer )
       cBuffer := ""
@@ -394,12 +402,14 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nW
              lNoLoadTrans, lStretch, lCancel, uAlign, lMultiLine, lDrawBy, aImageMargin, bMouseMove, ;
              lNo3DColors, lAutoFit, lNoDIB, uBackColor, lNoHotLight, lSolid, uFontColor, aTextAlign, ;
              lNoPrintOver, aTextMargin, lFitTxt, lFitImg, lImgSize, lTransparent, lNoFocusRect, lNoImgLst, ;
-             lNoDestroy )
+             lNoDestroy, lHand, lDefault )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetFocus() CLASS TButton
 
-   SendMessage( ::hWnd , BM_SETSTYLE , LOWORD( BS_DEFPUSHBUTTON ) , 1 )
+   IF ! _OOHG_ExtendedNavigation
+      SendMessage( ::hWnd, BM_SETSTYLE, BS_DEFPUSHBUTTON, 1 )
+   ENDIF
 
    RETURN ::Super:SetFocus()
 
@@ -550,14 +560,23 @@ METHOD Release() CLASS TButton
    RETURN ::Super:Release()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Events_Enter( wParam ) CLASS TButton
+
+   IF _OOHG_ExtendedNavigation
+      RETURN ::Super:Events_Enter()
+   ENDIF
+
+   RETURN ::Super:Events_Command( wParam )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Notify( wParam, lParam ) CLASS TButton
 
    LOCAL nNotify := GetNotifyCode( lParam )
 
    IF nNotify == NM_CUSTOMDRAW
       IF ::lLibDraw .AND. ::IsVisualStyled
-         RETURN TButton_Notify_CustomDraw( Self, lParam, ! ::lNoHotLight, ::lSolid, ::Caption, ::lNoPrintOver, ;
-                                           ::lNoFocusRect, ::aTextMargin, ::lFitTxt )
+         RETURN TButton_Notify_CustomDraw( Self, lParam, ! ::lNoHotLight, ::lSolid, ::Caption, ::lNoPrintOver, ::lNoFocusRect, ;
+                                           ::aTextMargin, ::lFitTxt, ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ) )
       ENDIF
    ENDIF
 
@@ -853,10 +872,10 @@ HB_FUNC( THEMEMARGINS )
    return;
 }
 
-int TButton_Notify_CustomDraw( PHB_ITEM, LPARAM, BOOL, BOOL, LPCSTR, BOOL, BOOL, RECT *, BOOL bFitTxt );
+int TButton_Notify_CustomDraw( PHB_ITEM, LPARAM, BOOL, BOOL, LPCSTR, BOOL, BOOL, RECT *, BOOL, BOOL );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BOOL bSolid, LPCSTR cCaption, BOOL bNoPrintOver, BOOL bNoFocusRect, RECT * margin, BOOL bFitTxt )
+int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BOOL bSolid, LPCSTR cCaption, BOOL bNoPrintOver, BOOL bNoFocusRect, RECT * margin, BOOL bFitTxt, BOOL bDrawBkGrnd )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = (LPNMCUSTOMDRAW) lParam;
@@ -871,6 +890,10 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
    HBRUSH hBrush;
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
+   {
+      return CDRF_NOTIFYPOSTERASE;
+   }
+   else if( pCustomDraw->dwDrawStage == CDDS_POSTERASE )
    {
       if( ! _UxTheme_Init() )
       {
@@ -891,16 +914,24 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       {
          state_id = PBS_DISABLED;
       }
+      else if( ( pCustomDraw->uItemState & CDIS_DISABLED ) == CDIS_DISABLED )
+      {
+         state_id = PBS_DISABLED;
+      }
       else if( style & BS_PUSHLIKE )
       {
          if( SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETCHECK , 0 , 0 ) == BST_CHECKED )
          {
             state_id = PBS_PRESSED;
          }
-      }
-      else if( ( pCustomDraw->uItemState & CDIS_SELECTED ) == CDIS_SELECTED )
-      {
-         state_id = PBS_PRESSED;
+         else if( ( ( pCustomDraw->uItemState & CDIS_HOT ) == CDIS_HOT ) && bHotLight )
+         {
+            state_id = PBS_HOT;
+         }
+         else if( ( pCustomDraw->uItemState & CDIS_SELECTED ) == CDIS_SELECTED )
+         {
+            state_id = PBS_PRESSED;
+         }
       }
       else if( ( ( pCustomDraw->uItemState & CDIS_HOT ) == CDIS_HOT ) && bHotLight )
       {
@@ -910,11 +941,19 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       {
          state_id = PBS_DEFAULTED;
       }
+      else if( ( pCustomDraw->uItemState & CDIS_SELECTED ) == CDIS_SELECTED )
+      {
+         state_id = PBS_PRESSED;
+      }
 
       /* draw parent background */
-      if( ProcIsThemeBackgroundPartiallyTransparent( hTheme, BP_PUSHBUTTON, state_id ) )
+      if( bDrawBkGrnd )
       {
-         ProcDrawThemeParentBackground( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+         if( ProcIsThemeBackgroundPartiallyTransparent( hTheme, BP_PUSHBUTTON, state_id ) )
+         {
+            /* pCustomDraw->rc is the item´s client area */
+            ProcDrawThemeParentBackground( pCustomDraw->hdr.hwndFrom, pCustomDraw->hdc, &pCustomDraw->rc );
+         }
       }
 
       if( bSolid )
@@ -1120,20 +1159,24 @@ int TButton_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bHotLight, BO
       }
 
       /* draw the focus rectangle if needed and required */
-      if( ( ( pCustomDraw->uItemState & CDIS_FOCUS ) == CDIS_FOCUS ) && ( ! bNoFocusRect ) )
+      if( ( pCustomDraw->uItemState & CDIS_FOCUS ) && ( ! bNoFocusRect ) )
       {
          DrawFocusRect( pCustomDraw->hdc, &content_rect );
       }
 
       /* cleanup */
-     ProcCloseThemeData( hTheme );
-   }
+      ProcCloseThemeData( hTheme );
 
-   return CDRF_SKIPDEFAULT;
+      return CDRF_SKIPDEFAULT;
+   }
+   else
+   {
+      return CDRF_SKIPDEFAULT;
+   }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomDraw( Self, lParam, lHotLight, lSolid, cCaption, lNoPrintOver, lNoFocusRect, aTextMargin, lFitTxt ) -> nRetVal */
+HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomDraw( Self, lParam, lHotLight, lSolid, cCaption, lNoPrintOver, lNoFocusRect, aTextMargin, lFitTxt, bDrawBkGrnd ) -> nRetVal */
 {
    PHB_ITEM pArrayRect = hb_param( 8, HB_IT_ARRAY );
    RECT rect;
@@ -1144,7 +1187,7 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomD
    rect.right  = hb_arrayGetNL( pArrayRect, 4 );
 
    hb_retni( TButton_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), LPARAMparam( 2 ), hb_parl( 3 ), hb_parl( 4 ),
-                                        (LPCSTR) hb_parc( 5 ), hb_parl( 6 ), hb_parl( 7 ), &rect, hb_parl( 9 ) ) );
+                                        (LPCSTR) hb_parc( 5 ), hb_parl( 6 ), hb_parl( 7 ), &rect, hb_parl( 9 ), hb_parl( 10 ) ) );
 }
 
 #pragma ENDDUMP
@@ -1153,14 +1196,15 @@ HB_FUNC( TBUTTON_NOTIFY_CUSTOMDRAW )          /* FUNCTION TButton_Notify_CustomD
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TButtonCheck FROM TButton
 
-   DATA Type      INIT "CHECKBUTTON" READONLY
-   DATA nWidth    INIT 100
-   DATA nHeight   INIT 28
+   DATA Type                      INIT "CHECKBUTTON" READONLY
+   DATA nWidth                    INIT 100
+   DATA nHeight                   INIT 28
 
    METHOD Define
    METHOD DefineImage
-   METHOD Value       SETGET
    METHOD Events_Command
+   METHOD SetFocus
+   METHOD Value                   SETGET
 
    ENDCLASS
 
@@ -1170,7 +1214,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
           lUnderline, lStrikeOut, cField, lRtl, cImage, cBuffer, hBitMap, lNoLoadTrans, lStretch, lNo3DColors, ;
           lAutoFit, lNoDIB, uBackColor, lDisabled, lDrawBy, aImageMargin, bMouseMove, uAlign, lMultiLine, ;
           lFlat, lNoHotLight, lSolid, uFontColor, aTextAlign, lNoPrintOver, aTextMargin, lFitTxt, lFitImg, ;
-          lImgSize, lTransparent, lNoFocusRect, lNoImgLst ) CLASS TButtonCheck
+          lImgSize, lTransparent, lNoFocusRect, lNoImgLst, lNoDestroy, lHand ) CLASS TButtonCheck
 
    LOCAL nControlHandle, nStyle, lBitMap, i, nAlign
 
@@ -1192,6 +1236,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
    ASSIGN ::Transparent    VALUE lTransparent TYPE "L"
    ASSIGN ::lNoFocusRect   VALUE lNoFocusRect TYPE "L"
    ASSIGN ::lNoImgLst      VALUE lNoImgLst    TYPE "L"
+   ASSIGN ::lNoDestroy     VALUE lNoDestroy   TYPE "L"
 
    IF HB_ISARRAY( aTextMargin )
       FOR i := 1 TO Min( 4, Len( aTextMargin ) )
@@ -1332,6 +1377,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
 
    ::SetVarBlock( cField, uValue )
 
+   IF HB_ISLOGICAL( lHand ) .AND. lHand
+      ::Cursor := IDC_HAND
+   ENDIF
+
    ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
    ASSIGN ::OnChange    VALUE bChange    TYPE "B"
@@ -1345,7 +1394,7 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFo
           lUnderline, lStrikeOut, cField, lRtl, cImage, cBuffer, hBitMap, lNoLoadTrans, lStretch, lNo3DColors, ;
           lAutoFit, lNoDIB, uBackColor, lDisabled, lDrawBy, aImageMargin, bMouseMove, uAlign, lMultiLine, ;
           lFlat, lNoHotLight, lSolid, uFontColor, aTextAlign, lNoPrintOver, aTextMargin, lFitTxt, lFitImg, ;
-          lImgSize, lTransparent ) CLASS TButtonCheck
+          lImgSize, lTransparent, lNoFocusRect, lNoImgLst, lNoDestroy, lHand ) CLASS TButtonCheck
 
    IF Empty( cBuffer )    // TODO: ver si se puede eliminar
       cBuffer := ""
@@ -1356,7 +1405,7 @@ METHOD DefineImage( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFo
              lUnderline, lStrikeOut, cField, lRtl, cImage, cBuffer, hBitMap, lNoLoadTrans, lStretch, lNo3DColors, ;
              lAutoFit, lNoDIB, uBackColor, lDisabled, lDrawBy, aImageMargin, bMouseMove, uAlign, lMultiLine, ;
              lFlat, lNoHotLight, lSolid, uFontColor, aTextAlign, lNoPrintOver, aTextMargin, lFitTxt, lFitImg, ;
-             lImgSize, lTransparent )
+             lImgSize, lTransparent, lNoFocusRect, lNoImgLst, lNoDestroy, lHand )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( lValue ) CLASS TButtonCheck
@@ -1369,6 +1418,11 @@ METHOD Value( lValue ) CLASS TButtonCheck
    ENDIF
 
    RETURN lValue
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetFocus() CLASS TButtonCheck
+
+   RETURN ::TControl():SetFocus()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TButtonCheck

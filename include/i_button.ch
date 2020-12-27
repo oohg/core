@@ -114,6 +114,7 @@
       [ <lnofocus: NOFOCUSRECT> ] ;
       [ <lnoimglst: NOIMAGELIST> ] ;
       [ <lhand: HANDCURSOR> ] ;
+      [ <ldefault: DEFAULT> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButton(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <{action}>, ;
@@ -126,7 +127,8 @@
             <aimagemargin>, <{onmousemove}>, <.no3dcolors.>, <.autofit.>, ;
             ! <.ldib.>, <backcolor>, <.nohotlight.>, <.solidbk.>, <fontcolor>, ;
             {<"txth">, <"txtv">}, <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, ;
-            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, <.lhand.> )
+            <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, ;
+            <.lhand.>, <.ldefault.> )
 
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
@@ -180,6 +182,7 @@
       [ <ltransp: TRANSPARENT> ] ;
       [ <lnofocus: NOFOCUSRECT> ] ;
       [ <lnoimglst: NOIMAGELIST> ] ;
+      [ <lhand: HANDCURSOR> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TButtonCheck(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
@@ -192,4 +195,4 @@
             <aimagemargin>, <{onmousemove}>, <"imgalign">, <.multiline.>, ;
             <.flat.>, <.nohotlight.>, <.solidbk.>, <fontcolor>, {<"txth">, <"txtv">}, ;
             <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, <.imgsize.>, ;
-            <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.> )
+            <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, <.lhand.> )
