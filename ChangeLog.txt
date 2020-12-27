@@ -12,14 +12,75 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2020-12-27 14:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_button.ch
+    + DEFAULT clause was added to BUTTON control.
+      When NAVIGATION is set to STANDARD the action associated with
+      a button with DEFAULT clause will be triggered whenever ENTER
+      key is pressed regardless of whether it has the focus or not.
+      When NAVITATION is set to EXTENDED the DEFAULT clause will be
+      ignored and ENTER key will behave like the TAB key.
+      To trigger the action of a specific button, use the mouse or
+      select the button with TAB and then press the SPACE key.
+    + HANDCURSOR clause to CHECKBUTTON control.
+  * core\source\h_button.prg
+    + Support for DEFAULT clause was added to TButton class.
+    + Method Events_Enter was added to TButton class.
+    + Support for HANDCURSOR and DEFAULT parameters was added to
+      method DefineImage of TButton class.
+    * Method SetFocus of TButton class no longer sets the button
+      as DEFAULT when NAVIGATION is set to EXTENDED.
+    * The method used by function TBUTTON_NOTIFY_CUSTOMDRAW to
+      paint the buttons and checkbuttons was improved.
+    * Some formatting was improved.
+    + Support for HANDCURSOR clause was added to TButtonCheck class.
+    + Method SetFocus to TButtonCheck class.
+    + The missing lNoDestroy parameter and its processing have been
+      added to the Define method of the TButtonCheck class.
+    + Support for NOFOCUSRECT, NOIMAGELIST, NODESTROY and HANDCURSOR
+      and DEFAULT parameters was added to method DefineImage of
+      TButtonCheck class.
+    ! ENTER key triggers the ACTION clause of a BUTTON control
+      when NAVIGATION is set to EXTENDED, instead of selecting the
+      next control in the dialog.
+    ! ENTER key does not trigger the ACTION clause of a BUTTON control
+      when NAVIGATION is set to STANDARD after the BUTTON looses the
+      focus from its ACTION clause.
+    ! A BUTTON control with OOHGDRAW clause is painted incorrectly
+      after being selected by TAB key if it losses the focus from
+      its ACTION clause.
+    ! BUTTON control background is painted using form's backcolor
+      instead of tabpage's backcolor.
+    ! Clause NODESTROY of BUTTONCHECK control is being ignored.
+  #358
+  #359
+  #360
+  #361
+  #362
+  #363
+  #364
+
+2020-12-27 14:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    ! Tab is not drawn properly when a checklist control is
+      placed inside a page.
+  #354
+
+2020-12-27 14:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_frame.prg
+    - Duplicated data TabHandle was removed.
+  #367
+
 2020-12-03 10:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.prg
     ! ON CHANGE event is wrongly fired at END TAB.
+  #365
 
 2020-11-02 16:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_this.ch
   * core\include\i_window.ch
     + Support for HidePage and ShowPage methods.
+  #366
 
 2020-11-02 12:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.prg
