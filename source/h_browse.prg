@@ -249,14 +249,6 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ASSIGN lNoHSB        VALUE lNoHSB       TYPE "L" DEFAULT .F.
    ASSIGN lNoVSB        VALUE lNoVSB       TYPE "L" DEFAULT ( ValType( nCol ) != "N" .OR. ValType( nRow ) != "N" )   // If splitboxed then force no vertical scrollbar
 
-   IF HB_ISARRAY( aDefaultValues )
-      ::aDefaultValues := aDefaultValues
-      ASize( ::aDefaultValues, Len( ::aHeaders ) )
-   ELSE
-      ::aDefaultValues := Array( Len( ::aHeaders ) )
-       AFill( ::aDefaultValues, aDefaultValues )
-   ENDIF
-
    IF ValType( uRefresh ) == "N"
       IF uRefresh == REFRESH_FORCE .OR. uRefresh == REFRESH_NO .OR. uRefresh == REFRESH_DEFAULT
          ::RefreshType := uRefresh
@@ -292,6 +284,14 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
             ENDIF
          ENDIF
       NEXT
+   ENDIF
+
+   IF HB_ISARRAY( aDefaultValues )
+      ::aDefaultValues := aDefaultValues
+      ASize( ::aDefaultValues, Len( ::aHeaders ) )
+   ELSE
+      ::aDefaultValues := Array( Len( ::aHeaders ) )
+       AFill( ::aDefaultValues, aDefaultValues )
    ENDIF
 
    IF ! ValType( cWorkArea ) $ "CMO" .OR. Empty( cWorkArea )
