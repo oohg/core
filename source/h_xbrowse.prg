@@ -260,14 +260,6 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
    ASSIGN lNoHSB            VALUE lNoHSB          TYPE "L" DEFAULT .F.
    ASSIGN lNoVSB            VALUE lNoVSB          TYPE "L" DEFAULT .F.
 
-   If HB_IsArray( aDefaultValues )
-      ::aDefaultValues := aDefaultValues
-      ASize( ::aDefaultValues, Len( ::aHeaders ) )
-   Else
-      ::aDefaultValues := Array( Len( ::aHeaders ) )
-       AFill( ::aDefaultValues, aDefaultValues )
-   EndIf
-
    If ValType( aColumnInfo ) == "A" .AND. LEN( aColumnInfo ) > 0
       If ValType( ::aFields ) == "A"
          aSize( ::aFields,  LEN( aColumnInfo ) )
@@ -294,6 +286,14 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
          EndIf
       NEXT
    EndIf
+
+   IF HB_ISARRAY( aDefaultValues )
+      ::aDefaultValues := aDefaultValues
+      ASize( ::aDefaultValues, Len( ::aHeaders ) )
+   ELSE
+      ::aDefaultValues := Array( Len( ::aHeaders ) )
+       AFill( ::aDefaultValues, aDefaultValues )
+   ENDIF
 
    ASSIGN ::WorkArea VALUE WorkArea TYPE "CMO" DEFAULT ALIAS()
    If ValType( ::aFields ) != "A"
@@ -1556,7 +1556,7 @@ METHOD Down( lAppend ) CLASS TXBrowse
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
             lRet := ::AppendItem()
-            IF ::VScroll:Enabled
+            IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                // Kill scrollbar's events...
                ::VScroll:Enabled := .F.
                ::VScroll:Enabled := .T.
@@ -1614,7 +1614,7 @@ METHOD PageDown( lAppend ) CLASS TXBrowse
          ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
          If lAppend
             lRet := ::AppendItem()
-            IF ::VScroll:Enabled
+            IF HB_ISOBJECT( ::VScroll ).AND. ::VScroll:Enabled
                // Kill scrollbar's events...
                ::VScroll:Enabled := .F.
                ::VScroll:Enabled := .T.
@@ -1678,7 +1678,7 @@ METHOD SetScrollPos( nPos, VScroll ) CLASS TXBrowse
 
    LOCAL nRecCount
 
-   IF ::lLocked
+   IF ::lLocked .OR. ! HB_ISOBJECT( ::VScroll )
       // Do nothing!
    ELSEIF nPos <= VScroll:RangeMin
       ::GoTop()
@@ -1776,7 +1776,7 @@ METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
          ::SetControlValue( nItem )
       EndIf
       If ! ::lNoVSB
-         IF ::VScroll:Enabled
+         IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
             // Kill scrollbar's events...
             ::VScroll:Enabled := .F.
             ::VScroll:Enabled := .T.
@@ -4441,7 +4441,7 @@ METHOD Right( lAppend ) CLASS TXBrowseByCell
                ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
                If lAppend
                   lRet := ::AppendItem()
-                  IF ::VScroll:Enabled
+                  IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                      // Kill scrollbar's events...
                      ::VScroll:Enabled := .F.
                      ::VScroll:Enabled := .T.
@@ -4505,7 +4505,7 @@ METHOD Down( lAppend ) CLASS TXBrowseByCell
       ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
       If lAppend
          lRet := ::AppendItem()
-         IF ::VScroll:Enabled
+         IF HB_ISOBJECT( ::VScroll ) .AND.::VScroll:Enabled
             // Kill scrollbar's events...
             ::VScroll:Enabled := .F.
             ::VScroll:Enabled := .T.
