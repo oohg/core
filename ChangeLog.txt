@@ -12,6 +12,24 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-01-04 20:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    * Data aDefaultValues is now initialized after processing
+      parameter aColumnInfo at method Define of class TXBrowse
+      to prevent an RTE if they have mismatched lengths.
+    ! RTE at methods Down, PageDown, SetScrollPos and EditItem
+      of TXBrowse class when data VScroll is not a valid object.
+    ! RTE at methods Down, PageDown, SetScrollPos and EditItem
+      of TXBrowse class when data VScroll is not a valid object.
+    ! RTE at methods Right and Down of TXBrowseByCell class when
+      data VScroll is not a valid object.
+
+2021-01-04 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    * Data aDefaultValues is now initialized after processing
+      parameter aColumnInfo at method Define of class TXBrowse
+      to prevent an RTE if they have mismatched lengths.
+
 2020-12-27 14:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_button.ch
     + DEFAULT clause was added to BUTTON control.
