@@ -19,16 +19,17 @@
       to prevent an RTE if they have mismatched lengths.
     ! RTE at methods Down, PageDown, SetScrollPos and EditItem
       of TXBrowse class when data VScroll is not a valid object.
-    ! RTE at methods Down, PageDown, SetScrollPos and EditItem
-      of TXBrowse class when data VScroll is not a valid object.
     ! RTE at methods Right and Down of TXBrowseByCell class when
       data VScroll is not a valid object.
+    #368
+    #369
 
 2021-01-04 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     * Data aDefaultValues is now initialized after processing
-      parameter aColumnInfo at method Define of class TXBrowse
+      parameter aColumnInfo at method Define of class TBrowse
       to prevent an RTE if they have mismatched lengths.
+  #368
 
 2020-12-27 14:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_button.ch
