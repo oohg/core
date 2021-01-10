@@ -634,7 +634,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             IF lAppend
                lRet := ::AppendItem()
-               IF ::VScroll:Enabled
+               IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                   // Kill scrollbar's events...
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
@@ -821,7 +821,7 @@ METHOD Down( lAppend ) CLASS TOBrowse
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             IF lAppend
                lRet := ::AppendItem()
-               IF ::VScroll:Enabled
+               IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                   // Kill scrollbar's events...
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
@@ -1067,7 +1067,7 @@ METHOD EditItem( lAppend, lOneRow ) CLASS TOBrowse
    ENDIF
 
    IF ! ::lNoVSB
-      IF ::VScroll:Enabled
+      IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
          // Kill scrollbar's events...
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
@@ -1675,7 +1675,7 @@ METHOD FastUpdate( d, nRow ) CLASS TOBrowse
       ListView_ClearCursel( ::hWnd, 0 )
    ELSE
       ListView_SetCursel( ::hWnd, nRow )
-      IF ! ::lNoVSB
+      IF ! ::lNoVSB .AND. HB_ISOBJECT( ::VScroll )
          ::VScroll:Value += d
       ENDIF
    ENDIF
@@ -2229,7 +2229,8 @@ METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
    LOCAL cWorkArea, nRecCount, nNewRec
 
    cWorkArea := ::WorkArea
-   IF Select( cWorkArea ) == 0
+   IF Select( cWorkArea ) == 0 .OR. ! HB_ISOBJECT( ::VScroll )
+      // Do nothing!
       // No workarea is selected
    ELSEIF nPos <= VScroll:RangeMin
       ::GoTop()
@@ -4112,7 +4113,7 @@ METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowseByCell
    LOCAL cWorkArea, nRecCount, nNewRec
 
    cWorkArea := ::WorkArea
-   IF Select( cWorkArea ) == 0
+   IF Select( cWorkArea ) == 0 .OR. ! HB_ISOBJECT( ::VScroll )
       // No workarea is selected
    ELSEIF nPos <= VScroll:RangeMin
       ::GoTop()
