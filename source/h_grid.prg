@@ -68,6 +68,7 @@
 
 CLASS TGrid FROM TControl
 
+   DATA ActiveTGridCtrl           INIT NIL
    DATA aEditControls             INIT Nil
    DATA aEditKeys                 INIT Nil
    DATA aHeadClick                INIT {}
@@ -1872,7 +1873,7 @@ METHOD IsColumnReadOnly( nCol, nRow ) CLASS TGrid
 
    Local uReadOnly
 
-   If ! HB_IsNumeric( nRow ) .OR. nRow < 1 .OR. nRow > :: ItemCount
+   If ! HB_IsNumeric( nRow ) .OR. nRow < 0 .OR. nRow > :: ItemCount
       nRow := ::FirstSelectedItem
    EndIf
 
@@ -1888,7 +1889,7 @@ METHOD IsColumnWhen( nCol, nRow ) CLASS TGrid
 
    Local uWhen
 
-   If ! HB_IsNumeric( nRow ) .OR. nRow < 1 .OR. nRow > :: ItemCount
+   If ! HB_IsNumeric( nRow ) .OR. nRow < 0 .OR. nRow > :: ItemCount
       nRow := ::FirstSelectedItem
    EndIf
 
@@ -4130,6 +4131,11 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
    RETURN Self
 
 METHOD Release() CLASS TGrid
+
+   IF HB_ISOBJECT( ::ActiveTGridCtrl )
+      Eval( ::ActiveTGridCtrl:bCancel, .F. )
+      ::ActiveTGridCtrl := NIL
+   ENDIF
 
    If ValidHandler( ::HeaderImageList )
       ImageList_Destroy( ::HeaderImageList )
@@ -6433,7 +6439,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
       ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    ElseIf HB_IsObject( ::oGrid )
 
@@ -6443,7 +6449,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    Else
 
@@ -6453,7 +6459,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { || lRet := ::Valid() }
-      ::bCancel := { || ::oWindow:Release() }
+      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    EndIf
 
@@ -6483,13 +6489,17 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ::Value := ::ControlValue
    END WINDOW
 
-   If HB_IsObject( ::oControl )
+   IF HB_ISOBJECT( ::oControl )
       ::oControl:SetFocus()
-   EndIf
-   If HB_IsObject( ::oWindow )
+   ENDIF
+   IF HB_ISOBJECT( ::oWindow )
+      IF HB_ISOBJECT( ::oGrid )
+         ::oGrid:ActiveTGridCtrl := Self
+      ENDIF
       ::oWindow:Activate()
-   EndIf
-   ::oWindow := Nil
+   ENDIF
+   ::oGrid:ActiveTGridCtrl := NIL
+   ::oWindow := NIL
 
    Return lRet
 
@@ -6661,7 +6671,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
       ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    ElseIf HB_IsObject( ::oGrid )
 
@@ -6671,7 +6681,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-      ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    Else
 
@@ -6681,7 +6691,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { || lRet := ::Valid() }
-      ::bCancel := { || ::oWindow:Release() }
+      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
 
    EndIf
 
@@ -6757,10 +6767,14 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
          EndIf
       EndIf
    EndIf
-   If HB_IsObject( ::oWindow )
+   IF HB_ISOBJECT( ::oWindow )
+      IF HB_ISOBJECT( ::oGrid )
+         ::oGrid:ActiveTGridCtrl := Self
+      ENDIF
       ::oWindow:Activate()
-   EndIf
-   ::oWindow := Nil
+   ENDIF
+   ::oGrid:ActiveTGridCtrl := NIL
+   ::oWindow := NIL
 
    Return lRet
 
@@ -7185,10 +7199,10 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       If HB_IsObject( oGrid )
          ::oGrid := oGrid
          ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-         ::bCancel := { || ::oGrid:bPosition := 0, ::oWindow:Release() }
+         ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
       Else
          ::bOk := { || lRet := ::Valid() }
-         ::bCancel := { || ::oWindow:Release() }
+         ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
       EndIf
       IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
          ::nTimeOut := nTimeOut
@@ -7222,10 +7236,18 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       @ oBut1:Row,i + 100 + i BUTTON 0 OBJ oBut2 PARENT ( ::oWindow ) CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ACTION EVAL( ::bCancel )
    END WINDOW
 
-   ::oWindow:Center()
-   ::oControl:SetFocus()
-   ::oWindow:Activate()
-   ::oWindow := Nil
+   IF HB_ISOBJECT( ::oControl )
+      ::oControl:SetFocus()
+   ENDIF
+   IF HB_ISOBJECT( ::oWindow )
+      ::oWindow:Center()
+      IF HB_ISOBJECT( ::oGrid )
+         ::oGrid:ActiveTGridCtrl := Self
+      ENDIF
+      ::oWindow:Activate()
+   ENDIF
+   ::oGrid:ActiveTGridCtrl := NIL
+   ::oWindow := NIL
 
    Return lRet
 
@@ -8592,7 +8614,6 @@ HB_FUNC( LISTVIEWGETITEM )
       LI.pszText = buffer;
       LI.iItem = c;
       buffer[ 0 ] = 0;
-      buffer[ 1023 ] = 0;
       ListView_GetItem( h, &LI );
       buffer[ 1023 ] = 0;
 
