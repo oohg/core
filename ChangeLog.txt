@@ -12,6 +12,40 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-01-24 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Data ActiveTGridCtrl to class TGrid.
+      It holds the currently active TGridControl object while
+      the cell is being edited. Its content is set when the
+      editing begins and deleted when it's finished.
+    + Method Release of class TGrid cancels any active edition
+      before releasing.
+    ! Some checks were missing at Method CreateWindow of
+      class TGridControlTextBox.
+    ! Some checks were missing at Method CreateWindow of
+      class TGridControlMemo.
+    + Method CreateControl of class TGridControl (and its
+      subclasses) now sets grid's data ActiveTGridCtrl.
+    - Unnecessary sentence at C function ListViewGetItem.
+    ! RTE at method EditCell2 of class TGrid when the form is
+      released while a cell is being edited.
+    #374
+    ! Method IsColumnReadOnly of class TGrid forces nRow to
+      ::FirstSelectedItem when nRow is zero.
+    #375
+    ! Method IsColumnWhen of class TGrid forces nRow to
+      ::FirstSelectedItem when nRow is zero.
+    #376
+
+2021-01-10 11:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! RTE at methods Down, PageDown, EditItem, FastUpdate and
+      SetScrollPos of class TOBrowse when data VScroll is not
+      a valid object.
+    ! RTE at method SetScrollPos of class TOBrowseByCell class when
+      data VScroll is not a valid object.
+    #372
+
 2021-01-04 20:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     * Data aDefaultValues is now initialized after processing
