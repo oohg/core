@@ -969,7 +969,7 @@ METHOD ToExcel( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    EndIf
 
    ::GoTop()
-   Do While ! ::Eof()
+   Do While ! ::Eof
       For i := nColFrom To nColTo
          If HB_IsBlock( ::aFields[ aColumnOrder[ i ] ] )
             uValue := ( cWorkArea ) -> ( _OOHG_Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
@@ -1083,7 +1083,7 @@ METHOD ToOpenOffice( cTitle, nColFrom, nColTo ) CLASS TXBrowse
    EndIf
 
    ::GoTop()
-   Do While ! ::Eof()
+   Do While ! ::Eof
       For i := nColFrom To nColTo
          If HB_IsBlock( ::aFields[ aColumnOrder[ i ] ] )
             uValue := ( cWorkArea ) -> ( _OOHG_Eval( ::aFields[ aColumnOrder[ i ] ], cWorkArea ) )
@@ -1181,7 +1181,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
 
       ::DbSkip()
 
-      Do While ! ::Eof()
+      Do While ! ::Eof
          If ::FixBlocks()
             uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          Else
@@ -1198,10 +1198,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
          ::DbSkip()
       EndDo
 
-      If ::Eof() .AND. ::SearchWrap
+      If ::Eof .AND. ::SearchWrap
          ::TopBottom( GO_TOP )
 
-         Do While ! ::Eof()
+         Do While ! ::Eof
             If ::FixBlocks()
                uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             Else
@@ -1219,7 +1219,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowse
          EndDo
       EndIf
 
-      If ::Eof()
+      If ::Eof
          ::GoBottom()
       Else
          ::Refresh( ::CountPerPage )
@@ -1449,7 +1449,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
             EndIf
 
          Case nvKey == VK_DELETE
-            If ::AllowDelete .AND. ! ::Eof() .AND. ! ::lLocked
+            If ::AllowDelete .AND. ! ::Eof .AND. ! ::lLocked
                If ValType( ::bDelWhen ) == "B"
                   lGo := _OOHG_Eval( ::bDelWhen )
                Else
@@ -1621,7 +1621,7 @@ METHOD PageDown( lAppend ) CLASS TXBrowse
             ENDIF
          EndIf
       ElseIf nSkip != 0
-         ::Refresh( , .T. )
+         ::Refresh( NIL, .T. )
          ::DoChange()
          lRet := .T.
       EndIf
@@ -1731,7 +1731,7 @@ METHOD Delete() CLASS TXBrowse
 
    If ::Lock
       ::oWorkArea:Commit()
-      ::oWorkArea:UnLock()
+      ::oWorkArea:Unlock()
    EndIf
 
    If ::DbSkip( 1 ) == 0
@@ -1925,7 +1925,7 @@ METHOD EditItem_B( lAppend ) CLASS TXBrowse
 
    Return ! Empty( aItems )
 
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend ) CLASS TXBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend, lJustAdd ) CLASS TXBrowse
 
    Local lRet, bReplaceField, i, aItem, aRepl, aVals, oCtr, uVal, bRep, aNewI, lRet2
 
@@ -1962,9 +1962,20 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
    If nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders )
       Return .F.
    EndIf
-   If aScan( ::aHiddenCols, nCol ) > 0
-      Return .F.
-   EndIf
+   /*
+    * lJustAdd == .T. means add the row even if the column is hidden, read only
+    * or its When clause is not fulfilled. Note that lAppend must be .T.
+    */
+   IF lAppend
+      IF ! HB_ISLOGICAL( lJustAdd )
+         lJustAdd := .F.
+      ENDIF
+   ELSE
+      lJustAdd := .F.
+   ENDIF
+   IF ! lJustAdd .AND. ( AScan( ::aHiddenCols, nCol ) # 0 .OR. ::IsColumnReadOnly( nCol, iif( lAppend, 0, nRow ) ) .OR. ! ::IsColumnWhen( nCol, iif( lAppend, 0, nRow ) ) )
+      RETURN .F.
+   ENDIF
 
    // to work properly, nRow and the data source record must be synchronized
    HB_SYMBOL_UNUSED( lChange )
@@ -2006,7 +2017,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
          MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 9 ), _OOHG_Messages( MT_BRW_ERR, 10 ) )
          Return .F.
       EndIf
-      ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, lAppend )
+      ::GetCellType( nCol, @EditControl, @uOldValue, @cMemVar, @bReplaceField, .F. )
    EndIf
 
    If HB_IsBlock( ::OnBeforeEditCell )
@@ -2020,16 +2031,21 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
       lRet2 := .T.
    EndIf
 
-   If lRet2
+   IF lAppend .AND. lJustAdd
+      lRet := .T.
+      ::bPosition := 0
+   ELSEIF lRet2
       lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
-   Else
+   ELSE
       lRet := .F.
-   EndIf
+   ENDIF
 
    If lRet
-      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-      ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
-      _ClearThisCellInfo()
+      IF ! lJustAdd
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+         ::DoEvent( ::OnEditCellEnd, "EDITCELLEND", { nRow, nCol } )
+         _ClearThisCellInfo()
+      ENDIF
       If lAppend
          ::oWorkArea:Append()
          // Set edited and default values into the appended record
@@ -2049,9 +2065,11 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
          _OOHG_Eval( bReplaceField, uValue, ::oWorkArea )
       EndIf
       ::RefreshRow( nRow )
-      _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
-      ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
-      _ClearThisCellInfo()
+      IF ! lJustAdd
+         _SetThisCellInfo( ::hWnd, nRow, nCol, uValue )
+         ::DoEvent( ::OnEditCell, "EDITCELL", { nRow, nCol } )
+         _ClearThisCellInfo()
+      ENDIF
       If ! ::lCalledFromClass .AND. ::bPosition == 9                  // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
@@ -2104,7 +2122,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 
    Return lRet
 
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lJustAdd ) CLASS TXBrowse
 
    Local lRet, lSomethingEdited
 
@@ -2166,7 +2184,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
         // Hidden column
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode )
+         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode, lJustAdd )
          ::lCalledFromClass := .F.
 
          If ::lAppendMode
@@ -2252,7 +2270,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
 
    Return lSomethingEdited
 
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lJustAdd ) CLASS TXBrowse
 
    Local lRet, lSomethingEdited
 
@@ -2309,7 +2327,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowse
         // Hidden column, skip
       Else
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode )
+         lRet := ::EditCell( ::nRowPos, nCol, , , , , , , ::lAppendMode, lJustAdd )
          ::lCalledFromClass := .F.
 
          If ::lAppendMode
@@ -2433,11 +2451,11 @@ METHOD GetCellType( nCol, EditControl, uOldValue, cMemVar, bReplaceField, lAppen
       If nPos != 0 .AND. Select( Trim( Left( cField, nPos - 1 ) ) ) != 0
          cArea := Trim( Left( cField, nPos - 1 ) )
          cField := Ltrim( SubStr( cField, nPos + 2 ) )
-         aStruct := ( cArea )->( DbStruct() )
+         aStruct := ( cArea )->( dbStruct() )
          nPos := ( cArea )->( FieldPos( cField ) )
       Else
          cArea := ::oWorkArea:cAlias__
-         aStruct := ::oWorkArea:DbStruct()
+         aStruct := ::oWorkArea:dbStruct()
          nPos := ::oWorkArea:FieldPos( cField )
       EndIf
       If nPos # 0
@@ -2760,28 +2778,28 @@ CLASS ooHGRecord
    METHOD FieldPos    BLOCK { | Self, cField |                 ( ::cAlias__ )->( FieldPos( cField ) ) }
    METHOD FieldPut    BLOCK { | Self, nPos, uValue |           ( ::cAlias__ )->( FieldPut( nPos, uValue ) ) }
    METHOD Locate      BLOCK { | Self, bFor, bWhile, nNext, nRec, lRest | ( ::cAlias__ )->( __dbLocate( bFor, bWhile, nNext, nRec, lRest ) ) }
-   METHOD Seek        BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( DbSeek( uKey, lSoftSeek, lLast ) ) }
-   METHOD Skip        BLOCK { | Self, nCount |                 ( ::cAlias__ )->( DbSkip( nCount ) ) }
-   METHOD GoTo        BLOCK { | Self, nRecord |                ( ::cAlias__ )->( DbGoTo( nRecord ) ) }
-   METHOD GoTop       BLOCK { | Self |                         ( ::cAlias__ )->( DbGoTop() ) }
-   METHOD GoBottom    BLOCK { | Self |                         ( ::cAlias__ )->( DbGoBottom() ) }
-   METHOD Commit      BLOCK { | Self |                         ( ::cAlias__ )->( DbCommit() ) }
-   METHOD Unlock      BLOCK { | Self |                         ( ::cAlias__ )->( DbUnlock() ) }
-   METHOD Delete      BLOCK { | Self |                         ( ::cAlias__ )->( DbDelete() ) }
-   METHOD Close       BLOCK { | Self |                         ( ::cAlias__ )->( DbCloseArea() ) }
-   METHOD BOF         BLOCK { | Self |                         ( ::cAlias__ )->( BOF() ) }
-   METHOD EOF         BLOCK { | Self |                         ( ::cAlias__ )->( EOF() ) }
+   METHOD Seek        BLOCK { | Self, uKey, lSoftSeek, lLast | ( ::cAlias__ )->( dbSeek( uKey, lSoftSeek, lLast ) ) }
+   METHOD Skip        BLOCK { | Self, nCount |                 ( ::cAlias__ )->( dbSkip( nCount ) ) }
+   METHOD GoTo        BLOCK { | Self, nRecord |                ( ::cAlias__ )->( dbGoto( nRecord ) ) }
+   METHOD GoTop       BLOCK { | Self |                         ( ::cAlias__ )->( dbGoTop() ) }
+   METHOD GoBottom    BLOCK { | Self |                         ( ::cAlias__ )->( dbGoBottom() ) }
+   METHOD Commit      BLOCK { | Self |                         ( ::cAlias__ )->( dbCommit() ) }
+   METHOD Unlock      BLOCK { | Self |                         ( ::cAlias__ )->( dbUnlock() ) }
+   METHOD Delete      BLOCK { | Self |                         ( ::cAlias__ )->( dbDelete() ) }
+   METHOD Close       BLOCK { | Self |                         ( ::cAlias__ )->( dbCloseArea() ) }
+   METHOD Bof         BLOCK { | Self |                         ( ::cAlias__ )->( Bof() ) }
+   METHOD Eof         BLOCK { | Self |                         ( ::cAlias__ )->( Eof() ) }
    METHOD RecNo       BLOCK { | Self |                         ( ::cAlias__ )->( RecNo() ) }
    METHOD RecCount    BLOCK { | Self |                         ( ::cAlias__ )->( RecCount() ) }
    METHOD Found       BLOCK { | Self |                         ( ::cAlias__ )->( Found() ) }
-   METHOD SetOrder    BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ORDSETFOCUS( uOrder ) ) }
-   METHOD SetIndex    BLOCK { | Self, cFile, lAdditive |       If( EMPTY( lAdditive ), ( ::cAlias__ )->( ordListClear() ), ) , ( ::cAlias__ )->( ordListAdd( cFile ) ) }
-   METHOD Append      BLOCK { | Self |                         ( ::cAlias__ )->( DbAppend() ) }
+   METHOD SetOrder    BLOCK { | Self, uOrder |                 ( ::cAlias__ )->( ordSetFocus( uOrder ) ) }
+   METHOD SetIndex    BLOCK { | Self, cFile, lAdditive |       iif( Empty( lAdditive ), ( ::cAlias__ )->( ordListClear() ), NIL ), ( ::cAlias__ )->( ordListAdd( cFile ) ) }
+   METHOD Append      BLOCK { | Self |                         ( ::cAlias__ )->( dbAppend() ) }
    METHOD Lock        BLOCK { | Self |                         ( ::cAlias__ )->( RLock() ) }
-   METHOD DbStruct    BLOCK { | Self |                         ( ::cAlias__ )->( DbStruct() ) }
-   METHOD OrdKeyNo    BLOCK { | Self |                         If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
-   METHOD OrdKeyCount BLOCK { | Self |                         If( ( ::cAlias__ )->( OrdKeyCount() ) > 0, ( ::cAlias__ )->( OrdKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
-   METHOD OrdKeyGoTo  BLOCK { | Self, nRecord |                ( ::cAlias__ )->( OrdKeyGoTo( nRecord ) ) }
+   METHOD dbStruct    BLOCK { | Self |                         ( ::cAlias__ )->( dbStruct() ) }
+   METHOD ordKeyNo    BLOCK { | Self |                         iif( ( ::cAlias__ )->( ordKeyCount() ) > 0, ( ::cAlias__ )->( ordKeyNo() ), ( ::cAlias__ )->( RecNo() ) ) }
+   METHOD ordKeyCount BLOCK { | Self |                         iif( ( ::cAlias__ )->( ordKeyCount() ) > 0, ( ::cAlias__ )->( ordKeyCount() ), ( ::cAlias__ )->( RecCount() ) ) }
+   METHOD ordKeyGoto  BLOCK { | Self, nRecord |                ( ::cAlias__ )->( ordKeyGoto( nRecord ) ) }
 
    ERROR HANDLER FieldAssign
 
@@ -2791,126 +2809,126 @@ METHOD IsTableEmpty CLASS ooHGRecord
 
    LOCAL lEmpty
 
-   If ::EOF()
-      If ::BOF()
+   IF ::Eof()
+      IF ::Bof()
          lEmpty := .T.
-      Else
+      ELSE
          ::Skip( -1 )
-         lEmpty := ::BOF()
+         lEmpty := ::Bof()
          ::Skip( 1 )
-      EndIf
-   Else
-      If ::BOF()
+      ENDIF
+   ELSE
+      IF ::Bof()
          ::GoTop()
-         lEmpty := ::EOF()
-      Else
+         lEmpty := ::Eof()
+      ELSE
         lEmpty := .F.
-      EndIf
-   EndIf
+      ENDIF
+   ENDIF
 
-   Return lEmpty
+   RETURN lEmpty
 
 METHOD FieldAssign( xValue ) CLASS ooHGRecord
 
    LOCAL nPos, cMessage, uRet, cAlias, lError
 
    cAlias := ::cAlias__
-   cMessage := ALLTRIM( UPPER( __GetMessage() ) )
+   cMessage := AllTrim( Upper( __GetMessage() ) )
    lError := .T.
-   If PCOUNT() == 0
+   IF PCount() == 0
       nPos := ( cAlias )->( FieldPos( cMessage ) )
-      If nPos > 0
+      IF nPos > 0
          uRet := ( cAlias )->( FieldGet( nPos ) )
          lError := .F.
-      EndIf
-   ElseIf PCOUNT() == 1
-      nPos := ( cAlias )->( FieldPos( SUBSTR( cMessage, 2 ) ) )
-      If nPos > 0
+      ENDIF
+   ELSEIF PCount() == 1
+      nPos := ( cAlias )->( FieldPos( SubStr( cMessage, 2 ) ) )
+      IF nPos > 0
          uRet := ( cAlias )->( FieldPut( nPos, xValue ) )
          lError := .F.
-      EndIf
-   EndIf
-   If lError
-      uRet := Nil
+      ENDIF
+   ENDIF
+   IF lError
+      uRet := NIL
       ::MsgNotFound( cMessage )
-   EndIf
+   ENDIF
 
-   Return uRet
+   RETURN uRet
 
 METHOD New( cAlias ) CLASS ooHGRecord
 
-   If ! ValType( cAlias ) $ "CM" .OR. EMPTY( cAlias )
-      ::cAlias__ := ALIAS()
-   Else
-      ::cAlias__ := UPPER( ALLTRIM( cAlias ) )
-   EndIf
+   IF ! ValType( cAlias ) $ "CM" .OR. Empty( cAlias )
+      ::cAlias__ := Alias()
+   ELSE
+      ::cAlias__ := Upper( AllTrim( cAlias ) )
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Use( cFile, cAlias, cRDD, lShared, lReadOnly ) CLASS ooHGRecord
 
-   DbUseArea( .T., cRDD, cFile, cAlias, lShared, lReadOnly )
-   ::cAlias__ := ALIAS()
+   dbUseArea( .T., cRDD, cFile, cAlias, lShared, lReadOnly )
+   ::cAlias__ := Alias()
 
-   Return Self
+   RETURN Self
 
 METHOD Skipper( nSkip ) CLASS ooHGRecord
 
    LOCAL nCount
 
    nCount := 0
-   nSkip := If( ValType( nSkip ) == "N", Int( nSkip ), 1 )
-   If nSkip == 0
+   nSkip := iif( ValType( nSkip ) == "N", Int( nSkip ), 1 )
+   IF nSkip == 0
       ::Skip( 0 )
-   Else
+   ELSE
       DO WHILE nSkip != 0
-         If nSkip > 0
+         IF nSkip > 0
             ::Skip( 1 )
-            If ::EOF()
+            IF ::Eof()
                ::Skip( -1 )
                EXIT
-            Else
+            ELSE
                nCount ++
                nSkip --
-            EndIf
-         Else
+            ENDIF
+         ELSE
             ::Skip( -1 )
-            If ::BOF()
+            IF ::Bof()
                EXIT
-            Else
+            ELSE
                nCount --
                nSkip ++
-            EndIf
-         EndIf
+            ENDIF
+         ENDIF
       ENDDO
-   EndIf
+   ENDIF
 
-   Return nCount
+   RETURN nCount
 
 METHOD OrdScope( uFrom, uTo ) CLASS ooHGRecord
 
-   If PCOUNT() == 0
-      ( ::cAlias )->( ORDSCOPE( 0, Nil ) )
-      ( ::cAlias )->( ORDSCOPE( 1, Nil ) )
-   ElseIf PCOUNT() == 1
-      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias )->( ORDSCOPE( 1, uFrom ) )
-   Else
-      ( ::cAlias )->( ORDSCOPE( 0, uFrom ) )
-      ( ::cAlias )->( ORDSCOPE( 1, uTo ) )
-   EndIf
+   IF PCount() == 0
+      ( ::cAlias )->( ordScope( 0, NIL ) )
+      ( ::cAlias )->( ordScope( 1, NIL ) )
+   ELSEIF PCount() == 1
+      ( ::cAlias )->( ordScope( 0, uFrom ) )
+      ( ::cAlias )->( ordScope( 1, uFrom ) )
+   ELSE
+      ( ::cAlias )->( ordScope( 0, uFrom ) )
+      ( ::cAlias )->( ordScope( 1, uTo ) )
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 METHOD Filter( cFilter ) CLASS ooHGRecord
 
-   If EMPTY( cFilter )
-      ( ::cAlias__ )->( DbClearFilter() )
-   Else
-      ( ::cAlias__ )->( DbSetFilter( { || &( cFilter ) } , cFilter ) )
-   EndIf
+   IF Empty( cFilter )
+      ( ::cAlias__ )->( dbClearFilter() )
+   ELSE
+      ( ::cAlias__ )->( dbSetFilter( { || &( cFilter ) } , cFilter ) )
+   ENDIF
 
-   Return Self
+   RETURN Self
 
 
 CLASS TVirtualField
@@ -3201,7 +3219,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TXBrowseByCell
 
    Return nColIndex
 
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend ) CLASS TXBrowseByCell
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend, lJustAdd ) CLASS TXBrowseByCell
 
    Local lRet, lBefore
 
@@ -3218,7 +3236,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
-   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .T., lAppend )
+   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .T., lAppend, lJustAdd )
    ::lCalledFromClass := lBefore
 
    If lRet
@@ -3282,7 +3300,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 
    Return lRet
 
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lJustAdd ) CLASS TXBrowseByCell
 
    Local lRet, lSomethingEdited
 
@@ -3344,7 +3362,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
          ::bPosition := ::NextPosToEdit()
       Else
          ::lCalledFromClass := .T.
-         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
+         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode, lJustAdd )
          ::lCalledFromClass := .F.
 
          If ::lAppendMode
@@ -3379,7 +3397,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
             Exit
          Else
             ::Right( .F. )
-            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+            ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
          If ::nColPos # ::FirstColInOrder
@@ -3413,7 +3431,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
          If ! HB_IsLogical( lOneRow ) .AND. ! ::FullMove
             Exit
          EndIf
-         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 7                        // PRIOR
          If HB_IsLogical( lOneRow ) .AND. lOneRow
             Exit
@@ -3428,7 +3446,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
             Exit
          EndIf
          ::PageDown( .F. )
-         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
@@ -3477,7 +3495,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
             Exit
          Else
             ::Right( .F. )
-            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+            ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       EndIf
 
@@ -3493,7 +3511,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
 
    Return lSomethingEdited
 
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCell
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lJustAdd ) CLASS TXBrowseByCell
 
    Local lRet, lSomethingEdited
 
@@ -3559,7 +3577,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
          ::bPosition := ::NextPosToEdit()
       Else
          ::lCalledFromClass := .T.
-         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode )
+         lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F., ::lAppendMode, lJustAdd )
          ::lCalledFromClass := .F.
 
          If ::lAppendMode
@@ -3590,7 +3608,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
             Exit
          Else
             ::Right( .F. )
-            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+            ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       ElseIf ::bPosition == 3                        // LEFT
          If ::nColPos # ::FirstColInOrder
@@ -3615,7 +3633,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
             Exit
          EndIf
          ::Down( .F. )
-         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 7                        // PRIOR
          If lOneRow
             Exit
@@ -3626,7 +3644,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
             Exit
          EndIf
          ::PageDown( .F. )
-         ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+         ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
       ElseIf ::bPosition == 9                        // MOUSE EXIT
          // Edition window lost focus
          ::bPosition := 0                   // This restores the processing of click messages
@@ -3673,7 +3691,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TXBrowseByCel
             Exit
          Else
             ::Right( .F. )
-            ::lAppendMode := ::Eof() .AND. ( lAppend .OR. ::AllowAppend )
+            ::lAppendMode := ::Eof .AND. ( lAppend .OR. ::AllowAppend )
          EndIf
       EndIf
 
@@ -3769,7 +3787,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
       If ( ! ::lLocked .AND. ::AllowEdit .AND. ( ::lLikeExcel .OR. ::EditControlLikeExcel( nCol ) ) .AND. ;
            ! ::IsColumnReadOnly( nCol, nRow ) .AND. ::IsColumnWhen( nCol, nRow ) .AND. aScan( ::aHiddenCols, nCol ) == 0 )
-         ::EditCell( , , , Chr( wParam  ), , , , , .F. )
+         ::EditCell( , , , Chr( wParam ) )
 
       Else
          If wParam < 32
@@ -3807,7 +3825,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
          ::DbSkip()
 
-         Do While ! ::Eof()
+         Do While ! ::Eof
             If ::FixBlocks()
                uGridValue := _OOHG_Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
             Else
@@ -3824,10 +3842,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
             ::DbSkip()
          EndDo
 
-         If ::Eof() .AND. ::SearchWrap
+         If ::Eof .AND. ::SearchWrap
             ::TopBottom( GO_TOP )
 
-            Do While ! ::Eof()
+            Do While ! ::Eof
                If ::FixBlocks()
                   uGridValue := _OOHG_Eval( ::aColumnBlocks[ nSearchCol ], cWorkArea )
                Else
@@ -3845,7 +3863,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
             EndDo
          EndIf
 
-         If ::Eof()
+         If ::Eof
             ::TopBottom( GO_BOTTOM )
             ::Refresh( { ::CountPerPage, nCol } )
          Else
@@ -4002,7 +4020,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
          ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
          ELSE
-            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
+            ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          ENDIF
       ELSEIF ! _OOHG_SameEnterDblClick .AND. ::lExtendDblClick .AND. HB_ISBLOCK( ::OnDblClick, aCellData )
          ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK", aCellData )
@@ -4240,7 +4258,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
             EndIf
 
          Case nvKey == VK_DELETE
-            If ::AllowDelete .and. ! ::Eof() .AND. ! ::lLocked
+            If ::AllowDelete .and. ! ::Eof .AND. ! ::lLocked
                If ValType(::bDelWhen) == "B"
                   lGo := _OOHG_Eval( ::bDelWhen )
                Else
