@@ -12,6 +12,25 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-01-27 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    * Some format was changed to reduce (my) confusion.
+    + Parameter lJustAdd to method EditCell of class TXBrowse.
+      If the lAppend and lJustAdd parameters are .T. and the specified
+      column is hidden, read only, or its When clause evaluates to .F.
+      then a record is added to the workarea, its fields populated
+      with default values, the ON APPEND codeblock is evaluated, and
+      the method is ended with .T. as if the user had pressed the
+      Enter key.
+    + Parameter lJustAdd to method EditAllCells of class TXBrowse.
+    + Parameter lJustAdd to method EditGrid of class TXBrowse.
+    + Parameter lJustAdd to method EditCell of class TXBrowseByCell.
+    + Parameter lJustAdd to method EditGrid of class TXBrowseByCell.
+    + Parameter lJustAdd to method EditAllCells of class TXBrowseByCell.
+    ! When you try to add a new record to a browse whose first field
+      is readonly, the record is added but the edition doesn't start.
+    #377
+
 2021-01-24 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     + Data ActiveTGridCtrl to class TGrid.
