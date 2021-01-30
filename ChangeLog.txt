@@ -12,6 +12,22 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-01-30 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    * Some format was changed to reduce (my) confusion.
+    + Check for workarea existence was added to TopBottom, DbSkip,
+      DbGoTo, Delete, EditAllCells, EditGrid methods of the TOBrowse
+      class.
+    ! The parameters of a call to EditCell method of the TXBrowse
+      class are in the wrong order.
+      Thanks to Jacek Pospischil for reporting.
+    + Check for workarea existence was added to EditAllCells and
+      Delete methods of TOBrowseBycell class.
+    ! Double execution of ON APPEND codeblock at EditGrid method of
+      TOBrowseByCell class.
+    ! RTE at PageDown and Down methods of TOBrowseByCell class when
+      data VScroll is not a valid object.
+
 2021-01-27 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     * Some format was changed to reduce (my) confusion.
