@@ -462,7 +462,7 @@ METHOD Update( nRow, lComplete ) CLASS TOBrowse
    ::GridForeColor := NIL
    ::GridBackColor := NIL
 
-   IF ::Eof()
+   IF ::Eof
       _BrowseRecMap := {}
       ::DeleteAllItems()
    ELSE
@@ -487,7 +487,7 @@ METHOD Update( nRow, lComplete ) CLASS TOBrowse
       ENDDO
       ::DbGoTo( _RecNo )
       ::DbSkip()
-      DO WHILE Len( _BrowseRecMap ) < PageLength .AND. ! ::Eof()
+      DO WHILE Len( _BrowseRecMap ) < PageLength .AND. ! ::Eof
          AAdd( _BrowseRecMap, ( cWorkArea )->( RecNo() ) )
          ::DbSkip()
       ENDDO
@@ -629,7 +629,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          // Check FOR more records
          ::DbSkip()
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             IF lAppend
@@ -816,7 +816,7 @@ METHOD Down( lAppend ) CLASS TOBrowse
          // Check for more records
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          ::DbSkip()
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             IF lAppend
@@ -864,6 +864,10 @@ METHOD TopBottom( nDir ) CLASS TOBrowse
 
    LOCAL cWorkArea := ::WorkArea
 
+   IF Select( cWorkArea ) == 0
+      RETURN NIL
+   ENDIF
+
    IF ::lDescending
       nDir := - nDir
    ENDIF
@@ -880,6 +884,10 @@ METHOD TopBottom( nDir ) CLASS TOBrowse
 METHOD DbSkip( nRows ) CLASS TOBrowse
 
    LOCAL cWorkArea := ::WorkArea
+
+   IF Select( cWorkArea ) == 0
+      RETURN NIL
+   ENDIF
 
    ASSIGN nRows VALUE nRows TYPE "N" DEFAULT 1
    IF ! ::lDescending
@@ -902,7 +910,12 @@ METHOD DbSkip( nRows ) CLASS TOBrowse
 
 METHOD DbGoTo( nRecNo ) CLASS TOBrowse
 
-   LOCAL cWorkArea := ::WorkArea
+   LOCAL cWorkArea
+
+   cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN NIL
+   ENDIF
 
    ( cWorkArea )->( dbGoto( nRecNo ) )
    ::Bof := .F.
@@ -950,7 +963,7 @@ METHOD SetValue( Value, nAtRow ) CLASS TOBrowse
    _RecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( Value )
-   IF ::Eof()
+   IF ::Eof
       ::DbGoTo( _RecNo )
       RETURN NIL
    ENDIF
@@ -985,6 +998,10 @@ METHOD Delete() CLASS TOBrowse
    ENDIF
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN NIL
+   ENDIF
+
    _RecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( Value )
@@ -1005,7 +1022,7 @@ METHOD Delete() CLASS TOBrowse
          ( cWorkArea )->( dbUnlock() )
       ENDIF
       ::DbSkip()
-      IF ::Eof()
+      IF ::Eof
          ::TopBottom( GO_BOTTOM )
       ENDIF
 
@@ -1242,6 +1259,9 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
 
    lSomethingEdited := .F.
 
@@ -1359,6 +1379,9 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
    ENDIF
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
 
    IF lAppend
       IF ::lAppendMode
@@ -1397,7 +1420,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             ::DbGoTo( ::aRecMap[ nRow ] )
             IF nRow == ::ItemCount
                ::DbSkip()
-               IF ::Eof()
+               IF ::Eof
                   nNextRec := 0
                ELSE
                   nNextRec := ( cWorkArea )->( RecNo() )
@@ -1574,7 +1597,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             IF ( cWorkArea )->( RecNo() ) # nNextRec
                ::DbGoTo( nNextRec )
                ::DbSkip()
-               IF ::Eof()
+               IF ::Eof
                   nNextRec := 0
                ELSE
                   nNextRec := ( cWorkArea )->( RecNo() )
@@ -1798,7 +1821,7 @@ METHOD Refresh() CLASS TOBrowse
       ENDIF
    ENDIF
 
-   IF ::Eof()
+   IF ::Eof
       ::DeleteAllItems()
       ::DbGoTo( _RecNo )
       RETURN NIL
@@ -1882,7 +1905,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
             ::DbGoTo( ::aRecMap[ 1 ] )
          ENDIF
 
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             RETURN 0
          ENDIF
@@ -1892,7 +1915,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
       ::DbGoTo( nRow )
       ::DbSkip()
 
-      DO WHILE ! ::Eof()
+      DO WHILE ! ::Eof
          IF ::FixBlocks()
            uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          ELSE
@@ -1909,9 +1932,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          ::DbSkip()
       ENDDO
 
-      IF ::Eof() .AND. ::SearchWrap
+      IF ::Eof .AND. ::SearchWrap
          ::TopBottom( GO_TOP )
-         DO WHILE ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != nRow
+         DO WHILE ! ::Eof .AND. ( cWorkArea )->( RecNo() ) != nRow
             IF ::FixBlocks()
               uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             ELSE
@@ -1929,7 +1952,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          ENDDO
       ENDIF
 
-      IF ::Eof()
+      IF ::Eof
          ::DbGoTo( _RecNo )
       ELSE
          ::Value := ( cWorkArea )->( RecNo() )      
@@ -2188,7 +2211,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowse
             ::AppendItem()
          ENDIF
       CASE nvKey == VK_DELETE
-         IF ::AllowDelete .AND. ! ::Eof()
+         IF ::AllowDelete .AND. ! ::Eof
             IF HB_ISBLOCK( ::bDelWhen )
                lGo := _OOHG_Eval( ::bDelWhen )
             ELSE
@@ -2675,7 +2698,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
             ::DbGoTo( ::aRecMap[ 1 ] )
          ENDIF
 
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             RETURN 0
          ENDIF
@@ -2685,7 +2708,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
       ::DbGoTo( nRow )
       ::DbSkip()
 
-      DO WHILE ! ::Eof()
+      DO WHILE ! ::Eof
          IF ::FixBlocks()
            uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
          ELSE
@@ -2702,9 +2725,9 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
          ::DbSkip()
       ENDDO
 
-      IF ::Eof() .AND. ::SearchWrap
+      IF ::Eof .AND. ::SearchWrap
          ::TopBottom( GO_TOP )
-         DO WHILE ! ::Eof() .AND. ( cWorkArea )->( RecNo() ) != nRow
+         DO WHILE ! ::Eof .AND. ( cWorkArea )->( RecNo() ) != nRow
             IF ::FixBlocks()
               uGridValue := _OOHG_Eval( ::aColumnBlocks[ ::SearchCol ], cWorkArea )
             ELSE
@@ -2722,7 +2745,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowseByCell
          ENDDO
       ENDIF
 
-      IF ! ::Eof()
+      IF ! ::Eof
          ::Value := { ( cWorkArea )->( RecNo() ), ::nColPos }
       ENDIF
 
@@ -2966,7 +2989,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
             ::AppendItem()
          ENDIF
       CASE nvKey == VK_DELETE
-         IF ::AllowDelete .AND. ! ::Eof()
+         IF ::AllowDelete .AND. ! ::Eof
             IF HB_ISBLOCK( ::bDelWhen )
                lGo := _OOHG_Eval( ::bDelWhen )
             ELSE
@@ -3031,7 +3054,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
-   lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos )
+   lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend )
    ::lCalledFromClass := lBefore
 
    IF lRet .AND. lAppend
@@ -3220,6 +3243,9 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
 
    lSomethingEdited := .F.
 
@@ -3387,7 +3413,6 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             lRowAppended := .T.
             ::lAppendMode := .F.
             lAppend := .F.
-            ::DoEvent( ::OnAppend, "APPEND" )
          ENDIF
       ENDIF
 
@@ -3675,7 +3700,7 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
          _RecNo := ( cWorkArea )->( RecNo() )
 
          ::DbGoTo( nRow )
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             RETURN NIL
          ENDIF
@@ -3726,6 +3751,10 @@ METHOD Delete() CLASS TOBrowseByCell
    ENDIF
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN NIL
+   ENDIF
+
    _RecNo := ( cWorkArea )->( RecNo() )
 
    ::DbGoTo( nRow )
@@ -3746,7 +3775,7 @@ METHOD Delete() CLASS TOBrowseByCell
          ( cWorkArea )->( DbUnlock() )
       ENDIF
       ::DbSkip()
-      IF ::Eof()
+      IF ::Eof
          ::TopBottom( GO_BOTTOM )
       ENDIF
 
@@ -3922,12 +3951,12 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          // Check for more records
          ::DbSkip()
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT .F.
             IF lAppend
                lRet := ::AppendItem()
-               IF ::VScroll:Enabled
+               IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                   // Kill scrollbar's events...
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
@@ -4057,12 +4086,12 @@ METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
          // Check FOR more records
          ::DbGoTo( ::aRecMap[ Len( ::aRecMap ) ] )
          ::DbSkip()
-         IF ::Eof()
+         IF ::Eof
             ::DbGoTo( _RecNo )
             ASSIGN lAppend VALUE lAppend TYPE "L" DEFAULT ::AllowAppend
             IF lAppend
                lRet := ::AppendItem()
-               IF ::VScroll:Enabled
+               IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
                   // Kill scrollbar's events...
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
