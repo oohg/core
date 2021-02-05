@@ -26,6 +26,7 @@
     cell using a TGridControlTextBox control.
     It only applies to browse, xbrowse and grid controls with INPLACE
     and EDITLIKEEXCEL clauses that have lKeysOn data set to .T.
+  ; Based on a proposal by Jacek Pospischil.
   #381
 
 2021-01-30 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
