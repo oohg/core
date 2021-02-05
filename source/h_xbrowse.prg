@@ -243,7 +243,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
                rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
                bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick, aHeaderColors, ;
-               nTimeOut, bEditKeysFun ) CLASS TXBrowse
+               nTimeOut, bEditKeysFun, lNoDefMsg ) CLASS TXBrowse
 
    Local nWidth2, nCol2, z
 
@@ -323,7 +323,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               NIL, NIL, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, NIL, ;
-              NIL, aHeadDblClick, aHeaderColors, nTimeOut )
+              NIL, aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg )
 
    ::FixBlocks( lFixedBlocks )
 
@@ -3157,7 +3157,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, ;
-                lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut ) CLASS TXBrowseByCell
+                lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg ) CLASS TXBrowseByCell
 
    HB_SYMBOL_UNUSED( nStyle )
    HB_SYMBOL_UNUSED( lNone )
@@ -3179,7 +3179,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                     DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                     lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                     lNoShowAlways, .F., .T., lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-                    aHeadDblClick, aHeaderColors, nTimeOut )
+                    aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg )
 
    // By default, search in the current column
    ::SearchCol := -1

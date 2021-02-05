@@ -111,6 +111,7 @@ STANDARD VERSION
       [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
+      [ <nomsg: NODEFAULTMSG> ] ;
       [ READONLY <aReadOnly> ] ;
       [ <lock: LOCK> ] ;
       [ <delete: DELETE> ] ;
@@ -224,7 +225,7 @@ STANDARD VERSION
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
             <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, ;
-            <nRowAt>, <{bFun}> )
+            <nRowAt>, <{bFun}>, <.nomsg.> )
 
 #command SET BROWSESYNC ON ;
    => ;

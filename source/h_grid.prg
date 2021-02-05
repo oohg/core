@@ -153,6 +153,7 @@ CLASS TGrid FROM TControl
    DATA nDelayedClick             INIT { 0, 0, 0, Nil } PROTECTED
    DATA nEditRow                  INIT 0 PROTECTED
    DATA nHeight                   INIT 120
+   DATA NoDefaultMsg              INIT .F.
    DATA nRowPos                   INIT 0 PROTECTED
    DATA nTimeOut                  INIT Nil
    DATA nVisibleItems             INIT 0
@@ -305,7 +306,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGrid
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -320,7 +321,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -344,7 +345,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
-                lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut ) CLASS TGrid
+                lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg ) CLASS TGrid
 
    Local ControlHandle, aImageList, i
 
@@ -436,6 +437,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ASSIGN ::lChangeBeforeEdit VALUE lCBE              TYPE "L"
    ASSIGN ::lAtFirstCol       VALUE lAtFirst          TYPE "L"
    ASSIGN ::lKeysLikeClipper  VALUE klc               TYPE "L"
+   ASSIGN ::NoDefaultMsg      VALUE lNoDefMsg         TYPE "L"
    ASSIGN lLabelTip           VALUE lLabelTip         TYPE "L" DEFAULT .F.
    ASSIGN lNoHSB              VALUE lNoHSB            TYPE "L" DEFAULT .F.
    ASSIGN lNoVSB              VALUE lNoVSB            TYPE "L" DEFAULT .F.
@@ -1855,7 +1857,7 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
          ENDIF
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
             MsgExclamation( cValidMessage, _OOHG_Messages( MT_MISCELL, 9 ) )
-         Else
+         ELSEIF ! ::NoDefaultMsg .AND. ( ! HB_ISLOGICAL( cValidMessage ) .OR. cValidMessage )
             MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          EndIf
          aEditControls[ nItem ]:SetFocus()
@@ -4562,7 +4564,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGridMulti
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4581,7 +4583,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4776,7 +4778,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGridByCell
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4795,7 +4797,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg )
 
    // Search the current column
    ::SearchCol := -1
@@ -6500,7 +6502,9 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ENDIF
       ::oWindow:Activate()
    ENDIF
-   ::oGrid:ActiveTGridCtrl := NIL
+   IF HB_ISOBJECT( ::oGrid )
+      ::oGrid:ActiveTGridCtrl := NIL
+   ENDIF
    ::oWindow := NIL
 
    Return lRet
@@ -6534,7 +6538,7 @@ METHOD Valid() CLASS TGridControl
       EndIf
       If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
          MsgExclamation( cValidMessage, _OOHG_Messages( MT_MISCELL, 9 ) )
-      Else
+      ELSEIF ! HB_ISOBJECT( ::oGrid ) .OR. ( ! ::oGrid:NoDefaultMsg .AND. ( ! HB_ISLOGICAL( cValidMessage ) .OR. cValidMessage ) )
          MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       EndIf
       ::oControl:SetFocus()
@@ -6779,7 +6783,9 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ENDIF
       ::oWindow:Activate()
    ENDIF
-   ::oGrid:ActiveTGridCtrl := NIL
+   IF HB_ISOBJECT( ::oGrid )
+      ::oGrid:ActiveTGridCtrl := NIL
+   ENDIF
    ::oWindow := NIL
 
    Return lRet
@@ -7252,7 +7258,9 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ENDIF
       ::oWindow:Activate()
    ENDIF
-   ::oGrid:ActiveTGridCtrl := NIL
+   IF HB_ISOBJECT( ::oGrid )
+      ::oGrid:ActiveTGridCtrl := NIL
+   ENDIF
    ::oWindow := NIL
 
    Return lRet
@@ -7479,7 +7487,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
 
    ::Refresh()
    @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems VALUESOURCE ( ::aValues )
-   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+   IF HB_ISOBJECT( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 
@@ -7588,7 +7596,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
          @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE uValue ITEMS ::aItems
       EndIf
    EndIf
-   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+   If HB_ISOBJECT( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
    EndIf
 
@@ -7764,7 +7772,7 @@ METHOD New( oGrid, lButtons, aImages, lNoModal, nTimeOut ) CLASS TGridControlIma
    _OOHG_Eval( _OOHG_InitTGridControlDatas, Self )
 
    ::oGrid := oGrid
-   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+   IF HB_ISOBJECT( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       ::nDefHeight := ImageList_Size( ::oGrid:ImageList )[ 2 ] + 6
    EndIf
 
@@ -7798,7 +7806,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    If ValType( uValue ) == "C"
       uValue := Val( uValue )
    EndIf
-   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+   IF HB_ISOBJECT( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       @ nRow,nCol COMBOBOX 0 OBJ ::oControl PARENT ( cWindow ) WIDTH nWidth VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]
       ::oControl:ImageList := ImageList_Duplicate( ::oGrid:ImageList )
       AEval( Array( ImageList_GetImageCount( ::oGrid:ImageList ) ), { |x,i| ::oControl:AddItem( i - 1 ), x } )
@@ -7878,7 +7886,7 @@ METHOD CreateControl( uValue, cWindow, nRow, nCol, nWidth, nHeight ) CLASS TGrid
    EndIf
    nSize := LoWord( GetDialogBaseUnits() ) + GetVScrollBarWidth()
    nHeight := 6
-   If ! Empty( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
+   If HB_ISOBJECT( ::oGrid ) .AND. ValidHandler( ::oGrid:ImageList )
       nSize += ImageList_Size( ::oGrid:ImageList )[ 1 ]
       nHeight += ImageList_Size( ::oGrid:ImageList )[ 2 ]
       @ nRow,nCol COMBOBOX 0 OBJ oCImage PARENT ( cWindow ) WIDTH nSize VALUE 0 ITEMS {} IMAGE {} TEXTHEIGHT ImageList_Size( ::oGrid:ImageList )[ 2 ]

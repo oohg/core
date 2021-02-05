@@ -102,6 +102,7 @@
       [ <dummy08: WHEN, COLUMNWHEN> <aWhenFields> ] ;
       [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
+      [ <nomsg: NODEFAULTMSG> ] ;
       [ READONLY <aReadOnly> ] ;
       [ <lock: LOCK> ] ;
       [ <delete: DELETE> ] ;
@@ -205,7 +206,7 @@
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
-            <aHeadClrs>, <nTime>, <{bFun}> )
+            <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

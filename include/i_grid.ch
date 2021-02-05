@@ -115,6 +115,7 @@ STANDARD VERSION
       [ READONLY <aReadOnly> ] ;
       [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
+      [ <nomsg: NODEFAULTMSG> ] ;
       [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
       [ <dummy10: WHEN, COLUMNWHEN> <aWhenFields> ] ;
@@ -205,7 +206,7 @@ STANDARD VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClr>, <nTime>, <{bFun}> )
+            <aHeadDblClick>, <aHeadClr>, <nTime>, <{bFun}>, <.nomsg.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -254,6 +255,7 @@ SPLITBOX VERSION
       [ READONLY <aReadOnly> ] ;
       [ <dummy20: VALID, COLUMNVALID> <aValidFields> ] ;
       [ VALIDMESSAGES <aValidMessages> ] ;
+      [ <nomsg: NODEFAULTMSG> ] ;
       [ <dummy09: ONEDITCELL, ON EDITCELL> <editcell> ] ;
       [ <noshowheaders: NOHEADERS> ] ;
       [ <dummy10: WHEN, COLUMNWHEN> <aWhenFields> ] ;
@@ -344,7 +346,7 @@ SPLITBOX VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}> )
+            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;
