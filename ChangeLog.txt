@@ -12,6 +12,13 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-05 10:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Related to previous commit: the codeblock should have the form
+      { |oTGridControlTextBox| MyFunction( oTGridControlTextBox ) }
+      This change allows the access to all the control's datas.
+  #381
+
 2021-02-04 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.ch
   * core\include\i_xbrowse.ch
@@ -26,10 +33,6 @@
     cell using a TGridControlTextBox control.
     It only applies to browse, xbrowse and grid controls with INPLACE
     and EDITLIKEEXCEL clauses that have lKeysOn data set to .T.
-  ; The codeblock should have the form:
-    { |oWin, oCtrl| MyFunction( oWin, oCtrl) }
-    oCtrl is a reference to the TGridControlTextBox.
-    oWin is a reference to TGridContrlTextBox container.
   ; Based on a proposal by Jacek Pospischil.
   #381
 
