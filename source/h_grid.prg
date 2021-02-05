@@ -1777,7 +1777,7 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
    EndIf
 
    @ nRow,  25 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( MT_MISCELL, 6 ) ;
-         ACTION ( TGrid_EditItem_Check( aEditControls2, aItemValues, oMain, aReturn ) )
+         ACTION ( TGrid_EditItem_Check( aEditControls2, aItemValues, oMain, aReturn, ::NoDefaultMsg ) )
 
    @ nRow, 145 BUTTON 0 PARENT ( oWnd ) CAPTION _OOHG_Messages( MT_MISCELL, 7 ) ;
          ACTION oMain:Release()
@@ -1834,7 +1834,7 @@ STATIC FUNCTION TGrid_EditItem_When( aEditControls )
 
    Return aValues
 
-STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn )
+STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn, lNoMsg )
 
    Local lRet, nItem, aValues, lValid, cValidMessage
 
@@ -1857,7 +1857,7 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
          ENDIF
          If ValType( cValidMessage ) $ "CM" .AND. ! Empty( cValidMessage )
             MsgExclamation( cValidMessage, _OOHG_Messages( MT_MISCELL, 9 ) )
-         ELSEIF ! ::NoDefaultMsg .AND. ( ! HB_ISLOGICAL( cValidMessage ) .OR. cValidMessage )
+         ELSEIF ! lNoMsg .AND. ( ! HB_ISLOGICAL( cValidMessage ) .OR. cValidMessage )
             MsgExclamation( _OOHG_Messages( MT_BRW_ERR, 11 ), _OOHG_Messages( MT_MISCELL, 9 ) )
          EndIf
          aEditControls[ nItem ]:SetFocus()
