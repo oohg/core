@@ -3026,8 +3026,8 @@
       control with ACTION and/or ACTION2 clauses.
     ! TGridControlTextBox with lButton parameter set to .T. in a Grid with
       NOMODAL edit clause, hangs the app when a button is clicked. Until
-      a solution is found, edit control es forced to MODAL behaviour.
-      This means that you cant exit the editing windows with the mouse.
+      a solution is found, edit control is forced to MODAL behaviour.
+      This means that you can't exit the editing window with the mouse.
   * source\h_xbrowse.prg
     * Comments.
     *- Unneeded code.
