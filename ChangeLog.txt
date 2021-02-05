@@ -12,6 +12,22 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-04 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_xbrowse.ch
+  * core\include\i_grid.ch
+    + Clause EDITKEYSFUN <codeblock>.
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+  * core\source\h_grid.prg
+    + Support for new clause.
+  ; This clause disables the default set of navigation and ctrl keys.
+    It allows to customization of such keys during the edition of a
+    cell using a TGridControlTextBox control.
+    It only applies to browse, xbrowse and grid controls with INPLACE
+    and EDITLIKEEXCEL clauses that have lKeysOn data set to .T.
+  #381
+
 2021-01-30 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     * Some format was changed to reduce (my) confusion.
@@ -21,12 +37,15 @@
     ! The parameters of a call to EditCell method of the TXBrowse
       class are in the wrong order.
       Thanks to Jacek Pospischil for reporting.
+    #378
     + Check for workarea existence was added to EditAllCells and
       Delete methods of TOBrowseBycell class.
     ! Double execution of ON APPEND codeblock at EditGrid method of
       TOBrowseByCell class.
+    #379
     ! RTE at PageDown and Down methods of TOBrowseByCell class when
       data VScroll is not a valid object.
+    #380
 
 2021-01-27 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
