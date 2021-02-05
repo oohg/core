@@ -6720,7 +6720,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
 
       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) .AND. ::oGrid:lKeysOn
          IF HB_ISBLOCK( ::oGrid:bEditKeysFun )
-            _OOHG_Eval( ::oGrid:bEditKeysFun, ::oWindow, ::oControl )
+            _OOHG_Eval( ::oGrid:bEditKeysFun, Self )
          ELSE
             ON KEY UP             OF ( ::oControl ) ACTION EVAL( ::bOk, 1 )
             ON KEY RIGHT          OF ( ::oControl ) ACTION EVAL( ::bOk, 2 )
