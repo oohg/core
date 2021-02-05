@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-05 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! Compiler error "Self not defined" at function TGrid_EditItem_Check.
+  #383
+
 2021-02-05 17:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     + Some checks for grid existence in various methods of the
