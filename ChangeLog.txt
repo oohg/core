@@ -12,6 +12,25 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-05 17:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Some checks for grid existence in various methods of the
+      TGridControl * classes.
+  * core\include\i_browse.ch
+  * core\include\i_xbrowse.ch
+  * core\include\i_grid.ch
+    + Clause NODEFAULTMSG.
+ * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+  * core\source\h_grid.prg
+    + Support for new clause.
+  ; This clause disables the display of a default message when
+    the valid clause is evaluated to .F. and an specific message
+    is not set. This clause applies to all columns. To disable
+    the default message for just one column you can set its valid
+    message to .F.
+  #382
+
 2021-02-05 10:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     * Related to previous commit: the codeblock should have the form
