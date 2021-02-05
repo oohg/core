@@ -142,6 +142,7 @@ STANDARD VERSION
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ EDITKEYSFUN <bFun> ] ;
       [ <forcerefresh: FORCEREFRESH> ] ;
       [ <norefresh: NOREFRESH> ] ;
       [ <bffr: SINGLEBUFFER> ] ;
@@ -222,7 +223,8 @@ STANDARD VERSION
             <.none.>, <.cbe.>, <{rclick}>, ;
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
-            <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, <nRowAt> )
+            <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, ;
+            <nRowAt>, <{bFun}> )
 
 #command SET BROWSESYNC ON ;
    => ;

@@ -133,6 +133,7 @@
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ EDITKEYSFUN <bFun> ] ;
       [ <bffr: SINGLEBUFFER> ] ;
       [ <focus: NOFOCUSRECT, FOCUSRECT> ] ;
       [ <plm: PAINTLEFTMARGIN> ] ;
@@ -204,7 +205,7 @@
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
-            <aHeadClrs>, <nTime> )
+            <aHeadClrs>, <nTime>, <{bFun}> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

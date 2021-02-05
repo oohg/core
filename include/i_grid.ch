@@ -129,6 +129,7 @@ STANDARD VERSION
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ EDITKEYSFUN <bFun> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ <bffr: SINGLEBUFFER> ] ;
@@ -204,7 +205,7 @@ STANDARD VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClr>, <nTime> )
+            <aHeadDblClick>, <aHeadClr>, <nTime>, <{bFun}> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -267,6 +268,7 @@ SPLITBOX VERSION
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
+      [ EDITKEYSFUN <bFun> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
       [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ <bffr: SINGLEBUFFER> ] ;
@@ -342,7 +344,7 @@ SPLITBOX VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClrs>, <nTime> )
+            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

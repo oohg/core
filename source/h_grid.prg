@@ -95,6 +95,7 @@ CLASS TGrid FROM TControl
    DATA bCompareItems             INIT Nil
    DATA bDelWhen                  INIT Nil
    DATA bEditCellValue            INIT Nil
+   DATA bEditKeysFun              INIT NIL
    DATA bHeadRClick               INIT Nil
    DATA bOnEnter                  INIT Nil
    DATA bOnScroll                 INIT NIL
@@ -304,7 +305,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut ) CLASS TGrid
+               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -326,7 +327,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
               bdelwhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue, bbeforeinsert )
+              bbeforeditcell, bEditCellValue, bbeforeinsert, bEditKeysFun )
 
    Return Self
 
@@ -594,7 +595,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
                 onenter, oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
                 bDelWhen, onappend, bheadrclick, onrclick, oninsert, editend, ;
-                bbeforeditcell, bEditCellValue, bbeforeinsert ) CLASS TGrid
+                bbeforeditcell, bEditCellValue, bbeforeinsert, bEditKeysFun ) CLASS TGrid
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
@@ -620,6 +621,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
    ASSIGN ::OnBeforeInsert   VALUE bbeforeinsert  TYPE "B"
    ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
+   ASSIGN ::bEditKeysFun     VALUE bEditKeysFun   TYPE "B"
    // Must precede ::OnEnter assignment to honor _OOHG_SameEnterDblClick
    ASSIGN ::OnDblClick       VALUE dblclick       TYPE "B"
    ASSIGN ::OnEnter          VALUE onenter        TYPE "B"
@@ -4560,7 +4562,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut ) CLASS TGridMulti
+               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4586,7 +4588,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue, bbeforeinsert )
+              bbeforeditcell, bEditCellValue, bbeforeinsert, bEditKeysFun )
 
    Return Self
 
@@ -4774,7 +4776,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut ) CLASS TGridByCell
+               aHeaderColors, nTimeOut, bEditKeysFun ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4803,7 +4805,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               onenter, oncheck, abortedit, click, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutofit, onDelete, ;
               bDelWhen, onappend, bHeadRClick, onrclick, oninsert, editend, ;
-              bbeforeditcell, bEditCellValue, bbeforeinsert )
+              bbeforeditcell, bEditCellValue, bbeforeinsert, bEditKeysFun )
 
    Return Self
 
@@ -6717,30 +6719,34 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       ::CreateControl( uValue, ::oWindow, 0, 0, nWidth + 6, nHeight + 6 )
 
       If HB_IsObject( ::oGrid ) .AND. ::oGrid:InPlace .AND. ( ::lLikeExcel .OR. ::oGrid:lLikeExcel ) .AND. ::oGrid:lKeysOn
-         ON KEY UP             OF ( ::oControl ) ACTION EVAL( ::bOk, 1 )
-         ON KEY RIGHT          OF ( ::oControl ) ACTION EVAL( ::bOk, 2 )
-         ON KEY LEFT           OF ( ::oControl ) ACTION EVAL( ::bOk, 3 )
-         ON KEY HOME           OF ( ::oControl ) ACTION EVAL( ::bOk, 4 )
-         ON KEY END            OF ( ::oControl ) ACTION EVAL( ::bOk, 5 )
-         ON KEY DOWN           OF ( ::oControl ) ACTION EVAL( ::bOk, 6 )
-         ON KEY PRIOR          OF ( ::oControl ) ACTION EVAL( ::bOk, 7 )
-         ON KEY NEXT           OF ( ::oControl ) ACTION EVAL( ::bOk, 8 )
-         ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
-         ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
-         If ::oGrid:lKeysLikeClipper
-            ON KEY CTRL+HOME   OF ( ::oControl ) ACTION EVAL( ::bOk, 14 )
-            ON KEY CTRL+END    OF ( ::oControl ) ACTION EVAL( ::bOk, 15 )
-            ON KEY CTRL+PRIOR  OF ( ::oControl ) ACTION EVAL( ::bOk, 17 )
-            ON KEY CTRL+NEXT   OF ( ::oControl ) ACTION EVAL( ::bOk, 18 )
-         Else
-            ON KEY CTRL+RIGHT  OF ( ::oControl ) ACTION EVAL( ::bOk, 12 )
-            ON KEY CTRL+LEFT   OF ( ::oControl ) ACTION EVAL( ::bOk, 13 )
-         Endif
+         IF HB_ISBLOCK( ::oGrid:bEditKeysFun )
+            _OOHG_Eval( ::oGrid:bEditKeysFun, ::oWindow, ::oControl )
+         ELSE
+            ON KEY UP             OF ( ::oControl ) ACTION EVAL( ::bOk, 1 )
+            ON KEY RIGHT          OF ( ::oControl ) ACTION EVAL( ::bOk, 2 )
+            ON KEY LEFT           OF ( ::oControl ) ACTION EVAL( ::bOk, 3 )
+            ON KEY HOME           OF ( ::oControl ) ACTION EVAL( ::bOk, 4 )
+            ON KEY END            OF ( ::oControl ) ACTION EVAL( ::bOk, 5 )
+            ON KEY DOWN           OF ( ::oControl ) ACTION EVAL( ::bOk, 6 )
+            ON KEY PRIOR          OF ( ::oControl ) ACTION EVAL( ::bOk, 7 )
+            ON KEY NEXT           OF ( ::oControl ) ACTION EVAL( ::bOk, 8 )
+            ON KEY ( ::cEditKey ) OF ( ::oControl ) ACTION TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey )
+            ::oControl:OnClick     := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnDblClick  := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnRClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnRDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnMClick    := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            ::oControl:OnMDblClick := { || TGridControlTextBox_ReleaseKeys( ::oControl, ::cEditKey ) }
+            If ::oGrid:lKeysLikeClipper
+               ON KEY CTRL+HOME   OF ( ::oControl ) ACTION EVAL( ::bOk, 14 )
+               ON KEY CTRL+END    OF ( ::oControl ) ACTION EVAL( ::bOk, 15 )
+               ON KEY CTRL+PRIOR  OF ( ::oControl ) ACTION EVAL( ::bOk, 17 )
+               ON KEY CTRL+NEXT   OF ( ::oControl ) ACTION EVAL( ::bOk, 18 )
+            Else
+               ON KEY CTRL+RIGHT  OF ( ::oControl ) ACTION EVAL( ::bOk, 12 )
+               ON KEY CTRL+LEFT   OF ( ::oControl ) ACTION EVAL( ::bOk, 13 )
+            Endif
+         ENDIF
       EndIf
 
       ::Value := ::ControlValue

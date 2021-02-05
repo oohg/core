@@ -229,7 +229,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lNoShowAlways, lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck, ;
                bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst, ;
                bbeforeditcell, bEditCellValue, klc, lLabelTip, lNoHSB, ;
-               aHeadDblClick, aHeaderColors, nTimeOut, nNewAtRow ) CLASS TOBrowse
+               aHeadDblClick, aHeaderColors, nTimeOut, nNewAtRow, bEditKeysFun ) CLASS TOBrowse
 
    LOCAL nWidth2, nCol2, z
 
@@ -382,7 +382,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               bOnCheck, bOnAbortEdit, bOnClick, bBeforeColMove, bAfterColMove, ;
               bBeforeColSize, bAfterColSize, bBeforeAutoFit, bOnDelete, ;
               bDelWhen, bOnAppend, bHeadRClick, bOnRClick, bOnEditEnd, bOnRowRefresh, ;
-              bbeforeditcell, bEditCellValue )
+              bbeforeditcell, bEditCellValue, bEditKeysFun )
 
    ::ToolTip := cToolTip
    ::HelpId  := nHelpId

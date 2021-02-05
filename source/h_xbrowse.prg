@@ -243,7 +243,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
                lSilent, lAltA, lNoShowAlways, onrclick, lCheckBoxes, oncheck, ;
                rowrefresh, aDefaultValues, editend, lAtFirst, bbeforeditcell, ;
                bEditCellValue, klc, lLabelTip, lNoHSB, aHeadDblClick, aHeaderColors, ;
-               nTimeOut ) CLASS TXBrowse
+               nTimeOut, bEditKeysFun ) CLASS TXBrowse
 
    Local nWidth2, nCol2, z
 
@@ -385,7 +385,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
               oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
               bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
               bdelwhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
-              bbeforeditcell, bEditCellValue )
+              bbeforeditcell, bEditCellValue, bEditKeysFun )
 
    ::ToolTip := cToolTip
    ::HelpId  := nHelpId
@@ -409,7 +409,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
                 oncheck, abortedit, click, bbeforecolmove, baftercolmove, ;
                 bbeforecolsize, baftercolsize, bbeforeautofit, ondelete, ;
                 bDelWhen, onappend, bheadrclick, onrclick, editend, rowrefresh, ;
-                bbeforeditcell, bEditCellValue ) CLASS TXBrowse
+                bbeforeditcell, bEditCellValue, bEditKeysFun ) CLASS TXBrowse
 
    // Must be set after control is initialized
    ASSIGN ::OnChange         VALUE change         TYPE "B"
@@ -432,6 +432,7 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, editcell, onenter, ;
    ASSIGN ::bHeadRClick      VALUE bheadrclick    TYPE "B"
    ASSIGN ::OnRClick         VALUE onrclick       TYPE "B"
    ASSIGN ::OnEditCellEnd    VALUE editend        TYPE "B"
+   ASSIGN ::bEditKeysFun     VALUE bEditKeysFun   TYPE "B"
    ASSIGN ::OnRefreshRow     VALUE rowrefresh     TYPE "B"
    ASSIGN ::OnBeforeEditCell VALUE bbeforeditcell TYPE "B"
    ASSIGN ::bEditCellValue   VALUE bEditCellValue TYPE "B"
