@@ -6442,8 +6442,8 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize ;
       ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
-      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux, lRet }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    ElseIf HB_IsObject( ::oGrid )
 
@@ -6453,7 +6453,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    Else
 
@@ -6463,7 +6463,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { || lRet := ::Valid() }
-      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    EndIf
 
@@ -6676,8 +6676,8 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize ;
       ON INIT ( ::onLostFocus := { |bAux| ::oGrid:bPosition := 9, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux } )
 
-      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux }
-      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bOk := { |nPos, bAux| ::oGrid:bPosition := nPos, bAux := ::onLostFocus, ::onLostFocus := Nil, lRet := ::Valid(), ::onLostFocus := bAux, lRet }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    ElseIf HB_IsObject( ::oGrid )
 
@@ -6687,7 +6687,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    Else
 
@@ -6697,7 +6697,7 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       FONT cFontName SIZE nFontSize
 
       ::bOk := { || lRet := ::Valid() }
-      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+      ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
 
    EndIf
 
@@ -7211,10 +7211,10 @@ METHOD CreateWindow( uValue, nRow, nCol, nWidth, nHeight, cFontName, nFontSize, 
       If HB_IsObject( oGrid )
          ::oGrid := oGrid
          ::bOk := { |nPos| ::oGrid:bPosition := nPos, lRet := ::Valid() }
-         ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+         ::bCancel := { |x| ::oGrid:bPosition := 0, iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
       Else
          ::bOk := { || lRet := ::Valid() }
-         ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release() }
+         ::bCancel := { |x| iif( HB_ISLOGICAL( x ), lRet := x, NIL ), ::oWindow:Release(), lRet }
       EndIf
       IF HB_ISNUMERIC( nTimeOut ) .AND. nTimeOut >= 0
          ::nTimeOut := nTimeOut
