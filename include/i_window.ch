@@ -256,6 +256,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ <nosize: NOSIZE> ] ;
       [ <nosysmenu: NOSYSMENU> ] ;
       [ <nocaption: NOCAPTION> ] ;
+      [ <border: BORDER> ] ;
       [ CURSOR <cursor> ] ;
       [ ON INIT <InitProcedure> ] ;
       [ ON MOVE <MoveProcedure> ] ;
@@ -325,7 +326,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
             <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
-            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1 )
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1, ;
+            <.border.> )
 
 #xcommand LOAD WINDOW <w> ;
    => ;
@@ -433,6 +435,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ <nosize: NOSIZE> ] ;
       [ <nosysmenu: NOSYSMENU> ] ;
       [ <nocaption: NOCAPTION> ] ;
+      [ <border: BORDER> ] ;
       [ CURSOR <cursor> ] ;
       [ ON INIT <InitProcedure> ] ;
       [ ON MOVE <MoveProcedure> ] ;
@@ -501,7 +504,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
             <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
-            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1 )
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1, ;
+            <.border.> )
 
 /*---------------------------------------------------------------------------
 AUTOADJUST

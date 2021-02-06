@@ -247,7 +247,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp, nICL ) CLASS TForm
+               fontcolor, nodwp, nICL, border ) CLASS TForm
 
    Local nStyle := 0, nStyleEx := 0
    Local hParent
@@ -272,7 +272,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp, nICL )
+              MoveProcedure, fontcolor, nodwp, nICL, border )
 
    Return Self
 
@@ -283,7 +283,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                MoveProcedure, fontcolor, nodwp, nICL ) CLASS TForm
+                MoveProcedure, fontcolor, nodwp, nICL, border ) CLASS TForm
 
    Local FormHandle, aRet
 
@@ -339,8 +339,13 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
    EndIf
 
    nStyle += iif( ! HB_ISLOGICAL( nosize ) .OR. ! nosize, WS_SIZEBOX, 0 ) + ;
-             iif( ! HB_ISLOGICAL( nosysmenu ) .OR. ! nosysmenu, WS_SYSMENU, 0 ) + ;
-             iif( ! HB_ISLOGICAL( nocaption )  .OR. ! nocaption, WS_CAPTION, 0 )
+             iif( ! HB_ISLOGICAL( nosysmenu ) .OR. ! nosysmenu, WS_SYSMENU, 0 )
+
+   IF ! HB_ISLOGICAL( nocaption ) .OR. ! nocaption
+      nStyle += WS_CAPTION
+   ELSEIF HB_ISLOGICAL( border ) .AND. border
+      nStyle += WS_BORDER
+   ENDIF
 
    IF ::lTopmost
       nStyleEx += WS_EX_TOPMOST
@@ -2053,7 +2058,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                mdi, clientarea, restoreprocedure, RClickProcedure, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
                MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-               MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormMain
+               MoveProcedure, fontcolor, nodwp, nICL, border ) CLASS TFormMain
 
    Local nStyle := 0, nStyleEx := 0
 
@@ -2073,7 +2078,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NIL, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp, nICL )
+              MoveProcedure, fontcolor, nodwp, nICL, border )
 
    ::NotifyIconObject:Picture := NotifyIconName
    ::NotifyIconObject:ToolTip := NotifyIconToolTip
@@ -2126,7 +2131,7 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
                MClickProcedure, DblClickProcedure, RDblClickProcedure, ;
                MDblClickProcedure, nominimize, nomaximize, maximizeprocedure, ;
                minimizeprocedure, minwidth, maxwidth, minheight, maxheight, ;
-               MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormModal
+               MoveProcedure, fontcolor, nodwp, nICL, border ) CLASS TFormModal
 
    LOCAL nStyle := 0, nStyleEx := 0
    LOCAL oParent, hParent
@@ -2152,7 +2157,7 @@ METHOD Define( FormName, Caption, x, y, w, h, Parent, nosize, nosysmenu, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp, nICL )
+              MoveProcedure, fontcolor, nodwp, nICL, border )
 
    RETURN Self
 
@@ -2261,7 +2266,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
                hscrollbox, vscrollbox, cursor, Focused, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormInternal
+               minheight, maxheight, fontcolor, nodwp, nICL, border ) CLASS TFormInternal
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2280,7 +2285,7 @@ METHOD Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize,
               MouseMoveProcedure, MouseDragProcedure, NIL, NIL, nStyle, nStyleEx, ;
               TYPE_OTHERS, lRtl, mdi, NIL, clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp, nICL )
+              NIL, fontcolor, nodwp, nICL, border )
 
    Return Self
 
@@ -2291,7 +2296,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                 MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                 nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                 DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                MoveProcedure, fontcolor, nodwp, nICL ) CLASS TFormInternal
+                MoveProcedure, fontcolor, nodwp, nICL, border ) CLASS TFormInternal
 
    ::Super:Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, nomaximize, nosize, nosysmenu, ;
                     nocaption, virtualheight, virtualwidth, hscrollbox, vscrollbox, fontname, fontsize, aRGB, cursor, ;
@@ -2300,7 +2305,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, Parent, helpbutton, nominimize, n
                     MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
                     nWindowType, lRtl, mdi, topmost, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                     DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-                    MoveProcedure, fontcolor, nodwp, nICL )
+                    MoveProcedure, fontcolor, nodwp, nICL, border )
 
    ::ActivateCount[ 1 ] += 999
    aAdd( ::Parent:SplitChildList, Self )
@@ -2378,7 +2383,8 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
-               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormSplit
+               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, ;
+               nICL, border ) CLASS TFormSplit
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2402,7 +2408,7 @@ METHOD Define( FormName, w, h, break, grippertext, nocaption, title, aRGB, ;
               NIL, NIL, NIL, .F., nStyle, nStyleEx, ;
               TYPE_SPLITCHILD, lRtl, mdi, .F., clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp, nICL )
+              NIL, fontcolor, nodwp, nICL, border )
 
    IF ::Container:lForceBreak .AND. ! ::Container:lInverted
       Break := .T.
@@ -2438,7 +2444,8 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
                hscrollbox, vscrollbox, cursor, oParent, Focused, lRtl, ;
                clientarea, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
-               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, nICL ) CLASS TFormMDIClient
+               minwidth, maxwidth, minheight, maxheight, fontcolor, nodwp, ;
+               nICL, border ) CLASS TFormMDIClient
 
    LOCAL nStyle := 0, nStyleEx := 0, aClientRect
 
@@ -2470,7 +2477,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
               MouseMoveProcedure, MouseDragProcedure, NIL, .F., nStyle, nStyleEx, ;
               TYPE_MDICLIENT, lRtl, .F.,, clientarea, NIL, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              NIL, fontcolor, nodwp, nICL )
+              NIL, fontcolor, nodwp, nICL, border )
 
    ::Parent:hWndClient := ::hWnd
    ::Parent:oWndClient := Self
@@ -2553,7 +2560,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp, nICL ) CLASS TFormMDIChild
+               fontcolor, nodwp, nICL, border ) CLASS TFormMDIChild
 
    LOCAL nStyle := 0, nStyleEx := 0
 
@@ -2579,7 +2586,7 @@ METHOD Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
               MouseMoveProcedure, MouseDragProcedure, InteractiveCloseProcedure, NoAutoRelease, nStyle, nStyleEx, ;
               TYPE_MDICHILD, lRtl,,, clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
               DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, maxheight, ;
-              MoveProcedure, fontcolor, nodwp, nICL )
+              MoveProcedure, fontcolor, nodwp, nICL, border )
 
    ::ProcessInitProcedure()
 
@@ -2601,7 +2608,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                        RClickProcedure, MClickProcedure, DblClickProcedure, ;
                        RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
                        minheight, maxheight, MoveProcedure, cBackImage, lStretchBack, ;
-                       fontcolor, nodwp, nICL )
+                       fontcolor, nodwp, nICL, border )
 
    Local Self
    Local aError := {}
@@ -2648,6 +2655,9 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
    ElseIf internal
       AADD( aError, "INTERNAL" )
    EndIf
+   IF ! HB_ISLOGICAL( border )
+      border := .F.
+   ENDIF
 
    if Len( aError ) > 1
       MsgOOHGError( "Window: " + aError[ 1 ] + " and " + aError[ 2 ] + " clauses can't be used simultaneously. Program terminated." )
@@ -2670,7 +2680,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                clientarea, restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp, nICL )
+               fontcolor, nodwp, nICL, border )
    ElseIf splitchild
       Self := _OOHG_SelectSubClass( TFormSplit(), subclass )
       ::Define( FormName, w, h, break, grippertext, nocaption, caption, aRGB, ;
@@ -2679,7 +2689,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                scrolldown, hscrollbox, vscrollbox, cursor, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp, nICL )
+               minheight, maxheight, fontcolor, nodwp, nICL, border )
    ElseIf modal .OR. modalsize
       Self := _OOHG_SelectSubClass( TFormModal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, nosize, nosysmenu, ;
@@ -2694,7 +2704,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, ;
                nominimize, nomaximize, maximizeprocedure, minimizeprocedure, ;
                minwidth, maxwidth, minheight, maxheight, MoveProcedure, ;
-               fontcolor, nodwp, nICL )
+               fontcolor, nodwp, nICL, border )
    ElseIf mdiclient
       Self := _OOHG_SelectSubClass( TFormMDIClient(), subclass )
       ::Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
@@ -2704,7 +2714,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                hscrollbox, vscrollbox, cursor, oParent, Focused, lRtl, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, ;
-               minheight, maxheight, fontcolor, nodwp, nICL )
+               minheight, maxheight, fontcolor, nodwp, nICL, border )
    ElseIf mdichild
       Self := _OOHG_SelectSubClass( TFormMDIChild(), subclass )
       ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
@@ -2718,7 +2728,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                InteractiveCloseProcedure, Focused, lRtl, clientarea, restoreprocedure, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, ;
-               maxheight, MoveProcedure, fontcolor, nodwp, nICL )
+               maxheight, MoveProcedure, fontcolor, nodwp, nICL, border )
    ElseIf internal
       Self := _OOHG_SelectSubClass( TFormInternal(), subclass )
       ::Define( FormName, Caption, x, y, w, h, oParent, aRGB, fontname, fontsize, ;
@@ -2728,7 +2738,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                hscrollbox, vscrollbox, cursor, Focused, lRtl, mdi, clientarea, ;
                RClickProcedure, MClickProcedure, DblClickProcedure, ;
                RDblClickProcedure, MDblClickProcedure, minwidth, maxwidth, minheight, ;
-               maxheight, fontcolor, nodwp, nICL )
+               maxheight, fontcolor, nodwp, nICL, border )
    Else // Child and "S"
       Self := _OOHG_SelectSubClass( TForm(), subclass )
       ::Define( FormName, Caption, x, y, w, h, nominimize, nomaximize, nosize, ;
@@ -2742,7 +2752,7 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                InteractiveCloseProcedure, lRtl, child, mdi, clientarea, ;
                restoreprocedure, RClickProcedure, MClickProcedure, ;
                DblClickProcedure, RDblClickProcedure, MDblClickProcedure, minwidth, ;
-               maxwidth, minheight, maxheight, MoveProcedure, fontcolor, nodwp, nICL )
+               maxwidth, minheight, maxheight, MoveProcedure, fontcolor, nodwp, nICL, border )
    EndIf
 
    ::NotifyIconObject:Picture := NotifyIconName
