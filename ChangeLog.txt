@@ -12,6 +12,14 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-06 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Clause BORDER.
+  * core\source\h_window.prg
+    + Support for new clause.
+  ; Use NOCAPTION BORDER to get a form without caption but with border.
+  #385
+
 2021-02-06 10:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     + All TGridControl bOK and bCancel codeblocks now return lRet.
