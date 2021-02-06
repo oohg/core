@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-06 10:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + All TGridControl bOK and bCancel codeblocks now return lRet.
+  #384
+
 2021-02-05 17:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     ! Compiler error "Self not defined" at function TGrid_EditItem_Check.
