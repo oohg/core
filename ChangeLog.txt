@@ -12,6 +12,22 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-02-17 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.BAT
+  * core\oohg.hbc
+    ! Lib xhb is no longer linked by default under Harbour.
+  * core\source\h_activex.prg
+  * core\source\h_zip.prg
+    ! Use Harbour's function win_oleCreateObject when __XHARBOUR__
+      is not defined. This removes Harbour's dependency on lib xhb.
+  #385
+
+2021-02-07 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    + Parameter lJustAdd to method EditCell of class TOBrowse.
+
 2021-02-06 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
     + Clause BORDER.
