@@ -28,7 +28,7 @@ prgflags=-n -q0 -w3 -es2
 libs=oohg hbprinter miniprint bostaurus
 
 # harbour libs
-libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbzebra hbhpdf hbmemio rddsql hbodbc sddodbc hbwin png xhb
+libs=hbct hbmisc hbtip hbziparc hbmzip minizip hbzebra hbhpdf hbmemio rddsql hbodbc sddodbc hbwin png
 {HB30}libs=libhpdf
 {HB32}libs=libhpdf
 {HB34}libs=hpdf

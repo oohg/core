@@ -63,12 +63,23 @@
 
 PROCEDURE HMG_UNZIPFILE ( zipfile , block , extractpath )
 
-   Local ObjZip
+   Local objZip
    Local Count
    Local objItem
    Local i
 
-   objZip := TOleAuto():New( "XStandard.Zip")
+   #ifndef __XHARBOUR__
+      IF ( objZip := win_oleCreateObject( "XStandard.Zip" ) ) == NIL
+         MsgStop( "Zip interfase is not available, error: " + win_oleErrorText(), "Error" )
+         RETURN
+      ENDIF
+   #else
+      objZip := TOleAuto():New( "XStandard.Zip" )
+      IF Ole2TxtError() != "S_OK"
+         MsgStop( "Zip interfase is not available.","Error" )
+         RETURN
+      ENDIF
+   #endif
 
    Count := objZip:Contents(zipfile):Count
 

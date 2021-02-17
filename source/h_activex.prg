@@ -124,16 +124,16 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
    ::Register( nControlHandle, ControlName )
 
    bErrorBlock := ErrorBlock( { |x| Break( x ) } )
-   #ifdef __XHARBOUR__
-      TRY
-         ::oOle := ToleAuto():New( ::hAtl )
-      CATCH oError
+   #ifndef __XHARBOUR__
+      BEGIN SEQUENCE
+         ::oOle := win_oleCreateObject( ::hAtl )
+      RECOVER USING oError
          MsgInfo( oError:Description )
       END
    #else
-      BEGIN SEQUENCE
+      TRY
          ::oOle := ToleAuto():New( ::hAtl )
-      RECOVER USING oError
+      CATCH oError
          MsgInfo( oError:Description )
       END
    #endif
