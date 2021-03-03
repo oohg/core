@@ -500,22 +500,6 @@ HB_FUNC( REGCONNECTREGISTRY )
    HB_RETNL( lError );
 }
 
-typedef BOOL ( WINAPI *LPFN_ISWOW64PROCESS ) ( HANDLE, PBOOL );
-
-HB_FUNC( ISWOW64 )
-{
-   BOOL bIsWow64 = FALSE;
-   LPFN_ISWOW64PROCESS fnIsWow64Process;
-
-   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
-   if( NULL != fnIsWow64Process )
-   {
-      fnIsWow64Process( GetCurrentProcess(), &bIsWow64 );
-   }
-
-   hb_retl( bIsWow64 );
-}
-
 #pragma ENDDUMP
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
