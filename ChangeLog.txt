@@ -17,6 +17,7 @@
     + Function ISWOW64.
     ! Function SHELLEXECUTE does not execute 32 bits apps
       under Windows 10 64 bits.
+  #387
 
 2021-03-02 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_registry.prg
