@@ -12,6 +12,16 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-03-02 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    + Function ISWOW64.
+    ! Function SHELLEXECUTE does not execute 32 bits apps
+      under Windows 10 64 bits.
+
+2021-03-02 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_registry.prg
+    - Function ISWOW64.
+
 2021-02-17 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
   * core\compile_bcc.bat
