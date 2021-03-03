@@ -451,14 +451,66 @@ HB_FUNC( GETNEXTDLGTABITEM )
    HWNDret( GetNextDlgTabItem( HWNDparam( 1 ), HWNDparam( 2 ), hb_parl( 3 ) ) );
 }
 
+typedef BOOL ( WINAPI *LPFN_ISWOW64PROCESS ) ( HANDLE, PBOOL );
+typedef BOOL ( WINAPI *LPFN_WOW64DISABLEWOW64FSREDIRECTION ) ( PVOID * );
+typedef BOOL ( WINAPI *LPFN_WOW64REVERTWOW64FSREDIRECTION ) ( PVOID );
+
+HB_FUNC( ISWOW64 )
+{
+   BOOL bIsWow64 = FALSE;
+   LPFN_ISWOW64PROCESS fnIsWow64Process;
+
+   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
+   if( NULL != fnIsWow64Process )
+   {
+      fnIsWow64Process( GetCurrentProcess(), &bIsWow64 );
+   }
+
+   hb_retl( bIsWow64 );
+}
+
 HB_FUNC( SHELLEXECUTE )
 {
+   LPFN_ISWOW64PROCESS fnIsWow64Process;
+   BOOL bIsWow64 = FALSE;
+   LPFN_WOW64DISABLEWOW64FSREDIRECTION fnDisable;
+   PVOID OldValue = NULL;
+   BOOL bRestore = FALSE;
+   LPFN_WOW64REVERTWOW64FSREDIRECTION fnRevert;
+
+   fnIsWow64Process = ( LPFN_ISWOW64PROCESS ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "IsWow64Process" );
+   if( NULL != fnIsWow64Process )
+   {
+      fnIsWow64Process( GetCurrentProcess(), &bIsWow64 );
+   }
+
+   if( bIsWow64 )
+   {
+      fnDisable = ( LPFN_WOW64DISABLEWOW64FSREDIRECTION ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "Wow64DisableWow64FsRedirection" );
+      if( NULL != fnDisable )
+      {
+         if( fnDisable( &OldValue ) )
+         {
+            bRestore = TRUE;
+         }
+      }
+   }
+
    HINSTANCEret( ShellExecute( HWNDparam( 1 ),
                  HB_ISNIL( 2 ) ? NULL : (LPCSTR) hb_parc( 2 ),
                  (LPCSTR) hb_parc( 3 ),
                  HB_ISNIL( 4 ) ? NULL : (LPCSTR) hb_parc( 4 ),
                  HB_ISNIL( 5 ) ? NULL : (LPCSTR) hb_parc( 5 ),
                  hb_parni( 6 ) ) );
+
+   if( bRestore )
+   {
+      fnRevert = ( LPFN_WOW64REVERTWOW64FSREDIRECTION ) _OOHG_GetProcAddress( GetModuleHandle( "kernel32" ), "Wow64RevertWow64FsRedirection" );
+      if( NULL != fnRevert )
+      {
+         fnRevert( OldValue );
+      }
+   }
 }
 
 HB_FUNC( WAITRUN )
