@@ -196,13 +196,11 @@ rem
    if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=gtwin gtgui hbdebug
    if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=gtwin gtgui
    set HG_C_LIBS=%HG_C_LIBS% hbrtl hbvmmt hbrdd hbcpage hbcommon hbct rddcdx rddfpt
-   set HG_C_LIBS=%HG_C_LIBS% rddntx hbsix hbhsx hblang hbmacro hbpp
+   set HG_C_LIBS=%HG_C_LIBS% rddntx hbsix hbhsx hblang hbmacro hbpp %HG_ADDLIBS%
    set HG_C_LIBS=%HG_C_LIBS% hbmemio hbmisc hbmzip hbtip hbzebra
    set HG_C_LIBS=%HG_C_LIBS% rddsql hbziparc minizip
-   rem hbhpdf must precede hbwin, png and xhb
-   rem %HG_ADDLIBS% must be at the end in case the user adds xhb
-   rem xhb must always the last lib
-   set HG_C_LIBS=%HG_C_LIBS% hbhpdf hpdf hbwin png %HG_ADDLIBS%
+   rem hbhpdf must precede hbwin png xhb
+   set HG_C_LIBS=%HG_C_LIBS% hbhpdf hpdf hbwin png xhb
 
 :LIBS_WINDOWS
 

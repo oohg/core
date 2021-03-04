@@ -222,13 +222,11 @@ rem
    if "%HG_COMP_TYPE%" == "DEBUG" set HG_C_LIBS=-lgtwin -lgtgui -lhbdebug
    if "%HG_COMP_TYPE%" == "CONSOLE" set HG_C_LIBS=-lgtwin -lgtgui
    set HG_C_LIBS=%HG_C_LIBS% -lhbrtl -lhbvmmt -lhbrdd -lhbcpage -lhbcommon -lhbct -lrddcdx -lrddfpt
-   set HG_C_LIBS=%HG_C_LIBS% -lrddntx -lhbsix -lhbhsx -lhblang -lhbmacro -lhbpp
+   set HG_C_LIBS=%HG_C_LIBS% -lrddntx -lhbsix -lhbhsx -lhblang -lhbmacro -lhbpp %HG_ADDLIBS%
    set HG_C_LIBS=%HG_C_LIBS% -lhbmemio -lhbmisc -lhbmzip -lhbtip -lhbzebra
    set HG_C_LIBS=%HG_C_LIBS% -lrddsql -lhbziparc -lminizip
    rem hbhpdf must precede hbwin, png and xhb
-   rem %HG_ADDLIBS% must be at the end in case the user adds xhb
-   rem xhb must always the last lib
-   set HG_C_LIBS=%HG_C_LIBS% -lhbhpdf -llibhpdf -lhbwin -lpng %HG_ADDLIBS%
+   set HG_C_LIBS=%HG_C_LIBS% -lhbhpdf -llibhpdf -lhbwin -lpng -lxhb
 
 :OTHER_LIBS
 
