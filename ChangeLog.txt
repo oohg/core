@@ -12,6 +12,17 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-03-03 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile.bat
+  * core\compile_bcc.bat
+  * core\compile_MINGW.BAT
+  * core\oohg.hbc
+  * core\source\h_activex.prg
+    ! RTE "Error BASE/1099 Argument error: HB_EXECFROMARRAY"
+      when an ActiveX control is created.
+  ; Previous commit "2021-02-17 17:23 UTC-0300" was reverted.
+  ; This reinstates the dependency on library xhb for Harbour builds.
+
 2021-03-02 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
     + Function ISWOW64.
