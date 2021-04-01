@@ -523,6 +523,8 @@ METHOD Value( uValue ) CLASS TButton
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint( lChange ) CLASS TButton
 
+   LOCAL hCurrentOne
+
    IF ValidHandler( ::AuxHandle )
       DeleteObject( ::AuxHandle )
    ENDIF
@@ -536,7 +538,16 @@ METHOD RePaint( lChange ) CLASS TButton
          ENDIF
          ::ReDraw()
       ELSE
+         /* if ::hImage contains pixels with nonzero alpha then this message will create and use a new bitmap */
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoTransparent )
+         /* to prevent the resource leak we must do this check */
+         hCurrentOne := _OOHG_GetBitmap( Self, BM_GETIMAGE )
+         IF ::AuxHandle # hCurrentOne
+            IF ValidHandler( ::AuxHandle )
+               DeleteObject( ::AuxHandle )
+            ENDIF
+            ::AuxHandle := hCurrentOne
+         ENDIF
       ENDIF
    ELSE
       ClearImageXP( ::hWnd )
