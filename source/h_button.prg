@@ -523,11 +523,12 @@ METHOD Value( uValue ) CLASS TButton
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint( lChange ) CLASS TButton
 
+   IF ValidHandler( ::AuxHandle )
+      DeleteObject( ::AuxHandle )
+   ENDIF
+   ::AuxHandle := NIL
+
    IF ValidHandler( ::hImage )
-      IF ValidHandler( ::AuxHandle )
-         DeleteObject( ::AuxHandle )
-      ENDIF
-      ::AuxHandle := NIL
       ::TControl():SizePos()
       IF ::IsVisualStyled .AND. ( Len( ::Caption ) > 0 .OR. ! ::lNoImgLst )
          IF HB_ISLOGICAL( lChange ) .AND. lChange
@@ -537,6 +538,8 @@ METHOD RePaint( lChange ) CLASS TButton
       ELSE
          ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, BM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoTransparent )
       ENDIF
+   ELSE
+      ClearImageXP( ::hWnd )
    ENDIF
 
    RETURN Self

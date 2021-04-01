@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-01 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    ! Button's image can't be removed by assigning an empty string.
+
 2021-03-03 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
   * core\compile_bcc.bat
