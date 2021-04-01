@@ -12,6 +12,22 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-01 17:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    ! Handle leak when image contains pixels with nonzero alpha.
+
+2021-04-01 17:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    ! Handle leak when image contains pixels with nonzero alpha.
+
+2021-04-01 17:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
+2021-04-01 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+    + Function _OOHG_GETBITMAP.
+
 2021-04-01 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
     ! Button's image can't be removed by assigning an empty string.
