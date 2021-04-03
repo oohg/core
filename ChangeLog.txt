@@ -12,13 +12,20 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-03 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Method HeaderSetColors to TGrid class.
+  #390
+
 2021-04-01 17:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_image.prg
     ! Handle leak when image contains pixels with nonzero alpha.
+  #389
 
 2021-04-01 17:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
     ! Handle leak when image contains pixels with nonzero alpha.
+  #389
 
 2021-04-01 17:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg_dyns.hbx
@@ -27,10 +34,12 @@
 2021-04-01 17:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_image.c
     + Function _OOHG_GETBITMAP.
+  #389
 
 2021-04-01 14:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
     ! Button's image can't be removed by assigning an empty string.
+  #388
 
 2021-03-03 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
@@ -42,6 +51,7 @@
       when an ActiveX control is created.
   ; Previous commit "2021-02-17 17:23 UTC-0300" was reverted.
   ; This reinstates the dependency on library xhb for Harbour builds.
+  #385
 
 2021-03-02 21:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
@@ -53,6 +63,7 @@
 2021-03-02 21:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_registry.prg
     - Function ISWOW64.
+  #387
 
 2021-02-17 17:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
