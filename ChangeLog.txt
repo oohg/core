@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-04 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_monthcal.prg
+    + Method MonthRange to class TMonthCal.
+    * Use new method instead of supporting c function.
+  #391
+
 2021-04-03 18:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     + Method HeaderSetColors to TGrid class.
