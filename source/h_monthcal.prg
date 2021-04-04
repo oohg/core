@@ -83,6 +83,7 @@ CLASS TMonthCal FROM TControl
    METHOD TrailingFontColor       SETGET
    METHOD BackgroundColor         SETGET
    METHOD SetRange
+   METHOD MonthRange              BLOCK { |Self| GetMonthRange( ::hWnd ) }
    METHOD Define2
    METHOD CurrentView             SETGET
    METHOD Events
@@ -352,7 +353,7 @@ FUNCTION SetDayState( Self )
 
    Local aData, nCount, aDays, dStart, iNextD, dEnd, dEoM, nMonth, dDay, nLen
 
-   aData  := GetMonthRange( ::hWnd )
+   aData  := ::MonthRange
    nCount := aData[ 1 ]
    IF nCount < 1
       Return Nil
