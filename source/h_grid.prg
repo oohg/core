@@ -238,6 +238,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderHeight
    METHOD HeaderImage
    METHOD HeaderImageAlign
+   METHOD HeaderSetColors
    METHOD HeaderSetFont
    METHOD HScrollUpdate
    METHOD HScrollVisible          SETGET
@@ -4109,6 +4110,21 @@ METHOD HeaderImageAlign( nColumn, nPlace ) CLASS TGrid
 
    Return ::aHeaderImageAlign[ nColumn ]
 
+METHOD HeaderSetColors( aHeaderColors ) CLASS TGrid
+
+   IF HB_ISARRAY( aHeaderColors )
+      ::aHeaderColors := aHeaderColors
+      ASize( ::aHeaderColors, Len( ::aHeaders ) )
+   ELSE
+      ::aHeaderColors := Array( Len( ::aHeaders ) )
+      IF HB_ISBLOCK( aHeaderColors )
+         AFill( ::aHeaderColors, aHeaderColors )
+      ENDIF
+   ENDIF
+   ::Redraw()
+
+   RETURN ::aHeaderColors
+
 METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharSet, nWidth, nOrientation, lAdvanced ) CLASS TGrid
 
    LOCAL HeaderHandle
@@ -4132,7 +4148,7 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
       ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
    ENDIF
 
-   RETURN Self
+   RETURN NIL
 
 METHOD Release() CLASS TGrid
 

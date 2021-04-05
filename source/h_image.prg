@@ -426,6 +426,8 @@ METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TImage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RePaint() CLASS TImage
 
+   LOCAL hCurrentOne
+
    IF ValidHandler( ::hImage )
       IF ValidHandler( ::AuxHandle )
          DeleteObject( ::AuxHandle )
@@ -433,7 +435,16 @@ METHOD RePaint() CLASS TImage
       ::AuxHandle := NIL
       ::Super:SizePos()
       IF ::Stretch .OR. ::AutoFit
-         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit )
+         /* if ::hImage contains pixels with nonzero alpha then this message will create and use a new bitmap */
+         ::AuxHandle := _OOHG_SetBitmap( Self, ::hImage, STM_SETIMAGE, ::Stretch, ::AutoFit, ::lNoTransparent )
+         /* to prevent the resource leak we must do this check */
+         hCurrentOne := _OOHG_GetBitmap( Self, STM_GETIMAGE )
+         IF ::AuxHandle # hCurrentOne
+            IF ValidHandler( ::AuxHandle )
+               DeleteObject( ::AuxHandle )
+            ENDIF
+            ::AuxHandle := hCurrentOne
+         ENDIF
       ELSE
          SendMessage( ::hWnd, STM_SETIMAGE, IMAGE_BITMAP, ::hImage )
       ENDIF

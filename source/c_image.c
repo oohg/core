@@ -726,6 +726,14 @@ HB_FUNC( _OOHG_SETBITMAP )           /* FUNCTION _OOHG_SetBitmap( oSelf, hBitmap
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_GETBITMAP )           /* FUNCTION _OOHG_GetBitmap( oSelf, iMessage ) -> hBitmap */
+{
+   POCTRL oSelf = _OOHG_GetControlInfo( hb_param( 1, HB_IT_OBJECT ) );
+
+   HBITMAPret( (HBITMAP) SendMessage( oSelf->hWnd, hb_parni( 2 ), (WPARAM) IMAGE_BITMAP, 0 ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_BITMAPWIDTH )          /* FUNCTION _OOHG_BitmapWidth( hBitmap ) -> nWidth */
 {
    BITMAP bm;
