@@ -1591,13 +1591,11 @@ FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
       RETURN 1
 
    ELSEIF nMsg == WM_LBUTTONDOWN
-      IF ::lFocused
-         ::DoEventMouseCoords( ::OnClick, "CLICK" )
-      ELSE
+      IF ! ::lFocused
          ::SetFocus()
-         ::DoEventMouseCoords( ::OnClick, "CLICK" )
-         RETURN 1
       ENDIF
+      ::DoEventMouseCoords( ::OnClick, "CLICK" )
+      RETURN 1
 
    ELSEIF nMsg == WM_UNDO .OR. ;
           ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
