@@ -12,6 +12,14 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-15 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    ! Click on TTextPicture control selects all content on first
+      click and it's ignored afterward.
+    ; From now on the TTextPicture control behaves like TText
+      control when clicked.
+  #393
+
 2021-04-14 20:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_textbox.prg
     ! On Click event of TTextPicture class is fired twice.
