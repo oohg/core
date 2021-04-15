@@ -1590,13 +1590,6 @@ FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
       // ENDIF
       RETURN 1
 
-   ELSEIF nMsg == WM_LBUTTONDOWN
-      IF ! ::lFocused
-         ::SetFocus()
-      ENDIF
-      ::DoEventMouseCoords( ::OnClick, "CLICK" )
-      RETURN 1
-
    ELSEIF nMsg == WM_UNDO .OR. ;
           ( nMsg == WM_KEYDOWN .AND. wParam == VK_Z .AND. GetKeyFlagState() == MOD_CONTROL )
       cText := ::Value
