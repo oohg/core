@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-18 09:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_timer.prg
+    ! The action of a timer control with clause ONCE is triggered
+      more than once if its duration exceeds the interval.
+  #394
+
 2021-04-15 10:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_textbox.prg
     ! Click on TTextPicture control selects all content on first
