@@ -134,10 +134,10 @@ METHOD Release() CLASS TTimer
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_TimeOut() CLASS TTimer
 
-   ::DoEvent( ::OnClick, "TIMER" )
    IF ::lOnce
       ::Enabled := .F.
    ENDIF
+   ::DoEvent( ::OnClick, "TIMER" )
 
    RETURN NIL
 
