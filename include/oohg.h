@@ -81,7 +81,7 @@
 #endif
 
 #ifndef _WIN32_IE
-   #define _WIN32_IE 0x0600   // Internet Explorer 6.0 (Win XP)
+   #define _WIN32_IE 0x0600   // Internet Explorer 6.0
 #endif
 #if ( _WIN32_IE < 0x0600 )
    #undef _WIN32_IE
