@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-04-19 15:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Added support for form's FONTCOLOR to semi-oop syntax.
+   #395
+
 2021-04-18 09:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_timer.prg
     ! The action of a timer control with clause ONCE is triggered
