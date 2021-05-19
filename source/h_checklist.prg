@@ -277,8 +277,8 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckList
 
    If nNotify == NM_CUSTOMDRAW
       // hide the horizontal scrollbar if any is shown
-      If ::Super:ColumnWidth( 1 ) # ::ClientWidth
-         ::Super:ColumnWidth( 1, ::ClientWidth )
+      If ::ColumnWidth( 1 ) # ::ClientWidth
+         ::ColumnWidth( 1, ::ClientWidth )
       EndIf
 
       // this is the same as TGrid's
@@ -358,7 +358,7 @@ METHOD Width( nWidth ) CLASS TCheckList
 
    If pcount() > 0
       ::Super:Width( nWidth )
-      ::Super:ColumnWidth( 1, ::ClientWidth )
+      ::ColumnWidth( 1, ::ClientWidth )
    EndIf
 
    Return ::nWidth
