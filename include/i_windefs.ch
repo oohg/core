@@ -476,6 +476,8 @@ LISTVIEW CONTROL
 #define LVN_COLUMNCLICK               ( -108 )
 #define LVN_ITEMCHANGED               ( -101 )
 #define LVN_INSERTITEM                ( -102 )
+#define LVS_EX_GRIDLINES              1
+#define LVS_EX_NOGRIDLINES            0
 
 /*---------------------------------------------------------------------------
 LISTBOX CONTROL
