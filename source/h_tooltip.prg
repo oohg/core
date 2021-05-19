@@ -421,15 +421,51 @@ METHOD Title( cTitle ) CLASS TToolTip
    } TTGETTITLE, *PTTGETTITLE;
 #endif
 
+#ifndef TTI_ERROR
+   #define TTI_ERROR 3
+#endif
+
+#ifndef TTI_NONE
+   #define TTI_NONE 0
+#endif
+
 #ifndef TTM_SETTITLE
    #define TTM_SETTITLE ( WM_USER + 32 )
 #endif
 
 static long _OOHG_TooltipBackcolor = -1;
-static long _OOHG_TooltipForecolor = -1;   
+static long _OOHG_TooltipForecolor = -1;
 static long _OOHG_ToolTipMaxWidth  = -1;
 static BOOL _OOHG_ToolTipActivate  = TRUE;
 static char _OOHG_ToolTipBuffer[ 10001 ];
+
+#ifndef ECM_FIRST
+#define ECM_FIRST 0x1500
+#endif
+
+#ifndef EM_SHOWBALLOONTIP
+#define EM_SHOWBALLOONTIP ( ECM_FIRST + 3 )
+typedef struct _tagEDITBALLOONTIP
+{
+    DWORD   cbStruct;
+    LPCWSTR pszTitle;
+    LPCWSTR pszText;
+    INT     ttiIcon; // From TTI_*
+} EDITBALLOONTIP, *PEDITBALLOONTIP;
+#define Edit_ShowBalloonTip( hwnd, peditballoontip ) \
+        (BOOL) SNDMSG( (hwnd), EM_SHOWBALLOONTIP, 0, (LPARAM) (peditballoontip) )
+#define EM_HIDEBALLOONTIP ( ECM_FIRST + 4 )
+#define Edit_HideBalloonTip( hwnd ) \
+        (BOOL) SNDMSG( (hwnd), EM_HIDEBALLOONTIP, 0, 0 )
+#endif
+
+#ifndef TTM_POPUP
+#define TTM_POPUP ( WM_USER + 34 )
+#endif
+
+#ifndef EM_GETCUEBANNER
+#define EM_GETCUEBANNER ( ECM_FIRST + 2 )
+#endif
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static WNDPROC _OOHG_TToolTip_lpfnOldWndProc( LONG_PTR lp )
@@ -888,7 +924,7 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
    int nIcon = HB_ISNUM( 5 ) ? hb_parni( 5 ) : TTI_NONE;
    DWORD dwStyle = WS_POPUP;
    HWND hwndToolTip;
-   TOOLINFO ti = { 0 };
+   TOOLINFO ti;
    UINT uFlags = 0;
    INITCOMMONCONTROLSEX i;
 
@@ -928,6 +964,7 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
    SetWindowPos( hwndToolTip, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE );
 
    /* Set up "tool" information. In this case, the "tool" is the entire parent window. */
+   memset( &ti, 0, sizeof( ti ) );
    ti.cbSize   = sizeof( ti );
    ti.uFlags   = uFlags;
    ti.hwnd     = hwndParent;
@@ -1124,8 +1161,9 @@ HB_FUNC( TTM_SETTIPTEXTCOLOR )          /* FUNCTION TTM_SetTipTextColor( hWnd, u
 HB_FUNC( TTM_TRACKACTIVATE )          /* FUNCTION TTM_TrackActivate( hWnd, hWnd ) -> NIL */
 {
    HWND hwndTool = HWNDparam( 2 );
-   TOOLINFO ti = { 0 };
+   TOOLINFO ti;
 
+   memset( &ti, 0, sizeof( ti ) );
    ti.cbSize = sizeof( ti );
    ti.hwnd   = hwndTool;
    ti.uId    = (UINT_PTR) hwndTool;
@@ -1165,10 +1203,11 @@ HB_FUNC( TTM_UPDATE )          /* FUNCTION TTM_Update( hWnd ) -> NIL */
 HB_FUNC( TTM_UPDATETIPTEXT )          /* FUNCTION TTM_UpdateTipText( hWnd, hWnd, cText ) -> NIL */
 {
    HWND hwndTool = HWNDparam( 2 );
-   TOOLINFO ti = { 0 };
+   TOOLINFO ti;
 
    if( hb_parclen( 3 ) > 0 )
    {
+      memset( &ti, 0, sizeof( ti ) );
       ti.cbSize   = sizeof( ti );
       ti.hinst    = (HINSTANCE) 0;
       ti.hwnd     = hwndTool;
@@ -1194,6 +1233,33 @@ HB_FUNC( TTM_WINDOWFROMPOINT )          /* FUNCTION TTM_WindowFromPoint( hWnd, h
 
       HWNDret( SendMessage( HWNDparam( 1 ), TTM_WINDOWFROMPOINT, 0, (LPARAM) MAKELONG( point.x, point.y  ) ) );
    }
+}
+
+#ifndef __XHARBOUR__
+#include "hbwinuni.h"
+#else
+typedef wchar_t HB_WCHAR;
+#endif
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETCUEBANNERTEXT )
+{
+   HB_WCHAR *lpWCStr = (HB_WCHAR *) hb_xgrab( 256 * sizeof( HB_WCHAR ) );
+
+   if( SendMessage( HWNDparam( 1 ), EM_GETCUEBANNER, (WPARAM) (LPWSTR) lpWCStr, (LPARAM) 256 ) )
+   {
+   #ifdef __XHARBOUR__
+      hb_retc( (const char *) hb_wctomb( lpWCStr ) );
+   #else
+      hb_retstrlen_u16( HB_CDP_ENDIAN_NATIVE, lpWCStr, 256 );
+   #endif
+   }
+   else
+   {
+      hb_retc_null();
+   }
+
+   hb_xfree( lpWCStr );
 }
 
 /* TODO:
