@@ -15,12 +15,17 @@ rem
 :CHECK
 
    if "%1" == "" goto ERROR2
-   if not exist %1.prg goto ERROR3
+   set HG_FILE=%1
+   if exist %1.prg goto CLEAN_EXE
+   set HG_FILE=%~n1
+   if /I "%~x1" == ".PRG" goto CLEAN_EXE
+   set HG_FILE=
+   goto ERROR3
 
 :CLEAN_EXE
 
-   if exist %1.exe del %1.exe
-   if exist %1.exe goto ERROR4
+   if exist %HG_FILE%.exe del %HG_FILE%.exe
+   if exist %HG_FILE%.exe goto ERROR4
    if exist _temp.rc del _temp.rc
    if exist _temp.rc goto ERROR5
    if exist oohglog.txt del oohglog.txt
@@ -33,7 +38,7 @@ rem
    set HG_COMP_TYPE=STD
    set HG_DEFINES=
    set HG_EXTRA=
-   set HG_FILE=%1
+   set HG_FILE=%HG_FILE%
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
    set HG_SEARCH=
@@ -236,6 +241,7 @@ rem
    if exist %HG_FILE%.tds del %HG_FILE%.tds
    if exist %HG_FILE%.c   del %HG_FILE%.c
    for %%a in ( _temp.* ) do del %%a
+   if exist _oohg_resconfig.h del _oohg_resconfig.h
    set HG_C_FLAGS=
    set HG_C_LIBS=
    set HG_C_LOG=
@@ -269,12 +275,12 @@ rem
 
 :ERROR3
 
-   echo File %1.prg not found !!!
+   echo File %HG_FILE%.prg not found !!!
    goto END
 
 :ERROR4
 
-   echo COMPILE ERROR: Is %1.exe running ?
+   echo COMPILE ERROR: Is %HG_FILE%.exe running ?
    goto END
 
 :ERROR5
