@@ -491,7 +491,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, If( ::lNoGrid, 0, 1 ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( ::lNoGrid, LVS_EX_NOGRIDLINES, LVS_EX_GRIDLINES ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
 
    IF Len( ::aHeaders ) > 0
       IF HB_ISARRAY( aImage )
