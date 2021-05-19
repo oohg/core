@@ -600,7 +600,7 @@ METHOD Cursor( uValue ) CLASS TApplication
 METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, ;
                    nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS TApplication
 
-   LOCAL i, aFontList, hFont := 0
+   LOCAL i, aFontName, hFont := 0
 
    ::MutexLock()
    IF HB_ISSTRING( cFontID ) .AND. ! Empty( cFontID )
@@ -623,8 +623,8 @@ METHOD DefineLogFont( cFontID, lDefault, cFontName, nFontSize, lBold, lItalic, l
          ELSEIF ! lAdvanced
             nOrientation := nAngle
          ENDIF
-         GetFontList( NIL, NIL, NIL, NIL, NIL, NIL, @aFontList )
-         IF Empty( AScan( aFontList, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
+         GetFontList( NIL, NIL, NIL, NIL, NIL, NIL, @aFontName )
+         IF Empty( AScan( aFontName, { | cName | Upper( cName ) == Upper( cFontName ) } ) )
             cFontName := "Arial"
          ENDIF
 
