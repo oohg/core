@@ -572,7 +572,3 @@ METHOD ItemImage( nItem, nImage ) CLASS TCheckList
    EndIf
 
    Return ::Super:CellImage( nItem, 1, nImage )
-
-FUNCTION ArraysAreEqual( array1, array2 )
-
-   Return aEqual( array1, array2 )

@@ -93,6 +93,10 @@
    => ;
       _IsWindowDefined( <(FormName)> )
 
+#translate ArraysAreEqual( <array1>, <array2> ) ;
+   => ;
+      AEqual( <array1>, <array2> )
+
 #command ASSIGN <var> VALUE <value> TYPE <type> ;
    => ;
       IF ValType( <value> ) $ ( <type> ) ;;
