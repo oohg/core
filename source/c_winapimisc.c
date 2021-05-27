@@ -397,21 +397,21 @@ HB_FUNC( PAINTBKGND )
 
 HB_FUNC( GETWINDOWSDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = { 0 };
    GetWindowsDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETSYSTEMDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = { 0 };
    GetSystemDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETTEMPDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = {0};
+   char szBuffer[ MAX_PATH + 1 ] = { 0 };
    GetTempPath( MAX_PATH, szBuffer );
    hb_retc( szBuffer );
 }
@@ -667,7 +667,7 @@ HB_FUNC( REMOVEFOLDER )
 
 HB_FUNC( GETCURRENTFOLDER )
 {
-   char Path[ MAX_PATH + 1 ] = {0};
+   char Path[ MAX_PATH + 1 ] = { 0 };
    GetCurrentDirectory( MAX_PATH, (LPSTR) Path );
    hb_retc( Path );
 }
@@ -1132,7 +1132,7 @@ HB_FUNC( GETCOMPACTPATH )
 HB_FUNC( GETSHORTPATHNAME )
 /* Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a */
 {
-   char buffer[ MAX_PATH + 1 ] = {0};
+   char buffer[ MAX_PATH + 1 ] = { 0 };
    DWORD iRet;
 
    iRet = GetShortPathName( hb_parc( 1 ), buffer, MAX_PATH );
