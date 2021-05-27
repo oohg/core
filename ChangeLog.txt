@@ -12,6 +12,24 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-05-27 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    ! Potentially wrong return value. According to Microsoft's
+      documentation on TreeView_GetItem macro: the returned text
+      will not necessarily be stored in the original buffer passed
+      by the application. It is possible that pszText will point
+      to text in a new buffer rather than place it in the old buffer.
+
+2021-05-27 20:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * Some format was changed.
+
+2021-05-27 20:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    + Added ArraysAreEqual pseudofunction.
+  * core\source\h_checklist.prg
+    - Removed function ArraysAreEqual.
+
 2021-05-19 15:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_windows.c
     - Function GETCUEBANNERTEXT was moved to h_tooltip.prg to
