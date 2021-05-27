@@ -2464,7 +2464,7 @@ HB_FUNC( TREEVIEW_GETITEMTEXT )          /* FUNCTION TreeView_GetItemText( hWnd,
 
    TreeView_GetItem( HWNDparam( 1 ), &TreeItem );
 
-   hb_retc( ItemText );
+   hb_retc( TreeItem.pszText );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
