@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-06-01 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + New constants for functions ShellExecute.
+
 2021-05-27 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
     ! Potentially wrong return value. According to Microsoft's
