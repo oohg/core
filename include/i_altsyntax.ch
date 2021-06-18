@@ -1590,6 +1590,10 @@ BUTTON
    => ;
       _OOHG_ActiveControlAlignment := "BOTTOM"
 
+#xcommand PICTALIGNMENT <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ;
+   => ;
+      ALIGNMENT <imgalign>
+
 #xcommand IMAGEALIGN <imgalign: LEFT, RIGHT, TOP, BOTTOM, CENTER> ;
    => ;
       ALIGNMENT <imgalign>
