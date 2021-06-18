@@ -12,6 +12,18 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-06-18 12:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    ! OnMouseMove event function is continuously triggered if inside
+      it the text of a label with autosize clause is changed.
+  ; Previous commit "2018-10-19 23:27 UTC-0300" was reverted.
+  #397
+
+2021-06-18 12:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    ! Mouse coordinates are not updated when mouse hovers a control.
+  #397
+
 2021-06-01 17:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_windefs.ch
     + New constants for functions ShellExecute and ShowWindow.
