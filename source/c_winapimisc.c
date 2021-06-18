@@ -469,7 +469,8 @@ HB_FUNC( ISWOW64 )
    hb_retl( bIsWow64 );
 }
 
-HB_FUNC( SHELLEXECUTE )
+
+HB_FUNC( SHELLEXECUTE )          /* FUNCTION ShellExecute( hwnd, cOperation, cFile, cParameters, cFolder, iShowComd ) -> nRet */
 {
    LPFN_ISWOW64PROCESS fnIsWow64Process;
    BOOL bIsWow64 = FALSE;
@@ -496,12 +497,16 @@ HB_FUNC( SHELLEXECUTE )
       }
    }
 
+   CoInitialize( NULL );
+
    HINSTANCEret( ShellExecute( HWNDparam( 1 ),
                  HB_ISNIL( 2 ) ? NULL : (LPCSTR) hb_parc( 2 ),
                  (LPCSTR) hb_parc( 3 ),
                  HB_ISNIL( 4 ) ? NULL : (LPCSTR) hb_parc( 4 ),
                  HB_ISNIL( 5 ) ? NULL : (LPCSTR) hb_parc( 5 ),
                  hb_parni( 6 ) ) );
+
+   hb_idleSleep( 1 );
 
    if( bRestore )
    {
