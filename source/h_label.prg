@@ -88,7 +88,6 @@ CLASS TLabel FROM TControl
    METHOD LeftAlign               BLOCK {| Self | ::Align( SS_LEFT ) }
    METHOD RightAlign              BLOCK {| Self | ::Align( SS_RIGHT ) }
    METHOD CenterAlign             BLOCK {| Self | ::Align( SS_CENTER ) }
-   METHOD SizePos
 
    ENDCLASS
 
@@ -212,15 +211,6 @@ METHOD AutoSize( lValue ) CLASS TLabel
    ENDIF
 
    RETURN ::lAutoSize
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SizePos( nRow, nCol, nWidth, nHeight ) CLASS TLabel
-
-   LOCAL uRet := ::Super:SizePos( nRow, nCol, nWidth, nHeight )
-
-   SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
-
-   RETURN uRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Align( nAlign ) CLASS TLabel
