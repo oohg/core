@@ -113,6 +113,7 @@
       [ ON DROP <ondrop> ] ;
       [ ON EXPAND <bExpand> ] ;
       [ ON COLLAPSE <bCollapse> ] ;
+      [ <redraw: REDRAWONADD> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, ;
@@ -124,7 +125,8 @@
             <.checkboxes.>, <.editlabels.>, <.noHScr.>, <.noScr.>, <.hott.>, ;
             .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
             <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
-            <.drop.>, <aTarget>, <{ondrop}>, <.own.>, <{bExpand}>, <{bCollapse}> )
+            <.drop.>, <aTarget>, <{ondrop}>, <.own.>, <{bExpand}>, ;
+            <{bCollapse}>, <.redraw.> )
 
 #xcommand DEFINE TREE <name> ;
       [ OBJ <obj> ] ;
@@ -178,6 +180,7 @@
       [ ON DROP <ondrop> ] ;
       [ ON EXPAND <bExpand> ] ;
       [ ON COLLAPSE <bCollapse> ] ;
+      [ <redraw: REDRAWONADD> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, ;
@@ -190,7 +193,7 @@
             <.noScr.>, <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, ;
             <.single.>, <.noborder.>, <selcolor>, <{labeledit}>, <{valid}>, ;
             <{checkchange}>, <pixels>, <.selbold.>, <.drop.>, <aTarget>, ;
-            <{ondrop}>, <.own.>, <{bExpand}>, <{bCollapse}> )
+            <{ondrop}>, <.own.>, <{bExpand}>, <{bCollapse}>, <.redraw.> )
 
 #xcommand NODE <text> ;
       [ IMAGES <aImage> ] ;

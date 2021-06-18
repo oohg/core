@@ -105,6 +105,7 @@ CLASS TTree FROM TControl
    DATA OnDrop               INIT Nil               // executed after drop is finished
    DATA OnExpand             INIT Nil
    DATA OnCollapse           INIT Nil
+   DATA RedrawOnAdd          INIT .F.
 
    METHOD Define
    METHOD AddItem
@@ -331,7 +332,7 @@ FUNCTION AutoID( oTree )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
-                lDisabled, lNoDrag, lAssignID ) CLASS TTree
+                lDisabled, lNoDrag, lAssignID, lRedraw ) CLASS TTree
 
    Local TreeItemHandle, ImgDef, iUnSel, iSel, iID
    Local NewHandle, TempHandle, i, Pos, ChildHandle, BackHandle, ParentHandle, iPos
@@ -342,6 +343,7 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
    ASSIGN lDisabled VALUE lDisabled TYPE "L" DEFAULT .F.
    ASSIGN lNoDrag   VALUE lNoDrag   TYPE "L" DEFAULT .F.
    ASSIGN lAssignID VALUE lAssignID TYPE "L" DEFAULT .F.
+   ASSIGN lRedraw   VALUE lRedraw   TYPE "L" DEFAULT ::RedrawOnAdd
 
    ImgDef := iif( HB_IsArray( aImage ), len( aImage ), 0 )
 
@@ -583,6 +585,10 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
    ::CheckItem( iPos, lChecked )
    ::BoldItem( iPos, lBold )
 
+   IF lRedraw
+      ::Redraw()
+   ENDIF
+
    Return iPos
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -751,9 +757,9 @@ METHOD EndTree() CLASS TTree
 
    IF ( ::ItemIds .AND. ::InitValue != NIL ) .OR. ( ! ::ItemIds .AND. ::InitValue > 0 )
       TreeView_SelectItem( ::hWnd, ::ItemToHandle( ::InitValue ) )
-   EndIf
+   ENDIF
 
-   Return Nil
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS TTree
