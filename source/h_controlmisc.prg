@@ -2067,8 +2067,11 @@ METHOD DoChange() CLASS TControl
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+#include <windowsx.h>
 
 #define s_Super s_TWindow
+
+void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 
 HBRUSH GetTabBrush( HWND );
 
@@ -2085,6 +2088,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam
    switch( message )
    {
       case WM_MOUSEMOVE:
+         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
          _OOHG_Send( pSelf, s_hCursor );
          hb_vmSend( 0 );
          lData = HCURSORparam( -1 );
