@@ -17,7 +17,7 @@ rem
 
 :EXECUTE
 
-   start "%HG_FMT%\ofmt.exe" %*
+   start %HG_FMT%\ofmt.exe %*
    goto END
 
 :NOT_INSTALLED

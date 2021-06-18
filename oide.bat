@@ -17,7 +17,7 @@ rem
 
 :EXECUTE
 
-   start "%HG_IDE%\oide.exe" %*
+   start %HG_IDE%\oide.exe %*
    goto END
 
 :NOT_INSTALLED
