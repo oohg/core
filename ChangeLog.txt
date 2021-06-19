@@ -12,11 +12,63 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-06-19 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Release method of TWindow class now sets ::hWnd to -1.
+    ; Note that -1 indicates that the control or form was released.
+  * core\source\h_windows.prg
+    * Events_Destroy method of TForm class no longer sets hWnd data
+      to NIL.
+  * core\source\h_controlmisc.prg
+    * Release method of TControl class no longer sets hWnd data to NIL.
+  ; Partially reverts commit "2019-09-08 20:13 UTC-0300", hash 59dfed7.
+
+2021-06-19 10:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * A function comment.
+    ! Test for valid pointer at SethWnd method.
+
+2021-06-18 23:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    + Some casting.
+
+2021-06-18 14:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * A function comment.
+    + A call to CoInitialize function as indicated by Microsoft
+      documentation for ShellExecute function.
+    + A pause after the call to ShellExecute function.
+
+2021-06-18 14:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tree.ch
+    + Clause REDRAWONADD.
+  * core\source\h_tree.prg
+    + Data RedrawOnAdd. Defaults to .F.
+    + Support for clause REDRAWONADD at method AddItem.
+    * Some format.
+
+2021-06-18 13:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\i_hmg_compat.ch
+    + Support for PICTALIGNMENT clause.
+
+2021-06-18 13:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\i_altsyntax.ch
+    + Support for PICTALIGNMENT clause.
+
+2021-06-18 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile_MINGW.BAT
+    + Static libs were synchronized with the ones used by HBMK2 tool.
+
+2021-06-18 12:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ofmt.bat
+  * core\oide.bat
+    ! App is not executed.
+
 2021-06-18 12:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_label.prg
     ! OnMouseMove event function is continuously triggered if inside
       it the text of a label with autosize clause is changed.
-  ; Previous commit "2018-10-19 23:27 UTC-0300" was reverted.
+  ; Reverts commit "2018-10-19 23:27 UTC-0300", hash 9c920ed.
   #397
 
 2021-06-18 12:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -154,7 +206,7 @@
   * core\source\h_activex.prg
     ! RTE "Error BASE/1099 Argument error: HB_EXECFROMARRAY"
       when an ActiveX control is created.
-  ; Previous commit "2021-02-17 17:23 UTC-0300" was reverted.
+  ; Reverts commit "2021-02-17 17:23 UTC-0300", hash eabe61d.
   ; This reinstates the dependency on library xhb for Harbour builds.
   #385
 
@@ -176,6 +228,7 @@
   * core\compile_MINGW.BAT
   * core\oohg.hbc
     ! Lib xhb is no longer linked by default under Harbour.
+    ; Reverted by commit "2021-03-03 21:06 UTC-0300", hash 4654e01.
   * core\source\h_activex.prg
   * core\source\h_zip.prg
     ! Use Harbour's function win_oleCreateObject when __XHARBOUR__
@@ -4092,7 +4145,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
   * core\source\h_form.prg
     - Static var _OOHG_InteractiveClose.
     - Function SetInteractiveClose.
-    + Data InteractiveClose to TForm CLASS.
+    + Data InteractiveClose to TForm class.
       Use it to establish a specific value on per form basis.
       On form's close this data will be checked first, if
       it's value is -1 (default value) then the global
@@ -4137,7 +4190,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-08 21:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_menu.prg
-    + Method Enabled to TMenu CLASS.
+    + Method Enabled to TMenu class.
     * Use stock brushes to reduce resource usage.
 
 2019-09-08 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -4164,7 +4217,7 @@ C:\GitOOHG\core\compile_MINGW.BAT
 
 2019-09-08 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_combo.prg
-    ! Missing call to ::SethWnd at TEditCombo CLASS.
+    ! Missing call to ::SethWnd at TEditCombo class.
 
 2019-09-08 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_image.c
@@ -4200,13 +4253,13 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Events_TimeOut to s_SymbolNames array.
 
   * core\source\h_controlmisc.prg
-    ! Resource leak at Method Release of TControl CLASS
+    ! Resource leak at Method Release of TControl class
       caused by the release of the control before the
-      execution of Method Release of TWindow CLASS.
-    ! Resource leak at Method SetFont of TControl CLASS.
-    ! Resource leak at Method ClearBitmaps of TControl CLASS.
-    ! Resource leak at Method Events_Color of TControl CLASS.
-    + Method PosAddToCtrlsArrays to TControl CLASS.
+      execution of Method Release of TWindow class.
+    ! Resource leak at Method SetFont of TControl class.
+    ! Resource leak at Method ClearBitmaps of TControl class.
+    ! Resource leak at Method Events_Color of TControl class.
+    + Method PosAddToCtrlsArrays to TControl class.
 
   * core\source\h_timer.prg
     * Some format.
@@ -4214,17 +4267,17 @@ C:\GitOOHG\core\compile_MINGW.BAT
     + Method Events_TimeOut to executed the associated action.
 
   * core\source\h_windows.prg
-    + Method Events_Timeout to CLASS TWindow.
+    + Method Events_Timeout to TWindow class.
     ! RTE at function ExitProcess when Application object
       is not defined.
-    ! Resouce leak at Method Release of TWindow CLASS.
-    * Method Release of TWindow CLASS no longer sets
+    ! Resouce leak at Method Release of TWindow class.
+    * Method Release of TWindow class no longer sets
       ::hWnd to NIL.
     ; For forms it's done by WM_CLOSE handler.
-    ; For controls it's done by Method Release of
-        TControl CLASS.
+    ; For controls it's done by Release method of class TControl.
+    ; Reverted by commit "2021-06-19 17:15 UTC-0300", hash 088dca13.
     * WM_CTLCOLORSTATIC and WM_CTLCOLORLISTBOX handlers
-      at Method Events of TWindow CLASS now send a color
+      at Method Events of TWindow class now send a color
       constant to Method Events_Color instead of sending
       a COLORREF.
     * WM_TIMER handler now calls Method Events_TimeOut
@@ -4293,14 +4346,14 @@ C:\GitOOHG\core\compile_MINGW.BAT
   * core\source\h_tooltip.prg
     * Use wrapper functions to call theme related functions.
   * core\source\h_windows.prg
-    + Method IconHandle to CLASS TWindow.
-    + Method ReleaseAttached of CLASS TWindow now sets to NIL the
+    + Method IconHandle to TWindow class.
+    + Method ReleaseAttached of TWindow class now sets to NIL the
       codeblocks associated to hot keys, accelerator commands and
       scrollbars.
     * _OOHG_NestedSameEvent and _OOHG_GlobalRTL are now declared
       as BOOL.
     * _OOHG_NestedSameEvent is now thread safe.
-    ! Resource leak at method Release of CLASS TWindows.
+    ! Resource leak at method Release of TWindows class.
     * Use wrapper functions to call theme related functions.
     - Functions _ComCtl32_DeInit, GetComCtl32Version, IsAppThemed
       and IsXPThemeActive moved to c_winapimisc.c.
@@ -4556,8 +4609,8 @@ C:\GitOOHG\core\compile_MINGW.BAT
       function DefWindowProc at it's beginning but at it's end.
 
   * core\source\h_form.prg
-    * Reverted the change to WM_PAINT handler's default behavior
-      done by commit 2019-02-17 11:36 UTC-0300 (hash 0073c75).
+    * Reverts commit "2019-02-17 11:36 UTC-0300", hash 0073c75, that
+      changed WM_PAINT handler's default behavior.
     ! This reversion fixes miniprint's not displaying the
       document in the preview window.
     * This reversion breaks code based on BosTaurus functions
