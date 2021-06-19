@@ -1689,7 +1689,7 @@
     + METHOD SizePos.
     ! Painting after resizing a control created with height and
       width set to zero.
-    ; REVERTED by commit "2021-06-18 12:17 UTC-0300", see #397
+    ; Reverted by commit "2021-06-18 12:17 UTC-0300", hash 851899d.
 
 2018-10-19 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_listbox.prg
