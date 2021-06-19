@@ -2183,7 +2183,11 @@ HB_FUNC_STATIC( TWINDOW_SETHWND )          /* METHOD SethWnd( hWnd ) CLASS TWind
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
+#ifdef OOHG_HWND_POINTER
+   if( hb_pcount() >= 1 && HB_ISPOINTER( 1 ) )
+#else
    if( hb_pcount() >= 1 && HB_ISNUM( 1 ) )
+#endif
    {
       oSelf->hWnd = HWNDparam( 1 );
    }
@@ -2943,7 +2947,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( DISABLEVISUALSTYLE )          /* FUNCTION DisableVisualStyle() -> lSuccess */
+HB_FUNC( DISABLEVISUALSTYLE )          /* FUNCTION DisableVisualStyle( hWnd ) -> lSuccess */
 {
    BOOL bRet = FALSE;
 
