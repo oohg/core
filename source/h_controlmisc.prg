@@ -1678,7 +1678,7 @@ METHOD DelFromCtrlsArrays() CLASS TControl
 
 METHOD Release() CLASS TControl
 
-   LOCAL mVar, oCont
+   LOCAL mVar, oCont, hWnd
 
    // Erase events to avoid problems with detached references
    ::OnChange       := NIL
@@ -1720,12 +1720,14 @@ METHOD Release() CLASS TControl
       __mvXRelease( mVar )
    ENDIF
 
+   // ::hWnd is set to -1 by ::Super:Release()
+   hWnd := ::hWnd
+
    ::Super:Release()
 
-   IF ValidHandler( ::hWnd )
-      ReleaseControl( ::hWnd )
+   IF ValidHandler( hWnd )
+      ReleaseControl( hWnd )
    ENDIF
-   ::hWnd := NIL
 
    RETURN NIL
 

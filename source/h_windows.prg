@@ -2249,8 +2249,11 @@ HB_FUNC_STATIC( TWINDOW_RELEASE )          /* METHOD Release() CLASS TWindow -> 
       hb_vmSend( 1 );
    }
 
-   /* Note that ::hWnd := -1 is set at ::Events_Destroy() */
-   oSelf->hWnd = (HWND) ( ~0 );
+   /* ::hWnd := -1 */
+   oSelf->hWnd = ( HWND )( ~0 );
+   _OOHG_Send( pSelf, s__hWnd );
+   HWNDpush( ~0 );
+   hb_vmSend( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/

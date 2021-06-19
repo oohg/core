@@ -1211,8 +1211,6 @@ METHOD Events_Destroy() CLASS TForm
 
    ::Super:Release()
 
-   ::hWnd := NIL
-
    /*
     * UnRegisterWindow( ::Name )
     *
