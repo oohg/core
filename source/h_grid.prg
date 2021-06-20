@@ -4661,6 +4661,24 @@ FUNCTION AEqual( array1, array2 )
 
    Return lRet
 
+FUNCTION AIsEmpty( array )
+
+   LOCAL lRet, nLen, i
+
+   IF HB_ISARRAY( array )
+      nLen := Len( array )
+      lRet := .T.
+      FOR i := 1 TO nLen
+         IF array[ i ] # NIL
+            lRet := .F.
+         ENDIF
+      NEXT i
+   ELSE
+      MsgOOHGError( 'AIsEmpty: Argument is not an array !!!' )
+   ENDIF
+
+   RETURN lRet
+
 METHOD DoChange() CLASS TGridMulti
 
    Local xValue, cType, cOldType
