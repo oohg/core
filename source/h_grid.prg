@@ -8635,7 +8635,7 @@ HB_FUNC( LISTVIEWSETITEM )
 
 HB_FUNC( LISTVIEWGETITEM )
 {
-   char buffer[ 1024 ];
+   char buffer[ 1024 ] = { 0 };
    HWND h;
    int s, c, l;
    LV_ITEM LI;
@@ -8661,13 +8661,11 @@ HB_FUNC( LISTVIEWGETITEM )
       LI.cchTextMax = 1022;
       LI.pszText = buffer;
       LI.iItem = c;
-      buffer[ 0 ] = 0;
       ListView_GetItem( h, &LI );
-      buffer[ 1023 ] = 0;
 
       if( LI.iImage == -1 )
       {
-         hb_itemPutC( pString, buffer );
+         hb_itemPutC( pString, LI.pszText );
       }
       else
       {
@@ -8718,7 +8716,7 @@ HB_FUNC( CELLRAWVALUE )          /* FUNCTION CellRawValue( hWnd, nRow, nCol, nTy
 {
    HWND hwnd;
    LV_ITEM LI;
-   char buffer[ 1024 ];
+   char buffer[ 1024 ] = { 0 };
    int iType;
 
    hwnd = HWNDparam( 1 );
@@ -8731,9 +8729,6 @@ HB_FUNC( CELLRAWVALUE )          /* FUNCTION CellRawValue( hWnd, nRow, nCol, nTy
    LI.iSubItem = hb_parni( 3 ) - 1;
    LI.cchTextMax = 1022;
    LI.pszText = buffer;
-   buffer[ 0 ] = 0;
-   buffer[ 1023 ] = 0;
-
    ListView_GetItem( hwnd, &LI );
 
    if( iType == 1 && HB_ISCHAR( 5 ) )
@@ -8749,9 +8744,8 @@ HB_FUNC( CELLRAWVALUE )          /* FUNCTION CellRawValue( hWnd, nRow, nCol, nTy
    }
 
    LI.cchTextMax = 1022;
+   ZeroMemory( &buffer, sizeof( buffer ) );
    LI.pszText = buffer;
-   buffer[ 0 ] = 0;
-   buffer[ 1023 ] = 0;
    ListView_GetItem( hwnd, &LI );
 
    if( iType == 1 )
@@ -8775,7 +8769,7 @@ int CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort 
    _OOHG_SortItemsInfo *si;
    int iRet;
    LVITEM lvItem1, lvItem2;
-   char cString1[ 1024 ], cString2[ 1024 ];
+   char cString1[ 1024 ] = { 0 }, cString2[ 1024 ] = { 0 };
 
    si = (_OOHG_SortItemsInfo *) lParamSort;
 
@@ -8784,20 +8778,23 @@ int CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort 
    lvItem1.iSubItem   = si->iColumn;
    lvItem1.cchTextMax = 1022;
    lvItem1.pszText    = cString1;
-   cString1[ 0 ]      = cString1[ 1023 ] = 0;
    ListView_GetItem( si->hwnd, &lvItem1 );
-   cString1[ 1023 ] = 0;
+
+/*
+From https://docs.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-listview_getitem
+Applications should not assume that the text will necessarily be placed in the specified buffer.
+The control may instead change the pszText member of the structure to point to the new text
+rather than place it in the buffer.
+*/
 
    lvItem2.mask       = LVIF_TEXT;
    lvItem2.iItem      = (int) lParam2;
    lvItem2.iSubItem   = si->iColumn;
    lvItem2.cchTextMax = 1022;
    lvItem2.pszText    = cString2;
-   cString2[ 0 ]      = cString2[ 1023 ] = 0;
    ListView_GetItem( si->hwnd, &lvItem2 );
-   cString2[ 1023 ] = 0;
 
-   iRet = strcmp( cString1, cString2 );
+   iRet = strcmp( lvItem1.pszText, lvItem2.pszText );
    if( si->bDescending )
    {
       iRet = - iRet;
@@ -9473,7 +9470,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    LPRECT lprcBack = &rcBack;
    HBRUSH hBrush;
    LV_ITEM LI;
-   char buffer[ 1024 ];
+   char buffer[ 1024 ] = { 0 };
 
    lplvcd = ( LPNMLVCUSTOMDRAW ) lParam;
 
@@ -9497,10 +9494,7 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iSubItem = lplvcd->iSubItem;
       LI.cchTextMax = 1022;
       LI.pszText = buffer;
-      buffer[ 0 ] = 0;
-      buffer[ 1023 ] = 0;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
-      buffer[ 1023 ] = 0;
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
