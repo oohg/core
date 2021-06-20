@@ -1989,17 +1989,17 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    AIns( ::aJust, nColIndex )
    ::aJust[ nColIndex ] := nJustify
 
-   // Update on head click codeblock
+   // Update ONHEADCLICK codeblock
    ASize( ::aHeadClick, nColumns )
    AIns( ::aHeadClick, nColIndex )
    ::aHeadClick[ nColIndex ] := uHeadClick
 
-   // Update on head dblclick codeblock
+   // Update ONHEADDBLCLICK codeblock
    ASize( ::aHeadDblClick, nColumns )
    AIns( ::aHeadDblClick, nColIndex )
    ::aHeadDblClick[ nColIndex ] := uHeadDblClick
 
-   // Update header color
+   // Update HEADERCOLORS values
    ASize( ::aHeaderColors, nColumns )
    AIns( ::aHeaderColors, nColIndex )
    ::aHeaderColors[ nColIndex ] := uHeaderColor
@@ -2233,15 +2233,15 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ASize( ::aJust, nColumns )
    ::aJust[ nColIndex ] := nJustify
 
-   // Update on head click codeblock
+   // Update ONHEADCLICK codeblock
    ASize( ::aHeadClick, nColumns )
    ::aHeadClick[ nColIndex ] := uHeadClick
 
-   // Update on head dblclick codeblock
+   // Update ONHEADDBLCLICK codeblock
    ASize( ::aHeadDblClick, nColumns )
    ::aHeadDblClick[ nColIndex ] := uHeadDblClick
 
-   // Update on head dblclick codeblock
+   // Update HEADERCOLORS values
    ASize( ::aHeaderColors, nColumns )
    ::aHeaderColors[ nColIndex ] := uHeaderColor
 
