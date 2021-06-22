@@ -93,6 +93,164 @@ FUNCTION BeginIni( name, cIniFile )
 
    RETURN NIL
 
+FUNCTION GetBeginComment
+
+   LOCAL aLines, nLen, i, lTest := .T., cComment := ""
+
+   IF ! Empty( _OOHG_ActiveIniFile )
+      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      nLen := Len( aLines )
+      IF nLen > 0
+         FOR i := 1 TO nLen
+            aLines[ i ] := AllTrim( aLines[ i ] )
+            IF lTest
+               IF Left( aLines[ i ], 1 ) $ "#;"
+                  cComment := aLines[ i ]
+                  lTest := .F.
+               ELSEIF ! Empty( aLines[i] )
+                  lTest := .F.
+               ENDIF
+            ENDIF
+         NEXT i
+      ENDIF
+   ENDIF
+
+   RETURN cComment
+
+FUNCTION GetEndComment
+
+   LOCAL aLines, nLen, i, lTest := .T., cComment := ""
+
+   IF ! Empty( _OOHG_ActiveIniFile )
+      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      nLen := Len( aLines )
+      IF nLen > 0
+         FOR i := nLen TO 1 STEP -1
+            aLines[ i ] := AllTrim( aLines[ i ] )
+            IF lTest
+               IF Left( aLines[ i ], 1 ) $ "#;"
+                  cComment := aLines[ i ]
+                  lTest := .F.
+               ELSEIF ! Empty( aLines[i] )
+                  lTest := .F.
+               ENDIF
+            ENDIF
+         NEXT i
+      ENDIF
+   ENDIF
+
+   RETURN cComment
+
+FUNCTION SetBeginComment( cComment )
+
+   LOCAL aLines, nLen, i, lTest := .T., cMemo := ""
+
+   ASSIGN cComment VALUE cComment TYPE "CM" DEFAULT ""
+
+   IF ! Empty( _OOHG_ActiveIniFile )
+      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      nLen := Len( aLines )
+      IF nLen > 0 .AND. Len( ATail( aLines ) ) == 0
+         ASize( aLines, nLen - 1 )
+         nLen--
+      ENDIF
+      IF nLen > 0
+         FOR i := 1 TO nLen
+            aLines[ i ] := AllTrim( aLines[ i ] )
+            IF lTest
+               IF Left( aLines[ i ], 1 ) $ "#;"
+                  IF Empty( cComment )
+                     aLines[ i ] := ""
+                  ELSE
+                     IF ! Left( cComment := AllTrim( cComment ), 1 ) $ "#;"
+                        cComment := "#" + cComment
+                     ENDIF
+                     aLines[ i ] := cComment + CRLF
+                  ENDIF
+                  lTest := .F.
+               ELSEIF Empty( aLines[ i ] )
+                  aLines[ i ] += CRLF
+               ELSEIF Empty( cComment )
+                  aLines[ i ] += CRLF
+                  lTest := .F.
+               ELSE
+                  AAdd( aLines, NIL )
+                  nLen++
+                  AIns( aLines, i )
+                  IF ! Left( cComment := AllTrim( cComment ), 1 ) $ "#;"
+                     cComment := "#" + cComment
+                  ENDIF
+                  aLines[ i ] := cComment + CRLF
+                  lTest := .F.
+               ENDIF
+            ELSE
+               aLines[ i ] += CRLF
+            ENDIF
+            cMemo := cMemo + aLines[ i ]
+         NEXT i
+         hb_MemoWrit( _OOHG_ActiveIniFile, cMemo )
+      ENDIF
+   ENDIF
+
+   RETURN cComment
+
+FUNCTION SetEndComment( cComment )
+
+   LOCAL aLines, nLen, i, lTest := .T., cMemo := ""
+
+   ASSIGN cComment VALUE cComment TYPE "CM" DEFAULT ""
+   cComment := AllTrim( cComment )
+
+   IF ! Empty( _OOHG_ActiveIniFile )
+      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      nLen := Len( aLines )
+      IF nLen > 0 .AND. Len( ATail( aLines ) ) == 0
+         ASize( aLines, nLen - 1 )
+         nLen--
+      ENDIF
+      IF nLen > 0
+         FOR i := nLen TO 1 STEP -1
+            aLines[ i ] := AllTrim( aLines[ i ] )
+            IF lTest
+               IF Empty( aLines[i] )
+                  // Remove empty trailing lines
+               ELSEIF Left( aLines[ i ], 1 ) $ "#;"
+                  IF Empty( cComment )
+                     // Remove previous comment
+                  ELSE
+                     // Replace previous comment
+                     IF ! Left( cComment, 1 ) $ "#;"
+                        cComment := "#" + cComment
+                     ENDIF
+                     cMemo := cComment + CRLF
+                  ENDIF
+                  lTest := .F.
+               ELSEIF Empty( cComment )
+                  // Do not add comment
+                  lTest := .F.
+               ELSE
+                  // Add comment as the last line
+                  IF ! Left( cComment, 1 ) $ "#;"
+                     cComment := "#" + cComment
+                  ENDIF
+                  cMemo := CRLF + cComment + CRLF
+                  // Add line
+                  cMemo := aLines[ i ] + CRLF + cMemo
+                  lTest := .F.
+               ENDIF
+            ELSE
+               // Add line
+               cMemo := aLines[ i ] + CRLF + cMemo
+            ENDIF
+         NEXT i
+         IF Left( cMemo, Len( CRLF ) ) == CRLF
+            cMemo := SubStr( cMemo, Len( CRLF ) + 1 )
+         ENDIF
+         hb_MemoWrit( _OOHG_ActiveIniFile, cMemo )
+      ENDIF
+   ENDIF
+
+   RETURN cComment
 
 // Code GetIni and SetIni based on source of Grigory Filatov
 

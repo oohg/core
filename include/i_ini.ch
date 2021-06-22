@@ -70,6 +70,22 @@
    => ;
       BeginIni( "", <cIniFile> )
 
+#xcommand GET BEGIN COMMENT TO <uVar> ;
+   => ;
+      <uVar> := GetBeginComment()
+
+#xcommand GET END COMMENT TO <uVar> ;
+   => ;
+      <uVar> := GetEndComment()
+
+#xcommand SET BEGIN COMMENT TO <uVal> ;
+   => ;
+      SetBeginComment( <uVal> )
+
+#xcommand SET END COMMENT TO <uVal> ;
+   => ;
+      SetEndComment( <uVal> )
+
 #xcommand END INI ;
    => ;
       _EndIni()
