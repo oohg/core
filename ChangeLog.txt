@@ -12,6 +12,39 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-06-22 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_ini.ch
+    + New commands:
+      GET BEGIN COMMENT TO <uVar>
+      GET END COMMENT TO <uVar>
+      SET BEGIN COMMENT TO <uVal>
+      SET END COMMENT TO <uVal>
+  * core\source\h_ini.prg
+    + GetBeginComment and SetBeginComment functions to get/set
+      a comment at the first line of an INI file.
+    + GetEndComment and SetEndComment functions to get/set
+      a comment at the last line of an INI file.
+
+2021-06-20 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * ListViewGetItem, CellRawValue, _OOHG_SortItems and
+      TGrid_Notify_CustomDraw functions were modified to comply
+      with Microsoft's documentation on LVM_GETITEM message.
+
+2021-06-20 12:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Some word's case style was changed.
+
+2021-06-20 11:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Function AIsEmpty( array ). Returns .T. when array is NIL
+      or when every element of array is NIL. Note that the function
+      will throw an RTE when HB_ISARRAY( array ) is .F.
+
+2021-06-20 11:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Make some comments clearer.
+
 2021-06-19 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     * Release method of TWindow class now sets ::hWnd to -1.
