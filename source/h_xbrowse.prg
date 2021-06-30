@@ -510,7 +510,7 @@ METHOD Refresh( nCurrent, lNoEmptyBottom ) CLASS TXBrowse
    Local nRow, nCount, nSkipped
 
    If Empty( ::WorkArea ) .OR. ( ValType( ::WorkArea ) $ "CM" .AND. Select( ::WorkArea ) == 0 )
-      // No workarea specified...
+      // No workarea specified
    ElseIf ! ::lLocked
       If ::Visible
          ::SetRedraw( .F. )
@@ -1558,7 +1558,7 @@ METHOD Down( lAppend ) CLASS TXBrowse
          If lAppend
             lRet := ::AppendItem()
             IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-               // Kill scrollbar's events...
+               // Kill scrollbar's events
                ::VScroll:Enabled := .F.
                ::VScroll:Enabled := .T.
             ENDIF
@@ -1616,7 +1616,7 @@ METHOD PageDown( lAppend ) CLASS TXBrowse
          If lAppend
             lRet := ::AppendItem()
             IF HB_ISOBJECT( ::VScroll ).AND. ::VScroll:Enabled
-               // Kill scrollbar's events...
+               // Kill scrollbar's events
                ::VScroll:Enabled := .F.
                ::VScroll:Enabled := .T.
             ENDIF
@@ -1778,7 +1778,7 @@ METHOD EditItem( lAppend, lOneRow, nItem, lChange ) CLASS TXBrowse
       EndIf
       If ! ::lNoVSB
          IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-            // Kill scrollbar's events...
+            // Kill scrollbar's events
             ::VScroll:Enabled := .F.
             ::VScroll:Enabled := .T.
          ENDIF
@@ -4461,7 +4461,7 @@ METHOD Right( lAppend ) CLASS TXBrowseByCell
                If lAppend
                   lRet := ::AppendItem()
                   IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-                     // Kill scrollbar's events...
+                     // Kill scrollbar's events
                      ::VScroll:Enabled := .F.
                      ::VScroll:Enabled := .T.
                   ENDIF
@@ -4525,7 +4525,7 @@ METHOD Down( lAppend ) CLASS TXBrowseByCell
       If lAppend
          lRet := ::AppendItem()
          IF HB_ISOBJECT( ::VScroll ) .AND.::VScroll:Enabled
-            // Kill scrollbar's events...
+            // Kill scrollbar's events
             ::VScroll:Enabled := .F.
             ::VScroll:Enabled := .T.
          ENDIF
