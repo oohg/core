@@ -635,7 +635,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowse
             IF lAppend
                lRet := ::AppendItem()
                IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-                  // Kill scrollbar's events...
+                  // Kill scrollbar's events
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
                ENDIF
@@ -822,7 +822,7 @@ METHOD Down( lAppend ) CLASS TOBrowse
             IF lAppend
                lRet := ::AppendItem()
                IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-                  // Kill scrollbar's events...
+                  // Kill scrollbar's events
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
                ENDIF
@@ -1085,7 +1085,7 @@ METHOD EditItem( lAppend, lOneRow ) CLASS TOBrowse
 
    IF ! ::lNoVSB
       IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-         // Kill scrollbar's events...
+         // Kill scrollbar's events
          ::VScroll:Enabled := .F.
          ::VScroll:Enabled := .T.
       ENDIF
@@ -3957,7 +3957,7 @@ METHOD PageDown( lAppend ) CLASS TOBrowseByCell
             IF lAppend
                lRet := ::AppendItem()
                IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-                  // Kill scrollbar's events...
+                  // Kill scrollbar's events
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
                ENDIF
@@ -4092,7 +4092,7 @@ METHOD Down( lAppend, lFirst ) CLASS TOBrowseByCell
             IF lAppend
                lRet := ::AppendItem()
                IF HB_ISOBJECT( ::VScroll ) .AND. ::VScroll:Enabled
-                  // Kill scrollbar's events...
+                  // Kill scrollbar's events
                   ::VScroll:Enabled := .F.
                   ::VScroll:Enabled := .T.
                ENDIF
