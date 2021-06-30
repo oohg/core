@@ -2900,7 +2900,7 @@
     ; aExcludeArea must be an array. Each item must be an
       array of 4 numeric items {left, top, right, bottom}.
       Each item defines a rectangular area inside the Image
-      control that should be considered tranparent to mouse
+      control that should be considered transparent to mouse
       clicks.
     ; These changes allow that an Image control placed under
       another Image control can have an ON CLICK event and/or a
