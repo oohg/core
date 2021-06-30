@@ -197,7 +197,7 @@ FUNCTION _EndToolBar( lBreak )
 
       ASSIGN lBreak VALUE lBreak TYPE "L" DEFAULT .T.
 
-      ::SetSplitBoxInfo( lBreak )  // .T. forces break for next control...
+      ::SetSplitBoxInfo( lBreak )  // .T. forces break for next control
    EndIf
 
    _OOHG_ActiveToolBar := NIL

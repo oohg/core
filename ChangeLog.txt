@@ -12,6 +12,14 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-06-29 22:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_xbrowse.prg
+    * Some comments.
+
+2021-06-29 22:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    * Some comments.
+
 2021-06-22 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_ini.ch
     + New commands:
