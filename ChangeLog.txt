@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-02 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_menu.ch
+    * IsExtendedMenuStyleActive() function definition was changed
+      from #translate to #xtranslate. From now on you must use the
+      function's full name in your code.
+
 2021-07-02 16:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     + DATA aGroupBoxesStack.
