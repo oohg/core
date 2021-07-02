@@ -12,6 +12,11 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg.hbc
+    - The flags related to .prg have been removed because they
+      should be set in the .hbp file if necessary.
+
 2021-07-01 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.ch
   * core\include\i_grid.ch
