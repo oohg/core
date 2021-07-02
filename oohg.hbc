@@ -21,9 +21,6 @@ incpaths=${hb_curdir}
 # Multithread support
 mt=yes
 
-#Harbour flags
-prgflags=-n -q0 -w3 -es2
-
 # oohg libs
 libs=oohg hbprinter miniprint bostaurus
 
