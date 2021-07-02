@@ -12,6 +12,30 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-01 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_xbrowse.ch
+    + ALLOWEDIT clause as a synonym of EDIT.
+    + HEADERFONTCOLORS clause as a synonym of HEADERCOLORS.
+    + HEADERBACKCOLORS clause.
+    + NOHSCROLL clause as a synonym of NOHSCROLLBAR.
+    + NOVSCROLL clause as a synonym of NOVSCROLLBAR.
+  * core\source\h_browse.prg
+  * core\source\h_xbrowse.prg
+  * core\source\h_grid.prg
+    + DATA aHeaderBkClrs.
+    + METHOD HeaderSetBkColors.
+    ; Added support for headers backcolors.
+    ; Note that setting a header backcolor disables grid's
+      visual styles and makes the control look old styled.
+    ; TODO: use custom-draw or owner-drawo to get backcolor
+      with visual style .
+
+2021-06-29 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_toolbar.prg
+    * Some comments.
+
 2021-06-29 22:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
     * Some comments.
