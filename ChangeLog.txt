@@ -12,6 +12,12 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-02 19:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tooltip.ch
+    * IsToolTipBalloonActive variable definition was changed from
+      #translate to #xtranslate. From now on you must use the
+      variable's full name in your code.
+
 2021-07-02 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_menu.ch
     * IsExtendedMenuStyleActive() function definition was changed

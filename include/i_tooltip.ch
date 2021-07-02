@@ -109,7 +109,7 @@
    => ;
       _SetToolTipBalloon( .F. )
 
-#translate IsToolTipBalloonActive ;
+#xtranslate IsToolTipBalloonActive ;
    => ;
       _SetToolTipBalloon()
 
