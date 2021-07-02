@@ -81,19 +81,19 @@
    => ;
       '10' $ WindowsVersion() \[ 1 ]
 
-#translate IsControlDefined( <ControlName>, <FormName> ) ;
+#xtranslate IsControlDefined( <ControlName>, <FormName> ) ;
    => ;
       _IsControlDefined( <(ControlName)>, <(FormName)> )
 
-#translate IsWindowActive( <FormName> ) ;
+#xtranslate IsWindowActive( <FormName> ) ;
    => ;
       _IsWindowActive( <(FormName)> )
 
-#translate IsWindowDefined( <FormName> ) ;
+#xtranslate IsWindowDefined( <FormName> ) ;
    => ;
       _IsWindowDefined( <(FormName)> )
 
-#translate ArraysAreEqual( <array1>, <array2> ) ;
+#xtranslate ArraysAreEqual( <array1>, <array2> ) ;
    => ;
       AEqual( <array1>, <array2> )
 
