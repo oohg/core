@@ -484,7 +484,7 @@
    => ;
       _OOHG_OwnerDrawMenus := .F.
 
-#translate IsExtendedMenuStyleActive() ;
+#xtranslate IsExtendedMenuStyleActive() ;
    => ;
       _OOHG_OwnerDrawMenus
 
