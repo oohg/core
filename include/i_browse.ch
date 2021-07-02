@@ -104,7 +104,7 @@ STANDARD VERSION
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
-      [ <edit: EDIT> ] ;
+      [ <edit: EDIT, ALLOWEDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
@@ -187,7 +187,8 @@ STANDARD VERSION
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
-      [ HEADERCOLORS <aHeadClrs> ] ;
+      [ <dummy22: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
+      [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
       [ NEWATROW <nRowAt> ] ;
    => ;
@@ -225,7 +226,7 @@ STANDARD VERSION
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
             <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, ;
-            <nRowAt>, <{bFun}>, <.nomsg.> )
+            <nRowAt>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> )
 
 #command SET BROWSESYNC ON ;
    => ;

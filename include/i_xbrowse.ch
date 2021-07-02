@@ -95,7 +95,7 @@
       [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
-      [ <edit: EDIT> ] ;
+      [ <edit: EDIT, ALLOWEDIT> ] ;
       [ <inplace: INPLACE> ] ;
       [ <append: APPEND> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
@@ -173,7 +173,8 @@
       [ <ctt: CELLTOOLTIP> ] ;
       [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
       [ <dummy21: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
-      [ HEADERCOLORS <aHeadClrs> ] ;
+      [ <dummy22: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
+      [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TXBrowseByCell(), ;
@@ -206,7 +207,7 @@
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
-            <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.> )
+            <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;

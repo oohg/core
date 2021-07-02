@@ -99,7 +99,7 @@ STANDARD VERSION
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
-      [ <edit: EDIT> ] ;
+      [ <edit: EDIT, ALLOWEDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
       [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
@@ -176,7 +176,8 @@ STANDARD VERSION
       [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
       [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
-      [ HEADERCOLORS <aHeadClr> ] ;
+      [ <dummy23: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
+      [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
@@ -206,7 +207,8 @@ STANDARD VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClr>, <nTime>, <{bFun}>, <.nomsg.> )
+            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
+            <aHeadBkClrs> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -239,7 +241,7 @@ SPLITBOX VERSION
       [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <dummy07: ONHEADCLICK, ON HEADCLICK> <aHeadClick> ] ;
-      [ <edit: EDIT> ] ;
+      [ <edit: EDIT, ALLOWEDIT> ] ;
       [ <ownerdata: VIRTUAL> ] ;
       [ ITEMCOUNT <itemcount> ] ;
       [ <dummy08: ONQUERYDATA, ON QUERYDATA> <dispinfo> ] ;
@@ -312,11 +314,12 @@ SPLITBOX VERSION
       [ EDITCELLVALUE <edtval> ] ;
       [ <klc: KEYSLIKECLIPPER> ] ;
       [ <ctt: CELLTOOLTIP> ] ;
-      [ <nohsb: NOHSCROLLBAR> ] ;
-      [ <novsb: NOVSCROLLBAR> ] ;
+      [ <nohsb: NOHSCROLL, NOHSCROLLBAR> ] ;
+      [ <novsb: NOVSCROLL, NOVSCROLLBAR> ] ;
       [ <dummy21: ONBEFOREINSERT, ON BEFOREINSERT> <beforeins> ] ;
       [ <dummy22: ONHEADDBLCLICK, ON HEADDBLCLICK> <aHeadDblClick> ] ;
-      [ HEADERCOLORS <aHeadClrs> ] ;
+      [ <dummy23: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
+      [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
@@ -346,7 +349,8 @@ SPLITBOX VERSION
             <.silent.>, <.alta.>, <.noshow.>, <.none.>, <.cbe.>, <{rclick}>, ;
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
-            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.> )
+            <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
+            <aHeadBkClrs> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;
