@@ -12,6 +12,13 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-02 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    * IsControlDefined(), IsWindowActive(), IsWindowDefined() and
+      ArraysAreEqual() functions definitions were changed from
+      #translate to #xtranslate. From now on you must use the
+      functions' full names in your code.
+
 2021-07-02 19:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_tooltip.ch
     * IsToolTipBalloonActive variable definition was changed from
