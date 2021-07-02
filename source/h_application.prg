@@ -163,6 +163,7 @@ CLASS TApplication
    DATA aEventsStack              INIT {}  HIDDEN
    DATA aFonts                    INIT {}  READONLY
    DATA aFramesStack              INIT {}  HIDDEN
+   DATA aGroupBoxesStack          INIT {}  HIDDEN
    DATA aMenusStack               INIT {}  HIDDEN
    DATA AppMutex                  INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
@@ -179,6 +180,9 @@ CLASS TApplication
    METHOD ActiveFrameGet
    METHOD ActiveFramePop
    METHOD ActiveFramePush
+   METHOD ActiveGroupBoxGet
+   METHOD ActiveGroupBoxPop
+   METHOD ActiveGroupBoxPush
    METHOD ActiveMenuGet
    METHOD ActiveMenuPop
    METHOD ActiveMenuPush
@@ -426,27 +430,79 @@ METHOD ActiveFrameGet() CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFramePop() CLASS TApplication
 
-   LOCAL nThreadID, i
+   LOCAL nThreadID, i, lRet
 
    ::MutexLock()
    nThreadID := GetThreadId()
    i := Len( ::aFramesStack )
+   lRet := .F.
    DO WHILE i > 0
       IF ::aFramesStack[ i ][ 1 ] == nThreadID
          _OOHG_DeleteArrayItem( ::aFramesStack, i )
+         lRet := .T.
          EXIT
       ENDIF
       i --
    ENDDO
    ::MutexUnlock()
 
-   RETURN ( NIL )
+   RETURN ( lRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ActiveFramePush( oFrame ) CLASS TApplication
 
    ::MutexLock()
    AAdd( ::aFramesStack, { GetThreadId(), oFrame } )
+   ::MutexUnlock()
+
+   RETURN ( oFrame )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveGroupBoxGet() CLASS TApplication
+
+   LOCAL uRet, nThreadID, i
+
+   ::MutexLock()
+   nThreadID := GetThreadId()
+   i := Len( ::aGroupBoxesStack )
+   uRet := NIL
+   DO WHILE i > 0
+      IF ::aGroupBoxesStack[ i ][ 1 ] == nThreadID
+         uRet := ::aGroupBoxesStack[ i ][ 2 ]
+         EXIT
+      ENDIF
+      i --
+   ENDDO
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveGroupBoxPop() CLASS TApplication
+
+   LOCAL nThreadID, i, lRet
+
+   ::MutexLock()
+   nThreadID := GetThreadId()
+   i := Len( ::aGroupBoxesStack )
+   lRet := .F.
+   DO WHILE i > 0
+      IF ::aGroupBoxesStack[ i ][ 1 ] == nThreadID
+         _OOHG_DeleteArrayItem( ::aGroupBoxesStack, i )
+         lRet := .T.
+         EXIT
+      ENDIF
+      i --
+   ENDDO
+   ::MutexUnlock()
+
+   RETURN ( lRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD ActiveGroupBoxPush( oGroupBox ) CLASS TApplication
+
+   ::MutexLock()
+   AAdd( ::aGroupBoxesStack, { GetThreadId(), oGroupBox } )
    ::MutexUnlock()
 
    RETURN ( NIL )
@@ -1122,6 +1178,11 @@ METHOD Release() CLASS TApplication
          ::aFramesStack[ i ] := NIL
       NEXT i
       ::aFramesStack := {}
+
+      FOR i := 1 TO Len( ::aGroupBoxesStack )
+         ::aGroupBoxesStack[ i ] := NIL
+      NEXT i
+      ::aGroupBoxesStack := {}
 
       FOR i := 1 TO Len( ::aMenusStack )
          ::aMenusStack[ i ] := NIL

@@ -12,6 +12,18 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-02 16:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    + DATA aGroupBoxesStack.
+    + METHOD ActiveGroupBoxGet.
+    + METHOD ActiveGroupBoxPop.
+    + METHOD ActiveGroupBoxPush.
+      ; They will handle a stack for groupbox controls.
+    * METHOD ActiveFramePop now returns .T. if a frame was
+      removed or .F. if not.
+    * Method ActiveFramePush now returns the just addeed frame.
+    + Method Release: added support for releasing the new stack.
+
 2021-07-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg.hbc
     - The flags related to .prg have been removed because they
