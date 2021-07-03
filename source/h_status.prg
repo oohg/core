@@ -576,12 +576,11 @@ METHOD MinHeight( nWidth ) CLASS TMessageBar
 
    Return ::ClientHeightUsed()
 
-Function _EndMessageBar()
+FUNCTION _EndMessageBar()
 
-   _OOHG_ActiveMessageBar := Nil
-   _OOHG_DeleteFrame( "MESSAGEBAR" )
+   _OOHG_ActiveMessageBar := NIL
 
-   Return Nil
+   RETURN _OOHG_DeleteFrame( "MESSAGEBAR" )
 
 FUNCTION _SetStatusClock( nSize, cToolTip, uAction, lAmPm, icon, cstyl, cAlign )
 
