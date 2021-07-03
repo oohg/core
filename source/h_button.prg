@@ -296,7 +296,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, bAction, nWidth,
 
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeOut )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
+   IF _OOHG_LastFrameType() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := _OOHG_ActiveFrame
       IF oTab:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd

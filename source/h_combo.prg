@@ -249,7 +249,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
              iif( HB_ISLOGICAL( sort ) .AND. sort, CBS_SORT, 0 ) + ;
              iif( ! displaychange, CBS_DROPDOWNLIST, CBS_DROPDOWN ) + ;
              iif( HB_ISARRAY( aImage ) .OR. HB_ISBLOCK( ItemImgNum ) .OR. displaychange, CBS_OWNERDRAWFIXED, 0) + ;
-             iif( _OOHG_LastFrame() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 ) + ;
+             iif( _OOHG_LastFrameType() != "SPLITBOX" .AND. ! lWinSize, CBS_NOINTEGRALHEIGHT, 0 ) + ;
              iif( HB_ISLOGICAL( lNoHScroll ) .AND. lNoHScroll, 0, CBS_AUTOHSCROLL )
 
    ::SetSplitBoxInfo( Break, GripperText, ::nWidth )

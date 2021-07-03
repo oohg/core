@@ -196,17 +196,19 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, aCaptions
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndTab() CLASS TTabDirect
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   LOCAL lRet
+
+   IF _OOHG_LastFrameType() == "TABPAGE"
       // ERROR: Last page not finished
-      ::EndPage()
+      lRet := ::EndPage()
    ENDIF
-   _OOHG_DeleteFrame( ::Type )
+   lRet := lRet .OR. _OOHG_DeleteFrame( ::Type )   // TODO: check by ::Name also
    IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ENDIF
    ::SizePos()
 
-   RETURN NIL
+   RETURN lRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Refresh() CLASS TTabDirect
@@ -415,7 +417,7 @@ FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip 
 
    LOCAL oCtrl, oPage
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrameType() == "TABPAGE"
       _EndTabPage()
    ENDIF
    oCtrl := _OOHG_ActiveFrame
@@ -427,14 +429,12 @@ FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndTabPage()
 
-   _OOHG_DeleteFrame( "TABPAGE" )
-
-   RETURN NIL
+   RETURN _OOHG_DeleteFrame( "TABPAGE" )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndTab()
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrameType() == "TABPAGE"
       _EndTabPage()
    ENDIF
    _OOHG_ActiveFrame:EndTab()
@@ -1282,11 +1282,13 @@ METHOD Picture( nColumn, uValue ) CLASS TMultiPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EndTab() CLASS TMultiPage
 
-   IF _OOHG_LastFrame() == ::oPageClass:Type
+   LOCAL lRet := .T.
+
+   IF _OOHG_LastFrameType() == ::oPageClass:Type
       // ERROR: Last page not finished
-      ::EndPage()
+      lRet := ::EndPage()
    ENDIF
-   _OOHG_DeleteFrame( ::Type )
+   lRet := lRet .AND. _OOHG_DeleteFrame( ::Type )
    IF HB_ISNUMERIC( ::nFirstValue ) .AND. ! ::Value == ::nFirstValue
       ::Value := ::nFirstValue
    ELSEIF ::Value == 0
@@ -1294,7 +1296,7 @@ METHOD EndTab() CLASS TMultiPage
    ENDIF
    ::SizePos()
 
-   RETURN NIL
+   RETURN lRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ContainerValue( nValue ) CLASS TMultiPage

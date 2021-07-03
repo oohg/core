@@ -172,7 +172,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    ::InitStyle( NIL, NIL, lInvisible, NIL, lDisabled )
    ::Register( 0, NIL, nHelpId )
 
-   IF _OOHG_LastFrame() == "TABPAGE"
+   IF _OOHG_LastFrameType() == "TABPAGE"
       oTabPage := _OOHG_ActiveFrame
       IF oTabPage:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd
@@ -825,7 +825,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, cCaption,
 
    IF ::Container # NIL .AND. ::Container:Type == "RADIOGROUP"
       ::TabHandle := ::Container:TabHandle
-   ELSEIF _OOHG_LastFrame() == "TABPAGE"
+   ELSEIF _OOHG_LastFrameType() == "TABPAGE"
       oTabPage := _OOHG_ActiveFrame
       IF oTabPage:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd

@@ -3,7 +3,7 @@
  */
 /*
  * ooHG source code:
- * "Global variables" definitions
+ * Global pseudo functions and variables
  *
  * Copyright 2005-2020 Vicente Guerra <vicente@guerra.com.mx> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
@@ -62,7 +62,7 @@
 
 
 /*---------------------------------------------------------------------------
-APPLICATION WIDE VARIABLES USED BY OOHG MODULES
+APPLICATION WIDE PSEUDO-VARIABLES
 ---------------------------------------------------------------------------*/
 
 #xtranslate _OOHG_ActiveControlInfo      => _OOHG_AppObject():Value_Pos01
@@ -114,7 +114,6 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_DefaultStatusBarMsg    => _OOHG_AppObject():Value_Pos47
 #xtranslate _OOHG_DefaultMenuParams      => _OOHG_AppObject():Value_Pos48
 #xtranslate _OOHG_OwnerDrawMenus         => _OOHG_AppObject():Value_Pos49
-#xtranslate _OOHG_GetNullName            => _OOHG_AppObject():Value_Pos50
 #xtranslate _OOHG_SettingFocus           => _OOHG_AppObject():Value_Pos51
 #xtranslate _OOHG_Validating             => _OOHG_AppObject():Value_Pos52
 #xtranslate _OOHG_ActiveHelpFile         => _OOHG_AppObject():Value_Pos53
@@ -127,14 +126,38 @@ APPLICATION WIDE VARIABLES USED BY OOHG MODULES
 #xtranslate _OOHG_ComboIndexIsValueArray => _OOHG_AppObject():Value_Pos60
 #xtranslate _OOHG_ComboIndexIsValueDbf   => _OOHG_AppObject():Value_Pos61
 #xtranslate _OOHG_ActiveFrame            => _OOHG_AppObject():ActiveFrameGet()
+#xtranslate _OOHG_ActiveGroupBox         => _OOHG_AppObject():ActiveGroupBoxGet()
+#xtranslate _OOHG_LastDefinedForm        => ATail( _OOHG_RegisteredForms )
+#xtranslate _OOHG_MouseCol               => _OOHG_GetMouseCol()
+#xtranslate _OOHG_MouseRow               => _OOHG_GetMouseRow()
+#xtranslate _OOHG_RegisteredForms        => _OOHG_FormObjects()
+#xtranslate _OOHG_RegisteredControls     => _OOHG_ControlObjects()
+#xtranslate _OOHG_LastDefinedControl     => ATail( _OOHG_RegisteredControls )
 
 /*---------------------------------------------------------------------------
-PSEUDO VARIABLES USED BY OOHG MODULES
+APPLICATION WIDE PSEUDO-FUNCTIONS
 ---------------------------------------------------------------------------*/
 
-#xtranslate _OOHG_LastDefinedForm    => ATail( _OOHG_RegisteredForms )
-#xtranslate _OOHG_MouseCol           => _OOHG_GetMouseCol()
-#xtranslate _OOHG_MouseRow           => _OOHG_GetMouseRow()
-#xtranslate _OOHG_RegisteredForms    => _OOHG_FormObjects()
-#xtranslate _OOHG_RegisteredControls => _OOHG_ControlObjects()
-#xtranslate _OOHG_LastDefinedControl => ATail( _OOHG_RegisteredControls )
+#xtranslate _OOHG_AddFrame( <obj> )      => _OOHG_AppObject():ActiveFramePush( <obj> )
+#xtranslate _OOHG_LastFrameType()        => iif( _OOHG_ActiveFrame == NIL, "", _OOHG_ActiveFrame:Type )
+#xtranslate _OOHG_AddGroupBox( <obj> )   => _OOHG_AppObject():ActiveGroupBoxPush( <obj> )
+#xtranslate _OOHG_DeleteGroupBox()       => _OOHG_AppObject():ActiveGroupBoxPop()
+#xtranslate GetFontHandle( <cFontID> )   => _OOHG_AppObject():GetLogFontHandle( <cFontID> )
+#xtranslate GetFontParam( <hFont> )      => _OOHG_AppObject():GetLogFontParams( <hFont> )
+#xtranslate GetFontParamByRef( <x,...> ) => _OOHG_AppObject():GetLogFontParamsByRef( <x> )
+#xtranslate _OOHG_GetNullName( [ <x> ] ) => _OOHG_AppObject():Value_Pos50( [ <x> ] )
+#xtranslate _PushEventInfo()             => _OOHG_AppObject():EventInfoPush()
+#xtranslate _PopEventInfo()              => _OOHG_AppObject():EventInfoPop()
+#xtranslate _PushEventList()             => _OOHG_AppObject():EventInfoList()
+
+#xtranslate _OOHG_DeleteFrame( <cType> ) ;
+   => ;
+      ( _OOHG_ActiveFrame != NIL .AND. _OOHG_ActiveFrame:Type == <cType> .AND. _OOHG_AppObject():ActiveFramePop() )
+
+#xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
+   => ;
+      _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
+
+#xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
+   => ;
+      _OOHG_AppObject():HotKeySet( <nKey>, <nFlags>, <bAction> )

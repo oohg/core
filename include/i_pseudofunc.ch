@@ -123,18 +123,6 @@
    => ;
       GetSystemFont() \[2\]
 
-#xtranslate GetFontHandle( <cFontID> ) ;
-   => ;
-      _OOHG_AppObject():GetLogFontHandle( <cFontID> )
-
-#xtranslate GetFontParam( <hFont> ) ;
-   => ;
-      _OOHG_AppObject():GetLogFontParams( <hFont> )
-
-#xtranslate GetFontParamByRef( <x,...> ) ;
-   => ;
-      _OOHG_AppObject():GetLogFontParamsByRef( <x> )
-
 #xtranslate GetActiveHelpFile() ;
    => ;
       _OOHG_ActiveHelpFile
@@ -170,26 +158,6 @@
 #xtranslate GetApplicationDataFolder() ;
    => ;
       GetSpecialFolder( CSIDL_APPDATA )
-
-#xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
-   => ;
-      _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
-
-#xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
-   => ;
-      _OOHG_AppObject():HotKeySet( <nKey>, <nFlags>, <bAction> )
-
-#xtranslate _PushEventInfo() ;
-   => ;
-      _OOHG_AppObject():EventInfoPush()
-
-#xtranslate _PopEventInfo() ;
-   => ;
-      _OOHG_AppObject():EventInfoPop()
-
-#xtranslate _PushEventList() ;
-   => ;
-      _OOHG_AppObject():EventInfoList()
 
 #xtranslate _OOHG_SetbKeyDown( [ <bValue> ] ) ;
    => ;

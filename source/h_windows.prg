@@ -917,7 +917,7 @@ METHOD ClientWidth( nWidth ) CLASS TWindow
       ::Width := ::Width - ( aClientRect[ 3 ] - aClientRect[ 1 ] ) + nWidth
    ENDIF
 
-   // Window may be greater than requested width... verify it again
+   // Window may be greater than requested width, verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
 
@@ -934,7 +934,7 @@ METHOD ClientHeight( nHeight ) CLASS TWindow
       ::Height := ::Height - ( aClientRect[ 4 ] - aClientRect[ 2 ] ) + nHeight
    ENDIF
 
-   // Window may be greater than requested height... verify it again
+   // Window may be greater than requested height, verify it again
    aClientRect := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, aClientRect )
 
@@ -1695,45 +1695,6 @@ METHOD Polygon( aPoints, nWidth, aColor, lStyle, nStyle, nBrStyle, aBrColor, nFi
    ::ReleaseDC()
 
    RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _OOHG_AddFrame( oFrame )
-
-   _OOHG_AppObject():ActiveFramePush( oFrame )
-
-   RETURN oFrame
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _OOHG_DeleteFrame( cType )
-
-   LOCAL oCtrl
-
-   IF _OOHG_ActiveFrame == NIL
-      // ERROR: No FRAME started
-      RETURN .F.
-   ENDIF
-   oCtrl := _OOHG_ActiveFrame
-   IF oCtrl:Type == cType
-      _OOHG_AppObject():ActiveFramePop()
-   ELSE
-      // ERROR: No FRAME started
-      RETURN .F.
-   ENDIF
-
-   RETURN .T.
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _OOHG_LastFrame()
-
-   LOCAL cRet
-
-   IF _OOHG_ActiveFrame == NIL
-      cRet := ""
-   ELSE
-      cRet := _OOHG_ActiveFrame:Type
-   ENDIF
-
-   RETURN cRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_SelectSubClass( oClass, oSubClass, bAssign )
