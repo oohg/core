@@ -81,6 +81,7 @@ CLASS TImage FROM TControl
    DATA cPicture                  INIT ""
    DATA hImage                    INIT NIL
    DATA ImageSize                 INIT .F.
+   DATA lCtrlCoords               INIT .T.
    DATA lNoCheckDepth             INIT .F.
    DATA lNo3DColors               INIT .F.
    DATA lNoDIBSection             INIT .F.
@@ -118,7 +119,7 @@ CLASS TImage FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight, bOnClick, nHelpId, lInvisible, ;
       lStretch, lWhiteBackground, lRtl, uBackColor, cBuffer, hBitMap, lAutofit, lImagesize, cToolTip, lBorder, ;
       lClientEdge, lNoLoadTrans, lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, bOnChange, bOnDblClick, ;
-      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth, lNoRedraw, bOnMove ) CLASS TImage
+      bOnMClick, bOnMDblClick, bOnRClick, bOnRDblClick, lNoCheckDepth, lNoRedraw, bOnMove, bOnLeave, cRelativeTo ) CLASS TImage
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -141,6 +142,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
 
    IF HB_ISLOGICAL( lNoRedraw ) .AND. lNoRedraw
       ::lParentRedraw := .F.
+   ENDIF
+
+   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "FORM"
+      ::lCtrlCoords := .F.
    ENDIF
 
    ::SetForm( cControlName, uParentForm, , , , uBackColor, , lRtl )
@@ -168,14 +173,15 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
       ENDIF
    ENDIF
 
-   ASSIGN ::OnClick     VALUE bOnClick     TYPE "B"
-   ASSIGN ::OnChange    VALUE bOnChange    TYPE "B"
-   ASSIGN ::OnDblClick  VALUE bOnDblClick  TYPE "B"
-   ASSIGN ::OnMClick    VALUE bOnMClick    TYPE "B"
-   ASSIGN ::OnMDblClick VALUE bOnMDblClick TYPE "B"
-   ASSIGN ::OnRClick    VALUE bOnRClick    TYPE "B"
-   ASSIGN ::OnRDblClick VALUE bOnRDblClick TYPE "B"
-   ASSIGN ::OnMouseMove VALUE bOnMove      TYPE "B"
+   ASSIGN ::OnClick      VALUE bOnClick     TYPE "B"
+   ASSIGN ::OnChange     VALUE bOnChange    TYPE "B"
+   ASSIGN ::OnDblClick   VALUE bOnDblClick  TYPE "B"
+   ASSIGN ::OnMClick     VALUE bOnMClick    TYPE "B"
+   ASSIGN ::OnMDblClick  VALUE bOnMDblClick TYPE "B"
+   ASSIGN ::OnRClick     VALUE bOnRClick    TYPE "B"
+   ASSIGN ::OnRDblClick  VALUE bOnRDblClick TYPE "B"
+   ASSIGN ::OnMouseMove  VALUE bOnMove      TYPE "B"
+   ASSIGN ::OnMouseLeave VALUE bOnLeave     TYPE "B"
 
    RETURN Self
 
@@ -641,7 +647,7 @@ HB_FUNC( INITIMAGE )          /* FUNCTION InitImage( hWnd, hMenu, nCol, nRow, nW
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL PtInExcludeArea( PHB_ITEM pArea, int x, int y )
 {
-   PHB_ITEM pSector;
+   PHB_ITEM pSector;   // {left, top, right, bottom}
    ULONG ulCount;
 
    if( pArea )
@@ -687,16 +693,27 @@ HB_FUNC_STATIC( TIMAGE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
    POINT pt;
    PHB_ITEM pArea;
    BOOL bPtInExcludeArea;
+   BOOL blCtrlCoords;
 
    switch( message )
    {
       case WM_NCHITTEST:
+         _OOHG_Send( pSelf, s_lCtrlCoords );
+         hb_vmSend( 0 );
+         blCtrlCoords = hb_parl( -1 );
          _OOHG_Send( pSelf, s_aExcludeArea );
          hb_vmSend( 0 );
          pArea = hb_param( -1, HB_IT_ARRAY );
-         pt.x = GET_X_LPARAM( lParam );
+         pt.x = GET_X_LPARAM( lParam );   // screen coordinates
          pt.y = GET_Y_LPARAM( lParam );
-         MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
+         if( blCtrlCoords )
+         {
+            MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );   // control coordinates
+         }
+         else
+         {
+            MapWindowPoints( HWND_DESKTOP, GetParent( hWnd ), &pt, 1 );   // form coordinates
+         }
          bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
 
          if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )

@@ -86,7 +86,7 @@
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <nodib: NODIBSECTION> ] ;
       [ <style: TRANSPARENT> ] ;
-      [ EXCLUDEAREA <area> ] ;
+      [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] ;
       [ <disabled: DISABLED> ] ;
       [ <dummy3: ONCHANGE, ON CHANGE> <change> ] ;
       [ <dummy4: ONRCLICK, ON RCLICK> <rclk> ] ;
@@ -96,7 +96,8 @@
       [ <dummy8: ONMDBLCLICK, ON MDBLCLICK> <mdblclk> ] ;
       [ <nocheck: NOCHECKDEPTH> ] ;
       [ <noredraw: NOPARENTREDRAW> ] ;
-      [ <dummy9: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <move> ] ;
+      [ <dummy9: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
+      [ <dummy10: ON MOUSELEAVE, ONMOUSELEAVE> <onmouseleave> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TImage(), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
@@ -104,5 +105,6 @@
             <.whitebackground.>, <.rtl.>, <backcolor>, <buffer>, <hbitmap>, ;
             ! <.noresize.>, <.imagesize.>, <tooltip>, <.border.>, ;
             <.clientedge.>, <.notrans.>, <.no3dcolors.>, <.nodib.>, <.style.>, ;
-            <area>, <.disabled.>, <{change}>, <{rclk}>, <{mclk}>, <{dblclk}>, ;
-            <{rdblclk}>, <{mdblclk}>, <.nocheck.>, <.noredraw.>, <{move}> )
+            <area>, <.disabled.>, <{change}>, <{dblclk}>, <{mclk}>, <{mdblclk}>, ;
+            <{rclk}>, <{rdblclk}>, <.nocheck.>, <.noredraw.>, <{onmousemove}> ;
+            <{onmouseleave}>, <"coord"> )
