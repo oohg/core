@@ -12,6 +12,21 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-03 15:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_image.ch
+    + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
+    ; This allows to indicate the coordinates of the excluded
+      areas using coordinates relative to the image control or
+      relative to the container form. Defaults to OF CONTROL.
+    + Clause ON MOUSELEAVE.
+  * core\source\h_image.prg
+    + DATA lCtrlCoords to TPicture class.
+    + Support for new clause and sub-clauses.
+    ! ON RCLICK block is wrongly assigned to ON DBLCLICK event.
+    ! ON DBLCLICK block is wrongly assigned to ON MDBLCLICK event.
+    ! ON MDBLCLICK block is wrongly assigned to ON RDBLCLICK event.
+    ! ON RDBLCLICK block is wrongly assigned to ON RCLICK event.
+
 2021-07-03 15:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.h
   * core\source\c_controlmisc.c
@@ -22,7 +37,7 @@
     + DATA lCtrlCoords to TPicture class.
     + Support for new sub-clauses.
     ; This allows to indicate the coordinates of the excluded
-      areas using coordinates relative to the image control or
+      areas using coordinates relative to the picture control or
       relative to the container form. Defaults to OF CONTROL.
 
 2021-07-03 13:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -966,7 +981,7 @@
     + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
   * core\include\i_label.ch
     + Clauses ON MOUSEMOVE and its alias ON MOUSEHOVER.
-    + Clauses ON MOUSELEAVE.
+    + Clause ON MOUSELEAVE.
   * core\include\oohg.h
   * core\source\c_controlmisc.c
     + OnMouseLeave to symbols table.
