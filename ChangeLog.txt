@@ -12,7 +12,20 @@
  *   '-' Removed: ...           ';' Comment
  */
 
-2021-07-02 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2021-07-03 15:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+  * core\source\c_controlmisc.c
+    + Symbol lCtrlCoords was added to static symbols array.
+  * core\include\i_picture.ch
+    + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
+  * core\source\h_picture.prg
+    + DATA lCtrlCoords to TPicture class.
+    + Support for new sub-clauses.
+    ; This allows to indicate the coordinates of the excluded
+      areas using coordinates relative to the image control or
+      relative to the container form. Defaults to OF CONTROL.
+
+2021-07-03 13:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_pseudofunc.ch
     - The definitions for GetFontHandle, GetFontParam, SetAppHotKey,
       GetFontParamByRef, _OOHG_SetMultiple, _PushEventInfo,
@@ -67,7 +80,7 @@
       from #translate to #xtranslate. From now on you must use the
       function's full name in your code.
 
-2021-07-02 16:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2021-07-02 16:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     + DATA aGroupBoxesStack.
     + METHOD ActiveGroupBoxGet.
