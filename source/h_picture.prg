@@ -67,38 +67,39 @@
 
 CLASS TPicture FROM TControl
 
-   DATA Type               INIT "PICTURE" READONLY
-   DATA nWidth             INIT 100
-   DATA nHeight            INIT 100
-   DATA cPicture           INIT ""
-   DATA Stretch            INIT .F.
-   DATA AutoFit            INIT .F.
-   DATA hImage             INIT nil
-   DATA ImageSize          INIT .F.
-   DATA nZoom              INIT 1
-   DATA bOnClick           INIT nil
-   DATA lNoDIBSection      INIT .F.
-   DATA lNo3DColors        INIT .F.
-   DATA lNoTransparent     INIT .F.
-   DATA aExcludeArea       INIT {}
-   DATA aCopies            INIT {}
+   DATA Type                      INIT "PICTURE" READONLY
+   DATA nWidth                    INIT 100
+   DATA nHeight                   INIT 100
+   DATA cPicture                  INIT ""
+   DATA Stretch                   INIT .F.
+   DATA AutoFit                   INIT .F.
+   DATA hImage                    INIT nil
+   DATA ImageSize                 INIT .F.
+   DATA nZoom                     INIT 1
+   DATA bOnClick                  INIT nil
+   DATA lCtrlCoords               INIT .T.
+   DATA lNoDIBSection             INIT .F.
+   DATA lNo3DColors               INIT .F.
+   DATA lNoTransparent            INIT .F.
+   DATA aExcludeArea              INIT {}
+   DATA aCopies                   INIT {}
 
    METHOD Define
    METHOD RePaint
    METHOD Release
    METHOD SizePos
-   METHOD Picture          SETGET
-   METHOD Buffer           SETGET
-   METHOD HBitMap          SETGET
-   METHOD Zoom             SETGET
-   METHOD Rotate           SETGET
-   METHOD OnClick          SETGET
-   METHOD HorizontalScroll SETGET
-   METHOD VerticalScroll   SETGET
+   METHOD Picture                 SETGET
+   METHOD Buffer                  SETGET
+   METHOD HBitMap                 SETGET
+   METHOD Zoom                    SETGET
+   METHOD Rotate                  SETGET
+   METHOD OnClick                 SETGET
+   METHOD HorizontalScroll        SETGET
+   METHOD VerticalScroll          SETGET
    METHOD Events
-   METHOD nDegree          SETGET
+   METHOD nDegree                 SETGET
    METHOD Redraw
-   METHOD ToolTip          SETGET
+   METHOD ToolTip                 SETGET
    METHOD OriginalSize
    METHOD CurrentSize
    METHOD Blend
@@ -107,9 +108,9 @@ CLASS TPicture FROM TControl
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, ;
-               stretch, autofit, imagesize, BORDER, CLIENTEDGE, BackColor, ;
+               stretch, autofit, imagesize, border, clientedge, BackColor, ;
                ProcedureName, ToolTip, HelpId, lRtl, invisible, lNoLoadTrans, ;
-               lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled ) CLASS TPicture
+               lNo3DColors, lNoDIB, lStyleTransp, aArea, lDisabled, cRelativeTo ) CLASS TPicture
 
    Local ControlHandle, nStyle, nStyleEx, nError
 
@@ -127,10 +128,14 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, 
    ASSIGN lDisabled        VALUE lDisabled    TYPE "L" DEFAULT .F.
 
    /*
-   IF BackColor== NIL
+   IF BackColor == NIL
       BackColor := GetSysColor( COLOR_3DFACE )
    ENDIF
    */
+
+   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "FORM"
+      ::lCtrlCoords := .F.
+   ENDIF
 
    ::SetForm( ControlName, ParentForm,,,, BackColor, , lRtl )
 
@@ -847,14 +852,25 @@ HB_FUNC_STATIC( TPICTURE_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam,
             POINT pt;
             PHB_ITEM pArea;
             BOOL bPtInExcludeArea;
+            BOOL blCtrlCoords;
 
+            _OOHG_Send( pSelf, s_lCtrlCoords );
+            hb_vmSend( 0 );
+            blCtrlCoords = hb_parl( -1 );
             _OOHG_Send( pSelf, s_aExcludeArea );
             hb_vmSend( 0 );
             pArea = hb_param( -1, HB_IT_ARRAY );
-            pt.x = GET_X_LPARAM( lParam );
+            pt.x = GET_X_LPARAM( lParam );   // screen coordinates
             pt.y = GET_Y_LPARAM( lParam );
-            MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
-            bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
+            if( blCtrlCoords )
+            {
+               MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );   // control coordinates
+            }
+            else
+            {
+               MapWindowPoints( HWND_DESKTOP, GetParent( hWnd ), &pt, 1 );   // form coordinates
+            }
+            bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );   // form coordinates
 
             if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )
             {

@@ -85,7 +85,7 @@
       [ <no3dcolors: NO3DCOLORS> ] ;
       [ <nodib: NODIBSECTION> ] ;
       [ <style: TRANSPARENT> ] ;
-      [ EXCLUDEAREA <area> ] ;
+      [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] ;
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
@@ -93,4 +93,4 @@
             <buffer>, <hbitmap>, <.stretch.>, <.autofit.>, <.imagesize.>, ;
             <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
             <helpid>, <.rtl.>, <.invisible.>, <.notrans.>, <.no3dcolors.>, ;
-            <.nodib.>, <.style.>, <area>, <.disabled.> )
+            <.nodib.>, <.style.>, <area>, <.disabled.>, <"coord"> )
