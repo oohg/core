@@ -1248,37 +1248,38 @@ FUNCTION _GetCaption( ControlName, ParentForm )
 
 CLASS TControl FROM TWindow
 
-   DATA oToolTipCtrl         INIT Nil
-   DATA cToolTip             INIT ""
-   DATA uToolTipIcon         INIT TTI_NONE
-   DATA cToolTipTitle        INIT ""
-   DATA AuxHandle            INIT 0
-   DATA Transparent          INIT .F.
-   DATA HelpId               INIT 0
-   DATA OnChange             INIT nil
-   DATA Id                   INIT 0
-   DATA ImageListColor       INIT CLR_NONE
-   DATA ImageListFlags       INIT LR_LOADTRANSPARENT
-   DATA SetImageListCommand  INIT 0   // Must be explicit for each control
-   DATA SetImageListWParam   INIT TVSIL_NORMAL
-   DATA hCursor              INIT 0
-   DATA postBlock            INIT nil
-   DATA lCancel              INIT .F.
-   DATA OnEnter              INIT nil
-   DATA xOldValue            INIT nil
-   DATA OldValue             INIT nil
+   DATA oToolTipCtrl             INIT NIL
+   DATA cToolTip                 INIT ""
+   DATA uToolTipIcon             INIT TTI_NONE
+   DATA cToolTipTitle            INIT ""
+   DATA AuxHandle                INIT 0
+   DATA Transparent              INIT .F.
+   DATA HelpId                   INIT 0
+   DATA OnChange                 INIT NIL
+   DATA Id                       INIT 0
+   DATA ImageListColor           INIT CLR_NONE
+   DATA ImageListFlags           INIT LR_LOADTRANSPARENT
+   DATA SetImageListCommand      INIT 0   // Must be explicit for each control
+   DATA SetImageListWParam       INIT TVSIL_NORMAL
+   DATA hCursor                  INIT 0
+   DATA postBlock                INIT NIL
+   DATA lCancel                  INIT .F.
+   DATA OnEnter                  INIT NIL
+   DATA xOldValue                INIT NIL
+   DATA OldValue                 INIT NIL
    DATA OldColor
    DATA OldBackColor
-   DATA BackgroundObject     INIT NIL
+   DATA BackgroundObject         INIT NIL
+   DATA oGroupBox                INIT NIL
 
-   METHOD oBkGrnd            SETGET
-   METHOD Row                SETGET
-   METHOD Col                SETGET
-   METHOD Width              SETGET
-   METHOD Height             SETGET
-   METHOD ToolTip            SETGET
-   METHOD ToolTipTitle       SETGET
-   METHOD ToolTipIcon        SETGET
+   METHOD oBkGrnd                SETGET
+   METHOD Row                    SETGET
+   METHOD Col                    SETGET
+   METHOD Width                  SETGET
+   METHOD Height                 SETGET
+   METHOD ToolTip                SETGET
+   METHOD ToolTipTitle           SETGET
+   METHOD ToolTipIcon            SETGET
    METHOD SetForm
    METHOD InitStyle
    METHOD Register
@@ -1286,25 +1287,25 @@ CLASS TControl FROM TWindow
    METHOD PreAddToCtrlsArrays
    METHOD PosAddToCtrlsArrays
    METHOD DelFromCtrlsArrays
-   METHOD TabIndex           SETGET
-   METHOD Refresh            BLOCK { |Self| ::ReDraw() }
+   METHOD TabIndex               SETGET
+   METHOD Refresh                BLOCK { |Self| ::ReDraw() }
    METHOD Release
    METHOD SetFont
    METHOD FocusEffect
-   METHOD ContainerRow       BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
-   METHOD ContainerCol       BLOCK { |Self| IF( ::Container != NIL, IF( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
-   METHOD ContainerhWnd      BLOCK { |Self| IF( ::Container == NIL, ::Parent:hWnd, if( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
-   METHOD FontName           SETGET
-   METHOD FontSize           SETGET
-   METHOD FontBold           SETGET
-   METHOD FontItalic         SETGET
-   METHOD FontUnderline      SETGET
-   METHOD FontStrikeout      SETGET
-   METHOD FontAngle          SETGET
-   METHOD FontCharset        SETGET
-   METHOD FontWidth          SETGET
-   METHOD FontOrientation    SETGET
-   METHOD FontAdvancedGM     SETGET
+   METHOD ContainerRow           BLOCK { |Self| iif( ::Container != NIL, iif( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerRow ) + ::Container:RowMargin, ::Parent:RowMargin ) + ::Row }
+   METHOD ContainerCol           BLOCK { |Self| iif( ::Container != NIL, iif( ValidHandler( ::Container:ContainerhWndValue ), 0, ::Container:ContainerCol ) + ::Container:ColMargin, ::Parent:ColMargin ) + ::Col }
+   METHOD ContainerhWnd          BLOCK { |Self| iif( ::Container == NIL, ::Parent:hWnd, iif( ValidHandler( ::Container:ContainerhWndValue ), ::Container:ContainerhWndValue, ::Container:ContainerhWnd ) ) }
+   METHOD FontName               SETGET
+   METHOD FontSize               SETGET
+   METHOD FontBold               SETGET
+   METHOD FontItalic             SETGET
+   METHOD FontUnderline          SETGET
+   METHOD FontStrikeout          SETGET
+   METHOD FontAngle              SETGET
+   METHOD FontCharset            SETGET
+   METHOD FontWidth              SETGET
+   METHOD FontOrientation        SETGET
+   METHOD FontAdvancedGM         SETGET
    METHOD SizePos
    METHOD Move
    METHOD ForceHide
@@ -1316,17 +1317,31 @@ CLASS TControl FROM TWindow
    METHOD DoEventMouseCoords
    METHOD DoLostFocus
    METHOD DoChange
-   METHOD oToolTip           SETGET
+   METHOD oToolTip               SETGET
    METHOD Events
    METHOD Events_Color
    METHOD Events_Enter
    METHOD Events_Command
    METHOD Events_Notify
-   METHOD Events_DrawItem    BLOCK { || NIL }
-   METHOD Events_MeasureItem BLOCK { || NIL }
-   METHOD Cursor             SETGET
+   METHOD Events_DrawItem        BLOCK { || NIL }
+   METHOD Events_MeasureItem     BLOCK { || NIL }
+   METHOD Cursor                 SETGET
+   METHOD ExcludeGroupBoxArea
 
    ENDCLASS
+
+METHOD ExcludeGroupBoxArea() CLASS TControl
+
+   LOCAL lRet
+
+   IF ( ::oGroupBox := _OOHG_ActiveGroupBox ) # NIL .AND. ! ::oGroupBox:lNoAutoExclude
+      ::oGroupBox:AddExcludeArea( ::Name, { ::nCol, ::nRow, ::nCol + ::nWidth, ::nRow + ::nHeight } )
+      lRet := .T.
+   ELSE
+      lRet := .F.
+   ENDIF
+
+   RETURN lRet
 
 METHOD oBkGrnd( oCtrl ) CLASS TControl
 
@@ -1625,6 +1640,8 @@ METHOD Register( hWnd, cName, HelpId, Visible, ToolTip, Id ) CLASS TControl
    mVar := "_" + ::Parent:Name + "_" + ::Name
    PUBLIC &mVar. := Self
 
+   ::ExcludeGroupBoxArea()
+
    RETURN Self
 
 METHOD AddToCtrlsArrays() CLASS TControl
@@ -1679,6 +1696,11 @@ METHOD DelFromCtrlsArrays() CLASS TControl
 METHOD Release() CLASS TControl
 
    LOCAL mVar, oCont, hWnd
+
+   IF ::oGroupBox # NIL
+      ::oGroupBox:DelExcludeArea( ::Name )
+      ::oGroupBox := NIL
+   ENDIF
 
    // Erase events to avoid problems with detached references
    ::OnChange       := NIL
@@ -2075,6 +2097,8 @@ METHOD DoChange() CLASS TControl
 
 void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 
+void _OOHG_CheckMouseLeave( HWND hWnd );
+
 HBRUSH GetTabBrush( HWND );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2090,23 +2114,27 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam
    switch( message )
    {
       case WM_MOUSEMOVE:
-         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
-         _OOHG_Send( pSelf, s_hCursor );
-         hb_vmSend( 0 );
-         lData = HCURSORparam( -1 );
-         if( lData )
          {
-            SetCursor( lData );
+            POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+            _OOHG_CheckMouseLeave( oSelf->hWnd );
+            _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+            _OOHG_Send( pSelf, s_hCursor );
+            hb_vmSend( 0 );
+            lData = HCURSORparam( -1 );
+            if( lData )
+            {
+               SetCursor( lData );
+            }
+            if( wParam == MK_LBUTTON )
+            {
+               _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
+            }
+            else
+            {
+               _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
+            }
+            hb_ret();
          }
-         if( wParam == MK_LBUTTON )
-         {
-            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
-         }
-         else
-         {
-            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
-         }
-         hb_ret();
          break;
 
       case WM_MOUSELEAVE:

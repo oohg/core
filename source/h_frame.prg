@@ -64,86 +64,144 @@
 #include "oohg.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TFrame FROM TControl
 
-   DATA Type           INIT "FRAME" READONLY
-   DATA nWidth         INIT 140
-   DATA nHeight        INIT 140
-   DATA aExcludeArea   INIT {}
+   DATA Type                      INIT "FRAME" READONLY
+   DATA nWidth                    INIT 140
+   DATA nHeight                   INIT 140
+   DATA aExcludeArea              INIT {}
+   DATA lCtrlCoords               INIT .F.
+   DATA aCtrlNames                INIT {}
+   DATA lGroupBox                 INIT .F.
+   DATA lNoAutoExclude            INIT .F.
 
-   METHOD Caption      SETGET
+   METHOD Caption                 SETGET
    METHOD Define
    METHOD Events
-   METHOD ToolTip      SETGET
+   METHOD ToolTip                 SETGET
+   METHOD AddExcludeArea
+   METHOD DelExcludeArea
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, y, x, w, h, caption, fontname, ;
-               fontsize, opaque, bold, italic, underline, strikeout, ;
-               backcolor, fontcolor, transparent, lRtl, invisible, lDisabled, ;
-               tooltip, aArea ) CLASS TFrame
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption, cFontName, nFontSize, ;
+               lOpaque, lBold, lItalic, lUnderline, lStrikeOut, uBackColor, uFontColor, lTransparent, ;
+               lRtl, lInvisible, lDisabled, cToolTip, aArea, cRelativeTo, lNoAutoExc, lGroupBox ) CLASS TFrame
 
-   Local ControlHandle, nStyle
-   Local oTab
+   LOCAL nControlHandle, nStyle, oTab
 
-   ASSIGN ::nCol         VALUE x           TYPE "N"
-   ASSIGN ::nRow         VALUE y           TYPE "N"
-   ASSIGN ::nWidth       VALUE w           TYPE "N"
-   ASSIGN ::nHeight      VALUE h           TYPE "N"
-   ASSIGN caption        VALUE caption     TYPE "CM" DEFAULT ""
-   ASSIGN opaque         VALUE opaque      TYPE "L"  DEFAULT .F.
-   ASSIGN transparent    VALUE transparent TYPE "L"  DEFAULT .F.
-   ASSIGN ::aExcludeArea VALUE aArea       TYPE "A"
+   ASSIGN ::nCol           VALUE nCol         TYPE "N"
+   ASSIGN ::nRow           VALUE nRow         TYPE "N"
+   ASSIGN ::nWidth         VALUE nWidth       TYPE "N"
+   ASSIGN ::nHeight        VALUE nHeight      TYPE "N"
+   ASSIGN cCaption         VALUE cCaption     TYPE "CM" DEFAULT ""
+   ASSIGN lOpaque          VALUE lOpaque      TYPE "L"  DEFAULT .F.
+   ASSIGN lTransparent     VALUE lTransparent TYPE "L"  DEFAULT .F.
+   ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
+   ASSIGN ::lNoAutoExclude VALUE lNoAutoExc   TYPE "L"
+   ASSIGN ::lGroupBox      VALUE lGroupBox    TYPE "L"
 
-   IF transparent
-      IF opaque
+   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "CONTROL"
+      ::lCtrlCoords := .T.
+   ENDIF
+
+   IF lTransparent
+      IF lOpaque
          MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program terminated." )
       ELSE
          ::Transparent := .T.
       ENDIF
    ELSE
-      ::Transparent := ! opaque
+      ::Transparent := ! lOpaque
    ENDIF
 
-   If valtype( caption ) == 'U'
-      caption := ""
-      fontname := "Arial"
-      fontsize := 1
-   EndIf
+   IF ValType( cCaption ) == 'U'
+      cCaption := ""
+      cFontName := "Arial"
+      nFontSize := 1
+   ENDIF
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, , lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, NIL, lRtl )
 
-   nStyle := ::InitStyle( ,, Invisible, .T., lDisabled )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, .T., lDisabled )
 
-   ControlHandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, caption, opaque, ::lRtl, nStyle )
+   nControlHandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, cCaption, lOpaque, ::lRtl, nStyle )
 
-   ::Register( ControlHandle, ControlName,,, tooltip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, NIL, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
-   IF _OOHG_LastFrame() == "TABPAGE" .AND. ::IsVisualStyled
+   IF _OOHG_LastFrameType() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := _OOHG_ActiveFrame
       IF oTab:Parent:hWnd == ::Parent:hWnd
          ::TabHandle := ::Container:Container:hWnd
       ENDIF
    ENDIF
 
-   ::Caption := Caption
+   ::Caption := cCaption
 
-   Return Self
+   IF ::lGroupBox
+      _OOHG_AddGroupBox( Self )
+   ENDIF
 
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _EndGroupBox()
+
+   RETURN _OOHG_DeleteGroupBox()
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AddExcludeArea( cControlName, aAreas ) CLASS TFrame
+
+   LOCAL lRet
+
+   ASSIGN cControlName VALUE cControlName TYPE "CM" DEFAULT NIL
+   ASSIGN aAreas       VALUE aAreas       TYPE "A"  DEFAULT NIL
+
+   IF Empty( cControlName ) .OR. Empty( aAreas )
+      lRet := .F.
+   ELSE
+      AAdd( ::aCtrlNames, cControlName )
+      // aAreas must be an array {left, top, right, bottom} or an array of arrays with such format
+      AAdd( ::aExcludeArea, aAreas )
+      lRet := .T.
+   ENDIF
+
+   RETURN lRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DelExcludeArea( cControlName )
+
+   LOCAL nPos, lRet
+
+   nPos := AScan( ::aCtrlNames, cControlName )
+   IF nPos > 0
+      _OOHG_DeleteArrayItem( ::aCtrlNames, nPos )
+      _OOHG_DeleteArrayItem( ::aExcludeArea, nPos )
+      lRet := .T.
+   ELSE
+      lRet := .F.
+   ENDIF
+
+   RETURN lRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Caption( cCaption ) CLASS TFrame
 
-   Local cRet
+   LOCAL cRet
 
    // Under XP, when caption is changed, part of the old text remains visible.
    cRet := ::Super:Caption( cCaption )
-   If ::lVisible
+   IF ::lVisible
       ::Visible := .F.
       ::Visible := .T.
-   EndIf
+   ENDIF
 
-   Return cRet
+   RETURN cRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ToolTip( uToolTip ) CLASS TFrame
 
    IF PCount() > 0
@@ -153,7 +211,7 @@ METHOD ToolTip( uToolTip ) CLASS TFrame
 
    RETURN ::cToolTip
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
@@ -219,18 +277,28 @@ HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
    POINT pt;
    PHB_ITEM pArea;
    BOOL bPtInExcludeArea;
+   BOOL blCtrlCoords;
 
    switch( message )
    {
       case WM_NCHITTEST:
+         _OOHG_Send( pSelf, s_lCtrlCoords );
+         hb_vmSend( 0 );
+         blCtrlCoords = hb_parl( -1 );
          _OOHG_Send( pSelf, s_aExcludeArea );
          hb_vmSend( 0 );
          pArea = hb_param( -1, HB_IT_ARRAY );
-         pt.x = GET_X_LPARAM( lParam );
+         pt.x = GET_X_LPARAM( lParam );   // screen coordinates
          pt.y = GET_Y_LPARAM( lParam );
-         MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );
+         if( blCtrlCoords )
+         {
+            MapWindowPoints( HWND_DESKTOP, hWnd, &pt, 1 );   // control coordinates
+         }
+         else
+         {
+            MapWindowPoints( HWND_DESKTOP, GetParent( hWnd ), &pt, 1 );   // form coordinates
+         }
          bPtInExcludeArea = PtInExcludeArea( pArea, pt.x, pt.y );
-
          if( oSelf->lAux[ 0 ] && ! bPtInExcludeArea )
          {
             hb_retni( HTCLIENT );
