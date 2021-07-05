@@ -81,7 +81,7 @@ CLASS TImage FROM TControl
    DATA cPicture                  INIT ""
    DATA hImage                    INIT NIL
    DATA ImageSize                 INIT .F.
-   DATA lCtrlCoords               INIT .T.
+   DATA lCtrlCoords               INIT .F.
    DATA lNoCheckDepth             INIT .F.
    DATA lNo3DColors               INIT .F.
    DATA lNoDIBSection             INIT .F.
@@ -144,7 +144,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cFileName, nWidth, nHeight
       ::lParentRedraw := .F.
    ENDIF
 
-   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "FORM"
+   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "CONTROL"
       ::lCtrlCoords := .F.
    ENDIF
 
