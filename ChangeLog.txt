@@ -12,6 +12,73 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-05 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_frame.ch
+    + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
+    ; This allows to indicate the coordinates of the excluded
+      areas using coordinates relative to the frame control or
+      relative to the container form. Defaults to OF FORM.
+    + New control DEFINE GROUPBOX ... END GROUPBOX.
+      ; This control is a FRAME that automatically adds to its
+        excludearea the areas of the controls defined between
+        DEFINE GROUPOX and END GROUPBOX clauses.
+      ; Use the NOAUTOEXCLUDE clause to disable automatic addition.
+    ; According to the Windows implementation, a FRAME control is
+      completely transparent to mouse messages: all of them are sent
+      to the control's parent. Because of that it can't have a
+      tooltip. By commit 2018-09-15 22:08 UTC-0300 a trick was
+      introduced to enable a tooltip. This trick makes the control
+      opaque to mouse clicks thus preventing the relay of mouse
+      events to its parent.
+  * core\source\h_frame.prg
+    * Some format.
+    + Support for new clauses.
+    * Calls to _OOHG_LastFrame were replaced by _OOHG_LastFrameType.
+    + Function _EndGroupBox().
+    + DATA lCtrlCoords.
+    + DATA aCtrlNames.
+    + DATA lGroupBox.
+    + DATA lNoAutoExclude.
+    + METHOD AddExcludeArea.
+    + METHOD DelExcludeArea.
+  * core\source\h_controlmisc.prg
+    * Some format.
+    + DATA oGroupBox.
+    + METHOD ExcludeGroupBoxArea to class TControl.
+    * A call to method ExcludeGroupBoxArea was added in method
+      Register of TControl class to register the area occupied by
+      the control within a GROUPBOX.
+    + A call to method DelExcludeArea of class TGroupBox was added
+      in method Release of class TControl to unregister the area
+      occupied by the control within a GROUPBOX.
+    ! ON MOUSELEAVE event is not triggered because the control
+      doesn't receive the WM_MOUSELEAVE message when the mouse
+      is moving too fast over it.
+
+2021-07-05 10:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    ! Default value of lCtrlCoords data was changed to .F. to
+      restore the default behavior.
+
+2021-07-05 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_picture.prg
+    ! Default value of lCtrlCoords data was changed to .F. to
+      restore the default behavior.
+
+2021-07-05 10:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+  * core\source\h_tree.prg
+  * core\source\h_form.prg
+  * core\source\h_controlmisc.prg
+    ! ON MOUSELEAVE event is not triggered because the control
+      doesn't receive the WM_MOUSELEAVE message when the mouse
+      is moving too fast over it.
+
+2021-07-05 10:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Protect static var _OOHG_ShowContextMenus with mutex so
+      it's thread safe.
+
 2021-07-03 15:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_image.ch
     + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
