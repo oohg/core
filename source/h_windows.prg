@@ -2109,7 +2109,7 @@ METHOD Error( xParam ) CLASS TDynamicValues
 #endif
 
 static int _OOHG_ShowContextMenus = 1;      /* TODO: Thread safe ? */
-static BOOL _OOHG_NestedSameEvent = FALSE;  /* TRUE allows event nesting */
+static BOOL _OOHG_NestedSameEvent = FALSE;   /* TRUE allows event nesting */
 static int _OOHG_MouseCol = 0;              /* TODO: Thread safe ? */
 static int _OOHG_MouseRow = 0;              /* TODO: Thread safe ? */
 
@@ -3039,11 +3039,17 @@ HB_FUNC( _OOHG_EVAL_ARRAY )          /* FUNCTION _OOHG_Eval_Array( bCodeblock, a
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_SHOWCONTEXTMENUS )          /* FUNCTION _OOHG_ShowContextMenus( lOnOff ) -> lOnOff */
 {
+   BOOL bRet;
+
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
    if( HB_ISLOG( 1 ) )
    {
       _OOHG_ShowContextMenus = hb_parl( 1 );
    }
-   hb_retl( _OOHG_ShowContextMenus );
+   bRet = _OOHG_ShowContextMenus;
+   ReleaseMutex( _OOHG_GlobalMutex() );
+
+   hb_retl( bRet );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
