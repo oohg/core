@@ -1227,6 +1227,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
       Return Nil
 
    ElseIf nMsg == WM_MOUSEMOVE
+      _OOHG_CheckMouseLeave( ::hwnd )
       If ::DragActive .and. ! ::DragEnding
          If HB_IsObject( ::LastTarget )
             ::LastTarget:HasDragFocus := .F.

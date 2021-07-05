@@ -2108,15 +2108,33 @@ METHOD Error( xParam ) CLASS TDynamicValues
    #define WM_COPYGLOBALDATA 0x0049
 #endif
 
-static int _OOHG_ShowContextMenus = 1;      /* TODO: Thread safe ? */
+static int _OOHG_ShowContextMenus = 1;
 static BOOL _OOHG_NestedSameEvent = FALSE;   /* TRUE allows event nesting */
-static int _OOHG_MouseCol = 0;              /* TODO: Thread safe ? */
-static int _OOHG_MouseRow = 0;              /* TODO: Thread safe ? */
+static int _OOHG_MouseCol = 0;
+static int _OOHG_MouseRow = 0;
+static HWND _OOHG_MousehWnd = 0;
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+void _OOHG_CheckMouseLeave( HWND hWnd )
+{
+   if( _OOHG_MousehWnd != 0 && hWnd != _OOHG_MousehWnd )
+   {
+      SendMessage( _OOHG_MousehWnd, WM_MOUSELEAVE, 0, 0 );
+   }
+   _OOHG_MousehWnd = hWnd;
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( _OOHG_CHECKMOUSELEAVE )          /* FUNCTION _OOHG_CheckMouseLeave( hWnd ) -> NIL */
+{
+   _OOHG_CheckMouseLeave( HWNDparam( 1 ) );
+}
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
 {
    PHB_ITEM pSelf2;
+   POCTRL oSelf;
 
    pSelf2 = hb_itemNew( NULL );
    hb_itemCopy( pSelf2, pSelf );
@@ -2129,11 +2147,14 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow )
    hb_vmSend( 0 );
    _OOHG_MouseRow = iRow - hb_parni( -1 );
 
+   oSelf = _OOHG_GetControlInfo( pSelf2 );
+   _OOHG_MousehWnd = oSelf->hWnd;
+
    hb_itemRelease( pSelf2 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( _OOHG_SETMOUSECOORDS )          /* FUNCTION _OOHG_SetmouseCoords( nCol, nRow ) -> NIL */
+HB_FUNC( _OOHG_SETMOUSECOORDS )          /* FUNCTION _OOHG_SetmouseCoords( oCtrl, nCol, nRow ) -> NIL */
 {
    _OOHG_SetMouseCoords( ( PHB_ITEM ) hb_param( 1, HB_IT_ARRAY ), hb_parni( 2 ), hb_parni( 3 ) );
 }

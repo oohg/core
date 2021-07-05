@@ -1381,6 +1381,8 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
 #define WM_MOUSEHWHEEL 0x020e
 #endif
 
+void _OOHG_CheckMouseLeave( HWND hWnd );
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC_STATIC( TFORM_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm */
 {
@@ -1458,16 +1460,20 @@ HB_FUNC_STATIC( TFORM_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) 
          break;
 
       case WM_MOUSEMOVE:
-         _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
-         if( wParam == MK_LBUTTON )
          {
-            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
+            POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+            _OOHG_CheckMouseLeave( oSelf->hWnd );
+            _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+            if( wParam == MK_LBUTTON )
+            {
+               _OOHG_DoEventMouseCoords( pSelf, s_OnMouseDrag, "MOUSEDRAG", lParam );
+            }
+            else
+            {
+               _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
+            }
+            hb_ret();
          }
-         else
-         {
-            _OOHG_DoEventMouseCoords( pSelf, s_OnMouseMove, "MOUSEMOVE", lParam );
-         }
-         hb_ret();
          break;
 
       case WM_NCMOUSEMOVE:
