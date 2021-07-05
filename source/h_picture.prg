@@ -77,7 +77,7 @@ CLASS TPicture FROM TControl
    DATA ImageSize                 INIT .F.
    DATA nZoom                     INIT 1
    DATA bOnClick                  INIT nil
-   DATA lCtrlCoords               INIT .T.
+   DATA lCtrlCoords               INIT .F.
    DATA lNoDIBSection             INIT .F.
    DATA lNo3DColors               INIT .F.
    DATA lNoTransparent            INIT .F.
@@ -133,8 +133,8 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, 
    ENDIF
    */
 
-   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "FORM"
-      ::lCtrlCoords := .F.
+   IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "CONTROL"
+      ::lCtrlCoords := .T.
    ENDIF
 
    ::SetForm( ControlName, ParentForm,,,, BackColor, , lRtl )
