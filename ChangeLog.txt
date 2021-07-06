@@ -12,6 +12,19 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-06 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_frame.ch
+    + Sub-clause POSTPARENT.
+    ; This forces the control to relay its WM_MOUSEMOVE messages
+      to its parent and to ignore its WM_MOUSELEAVE messages.
+  * core\source\h_frame.prg
+    + DATA lPostParent.
+    + Support for new clause.
+  * core\include\oohg.h
+  * core\source\c_controlmisc.c
+    + Symbols ContainerhWnd and lPostParent were added to static
+      symbols array.
+
 2021-07-05 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_frame.ch
     + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
