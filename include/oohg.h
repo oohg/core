@@ -739,7 +739,9 @@ void             _UxTheme_DeInit( void );
 #define s_RangeWidth            85
 #define s_OnMouseLeave          86
 #define s_lCtrlCoords           87
-#define s_LastSymbol            88
+#define s_ContainerhWnd         88
+#define s_lPostParent           89
+#define s_LastSymbol            90
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */

@@ -81,14 +81,14 @@
       [ <invisible: INVISIBLE> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] ] ;
+      [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] [ <pp: POSTPARENT> ] ] ;
 => ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
          Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
          <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
          <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.>, <tooltip>, ;
-         <area>, <"coord">, NIL, .F. )
+         <area>, <"coord">, NIL, .F., <.pp.> )
 
 #xcommand DEFINE GROUPBOX <name> ;
       [ AT <row>, <col> ] ;
@@ -111,7 +111,7 @@
       [ <invisible: INVISIBLE> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] ] ;
+      [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] [ <pp: POSTPARENT> ] ] ;
       [ <noauto: NOAUTOEXCLUDE> ] ;
 => ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
@@ -119,7 +119,7 @@
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
          <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
          <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.>, <tooltip>, ;
-         <area>, <"coord">, <.noauto.>, .T. )
+         <area>, <"coord">, <.noauto.>, .T., <.pp.> )
 
 #xcommand END GROUPBOX [ <x> ] ;
 => ;

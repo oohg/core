@@ -75,6 +75,7 @@ CLASS TFrame FROM TControl
    DATA aCtrlNames                INIT {}
    DATA lGroupBox                 INIT .F.
    DATA lNoAutoExclude            INIT .F.
+   DATA lPostParent               INIT .F.
 
    METHOD Caption                 SETGET
    METHOD Define
@@ -88,7 +89,7 @@ CLASS TFrame FROM TControl
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption, cFontName, nFontSize, ;
                lOpaque, lBold, lItalic, lUnderline, lStrikeOut, uBackColor, uFontColor, lTransparent, ;
-               lRtl, lInvisible, lDisabled, cToolTip, aArea, cRelativeTo, lNoAutoExc, lGroupBox ) CLASS TFrame
+               lRtl, lInvisible, lDisabled, cToolTip, aArea, cRelativeTo, lNoAutoExc, lGroupBox, lPostParent ) CLASS TFrame
 
    LOCAL nControlHandle, nStyle, oTab
 
@@ -102,6 +103,7 @@ METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption,
    ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
    ASSIGN ::lNoAutoExclude VALUE lNoAutoExc   TYPE "L"
    ASSIGN ::lGroupBox      VALUE lGroupBox    TYPE "L"
+   ASSIGN ::lPostParent    VALUE lPostParent  TYPE "L"
 
    IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "CONTROL"
       ::lCtrlCoords := .T.
@@ -278,6 +280,8 @@ HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
    PHB_ITEM pArea;
    BOOL bPtInExcludeArea;
    BOOL blCtrlCoords;
+   BOOL bPostParent;
+   HWND hContainer;
 
    switch( message )
    {
@@ -307,6 +311,30 @@ HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
          {
             hb_retni( HTTRANSPARENT );
          }
+         break;
+
+      case WM_MOUSEMOVE:
+         _OOHG_Send( pSelf, s_lPostParent );
+         hb_vmSend( 0 );
+         bPostParent = hb_parl( -1 );
+         if( bPostParent )
+         {
+            _OOHG_Send( pSelf, s_ContainerhWnd );
+            hb_vmSend( 0 );
+            hContainer = HWNDparam( -1 );
+            pt.x = GET_X_LPARAM( lParam );
+            pt.y = GET_Y_LPARAM( lParam );
+            MapWindowPoints( hWnd, GetParent( hWnd ), &pt, 1 );
+            SendMessage( hContainer, WM_MOUSEMOVE, wParam, MAKELPARAM( pt.x, pt.y ) );
+            break;
+         }
+         #ifdef __clang__
+            __attribute__((fallthrough));
+         #endif
+            /* FALLTHRU */
+
+      case WM_MOUSELEAVE:
+         hb_ret();
          break;
 
       default:

@@ -165,6 +165,8 @@ static const char *s_SymbolNames[] = {
    "RANGEWIDTH",
    "ONMOUSELEAVE",
    "LCTRLCOORDS",
+   "CONTAINERHWND",
+   "LPOSTPARENT",
    "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )
