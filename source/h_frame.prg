@@ -313,29 +313,34 @@ HB_FUNC_STATIC( TFRAME_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, l
          }
          break;
 
+      case WM_MOUSELEAVE:
       case WM_MOUSEMOVE:
          _OOHG_Send( pSelf, s_lPostParent );
          hb_vmSend( 0 );
          bPostParent = hb_parl( -1 );
          if( bPostParent )
          {
-            _OOHG_Send( pSelf, s_ContainerhWnd );
-            hb_vmSend( 0 );
-            hContainer = HWNDparam( -1 );
-            pt.x = GET_X_LPARAM( lParam );
-            pt.y = GET_Y_LPARAM( lParam );
-            MapWindowPoints( hWnd, GetParent( hWnd ), &pt, 1 );
-            SendMessage( hContainer, WM_MOUSEMOVE, wParam, MAKELPARAM( pt.x, pt.y ) );
+            if( message == WM_MOUSELEAVE )
+            {
+               hb_ret();
+            }
+            else
+            {
+               _OOHG_Send( pSelf, s_ContainerhWnd );
+               hb_vmSend( 0 );
+               hContainer = HWNDparam( -1 );
+               pt.x = GET_X_LPARAM( lParam );
+               pt.y = GET_Y_LPARAM( lParam );
+               MapWindowPoints( hWnd, GetParent( hWnd ), &pt, 1 );
+               SendMessage( hContainer, WM_MOUSEMOVE, wParam, MAKELPARAM( pt.x, pt.y ) );
+            }
             break;
          }
+
          #ifdef __clang__
             __attribute__((fallthrough));
          #endif
             /* FALLTHRU */
-
-      case WM_MOUSELEAVE:
-         hb_ret();
-         break;
 
       default:
          _OOHG_Send( pSelf, s_Super );
