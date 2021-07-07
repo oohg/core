@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-06 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated.
+
 2021-07-06 21:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
   * core\compile_MINGW.BAT
