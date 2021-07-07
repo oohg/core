@@ -33,7 +33,7 @@ rem
 :MORE_SETS
 
    rem *** Force static linking ***
-   set HG_STATIC_LIBS=-static -static-libgcc -static-libstdc++ -pthread -lpthread
+   set HG_STATIC_LIBS=-static -static-libgcc %HG_ADDSTATIC%
 
    rem *** Set PATH ***
    set "HG_PATH=%PATH%"

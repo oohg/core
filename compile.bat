@@ -23,6 +23,7 @@ rem
    set LIB_HRB=
    set BIN_HRB=
    set HG_ADDLIBS=
+   set HG_ADDSTATIC=
    set HG_FLAVOR=
 
 :ROOT
@@ -196,7 +197,6 @@ rem
    if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
-
    if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
    set HG_FLAVOR=HARBOUR
    call "%HG_ROOT%\compile_mingw.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
@@ -213,6 +213,7 @@ rem
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM32.o
    if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
    if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
@@ -231,6 +232,7 @@ rem
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
    if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
    if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
@@ -249,6 +251,7 @@ rem
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM34.o
    if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
    if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
@@ -267,6 +270,7 @@ rem
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3464.o
    if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
    if "%HG_INC_RC%"    == "" set HG_INC_RC=-I%HG_ROOT%\resources
