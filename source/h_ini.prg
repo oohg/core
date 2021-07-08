@@ -98,7 +98,7 @@ FUNCTION GetBeginComment
    LOCAL aLines, nLen, i, lTest := .T., cComment := ""
 
    IF ! Empty( _OOHG_ActiveIniFile )
-      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      aLines := hb_ATokens( StrTran( MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
       nLen := Len( aLines )
       IF nLen > 0
          FOR i := 1 TO nLen
@@ -122,7 +122,7 @@ FUNCTION GetEndComment
    LOCAL aLines, nLen, i, lTest := .T., cComment := ""
 
    IF ! Empty( _OOHG_ActiveIniFile )
-      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      aLines := hb_ATokens( StrTran( MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
       nLen := Len( aLines )
       IF nLen > 0
          FOR i := nLen TO 1 STEP -1
@@ -148,7 +148,7 @@ FUNCTION SetBeginComment( cComment )
    ASSIGN cComment VALUE cComment TYPE "CM" DEFAULT ""
 
    IF ! Empty( _OOHG_ActiveIniFile )
-      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      aLines := hb_ATokens( StrTran( MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
       nLen := Len( aLines )
       IF nLen > 0 .AND. Len( ATail( aLines ) ) == 0
          ASize( aLines, nLen - 1 )
@@ -202,7 +202,7 @@ FUNCTION SetEndComment( cComment )
    cComment := AllTrim( cComment )
 
    IF ! Empty( _OOHG_ActiveIniFile )
-      aLines := hb_ATokens( StrTran( hb_MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
+      aLines := hb_ATokens( StrTran( MemoRead( _OOHG_ActiveIniFile ), CRLF, Chr( 10 ) ), Chr( 10 ) )
       nLen := Len( aLines )
       IF nLen > 0 .AND. Len( ATail( aLines ) ) == 0
          ASize( aLines, nLen - 1 )
