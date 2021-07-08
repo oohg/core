@@ -139,7 +139,7 @@ STANDARD VERSION
       [ DELETEMSG <DelMsg> ] ;
       [ <dummy12: ONDELETE, ON DELETE> <onDelete> ] ;
       [ HEADERIMAGES <aHeaderImages> ] ;
-      [ <dummy20: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
+      [ <dummy23: HEADERIMAGESALIGN, IMAGESALIGN> <aImgAlign> ] ;
       [ <fullmove: FULLMOVE> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ EDITKEYS <aEditKeys> ] ;
