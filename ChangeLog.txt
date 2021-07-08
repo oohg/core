@@ -12,6 +12,15 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-08 13:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg_license_template.txt
+  * core\include\*.ch
+  * core\include\*.h
+  * core\resources\*.rc
+  * core\source\*.c
+  * core\source\*.prg
+    * Copyright updated.
+
 2021-07-08 12:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.ch
     ! Duplicated marker.
