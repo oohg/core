@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-08 12:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_browse.ch
+    ! Duplicated marker.
+
 2021-07-07 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_frame.prg
     ! WM_MOUSELEAVE handler is blocking the message when
