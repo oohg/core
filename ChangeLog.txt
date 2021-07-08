@@ -658,7 +658,7 @@
       When NAVIGATION is set to STANDARD the action associated with
       a button with DEFAULT clause will be triggered whenever ENTER
       key is pressed regardless of whether it has the focus or not.
-      When NAVITATION is set to EXTENDED the DEFAULT clause will be
+      When NAVIGATION is set to EXTENDED the DEFAULT clause will be
       ignored and ENTER key will behave like the TAB key.
       To trigger the action of a specific button, use the mouse or
       select the button with TAB and then press the SPACE key.
