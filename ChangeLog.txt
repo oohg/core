@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-08 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_ini.ch
+    ! Compilation under xharbour.
+
 2021-07-08 13:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg_license_template.txt
   * core\include\*.ch
