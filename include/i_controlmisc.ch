@@ -80,13 +80,13 @@ STANDARD CURSORS
 #define IDC_APPSTARTING 32650
 #define IDC_HELP        32651
 
-#command SETFOCUS <n> OF <w> ;
+#command SETFOCUS <control> OF <parent> ;
    => ;
-      DoMethod( <(w)>, <(n)>, 'SetFocus' )
+      DoMethod( <(parent)>, <(control)>, 'SetFocus' )
 
-#command ADD ITEM <i> TO <n> OF <p> ;
+#command ADD ITEM <i> TO <control> OF <parent> ;
    => ;
-      DoMethod( <(p)>, <(n)>, 'AddItem', <i> )
+      DoMethod( <(parent)>, <(control)>, 'AddItem', <i> )
 
 #command ADD COLUMN ;
       [ INDEX <index> ] ;
@@ -102,13 +102,13 @@ STANDARD CURSORS
    => ;
       DoMethod( <(parent)>, <(control)>, 'DeleteColumn', <index> )
 
-#command DELETE ITEM <i> FROM <n> OF <p> ;
+#command DELETE ITEM <i> FROM <control> OF <parent> ;
    => ;
-      DoMethod( <(p)>, <(n)>, 'DeleteItem', <i> )
+      DoMethod( <(parent)>, <(control)>, 'DeleteItem', <i> )
 
-#command DELETE ITEM ALL FROM <n> OF <p> ;
+#command DELETE ITEM ALL FROM <control> OF <parent> ;
    => ;
-      DoMethod( <(p)>, <(n)>, 'DeleteAllItems' )
+      DoMethod( <(parent)>, <(control)>, 'DeleteAllItems' )
 
 #command ENABLE CONTROL <control> OF <form> ;
    => ;
@@ -162,7 +162,7 @@ STANDARD CURSORS
    => ;
       SetProperty ( <(Arg1)>, <(Arg2)>, <(Arg3)>, \{<Arg4>\} )
 
-#translate SET MULTIPLE <x: ON,OFF> [<warning: WARNING>] ;
+#translate SET MULTIPLE <x: ON, OFF> [<warning: WARNING>] ;
    => ;
       _OOHG_SetMultiple( <(x)>, <.warning.> )
 

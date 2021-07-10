@@ -83,8 +83,7 @@
       [ PARAMETERS <parameters> ] ;
       [ DEFAULT <default> ] ;
    => ;
-      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, ;
-            <default>, 5 )
+      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, <default>, 5 )
 
 #xcommand EXECUTE ;
       [ OPERATION <operation> ] ;
@@ -93,8 +92,7 @@
       [ DEFAULT <default> ] ;
       MAXIMIZE ;
    => ;
-      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, ;
-            <default>, 3 )
+      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, <default>, 3 )
 
 #xcommand EXECUTE ;
       [ OPERATION <operation> ] ;
@@ -103,8 +101,7 @@
       [ DEFAULT <default> ] ;
       MINIMIZE ;
    => ;
-      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, ;
-            <default>, 6 )
+      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, <default>, 6 )
 
 #xcommand EXECUTE ;
       [ OPERATION <operation> ] ;
@@ -113,5 +110,4 @@
       [ DEFAULT <default> ] ;
       HIDE ;
    => ;
-      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, ;
-            <default>, 0 )
+      _Execute( GetActiveWindow(), <operation>, <file>, <parameters>, <default>, 0 )

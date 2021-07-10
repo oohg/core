@@ -63,10 +63,10 @@
 
 #command @ <row>, <col> ANIGIF <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
@@ -80,6 +80,6 @@
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TAniGIF(), [ <subclass>() ] ):Define( ;
-            <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+            <(name)>, <(parent)>, <col>, <row>, <filename>, <width>, <height>, ;
             <{action}>, <helpid>, <.invisible.>, <.whitebackground.>, <.rtl.>, ;
             <backcolor>, <tooltip>, <.border.>, <.clientedge.>, <.disabled.> )

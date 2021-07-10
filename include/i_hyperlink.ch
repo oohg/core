@@ -63,9 +63,9 @@
 
 #command @ <row>, <col> HYPERLINK <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ VALUE <value> ] ;
-      [ ADDRESS <address>] ;
+      [ ADDRESS <address> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ <autosize: AUTOSIZE> ] ;
@@ -91,5 +91,5 @@
          Define( <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
          <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
          <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
-         [ <backcolor> ], [ <fontcolor> ], <tooltip>, <helpid>, ;
+         <backcolor>, <fontcolor>, <tooltip>, <helpid>, ;
          <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )

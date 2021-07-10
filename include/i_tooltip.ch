@@ -165,19 +165,19 @@
    => ;
       _SetToolTipReShowTime( <nMilliSec> )
 
-#xcommand SET TOOLTIPMAXWIDTH [ TO ] <w> ;
+#xcommand SET TOOLTIPMAXWIDTH [ TO ] <width> ;
    => ;
-      _SetToolTipMaxWidth ( <w> )
+      _SetToolTipMaxWidth ( <width> )
 
-#xcommand SET TOOLTIP MAXWIDTH [ TO ] <w> ;
+#xcommand SET TOOLTIP MAXWIDTH [ TO ] <width> ;
    => ;
-      _SetToolTipMaxWidth ( <w> )
+      _SetToolTipMaxWidth ( <width> )
 
 #xcommand ADD TOOLTIP ICON <x> ;
    => ;
       ADD TOOLTIPICON <x>
 
-#xcommand ADD TOOLTIPICON <icon> WITH <dummy1: MESSAGE, TITLE> <title> <dummy2: TO, OF> <form> ;
+#xcommand ADD TOOLTIPICON <icon> WITH <dummy: MESSAGE, TITLE> <title> <dummy: TO, OF> <form> ;
    => ;
       WITH OBJECT GetExistingFormObject( <(form)> ) ;;
          :ToolTipIcon( icon ) ;;
@@ -185,7 +185,7 @@
       END OBJECT
 
 #xcommand ADD TOOLTIPICON <icon: ERROR, ERROR_LARGE, INFO, INFO_LARGE, WARNING, WARNING_LARGE> ;
-      WITH <dummy1: MESSAGE, TITLE> <title> <dummy2: TO, OF> <form> ;
+      WITH <dummy: MESSAGE, TITLE> <title> <dummy: TO, OF> <form> ;
    => ;
       WITH OBJECT GetExistingFormObject( <(form)> ) ;;
          :ToolTipIcon( TTI_<icon> ) ;;

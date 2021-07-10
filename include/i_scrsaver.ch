@@ -73,7 +73,7 @@
       DECLARE WINDOW <Scr> ;;
       _BeginScrSaver( <(Scr)>, <.noshow.>, ;
             <{InitProcedure}>, <{ReleaseProcedure}>, <{PaintProcedure}>, ;
-            <nInterval>, [<backcolor>] )
+            <nInterval>, <backcolor> )
 
 #xcommand INSTALL SCREENSAVER ;
       [ TO FILE <cFileName> ] ;

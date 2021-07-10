@@ -63,14 +63,14 @@
 
 #command @ <row>, <col> CHECKBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FIELD <field> ] ;
       [ VALUE <value> ] ;
-      [ FONT <f> ] ;
-      [ SIZE <n> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
       [ <italic: ITALIC> ] ;
       [ <underline: UNDERLINE> ] ;
@@ -78,9 +78,9 @@
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <transparent: TRANSPARENT> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -97,7 +97,7 @@
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckBox(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <caption>, <value>, ;
-            <f>, <n>, <tooltip>, <{change}>, [<w>], [<h>], <{lostfocus}>, ;
+            <fontname>, <fontsize>, <tooltip>, <{change}>, <width>, <height>, <{lostfocus}>, ;
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;

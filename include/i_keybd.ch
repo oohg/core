@@ -299,7 +299,7 @@ HOT KEY CONTROL - Parent specific - OOHG controlled
 ---------------------------------------------------------------------------*/
 #command DEFINE HOTKEY <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ KEY <key> ] ;
       [ MODIFIERS <mod> ] ;
       [ ACTION <action> ] ;

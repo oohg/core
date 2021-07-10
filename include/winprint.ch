@@ -473,7 +473,8 @@ MEMVAR HBPRN
       [ <nstrikeout: NOSTRIKEOUT> ] ;
    => ;
       hbprn:ModifyFont( <cfont>, <cface>, <size>, <width>, <angle>, <.bold.>, ;
-            <.nbold.>, <.italic.>, <.nitalic.>, <.underline.>, <.nunderline.>, <.strikeout.>, <.nstrikeout.> )
+            <.nbold.>, <.italic.>, <.nitalic.>, <.underline.>, <.nunderline.>, ;
+            <.strikeout.>, <.nstrikeout.> )
 
 #xcommand SELECT FONT <cfont> ;
    => ;
@@ -591,7 +592,7 @@ MEMVAR HBPRN
 #xcommand SET UNITS <units: ROWCOL, MM, INCHES, PIXELS> ;
       [ <absolute: ABSOLUTE> ] ;
    => ;
-      hbprn:SetUnits( <"units">,,, <.absolute.> )
+      hbprn:SetUnits( <"units">, NIL, NIL, <.absolute.> )
 
 #xcommand SET UNITS ROWS <r> COLS <c> [ <absolute: ABSOLUTE> ] ;
    => ;
@@ -707,7 +708,7 @@ MEMVAR HBPRN
 
 #xcommand @ <row>, <col> PICTURE <cpic> IMAGESIZE ;
    => ;
-      hbprn:Picture( <row>, <col>,,, <cpic>,,, .T. )
+      hbprn:Picture( <row>, <col>, NIL, NIL, <cpic>, NIL, NIL, .T. )
 
 #xcommand MOVE TO <row>, <col> [ PREVIOUS <aRowCol> ] ;
    => ;
@@ -735,7 +736,7 @@ MEMVAR HBPRN
 
 #xcommand @ <row>, <col> BITMAP <hBitmap> IMAGESIZE ;
    => ;
-      hbprn:Bitmap( <row>, <col>,,, <hBitmap>,,, .T. )
+      hbprn:Bitmap( <row>, <col>, NIL, NIL, <hBitmap>, NIL, NIL, .T. )
 
 /*---------------------------------------------------------------------------
 FIELD SELECTION BITS FOR SETDEVMODE "WHAT" PARAMETER

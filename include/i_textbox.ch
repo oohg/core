@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> TEXTBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ HEIGHT <height> ] ;
       [ WIDTH <width> ] ;
       [ FIELD <field> ] ;
@@ -82,11 +82,11 @@
       [ <upper: UPPERCASE> ] ;
       [ <lower: LOWERCASE> ] ;
       [ <password: PASSWORD> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONTEXTFILLED, ON TEXTFILLED> <textfilled> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONTEXTFILLED, ON TEXTFILLED> <textfilled> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <RightAlign: RIGHTALIGN> ] ;
       [ <centeralign: CENTERALIGN> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -101,7 +101,7 @@
       [ <date: DATE> ] ;
       [ DEFAULTYEAR <year> ] ;
       [ <numeric: NUMERIC> ] ;
-      [ <dummy2: INPUTMASK, PICTURE> <inputmask> ] ;
+      [ <dummy: INPUTMASK, PICTURE> <inputmask> ] ;
       [ FORMAT <format> ] ;
       [ SUBCLASS <subclass> ] ;
       [ ACTION <action> [ TOOLTIP <tb1> ] ]  ;

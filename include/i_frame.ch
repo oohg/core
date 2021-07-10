@@ -63,10 +63,10 @@
 
 #xcommand @ <row>, <col> FRAME <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
@@ -82,9 +82,9 @@
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
       [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] [ <pp: POSTPARENT> ] ] ;
-=> ;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
+         Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, <caption>, ;
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
          <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
          <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.>, <tooltip>, ;
@@ -93,10 +93,10 @@
 #xcommand DEFINE GROUPBOX <name> ;
       [ AT <row>, <col> ] ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
@@ -113,14 +113,14 @@
       [ SUBCLASS <subclass> ] ;
       [ TOOLTIP <tooltip> [ EXCLUDEAREA <area> [ OF <coord: CONTROL, FORM> ] ] [ <pp: POSTPARENT> ] ] ;
       [ <noauto: NOAUTOEXCLUDE> ] ;
-=> ;
+   => ;
       [ <obj> := ] _OOHG_SelectSubClass( TFrame(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <row>, <col>, <w>, <h>, <caption>, ;
+         Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, <caption>, ;
          <fontname>, <fontsize>, <.opaque.>, <.bold.>, <.italic.>, ;
          <.underline.>, <.strikeout.>, <backcolor>, <fontcolor>, ;
          <.transparent.>, <.rtl.>, <.invisible.>, <.disabled.>, <tooltip>, ;
          <area>, <"coord">, <.noauto.>, .T., <.pp.> )
 
 #xcommand END GROUPBOX [ <x> ] ;
-=> ;
+   => ;
       _EndGroupBox()

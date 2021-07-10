@@ -64,14 +64,14 @@
 #command DEFINE INTERNAL <name> ;
       [ AT <row>, <col> ] ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy06: ACTION, ONCLICK, ON CLICK> <action> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy: ACTION, ONCLICK, ON CLICK> <action> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ <border: BORDER> ] ;
       [ <clientedge: CLIENTEDGE> ] ;
       [ CURSOR <cursor> ] ;

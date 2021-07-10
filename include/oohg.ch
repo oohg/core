@@ -149,9 +149,10 @@ REQUEST DBFNTX, DBFDBT
 
 #endif
 
-#if ( __HARBOUR__ - 0 > 0x030200 )                // This pp rules are only needed for Harbour 3.4 version
-
+/*
+This pp rules are only needed for Harbour 3.4 version
+*/
+#if ( __HARBOUR__ - 0 > 0x030200 )
 REQUEST GetFolder
 REQUEST TRadioGroup
-
 #endif

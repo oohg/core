@@ -63,11 +63,11 @@
 
 #command @ <row>, <col> PROGRESSMETER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ RANGE <lo>, <hi> ] ;
       [ VALUE <v> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -86,7 +86,7 @@
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TProgressMeter(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <lo>, <hi>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <lo>, <hi>, ;
             <v>, <tooltip>, <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, <forecolor>, <backcolor>, ;
             <{action}>, <helpid>, <.invisible.>, <.rtl.>, <.clientedge.>, ;

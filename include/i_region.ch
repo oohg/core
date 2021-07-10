@@ -61,13 +61,13 @@
  */
 
 
-#xtranslate SET REGION OF <name> RECTANGULAR <row>, <col>, <w>, <h> ;
+#xtranslate SET REGION OF <name> RECTANGULAR <row>, <col>, <width>, <height> ;
    => ;
-      _SetWindowRgn( <(name)>, <col>, <row>, <w>, <h>, 1 )
+      _SetWindowRgn( <(name)>, <col>, <row>, <width>, <height>, 1 )
 
-#xtranslate SET REGION OF <name> ELLIPTIC <row>, <col>, <w>, <h> ;
+#xtranslate SET REGION OF <name> ELLIPTIC <row>, <col>, <width>, <height> ;
    => ;
-      _SetWindowRgn( <(name)>, <col>, <row>, <w>, <h>, 2 )
+      _SetWindowRgn( <(name)>, <col>, <row>, <width>, <height>, 2 )
 
 #xtranslate SET REGION OF <name> POLYGONAL <apoints> [ WINDING ] ;
    => ;

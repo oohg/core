@@ -67,7 +67,7 @@
       [ BLOCK <block> ] ;
       [ <createdir: CREATEDIR> ] ;
       [ PASSWORD <password> ] ;
-      [ <dummy1: FILEMASK, FILEARRAY> <mask> ] ;
+      [ <dummy: FILEMASK, FILEARRAY> <mask> ] ;
       [ FILEPROGRESS <fileblock> ] ;
    => ;
       [ <lSuccess> := ] hb_UnZipFile( <zipfile>, <block>, <.createdir.>, ;
@@ -84,4 +84,4 @@
       [ FILEPROGRESS <fileblock> ] ;
    => ;
       [ <lSuccess> := ] hb_ZipFile( <zipfile>, <afiles>, <level>, <block>, ;
-            <.ovr.>, <password>, <.srp.>,, <fileblock> )
+            <.ovr.>, <password>, <.srp.>, NIL, <fileblock> )

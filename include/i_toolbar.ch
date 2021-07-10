@@ -63,12 +63,12 @@
 
 #xcommand DEFINE TOOLBAR <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: GRIPPERTEXT, CAPTION> <caption> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy: GRIPPERTEXT, CAPTION> <caption> ] ;
       [ ACTION <action> ] ;
-      [ BUTTONSIZE <w>, <h> ] ;
-      [ FONT <f> ] ;
-      [ SIZE <s> ] ;
+      [ BUTTONSIZE <width>, <height> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
       [ <italic: ITALIC> ] ;
       [ <underline: UNDERLINE> ] ;
@@ -87,8 +87,8 @@
       [ TOOLBARSIZE <tbsize> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TToolBar(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, 0, 0, <w>, <h>, <caption>, ;
-            <{action}>, <f>, <s>, <tooltip>, <.flat.>, <.bottom.>, ;
+            Define( <(name)>, <(parent)>, 0, 0, <width>, <height>, <caption>, ;
+            <{action}>, <fontname>, <fontsize>, <tooltip>, <.flat.>, <.bottom.>, ;
             <.righttext.>, <.break.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <.border.>, <.rtl.>, <.notabstop.>, <.vertical.>, ;
             <.own.>, <tbsize> )
@@ -112,6 +112,6 @@
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TToolButton(), [ <subclass>() ] ): ;
-            Define( <(name)>, 0, 0, <caption>, <{action}>,,, <bitmap>, ;
-            <tooltip>,,, .f., <.separator.>, <.autosize.>, <.check.>, ;
+            Define( <(name)>, 0, 0, <caption>, <{action}>, NIL, NIL, <bitmap>, ;
+            <tooltip>, NIL, NIL, .f., <.separator.>, <.autosize.>, <.check.>, ;
             <.group.>, <.dropdown.>, <.wholedropdown.> )

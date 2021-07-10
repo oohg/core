@@ -62,7 +62,7 @@
 
 
 #xcommand DEFINE STATUSBAR ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ <kbd: KEYBOARD> ] ;
       [ <date: DATE> ] ;

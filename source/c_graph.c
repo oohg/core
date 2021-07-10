@@ -792,7 +792,7 @@ HB_FUNC( _OOHG_NEWGRAPHCOMMAND_TEXT )          /* FUNCTION _OOHG_NewGraphCommand
    lColor = -1;
    _OOHG_DetermineColor( hb_param( 7, HB_IT_ANY ), &lColor );
    pData->penrgb   = (COLORREF) lColor;
-   pData->penwidth = (int) hb_parclen( 15 );                  /* LEN( fontname ) */
+   pData->penwidth = (int) hb_parclen( 15 );                  /* Len( fontname ) */
    cBuffer = &pData->points;
    memcpy( cBuffer, hb_parc( 15 ), (size_t) ( pData->penwidth + 1 ) );
    cBuffer += hb_parclen( 15 ) + 1;

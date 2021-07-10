@@ -374,7 +374,7 @@ MEMVAR _HMG_MiniPrint
       [ <lColor: COLOR> <aColor> ] ;
       [ <lAngle: ANGLE> <nAngle> ] ;
       [ <lWidth: WIDTH> <nWidth> ] ;
-      [ <cAlign : CENTER, LEFT, RIGHT> ] ;
+      [ <cAlign: CENTER, LEFT, RIGHT> ] ;
    => ;
       _HMG_PRINTER_H_Print( OpenPrinterGetPageDC(), <nRow>, <nCol>, <cFontName>, <nFontSize>, <aColor>\[1\], ;
          <aColor>\[2\], <aColor>\[3\], <cText>, <.lBold.>, <.lItalic.>, <.lUnderline.>, <.lStrikeout.>, ;
@@ -390,7 +390,7 @@ MEMVAR _HMG_MiniPrint
       [ <lColor: COLOR> <aColor> ] ;
       [ <lAngle: ANGLE> <nAngle> ] ;
       [ <lWidth: WIDTH> <nWidth> ] ;
-      [ <cAlign : CENTER, LEFT, RIGHT> ] ;
+      [ <cAlign: CENTER, LEFT, RIGHT> ] ;
    => ;
       _HMG_PRINTER_H_MultiLine_Print( OpenPrinterGetPageDC(), <nRow>, <nCol>, <nToRow>, <nToCol>, <cFontName>, <nFontSize>, ;
          <aColor>\[1\], <aColor>\[2\], <aColor>\[3\], <cText>, <.lBold.>, <.lItalic.>, <.lUnderline.>, ;

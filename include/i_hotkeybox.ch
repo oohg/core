@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> HOTKEYBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ HEIGHT <height> ] ;
       [ WIDTH <width> ] ;
       [ VALUE <value> ] ;
@@ -76,10 +76,10 @@
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <rtl: RTL> ] ;

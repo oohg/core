@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> RADIOGROUP <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OPTIONS <aOptions> ] ;
       [ VALUE <value> ] ;
       [ WIDTH <width> ] ;
@@ -77,7 +77,7 @@
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
       [ <transparent: TRANSPARENT> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;

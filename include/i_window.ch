@@ -233,8 +233,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ AT <row>, <col> ] ;
       [ ROW <row> ] ;
       [ COL <col> ] ;
-      [ WIDTH <wi> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;
       [ VIRTUAL HEIGHT <vHeight> ] ;
       [ TITLE <title> ] ;
@@ -271,13 +271,13 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ ON RESTORE <RestoreProcedure> ] ;
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FONT <FontName> ] ;
-      [ SIZE <FontSize> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
       [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <GotFocusProcedure> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <GotFocusProcedure> ] ;
       [ ON LOSTFOCUS <LostFocusProcedure> ] ;
       [ ON SCROLLUP <scrollup> ] ;
       [ ON SCROLLDOWN <scrolldown> ] ;
@@ -306,12 +306,12 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ INTERACTIVECLOSE <icl: OFF, ON, QUERY> ] ;
    => ;
       DECLARE WINDOW <w> ;;
-      [ <obj> := ] DefineWindow( <(w)>, <title>, <col>, <row>, <wi>, <h>, ;
+      [ <obj> := ] DefineWindow( <(w)>, <title>, <col>, <row>, <width>, <height>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
             <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
             <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
             <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, ;
-            <.noshow.>, <.topmost.>, <icon>, <FontName>, <FontSize>, ;
+            <.noshow.>, <.topmost.>, <icon>, <fontname>, <fontsize>, ;
             <NotifyIcon>, <NotifyIconTooltip>, <{NotifyLeftClick}>, ;
             <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
             <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, ;
@@ -326,7 +326,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
             <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
-            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1, ;
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), NIL, NIL, .T. ) - 1, ;
             <.border.> )
 
 #xcommand LOAD WINDOW <w> ;
@@ -412,8 +412,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ AT <row>, <col> ] ;
       [ ROW <row> ] ;
       [ COL <col> ] ;
-      [ WIDTH <wi> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ VIRTUAL WIDTH <vWidth> ] ;
       [ VIRTUAL HEIGHT <vHeight> ] ;
       [ TITLE <title> ] ;
@@ -450,13 +450,13 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ ON RESTORE <RestoreProcedure> ] ;
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FONT <FontName> ] ;
-      [ SIZE <FontSize> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
       [ ON NOTIFYCLICK <NotifyLeftClick> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <GotFocusProcedure> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <GotFocusProcedure> ] ;
       [ ON LOSTFOCUS <LostFocusProcedure> ] ;
       [ ON SCROLLUP <scrollup> ] ;
       [ ON SCROLLDOWN <scrolldown> ] ;
@@ -484,12 +484,12 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ <nodwp: NODWP> ] ;
       [ INTERACTIVECLOSE <icl: OFF, ON, QUERY> ] ;
    => ;
-      [ <obj> := ] DefineWindow(, <title>, <col>, <row>, <wi>, <h>, ;
+      [ <obj> := ] DefineWindow(, <title>, <col>, <row>, <width>, <height>, ;
             <.nominimize.>, <.nomaximize.>, <.nosize.>, <.nosysmenu.>, ;
             <.nocaption.>, <{InitProcedure}>, <{ReleaseProcedure}>, ;
             <{MouseDragProcedure}>, <{SizeProcedure}>, <{ClickProcedure}>, ;
             <{MouseMoveProcedure}>, <backcolor>, <{PaintProcedure}>, ;
-            <.noshow.>, <.topmost.>, <icon>, <FontName>, <FontSize>, ;
+            <.noshow.>, <.topmost.>, <icon>, <fontname>, <fontsize>, ;
             <NotifyIcon>, <NotifyIconTooltip>, <{NotifyLeftClick}>, ;
             <{GotFocusProcedure}>, <{LostFocusProcedure}>, <vHeight>, ;
             <vWidth>, <{scrollleft}>, <{scrollright}>, <{scrollup}>, ;
@@ -504,7 +504,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             <{RDblClickProcedure}>, <{MDblClickProcedure}>, <minwidth>, ;
             <maxwidth>, <minheight>, <maxheight>, <{MoveProcedure}>, ;
             <backimage>, <.stretch.>, <FontColor>, <.nodwp.>, ;
-            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), , , .T. ) - 1, ;
+            AScan( { "OFF", "ON", "QUERY" }, Upper( #<icl> ), NIL, NIL, .T. ) - 1, ;
             <.border.> )
 
 /*---------------------------------------------------------------------------

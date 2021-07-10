@@ -64,27 +64,26 @@
 #xcommand DRAW TEXT IN WINDOW <windowname> ;
       AT <nRow>, <nCol> ;
       VALUE <cString> ;
-      [ FONT <cFont> ] ;
-      [ SIZE <nSize> ] ;
-      [ BACKCOLOR <aBkRGB> ] ;
-      [ FONTCOLOR <aRGB> ] ;
-      [ <lBold: BOLD> ] ;
-      [ <lItalic: ITALIC> ] ;
-      [ <lUnderline: UNDERLINE> ] ;
-      [ <lStrikeout: STRIKEOUT> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
+      [ <bold: BOLD> ] ;
+      [ <italic: ITALIC> ] ;
+      [ <underline: UNDERLINE> ] ;
+      [ <strikeout: STRIKEOUT> ] ;
+      [ BACKCOLOR <backcolor> ] ;
+      [ FONTCOLOR <fontcolor> ] ;
       [ <transparent: TRANSPARENT> ] ;
    => ;
-      DrawTextOut( <(windowname)>, <nRow>, <nCol>, <cString>, <aRGB>, ;
-            <aBkRGB>, <cFont>, <nSize>, <.lBold.>, <.lItalic.>, ;
-            <.lUnderline.>, <.lStrikeout.>, <.transparent.> )
+      DrawTextOut( <(windowname)>, <nRow>, <nCol>, <cString>, <fontcolor>, ;
+            <backcolor>, <fontname>, <fontsize>, <.bold.>, <.italic.>, ;
+            <.underline.>, <.strikeout.>, <.transparent.> )
 
 #xcommand DRAW LINE IN WINDOW <windowname> AT <frow>, <fcol> ;
-      TO <trow>,<tcol> ;
+      TO <trow>, <tcol> ;
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <pnwidth> ] ;
    => ;
-      DrawLine( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, ;
-            [<penrgb>], <pnwidth> )
+      DrawLine( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <penrgb>, <pnwidth> )
 
 #xcommand DRAW RECTANGLE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -93,8 +92,8 @@
       [ FILLCOLOR <fillrgb> ] ;
       [ <transparent: TRANSPARENT> ] ;
    => ;
-      DrawRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
-            <pnwidth>, [<fillrgb>], [<.transparent.>] )
+      DrawRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <penrgb>, ;
+            <pnwidth>, <fillrgb>, <.transparent.> )
 
 #xcommand DRAW ROUNDRECTANGLE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -106,7 +105,7 @@
       [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawRoundRect( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <width>, ;
-            <height>, [<penrgb>], <pnwidth>, [<fillrgb>], [<.transparent.>] )
+            <height>, <penrgb>, <pnwidth>, <fillrgb>, <.transparent.> )
 
 #xcommand DRAW ELLIPSE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -115,8 +114,8 @@
       [ FILLCOLOR <fillrgb> ] ;
       [ <transparent: TRANSPARENT> ] ;
    => ;
-      DrawEllipse( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, [<penrgb>], ;
-            <pnwidth>, [<fillrgb>], [<.transparent.>] )
+      DrawEllipse( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <penrgb>, ;
+            <pnwidth>, <fillrgb>, <.transparent.> )
 
 #xcommand DRAW ARC IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -126,7 +125,7 @@
       [ PENWIDTH <pnwidth>] ;
    => ;
    DrawArc( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
-         <rrow1>, <rcol1>, [<penrgb>], <pnwidth> )
+         <rrow1>, <rcol1>, <penrgb>, <pnwidth> )
 
 #xcommand DRAW PIE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -138,7 +137,7 @@
       [ <transparent: TRANSPARENT> ] ;
    => ;
    DrawPie( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
-         <rrow1>, <rcol1>, [<penrgb>], <pnwidth>, [<fillrgb>], [<.transparent.>] )
+         <rrow1>, <rcol1>, <penrgb>, <pnwidth>, <fillrgb>, <.transparent.> )
 
 /*
  * POINTS must be specified using this syntax:
@@ -151,15 +150,15 @@
       [ FILLCOLOR <fillrgb> ] ;
       [ <transparent: TRANSPARENT> ] ;
    => ;
-      DrawPolygon( <(windowname)>, [<pointsarr>], [<penrgb>], ;
-            <penwidth>, [<fillrgb>], [<.transparent.>] )
+      DrawPolygon( <(windowname)>, <pointsarr>, <penrgb>, ;
+         <penwidth>, <fillrgb>, <.transparent.> )
 
 #xcommand DRAW POLYBEZIER IN WINDOW <windowname> ;
       POINTS <pointsarr> ;
       [ PENCOLOR <penrgb> ] ;
       [ PENWIDTH <penwidth> ] ;
    => ;
-      DrawPolyBezier( <(windowname)>, [<pointsarr>], [<penrgb>], <penwidth> )
+      DrawPolyBezier( <(windowname)>, <pointsarr>, <penrgb>, <penwidth> )
 
 #xcommand ERASE WINDOW <windowname> ;
    => ;
@@ -167,8 +166,8 @@
 
 #xcommand DEFAULT <uVar1> := <uVal1> [, <uVarN> := <uValN> ] ;
    => ;
-      <uVar1> := IIF( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
-      [ <uVarN> := IIF( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
+      <uVar1> := iif( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
+      [ <uVarN> := iif( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
 
 #ifndef _BT_INFO_NAME_
 #ifndef __HBPRN__

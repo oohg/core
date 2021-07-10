@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> TEXTARRAY <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ ACTION <action> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
@@ -87,8 +87,8 @@
       [ VALUE <value> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <disabled: DISABLED> ] ;
-      [ <dummy2: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy3: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTextArray(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;

@@ -63,7 +63,7 @@
 
 #xcommand DEFINE SPLITBOX ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ <bottom: BOTTOM> ]   ;
       [ <horizontal: HORIZONTAL> ] ;
       [ <vertical: VERTICAL> ] ;
@@ -80,6 +80,6 @@
       _EndSplitBox()
 
 #xcommand FORCEBREAK ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
    => ;
       _ForceBreak( <(parent)> )

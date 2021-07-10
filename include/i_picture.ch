@@ -63,17 +63,17 @@
 
 #command @ <row>, <col> PICTURE <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ <dummy2: ACTION,ON CLICK,ONCLICK> <action> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ <stretch: STRETCH> ] ;
       [ HELPID <helpid> ]       ;
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ <dummy3: PICTURE, ICON> <filename> ] ;
+      [ <dummy: PICTURE, ICON> <filename> ] ;
       [ BUFFER <buffer> ] ;
       [ HBITMAP <hbitmap> ] ;
       [ <autofit: AUTOFIT, ADJUST, FORCESCALE> ] ;
@@ -89,7 +89,7 @@
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPicture(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <w>, <h>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <filename>, <width>, <height>, ;
             <buffer>, <hbitmap>, <.stretch.>, <.autofit.>, <.imagesize.>, ;
             <.border.>, <.clientedge.>, <backcolor>, <{action}>, <tooltip>, ;
             <helpid>, <.rtl.>, <.invisible.>, <.notrans.>, <.no3dcolors.>, ;

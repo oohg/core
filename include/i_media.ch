@@ -67,9 +67,9 @@ ANIMATEBOX COMMANDS
 
 #command @ <row>, <col> ANIMATEBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FILE <file> ] ;
       [ <autoplay: AUTOPLAY> ] ;
       [ <center: CENTER> ] ;
@@ -83,7 +83,7 @@ ANIMATEBOX COMMANDS
       [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TAnimateBox(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
             <.autoplay.>, <.center.>, <.transparent.>, <file>, <helpid>, ;
             <.invisible.>, <.notabstop.>, <.disabled.>, <.rtl.>, <tooltip> )
 
@@ -141,9 +141,9 @@ PLAYER COMMANDS
 
 #command @ <row>, <col> PLAYER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FILE <file> ] ;
       [ <noautosizewindow: NOAUTOSIZEWINDOW> ] ;
       [ <noautosizemovie: NOAUTOSIZEMOVIE> ] ;
@@ -163,7 +163,7 @@ PLAYER COMMANDS
       [ <rtl: RTL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPlayer(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <file>, <col>, <row>, <w>, <h>, ;
+         Define( <(name)>, <(parent)>, <file>, <col>, <row>, <width>, <height>, ;
          <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>, ;
          <.nomenu.>, <.noopen.>, <.noplaybar.>, <.showall.>, <.showmode.>, ;
          <.showname.>, <.showposition.>, <helpid>, <.invisible.>, ;

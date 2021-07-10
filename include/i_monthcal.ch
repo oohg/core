@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> MONTHCALENDAR <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ VALUE <v> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
@@ -87,11 +87,11 @@
       [ TITLEFONTCOLOR <titlefontcolor> ] ;
       [ TITLEBACKCOLOR <titlebackcolor> ] ;
       [ TRAILINGFONTCOLOR <trailingfontcolor> ] ;
-      [ <dummy5: BACKGROUNDCOLOR, BKGNDCOLOR> <backgroundcolor> ] ;
+      [ <dummy: BACKGROUNDCOLOR, BKGNDCOLOR> <backgroundcolor> ] ;
       [ <multiselect: MULTISELECT> ] ;
-      [ <dummy2: ONVIEWCHANGE, ON VIEWCHANGE> <viewchg> ] ;
-      [ <dummy3: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy4: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONVIEWCHANGE, ON VIEWCHANGE> <viewchg> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( IIF( <.multiselect.>, ;
             TMonthCalMulti(), TMonthCal() ), [ <subclass>() ] ):Define( ;

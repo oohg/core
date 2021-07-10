@@ -73,9 +73,9 @@
    => ;
       ( "[" + <x> + "]")
 
-#xtranslate SendMessageWideString( <h>, <n>, <wp>, <lp> ) ;
+#xtranslate SendMessageWideString( <hWnd>, <nMsg>, <wparam>, <lparam> ) ;
    => ;
-      SendMessageStringW( <h>, <n>, <wp>, <lp> )
+      SendMessageStringW( <hWnd>, <nMsg>, <wparam>, <lparam> )
 
 #xtranslate hb_osIsWin10() ;
    => ;
@@ -111,7 +111,7 @@
          <var> := ( <default> ) ;;
       ENDIF
 
-#xtranslate SetFontNameSize( [ <param,...> ] ) ;
+#xtranslate SetFontNameSize( [ <param, ...> ] ) ;
    => ;
       _SetFont( <param> )
 

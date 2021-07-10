@@ -63,7 +63,7 @@
 
 #command DEFINE TIMER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ INTERVAL <interval> ] ;
       [ ACTION <action> ] ;
       [ SUBCLASS <subclass> ] ;

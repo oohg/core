@@ -64,7 +64,7 @@
 #xcommand DEFINE TREE <name> ;
       FULLROWSELECT ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
@@ -77,15 +77,15 @@
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ <own: OWNTOOLTIP> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] ] ;
       [ <itemids: ITEMIDS> ] ;
       [ HELPID <helpid> ] ;
       [ <rtl: RTL> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <break: BREAK> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
@@ -130,7 +130,7 @@
 
 #xcommand DEFINE TREE <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ AT <row>, <col> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
@@ -143,15 +143,15 @@
       [ <strikeout: STRIKEOUT> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ <own: OWNTOOLTIP> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
       [ NODEIMAGES <aImgNode> [ ITEMIMAGES <aImgItem> ] [ <noBut: NOROOTBUTTON> ] ] ;
       [ <itemids: ITEMIDS> ] ;
       [ HELPID <helpid> ] ;
       [ <rtl: RTL> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <break: BREAK> ] ;
       [ <disabled: DISABLED> ] ;
       [ SUBCLASS <subclass> ] ;
@@ -175,7 +175,7 @@
       [ <noborder: BORDERLESS, NOBORDER> ] ;
       [ ON LABELEDIT <labeledit> ] ;
       [ VALID <valid> ] ;
-      [ <dummy12: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
+      [ <dummy: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ INDENT <pixels> ] ;
       [ ON DROP <ondrop> ] ;
       [ ON EXPAND <bExpand> ] ;

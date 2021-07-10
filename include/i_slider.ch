@@ -63,14 +63,14 @@
 
 #command @ <row>, <col> SLIDER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ RANGE <lo>, <hi> ] ;
       [ VALUE <value> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
       [ <vertical: VERTICAL> ] ;
       [ <noticks: NOTICKS> ] ;
       [ <both: BOTH> ] ;
@@ -84,7 +84,7 @@
       [ <disabled: DISABLED> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TSlider(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <lo>, <hi>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <lo>, <hi>, ;
             <value>, <tooltip>, <{change}>, <.vertical.>, <.noticks.>, ;
             <.both.>, <.top.>, <.left.>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <backcolor>, <.rtl.>, <.disabled.> )

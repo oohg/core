@@ -73,11 +73,11 @@
       => ;
          hb_AScan( <a>, <b>, <c>, <d>, <e> )
 
-   #xtranslate GetThreadId( [<x,...>] ) ;
+   #xtranslate GetThreadId( [<x, ...>] ) ;
       => ;
          hb_threadID( <x> )
 
-   #xtranslate ValToPrgExp( [<x,...>] ) ;
+   #xtranslate ValToPrgExp( [<x, ...>] ) ;
       => ;
          hb_ValToExp( <x> )
 
@@ -89,7 +89,7 @@
       => ;
          hb_i18n_gettext( <x> )
 
-   #xtranslate NumToHex( [<n,...>] ) ;
+   #xtranslate NumToHex( [<n, ...>] ) ;
       => ;
          hb_NumToHex( <n> )
 
@@ -97,19 +97,19 @@
       => ;
          hb_CurDrive( <x> )
 
-   #xtranslate TToC( [<x,...>] ) ;
+   #xtranslate TToC( [<x, ...>] ) ;
       => ;
          hb_TToC( <x> )
 
-   #xtranslate CToT( [<x,...>] ) ;
+   #xtranslate CToT( [<x, ...>] ) ;
       => ;
          hb_CToT( <x> )
 
-   #xtranslate TToS( [<x,...>] ) ;
+   #xtranslate TToS( [<x, ...>] ) ;
       => ;
          hb_TToS( <x> )
 
-   #xtranslate SToT( [<x,...>] ) ;
+   #xtranslate SToT( [<x, ...>] ) ;
       => ;
          hb_SToT( <x> )
 
@@ -117,11 +117,11 @@
       => ;
          hb_DateTime()
 
-   #xtranslate PrintFileRaw( [<x,...>] ) ;
+   #xtranslate PrintFileRaw( [<x, ...>] ) ;
       => ;
          win_PrintFileRaw( <x> )
 
-   #xtranslate GetDefaultPrinter( [<x,...>] ) ;
+   #xtranslate GetDefaultPrinter( [<x, ...>] ) ;
       => ;
          win_PrinterGetDefault( <x> )
 

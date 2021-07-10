@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> ACTIVEX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ PROGID <progid> ] ;

@@ -69,9 +69,9 @@
 #command @ <row>, <col> CHECKLIST <name> ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ ITEMS <aRows> ] ;
       [ IMAGE <aImage> ] ;
       [ VALUE <value> ] ;
@@ -87,10 +87,10 @@
       [ FONTCOLOR <fontcolor> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
       [ TOOLTIP <tooltip> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy06: ACTION, ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ACTION, ONCLICK, ON CLICK> <click> ] ;
       [ <break: BREAK> ] ;
       [ HELPID <helpid> ] ;
       [ <disabled: DISABLED> ] ;
@@ -101,7 +101,7 @@
       [ <bffr: SINGLEBUFFER> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TCheckList(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <aRows>, ;
             <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
             <{gotfocus}>, <{lostfocus}>, <aImage>, <just>, <.break.>, ;
             <helpid>, <.bold.>, <.italic.>, <.underline.>, ;

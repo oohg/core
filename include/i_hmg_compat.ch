@@ -151,8 +151,8 @@ SPLITBOX VERSION
 
 #xcommand BROWSE <name> ;
       [ OF <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
       [ WORKAREA <workarea> ] ;
@@ -194,7 +194,7 @@ SPLITBOX VERSION
       [ HEADERIMAGE <aImageHeader> ] ;
       [ <notabstop: NOTABSTOP> ] ;
    => ;
-      TOBrowse():Define( <(name)>, <(parent)>, , , <w>, <h>, <headers>, ;
+      TOBrowse():Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
             <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
@@ -202,8 +202,8 @@ SPLITBOX VERSION
             <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
             <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
-            <aWhenFields>, <dynamicforecolor>, , , ;
-            , , , , , , , , , <.notabstop.>, , , , , , <aImageHeader> )
+            <aWhenFields>, <dynamicforecolor>, NIL, NIL, ;
+            , NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <.notabstop.>, NIL, NIL, NIL, NIL, NIL, <aImageHeader> )
 
 /*
 TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
@@ -212,14 +212,14 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
 */
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
-      [ <dummy2: PICTURE, ICON> <bitmap> ] ;
-      [ <dummy3: ACTION, ON CLICK, ONCLICK> <action> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
-      [ FONT <font> ] ;
-      [ SIZE <size> ] ;
+      [ <dummy: PICTURE, ICON> <bitmap> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
       [ <italic: ITALIC> ] ;
       [ <underline: UNDERLINE> ] ;
@@ -233,8 +233,8 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       [ <flat: FLAT> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy02: ON GOTFOCUS,ON MOUSEHOVER> <gotfocus> ] ;
-      [ <dummy04: ON LOSTFOCUS,ON MOUSELEAVE>> <lostfocus> ] ;
+      [ <dummy: ON GOTFOCUS, ON MOUSEHOVER> <gotfocus> ] ;
+      [ <dummy: ON LOSTFOCUS, ON MOUSELEAVE>> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -243,10 +243,10 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       @ <row>, <col> BUTTON <name> ;
             [ PARENT <parent> ] ;
             [ ACTION <action> ] ;
-            [ WIDTH <w> ] ;
-            [ HEIGHT <h> ] ;
-            [ FONT <font> ] ;
-            [ SIZE <size> ] ;
+            [ WIDTH <width> ] ;
+            [ HEIGHT <height> ] ;
+            [ FONT <fontname> ] ;
+            [ SIZE <fontsize> ] ;
             [ <bold> ] ;
             [ <italic> ] ;
             [ <underline> ] ;
@@ -267,14 +267,14 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
             [ <nohotlight> ]
 
 #xcommand @ <row>, <col> BUTTONEX <name> ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ CAPTION <caption> ] ;
-      [ <dummy2: PICTURE, ICON> <bitmap> ] ;
-      [ <dummy3: ACTION, ON CLICK, ONCLICK> <action> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
-      [ FONT <font> ] ;
-      [ SIZE <size> ] ;
+      [ <dummy: PICTURE, ICON> <bitmap> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
       [ <italic: ITALIC> ] ;
       [ <underline: UNDERLINE> ] ;
@@ -288,8 +288,8 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       [ <flat: FLAT> ] ;
       [ <lnoldtr: NOLOADTRANSPARENT> ] ;
       [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy02: ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ON LOSTFOCUS> <lostfocus> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -299,10 +299,10 @@ TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
       @ <row>, <col> BUTTON <name> ;
             [ PARENT <parent> ] ;
             [ ACTION <action> ] ;
-            [ WIDTH <w> ] ;
-            [ HEIGHT <h> ] ;
-            [ FONT <font> ] ;
-            [ SIZE <size> ] ;
+            [ WIDTH <width> ] ;
+            [ HEIGHT <height> ] ;
+            [ FONT <fontname> ] ;
+            [ SIZE <fontsize> ] ;
             [ <bold> ] ;
             [ <italic> ] ;
             [ <underline> ] ;
@@ -355,14 +355,14 @@ TODO: Try to implement this BUTTONEX clauses
 
 #xtranslate @ <row>, <col> BTNTEXTBOX <name> ;
       [ ID <nId> ] ;
-      [ <dummy1: OF, PARENT, DIALOG> <parent> ] ;
+      [ <dummy: OF, PARENT, DIALOG> <parent> ] ;
       [ HEIGHT <height> ] ;
       [ WIDTH <width> ] ;
       [ FIELD <field> ] ;
       [ VALUE <value> ] ;
-      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ ACTION2 <action2> ] ;
-      [ <dummy3: IMAGE, PICTURE> <abitmap> ] ;
+      [ <dummy: IMAGE, PICTURE> <abitmap> ] ;
       [ BUTTONWIDTH <btnwidth> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
@@ -378,10 +378,10 @@ TODO: Try to implement this BUTTONEX clauses
       [ <lowercase: LOWERCASE> ] ;
       [ <numeric: NUMERIC> ] ;
       [ <password: PASSWORD> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy11: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <rightalign: RIGHTALIGN> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -476,9 +476,9 @@ TODO: Try to implement this BUTTONEX clauses
       STATUSITEM [ <x> ]
 
 #xcommand @ <row>, <col> GRID <name> ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ HEADERS <headers> ] ;
       [ WIDTHS <widths> ] ;
       ROWSOURCE <recordsource> ;
@@ -524,8 +524,8 @@ TODO: Try to implement this BUTTONEX clauses
    => ;
       @ <row>, <col> BROWSE <name> ;
             [ PARENT <parent> ] ;
-            [ WIDTH <w> ] ;
-            [ HEIGHT <h> ] ;
+            [ WIDTH <width> ] ;
+            [ HEIGHT <height> ] ;
             [ HEADERS <headers> ] ;
             [ WIDTHS <widths> ] ;
             WORKAREA <recordsource> ;
@@ -673,9 +673,9 @@ TODO: implement this clauses:
    => ;
       SET TOOLTIP BACKCOLOR TO <color>
 
-#xtranslate SET TOOLTIP MAXWIDTH TO <w> OF <form> ;
+#xtranslate SET TOOLTIP MAXWIDTH TO <width> OF <form> ;
    => ;
-      SET TOOLTIP MAXWIDTH TO <w>
+      SET TOOLTIP MAXWIDTH TO <width>
 
 #xtranslate SET TOOLTIP VISIBLETIME TO <t> OF <form> ;
    => ;

@@ -63,11 +63,11 @@
 
 #command @ <row>, <col> SPINNER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ RANGE <rl>, <rh> ] ;
       [ VALUE <value> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
@@ -77,9 +77,9 @@
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ <notabstop: NOTABSTOP> ] ;
@@ -94,9 +94,9 @@
       [ <cuebanner: CUEBANNER, PLACEHOLDER> <cuetext> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TSpinner(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, ;
             <value>, <fontname>, <fontsize>, <rl>, <rh>, <tooltip>, <{change}>, ;
-            <{lostfocus}>, <{gotfocus}>, <h>, <helpid>, <.invisible.>, ;
+            <{lostfocus}>, <{gotfocus}>, <height>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <.wrap.>, <.readonly.>, <inc>, <backcolor>, <fontcolor>, <.rtl.>, ;
             <.noborder.>, <.disabled.>, <.boundtext.>, <cuetext> )

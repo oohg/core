@@ -61,11 +61,15 @@
  */
 
 
-#xcommand ENCODE FILE <file> [ PASSWORD <password> ] [ RESULT <uRet> ] ;
+#xcommand ENCODE FILE <file> ;
+      [ PASSWORD <password> ] ;
+      [ RESULT <uRet> ] ;
    => ;
       [ <uRet> := ] db_Encrypt( <(file)>, <(password)> )
 
-#xcommand DECODE FILE <file> [ PASSWORD <password> ] [ RESULT <uRet> ] ;
+#xcommand DECODE FILE <file> ;
+      [ PASSWORD <password> ] ;
+      [ RESULT <uRet> ] ;
    => ;
       [ <uRet> := ] db_UnEncrypt( <(file)>, <(password)> )
 
@@ -85,10 +89,16 @@
    => ;
       db_Code( <(file)>, <(key)>, { <(fields)> }, <(password)>, <(for)>, <(while)> )
 
-#command ENCODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] [ RESULT <uRet> ] ;
+#command ENCODE <file1> TO <file2> ;
+      [ PASSWORD <password> ] ;
+      [ <del: DELETE> ] ;
+      [ RESULT <uRet> ] ;
    => ;
       [ <uRet> := ] fi_Code( <(file1)>, <(password)>, <(file2)>, <.del.> )
 
-#command DECODE <file1> TO <file2> [ PASSWORD <password> ] [ <del: DELETE> ] [ RESULT <uRet> ] ;
+#command DECODE <file1> TO <file2> ;
+      [ PASSWORD <password> ] ;
+      [ <del: DELETE> ] ;
+      [ RESULT <uRet> ] ;
    => ;
       [ <uRet> := ] fi_Decode( <(file1)>, <(password)>, <(file2)>, <.del.> )

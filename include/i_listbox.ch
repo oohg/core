@@ -67,9 +67,9 @@ STANDARD VERSION
 
 #command @ <row>, <col> LISTBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ ITEMS <aRows> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
@@ -81,11 +81,11 @@ STANDARD VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
@@ -102,8 +102,8 @@ STANDARD VERSION
       [ <dragitems: DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
-            IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <aRows>, ;
+            iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <aRows>, ;
             <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
             <{dblclick}>, <{gotfocus}>, <{lostfocus}>, .F., ;
             <helpid>, <.invisible.>, <.notabstop.>, <.sort.>, ;
@@ -118,9 +118,9 @@ SPLITBOX VERSION
 
 #xcommand LISTBOX <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ ITEMS <aRows> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
@@ -132,11 +132,11 @@ SPLITBOX VERSION
       [ TOOLTIP <tooltip> ] ;
       [ BACKCOLOR <backcolor> ] ;
       [ FONTCOLOR <fontcolor> ] ;
-      [ <dummy02: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy03: ONCHANGE, ON CHANGE> <change> ] ;
-      [ <dummy04: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
-      [ <dummy05: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
-      [ <dummy06: ONENTER, ON ENTER> <enter> ] ;
+      [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
+      [ <dummy: ONDBLCLICK, ON DBLCLICK> <dblclick> ] ;
+      [ <dummy: ONENTER, ON ENTER> <enter> ] ;
       [ <multiselect: MULTISELECT> ] ;
       [ HELPID <helpid> ] ;
       [ <break: BREAK> ] ;
@@ -155,10 +155,10 @@ SPLITBOX VERSION
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
             IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>,  ,, <w>, <h>, <aRows>, <value>, ;
+            Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, <aRows>, <value>, ;
             <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
             <{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;
-            <.invisible.>, <.notabstop.>, <.sort.>,<.bold.>, ;
+            <.invisible.>, <.notabstop.>, <.sort.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.rtl.>, <.disabled.>, <{enter}>, ;
             <aImage>, <textheight>, <.fit.>, <.novscroll.>, <.multicolumn.>, ;

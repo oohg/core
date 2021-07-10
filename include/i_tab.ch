@@ -63,13 +63,13 @@
 
 #command DEFINE TAB <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy01: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       AT <row>, <col> ;
-      WIDTH <w> ;
-      HEIGHT <h> ;
+      WIDTH <width> ;
+      HEIGHT <height> ;
       [ VALUE <value> ] ;
-      [ FONT <f> ] ;
-      [ SIZE <s> ] ;
+      [ FONT <fontname> ] ;
+      [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
       [ <italic: ITALIC> ] ;
       [ <underline: UNDERLINE> ] ;
@@ -79,9 +79,9 @@
       [ <flat: FLAT> ] ;
       [ <hottrack: HOTTRACK> ] ;
       [ <vertical: VERTICAL, LEFT> ] ;
-      [ <dummy02: ACTION, ONCLICK, ON CLICK> <click> ] ;
-      [ <dummy03: ONRCLICK, ON RCLICK> <rclick> ] ;
-      [ <dummy04: ONCHANGE, ON CHANGE> <change> ] ;
+      [ <dummy: ACTION, ONCLICK, ON CLICK> <click> ] ;
+      [ <dummy: ONRCLICK, ON RCLICK> <rclick> ] ;
+      [ <dummy: ONCHANGE, ON CHANGE> <change> ] ;
       [ <notabstop: NOTABSTOP> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
@@ -103,8 +103,8 @@
       [ <so: SCROLLOP> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTab(), [ <subclass>() ] ): ;
-            Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, {}, {}, ;
-            <value>, <f>, <s>, <tooltip>, <{change}>, <.buttons.>, <.flat.>, ;
+            Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, {}, {}, ;
+            <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, <.buttons.>, <.flat.>, ;
             <.hottrack.>, <.vertical.>, <.notabstop.>, NIL, <.bold.>, <.italic.>, ;
             <.underline.>, <.strikeout.>, {}, <.rtl.>, <.internals.>, ;
             <.invisible.>, <.disabled.>, <.multiline.>, <.noproc.>, ;

@@ -63,9 +63,9 @@
 
 #command @ <row>, <col> LABEL <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ VALUE <value> ] ;
-      [ <dummy2: ACTION, ON CLICK, ONCLICK> <action> ] ;
+      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ <autosize: AUTOSIZE> ] ;
@@ -94,10 +94,10 @@
       [ SUBCLASS <subclass> ] ;
       [ <disabled: DISABLED> ] ;
       [ <vcntralign: VCENTERALIGN> ] ;
-      [ <dummy3: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
+      [ <dummy: ONDBLCLICK, ON DBLCLICK> <dblclk> ] ;
       [ CURSOR <cursor> ] ;
-      [ <dummy4: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
-      [ <dummy5: ON MOUSELEAVE, ONMOUSELEAVE> <onmouseleave> ] ;
+      [ <dummy: ONMOUSEMOVE, ON MOUSEMOVE, ONMOUSEHOVER, ON MOUSEHOVER> <onmousemove> ] ;
+      [ <dummy: ON MOUSELEAVE, ONMOUSELEAVE> <onmouseleave> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TLabel(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <value>, <width>, <height>, ;

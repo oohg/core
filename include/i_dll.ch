@@ -125,7 +125,7 @@ TYPES
       [, <typeN> <uParamN> ] ) ;
       IN <*DllName*> [ FLAGS <flags> ] ;
    => ;
-      [<static>] FUNCTION <FuncName>( [<uParam1>] [,<uParamN>] ) ;;
+      [<static>] FUNCTION <FuncName>( [<uParam1>] [, <uParamN>] ) ;;
       LOCAL uResult ;;
          uResult := OOHG_CallDLL32( <(FuncName)>, <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
       RETURN uResult
@@ -135,7 +135,7 @@ TYPES
       [, <typeN> <uParamN> ] ) ;
       IN <DllName> ALIAS <alias> [ FLAGS <flags> ] ;
    => ;
-      [<static>] FUNCTION <alias>( [<uParam1>] [,<uParamN>] ) ;;
+      [<static>] FUNCTION <alias>( [<uParam1>] [, <uParamN>] ) ;;
       LOCAL uResult ;;
          uResult := OOHG_CallDLL32( <(FuncName)>, <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
       RETURN uResult

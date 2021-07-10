@@ -63,11 +63,11 @@
 
 #command @ <row>, <col> PROGRESSBAR <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy1: OF, PARENT> <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ RANGE <lo>, <hi> ] ;
       [ VALUE <v> ] ;
-      [ WIDTH <w> ] ;
-      [ HEIGHT <h> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ TOOLTIP <tooltip> ] ;
       [ <vertical: VERTICAL> ] ;
       [ <smooth: SMOOTH> ] ;
@@ -81,6 +81,6 @@
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TProgressBar(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, ;
-            <row>, <w>, <h>, <lo>, <hi>, <tooltip>, <.vertical.>, ;
-            <.smooth.>, <helpid>, <.invisible.>, <v>, [ <backcolor> ], ;
-            [ <barcolor> ], <.rtl.>, <nVelocity> )
+            <row>, <width>, <height>, <lo>, <hi>, <tooltip>, <.vertical.>, ;
+            <.smooth.>, <helpid>, <.invisible.>, <v>, <backcolor>, ;
+            <barcolor>, <.rtl.>, <nVelocity> )
