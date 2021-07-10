@@ -12,6 +12,76 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-10 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\bostaurus.ch
+  * core\include\i_activex.ch
+  * core\include\i_anigif.ch
+  * core\include\i_browse.ch
+  * core\include\i_button.ch
+  * core\include\i_checkbox.ch
+  * core\include\i_checklist.ch
+  * core\include\i_color.ch
+  * core\include\i_combobox.ch
+  * core\include\i_controlmisc.ch
+  * core\include\i_datepicker.ch
+  * core\include\i_dll.ch
+  * core\include\i_editbox.ch
+  * core\include\i_encrypt.ch
+  * core\include\i_exec.ch
+  * core\include\i_font.ch
+  * core\include\i_frame.ch
+  * core\include\i_graph.ch
+  * core\include\i_grid.ch
+  * core\include\i_hb_compat.ch
+  * core\include\i_hmg_compat.ch
+  * core\include\i_hotkeybox.ch
+  * core\include\i_hyperlink.ch
+  * core\include\i_image.ch
+  * core\include\i_internal.ch
+  * core\include\i_ipaddress.ch
+  * core\include\i_keybd.ch
+  * core\include\i_label.ch
+  * core\include\i_listbox.ch
+  * core\include\i_media.ch
+  * core\include\i_menu.ch
+  * core\include\i_monthcal.ch
+  * core\include\i_picture.ch
+  * core\include\i_progressbar.ch
+  * core\include\i_progressmeter.ch
+  * core\include\i_pseudofunc.ch
+  * core\include\i_radiogroup.ch
+  * core\include\i_region.ch
+  * core\include\i_richeditbox.ch
+  * core\include\i_scroll.ch
+  * core\include\i_scrsaver.ch
+  * core\include\i_slider.ch
+  * core\include\i_spinner.ch
+  * core\include\i_splitbox.ch
+  * core\include\i_status.ch
+  * core\include\i_tab.ch
+  * core\include\i_textarray.ch
+  * core\include\i_textbox.ch
+  * core\include\i_timer.ch
+  * core\include\i_toolbar.ch
+  * core\include\i_tooltip.ch
+  * core\include\i_tree.ch
+  * core\include\i_var.ch
+  * core\include\i_window.ch
+  * core\include\i_xbrowse.ch
+  * core\include\i_zip.ch
+  * core\include\miniprint.ch
+  * core\include\oohg.ch
+  * core\include\winprint.ch
+  * core\source\c_graph.c
+    * Some changes to improve consistency and readability
+      throughout files.
+
+2021-07-10 16:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_edit.ch
+    * SAVE, SEARCH, ON SAVE, ON FIND and ON PRINT clauses of
+      EDIT WORKAREA and EDIT EXTENDED controls now use blockify
+      result markers.
+
 2021-07-08 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_ini.ch
     ! Compilation under xharbour.
