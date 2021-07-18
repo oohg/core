@@ -1038,7 +1038,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
    HTHEME hTheme;
    int state_id, checkState, drawState;
    LONG_PTR style, state;
-   RECT content_rect, aux_rect;
+   RECT textrect, aux_rect;
    SIZE s;
    OSVERSIONINFO osvi;
    static const int rb_states[ 2 ][ 5 ] =
@@ -1106,21 +1106,23 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
       /* get button size */
       ProcGetThemePartSize( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, NULL, TS_TRUE, &s );
 
-      /* get content rectangle */
-      ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, &pCustomDraw->rc, &content_rect );
+      /* get text rectangle */
+      ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, &pCustomDraw->rc, &textrect );
 
       aux_rect = pCustomDraw->rc;
-      aux_rect.top = aux_rect.top + ( content_rect.bottom - content_rect.top - s.cy ) / 2;
+      aux_rect.top = aux_rect.top + ( textrect.bottom - textrect.top - s.cy ) / 2;
       aux_rect.bottom = aux_rect.top + s.cy;
       if( bLeftAlign )
       {
+         aux_rect.right = aux_rect.right - 3;
          aux_rect.left = aux_rect.right - s.cx;
-         content_rect.right = aux_rect.left - 3;      /* Arbitrary margin between text and button */
+         textrect.right = aux_rect.left - 5;
       }
       else
       {
+         aux_rect.left += 3;
          aux_rect.right = aux_rect.left + s.cx;
-         content_rect.left = aux_rect.right + 3;      /* Arbitrary margin between text and button */
+         textrect.left = aux_rect.right + 5;
       }
 
       /* draw button */
@@ -1139,46 +1141,30 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
                pOptions.dwFlags |= DTT_TEXTCOLOR;
                pOptions.crText = (COLORREF) oSelf->lFontColor;
             }
-            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
+            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &textrect, &pOptions );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
             {
-               aux_rect = content_rect;
+               aux_rect = textrect;
                pOptions.dwFlags = DTT_CALCRECT;
                ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
 
-               if( bLeftAlign )
-               {
-                  aux_rect.right += 1;
-               }
-               else
-               {
-                  aux_rect.left -= 1;
-                  aux_rect.right += 1;
-               }
+               aux_rect.left -= 2;
+               aux_rect.bottom = textrect.bottom;
+
                DrawFocusRect( pCustomDraw->hdc, &aux_rect );
             }
          }
          else
          {
             /* paint caption */
-            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &content_rect );
+            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &textrect );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
             {
-               aux_rect = content_rect;
-               if( bLeftAlign )
-               {
-                  aux_rect.right += 1;
-               }
-               else
-               {
-                  aux_rect.left -= 1;
-                  aux_rect.right += 1;
-               }
-               DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+               DrawFocusRect( pCustomDraw->hdc, &textrect );
             }
          }
       }
