@@ -542,7 +542,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 
    IF ValType( uParent ) $ "CM" .AND. ! Empty( uParent )
       IF ! _IsWindowDefined( uParent )
-         MsgOOHGError( "Window: " + uParent + " is not defined. Program terminated." )
+         OOHG_MsgError( OOHG_MsgReplace( "TWindow.SearchParent: @1 is not defined. Program terminated.", { { "@1", uParent } } ) )
       ELSE
          uParent := GetFormObject( uParent )
       ENDIF
@@ -554,7 +554,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
 
    IF ::lInternal
       IF ! HB_ISOBJECT( uParent )
-         MsgOOHGError( "Window: Parent is not defined. Program terminated." )
+         OOHG_MsgError( "TWindow.SearchParent: Parent object is not defined. Program terminated." )
       ENDIF
 
       // NOTE: For INTERNALs, sets ::Parent and ::Container

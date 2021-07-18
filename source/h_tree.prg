@@ -386,13 +386,13 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
             If lAssignID
                Id := AutoID( Self )
             Else
-               MsgOOHGError( "Additem: Item Id Is Nil. Program terminated." )
+               OOHG_MsgError( "TTree.Additem: Item's ID is NIL. Program terminated." )
             EndIf
          ElseIf aScan( ::aTreeIdMap, Id ) != 0
             If lAssignID
                Id := AutoID( Self )
             Else
-               MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
+               OOHG_MsgError( "TTree.Additem: Item's ID is already in use. Program terminated." )
             EndIf
          EndIf
 
@@ -410,7 +410,7 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
          Else
-            MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
+            OOHG_MsgError( "TTree.Additem: Item's ID is already in use. Program terminated." )
          EndIf
       EndIf
 
@@ -434,13 +434,13 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
          Pos := aScan( ::aTreeIdMap, Parent )
 
          If Pos == 0
-            MsgOOHGError( "Additem: Invalid Parent Reference. Program terminated." )
+            OOHG_MsgError( "TTree.Additem: Invalid parent reference. Program terminated." )
          EndIf
 
          TreeItemHandle := ::aTreeMap[ Pos ]
       Else
          If Parent < 1 .OR. Parent > len( ::aTreeMap )
-            MsgOOHGError( "Additem: Invalid Parent Reference. Program terminated." )
+            OOHG_MsgError( "TTree.Additem: Invalid parent reference. Program terminated." )
          EndIf
 
          TreeItemHandle := ::aTreeMap[ Parent ]
@@ -484,13 +484,13 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
             If lAssignID
                Id := AutoID( Self )
             Else
-               MsgOOHGError( "Additem: Item Id Is Nil. Program terminated." )
+               OOHG_MsgError( "TTree.Additem: Item's ID is NIL. Program terminated." )
             EndIf
          ElseIf aScan( ::aTreeIdMap, Id ) != 0
             If lAssignID
                Id := AutoID( Self )
             Else
-               MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
+               OOHG_MsgError( "TTree.Additem: Item's ID is already in use. Program terminated." )
             EndIf
          EndIf
 
@@ -508,7 +508,7 @@ METHOD AddItem( Value, Parent, Id, aImage, lChecked, lReadOnly, lBold, ;
             aAdd( ::aItemIDs, Id )
             iID := len( ::aItemIDs )
          Else
-            MsgOOHGError( "Additem: Item Id Already In Use. Program terminated." )
+            OOHG_MsgError( "TTree.Additem: Item's ID is already in use. Program terminated." )
          EndIf
       EndIf
 
@@ -603,7 +603,7 @@ METHOD SelectionID( Id ) CLASS TTree
 
    Pos := aScan( ::aTreeMap, Handle )
    If Pos == 0
-      MsgOOHGError( "SelectionID: Item Selected Is Invalid. Program terminated." )
+      OOHG_MsgError( "TTree.SelectionID: The selected item is not valid. Program terminated." )
    EndIf
 
    If pcount() > 0
@@ -614,7 +614,7 @@ METHOD SelectionID( Id ) CLASS TTree
          If OldID != Nil
             iID := aScan( ::aItemIDs, OldID )
             If iID == 0
-               MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
+               OOHG_MsgError( "TTree.SelectionID: Item's ID is invalid. Program terminated." )
             EndIf
 
             aDel( ::aItemIDs, iID )
@@ -631,7 +631,7 @@ METHOD SelectionID( Id ) CLASS TTree
             EndIf
          Else
             If aScan( ::aTreeIdMap, Id ) > 0
-               MsgOOHGError( "SelectionID: Item Id Already In Use. Program terminated." )
+               OOHG_MsgError( "TTree.SelectionID: Item's ID is already in use. Program terminated." )
             EndIf
 
             ::aTreeIdMap[ Pos ] := Id
@@ -649,7 +649,7 @@ METHOD SelectionID( Id ) CLASS TTree
    If iID == 0
       Return Nil
    ElseIf iID < 0 .OR. iID > len( ::aItemIDs )
-      MsgOOHGError( "SelectionID: Invalid Item Id. Program terminated." )
+      OOHG_MsgError( "TTree.SelectionID: Item's ID is not valid. Program terminated." )
    EndIf
 
    Return ::aItemIDs[ iID ]
@@ -666,11 +666,11 @@ METHOD DeleteItem( Item ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, Item )
 
       If Pos == 0
-         MsgOOHGError( "DeleteItem: Invalid Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.DeleteItem: Item's ID is not valid. Program terminated." )
       EndIf
    Else
       If Item > BeforeCount .OR. Item < 1
-         MsgOOHGError( "DeleteItem: Invalid Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.DeleteItem: Invalid item reference. Program terminated." )
       EndIf
 
       Pos := Item
@@ -686,7 +686,7 @@ METHOD DeleteItem( Item ) CLASS TTree
       If ::aTreeIdMap[ Pos ] # Nil
          iID := aScan( ::aItemIDs, ::aTreeIdMap[ Pos ] )
          If iID == 0
-            MsgOOHGError( "DeleteItem: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.DeleteItem: Item's ID is not valid. Program terminated." )
          EndIf
 
          aDel( ::aItemIDs, iID )
@@ -782,7 +782,7 @@ METHOD Value( uValue ) CLASS TTree
       Else
          Pos := aScan( ::aTreeMap, TreeItemHandle )
          If Pos == 0
-            MsgOOHGError( "Value: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.Value: Item's ID is not valid. Program terminated." )
          EndIf
 
          uValue := ::aTreeIdMap[ Pos ]
@@ -808,7 +808,7 @@ METHOD Value( uValue ) CLASS TTree
       Else
          Pos := aScan( ::aTreeMap, TreeItemHandle )
          If Pos == 0
-            MsgOOHGError( "Value: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.Value: Item's reference is not valid. Program terminated." )
          EndIf
 
          uValue := Pos
@@ -887,13 +887,13 @@ FUNCTION _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, lDisable
          If lAssignID
             Id := AutoID( _OOHG_ActiveTree )
          Else
-            MsgOOHGError( "Define Node Function: Item Id Is Nil. Program terminated." )
+            OOHG_MsgError( "_DefineTreeNode: Item's ID is NIL. Program terminated." )
          EndIf
       ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
          If lAssignID
             Id := AutoID( _OOHG_ActiveTree )
          Else
-            MsgOOHGError( "Define Node Function: Item Id Already In Use. Program terminated." )
+            OOHG_MsgError( "_DefineTreeNode: Item's ID is already in use. Program terminated." )
          EndIf
       EndIf
 
@@ -911,7 +911,7 @@ FUNCTION _DefineTreeNode( text, aImage, Id, lChecked, lReadOnly, lBold, lDisable
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
       Else
-         MsgOOHGError( "Define Node Function: Item Id Already In Use. Program terminated." )
+         OOHG_MsgError( "_DefineTreeNode: Item's ID is already in use. Program terminated." )
       EndIf
    EndIf
 
@@ -994,13 +994,13 @@ FUNCTION _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, lDisable
          If lAssignID
             Id := AutoID( _OOHG_ActiveTree )
          Else
-            MsgOOHGError( "Define Item Function: Item Id Is Nil. Program terminated." )
+            OOHG_MsgError( "_DefineTreeItem: Item Id Is Nil. Program terminated." )
          EndIf
       ElseIf aScan( _OOHG_ActiveTree:aTreeIdMap, Id ) != 0
          If lAssignID
             Id := AutoID( _OOHG_ActiveTree )
          Else
-            MsgOOHGError( "Define Item Function: Item Id Already In Use. Program terminated." )
+            OOHG_MsgError( "_DefineTreeItem: Item's ID is already in use. Program terminated." )
          EndIf
       EndIf
 
@@ -1018,7 +1018,7 @@ FUNCTION _DefineTreeItem( text, aImage, Id, lChecked, lReadOnly, lBold, lDisable
          aAdd( _OOHG_ActiveTree:aItemIDs, Id )
          iID := len( _OOHG_ActiveTree:aItemIDs )
       Else
-         MsgOOHGError( "Define Item Function: Item Id Already In Use. Program terminated." )
+         OOHG_MsgError( "_DefineTreeItem: Item's ID is already in use. Program terminated." )
       EndIf
    EndIf
 
@@ -1453,13 +1453,13 @@ METHOD ItemImages( Item, aImages ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemImages: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemImages: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemImages: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemImages: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1472,13 +1472,13 @@ METHOD ItemImages( Item, aImages ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemImages: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemImages: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemImages: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemImages: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1497,11 +1497,11 @@ METHOD CopyItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, ItemFrom )
 
       If Pos == 0
-         MsgOOHGError( "CopyItem: Invalid Origin Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.CopyItem: Invalid Origin Item Id. Program terminated." )
       EndIf
    Else
       If ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
-         MsgOOHGError( "CopyItem: Invalid Origin Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.CopyItem: Invalid Origin Item Reference. Program terminated." )
       EndIf
 
       Pos := ItemFrom
@@ -1572,11 +1572,11 @@ METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, ItemFrom )
 
       If Pos == 0
-         MsgOOHGError( "MoveItem: Invalid Origin Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.MoveItem: Invalid Origin Item Id. Program terminated." )
       EndIf
    Else
       If ItemFrom < 1 .OR. ItemFrom > len( ::aTreeMap )
-         MsgOOHGError( "MoveItem: Invalid Origin Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.MoveItem: Invalid Origin Item Reference. Program terminated." )
       EndIf
 
       Pos := ItemFrom
@@ -1592,11 +1592,11 @@ METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, ItemParent )
 
          If Pos == 0
-            MsgOOHGError( "MoveItem: Invalid Origin Parent Id. Program terminated." )
+            OOHG_MsgError( "TTree.MoveItem: Invalid Origin Parent Id. Program terminated." )
          EndIf
       Else
          If ItemParent < 1 .OR. ItemParent > len( ::aTreeMap )
-            MsgOOHGError( "MoveItem: Invalid Origin Parent Reference. Program terminated." )
+            OOHG_MsgError( "TTree.MoveItem: Invalid Origin Parent Reference. Program terminated." )
          EndIf
 
          Pos := ItemParent
@@ -1609,11 +1609,11 @@ METHOD MoveItem( ItemFrom, oTarget, ItemTo, aId ) CLASS TTree
       Pos := aScan( oTarget:aTreeIdMap, ItemTo )
 
       If Pos == 0
-         MsgOOHGError( "MoveItem: Invalid Target Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.MoveItem: Invalid Target Item Id. Program terminated." )
       EndIf
    Else
       If ItemTo < 1 .OR. ItemTo > len( oTarget:aTreeMap )
-         MsgOOHGError( "MoveItem: Invalid Target Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.MoveItem: Invalid Target Item Reference. Program terminated." )
       EndIf
 
       Pos := ItemTo
@@ -1733,7 +1733,7 @@ STATIC FUNCTION AddChildren( Self, ParentHandle, ChildHandle, aItems )
    If ChildHandle != 0
       ParentPos := aScan( ::aTreeMap, ParentHandle )
       If ParentPos == 0
-         MsgOOHGError( "AddChildren Function: Invalid Parent Item. Program terminated." )
+         OOHG_MsgError( "TTree.AddChildren Function: Invalid Parent Item. Program terminated." )
       EndIf
       ParentItem := if( Self:ItemIds, Self:aTreeIdMap[ ParentPos ], ParentPos )
 
@@ -1742,7 +1742,7 @@ STATIC FUNCTION AddChildren( Self, ParentHandle, ChildHandle, aItems )
       Do While NextChild != 0
          NextPos := aScan( ::aTreeMap, NextChild )
          If NextPos == 0
-            MsgOOHGError( "AddChildren Function: Invalid Child Item. Program terminated." )
+            OOHG_MsgError( "TTree.AddChildren Function: Invalid Child Item. Program terminated." )
          EndIf
          NextItem := if( Self:ItemIds, Self:aTreeIdMap[ NextPos ], NextPos )
 
@@ -1797,13 +1797,13 @@ METHOD CheckItem( Item, lChecked ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "CheckItem: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.CheckItem: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "CheckItem: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.CheckItem: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1816,13 +1816,13 @@ METHOD CheckItem( Item, lChecked ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "CheckItem: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.CheckItem: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "CheckItem: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.CheckItem: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1842,13 +1842,13 @@ METHOD BoldItem( Item, lBold ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "BoldItem: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.BoldItem: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "BoldItem: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.BoldItem: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1861,13 +1861,13 @@ METHOD BoldItem( Item, lBold ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "BoldItem: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.BoldItem: Item's ID is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Pos ]
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "BoldItem: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.BoldItem: Item's reference is not valid. Program terminated." )
          EndIf
 
          ItemHandle := ::aTreeMap[ Item ]
@@ -1887,11 +1887,11 @@ METHOD ItemReadonly( Item, lReadOnly ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemReadonly: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemReadonly: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemReadonly: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemReadonly: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -1904,11 +1904,11 @@ METHOD ItemReadonly( Item, lReadOnly ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemReadonly: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemReadonly: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemReadonly: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemReadonly: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -1928,11 +1928,11 @@ METHOD ItemEnabled( Item, lEnabled ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemEnabled: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemEnabled: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemEnabled: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemEnabled: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -1945,11 +1945,11 @@ METHOD ItemEnabled( Item, lEnabled ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemEnabled: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemEnabled: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemEnabled: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemEnabled: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -1969,11 +1969,11 @@ METHOD ItemDraggable( Item, lDraggable ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemDraggable: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemDraggable: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemDraggable: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemDraggable: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -1986,11 +1986,11 @@ METHOD ItemDraggable( Item, lDraggable ) CLASS TTree
          Pos := aScan( ::aTreeIdMap, Item )
 
          If Pos == 0
-            MsgOOHGError( "ItemDraggable: Invalid Item Id. Program terminated." )
+            OOHG_MsgError( "TTree.ItemDraggable: Item's ID is not valid. Program terminated." )
          EndIf
       Else
          If Item < 1 .OR. Item > len( ::aTreeMap )
-            MsgOOHGError( "ItemDraggable: Invalid Item Reference. Program terminated." )
+            OOHG_MsgError( "TTree.ItemDraggable: Item's reference is not valid. Program terminated." )
          EndIf
 
          Pos := Item
@@ -2008,11 +2008,11 @@ METHOD GetParent( Item ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, Item )
 
       If Pos == 0
-         MsgOOHGError( "GetParent: Invalid Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.GetParent: Item's ID is not valid. Program terminated." )
       EndIf
    Else
       If Item < 1 .OR. Item > len( ::aTreeMap )
-         MsgOOHGError( "GetParent: Invalid Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.GetParent: Item's reference is not valid. Program terminated." )
       EndIf
 
       Pos := Item
@@ -2040,11 +2040,11 @@ METHOD GetChildren( Item ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, Item )
 
       If Pos == 0
-         MsgOOHGError( "GetChildren: Invalid Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.GetChildren: Item's ID is not valid. Program terminated." )
       EndIf
    Else
       If Item < 1 .OR. Item > len( ::aTreeMap )
-         MsgOOHGError( "GetChildren: Invalid Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.GetChildren: Item's reference is not valid. Program terminated." )
       EndIf
 
       Pos := Item
@@ -2096,11 +2096,11 @@ METHOD IsItemCollapsed( Item ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, Item )
 
       If Pos == 0
-         MsgOOHGError( "IsItemCollapsed: Invalid Item Id. Program terminated." )
+         OOHG_MsgError( "TTree.IsItemCollapsed: Item's ID is not valid. Program terminated." )
       EndIf
    Else
       If Item < 1 .OR. Item > len( ::aTreeMap )
-         MsgOOHGError( "IsItemCollapsed: Invalid Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.IsItemCollapsed: Item's reference is not valid. Program terminated." )
       EndIf
 
       Pos := Item
@@ -2131,7 +2131,7 @@ METHOD HandleToItem( Handle ) CLASS TTree
    Pos := aScan( ::aTreeMap, Handle )
 
    If Pos == 0
-      MsgOOHGError( "HandleToItem: Invalid Item Handle. Program terminated." )
+      OOHG_MsgError( "TTree.HandleToItem: Invalid Item Handle. Program terminated." )
    EndIf
 
    If ::ItemIds
@@ -2149,11 +2149,11 @@ METHOD ItemToHandle( Item ) CLASS TTree
       Pos := aScan( ::aTreeIdMap, Item )
 
       If Pos == 0
-         MsgOOHGError( "ItemToHandle: Invalid Id Reference. Program terminated." )
+         OOHG_MsgError( "TTree.ItemToHandle: Invalid ID reference. Program terminated." )
       EndIf
    Else
       If Item < 1 .OR. Item > len( ::aTreeMap )
-         MsgOOHGError( "ItemToHandle: Invalid Item Reference. Program terminated." )
+         OOHG_MsgError( "TTree.ItemToHandle: Item's reference is not valid. Program terminated." )
       EndIf
 
       Pos := Item

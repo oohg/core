@@ -115,7 +115,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, nRowCount
    nStyleEx := iif( ValType( lClientEdge ) == "L" .AND. lClientEdge, WS_EX_CLIENTEDGE, 0 )
 
    IF ( nError := _OOHG_TTextArray_Register() ) # 0
-      MsgOOHGError( "TEXTARRAY: Windows class registration failed with error " + hb_ntos( nError ) + ". Program terminated.")
+      OOHG_MsgError( OOHG_MsgReplace( "TTextArray.Define: Registration of _OOHG_TTEXTARRAY class failed with error @1. Program terminated.", { { "@1", hb_ntos( nError ) } } ) )
    ENDIF
 
    nControlhandle := InitTextArray( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )

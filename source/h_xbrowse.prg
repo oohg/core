@@ -1310,7 +1310,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "TXBrowse.Events_Notify: At NM_CLICK ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
 // end TODO:
                   _PushEventInfo()
@@ -1373,7 +1373,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "TXBrowse.Events_Notify: At NM_RCLICK ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
             EndIf
 // end TODO:
                   _PushEventInfo()
@@ -2595,7 +2595,7 @@ METHOD AddColumn( nColIndex, xField, cHeader, nWidth, nJustify, uForeColor, ;
                               uValid, uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
                               uReadOnly, NIL, uHeadDblClick, uHeaderColor )
    If nRet # nColIndex
-      MsgOOHGError( "XBrowse: Column added in another place. Program terminated." )
+      OOHG_MsgError( "TXBrowse.AddColumn: Column added in another place. Program terminated." )
    EndIf
 
    // Update before calling ::ColumnBlock
@@ -4118,7 +4118,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "TXBrowseByCell.Events_Notify: At NM_CLICK ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
 // end TODO:
                   _PushEventInfo()
@@ -4182,7 +4182,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "TXBrowseByCell.Events_Notify: At NM_RCLICK ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
             EndIf
 // end TODO:
                   _PushEventInfo()

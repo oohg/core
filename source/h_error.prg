@@ -82,7 +82,7 @@ FUNCTION _OOHG_SetErrorMsgs( cError, cWarning )
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION MsgOOHGError( cMessage )
+FUNCTION OOHG_MsgError( cMessage )
 
    // Kill timers and hot keys
    _KillAllTimers()
@@ -91,6 +91,20 @@ FUNCTION MsgOOHGError( cMessage )
    OwnErrorHandler():ErrorMessage( cMessage, 1 )
 
    RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION OOHG_MsgReplace( cMsg, aData )
+
+   LOCAL i, j
+
+   FOR i := 1 TO Len( aData )
+      j := At( aData[ i, 1 ], cMsg )
+      IF j > 0
+         cMsg := Left( cMsg, j - 1 ) + aData[ i, 2 ] + SubStr( cMsg, j + Len( aData[ i, 1 ] ) )
+      ENDIF
+   NEXT i
+
+   RETURN cMsg
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE ErrorSys

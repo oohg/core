@@ -148,7 +148,7 @@ METHOD Define( ControlName, ParentForm, x, y, FileName, w, h, cBuffer, hBitMap, 
    ENDIF
 
    IF ( nError := _OOHG_PictureControl_Register() ) # 0
-      MsgOOHGError( "PICTURE: Windows class registration failed with error " + hb_ntos( nError ) + ". Program terminated.")
+      OOHG_MsgError( OOHG_MsgReplace( "TPicture.Define: Registration of _OOHG_PICTURECONTROL class failed with error @1. Program terminated.", { { "@1", hb_ntos( nError ) } } ) )
    ENDIF
 
    Controlhandle := InitPictureControl( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )

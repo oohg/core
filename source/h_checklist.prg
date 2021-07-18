@@ -136,7 +136,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
                                 Len( a ) # 2 .OR. ;
                                 ! ValType( a[1] ) $ "CM" .OR. ;
                                 ValType( a[2] ) # "N" } ) > 0
-            MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
+            OOHG_MsgError( "TCheckList.Define: ITEMS array is not valid. Program terminated." )
          EndIf
       Else
          aRows := {}
@@ -151,7 +151,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aRows, v, fontname, ;
 
       If HB_IsArray( aRows )
          If aScan( aRows, { |a| ! ValType( a ) $ "CM" } ) > 0
-            MsgOOHGError( "CheckList.Define: Invalid items. Program terminated." )
+            OOHG_MsgError( "TCheckList.Define: ITEMS array is not valid. Program terminated." )
          EndIf
       Else
          aRows := {}
@@ -414,13 +414,13 @@ METHOD AddItem( uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.AddItem: Item size mismatch. Program terminated." )
+         OOHG_MsgError( "TCheckList.AddItem: Item size is not valid. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.AddItem: Item is not valid. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.AddItem: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.AddItem: Item is not a string. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }
@@ -443,13 +443,13 @@ METHOD InsertItem( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheck
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.InsertItem: Item size mismatch. Program terminated." )
+         OOHG_MsgError( "TCheckList.InsertItem: Item size is not valid. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.InsertItem: Item is not valid. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.InsertItem: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.InsertItem: Item is not a string. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }
@@ -511,13 +511,13 @@ METHOD Item( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
    If ValidHandler( ::ImageList )
       If Len( uItem ) # 2
-         MsgOOHGError( "CheckList.Item: Item size mismatch. Program terminated." )
+         OOHG_MsgError( "TCheckList.Item: Item size is not valid. Program terminated." )
       ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.Item: Item is not valid. Program terminated." )
       EndIf
    Else
       If ! ValType( uItem ) $ "CM"
-         MsgOOHGError( "CheckList.Item: Invalid item. Program terminated." )
+         OOHG_MsgError( "TCheckList.Item: Item is not a string. Program terminated." )
       EndIf
    EndIf
    aRow := { uItem }

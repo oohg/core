@@ -944,7 +944,7 @@ METHOD SetValue( Value, nAtRow ) CLASS TOBrowse
 
    IF _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       IF ::hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError( "BROWSE: Value property can't be changed inside ON CHANGE event. Program terminated." )
+         OOHG_MsgError( "TOBrowse.SetValue: Value property can not be changed inside ON CHANGE event. Program terminated." )
       ENDIF
    ENDIF
 
@@ -3680,7 +3680,7 @@ METHOD SetValue( Value, mp ) CLASS TOBrowseByCell
 
    IF _OOHG_ThisEventType == 'BROWSE_ONCHANGE'
       IF ::hWnd == _OOHG_ThisControl:hWnd
-         MsgOOHGError( "BROWSEBYCELL: Value property can't be changed inside ONCHANGE event. Program terminated." )
+         OOHG_MsgError( "TOBrowseByCell.SetValue: Value property can not be changed inside ONCHANGE event. Program terminated." )
       ENDIF
    ENDIF
 

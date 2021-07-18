@@ -126,7 +126,7 @@ METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
    nStyleEx += iif( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    IF ( nError := _OOHG_TInternal_Register() ) # 0
-      MsgOOHGError( "INTERNAL: Windows class registration failed with error " + hb_ntos( nError ) + ". Program terminated.")
+      OOHG_MsgError( OOHG_MsgReplace( "TInternal.Define: Registration of _OOHG_TINTERNAL class failed with error @1. Program terminated.", { { "@1", hb_ntos( nError ) } } ) )
    ENDIF
 
    Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )

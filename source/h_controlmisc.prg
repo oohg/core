@@ -676,7 +676,7 @@ Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
          If oCtrl:Type == "TOOLBAR"
 
             If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
-               MsgOOHGError('Control Does Not Belong To Container')
+               OOHG_MsgError( OOHG_MsgReplace( "SetProperty: Control @1 does not belong to container @2. Program terminated.", { { "@1", Arg3 }, { "@2", Arg1 } } ) )
             EndIf
 
             SetProperty( Arg1, Arg3, Arg4, Arg5 )
@@ -945,7 +945,7 @@ Local RetVal, oWnd, oCtrl, nPos
          If oCtrl:Type == "TOOLBAR"
 
             If oCtrl:hWnd != GetControlObject( Arg3 , Arg1 ):Container:hWnd
-               MsgOOHGError('Control Does Not Belong To Container')
+               OOHG_MsgError( OOHG_MsgReplace( 'SetProperty: Control @1 does not belong to container @2. Program terminated.', { { "@1", Arg3 }, { "@2", Arg1 } } ) )
             EndIf
 
             RetVal := GetProperty( Arg1 , Arg3 , Arg4 )
@@ -1525,7 +1525,7 @@ METHOD SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, ;
    ::Name := _OOHG_GetNullName( ControlName )
 
    If _IsControlDefined( ::Name, ::Parent:Name )
-      MsgOOHGError( _OOHG_Messages( MT_BRW_ERR, 4 ) + ::Name + _OOHG_Messages( MT_BRW_ERR, 5 ) + ::Parent:Name + _OOHG_Messages( MT_BRW_ERR, 6 ) )
+      OOHG_MsgError( OOHG_MsgReplace( "TControl.SetForm: Control @1 of @2 is already defined. Program terminated.", { { "@1", ::Name }, { "@2", ::Parent:Name } } ) )
    EndIf
 
    // Right-to-left
@@ -2578,7 +2578,7 @@ Function GetExistingControlObject( ControlName, FormName )
 
    mVar := '_' + FormName + '_' + ControlName
    If ! Type( mVar ) == "O"
-      MsgOOHGError( "Control: " + ControlName + " of " + FormName + " not defined. Program terminated." )
+      OOHG_MsgError( OOHG_MsgReplace( "GetExistingControlObject: Control @1 of @2 is not defined. Program terminated.", { { "@1", ControlName }, { "@2", FormName } } ) )
    EndIf
 
    Return &mVar
@@ -2877,11 +2877,10 @@ CLASS TControlGroup FROM TControl
    DATA Type      INIT "CONTROLGROUP" READONLY
    DATA lHidden   INIT .F.
 
+   METHOD AddControl
    METHOD Define
    METHOD Enabled             SETGET
    METHOD Visible             SETGET
-
-   METHOD AddControl
 
    ENDCLASS
 
@@ -2924,4 +2923,4 @@ METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
    oCtrl:SizePos( Row, Col )
    oCtrl:Visible := oCtrl:Visible
 
-   Return Nil
+   RETURN NIL

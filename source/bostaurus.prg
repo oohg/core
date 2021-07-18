@@ -147,9 +147,9 @@ FUNCTION BT_DeleteDC( BTstruct )
    LOCAL lRet
 
    IF Valtype( BTstruct ) <> "A"
-      MsgOOHGError( "Parameter is not an array. Program terminated." )
+      OOHG_MsgError( "BT_DeleteDC: Parameter is not an array. Program terminated." )
    ELSEIF Len( BTstruct ) <> 50
-      MsgOOHGError( "Parameter is a corrupted array. Program terminated." )
+      OOHG_MsgError( "BT_DeleteDC: Parameter is a corrupted array. Program terminated." )
    ENDIF
    lRet:= BT_DC_DELETE( BTstruct )
 

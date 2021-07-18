@@ -405,7 +405,7 @@ METHOD RedefinePasswordStyle() CLASS TText
    ::Value := cOldValue
 
    IF ! ::PosAddToCtrlsArrays()
-      MsgOOHGError( "Cant' redefine TText control: " + ::Name + " of " + ::ParentName + ". Program terminated." )
+      OOHG_MsgError( "TText.RedefinePasswordStyle: Redefinition failed because parent was not found. Program terminated." )
    ENDIF
 
    IF HB_ISARRAY( ::aBitmap )
@@ -1310,7 +1310,7 @@ METHOD Picture( cInputMask, uValue ) CLASS TTextPicture
          ENDIF
 
          IF ! cInputMask == "@"
-            MsgOOHGError( "@...TEXTBOX: Wrong Format Definition" )
+            OOHG_MsgError( "TTextPicture.Picture: Format definition error. Program terminated." )
          ENDIF
 
          IF ! Empty( cPicFun )
@@ -1648,6 +1648,7 @@ STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, 
          ENDIF
       ENDIF
    ENDIF
+
    DO WHILE nPos <= Len( cPictureMask ) .AND. ! aValidMask[ nPos ]
       nPos++
    ENDDO

@@ -199,20 +199,20 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
    ::SetFont( NIL, NIL, bold, italic, underline, strikeout )
 
    IF ::lDelayLoad .AND. Sort
-      MsgOOHGError( "SORT and DELAYLOAD clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TCombo.Define: SORT and DELAYLOAD clauses can not be used simultaneously. Program terminated." )
    ENDIF
 
    IF ValType( itemsource ) != 'U' .AND. Sort
-      MsgOOHGError( "SORT and ITEMSOURCE clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TCombo.Define: SORT and ITEMSOURCE clauses can not be used simultaneously. Program terminated." )
    ENDIF
 
    IF ValType( valuesource ) != 'U' .AND. Sort
-      MsgOOHGError( "SORT and VALUESOURCE clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TCombo.Define: SORT and VALUESOURCE clauses can not be used simultaneously. Program terminated." )
    ENDIF
 
    IF ValType( itemsource ) == 'A'
       IF Len( itemsource ) < 2
-         MsgOOHGError( "ITEMSOURCE length is not valid. Program terminated." )
+         OOHG_MsgError( "TCombo.Define: ITEMSOURCE length is not valid. Program terminated." )
       ELSE
          WorkArea := itemsource[ 1 ]
          uField := itemsource[ 2 ]
@@ -231,7 +231,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
          WorkArea := Alias()
          uField := itemsource
       ELSE
-         MsgOOHGError( "ITEMSOURCE is not a qualified field name nor a field in the current workarea. Program terminated." )
+         OOHG_MsgError( "TCombo.Define: ITEMSOURCE is not a qualified field name nor a field in the current workarea. Program terminated." )
       ENDIF
       IF ! HB_ISLOGICAL( ::lUseIndexVal )
          ::lUseIndexVal := _OOHG_ComboIndexIsValueDbf
@@ -545,7 +545,7 @@ METHOD ValueType() CLASS TCombo
       IF cRet == "M"
          cRet := "C"
       ELSEIF ! cRet $ "CN"
-         MsgOOHGError( "COMBOBOX: The valtype of the first item is not valid. Program terminated." )
+         OOHG_MsgError( "TCombo.Define: The valtype of the first item is not valid. Program terminated." )
       ENDIF
    ENDIF
 

@@ -119,7 +119,7 @@ METHOD Address( cUrl ) CLASS THyperLink
          ::OnClick := {|| ShellExecute( 0, "open", "rundll32.exe", "url.dll,FileProtocolHandler mailto:" + cUrl, , 1 ) }
          ::URL := cUrl
       ELSE
-         MsgOOHGError( "Control: " + ::Name + " must have valid email or url defined. Program terminated." )
+         OOHG_MsgError( "THyperLink.Address: Invalid email or URL. Program terminated." )
       ENDIF
    ENDIF
 

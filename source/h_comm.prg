@@ -235,7 +235,7 @@ FUNCTION SendData( cDest, Data )
                pData := Data[ i ]
                cLen := AllTrim( Str( Len( pData ) ) )
             ELSE
-               MsgOOHGError( 'SendData: Type Not Suported. Program terminated.' )
+               OOHG_MsgError( OOHG_MsgReplace( "SendData: Type @1 is not supported. Program terminated.", { { "@1", cType } } ) )
             ENDIF
 
             cData := cData + '#DataBlock=' + cType + ',' + cLen + CRLF
@@ -271,7 +271,7 @@ FUNCTION SendData( cDest, Data )
                   pData := Data[ i, j ]
                   cLen := AllTrim( Str( Len( pData ) ) )
                ELSE
-                  MsgOOHGError( 'SendData: Type Not Suported. Program terminated.' )
+                  OOHG_MsgError( OOHG_MsgReplace( "SendData: Type @1 is not supported. Program terminated.", { { "@1", cType } } ) )
                ENDIF
 
                cData := cData + '#DataBlock=' + cType + ',' + cLen + CRLF
@@ -301,7 +301,7 @@ FUNCTION SendData( cDest, Data )
          pData := Data
          cLen := AllTrim( Str( Len( pData ) ) )
       ELSE
-         MsgOOHGError( "SendData: Type Not Suported. Program terminated." )
+         OOHG_MsgError( OOHG_MsgReplace( "SendData: Type @1 is not supported. Program terminated.", { { "@1", cType } } ) )
       ENDIF
 
       cData := '#DataRows=0'+ CRLF

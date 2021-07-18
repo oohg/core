@@ -187,11 +187,11 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
    ASSIGN nWidth      VALUE nWidth      TYPE "N"  DEFAULT NIL
 
    IF ! HB_ISARRAY( aFields ) .OR. ( nFieldsCount := Len( aFields ) ) < 1
-      MsgOOHGError( "REPORT: Parameter FIELDS is not a valid array of strings. Program terminated." )
+      OOHG_MsgError( "TReport.EasyReport1: Parameter FIELDS is not a valid array of strings. Program terminated." )
    ENDIF
    FOR i := 1 TO nFieldsCount
       IF ! HB_ISSTRING( aFields[ i ] )
-         MsgOOHGError( "REPORT: Parameter FIELDS is not a valid array of strings. Program terminated." )
+         OOHG_MsgError( "TReport.EasyReport1: Parameter FIELDS is not a valid array of strings. Program terminated." )
       ENDIF
    NEXT i
    IF ! HB_ISARRAY( aHeaders1 )

@@ -101,7 +101,7 @@ METHOD Define( uParentForm, lBottom, lInverted, lRtl, lNoAttached ) CLASS TSplit
    ::SetForm( NIL, uParentForm, NIL, NIL, NIL, NIL, NIL, lRtl )
 
    IF ::Container != NIL .AND. ! ValidHandler( ::ContainerhWndValue )
-      MsgOOHGError( "SPLITBOX can't be defined inside TAB control. Program terminated." )
+      OOHG_MsgError( "TSplitBox.Define: SplitBox can not be defined inside a TAB control. Program terminated." )
    ENDIF
 
    ASSIGN ::lInverted VALUE lInverted TYPE "L"

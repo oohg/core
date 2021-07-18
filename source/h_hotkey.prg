@@ -94,7 +94,7 @@ Function _PushKeyCommand( cKey )
       Keybd_Event( aKey[ 1 ], .f. )
       Keybd_Event( aKey[ 1 ], .t. )
    ELSE
-      MsgOOHGError( "PUSH KEY: Key combination name not valid: " + cKey + ". Program terminated." )
+      OOHG_MsgError( "Push Key: Key combination is not valid. Program terminated." )
    ENDIF
 
    Return Nil
@@ -168,8 +168,13 @@ Function _DefineAnyKey( cParentForm, cKey, bAction )
          oBase:_HOTKEYMETHOD( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
-      MsgOOHGError( "HOTKEY: Key combination name not valid: " + cKey + ". Program terminated." )
-      // bCode := NIL
+      IF bAction == NIL
+         OOHG_MsgError( "Release Key: Key combination is not valid. Program terminated." )
+      ELSEIF HB_ISBLOCK( bAction )
+         OOHG_MsgError( "On Key: Key combination is not valid. Program terminated." )
+      ELSE
+         OOHG_MsgError( "Store Key: Key combination is not valid. Program terminated." )
+      ENDIF
    ENDIF
 
    Return bCode
@@ -187,7 +192,7 @@ Function _DefineAccelerator( cParentForm, cKey, bAction )
          oBase:AcceleratorKey( aKey[ 1 ], aKey[ 2 ], bAction )
       ENDIF
    ELSE
-      MsgOOHGError( "ACCELERATOR: Key combination name not valid: " + cKey + ". Program terminated." )
+      OOHG_MsgError( "Accelerator: Key combination is not valid. Program terminated." )
       // bCode := NIL
    ENDIF
 

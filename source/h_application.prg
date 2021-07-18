@@ -302,7 +302,7 @@ METHOD New() CLASS TApplication
 
    IF oAppObj == NIL
       IF ! ::CreateGlobalMutex()
-         MsgOOHGError( "APPLICATION: Global mutex creation failed. Program terminated." )
+         OOHG_MsgError( "TApplication.New: Global mutex creation failed. Program terminated." )
       ENDIF
 
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
@@ -2039,7 +2039,7 @@ METHOD Value_Pos50( cValue ) CLASS TApplication
       uRet := "NULL" + StrZero( ::aVars[ NDX_OOHG_GETNULLNAME ], 10 )
       ::aVars[ NDX_OOHG_GETNULLNAME ] ++
       IF ::aVars[ NDX_OOHG_GETNULLNAME ] > MAX_OBJ_NUMBER
-         MsgOOHGError( "APPLICATION: Can't assign a new NULL name." )
+         OOHG_MsgError( "_OOHG_GetNullName: A new NULL name can not be assigned." )
       ENDIF
    ENDIF
    ::MutexUnlock()

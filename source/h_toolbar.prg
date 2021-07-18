@@ -128,7 +128,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
    ENDIF
 
    If ! ::lTop .AND. ::lVertical
-      MsgOOHGError( "BOTTOM and VERTICAL clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TToolbar.Define: BOTTOM and VERTICAL clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    ::SetForm( ControlName, ParentForm, fontName, fontSize, Nil, Nil, Nil, lRtl )
@@ -412,7 +412,7 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
    ASSIGN WholeDropdown VALUE WholeDropdown TYPE "L"  DEFAULT .F.
 
    If ValType( ProcedureName ) == "B" .and. WholeDropdown
-      MsgOOHGError( "ACTION and WHOLEDROPDOWN clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TToolButton.Define: ACTION and WHOLEDROPDOWN clauses can't be used simultaneously. Program terminated." )
    EndIf
 
    id := _GetId()

@@ -111,7 +111,7 @@ METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption,
 
    IF lTransparent
       IF lOpaque
-         MsgOOHGError( "OPAQUE and TRANSPARENT clauses can't be used simultaneously. Program terminated." )
+         OOHG_MsgError( "TFrame.Define: OPAQUE and TRANSPARENT clauses can not be used simultaneously. Program terminated." )
       ELSE
          ::Transparent := .T.
       ENDIF

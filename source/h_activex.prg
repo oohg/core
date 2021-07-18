@@ -114,11 +114,11 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
 
    nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
    IF ! ValidHandler( nControlHandle )
-      MsgOOHGError( "ACTIVEX: Container initialization failed. Program terminated." )
+      OOHG_MsgError( "TActiveX.Define: Container initialization failed. Program terminated." )
    ENDIF
    ::hAtl := AtlAxGetDisp( nControlHandle )
    IF ! ValidHandler( ::hAtl )
-      MsgOOHGError( "ACTIVEX: Interface pointer initialization failed with code " + LTrim( Str( AtlAxHResult() ) ) + ". Program terminated." )
+      OOHG_MsgError( OOHG_MsgReplace( "TActiveX.Define: Interface pointer initialization failed with code @1. Program terminated.", { { "@1", LTrim( Str( AtlAxHResult() ) ) } } ) )
    ENDIF
 
    ::Register( nControlHandle, ControlName )

@@ -382,7 +382,7 @@ Procedure GraphShow( parent, nTop, nLeft, nBottom, nRight, nHeight, nWidth, aDat
       lError := .T.
    EndIf
    If lError
-      MsgOOHGError( "DRAW GRAPH: Graph type is not valid. Program terminated." )
+      OOHG_MsgError( "GraphShow: Graph type is not valid. Program terminated." )
    EndIf
 
    If ! lLegends
@@ -391,7 +391,7 @@ Procedure GraphShow( parent, nTop, nLeft, nBottom, nRight, nHeight, nWidth, aDat
 
    If ( Len( aSeries ) != Len( aData ) ) .or. ;
       ( Len( aSeries ) != Len( aColors ) )
-      MsgOOHGError( "DRAW GRAPH: 'Series' / 'SerieNames' / 'Colors' Arrays size mismatch. Program terminated." )
+      OOHG_MsgError( "GraphShow: Series, SerieNames and Colors arrays do not have the same size. Program terminated." )
    EndIf
 
    If _IsControlDefined( 'Graph_Title', parent )

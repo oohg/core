@@ -361,7 +361,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
 
    IF lHasHeaders
       IF Len( ::aHeaders ) != Len( ::aWidths )
-         MsgOOHGError( "Grid: HEADERS/WIDTHS array size mismatch. Program terminated." )
+         OOHG_MsgError( "TGrid.Define2: HEADERS and WIDTHS arrays do not have the same size. Program terminated." )
       ENDIF
    ELSE
       IF Len( ::aHeaders ) != Len( ::aWidths )
@@ -370,7 +370,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
    If HB_IsArray( aRows )
       If AScan( aRows, { |a| ! HB_IsArray( a ) .OR. Len( a ) != Len( ::aHeaders ) } ) > 0
-         MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
+         OOHG_MsgError( "TGrid.Define2: One item is not an array or its length does not match the headers length. Program terminated." )
       EndIf
    Else
       aRows := {}
@@ -474,7 +474,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ::EditControls := editcontrols
 
    If ::lCheckBoxes .AND. ::lPLM
-      MsgOOHGError( "CHECKBOXES and PAINTLEFTMARGIN clauses can't be used simultaneously. Program terminated." )
+      OOHG_MsgError( "TGrid.Define2: CHECKBOXES and PAINTLEFTMARGIN clauses can not be used simultaneously. Program terminated." )
    EndIf
 
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop ) + ;
@@ -3555,7 +3555,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
 // end TODO:
                   _PushEventInfo()
@@ -3614,7 +3614,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
 // end TODO:
                   _PushEventInfo()
@@ -3680,12 +3680,12 @@ METHOD aItems( aRows ) CLASS TGrid
 
    IF PCount() > 0
       IF ! HB_ISARRAY( aRows )
-         MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
+         OOHG_MsgError( "TGrid.aItems: aRows is not an array. Program terminated." )
       ENDIF
 
       FOR i := 1 to Len( aRows )
          IF Len( aRows[ i ] ) != Len( ::aHeaders )
-            MsgOOHGError( "Grid: ITEMS length mismatch. Program terminated." )
+            OOHG_MsgError( "TGrid.aItems: The length of one row does not match the headers length. Program terminated." )
          ENDIF
       NEXT i
 
@@ -3712,7 +3712,7 @@ METHOD AddItem( aRow, uForeColor, uBackColor ) CLASS TGrid
    LOCAL aText, nItem
 
    IF Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.AddItem: Item size mismatch. Program terminated." )
+      OOHG_MsgError( "Grid.AddItem: Item size mismatch. Program terminated." )
    ENDIF
 
    aText := TGrid_SetArray( Self, aRow )
@@ -3752,7 +3752,7 @@ METHOD InsertItem( nItem, aRow, uForeColor, uBackColor ) CLASS TGrid
     */
 
    If Len( ::aHeaders ) != Len( aRow )
-      MsgOOHGError( "Grid.InsertItem: Item size mismatch. Program terminated." )
+      OOHG_MsgError( "Grid.InsertItem: Item size mismatch. Program terminated." )
    EndIf
 
    aText := TGrid_SetArray( Self, aRow )
@@ -4706,7 +4706,7 @@ FUNCTION AEqual( array1, array2 )
          lRet := .F.
       ENDIF
    ELSE
-      MsgOOHGError( 'AEqual: Argument is not an array !!!' )
+      OOHG_MsgError( 'AEqual: Argument is not an array. Program terminated.' )
    ENDIF
 
    RETURN lRet
@@ -4724,7 +4724,7 @@ FUNCTION AIsEmpty( array )
          ENDIF
       NEXT i
    ELSE
-      MsgOOHGError( 'AIsEmpty: Argument is not an array !!!' )
+      OOHG_MsgError( 'AIsEmpty: Argument is not an array. Program terminated.' )
    ENDIF
 
    RETURN lRet
@@ -6099,7 +6099,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
                   EndIf
 // end TODO:
                   _PushEventInfo()
@@ -6158,7 +6158,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   ::NestedClick := ! _OOHG_NestedSameEvent()
 // TODO: check and remove
                   If uValue > 0 .AND. uValue # aCellData[ 1 ]
-                     MsgOOHGError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
+                     OOHG_MsgError( "ListView_ItemActivate and ListView_HitOnCheckBox are different. Program terminated." )
             EndIf
 // end TODO:
                   _PushEventInfo()
@@ -7548,7 +7548,7 @@ METHOD Refresh CLASS TGridControlComboBox
          Else
             uValue := &( cValueSource )
             If ! ValType( uValue ) == ::cRetValType
-               MsgOOHGError( "GridControl: ValueSource/RetVal type mismatch. Program terminated." )
+               OOHG_MsgError( "TGridControlComboBox.Refresh: ValueSource/RetVal type mismatch. Program terminated." )
             EndIf
          EndIf
          AAdd( aVa, uValue )

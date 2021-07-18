@@ -248,7 +248,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
    // Control de parámetros.
    // Área de la base de datos.---------------------------------------------------
    if ( ! VALTYPE( cArea ) $"CM" ) .or. Empty( cArea )
-      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 1 ), "" )
+      OOHG_MsgError( _OOHG_Messages( MT_ABM_ERR, 1 ), "" )
    else
       _cArea       := cArea
       _aEstructura := (_cArea)->( dbStruct() )
@@ -257,7 +257,7 @@ function ABM( cArea, cTitulo, aCampos, aEditables, bGuardar, bBuscar )
 
    // Número de campos.-----------------------------------------------------------
    if ( nCampos > 16 )
-      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 2 ), "" )
+      OOHG_MsgError( _OOHG_Messages( MT_ABM_ERR, 2 ), "" )
    endif
 
    // Título de la ventana.-------------------------------------------------------
@@ -754,7 +754,7 @@ static function ABMRefresh( nEstado )
 
       // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 3 ), "" )
+      OOHG_MsgError( _OOHG_Messages( MT_ABM_ERR, 3 ), "" )
    end case
 
    return ( nil )
@@ -971,7 +971,7 @@ static function ABMEventos( nEvento )
 
       // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 4 ), "" )
+      OOHG_MsgError( _OOHG_Messages( MT_ABM_ERR, 4 ), "" )
 
    endcase
 
@@ -1387,7 +1387,7 @@ static function ABMListadoEvento( nEvento )
 
         // Control de error.---------------------------------------------------
    otherwise
-      MsgOOHGError( _OOHG_Messages( MT_ABM_ERR, 5 ), "" )
+      OOHG_MsgError( _OOHG_Messages( MT_ABM_ERR, 5 ), "" )
    endcase
 
    return ( nil )
