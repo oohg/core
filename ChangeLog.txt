@@ -12,6 +12,44 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-18 11:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    * Improve readability.
+    * Changed focusrect drawing to be more Windows-like.
+
+2021-07-18 11:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+    * Function MsgOOHGError was renamed as OOHG_MsgError.
+      INCOMPATIBLE.
+    + Function OOHG_MsgReplace.
+  * core\source\bostaurus.prg
+  * core\source\h_activex.prg
+  * core\source\h_application.prg
+  * core\source\h_browse.prg
+  * core\source\h_checklist.prg
+  * core\source\h_combo.prg
+  * core\source\h_comm.prg
+  * core\source\h_controlmisc.prg
+  * core\source\h_edit.prg
+  * core\source\h_form.prg
+  * core\source\h_frame.prg
+  * core\source\h_graph.prg
+  * core\source\h_grid.prg
+  * core\source\h_hotkey.prg
+  * core\source\h_hyperlink.prg
+  * core\source\h_internal.prg
+  * core\source\h_picture.prg
+  * core\source\h_report.prg
+  * core\source\h_splitbox.prg
+  * core\source\h_textarray.prg
+  * core\source\h_textbox.prg
+  * core\source\h_toolbar.prg
+  * core\source\h_tree.prg
+  * core\source\h_window.prg
+  * core\source\h_xbrowse.prg
+    * References to MsgOOHGError were changed to OOHG_MsgError.
+    * Some messages were changed to be more meaningful.
+
 2021-07-10 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\bostaurus.ch
   * core\include\i_activex.ch
