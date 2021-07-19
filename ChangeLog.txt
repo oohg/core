@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-19 01:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checklist.prg
+    ! Parameter validation at AddItem, InsertItem and Item methods.
+
 2021-07-18 11:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
     * Improve readability.
