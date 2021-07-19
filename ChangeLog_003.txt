@@ -3120,7 +3120,7 @@
   * source\common_make.prg
     + Added h_checklist to prg list.
   + source\h_checklist.prg
-    + Added TCheckList class implementing a listbox like control
+    + Added TCheckList class implementing a listbox-like control
       with text and checkbox and, optionaly, an image.
 
 2012-03-21 19:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
