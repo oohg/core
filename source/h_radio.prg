@@ -1153,6 +1153,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
                aux_rect.left -= 2;
                aux_rect.bottom = textrect.bottom;
 
+               SetTextColor( pCustomDraw->hdc, (COLORREF) 0 );
                DrawFocusRect( pCustomDraw->hdc, &aux_rect );
             }
          }
@@ -1164,6 +1165,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
             {
+               SetTextColor( pCustomDraw->hdc, (COLORREF) 0 );
                DrawFocusRect( pCustomDraw->hdc, &textrect );
             }
          }
