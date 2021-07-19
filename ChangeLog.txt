@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-19 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    * The focus rectangle is now always painted in black.
+
 2021-07-19 01:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_checklist.prg
     ! Parameter validation at AddItem, InsertItem and Item methods.
