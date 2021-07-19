@@ -413,11 +413,9 @@ METHOD AddItem( uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
    Local aRow
 
    If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
-         OOHG_MsgError( "TCheckList.AddItem: Item size is not valid. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      IF ! HB_ISARRAY( uItem ) .OR. Len( uItem ) # 2 .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          OOHG_MsgError( "TCheckList.AddItem: Item is not valid. Program terminated." )
-      EndIf
+      ENDIF
    Else
       If ! ValType( uItem ) $ "CM"
          OOHG_MsgError( "TCheckList.AddItem: Item is not a string. Program terminated." )
@@ -442,11 +440,9 @@ METHOD InsertItem( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheck
    Local aRow, aValue
 
    If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
-         OOHG_MsgError( "TCheckList.InsertItem: Item size is not valid. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      IF ! HB_ISARRAY( uItem ) .OR. Len( uItem ) # 2 .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          OOHG_MsgError( "TCheckList.InsertItem: Item is not valid. Program terminated." )
-      EndIf
+      ENDIF
    Else
       If ! ValType( uItem ) $ "CM"
          OOHG_MsgError( "TCheckList.InsertItem: Item is not a string. Program terminated." )
@@ -510,11 +506,9 @@ METHOD Item( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
    Local aRow
 
    If ValidHandler( ::ImageList )
-      If Len( uItem ) # 2
-         OOHG_MsgError( "TCheckList.Item: Item size is not valid. Program terminated." )
-      ElseIf ! HB_IsArray( uItem ) .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+      IF ! HB_ISARRAY( uItem ) .OR. Len( uItem ) # 2 .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
          OOHG_MsgError( "TCheckList.Item: Item is not valid. Program terminated." )
-      EndIf
+      ENDIF
    Else
       If ! ValType( uItem ) $ "CM"
          OOHG_MsgError( "TCheckList.Item: Item is not a string. Program terminated." )
