@@ -69,50 +69,51 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TRadioGroup FROM TLabel
 
-   DATA aOptions                   INIT {}
-   DATA IconWidth                  INIT 19
-   DATA LeftAlign                  INIT .F.
-   DATA lHorizontal                INIT .F.
-   DATA lLibDraw                   INIT .F.
-   DATA lNoFocusRect               INIT .F.
-   DATA lTabStop                   INIT .T.
-   DATA nHeight                    INIT 25
-   DATA nLimit                     INIT 0
-   DATA nShift                     INIT 120
-   DATA nSpacing                   INIT 25
-   DATA nWidth                     INIT 120
-   DATA Type                       INIT "RADIOGROUP" READONLY
+   DATA aOptions                  INIT {}
+   DATA IconWidth                 INIT 19
+   DATA LeftAlign                 INIT .F.
+   DATA lHorizontal               INIT .F.
+   DATA lLibDraw                  INIT .F.
+   DATA lNoFocusRect              INIT .F.
+   DATA lTabStop                  INIT .T.
+   DATA nHeight                   INIT 25
+   DATA nLimit                    INIT 0
+   DATA nShift                    INIT 120
+   DATA nSpacing                  INIT 25
+   DATA nWidth                    INIT 120
+   DATA Type                      INIT "RADIOGROUP" READONLY
 
    METHOD AddItem
    METHOD AdjustResize
-   METHOD Background               SETGET
+   METHOD Background              SETGET
    METHOD Caption
-   METHOD ColMargin                BLOCK { |Self| - ::Col }
+   METHOD ColMargin               BLOCK { |Self| - ::Col }
    METHOD Define
    METHOD DeleteItem
    METHOD DoChange
-   METHOD Enabled                  SETGET
+   METHOD Enabled                 SETGET
    METHOD GroupHeight
    METHOD GroupWidth
    METHOD InsertItem
-   METHOD ItemCount                BLOCK { |Self| Len( ::aOptions ) }
+   METHOD ItemCount               BLOCK { |Self| Len( ::aOptions ) }
    METHOD ItemEnabled
    METHOD ItemReadOnly
    METHOD ItemToolTip
-   METHOD Limit                    SETGET
-   METHOD oBkGrnd                  SETGET
-   METHOD ReadOnly                 SETGET
+   METHOD Limit                   SETGET
+   METHOD lFocusRect              BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lNoFocusRect := ! lValue, ! ::lNoFocusRect ) }
+   METHOD oBkGrnd                 SETGET
+   METHOD ReadOnly                SETGET
    METHOD RePaint
-   METHOD RowMargin                BLOCK { |Self| - ::Row }
+   METHOD RowMargin               BLOCK { |Self| - ::Row }
    METHOD SetFocus
    METHOD SetFont
-   METHOD Shift                    SETGET
+   METHOD Shift                   SETGET
    METHOD SizePos
-   METHOD Spacing                  SETGET
-   METHOD TabStop                  SETGET
-   METHOD ToolTip                  SETGET
-   METHOD Value                    SETGET
-   METHOD Visible                  SETGET
+   METHOD Spacing                 SETGET
+   METHOD TabStop                 SETGET
+   METHOD ToolTip                 SETGET
+   METHOD Value                   SETGET
+   METHOD Visible                 SETGET
 
    ENDCLASS
 
