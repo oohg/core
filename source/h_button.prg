@@ -100,6 +100,7 @@ CLASS TButton FROM TControl
    METHOD DefineImage
    METHOD Events_Enter
    METHOD Events_Notify
+   METHOD lFocusRect              BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lNoFocusRect := ! lValue, ! ::lNoFocusRect ) }
    METHOD HBitMap                 SETGET
    METHOD ImageList               BLOCK { || NIL }
    METHOD ImageMargin             SETGET
