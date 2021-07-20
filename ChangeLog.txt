@@ -12,6 +12,18 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-20 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Method lNoFocusRect to TGrid class.
+    - DATA lFocusRect of TGridByCell class.
+    + Default value for lFocusRect parameter at method
+      Events_Notify of TGridByCell class.
+
+2021-07-20 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    + Method lFocusRect.
+    * Some format.
+
 2021-07-19 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
     * The focus rectangle is now always painted in black.

@@ -255,6 +255,7 @@ CLASS TGrid FROM TControl
    METHOD LastColInOrder
    METHOD LastVisibleColumn
    METHOD Left
+   METHOD lNoFocusRect            BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lFocusRect := ! lValue, ! ::lFocusRect ) }
    METHOD LoadHeaderImages
    METHOD NextColInOrder
    METHOD NextPosToEdit
@@ -4809,7 +4810,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
 
 CLASS TGridByCell FROM TGrid
 
-   DATA lFocusRect                INIT .F.
    DATA Type                      INIT "GRIDBYCELL" READONLY
 
    METHOD AddColumn
@@ -4864,7 +4864,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
                aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs ) CLASS TGridByCell
 
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
    ASSIGN lCBE       VALUE lCBE       TYPE "L" DEFAULT .T.
 
