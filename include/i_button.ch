@@ -130,6 +130,10 @@
             <.imgsize.>, <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, ;
             <.lhand.>, <.ldefault.> )
 
+#xtranslate BUTTON [ <x> ] FOCUSRECT ;
+   => ;
+      BUTTON [ <x> ]
+
 #command @ <row>, <col> CHECKBUTTON <name> ;
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -196,3 +200,7 @@
             <.flat.>, <.nohotlight.>, <.solidbk.>, <fontcolor>, {<"txth">, <"txtv">}, ;
             <.noover.>, <atextmargin>, <.fittxt.>, <.fitimg.>, <.imgsize.>, ;
             <.ltransp.>, <.lnofocus.>, <.lnoimglst.>, <.nodestroy.>, <.lhand.> )
+
+#xtranslate CHECKBUTTON [ <x> ] FOCUSRECT ;
+   => ;
+      CHECKBUTTON [ <x> ]
