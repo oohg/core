@@ -2283,7 +2283,6 @@ METHOD SetScrollPos( nPos, VScroll ) CLASS TOBrowse
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TOBrowseByCell FROM TOBrowse
 
-   DATA lFocusRect                INIT .F.
    DATA Type                      INIT "BROWSEBYCELL" READONLY
 
    METHOD AddColumn
@@ -2437,7 +2436,7 @@ METHOD Define3( ControlName, ParentForm, x, y, w, h, fontname, fontsize, ;
    HB_SYMBOL_UNUSED( lNone )
    HB_SYMBOL_UNUSED( lDisabled )
 
-   ASSIGN lFocusRect VALUE lFocusRect TYPE "L"
+   ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    ASSIGN lCBE       VALUE lCBE       TYPE "L" DEFAULT .T.
 
    ::Define2( ControlName, ParentForm, x, y, w, h, ::aHeaders, ::aWidths, {}, ;
