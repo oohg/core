@@ -39,46 +39,54 @@ rem
 
 :PARSE_SWITCHES
 
+   set HG_COMP_TYPE=STD
+   set HG_EXTRA=
    set HG_LOG=1^>nul
    set HG_RUNEXE=-run
-   set HG_EXTRA=
-   set HG_COMP_TYPE=STD
+   set HG_STRIP=-strip
    set HG_USE_HBC=%HG_ROOT%\oohg.hbc
    set HG_USE_RC=TRUE
 
 :LOOP_START
 
-   if    "%2" == ""       goto LOOP_END
-   if /I "%2" == "/C"     goto SW_CONSOLE
-   if /I "%2" == "/D"     goto SW_DEBUG
-   if /I "%2" == "/GTWIN" goto SW_CONSOLE
-   if /I "%2" == "/L"     goto SW_USELOG
-   if /I "%2" == "/LOG"   goto SW_USELOG
-   if /I "%2" == "/NOHBC" goto SW_NOHBC
-   if /I "%2" == "/NORC"  goto SW_NORC
-   if /I "%2" == "/NR"    goto SUPPRESS_RUN
-   if /I "%2" == "/S"     goto SUPPRESS_LOG
-   if /I "%2" == "/SL"    goto SUPPRESS_LOG
-   if /I "%2" == "/V"     goto SW_VERBOSE
-   if /I "%2" == "-C"     goto SW_CONSOLE
-   if /I "%2" == "-D"     goto SW_DEBUG
-   if /I "%2" == "-GTWIN" goto SW_CONSOLE
-   if /I "%2" == "-L"     goto SW_USELOG
-   if /I "%2" == "-LOG"   goto SW_USELOG
-   if /I "%2" == "-NOHBC" goto SW_NOHBC
-   if /I "%2" == "-NORC"  goto SW_NORC
-   if /I "%2" == "-NR"    goto SUPPRESS_RUN
-   if /I "%2" == "-S"     goto SUPPRESS_LOG
-   if /I "%2" == "-SL"    goto SUPPRESS_LOG
-   if /I "%2" == "-V"     goto SW_VERBOSE
+   if    "%2" == ""         goto LOOP_END
+   if /I "%2" == "/C"       goto SW_CONSOLE
+   if /I "%2" == "/D"       goto SW_DEBUG
+   if /I "%2" == "/GTWIN"   goto SW_CONSOLE
+   if /I "%2" == "/L"       goto SW_USELOG
+   if /I "%2" == "/LOG"     goto SW_USELOG
+   if /I "%2" == "/NOHBC"   goto SW_NOHBC
+   if /I "%2" == "/NORC"    goto SW_NORC
+   if /I "%2" == "/NOSTRIP" goto SW_NOSTRIP
+   if /I "%2" == "/NR"      goto SUPPRESS_RUN
+   if /I "%2" == "/S"       goto SUPPRESS_LOG
+   if /I "%2" == "/SL"      goto SUPPRESS_LOG
+   if /I "%2" == "/V"       goto SW_VERBOSE
+   if /I "%2" == "-C"       goto SW_CONSOLE
+   if /I "%2" == "-D"       goto SW_DEBUG
+   if /I "%2" == "-GTWIN"   goto SW_CONSOLE
+   if /I "%2" == "-L"       goto SW_USELOG
+   if /I "%2" == "-LOG"     goto SW_USELOG
+   if /I "%2" == "-NOHBC"   goto SW_NOHBC
+   if /I "%2" == "-NORC"    goto SW_NORC
+   if /I "%2" == "-NR"      goto SUPPRESS_RUN
+   if /I "%2" == "-NOSTRIP" goto SW_NOSTRIP
+   if /I "%2" == "-S"       goto SUPPRESS_LOG
+   if /I "%2" == "-SL"      goto SUPPRESS_LOG
+   if /I "%2" == "-V"       goto SW_VERBOSE
    set HG_EXTRA=%HG_EXTRA% %2
    shift
    goto LOOP_START
 
-:SW_DEBUG
+:SUPPRESS_LOG
 
-   set HG_COMP_TYPE=DEBUG
-   set HG_EXTRA=%HG_EXTRA% -D_OOHG_CONSOLEMODE_
+   set HG_LOG=1^>nul 2^>^&1
+   shift
+   goto LOOP_START
+
+:SUPPRESS_RUN
+
+   set HG_RUNEXE=-run-
    shift
    goto LOOP_START
 
@@ -89,27 +97,10 @@ rem
    shift
    goto LOOP_START
 
-:SW_USELOG
+:SW_DEBUG
 
-   set HG_LOG=1^>^>oohglog.txt 2^>^>^&1
-   shift
-   goto LOOP_START
-
-:SUPPRESS_LOG
-
-   set HG_LOG=1^>nul 2^>^&1
-   shift
-   goto LOOP_START
-
-:SW_VERBOSE
-
-   set HG_LOG=
-   shift
-   goto LOOP_START
-
-:SUPPRESS_RUN
-
-   set HG_RUNEXE=-run-
+   set HG_COMP_TYPE=DEBUG
+   set HG_EXTRA=%HG_EXTRA% -D_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
@@ -122,6 +113,24 @@ rem
 :SW_NORC
 
    set HG_USE_RC=FALSE
+   shift
+   goto LOOP_START
+
+:SW_NOSTRIP
+
+   set HG_STRIP=
+   shift
+   goto LOOP_START
+
+:SW_USELOG
+
+   set HG_LOG=1^>^>oohglog.txt 2^>^>^&1
+   shift
+   goto LOOP_START
+
+:SW_VERBOSE
+
+   set HG_LOG=
    shift
    goto LOOP_START
 
@@ -159,7 +168,7 @@ rem
 :BUILD
 
    rem *** Compile and Link ***
-   hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_EXTRA% %HG_LOG%
+   hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_STRIP% %HG_EXTRA% %HG_LOG%
    if exist oohglog.txt type oohglog.txt
 
 :CLEANUP

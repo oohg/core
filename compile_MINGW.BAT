@@ -51,44 +51,40 @@ rem
    set HG_NO_RUN=FALSE
    set HG_PRG_LOG=
    set HG_SEARCH=
+   set HG_STRIP=-s
    set HG_USE_RC=TRUE
    set HG_W_LIBS=
 
 :LOOP_START
 
-   if    "%2" == ""       goto LOOP_END
-   if /I "%2" == "/C"     goto SW_CONSOLE
-   if /I "%2" == "/D"     goto SW_DEBUG
-   if /I "%2" == "/GTWIN" goto SW_CONSOLE
-   if /I "%2" == "/L"     goto SW_USELOG
-   if /I "%2" == "/LOG"   goto SW_USELOG
-   if /I "%2" == "/NORC"  goto SW_NORC
-   if /I "%2" == "/NR"    goto SW_NORUN
-   if /I "%2" == "/P"     goto SW_PPO
-   if /I "%2" == "/S"     goto SW_SILENT
-   if /I "%2" == "/SL"    goto SW_SILENT
-   if /I "%2" == "/V"     goto SW_VERBOSE
-   if /I "%2" == "/W3"    goto SW_W3
-   if /I "%2" == "-C"     goto SW_CONSOLE
-   if /I "%2" == "-D"     goto SW_DEBUG
-   if /I "%2" == "-GTWIN" goto SW_CONSOLE
-   if /I "%2" == "-L"     goto SW_USELOG
-   if /I "%2" == "-LOG"   goto SW_USELOG
-   if /I "%2" == "-NORC"  goto SW_NORC
-   if /I "%2" == "-NR"    goto SW_NORUN
-   if /I "%2" == "-P"     goto SW_PPO
-   if /I "%2" == "-S"     goto SW_SILENT
-   if /I "%2" == "-SL"    goto SW_SILENT
-   if /I "%2" == "-V"     goto SW_VERBOSE
-   if /I "%2" == "-W3"    goto SW_W3
+   if    "%2" == ""         goto LOOP_END
+   if /I "%2" == "/C"       goto SW_CONSOLE
+   if /I "%2" == "/D"       goto SW_DEBUG
+   if /I "%2" == "/GTWIN"   goto SW_CONSOLE
+   if /I "%2" == "/L"       goto SW_USELOG
+   if /I "%2" == "/LOG"     goto SW_USELOG
+   if /I "%2" == "/NORC"    goto SW_NORC
+   if /I "%2" == "/NOSTRIP" goto SW_NOSTRIP
+   if /I "%2" == "/NR"      goto SW_NORUN
+   if /I "%2" == "/P"       goto SW_PPO
+   if /I "%2" == "/S"       goto SW_SILENT
+   if /I "%2" == "/SL"      goto SW_SILENT
+   if /I "%2" == "/V"       goto SW_VERBOSE
+   if /I "%2" == "/W3"      goto SW_W3
+   if /I "%2" == "-C"       goto SW_CONSOLE
+   if /I "%2" == "-D"       goto SW_DEBUG
+   if /I "%2" == "-GTWIN"   goto SW_CONSOLE
+   if /I "%2" == "-L"       goto SW_USELOG
+   if /I "%2" == "-LOG"     goto SW_USELOG
+   if /I "%2" == "-NORC"    goto SW_NORC
+   if /I "%2" == "-NOSTRIP" goto SW_NOSTRIP
+   if /I "%2" == "-NR"      goto SW_NORUN
+   if /I "%2" == "-P"       goto SW_PPO
+   if /I "%2" == "-S"       goto SW_SILENT
+   if /I "%2" == "-SL"      goto SW_SILENT
+   if /I "%2" == "-V"       goto SW_VERBOSE
+   if /I "%2" == "-W3"      goto SW_W3
    set HG_EXTRA=%HG_EXTRA% %2
-   shift
-   goto LOOP_START
-
-:SW_DEBUG
-
-   set HG_COMP_TYPE=DEBUG
-   set HG_DEFINES=-D_OOHG_CONSOLEMODE_
    shift
    goto LOOP_START
 
@@ -99,21 +95,16 @@ rem
    shift
    goto LOOP_START
 
+:SW_DEBUG
+
+   set HG_COMP_TYPE=DEBUG
+   set HG_DEFINES=-D_OOHG_CONSOLEMODE_
+   shift
+   goto LOOP_START
+
 :SW_NORC
 
    set HG_USE_RC=FALSE
-   shift
-   goto LOOP_START
-
-:SW_PPO
-
-   set HG_EXTRA=%HG_EXTRA% -p
-   shift
-   goto LOOP_START
-
-:SW_W3
-
-   set HG_EXTRA=%HG_EXTRA% -w3
    shift
    goto LOOP_START
 
@@ -123,10 +114,15 @@ rem
    shift
    goto LOOP_START
 
-:SW_USELOG
+:SW_NOSTRIP
 
-   set HG_PRG_LOG=-q 1^>^>oohglog.txt 2^>^>^&1
-   set HG_C_LOG=1^>^>oohglog.txt 2^>^>^&1
+   set HG_STRIP=
+   shift
+   goto LOOP_START
+
+:SW_PPO
+
+   set HG_EXTRA=%HG_EXTRA% -p
    shift
    goto LOOP_START
 
@@ -137,10 +133,23 @@ rem
    shift
    goto LOOP_START
 
+:SW_USELOG
+
+   set HG_PRG_LOG=-q 1^>^>oohglog.txt 2^>^>^&1
+   set HG_C_LOG=1^>^>oohglog.txt 2^>^>^&1
+   shift
+   goto LOOP_START
+
 :SW_VERBOSE
 
    set HG_PRG_LOG=
    set HG_C_LOG=
+   shift
+   goto LOOP_START
+
+:SW_W3
+
+   set HG_EXTRA=%HG_EXTRA% -w3
    shift
    goto LOOP_START
 
@@ -244,7 +253,7 @@ rem
 
    set HG_SEARCH=-L. -L%HG_ROOT%\%LIB_GUI% -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
    set HG_C_LIBS=-Wl,--start-group %HG_C_LIBS% -Wl,--end-group
-   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_C_FLAGS% %HG_SEARCH% %HG_C_LIBS% %HG_STATIC_LIBS% %HG_C_LOG%
+   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_C_FLAGS% %HG_STRIP% %HG_SEARCH% %HG_C_LIBS% %HG_STATIC_LIBS% %HG_C_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error linking %HG_FILE%.exe! %HG_PRG_LOG%
 
