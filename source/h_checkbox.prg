@@ -72,6 +72,7 @@ CLASS TCheckBox FROM TLabel
    DATA cPicture                  INIT ""
    DATA IconWidth                 INIT 21
    DATA LeftAlign                 INIT .F.
+   DATA lFillRect                 INIT NIL
    DATA lLibDraw                  INIT .F.
    DATA lNoFocusRect              INIT .F.
    DATA nHeight                   INIT 28
@@ -83,6 +84,7 @@ CLASS TCheckBox FROM TLabel
    METHOD Events_Color
    METHOD Events_Command
    METHOD Events_Notify
+   METHOD lFocusRect              BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lNoFocusRect := ! lValue, ! ::lNoFocusRect ) }
    METHOD Value                   SETGET
 
    ENDCLASS
@@ -91,7 +93,7 @@ CLASS TCheckBox FROM TLabel
 METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontName,  cFontSize, cToolTip, bOnChange, ;
                nWidth, nHeight, bLostFocus, bGotFocus, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, lUnderline, ;
                lStrikeout, cField, uBackColor, uFontColor, lTransparent, lAutoSize,  lRtl, lDisabled, lThreeState, ;
-               lLeftAlign, lDrawBy, oBkGrnd, lNoFocusRect ) CLASS TCheckBox
+               lLeftAlign, lDrawBy, oBkGrnd, lNoFocusRect, lFillRect ) CLASS TCheckBox
 
    LOCAL nControlHandle, nStyle, nStyleEx := 0, oTab
 
@@ -106,12 +108,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
    ASSIGN ::LeftAlign    VALUE lLeftAlign   TYPE "L"
    ASSIGN ::oBkGrnd      VALUE oBkGrnd      TYPE "O"
    ASSIGN ::lNoFocusRect VALUE lNoFocusRect TYPE "L"
+   ASSIGN ::lFillRect    VALUE lFillRect    TYPE "L" DEFAULT ::LeftAlign
 
    IF HB_ISLOGICAL( lDrawBy )
       ::lLibDraw := lDrawBy
-   ELSEIF ::lNoFocusRect
-      ::lLibDraw := .T.
-   ELSEIF ::lNoFocusRect .OR. uFontColor # NIL
+   ELSEIF uFontColor # NIL .OR. ::LeftAlign .OR. ::lNoFocusRect .OR. ::lFillRect
       ::lLibDraw := .T.
    ELSE
       ::lLibDraw := _OOHG_UseLibraryDraw
@@ -207,7 +208,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TCheckBox
       IF ::lLibDraw .AND. ::IsVisualStyled
          RETURN TCheckBox_Notify_CustomDraw( Self, lParam, ::Caption, ;
                                              ( HB_ISOBJECT( ::TabHandle ) .AND. ! HB_ISOBJECT( ::oBkGrnd ) ), ;
-                                             ::LeftAlign, ::lNoFocusRect)
+                                             ::LeftAlign, ::lNoFocusRect, ::lFillRect )
       ENDIF
    ENDIF
 
@@ -287,17 +288,18 @@ HB_FUNC( INITCHECKBOX )          /* FUNCTION InitCheckBox( hWnd, cCaption, hMenu
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect )
+int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption, BOOL bDrawBkGrnd, BOOL bLeftAlign, BOOL bNoFocusRect, BOOL bFillRect )
 {
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    LPNMCUSTOMDRAW pCustomDraw = ( LPNMCUSTOMDRAW ) lParam;
    DTTOPTS pOptions;
    HTHEME hTheme;
    int state_id, checkState, drawState;
-   LONG_PTR style, state;
-   RECT content_rect, aux_rect;
+   LONG_PTR style, state, i;
+   RECT content_rect, btn_rect, txt_rect, fcs_rect;
    SIZE s;
-   OSVERSIONINFO osvi;
+   DWORD txt_style;
+   TEXTMETRICW ptm;
    static const int cb_states[ 3 ][ 5 ] =
    {
       { CBS_UNCHECKEDNORMAL, CBS_UNCHECKEDHOT, CBS_UNCHECKEDPRESSED, CBS_UNCHECKEDDISABLED, CBS_UNCHECKEDNORMAL },
@@ -307,21 +309,22 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
    if( pCustomDraw->dwDrawStage == CDDS_PREERASE )
    {
+      /* test if themes are enabled */
       if( ! _UxTheme_Init() )
       {
          return CDRF_DODEFAULT;
       }
 
+      /* open the theme data */
       hTheme = ( HTHEME ) ProcOpenThemeData( pCustomDraw->hdr.hwndFrom, L"BUTTON" );
       if( ! hTheme )
       {
          return CDRF_DODEFAULT;
       }
 
-      /* determine control's state, note that the order of these tests is significant */
+      /* determine control state, note that the order of these tests is significant */
       style = GetWindowLongPtr( pCustomDraw->hdr.hwndFrom, GWL_STYLE );
       state = SendMessage( pCustomDraw->hdr.hwndFrom, BM_GETSTATE, 0, 0 );
-
       if( state & BST_INDETERMINATE )
       {
          checkState = 2;
@@ -366,79 +369,125 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
          }
       }
 
-      /* get button size */
+      /* get the button size */
       ProcGetThemePartSize( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, NULL, TS_TRUE, &s );
 
-      /* get content rectangle */
+      /* get the content rect */
       ProcGetThemeBackgroundContentRect( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &pCustomDraw->rc, &content_rect );
 
-      aux_rect.top = content_rect.top + ( content_rect.bottom - content_rect.top - s.cy ) / 2;
-      aux_rect.bottom = aux_rect.top + s.cy;
+      /* compute the button rect and the text rect */
+      txt_rect = content_rect;
+      btn_rect.top = content_rect.top + ( content_rect.bottom - content_rect.top - s.cy ) / 2;
+      btn_rect.bottom = btn_rect.top + s.cy;
       if( bLeftAlign )
       {
-         aux_rect.right = content_rect.right;
-         aux_rect.left = aux_rect.right - s.cx;
-         content_rect.right = aux_rect.left - 3;      /* Arbitrary margin between text and button */
+         btn_rect.right = content_rect.right;
+         btn_rect.left = btn_rect.right - s.cx;
+         txt_rect.right = btn_rect.left - 5;
       }
       else
       {
-         aux_rect.left = content_rect.left;
-         aux_rect.right = aux_rect.left + s.cx;
-         content_rect.left = aux_rect.right + 3;      /* Arbitrary margin between text and button */
+         btn_rect.left = content_rect.left;
+         btn_rect.right = btn_rect.left + s.cx;
+         txt_rect.left = btn_rect.right + 5;
       }
 
-      /* aux_rect is the rect of the item's button area */
-      ProcDrawThemeBackground( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &aux_rect, NULL );
+      /* draw the button */
+      ProcDrawThemeBackground( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &btn_rect, NULL );
 
       if( strlen( cCaption ) > 0 )
       {
-         getwinver( &osvi );
-         if( osvi.dwMajorVersion >= 6 )
+         /* set the text style */
+         if( bLeftAlign )
          {
-            /* paint caption */
-            memset( &pOptions, 0, sizeof( DTTOPTS ) );
-            pOptions.dwSize = sizeof( DTTOPTS );
-            if( oSelf->lFontColor != -1 )
+            if( bFillRect )
             {
-               pOptions.dwFlags |= DTT_TEXTCOLOR;
-               pOptions.crText = (COLORREF) oSelf->lFontColor;
+               txt_style = DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_END_ELLIPSIS;
             }
-            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &content_rect, &pOptions );
-
-            /* paint focus rectangle */
-            if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
+            else
             {
-               aux_rect = content_rect;
-               pOptions.dwFlags = DTT_CALCRECT;
-               ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
-               aux_rect.top += 5;
-               aux_rect.bottom += 1;
-               aux_rect.right += 1;
-               if( ! bLeftAlign )
-               {
-                  aux_rect.left -= 1;
-               }
-               DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+               txt_style = DT_VCENTER | DT_RIGHT | DT_SINGLELINE | DT_END_ELLIPSIS;
             }
          }
          else
          {
-            /* paint caption */
-            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &content_rect );
-
-            /* paint focus rectangle */
-            if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
+            if( bFillRect )
             {
-               aux_rect = content_rect;
-               aux_rect.top += 5;
-               aux_rect.bottom -= 5;
-               aux_rect.right += 1;
-               if( ! bLeftAlign )
-               {
-                  aux_rect.left -= 1;
-               }
-               DrawFocusRect( pCustomDraw->hdc, &aux_rect );
+               txt_style = DT_VCENTER | DT_RIGHT | DT_SINGLELINE | DT_END_ELLIPSIS;
             }
+            else
+            {
+               txt_style = DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_END_ELLIPSIS;
+            }
+            txt_rect.right -= 3;
+         }
+
+         /* set the text color */
+         memset( &pOptions, 0, sizeof( DTTOPTS ) );
+         pOptions.dwSize = sizeof( DTTOPTS );
+         if( oSelf->lFontColor != -1 )
+         {
+            pOptions.dwFlags |= DTT_TEXTCOLOR;
+            pOptions.crText = (COLORREF) oSelf->lFontColor;
+         }
+
+         /* draw the text */
+         ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, txt_style, &txt_rect, &pOptions );
+
+         /* paint the focus rectangle */
+         if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
+         {
+            /* get the rectangle actually occupied by the text */
+            fcs_rect = txt_rect;
+            ProcGetThemeTextExtent( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, txt_style, &txt_rect, &fcs_rect );
+
+            /* get the font metrics */
+            ProcGetThemeTextMetrics( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &ptm );
+
+            /* adjust the rectangle height to fit the font height */
+            fcs_rect.top = fcs_rect.bottom - ptm.tmHeight - 1;
+            if( fcs_rect.top < content_rect.top )
+            {
+               fcs_rect.top = content_rect.top;
+            }
+            fcs_rect.bottom += 1;
+            if( fcs_rect.bottom > content_rect.bottom )
+            {
+               fcs_rect.bottom = content_rect.bottom;
+            }
+
+            /* adjust the left and right coordinates to fit the text */
+            if( ( bLeftAlign && bFillRect ) | ( ! bLeftAlign && ! bFillRect ) )
+            {
+               fcs_rect.right += 1;
+               if( fcs_rect.right > content_rect.right )
+               {
+                  fcs_rect.right = content_rect.right;
+               }
+            }
+            else if( bLeftAlign && ! bFillRect )
+            {
+               fcs_rect.left = txt_rect.right - fcs_rect.right - 1;
+               fcs_rect.right = txt_rect.right + 2;
+               if( fcs_rect.left < content_rect.left )
+               {
+                  fcs_rect.left = content_rect.left;
+               }
+            }
+            else   /* ( ! bLeftAlign && bFillRect ) */
+            {
+               i = fcs_rect.right - fcs_rect.left;
+               fcs_rect.right = txt_rect.right + 2;
+               fcs_rect.left = txt_rect.right - i - 1;
+               if( fcs_rect.left < content_rect.left )
+               {
+                  fcs_rect.left = content_rect.left;
+               }
+            }
+
+            /* draw the focus rect in black */
+            SetTextColor( pCustomDraw->hdc, (COLORREF) 0 );
+            DrawFocusRect( pCustomDraw->hdc, &fcs_rect );
          }
       }
 
@@ -450,10 +499,10 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TCHECKBOX_NOTIFY_CUSTOMDRAW )          /* FUNCTION TCheckBox_Notify_CustomDraw( hWnd, lParam, cCaption, lDrawBkGrnd, lLeftAlign, lNoFocusRect ) -> nRet */
+HB_FUNC( TCHECKBOX_NOTIFY_CUSTOMDRAW )          /* FUNCTION TCheckBox_Notify_CustomDraw( hWnd, lParam, cCaption, lDrawBkGrnd, lLeftAlign, lNoFocusRect, lFillRect ) -> nRet */
 {
    hb_retni( TCheckBox_Notify_CustomDraw( hb_param( 1, HB_IT_OBJECT ), (LPARAM) hb_parnl( 2 ), (LPCSTR) hb_parc( 3 ),
-                                          (BOOL) hb_parl( 4 ), (BOOL) hb_parl( 5 ), (BOOL) hb_parl( 6 ) ) );
+                                          (BOOL) hb_parl( 4 ), (BOOL) hb_parl( 5 ), (BOOL) hb_parl( 6 ), (BOOL) hb_parl( 7 ) ) );
 }
 
 #pragma ENDDUMP

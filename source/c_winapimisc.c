@@ -1782,14 +1782,16 @@ HB_FUNC( GETCOMCTL32VERSION )          /* FUNCTION GetComCtl32Version() -> nVers
 }
 
 typedef HRESULT ( WINAPI * CALL_CLOSETHEMEDATA ) ( HTHEME );
-typedef HRESULT ( WINAPI * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, INT, INT, const RECT *, const RECT * );
-typedef HRESULT ( WINAPI * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, const RECT * );
-typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, const RECT *, const DTTOPTS * pOptions );
-typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, INT, INT, LPCWSTR, INT, DWORD, DWORD, const RECT * );
-typedef HRESULT ( WINAPI * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, INT, INT, const RECT *, RECT * );
-typedef HRESULT ( WINAPI * CALL_GETTHEMEMARGINS ) ( HTHEME, HDC, INT, INT, INT, LPCRECT, MARGINS * );
-typedef HRESULT ( WINAPI * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, INT, INT, const RECT *, THEMESIZE, SIZE * );
-typedef BOOL    ( WINAPI * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, INT, INT );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMEBACKGROUND ) ( HTHEME, HDC, int, int, LPCRECT, LPCRECT );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMEPARENTBACKGROUND ) ( HWND, HDC, LPCRECT );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXTEX ) ( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, LPCRECT, const DTTOPTS * );
+typedef HRESULT ( WINAPI * CALL_DRAWTHEMETEXT ) ( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, DWORD, LPCRECT );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEBACKGROUNDCONTENTRECT ) ( HTHEME, HDC, int, int, LPCRECT, LPRECT );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEMARGINS ) ( HTHEME, HDC, int, int, int, LPCRECT, MARGINS * );
+typedef HRESULT ( WINAPI * CALL_GETTHEMEPARTSIZE ) ( HTHEME, HDC, int, int, LPCRECT, THEMESIZE, SIZE * );
+typedef HRESULT ( WINAPI * CALL_GETTHEMETEXTEXTENT ) ( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, LPCRECT, LPRECT );
+typedef HRESULT ( WINAPI * CALL_GETTHEMETEXTMETRICS ) ( HTHEME, HDC, int, int, TEXTMETRICW * );
+typedef BOOL    ( WINAPI * CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) ( HTHEME, int, int );
 typedef HTHEME  ( WINAPI * CALL_OPENTHEMEDATA ) ( HWND, LPCWSTR );
 typedef HRESULT ( WINAPI * CALL_SETWINDOWTHEME ) ( HWND, LPCWSTR, LPCWSTR );
 typedef BOOL    ( WINAPI * CALL_ISTHEMEACTIVE ) ( VOID );
@@ -1804,6 +1806,8 @@ static CALL_DRAWTHEMETEXTEX pProcDrawThemeTextEx = NULL;
 static CALL_GETTHEMEBACKGROUNDCONTENTRECT pProcGetThemeBackgroundContentRect = NULL;
 static CALL_GETTHEMEMARGINS pProcGetThemeMargins = NULL;
 static CALL_GETTHEMEPARTSIZE pProcGetThemePartSize = NULL;
+static CALL_GETTHEMETEXTEXTENT pProcGetThemeTextExtent = NULL;
+static CALL_GETTHEMETEXTMETRICS pProcGetThemeTextMetrics = NULL;
 static CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT pProcIsThemeBackgroundPartiallyTransparent = NULL;
 static CALL_OPENTHEMEDATA pProcOpenThemeData = NULL;
 static CALL_SETWINDOWTHEME pProcSetWindowTheme = NULL;
@@ -1829,6 +1833,8 @@ HMODULE _UxTheme_Init( void )
          pProcGetThemeBackgroundContentRect = ( CALL_GETTHEMEBACKGROUNDCONTENTRECT ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeBackgroundContentRect" );
          pProcGetThemeMargins = ( CALL_GETTHEMEMARGINS ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeMargins" );
          pProcGetThemePartSize = ( CALL_GETTHEMEPARTSIZE ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemePartSize" );
+         pProcGetThemeTextExtent = ( CALL_GETTHEMETEXTEXTENT ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeTextExtent" );
+         pProcGetThemeTextMetrics = ( CALL_GETTHEMETEXTMETRICS ) _OOHG_GetProcAddress( hDllUxTheme, "GetThemeTextMetrics" );
          pProcIsThemeBackgroundPartiallyTransparent = ( CALL_ISTHEMEBACKGROUNDPARTIALLYTRANSPARENT ) _OOHG_GetProcAddress( hDllUxTheme, "IsThemeBackgroundPartiallyTransparent" );
          pProcOpenThemeData = ( CALL_OPENTHEMEDATA ) _OOHG_GetProcAddress( hDllUxTheme, "OpenThemeData" );
          pProcSetWindowTheme = ( CALL_SETWINDOWTHEME ) _OOHG_GetProcAddress( hDllUxTheme, "SetWindowTheme" );
@@ -1840,6 +1846,8 @@ HMODULE _UxTheme_Init( void )
                  pProcGetThemeBackgroundContentRect &&
                  pProcGetThemeMargins &&
                  pProcGetThemePartSize &&
+                 pProcGetThemeTextExtent &&
+                 pProcGetThemeTextMetrics &&
                  pProcIsThemeBackgroundPartiallyTransparent &&
                  pProcOpenThemeData &&
                  pProcSetWindowTheme &&
@@ -1857,6 +1865,8 @@ HMODULE _UxTheme_Init( void )
             pProcGetThemeBackgroundContentRect = NULL;
             pProcGetThemeMargins = NULL;
             pProcGetThemePartSize = NULL;
+            pProcGetThemeTextExtent = NULL;
+            pProcGetThemeTextMetrics = NULL;
             pProcIsThemeBackgroundPartiallyTransparent = NULL;
             pProcOpenThemeData = NULL;
             pProcSetWindowTheme = NULL;
@@ -1919,6 +1929,18 @@ HRESULT ProcGetThemePartSize( HTHEME hTheme, HDC hdc, int iPartId, int iStateId,
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+HRESULT ProcGetThemeTextExtent( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchCharCount, DWORD dwTextFlags, LPCRECT pBoundingRect, LPRECT pExtentRect )
+{
+   return ( pProcGetThemeTextExtent )( hTheme, hdc, iPartId, iStateId, pszText, cchCharCount, dwTextFlags, pBoundingRect, pExtentRect );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HRESULT ProcGetThemeTextMetrics( HTHEME hTheme, HDC hdc, int iPartId, int iStateId, TEXTMETRICW * ptm )
+{
+   return ( pProcGetThemeTextMetrics )( hTheme, hdc, iPartId, iStateId, ptm );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 BOOL ProcIsThemeBackgroundPartiallyTransparent( HTHEME hTheme, int iPartId, int iStateId )
 {
    return ( pProcIsThemeBackgroundPartiallyTransparent )( hTheme, iPartId, iStateId );
@@ -1959,6 +1981,8 @@ void _UxTheme_DeInit( void )
       pProcGetThemeBackgroundContentRect = NULL;
       pProcGetThemeMargins = NULL;
       pProcGetThemePartSize = NULL;
+      pProcGetThemeTextExtent = NULL;
+      pProcGetThemeTextMetrics = NULL;
       pProcIsThemeBackgroundPartiallyTransparent = NULL;
       pProcOpenThemeData = NULL;
       pProcSetWindowTheme = NULL;

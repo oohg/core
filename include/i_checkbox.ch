@@ -90,7 +90,8 @@
       [ SUBCLASS <subclass> ] ;
       [ <rtl: RTL> ] ;
       [ <threestate: THREESTATE> ] ;
-      [ <left: LEFTJUSTIFY, LEFTALIGN> ] ;
+      [ <textatleft: LEFTJUSTIFY, LEFTALIGN> ] ;
+      [ <fill: FILLRECT, NOFILLRECT> ] ;
       [ <drawby: OOHGDRAW, WINDRAW> ] ;
       [ BACKGROUND <bkgrnd> ] ;
       [ <lnofr: NOFOCUSRECT> ] ;
@@ -101,8 +102,9 @@
             <{gotfocus}>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <(field)>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.rtl.>, <.disabled.>, ;
-            <.threestate.>, <.left.>, IIF( #<drawby> == "OOHGDRAW", .T., ;
-            IIF( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.lnofr.> )
+            <.threestate.>, <.textatleft.>, iif( #<drawby> == "OOHGDRAW", .T., ;
+            iif( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.lnofr.>, ;
+            iif( #<fill> == "FILLRECT", .T., iif( #<fill> == "NOFILLRECT", .F., NIL ) ) )
 
 #xtranslate CHECKBOX [ <x> ] FOCUSRECT ;
    => ;

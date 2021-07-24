@@ -615,6 +615,8 @@ HRESULT          ProcDrawThemeTextEx( HTHEME, HDC, int, int, LPCWSTR, int, DWORD
 HRESULT          ProcGetThemeBackgroundContentRect( HTHEME, HDC, int, int, LPCRECT, LPRECT );
 HRESULT          ProcGetThemeMargins( HTHEME, HDC, int, int, int, LPCRECT, MARGINS * );
 HRESULT          ProcGetThemePartSize( HTHEME, HDC, int, int, LPCRECT, THEMESIZE, SIZE * );
+HRESULT          ProcGetThemeTextExtent( HTHEME, HDC, int, int, LPCWSTR, int, DWORD, LPCRECT, LPRECT );
+HRESULT          ProcGetThemeTextMetrics( HTHEME, HDC, int, int, TEXTMETRICW * );
 BOOL             ProcIsThemeActive( void );
 BOOL             ProcIsThemeBackgroundPartiallyTransparent( HTHEME, int, int );
 HTHEME           ProcOpenThemeData( HWND, LPCWSTR );
