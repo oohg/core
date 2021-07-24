@@ -12,10 +12,52 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-23 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_checkbox.ch
+    + FILLRECT and NOFILLRECT clauses.
+    * A tag was changed to improve readability.
+  * core\include\oohg.h
+    + Declarations of functions ProcGetThemeTextExtent and
+      ProcGetThemeTextMetrics.
+  * core\source\c_winapimisc.c
+    + ProcGetThemeTextExtent and ProcGetThemeTextMetrics functions
+      and their related support code.
+    * Some typedefs were improved.
+  * core\source\h_checkbox.prg
+    + Data lFillRect to TCheckBox class.
+    + Method lFocusRect to TCheckBox class.
+    + Parameter lFillRect to method Define of TCheckBox class.
+    - Unneeded ELSEIF sentence.
+    + Support for new clauses.
+    * Controls with the OOHGDRAW clause are now painted more
+      similar to the way Windows does.
+  ; This changes add new options to display the control's text.
+    See https://github.com/oohg/samples/tree/master/checkbox
+
+2021-07-23 20:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\BuildApp_hbmk2.bat
+  * core\compile_MINGW.BAT
+    + Support for 'strip' C compiler switch to reduce exe size.
+    ; It's enable by default. To disable use /NOSTRIP or -NOSTRIP.
+
+2021-07-20 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_button.ch
+    + Support for FOCUSRECT clause: it's just ignored.
+
+2021-07-20 20:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    - Method lFocusRect from TOBrowseByCell class.
+    + Default value for lFocusRect parameter at method
+      Define3 of TOBrowseByCell class.
+
+2021-07-20 20:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    + Method lFocusRect.
+
 2021-07-20 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     + Method lNoFocusRect to TGrid class.
-    - DATA lFocusRect of TGridByCell class.
+    - Data lFocusRect of TGridByCell class.
     + Default value for lFocusRect parameter at method
       Events_Notify of TGridByCell class.
 
@@ -179,7 +221,7 @@
     ; This forces the control to relay its WM_MOUSEMOVE messages
       to its parent and to ignore its WM_MOUSELEAVE messages.
   * core\source\h_frame.prg
-    + DATA lPostParent.
+    + Data lPostParent.
     + Support for new clause.
   * core\include\oohg.h
   * core\source\c_controlmisc.c
@@ -209,16 +251,16 @@
     + Support for new clauses.
     * Calls to _OOHG_LastFrame were replaced by _OOHG_LastFrameType.
     + Function _EndGroupBox().
-    + DATA lCtrlCoords.
-    + DATA aCtrlNames.
-    + DATA lGroupBox.
-    + DATA lNoAutoExclude.
-    + METHOD AddExcludeArea.
-    + METHOD DelExcludeArea.
+    + Data lCtrlCoords.
+    + Data aCtrlNames.
+    + Data lGroupBox.
+    + Data lNoAutoExclude.
+    + Method AddExcludeArea.
+    + Method DelExcludeArea.
   * core\source\h_controlmisc.prg
     * Some format.
-    + DATA oGroupBox.
-    + METHOD ExcludeGroupBoxArea to class TControl.
+    + Data oGroupBox.
+    + Method ExcludeGroupBoxArea to class TControl.
     * A call to method ExcludeGroupBoxArea was added in method
       Register of TControl class to register the area occupied by
       the control within a GROUPBOX.
@@ -261,7 +303,7 @@
       relative to the container form. Defaults to OF CONTROL.
     + Clause ON MOUSELEAVE.
   * core\source\h_image.prg
-    + DATA lCtrlCoords to TPicture class.
+    + Data lCtrlCoords to TPicture class.
     + Support for new clause and sub-clauses.
     ! ON RCLICK block is wrongly assigned to ON DBLCLICK event.
     ! ON DBLCLICK block is wrongly assigned to ON MDBLCLICK event.
@@ -275,7 +317,7 @@
   * core\include\i_picture.ch
     + Sub-clauses OF CONTROL and OF FORM to clause EXCLUDEAREA.
   * core\source\h_picture.prg
-    + DATA lCtrlCoords to TPicture class.
+    + Data lCtrlCoords to TPicture class.
     + Support for new sub-clauses.
     ; This allows to indicate the coordinates of the excluded
       areas using coordinates relative to the picture control or
@@ -338,12 +380,12 @@
 
 2021-07-02 16:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
-    + DATA aGroupBoxesStack.
-    + METHOD ActiveGroupBoxGet.
-    + METHOD ActiveGroupBoxPop.
-    + METHOD ActiveGroupBoxPush.
+    + Data aGroupBoxesStack.
+    + Method ActiveGroupBoxGet.
+    + Method ActiveGroupBoxPop.
+    + Method ActiveGroupBoxPush.
       ; They will handle a stack for groupbox controls.
-    * METHOD ActiveFramePop now returns .T. if a frame was
+    * Method ActiveFramePop now returns .T. if a frame was
       removed or .F. if not.
     * Method ActiveFramePush now returns the just addeed frame.
     + Method Release: added support for releasing the new stack.
@@ -365,8 +407,8 @@
   * core\source\h_browse.prg
   * core\source\h_xbrowse.prg
   * core\source\h_grid.prg
-    + DATA aHeaderBkClrs.
-    + METHOD HeaderSetBkColors.
+    + Data aHeaderBkClrs.
+    + Method HeaderSetBkColors.
     ; Added support for headers backcolors.
     ; Note that setting a header backcolor disables grid's
       visual styles and makes the control look old styled.
@@ -5056,7 +5098,8 @@ C:\GitOOHG\core\compile_MINGW.BAT
       in case no MAIN window is defined to avoid and RTE.
     + Some validations to avoid an RTE if ::oWinReport is not
       defined at method EndDoc.
-    ! Missing CLASS clause at TPDFPRINT's MaxCol and MaxRow methods.
+    ! Missing CLASS clause at methods MaxCol and MaxRow of
+      TPdfPrint class.
 
 2019-03-20 21:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\ChangeLog_006.txt
