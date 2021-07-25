@@ -894,11 +894,9 @@ METHOD Events_Command( wParam  ) CLASS TRadioItem
    RETURN ::Super:Events_Command( wParam  )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TRadioItem
+METHOD Events_Color( wParam, nDefColor ) CLASS TRadioItem
 
-   HB_SYMBOL_UNUSED( lDrawBkGrnd )
-
-   RETURN ::Super:Events_Color( wParam, nDefColor, .T. )
+   RETURN ::Super:Events_Color( wParam, nDefColor )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Notify( wParam, lParam ) CLASS TRadioItem
