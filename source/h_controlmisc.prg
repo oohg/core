@@ -2181,15 +2181,13 @@ HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TControl -> hBrush */
+HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam, nDefColor ) CLASS TControl -> hBrush */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
    HDC hdc = HDCparam( 1 );
    HBRUSH OldBrush, NewBrush;
    long lBackColor;
-   RECT rc;
-   BOOL lDrawBkGrnd = ( HB_ISLOG( 3 ) ? hb_parl( 3 ) : FALSE );
    HWND hWnd = 0;
    PHB_ITEM pBkGrnd;
    POCTRL oBkGrnd;
