@@ -69,6 +69,8 @@
       [ WIDTH <width> ] ;
       [ HEIGHT <height> ] ;
       [ <autosize: AUTOSIZE> ] ;
+      [ <autowidth: AUTOWIDTH> ] ;
+      [ <autoheight: AUTOHEIGHT> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
@@ -107,4 +109,4 @@
             <.italic.>, <.underline.>, <.strikeout.>, <.autosize.>, ;
             <.rightalign.>, <.centeralign.>, <.rtl.>, <.nowordwrap.>, ;
             <.noprefix.>, <inputmask>, <.disabled.>, <.vcntralign.>, <{dblclk}>, ;
-            <cursor>, <{onmousemove}>, <{onmouseleave}> )
+            <cursor>, <{onmousemove}>, <{onmouseleave}>, <.autowidth.>, <.autoheight.> )

@@ -70,7 +70,8 @@
 CLASS TLabel FROM TControl
 
    DATA Type                      INIT "LABEL" READONLY
-   DATA lAutoSize                 INIT .F.
+   DATA lAutoHeight               INIT .F.
+   DATA lAutoWidth                INIT .F.
    DATA IconWidth                 INIT 0
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 24
@@ -82,9 +83,12 @@ CLASS TLabel FROM TControl
    METHOD Define
    METHOD Value                   SETGET
    METHOD Caption                 SETGET
+   METHOD AutoHeight              SETGET
    METHOD AutoSize                SETGET
+   METHOD AutoWidth               SETGET
    METHOD Align                   SETGET
    METHOD SetFont
+   METHOD lAutoSize               SETGET
    METHOD LeftAlign               BLOCK {| Self | ::Align( SS_LEFT ) }
    METHOD RightAlign              BLOCK {| Self | ::Align( SS_RIGHT ) }
    METHOD CenterAlign             BLOCK {| Self | ::Align( SS_CENTER ) }
@@ -95,7 +99,7 @@ CLASS TLabel FROM TControl
 METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
                lClientEdge, lHScroll, lVScroll, lTransparent, uBackColor, uFontColor, bOnClick, cToolTip, nHelpId, lInvisible, ;
                lItalic, lUnderline, lStrikeout, lAutoSize, lRightAlign, lHorzCenter, lRtl, lNoWordWrap, lNoPrefix, cPicture, ;
-               lDisabled, lVertCenter, bOnDblClk, uCursor, bOnMove, bOnLeave ) CLASS TLabel
+               lDisabled, lVertCenter, bOnDblClk, uCursor, bOnMove, bOnLeave, lAutoWidth, lAutoHeight ) CLASS TLabel
 
    LOCAL nControlHandle, nStyle, nStyleEx
 
@@ -106,7 +110,15 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight,
    ASSIGN ::Transparent VALUE lTransparent TYPE "L" DEFAULT .F.
    ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
    ASSIGN lDisabled     VALUE lDisabled    TYPE "L" DEFAULT .F.
-   ASSIGN ::lAutosize   VALUE lAutoSize    TYPE "L"
+   ASSIGN lAutosize     VALUE lAutoSize    TYPE "L" DEFAULT .F.
+
+   IF lAutosize
+      ::lAutoHeight := .T.
+      ::lAutoWidth := .T.
+   ELSE
+      ASSIGN ::lAutoHeight VALUE lAutoHeight TYPE "L"
+      ASSIGN ::lAutoWidth  VALUE lAutoWidth  TYPE "L"
+   ENDIF
 
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, NIL, lRtl )
 
@@ -131,6 +143,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight,
    nControlhandle := InitLabel( ::ContainerhWnd, "", 0, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ::Value := cCaption
@@ -172,9 +185,16 @@ METHOD Caption( cValue ) CLASS TLabel
    LOCAL nLines
 
    IF ValType( cValue ) $ "CM"
-      IF ::lAutoSize
-         nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ), CRLF )
-         ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
+      IF ::lAutoHeight
+         IF ::lAutoWidth
+            nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ), CRLF )
+            ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
+         ELSE
+            nLines := hb_tokenCount( StrTran( StrTran( cValue, Chr( 13 ), CRLF ), CRLF + Chr( 10 ), CRLF ), CRLF )
+            ::SizePos( NIL, NIL, ::Width, GetTextHeight( NIL, cValue, ::FontHandle ) * nLines )
+         ENDIF
+      ELSEIF ::lAutoWidth
+         ::SizePos( NIL, NIL, GetTextWidth( NIL, cValue, ::FontHandle ) + ::IconWidth, ::Height )
       ENDIF
       SetWindowText( ::hWnd, cValue )
       IF ::Transparent
@@ -188,14 +208,44 @@ METHOD Caption( cValue ) CLASS TLabel
 METHOD SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced ) CLASS Tlabel
 
    ::Super:SetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
-   IF ::lAutosize
-      ::AutoSize( .T. )
+   IF ::lAutoHeight
+      IF ::lAutoWidth
+         ::AutoSize( .T. )
+      ELSE
+         ::AutoHeight( .T. )
+      ENDIF
+   ELSEIF ::lAutoWidth
+      ::AutoWidth( .T. )
    ELSEIF ::Transparent .AND. ::lVisible
-      ::Visible := .F.
-      ::Visible := .T.
+      ::Visible := ::Visible
    ENDIF
 
    RETURN ::FontHandle
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AutoHeight( lValue ) CLASS TLabel
+
+   LOCAL cCaption
+
+   IF HB_ISLOGICAL( lValue )
+      ::lAutoHeight := lValue
+      IF lValue
+         cCaption := GetWindowText( ::hWnd )
+         ::SizePos( NIL, NIL, ::Width, GetTextHeight( NIL, cCaption, ::FontHandle ) )
+      ENDIF
+   ENDIF
+
+   RETURN ::lAutoHeight
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD lAutoSize( lValue ) CLASS TLabel
+
+   IF HB_ISLOGICAL( lValue )
+      ::lAutoHeight := lValue
+      ::lAutoWidth := lValue
+   ENDIF
+
+   RETURN ( ::lAutoHeight .AND. ::lAutoWidth )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AutoSize( lValue ) CLASS TLabel
@@ -203,7 +253,8 @@ METHOD AutoSize( lValue ) CLASS TLabel
    LOCAL cCaption
 
    IF HB_ISLOGICAL( lValue )
-      ::lAutoSize := lValue
+      ::lAutoHeight := lValue
+      ::lAutoWidth := lValue
       IF lValue
          cCaption := GetWindowText( ::hWnd )
          ::SizePos( NIL, NIL, GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, GetTextHeight( NIL, cCaption, ::FontHandle ) )
@@ -211,6 +262,21 @@ METHOD AutoSize( lValue ) CLASS TLabel
    ENDIF
 
    RETURN ::lAutoSize
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD AutoWidth( lValue ) CLASS TLabel
+
+   LOCAL cCaption
+
+   IF HB_ISLOGICAL( lValue )
+      ::lAutoWidth := lValue
+      IF lValue
+         cCaption := GetWindowText( ::hWnd )
+         ::SizePos( NIL, NIL, GetTextWidth( NIL, cCaption, ::FontHandle ) + ::IconWidth, ::Height )
+      ENDIF
+   ENDIF
+
+   RETURN ::lAutoWidth
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Align( nAlign ) CLASS TLabel
