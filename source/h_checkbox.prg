@@ -81,7 +81,6 @@ CLASS TCheckBox FROM TLabel
    DATA Type                      INIT "CHECKBOX" READONLY
 
    METHOD Define
-   METHOD Events_Color
    METHOD Events_Command
    METHOD Events_Notify
    METHOD lFocusRect              BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lNoFocusRect := ! lValue, ! ::lNoFocusRect ) }
@@ -136,7 +135,6 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
    nControlhandle := InitCheckBox( ::ContainerhWnd, cCaption, 0, ::ContainerCol, ::ContainerRow, NIL, NIL, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
    ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
-   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    IF _OOHG_LastFrameType() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := _OOHG_ActiveFrame
@@ -144,6 +142,9 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontNam
          ::TabHandle := ::Container:Container:hWnd
       ENDIF
    ENDIF
+
+   /* Must come after setting ::TabHandle to avoid a premature call to ::Events_Color */
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ::Caption := cCaption
 
@@ -179,13 +180,6 @@ METHOD Value( uValue ) CLASS TCheckBox
    ENDIF
 
    RETURN uValue
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Events_Color( wParam, nDefColor, lDrawBkGrnd ) CLASS TCheckBox
-
-   HB_SYMBOL_UNUSED( lDrawBkGrnd )
-
-   RETURN ::Super:Events_Color( wParam, nDefColor, .T. )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TCheckBox
