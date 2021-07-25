@@ -2555,8 +2555,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
          hb_vmPushLong( COLOR_3DFACE );
-         hb_vmPushNil();
-         hb_vmSend( 3 );
+         hb_vmSend( 2 );
          break;
 
       case WM_CTLCOLOREDIT:
@@ -2564,8 +2563,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
          _OOHG_Send( _OOHG_GetExistingObject( (HWND) lParam, FALSE, TRUE ), s_Events_Color );
          hb_vmPushNumInt( wParam );
          hb_vmPushLong( COLOR_WINDOW );
-         hb_vmPushNil();
-         hb_vmSend( 3 );
+         hb_vmSend( 2 );
          break;
 
       case WM_NOTIFY:
