@@ -1471,7 +1471,7 @@
   * source\h_grid.prg
   * source\h_richeditbox.prg
   * source\h_windows.prg
-    * Added _OOHG_DetermineColorReturn() for reduce common code.
+    * Added _OOHG_DetermineColorReturn() to reduce common code.
   * source\c_controlmisc.c
   * source\h_windows.prg
     * Moved TOOLTIP's color functions to C level.
