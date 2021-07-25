@@ -132,7 +132,6 @@ METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption,
    nControlHandle := InitFrame( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, cCaption, lOpaque, ::lRtl, nStyle )
 
    ::Register( nControlHandle, cControlName, NIL, NIL, cToolTip )
-   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    IF _OOHG_LastFrameType() == "TABPAGE" .AND. ::IsVisualStyled
       oTab := _OOHG_ActiveFrame
@@ -140,6 +139,9 @@ METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption,
          ::TabHandle := ::Container:Container:hWnd
       ENDIF
    ENDIF
+
+   /* Must come after setting ::TabHandle to avoid a premature call to ::Events_Color */
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ::Caption := cCaption
 
