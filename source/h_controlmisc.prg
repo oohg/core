@@ -2230,7 +2230,7 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
    }
    if( bPaint )
    {
-      if( oSelf-> BrushHandle )
+      if( oSelf->BrushHandle )
       {
          SetBkMode( hdc, TRANSPARENT );
          pt.x = 0; pt.y = 0;
@@ -2266,16 +2266,6 @@ HB_FUNC_STATIC( TCONTROL_EVENTS_COLOR )          /* METHOD Events_Color( wParam,
       oSelf->lOldBackColor = -1;
       OldBrush = (HBRUSH) SelectObject( hdc, oSelf->BrushHandle );
       DeleteObject( OldBrush );
-
-      /* FRAME, CHECKBOX, BUTTON, RADIOITEM */
-      if( lDrawBkGrnd )
-      {
-         if( _UxTheme_Init() )
-         {
-            GetClientRect( oSelf->hWnd, &rc );
-            ProcDrawThemeParentBackground( oSelf->hWnd, hdc, &rc );
-         }
-      }
    }
    else
    {
