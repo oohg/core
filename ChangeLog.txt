@@ -12,6 +12,50 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-25 20:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\i_label.ch
+    + AUTOWIDTH and AUTOHEIGHT clauses.
+  * core\source\h_label.prg
+    - Data lAutoSize.
+    + Datas lAutoHeight and lAutoWidth.
+    + Methods AutoHeight, AutoWidth and lAutoSize.
+    + Support for new clauses.
+
+2021-07-25 11:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    - Unneeded declarations.
+
+2021-07-25 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    - Unneeded NIL parameter in calls to Event_Color methods.
+
+2021-07-25 11:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    - Unneeded code from Events_Color method.
+
+2021-07-25 11:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_radio.prg
+    - Third parameter of Events_Color method.
+
+2021-07-25 11:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_frame.prg
+    ! At Define method the call to SetFont was moved after setting
+      the TabHande to avoid a premature call to Events_Color that
+      may end with the background painted with the wrong color.
+
+2021-07-25 11:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checkbox.prg
+    ! At Define method the call to SetFont was moved after setting
+      the TabHande to avoid a premature call to Events_Color that
+      may end with the background painted with the wrong color.
+   - Method Events_Color.
+
+2021-07-25 11:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    ! At Define method the call to SetFont was moved after setting
+      the TabHande to avoid a premature call to Events_Color that
+      may end with the background painted with the wrong color.
+
 2021-07-23 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_checkbox.ch
     + FILLRECT and NOFILLRECT clauses.
