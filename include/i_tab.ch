@@ -64,9 +64,9 @@
 #command DEFINE TAB <name> ;
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
-      AT <row>, <col> ;
-      WIDTH <width> ;
-      HEIGHT <height> ;
+      [ AT <row>, <col> ] ;
+      [ WIDTH <width> ] ;
+      [ HEIGHT <height> ] ;
       [ VALUE <value> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;

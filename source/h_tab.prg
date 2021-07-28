@@ -358,7 +358,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    IF ! ValType( cCaption ) $ 'CM'
       cCaption := ''
    ELSE
-      IF ! Empty( cImage ) .AND. IsXPThemeActive() .AND. At( '&', cCaption ) != 0
+      IF ! Empty( cImage ) .AND. _OOHG_UsesVisualStyle() .AND. At( '&', cCaption ) != 0
          cCaption := Space( 3 ) + cCaption
       ENDIF
    ENDIF
@@ -405,8 +405,6 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
       ENDIF
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( cCaption, nPos + 1, 1 ) ACTION ::DoEvent( bMnemonic, "CHANGE" )
    ENDIF
-
-   ::Refresh()
 
    oPage:nFixedHeightUsed := ::TabsAreaHeight()
 
@@ -785,7 +783,6 @@ CLASS TMultiPage FROM TControlGroup
    METHOD HidePage
    METHOD ItemCount               BLOCK { |Self| Len( ::aPages ) }
    METHOD Picture
-   METHOD ProcessInitProcedure
    METHOD RealPosition
    METHOD Refresh
    METHOD RefreshData
@@ -838,16 +835,6 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uFontColo
    // ::oContainerBase:OnChange := { || ::Refresh(), ::DoChange() }
 
    RETURN Self
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ProcessInitProcedure() CLASS TMultiPage
-
-   IF HB_ISBLOCK( ::OnInit )
-      ::DoEvent( ::OnInit, "CONTROL_INIT" )
-   ENDIF
-   ::Refresh()   // This ugly hack fixes the incomplete drawing of the checklist controls placed at the first tabpage
-
-   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uColor ) CLASS TMultiPage
@@ -930,7 +917,7 @@ METHOD Refresh() CLASS TMultiPage
    AEval( ::aPages, { |p,i| p:Position := i, p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= Len( ::aPages )
       ::aPages[ nPage ]:Show()
-      ::aPages[ nPage ]:Events_Size()
+      ::aPages[ nPage ]:Refresh()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
       ENDIF
@@ -987,7 +974,7 @@ METHOD Value( nValue ) CLASS TMultiPage
    ENDIF
    nPos := ::ContainerValue
    nCount := 0
-   nValue := AScan( ::aPages, { |o| iif( o:lHidden,, nCount ++ ), ( nCount == nPos ) } )
+   nValue := AScan( ::aPages, { |o| iif( o:lHidden, NIL, nCount ++ ), ( nCount == nPos ) } )
 
    RETURN nValue
 
@@ -1070,7 +1057,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    IF ! ValType( cCaption ) $ 'CM'
       cCaption := ''
    ELSE
-      IF ! Empty( cImage ) .AND. IsXPThemeActive() .AND. At( '&', cCaption ) != 0
+      IF ! Empty( cImage ) .AND. _OOHG_UsesVisualStyle() .AND. At( '&', cCaption ) != 0
          cCaption := Space( 3 ) + cCaption
       ENDIF
    ENDIF
@@ -1115,8 +1102,6 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
       ENDIF
       DEFINE HOTKEY 0 PARENT ( ::Parent ) KEY "ALT+" + SubStr( cCaption, nPos + 1, 1 ) ACTION ::DoEvent( bMnemonic, "CHANGE" )
    ENDIF
-
-   ::Refresh()
 
    RETURN oPage
 
@@ -1355,7 +1340,7 @@ METHOD OnRClick( bCode ) CLASS TMultiPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SaveData() CLASS TMultiPage
 
-   _OOHG_EVAL( ::Block, ::Value )
+   _OOHG_Eval( ::Block, ::Value )
    AEval( ::aPages, { |o| o:SaveData() } )
 
    RETURN NIL
@@ -1369,6 +1354,8 @@ CLASS TTabRaw FROM TControl
    DATA DefaultToolTip            INIT ""
    DATA ImageListColor            INIT CLR_DEFAULT
    DATA ImageListFlags            INIT LR_LOADTRANSPARENT + LR_DEFAULTCOLOR + LR_LOADMAP3DCOLORS
+   DATA nHeight                   INIT 120
+   DATA nWidth                    INIT 120
    DATA SetImageListCommand       INIT TCM_SETIMAGELIST
    DATA Type                      INIT "TAB" READONLY
 
@@ -1399,7 +1386,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidht, nHeight, aCaptions
                aToolTips, nItemW, nItemH, nMinW, nHPad, nVPad, uBackColor, lIcoLeft, lLblLeft, ;
                lRightJus, lScrollOp, bClick ) CLASS TTabRaw
 
-   LOCAL cCaption, cImage, i, nStyle, cControlHandle, bToolTip, uToolTip
+   LOCAL cCaption, cImage, i, nStyle, nControlHandle, bToolTip, uToolTip
 
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, NIL, NIL, NIL, lRtl )
 
@@ -1481,28 +1468,29 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidht, nHeight, aCaptions
              iif( lVertical, TCS_VERTICAL,       0 )
 /*
 TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper right unused rectangle.
+TODO: See TCS_EX_FLATSEPARATORS, TCS_EX_REGISTERDROP, TCM_GETEXTENDEDSTYLE and TCM_SETEXTENDEDSTYLE.
+TODO: See TCM_DESELECTALL message.
+TODO: See styles TCS_FOCUSNEVER, TCS_FOCUSONBUTTONDOWN, TCS_MULTISELECT, TCS_OWNERDRAWFIXED, TCS_TOOLTIPS
+A possible solution for painting problemas:Intercept WM_ERASEBKGND and use ExcludeClipRect() with the rectangle of inner controls.
 */
 
-   cControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, nValue, nStyle, ::lRtl )
+   nControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, nValue, nStyle, ::lRtl )
 
    IF ValType( cToolTip ) $ "CM" .OR. HB_ISBLOCK( cToolTip )
       ::DefaultToolTip := cToolTip
    ENDIF
    bToolTip := { |oCtrl| oCtrl:TabToolTip( TabCtrl_HitTest( oCtrl:hWnd, GetCursorRow() - GetWindowRow( oCtrl:hWnd ), GetCursorCol() - GetWindowCol( oCtrl:hWnd ) ) ) }
 
-   ::Register( cControlHandle, cControlName, NIL, NIL, bToolTip )
+   ::Register( nControlHandle, cControlName, NIL, NIL, bToolTip )
    ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    // Since we still can't set the TabPage's backcolor lets assume it's the system's default
    IF ( ! ::IsVisualStyled .OR. lButtons .OR. lVertical )
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_BTNFACE )
-   ELSEIF ISXPTHEMEACTIVE()
-      // XP uses a color gradient to paint the tab so this is useless
-      ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT RGB( 252, 252, 254 )
    ELSE
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
    ENDIF
-   ::BackColor := uBackColor
+   _oohg_calldump( ::BackColor := uBackColor )
 
    ::MinTabWidth( nMinW )       // win10 returns 42
    IF nHPad >= 0 .AND. nVPad >= 0
@@ -1746,7 +1734,6 @@ METHOD Events_Size() CLASS TTabPage
 
    oTab := ::Container
    ::SizePos( NIL, NIL, oTab:Width, oTab:Height )
-   ::Parent:Redraw()
 
    RETURN NIL
 
@@ -1912,7 +1899,7 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITTABCONTROL )          /* FUNCTION InitMonthCal( hWnd, hMenu, nCol, nRow, nWidth, nHeight, aItems, nValue, nStyle, lRtl ) -> hWnd */
+HB_FUNC( INITTABCONTROL )          /* FUNCTION InitTabControl( hWnd, hMenu, nCol, nRow, nWidth, nHeight, aItems, nValue, nStyle, lRtl ) -> hWnd */
 {
    HWND hCtrl;
    TC_ITEM tie;
