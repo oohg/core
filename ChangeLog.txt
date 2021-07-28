@@ -12,8 +12,27 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-07-28 15:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Some format.
+    * Repainting method was changed at method oBkGrnd of TControl class.
+
+2021-07-28 15:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tab.ch
+    * Clauses AT, WIDTH and HEIGHT are now optional.
+  * core\source\h_tab.prg
+    + Support for optional AT, WIDTH and HEIGHT clauses.
+    * IsXPThemeActive calls were replaced with _OOHG_UsesVisualStyle.
+    - Remove ::Refresh() calls from method AddPage of TTabDirect class.
+    - Method InitProcedure of TMultiPage class.
+    * Method BackColor of TMultiPage class nows calls Refresh instead
+      of Events_Size for force the repaint of all the page's controls.
+    + Datas nHeight and nWidth to TTabRaw class.
+    - A call to ::Parent:Redraw() was removed from Events_Size method
+      of TTabPage class because it was forcibly refreshing the form.
+
 2021-07-25 20:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\i_label.ch
+  * core\include\i_label.ch
     + AUTOWIDTH and AUTOHEIGHT clauses.
   * core\source\h_label.prg
     - Data lAutoSize.
