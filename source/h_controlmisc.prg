@@ -1349,13 +1349,11 @@ METHOD oBkGrnd( oCtrl ) CLASS TControl
       IF oCtrl == NIL
          ::BrushHandle := NIL
          ::BackgroundObject := NIL
-         ::Redraw()
+         ::Visible := ::Visible
       ELSEIF HB_ISOBJECT( oCtrl )
          ::BrushHandle := NIL
          ::BackgroundObject := oCtrl
-         ::Visible := .F.
-         ::Visible := .T.
-//         ::Redraw()
+         ::Visible := ::Visible
       ENDIF
    ENDIF
 
@@ -2105,7 +2103,7 @@ HBRUSH GetTabBrush( HWND );
 HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl */
 {
    HWND hWnd      = HWNDparam( 1 );
-   UINT message   = (UINT)   hb_parni( 2 );
+   UINT message   = (UINT) hb_parni( 2 );
    WPARAM wParam  = WPARAMparam( 3 );
    LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
