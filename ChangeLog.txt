@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-09-02 11:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    - Translate of BUTTON with DEFAULT clause.
+
 2021-07-28 15:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_controlmisc.prg
     * Some format.
