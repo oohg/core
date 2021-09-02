@@ -661,10 +661,6 @@ TODO: implement this clauses:
    => ;
       GetDefaultFontName()
 
-#xtranslate BUTTON [ <x> ] DEFAULT ;
-   => ;
-      BUTTON [ <x> ]
-
 #xtranslate SET TOOLTIP TEXTCOLOR TO <color> OF <form> ;
    => ;
       SET TOOLTIP TEXTCOLOR TO <color>
