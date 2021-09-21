@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-09-21 17:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_xbrowse.ch
+    - Property ENABLEALTA (because it's the default value).
+
 2021-09-02 11:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_hmg_compat.ch
     - Translate of BUTTON with DEFAULT clause.
