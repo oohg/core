@@ -158,7 +158,7 @@
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ <extdbl: EXTDBLCLICK> ] ;
       [ <silent: SILENT> ] ;
-      [ <alta: ENABLEALTA, DISABLEALTA> ] ;
+      [ <disalta: DISABLEALTA> ] ;
       [ <noshow: NOSHOWALWAYS> ] ;
       [ <dummy: ONRCLICK, ON RCLICK> <rclick> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
@@ -203,7 +203,7 @@
             iif( upper( #<edtctrls> ) == "FIXEDCONTROLS", .T., ;
             iif( upper( #<edtctrls> ) == "DYNAMICCONTROLS", .F., NIL ) ), ;
             <.noshowempty.>, <.upcol.>, <{bheadrclick}>, <.nomodal.>, ;
-            <.extdbl.>, <.silent.>, ! Upper( #<alta> ) == "DISABLEALTA", ;
+            <.extdbl.>, <.silent.>, ! <.disalta.>, ;
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
