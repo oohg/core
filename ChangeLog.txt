@@ -12,6 +12,10 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2021-11-05 08:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.ch
+    ! App shows undesired trace message at tab's define method.
+
 2021-09-21 17:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_xbrowse.ch
     - Property ENABLEALTA (because it's the default value).
