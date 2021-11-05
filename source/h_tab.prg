@@ -1490,7 +1490,6 @@ A possible solution for painting problemas:Intercept WM_ERASEBKGND and use Exclu
    ELSE
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
    ENDIF
-   _oohg_calldump( ::BackColor := uBackColor )
 
    ::MinTabWidth( nMinW )       // win10 returns 42
    IF nHPad >= 0 .AND. nVPad >= 0
