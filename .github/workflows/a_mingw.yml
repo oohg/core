@@ -1,0 +1,29 @@
+#
+#https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.3.0/threads-posix/dwarf/
+#
+
+name: mingw_0703 save as attachment
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Test'
+        default: 'test'
+        required: true
+
+jobs:
+
+  Build:
+
+    runs-on: windows-latest
+    
+    steps:
+
+    - run: |
+        (new-object System.Net.WebClient).DownloadFile('http://www.jpatecnologia.com.br/arquivos/mingw_0703.zip', 'c:\temp\mingw_0703.7z')
+
+    - uses: actions/upload-artifact@v2.2.4
+      with:
+         name: mingw_0703
+         path: c:\temp\mingw_0703.7z
