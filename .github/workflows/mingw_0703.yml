@@ -17,13 +17,29 @@ jobs:
   Build:
 
     runs-on: windows-latest
-    
+
     steps:
 
-    - run: |
+    - name: a_download
+      run: |
         (new-object System.Net.WebClient).DownloadFile('http://www.jpatecnologia.com.br/arquivos/mingw_0703.zip', 'c:\temp\mingw_0703.7z')
 
-    - uses: actions/upload-artifact@v2.2.4
+    - name: a_uploadmingw
+      uses: actions/upload-artifact@v2.2.4
       with:
          name: mingw_0703
          path: c:\temp\mingw_0703.7z
+
+#    - name: b_downloadartifact
+#      uses: dawidd6/action-download-artifact@v2
+#      with:
+#         workflow: mingw_0703.yml
+#         workflow_conclusion: success
+#         name: mingw_0703
+#         path: c:\temp
+
+#    - name: b_uploadartifact
+#      uses: actions/upload-artifact@v2.2.4
+#      with:
+#         name: mingw_0703
+#         path: c:\temp\mingw_0703.7z
