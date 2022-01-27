@@ -1317,6 +1317,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -1380,6 +1381,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowse
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -3960,9 +3962,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TXBrowseByCell
 
    ElseIf nMsg == WM_LBUTTONDBLCLK
       _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
+      _OOHG_ThisForm    := ::Parent
+      _OOHG_ThisType    := 'C'
       _OOHG_ThisControl := Self
+      _OOHG_ThisObject  := Self
 
       // Identify item & subitem hitted
       aPos := Get_XY_LPARAM( lParam )
@@ -4125,6 +4128,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -4189,6 +4193,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TXBrowseByCell
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -4680,3 +4685,4 @@ METHOD CurrentCol( nValue ) CLASS TXBrowseByCell
    EndIf
 
    Return ::nColPos
+

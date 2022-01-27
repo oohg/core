@@ -1991,6 +1991,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
       _OOHG_ThisForm := ::Parent
       _OOHG_ThisType := 'C'
       _OOHG_ThisControl := Self
+      _OOHG_ThisObject  := Self
 
       // Identify item & subitem hitted
       aPos := Get_XY_LPARAM( lParam )
@@ -4257,3 +4258,4 @@ METHOD Right( lAppend ) CLASS TOBrowseByCell
    ENDIF
 
    RETURN lRet
+

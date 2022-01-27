@@ -2927,9 +2927,10 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
    If nMsg == WM_LBUTTONDBLCLK
       If  ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          _PushEventInfo()
-         _OOHG_ThisForm := ::Parent
-         _OOHG_ThisType := 'C'
+         _OOHG_ThisForm    := ::Parent
+         _OOHG_ThisType    := 'C'
          _OOHG_ThisControl := Self
+         _OOHG_ThisObject  := Self
 
          // Identify item & subitem hitted
          aPos := Get_XY_LPARAM( lParam )
@@ -3490,21 +3491,23 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       If HB_IsBlock( ::OnDispInfo )
 
          _PushEventInfo()
-         _OOHG_ThisForm := ::Parent
-         _OOHG_ThisType := 'C'
+         _OOHG_ThisForm    := ::Parent
+         _OOHG_ThisType    := 'C'
          _OOHG_ThisControl := Self
-         _ThisQueryTemp  := GetGridDispInfoIndex( lParam )
-         _OOHG_ThisQueryRowIndex  := _ThisQueryTemp[ 1 ]
-         _OOHG_ThisQueryColIndex  := _ThisQueryTemp[ 2 ]
+         _OOHG_ThisObject  := Self
+         // Get data and copy to the grid
+         _ThisQueryTemp          := GetGridDispInfoIndex( lParam )
+         _OOHG_ThisQueryRowIndex := _ThisQueryTemp[ 1 ]
+         _OOHG_ThisQueryColIndex := _ThisQueryTemp[ 2 ]
          ::DoEvent( ::OnDispInfo, "DISPINFO" )
          If HB_IsNumeric( _OOHG_ThisQueryData )
             SetGridQueryImage ( lParam, _OOHG_ThisQueryData )
          ElseIf ValType( _OOHG_ThisQueryData ) $ "CM"
             SetGridQueryData ( lParam, _OOHG_ThisQueryData )
          EndIf
-         _OOHG_ThisQueryRowIndex  := 0
-         _OOHG_ThisQueryColIndex  := 0
-         _OOHG_ThisQueryData := ""
+         _OOHG_ThisQueryRowIndex := 0
+         _OOHG_ThisQueryColIndex := 0
+         _OOHG_ThisQueryData     := ""
          _PopEventInfo()
       EndIf
 
@@ -3563,6 +3566,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -3622,6 +3626,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -5762,9 +5767,10 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
    If nMsg == WM_LBUTTONDBLCLK
       If ! ::lCheckBoxes .OR. ListView_HitOnCheckBox( hWnd, GetCursorRow() - GetWindowRow( hWnd ), GetCursorCol() - GetWindowCol( hWnd ) ) <= 0
          _PushEventInfo()
-         _OOHG_ThisForm := ::Parent
-         _OOHG_ThisType := 'C'
+         _OOHG_ThisForm    := ::Parent
+         _OOHG_ThisType    := 'C'
          _OOHG_ThisControl := Self
+         _OOHG_ThisObject  := Self
 
          // Identify item & subitem hitted
          aPos := Get_XY_LPARAM( lParam )
@@ -6106,6 +6112,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -6165,6 +6172,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
                   _OOHG_ThisForm           := ::Parent
                   _OOHG_ThisType           := 'C'
                   _OOHG_ThisControl        := Self
+                  _OOHG_ThisObject         := Self
                   _OOHG_ThisItemRowIndex   := aCellData[ 1 ]
                   _OOHG_ThisItemColIndex   := aCellData[ 2 ]
                   _OOHG_ThisItemCellRow    := aCellData[ 3 ]
@@ -9902,3 +9910,4 @@ HB_FUNC( SETGRIDQUERYIMAGE )
 }
 
 #pragma ENDDUMP
+

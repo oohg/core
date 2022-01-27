@@ -2910,3 +2910,4 @@ METHOD AddControl( oCtrl, Row, Col ) CLASS TControlGroup
    oCtrl:Visible := oCtrl:Visible
 
    RETURN NIL
+
