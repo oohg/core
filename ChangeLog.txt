@@ -12,6 +12,34 @@
  *   '-' Removed: ...           ';' Comment
  */
 
+2022-01-27 14:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - WM_LBUTTONDBLCLK event handler of TOBrowse class.
+  * core\source\h_controlmisc.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - Method DoEvent of TControl class.
+  * core\source\h_grid.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - Function TGrid_AddColumnColor.
+      - WM_LBUTTONDBLCLK event handler of TGrid class.
+      - LVN_GETDISPINFO event handler of TGrid class.
+      - NM_CLICK event handler of TGrid class.
+      - NM_RCLICK event handler of TGrid class.
+      - Function TGrid_CreateColorArray.
+      - Function TGrid_FillColorArea.
+      - WM_LBUTTONDBLCLK event handler of TGridByCell class.
+      - NM_CLICK event handler of TGridByCell class.
+      - NM_RCLICK event handler of TGridByCell class.
+  * core\source\h_xbrowse.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - NM_CLICK event handler of TXBrowse class.
+      - NM_RCLICK event handler of TXBrowse class.
+      - WM_LBUTTONDBLCLK event handler of TXBrowseByCell class.
+      - NM_CLICK event handler of TXBrowseByCell class.
+      - NM_RCLICK event handler of TXBrowseByCell class.
+   #401
+   
 2021-11-05 08:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.ch
     ! App shows undesired trace message at tab's define method.
@@ -5201,3 +5229,4 @@ C:\GitOOHG\core\compile_MINGW.BAT
   + core\ChangeLog_006.txt
   * core\ChangeLog.txt
     * Renamed to ChangeLog_006.txt and started a new one.
+
