@@ -266,7 +266,7 @@ FUNCTION _SetToolTipAutoPopTime( nMilliSec )
    RETURN lOldAutoPopTime
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _SetToolTipReShowTime( nMilliSec )
+FUNCTION _SetToolTipReshowTime( nMilliSec )
 
    LOCAL lOldReShowTime
 
@@ -718,7 +718,7 @@ HB_FUNC( SETAUTOPOPTIME )          /* FUNCTION SetAutoPopTime( hWnd, nDuration )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( SETRESHOWTIME )          /* FUNCTION SetShowTime( hWnd, nDuration ) -> NIL */
+HB_FUNC( SETRESHOWTIME )          /* FUNCTION SetReshowTime( hWnd, nDuration ) -> NIL */
 {
    SendMessage( HWNDparam( 1 ), TTM_SETDELAYTIME, (WPARAM) TTDT_RESHOW, (LPARAM) MAKELONG( hb_parni( 2 ), 0 ) );
 }
