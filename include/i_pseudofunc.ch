@@ -77,9 +77,17 @@
    => ;
       SendMessageStringW( <hWnd>, <nMsg>, <wparam>, <lparam> )
 
-#xtranslate hb_osIsWin10() ;
+#if ( __HARBOUR__ - 0 < 0x030200 )
+#xtranslate hb_osisWin10() ;
    => ;
-      '10' $ WindowsVersion() \[ 1 ]
+      '10' $ WinVersion() \[ 1 ]
+#endif
+
+#if ( __HARBOUR__ - 0 > 0x030200 )
+#xtranslate hb_osisWin10() ;
+   => ;
+      os_IsWin10()
+#endif
 
 #xtranslate IsControlDefined( <ControlName>, <FormName> ) ;
    => ;
