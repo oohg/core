@@ -747,11 +747,9 @@ HB_FUNC( WINVERSION )
    TCHAR * szBuild = NULL;
    TCHAR buffer[5];
    TCHAR * szVersionEx = NULL;
-   HKEY hKey;
-   long lRetVal;
-   DWORD dwBufLen;
-   BYTE * lpData = NULL;
-   DWORD dwUBR;
+#ifdef UNICODE
+   LPSTR pStr;
+#endif
 
    ZeroMemory( &osvi, sizeof( OSVERSIONINFOEX ) );
    osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFOEX );
@@ -760,10 +758,8 @@ HB_FUNC( WINVERSION )
    if( ! bOsVersionInfoEx )
    {
       osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-      if( ! GetVersionEx( ( OSVERSIONINFO * ) &osvi ) )
-      {
-         lstrcat( szVersion, _TEXT( "Unknown Operating System" ) );
-      }
+      if( ! GetVersionEx( (OSVERSIONINFO *) &osvi ) )
+         szVersion = TEXT( "Unknown Operating System" );
    }
 
    if( szVersion == NULL )
@@ -771,228 +767,142 @@ HB_FUNC( WINVERSION )
       switch( osvi.dwPlatformId )
       {
          case VER_PLATFORM_WIN32_NT:
+            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
+               szVersion = TEXT( "Windows Server 2003 family " );
 
-            if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
-               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
-                  lstrcat( szVersion, _TEXT( "Windows Server 2016 " ) );
-               else
-                  lstrcat( szVersion, _TEXT( "Windows 10 " ) );
-            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
-               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
-                  lstrcat( szVersion, _TEXT( "Windows Server 2012 R2 " ) );
-               else
-                  lstrcat( szVersion, _TEXT( "Windows 8.1 " ) );
-            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
-               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
-                  lstrcat( szVersion, _TEXT( "Windows Server 2012 " ) );
-               else
-                  lstrcat( szVersion, _TEXT( "Windows 8 " ) );
-            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
-               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
-                  lstrcat( szVersion, _TEXT( "Windows Server 2008 R2 " ) );
-               else
-                  lstrcat( szVersion, _TEXT( "Windows 7 " ) );
-            else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
-               if( bOsVersionInfoEx && osvi.wProductType != VER_NT_WORKSTATION )
-                  lstrcat( szVersion, _TEXT( "Windows Server 2008 " ) );
-               else
-                  lstrcat( szVersion, _TEXT( "Windows Vista " ) );
-            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
-               lstrcat( szVersion, _TEXT( "Windows Server 2003 " ) );
-            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
-               lstrcat( szVersion, _TEXT( "Windows XP " ) );
-            else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
-               lstrcat( szVersion, _TEXT( "Windows 2000 " ) );
-            else if( osvi.dwMajorVersion <= 4 )
-               lstrcat( szVersion, _TEXT( "Windows NT " ) );
+            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1 )
+               szVersion = TEXT( "Windows XP " );
+
+            if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
+               szVersion = TEXT( "Windows 2000 " );
+
+            if( osvi.dwMajorVersion <= 4 )
+               szVersion = TEXT( "Windows NT " );
 
             if( bOsVersionInfoEx )
             {
                if( osvi.wProductType == VER_NT_WORKSTATION )
                {
-                  if( osvi.dwMajorVersion == 10 )
-                  {
-                     lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                             _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
-                                             0,
-                                             KEY_QUERY_VALUE,
-                                             &hKey);
-                     if( lRetVal == ERROR_SUCCESS )
-                     {
-                        dwBufLen = 0;
-                        lRetVal = RegQueryValueEx( hKey,
-                                                   _TEXT( "ProductName" ),
-                                                   NULL,
-                                                   NULL,
-                                                   NULL,
-                                                   &dwBufLen );
-                        if( lRetVal == ERROR_SUCCESS )
-                        {
-                           lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
-                           lRetVal = RegQueryValueEx( hKey,
-                                                      _TEXT( "ProductName" ),
-                                                      NULL,
-                                                      NULL,
-                                                      lpData,
-                                                      &dwBufLen );
-                           if( lRetVal == ERROR_SUCCESS )
-                              szVersion = (char *) lpData;
-                           else
-                              hb_xfree( lpData );
-                        }
-                     }
-                     RegCloseKey( hKey );
-                  }
-                  else if( osvi.dwMajorVersion == 4 )
-                     lstrcat( szVersionEx, _TEXT( "Workstation 4.0 " ) );
+                  if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
+                     szVersion = TEXT( "Windows 10 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
+                     szVersion = TEXT( "Windows 8.1 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
+                     szVersion = TEXT( "Windows 8 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
+                     szVersion = TEXT( "Windows 7 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
+                     szVersion = TEXT( "Windows Vista " );
+
+                  if( osvi.dwMajorVersion == 4 )
+                     szVersionEx = TEXT( "Workstation 4.0 " );
                   else if( osvi.wSuiteMask & VER_SUITE_PERSONAL )
-                     lstrcat( szVersionEx, _TEXT( "Home Edition " ) );
+                     szVersionEx = TEXT( "Home Edition " );
                   else
-                     lstrcat( szVersionEx, _TEXT( "Professional " ) );
+                     szVersionEx = TEXT( "Professional " );
                }
-               else if( osvi.wProductType == VER_NT_SERVER || osvi.wProductType == VER_NT_DOMAIN_CONTROLLER )
+               else if( osvi.wProductType == VER_NT_SERVER )
                {
-                  if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
+                  if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
+                     szVersion = TEXT( "Windows Server 2016 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
+                     szVersion = TEXT( "Windows Server 2012 R2 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 2 )
+                     szVersion = TEXT( "Windows Server 2012 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 1 )
+                     szVersion = TEXT( "Windows Server 2008 R2 " );
+                  else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
+                     szVersion = TEXT( "Windows Server 2008 " );
+                  else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 2 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                        lstrcat( szVersionEx, _TEXT( "Datacenter Edition " ) );
+                        szVersionEx = TEXT( "Datacenter Edition " );
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        lstrcat( szVersionEx, _TEXT( "Enterprise Edition " ) );
+                        szVersionEx = TEXT( "Enterprise Edition " );
                      else if( osvi.wSuiteMask & VER_SUITE_BLADE )
-                        lstrcat( szVersionEx, _TEXT( "Web Edition " ) );
-                     else if( osvi.wSuiteMask & VER_SUITE_WH_SERVER )
-                        lstrcat( szVersionEx, _TEXT( "Home Edition " ) );
+                        szVersionEx = TEXT( "Web Edition " );
                      else
-                        lstrcat( szVersionEx, _TEXT( "Standard Edition " ) );
+                        szVersionEx = TEXT( "Standard Edition " );
                   }
                   else if( osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 0 )
                   {
                      if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
-                        lstrcat( szVersionEx, _TEXT( "Datacenter Server " ) );
+                        szVersionEx = TEXT( "Datacenter Server " );
                      else if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        lstrcat( szVersionEx, _TEXT( "Advanced Server " ) );
+                        szVersionEx = TEXT( "Advanced Server " );
                      else
-                        lstrcat( szVersionEx, _TEXT( "Server " ) );
+                        szVersionEx = TEXT( "Server " );
                   }
                   else
                   {
                      if( osvi.wSuiteMask & VER_SUITE_ENTERPRISE )
-                        lstrcat( szVersionEx, _TEXT( "Server 4.0, Enterprise Edition " ) );
+                        szVersionEx = TEXT( "Server 4.0, Enterprise Edition " );
                      else
-                        lstrcat( szVersionEx, _TEXT( "Server 4.0 " ) );
+                        szVersionEx = TEXT( "Server 4.0 " );
                   }
                }
             }
             else
             {
-               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                       _TEXT( "SYSTEM\\CurrentControlSet\\Control\\ProductOptions" ),
-                                       0,
-                                       KEY_QUERY_VALUE,
-                                       &hKey);
-               if( lRetVal == ERROR_SUCCESS )
+               HKEY hKey;
+               TCHAR szProductType[80];
+               DWORD dwBufLen = 80;
+               LONG lRetVal;
+
+               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE, 
+                                       TEXT( "SYSTEM\\CurrentControlSet\\Control\\ProductOptions" ), 
+                                       0, 
+                                       KEY_QUERY_VALUE, 
+                                       &hKey );
+
+               if( lRetVal != ERROR_SUCCESS )
+                  szVersion = TEXT( "Unknown Operating System" );
+               else
                {
-                  dwBufLen = 0;
-                  lRetVal = RegQueryValueEx( hKey,
-                                             _TEXT( "ProductType" ),
-                                             NULL,
-                                             NULL,
-                                             NULL,
+                  lRetVal = RegQueryValueEx( hKey, 
+                                             TEXT( "ProductType" ), 
+                                             NULL, 
+                                             NULL, 
+                                             (LPBYTE) szProductType, 
                                              &dwBufLen );
-                  if( lRetVal == ERROR_SUCCESS )
-                  {
-                     lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
-                     lRetVal = RegQueryValueEx( hKey,
-                                                _TEXT( "ProductType" ),
-                                                NULL,
-                                                NULL,
-                                                lpData,
-                                                &dwBufLen );
-                     if( lRetVal != ERROR_SUCCESS )
-                     {
-                        hb_xfree( lpData );
-                        lstrcat( szVersion, _TEXT( "Unknown Operating System" ) );
-                     }
-                  }
-                  else
-                     lstrcat( szVersion, _TEXT( "Unknown Operating System" ) );
+                                             
+                  if( ( lRetVal != ERROR_SUCCESS ) || ( dwBufLen > 80 ) )
+                     szVersion = TEXT( "Unknown Operating System" );
                }
+
                RegCloseKey( hKey );
 
-               if( lstrcmp( szVersion, _TEXT( "Unknown Operating System" ) ) != 0 )
+               if( lstrcmpi( TEXT( "Unknown Operating System" ), szVersion ) != 0 )
                {
-                  if( lstrcmpi( _TEXT( "WINNT" ), (char *) lpData ) == 0 )
-                     lstrcat( szVersionEx, _TEXT( "Workstation " ) );
-                  if( lstrcmpi( _TEXT( "LANMANNT" ), (char *) lpData  ) == 0 )
-                     lstrcat( szVersionEx, _TEXT( "Server " ) );
-                  if( lstrcmpi( _TEXT( "SERVERNT" ), (char *) lpData  ) == 0 )
-                     lstrcat( szVersionEx, _TEXT( "Advanced Server " ) );
+                  if( lstrcmpi( TEXT( "WINNT" ), szProductType ) == 0 )
+                     szVersionEx = TEXT( "Workstation " );
+
+                  if( lstrcmpi( TEXT( "LANMANNT" ), szProductType ) == 0 )
+                     szVersionEx = TEXT( "Server " );
+
+                  if( lstrcmpi( TEXT( "SERVERNT" ), szProductType ) == 0 )
+                     szVersionEx = TEXT( "Advanced Server " );
 
                   szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMajorVersion, buffer, 10 ) );
-                  szVersion = lstrcat( szVersion, _TEXT( "." ) );
+                  szVersion = lstrcat( szVersion, TEXT( "." ) );
                   szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMinorVersion, buffer, 10 ) );
                }
             }
+  
+            if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, TEXT( "Service Pack 6" ) ) == 0 )
+            {
+               HKEY hKey;
+               LONG lRetVal;
 
-            if( osvi.dwMajorVersion == 10 )
-            {
                lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                       _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion" ),
-                                       0,
-                                       KEY_QUERY_VALUE,
-                                       &hKey);
-               if( lRetVal == ERROR_SUCCESS )
-               {
-                  dwBufLen = 0;
-                  lRetVal = RegQueryValueEx( hKey,
-                                             _TEXT( "ReleaseId" ),
-                                             NULL,
-                                             NULL,
-                                             NULL,
-                                             &dwBufLen );
-                  if( lRetVal == ERROR_SUCCESS )
-                  {
-                     lpData = (BYTE *) hb_xgrab( (UINT) ( (int) dwBufLen + 1 ) );
-                     lRetVal = RegQueryValueEx( hKey,
-                                                _TEXT( "ReleaseId" ),
-                                                NULL,
-                                                NULL,
-                                                (BYTE *) lpData,
-                                                &dwBufLen );
-                     if( lRetVal == ERROR_SUCCESS )
-                     {
-                        szServicePack = (char *) lpData;
-                        /* Add UBR */
-                        dwBufLen = sizeof( dwUBR );
-                        lRetVal = RegQueryValueEx( hKey,
-                                                   _TEXT( "UBR" ),
-                                                   NULL,
-                                                   NULL,
-                                                   (BYTE *) &dwUBR,
-                                                   &dwBufLen );
-                        if( lRetVal == ERROR_SUCCESS )
-                        {
-                           szServicePack = lstrcat( szServicePack, _TEXT( "." ) );
-                           szServicePack = lstrcat( szServicePack, _OOHG_ULTOA( dwUBR, buffer, 10 ) );
-                        }
-                     }
-                     else
-                        hb_xfree( (BYTE *) lpData );
-                  }
-               }
-               RegCloseKey( hKey );
-               szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
-            }
-            else if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, _TEXT( "Service Pack 6" ) ) == 0 )
-            {
-               lRetVal = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                                       _TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ),
+                                       TEXT( "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Hotfix\\Q246009" ),
                                        0,
                                        KEY_QUERY_VALUE,
                                        &hKey );
+                                       
                if( lRetVal == ERROR_SUCCESS )
                {
-                  lstrcat( szServicePack, _TEXT( "Service Pack 6a" ) );
+                  szServicePack = TEXT( "Service Pack 6a" );
                   szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
                }
                else
@@ -1000,6 +910,7 @@ HB_FUNC( WINVERSION )
                   szServicePack = osvi.szCSDVersion;
                   szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
                }
+
                RegCloseKey( hKey );
             }
             else
@@ -1007,59 +918,80 @@ HB_FUNC( WINVERSION )
                szServicePack = osvi.szCSDVersion;
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
             }
+            
             break;
 
          case VER_PLATFORM_WIN32_WINDOWS:
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 0 ) )
             {
-               if( osvi.szCSDVersion[1] == 'B' )
+               if( osvi.szCSDVersion[1] == TEXT( 'B' ) )
                {
-                  lstrcat( szVersion, _TEXT( "Windows 95 B" ) );
-                  lstrcat( szServicePack, _TEXT( "OSR2" ) );
+                  szVersion = TEXT( "Windows 95 B" );
+                  szServicePack = TEXT( "OSR2" );
                }
                else
                {
-                  if( osvi.szCSDVersion[1] == _TEXT( 'C' ) )
+                  if( osvi.szCSDVersion[1] == TEXT( 'C' ) )
                   {
-                     lstrcat( szVersion, _TEXT( "Windows 95 C" ) );
-                     lstrcat( szServicePack, _TEXT( "OSR2" ) );
+                     szVersion = TEXT( "Windows 95 C" );
+                     szServicePack = TEXT( "OSR2" );
                   }
                   else
                   {
-                     lstrcat( szVersion, _TEXT( "Windows 95" ) );
-                     lstrcat( szServicePack, _TEXT( "OSR1" ) );
+                     szVersion = TEXT( "Windows 95" );
+                     szServicePack = TEXT( "OSR1" );
                   }
                }
+
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
+
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 10 ) )
             {
                if( osvi.szCSDVersion[1] == 'A' )
                {
-                  lstrcat( szVersion, _TEXT( "Windows 98 A" ) );
-                  lstrcat( szServicePack, _TEXT( "Second Edition" ) );
+                  szVersion = TEXT( "Windows 98 A" );
+                  szServicePack = TEXT( "Second Edition" );
                }
                else
                {
-                  lstrcat( szVersion, _TEXT( "Windows 98" ) );
-                  lstrcat( szServicePack, _TEXT( "First Edition" ) );
+                  szVersion = TEXT( "Windows 98" );
+                  szServicePack = TEXT( "First Edition" );
                }
+
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
+
             if( ( osvi.dwMajorVersion == 4 ) && ( osvi.dwMinorVersion == 90 ) )
             {
-               lstrcat( szVersion, _TEXT( "Windows ME" ) );
+               szVersion = TEXT( "Windows ME" );
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
+            
             break;
       }
    }
 
    hb_reta( 4 );
+#ifndef UNICODE
    HB_STORC( szVersion, -1, 1 );
    HB_STORC( szServicePack, -1, 2 );
    HB_STORC( szBuild, -1, 3 );
    HB_STORC( szVersionEx, -1, 4 );
+#else
+   pStr = WideToAnsi( szVersion );
+   HB_STORC( pStr, -1, 1 );
+   hb_xfree( pStr );
+   pStr = WideToAnsi( szServicePack );
+   HB_STORC( pStr, -1, 2 );
+   hb_xfree( pStr );
+   pStr = WideToAnsi( szBuild );
+   HB_STORC( pStr, -1, 3 );
+   hb_xfree( pStr );
+   pStr = WideToAnsi( szVersionEx );
+   HB_STORC( pStr, -1, 4 );
+   hb_xfree( pStr );
+#endif
 }
 
 #if defined( __XHARBOUR__ )

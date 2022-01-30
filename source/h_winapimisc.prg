@@ -61,166 +61,111 @@
  */
 
 
-#define CSIDL_DESKTOP                   0x0000        // <desktop>
-#define CSIDL_INTERNET                  0x0001        // Internet Explorer (icon on desktop)
-#define CSIDL_PROGRAMS                  0x0002        // Start Menu\Programs
-#define CSIDL_CONTROLS                  0x0003        // My Computer\Control Panel
-#define CSIDL_PRINTERS                  0x0004        // My Computer\Printers
-#define CSIDL_PERSONAL                  0x0005        // My Documents
-#define CSIDL_FAVORITES                 0x0006        // <user name>\Favorites
-#define CSIDL_STARTUP                   0x0007        // Start Menu\Programs\Startup
-#define CSIDL_RECENT                    0x0008        // <user name>\Recent
-#define CSIDL_SENDTO                    0x0009        // <user name>\SendTo
-#define CSIDL_BITBUCKET                 0x000a        // <desktop>\Recycle Bin
-#define CSIDL_STARTMENU                 0x000b        // <user name>\Start Menu
-#define CSIDL_DESKTOPDIRECTORY          0x0010        // <user name>\Desktop
-#define CSIDL_DRIVES                    0x0011        // My Computer
-#define CSIDL_NETWORK                   0x0012        // Network Neighborhood
-#define CSIDL_NETHOOD                   0x0013        // <user name>\nethood
-#define CSIDL_FONTS                     0x0014        // windows\fonts
-#define CSIDL_TEMPLATES                 0x0015
-#define CSIDL_COMMON_STARTMENU          0x0016        // All Users\Start Menu
-#define CSIDL_COMMON_PROGRAMS           0X0017        // All Users\Programs
-#define CSIDL_COMMON_STARTUP            0x0018        // All Users\Startup
-#define CSIDL_COMMON_DESKTOPDIRECTORY   0x0019        // All Users\Desktop
-#define CSIDL_APPDATA                   0x001a        // <user name>\Application Data
-#define CSIDL_PRINTHOOD                 0x001b        // <user name>\PrintHood
-#define CSIDL_LOCAL_APPDATA             0x001c        // <user name>\Local Settings\Applicaiton Data (non roaming)
-#define CSIDL_ALTSTARTUP                0x001d        // non localized startup
-#define CSIDL_COMMON_ALTSTARTUP         0x001e        // non localized common startup
-#define CSIDL_COMMON_FAVORITES          0x001f
-#define CSIDL_INTERNET_CACHE            0x0020
-#define CSIDL_COOKIES                   0x0021
-#define CSIDL_HISTORY                   0x0022
-#define CSIDL_COMMON_APPDATA            0x0023        // All Users\Application Data
-#define CSIDL_WINDOWS                   0x0024        // GetWindowsDirectory()
-#define CSIDL_SYSTEM                    0x0025        // GetSystemDirectory()
-#define CSIDL_PROGRAM_FILES             0x0026        // C:\Program Files
-#define CSIDL_MYPICTURES                0x0027        // C:\Program Files\My Pictures
-#define CSIDL_PROFILE                   0x0028        // USERPROFILE
-#define CSIDL_SYSTEMX86                 0x0029        // x86 system directory on RISC
-#define CSIDL_PROGRAM_FILESX86          0x002a        // x86 C:\Program Files on RISC
-#define CSIDL_PROGRAM_FILES_COMMON      0x002b        // C:\Program Files\Common
-#define CSIDL_PROGRAM_FILES_COMMONX86   0x002c        // x86 Program Files\Common on RISC
-#define CSIDL_COMMON_TEMPLATES          0x002d        // All Users\Templates
-#define CSIDL_COMMON_DOCUMENTS          0x002e        // All Users\Documents
-#define CSIDL_COMMON_ADMINTOOLS         0x002f        // All Users\Start Menu\Programs\Administrative Tools
-#define CSIDL_ADMINTOOLS                0x0030        // <user name>\Start Menu\Programs\Administrative Tools
-#define CSIDL_CONNECTIONS               0x0031        // Network and Dial-up Connections
-#define CSIDL_FLAG_CREATE               0x8000        // combine with CSIDL_ value to force folder creation in SHGetFolderPath()
-#define CSIDL_FLAG_DONT_VERIFY          0x4000        // combine with CSIDL_ value to return an unverified folder path
-#define CSIDL_FLAG_MASK                 0xFF00        // mask for all possible flag values
+#include "oohg.ch"
 
-Function GetWindowsFolder()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetWindowsFolder()
 
-   Local lFolder
+   RETURN GetWindowsDir()
 
-   lFolder := GETWINDOWSDIR()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetSystemFolder()
 
-   Return lFolder
+   RETURN GetSystemDir()
 
-Function GetSystemFolder()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetTempFolder()
 
-   Local lFolder
+   RETURN GetTempDir()
 
-   lFolder := GETSYSTEMDIR()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetMyDocumentsFolder()
 
-   Return lFolder
+   RETURN GetSpecialFolder( CSIDL_PERSONAL )
 
-Function GetTempFolder()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetDesktopFolder()
 
-   Local lFolder
+   RETURN GetSpecialFolder( CSIDL_DESKTOPDIRECTORY )
 
-   lFolder := GETTEMPDIR()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetProgramFilesFolder()
 
-   Return lFolder
+   RETURN GetSpecialFolder( CSIDL_PROGRAM_FILES )
 
-Function GetMyDocumentsFolder()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
 
-   Local lFolder
+   RETURN C_GETSPECIALFOLDER( nCSIDL )
 
-   lFolder := GETSPECIALFOLDER( CSIDL_PERSONAL )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
 
-   Return lFolder
+   LOCAL cShort
 
-Function GetDesktopFolder()
-
-   Local lFolder
-
-   lFolder := GETSPECIALFOLDER( CSIDL_DESKTOPDIRECTORY )
-
-   Return lFolder
-
-Function GetProgramFilesFolder()
-
-   Local lFolder
-
-   lFolder := GETSPECIALFOLDER( CSIDL_PROGRAM_FILES )
-
-   Return lFolder
-
-Function GetSpecialFolder( nCSIDL ) // Contributed By Ryszard Rylko
-
-   Local RetVal
-
-   RetVal := C_GETSPECIALFOLDER( nCSIDL )
-
-   Return RetVal
-
-Function _GetCompactPath( cFile, nMax ) // Contributed By Jacek Kubica
-
-   Local cShort
-
-   If ! HB_IsNumeric( nMax )
+   IF ! HB_ISNUMERIC( nMax )
       nMax := 64
-   EndIf
+   ENDIF
    cShort := Space( nMax )
 
-   Return If( GETCOMPACTPATH( @cShort, cFile, nMax + 1, Nil ), cShort, cFile )
+   RETURN iif( GETCOMPACTPATH( @cShort, cFile, nMax + 1, NIL ), cShort, cFile )
 
-Procedure ProcessMessages
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+PROCEDURE ProcessMessages
 
-   Do While _ProcessMess()
-   EndDo
+   DO WHILE _ProcessMess()
+   ENDDO
 
-   Return
+   RETURN
 
-Function WindowsVersion()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION WindowsVersion()
 
-   Local aRetVal
+   LOCAL cKey, aRetVal := Array( 4 )
 
-   aRetVal := WinVersion()
+   IF hb_osisWin10()
+      cKey := "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+      aRetVal[ 1 ] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ProductName" )
+      aRetVal[ 2 ] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ReleaseId" )
+      aRetVal[ 3 ] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "CurrentBuild" ) + "." + ;
+                      hb_ntos( GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "UBR", "N" ) )
+      aRetVal[ 4 ] := ""
+   ELSE
+      aRetVal := WinVersion()
+   ENDIF
 
-   Return { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
+RETURN { aRetVal[ 1 ] + aRetVal[ 4 ], aRetVal[ 2 ], 'Build ' + aRetVal[ 3 ] }
 
-Function _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _Execute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
 
-   If ValType( nActiveWindowhandle ) == 'U'
+   IF ValType( nActiveWindowhandle ) == 'U'
       nActiveWindowhandle := 0
-   EndIf
+   ENDIF
 
-   If ValType( cOperation ) == 'U'
-      cOperation := Nil
-   EndIf
+   IF ValType( cOperation ) == 'U'
+      cOperation := NIL
+   ENDIF
 
-   If ValType( cFile ) == 'U'
+   IF ValType( cFile ) == 'U'
       cFile := ""
-   EndIf
+   ENDIF
 
-   If ValType( cParaMeters ) == 'U'
-      cParaMeters := Nil
-   EndIf
+   IF ValType( cParaMeters ) == 'U'
+      cParaMeters := NIL
+   ENDIF
 
-   If ValType( cDefault ) == 'U'
-       cDefault := Nil
-   EndIf
+   IF ValType( cDefault ) == 'U'
+       cDefault := NIL
+   ENDIF
 
-   If ValType( nState ) == 'U'
+   IF ValType( nState ) == 'U'
        nState := 10 // SW_SHOWDEFAULT
-   EndIf
+   ENDIF
 
-   Return ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
+   RETURN ShellExecute( nActiveWindowhandle, cOperation, cFile, cParaMeters, cDefault, nState )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION BmpSize( uImage )
 
    LOCAL aRet
@@ -235,4 +180,5 @@ FUNCTION BmpSize( uImage )
       aRet := { 0, 0, 4 }
    ENDCASE
 
-RETURN aRet
+   RETURN aRet
+   

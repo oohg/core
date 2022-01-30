@@ -40,6 +40,16 @@
       - NM_RCLICK event handler of TXBrowseByCell class.
    #401
    
+2022-01-30 15:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * Function WINVERSION was synchronized to Minigui one.
+    ; This should fix some random RTE at function hb_osisWin10.
+  * core\source\h_winapimisc.prg
+    * Some format.
+    % Some functions.
+    % All #defines were replaced by a single #include.
+    * Function WindowsVersion was synchronized to Minigui one.
+
 2021-11-05 08:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.ch
     ! App shows undesired trace message at tab's define method.
