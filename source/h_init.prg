@@ -1870,8 +1870,8 @@ FUNCTION ooHG_Messages_ESWIN // Spanish
                          "¡El archivo no está encriptado!", ;                                                                       // 26
                          "¡La contraseña es inválida!", ;                                                                           // 27
                          "¡Los nombres del nuevo archivo y el antiguo deben ser diferentes!", ;                                     // 28
-                         "Player creation failed!", ;                                                                               // 29
-                         "AnimateBox creation failed!" }                                                                            // 30
+                         "¡Falló la creación del objeto Player!", ;                                                                 // 29
+                         "¡Falló la creación del objeto AnimateBox!" }                                                              // 30
 
    // BROWSE MESSAGES
    acBrowseButton   := { "Agregar", ;
