@@ -476,10 +476,10 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
 
    _PushEventInfo()
    _OOHG_ThisForm      := Self
-   _OOHG_ThisEventType := "WINDOW_DEFINE"
    _OOHG_ThisType      := "W"
    _OOHG_ThisControl   := NIL
    _OOHG_ThisObject    := Self
+   _OOHG_ThisEventType := "WINDOW_DEFINE"
 
    Return Self
 
@@ -1113,11 +1113,11 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TForm
       lRetVal := .F.
    ElseIf HB_IsBlock( bBlock )
       _PushEventInfo()
-      _OOHG_ThisForm      := Self
-      _OOHG_ThisType      := "W"
+      _OOHG_ThisForm    := Self
+      _OOHG_ThisType    := "W"
+      _OOHG_ThisControl := NIL
+      _OOHG_ThisObject  := Self
       ASSIGN _OOHG_ThisEventType VALUE cEventType TYPE "CM" DEFAULT ""
-      _OOHG_ThisControl   := NIL
-      _OOHG_ThisObject    := Self
       lRetVal := _OOHG_Eval_Array( bBlock, aParams )
       _PopEventInfo()
    EndIf
