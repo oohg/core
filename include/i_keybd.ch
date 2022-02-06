@@ -91,7 +91,7 @@ SET NAVIGATION
 
 #xtranslate SET NAVIGATION STANDARD ;
    => ;
-   _OOHG_ExtendedNavigation := .F.
+      _OOHG_ExtendedNavigation := .F.
 
 /*---------------------------------------------------------------------------
 VIRTUAL KEY CODES AND MODIFIERS
@@ -252,8 +252,8 @@ HOT KEY COMMANDS - Parent specific - OOHG controlled
       _DefineAnyKey( <(parent)>, <(key)>, NIL )
 
 #xcommand STORE KEY <key> OF <parent> TO <baction> ;
-    => ;
-       <baction> := _DefineAnyKey( <(parent)>, <(key)> )
+   => ;
+      <baction> := _DefineAnyKey( <(parent)>, <(key)> )
 
 /*---------------------------------------------------------------------------
 ACCELERATOR COMMANDS - Windows controlled, see WM_HOTKEY message
@@ -308,3 +308,4 @@ HOT KEY CONTROL - Parent specific - OOHG controlled
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( THotKey(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <mod>, <key>, <{action}>, <disabled> )
+

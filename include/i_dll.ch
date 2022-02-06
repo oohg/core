@@ -126,9 +126,9 @@ TYPES
       IN <*DllName*> [ FLAGS <flags> ] ;
    => ;
       [<static>] FUNCTION <FuncName>( [<uParam1>] [, <uParamN>] ) ;;
-      LOCAL uResult ;;
+         LOCAL uResult ;;
          uResult := OOHG_CallDLL32( <(FuncName)>, <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
-      RETURN uResult
+         RETURN uResult
 
 #xcommand DECLARE <return> [<static: STATIC>] <FuncName>( ;
       [ <type1> <uParam1> ] ;
@@ -136,6 +136,6 @@ TYPES
       IN <DllName> ALIAS <alias> [ FLAGS <flags> ] ;
    => ;
       [<static>] FUNCTION <alias>( [<uParam1>] [, <uParamN>] ) ;;
-      LOCAL uResult ;;
+         LOCAL uResult ;;
          uResult := OOHG_CallDLL32( <(FuncName)>, <(DllName)> [, <uParam1> ] [, <uParamN> ] ) ;;
-      RETURN uResult
+         RETURN uResult

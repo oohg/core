@@ -163,11 +163,11 @@ PLAYER COMMANDS
       [ <rtl: RTL> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TPlayer(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <file>, <col>, <row>, <width>, <height>, ;
-         <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>, ;
-         <.nomenu.>, <.noopen.>, <.noplaybar.>, <.showall.>, <.showmode.>, ;
-         <.showname.>, <.showposition.>, <helpid>, <.invisible.>, ;
-         <.notabstop.>, <.disabled.>, <.rtl.> )
+            Define( <(name)>, <(parent)>, <file>, <col>, <row>, <width>, <height>, ;
+            <.noautosizewindow.>, <.noautosizemovie.>, <.noerrordlg.>, ;
+            <.nomenu.>, <.noopen.>, <.noplaybar.>, <.showall.>, <.showmode.>, ;
+            <.showname.>, <.showposition.>, <helpid>, <.invisible.>, ;
+            <.notabstop.>, <.disabled.>, <.rtl.> )
 
 #command PLAY PLAYER <name> OF <parent> ;
    => ;
@@ -242,11 +242,11 @@ WAVE COMMANDS
 ---------------------------------------------------------------------------*/
 
 #command PLAY WAVE <wave> ;
-      [<r: FROM RESOURCE>] ;
-      [<s: SYNC>] ;
-      [<ns: NOSTOP>] ;
-      [<l: LOOP>] ;
-      [<nd: NODEFAULT>] ;
+      [ <r: FROM RESOURCE> ] ;
+      [ <s: SYNC> ] ;
+      [ <ns: NOSTOP> ] ;
+      [ <l: LOOP> ] ;
+      [ <nd: NODEFAULT> ] ;
    => ;
       PlayWave( <wave>, <.r.>, <.s.>, <.ns.>, <.l.>, <.nd.> )
 

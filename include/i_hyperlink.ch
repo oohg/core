@@ -88,8 +88,8 @@
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( THyperLink(), [ <subclass>() ] ): ;
-         Define( <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
-         <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
-         <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
-         <backcolor>, <fontcolor>, <tooltip>, <helpid>, ;
-         <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )
+            Define( <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
+            <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
+            <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
+            <backcolor>, <fontcolor>, <tooltip>, <helpid>, ;
+            <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )

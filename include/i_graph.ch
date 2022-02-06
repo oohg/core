@@ -124,8 +124,8 @@
       [ PENCOLOR <penrgb>] ;
       [ PENWIDTH <pnwidth>] ;
    => ;
-   DrawArc( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
-         <rrow1>, <rcol1>, <penrgb>, <pnwidth> )
+      DrawArc( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
+            <rrow1>, <rcol1>, <penrgb>, <pnwidth> )
 
 #xcommand DRAW PIE IN WINDOW <windowname> AT <frow>, <fcol> ;
       TO <trow>, <tcol> ;
@@ -136,8 +136,8 @@
       [ FILLCOLOR <fillrgb> ] ;
       [ <transparent: TRANSPARENT> ] ;
    => ;
-   DrawPie( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
-         <rrow1>, <rcol1>, <penrgb>, <pnwidth>, <fillrgb>, <.transparent.> )
+      DrawPie( <(windowname)>, <frow>, <fcol>, <trow>, <tcol>, <rrow>, <rcol>, ;
+            <rrow1>, <rcol1>, <penrgb>, <pnwidth>, <fillrgb>, <.transparent.> )
 
 /*
  * POINTS must be specified using this syntax:
@@ -151,7 +151,7 @@
       [ <transparent: TRANSPARENT> ] ;
    => ;
       DrawPolygon( <(windowname)>, <pointsarr>, <penrgb>, ;
-         <penwidth>, <fillrgb>, <.transparent.> )
+            <penwidth>, <fillrgb>, <.transparent.> )
 
 #xcommand DRAW POLYBEZIER IN WINDOW <windowname> ;
       POINTS <pointsarr> ;
@@ -167,7 +167,7 @@
 #xcommand DEFAULT <uVar1> := <uVal1> [, <uVarN> := <uValN> ] ;
    => ;
       <uVar1> := iif( <uVar1> == NIL, <uVal1>, <uVar1> ) ;;
-      [ <uVarN> := iif( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
+            [ <uVarN> := iif( <uVarN> == NIL, <uValN>, <uVarN> ) ; ]
 
 #ifndef _BT_INFO_NAME_
 #ifndef __HBPRN__
@@ -241,3 +241,4 @@
       TO <trow>, <tcol> ;
    => ;
       DrawWindowBoxIn( <(windowname)>, <frow>, <fcol>, <trow>, <tcol> )
+
