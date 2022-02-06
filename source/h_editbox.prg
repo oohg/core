@@ -66,75 +66,62 @@
 #include "i_windefs.ch"
 #include "hbclass.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TEdit FROM TText
 
-   DATA Type             INIT "EDIT" READONLY
-   DATA nOnFocusPos      INIT -4
-   DATA OnHScroll        INIT Nil
-   DATA OnVScroll        INIT Nil
-   DATA nWidth           INIT 120
-   DATA nHeight          INIT 240
+   DATA Type                      INIT "EDIT" READONLY
+   DATA nOnFocusPos               INIT -4
+   DATA OnHScroll                 INIT Nil
+   DATA OnVScroll                 INIT Nil
+   DATA nWidth                    INIT 120
+   DATA nHeight                   INIT 240
 
    METHOD Define
-   METHOD LookForKey
    METHOD Events_Command
-   METHOD Events_Enter   BLOCK { || Nil }
+   METHOD Events_Enter            BLOCK { || NIL }
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, h, value, fontname, ;
-               fontsize, tooltip, maxlength, gotfocus, change, lostfocus, ;
-               readonly, break, HelpId, invisible, notabstop, bold, italic, ;
-               underline, strikeout, field, backcolor, fontcolor, novscroll, ;
-               nohscroll, lRtl, lNoBorder, OnFocusPos, OnHScroll, OnVScroll, ;
-               lDisabled, nInsType ) CLASS TEdit
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
+               bGotFocus, bChange, bLostFocus, lReadOnly, lBreak, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, lUnderline, ;
+               lStrikeout, cField, uBackColor, uFontColor, lNoVScroll, lNoHScroll, lRtl, lNoBorder, nOnFocusPos, bOnHScroll, ;
+               bOnVScroll, lDisabled, nInsType, lNoCntxtMnu, lUndo ) CLASS TEdit
 
-   Local nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
+   LOCAL nStyle := ES_MULTILINE + ES_WANTRETURN, nStyleEx := 0
 
-   ASSIGN ::nWidth  VALUE w TYPE "N"
-   ASSIGN ::nHeight VALUE h TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
 
-   nStyle += IF( HB_IsLogical( novscroll ) .AND. novscroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
-             IF( HB_IsLogical( nohscroll ) .AND. nohscroll, 0,              WS_HSCROLL )
+   nStyle += iif( HB_ISLOGICAL( lNoVScroll ) .AND. lNoVScroll, ES_AUTOVSCROLL, WS_VSCROLL ) + ;
+             iif( HB_ISLOGICAL( lNoHScroll ) .AND. lNoHScroll, 0, WS_HSCROLL )
 
-   ::SetSplitBoxInfo( Break )
+   ::SetSplitBoxInfo( lBreak )
 
-   ::Define2( ControlName, ParentForm, x, y, ::nWidth, ::nHeight, value, ;
-              fontname, fontsize, tooltip, maxlength, .f., ;
-              lostfocus, gotfocus, change, nil, .f., HelpId, ;
-              readonly, bold, italic, underline, strikeout, field, ;
-              backcolor, fontcolor, invisible, notabstop, nStyle, lRtl, ;
-              .F., nStyleEx, lNoBorder, OnFocusPos, lDisabled, ;
-              NIL, NIL, NIL, NIL, NIL, NIL, ;
-              NIL, NIL, nInsType ) 
+   ::Define2( cControlName, cParentForm, nCol, nRow, ::nWidth, ::nHeight, cValue, cFontName, nFontSize, cToolTip, nMaxLength, .F., ;
+              bLostFocus, bGotFocus, bChange, NIL, .F., nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
+              cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, .F., nStyleEx, lNoBorder, ;
+              nOnFocusPos, lDisabled, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, nInsType, ;
+              .F., lNoCntxtMnu, NIL, NIL, NIL, lUndo )
 
-   ASSIGN ::OnHScroll VALUE OnHScroll TYPE "B"
-   ASSIGN ::OnVScroll VALUE OnVScroll TYPE "B"
+   ASSIGN ::OnHScroll VALUE bOnHScroll TYPE "B"
+   ASSIGN ::OnVScroll VALUE bOnVScroll TYPE "B"
 
-   Return Self
+   RETURN Self
 
-METHOD LookForKey( nKey, nFlags ) CLASS TEdit
-
-   Local lDone
-
-   lDone := ::Super:LookForKey( nKey, nFlags )
-   If nKey == VK_ESCAPE .and. nFlags == 0
-      lDone := .T.
-   EndIf
-
-   Return lDone
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Command( wParam ) CLASS TEdit
 
-   Local Hi_wParam := HiWord( wParam )
+   LOCAL Hi_wParam := HIWORD( wParam )
 
-   If Hi_wParam == EN_HSCROLL
+   IF Hi_wParam == EN_HSCROLL
       ::DoEvent( ::OnHScroll, "HSCROLL" )
-      Return Nil
+      RETURN NIL
 
-   ElseIf Hi_wParam == EN_VSCROLL
+   ELSEIF Hi_wParam == EN_VSCROLL
       ::DoEvent( ::OnVScroll, "VSCROLL" )
-      Return Nil
-   EndIf
+      RETURN NIL
+   ENDIF
 
-   Return ::Super:Events_Command( wParam )
+   RETURN ::Super:Events_Command( wParam )
+

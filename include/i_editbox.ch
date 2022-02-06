@@ -99,6 +99,8 @@ STANDARD VERSION
       [ <disabled: DISABLED> ] ;
       [ INSERTTYPE <nInsType> ] ;
       [ SUBCLASS <subclass> ] ;
+      [ <nocm: NOCONTEXTMENU> ] ;
+      [ <undo: UNDO> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEdit(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, ;
@@ -107,7 +109,7 @@ STANDARD VERSION
             <.invisible.>, <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, ;
             <.strikeout.>, <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, ;
             <.nohscroll.>, <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, ;
-            <{vscroll}>, <.disabled.>, <nInsType> )
+            <{vscroll}>, <.disabled.>, <nInsType>, <.nocm.>, <.undo.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -148,6 +150,8 @@ SPLITBOX VERSION
       [ <disabled: DISABLED> ] ;
       [ INSERTTYPE <nInsType> ] ;
       [ SUBCLASS <subclass> ] ;
+      [ <nocm: NOCONTEXTMENU> ] ;
+      [ <undo: UNDO> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TEdit(), [ <subclass>() ] ): ;
             TEdit():Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, <value>, ;
@@ -156,4 +160,5 @@ SPLITBOX VERSION
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <(field)>, <backcolor>, <fontcolor>, <.novscroll.>, <.nohscroll.>, ;
             <.rtl.>, <.noborder.>, <focusedpos>, <{hscroll}>, <{vscroll}>, ;
-            <.disabled.>, <nInsType> )
+            <.disabled.>, <nInsType>, <.nocm.>, <.undo.> )
+

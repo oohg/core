@@ -113,6 +113,7 @@
       [ <place: CTRLSATLEFT> ] ;
       [ <nocm: NOCONTEXTMENU> ] ;
       [ <cuebanner: CUEBANNER, PLACEHOLDER> <cuetext> ] ;
+      [ <undo: UNDO> ] ;
    => ;
       [ <obj> := ] DefineTextBox( <(name)>, <(parent)>, <col>, <row>, <width>, ;
             <height>, <value>, <fontname>, <fontsize>, <tooltip>, <maxlength>, ;
@@ -124,4 +125,5 @@
             <.date.>, <.numeric.>, <inputmask>, <format>, [ <subclass>() ], ;
             <{action}>, <abitmap>, <btnwidth>, <{action2}>, <{bWhen}>, ;
             <.centeralign.>, <year>, <{textfilled}>, <nInsType>, <.place.>, ;
-            <.nocm.>, <tb1>, <tb2>, <cuetext> )
+            <.nocm.>, <tb1>, <tb2>, <cuetext>, <.undo.> )
+
