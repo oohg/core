@@ -93,7 +93,7 @@
       [ <dummy: ONGOTFOCUS, ON GOTFOCUS> <gotfocus> ] ;
       [ <dummy: ONLOSTFOCUS, ON LOSTFOCUS> <lostfocus> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( IIF( <.multiselect.>, ;
+      [ <obj> := ] _OOHG_SelectSubClass( iif( <.multiselect.>, ;
             TMonthCalMulti(), TMonthCal() ), [ <subclass>() ] ):Define( ;
             <(name)>, <(parent)>, <col>, <row>, 0, 0, <v>, <fontname>, <fontsize>, ;
             <tooltip>, <.notoday.>, <.notodaycircle.>, <.weeknumbers.>, <{change}>, ;

@@ -96,5 +96,5 @@
             <min>, <max>, <{change}>, <{lineup}>, <{linedown}>, <{pageup}>, ;
             <{pagedown}>, <{top}>, <{bottom}>, <{thumb}>, <{track}>, ;
             <{endtrack}>, <helpid>, <.invisible.>, <tooltip>, <.rtl.>, ;
-            IIF( <.horz.>, 0, IIF( <.vert.>, 1, NIL ) ), <.attached.>, ;
+            iif( <.horz.>, 0, iif( <.vert.>, 1, NIL ) ), <.attached.>, ;
             <value>, <disabled>, <lineskip>, <pageskip>, <.auto.> )

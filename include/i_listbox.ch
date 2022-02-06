@@ -154,7 +154,7 @@ SPLITBOX VERSION
       [ <dragitems: DRAGITEMS> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( ;
-            IIF( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
+            iif( <.multiselect.>, TListMulti(), TList() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, <aRows>, <value>, ;
             <fontname>, <fontsize>, <tooltip>, <{change}>, <{dblclick}>, ;
             <{gotfocus}>, <{lostfocus}>, <.break.>, <helpid>, ;

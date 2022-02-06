@@ -146,11 +146,11 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, rows, value, fontname, ;
    ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
 
    nStyle := ::InitStyle( nStyle,, invisible, notabstop, lDisabled ) + ;
-             IIF( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
-             IIF( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
-             IIF( HB_IsArray( aImage ) .OR. ::nTextHeight > 0,  LBS_OWNERDRAWFIXED, 0) + ;
-             IIF( HB_ISLOGICAL( multicol ) .AND. multicol, LBS_MULTICOLUMN, 0 ) + ;
-             IIF( ::lMultiTab, LBS_USETABSTOPS, 0 )
+             iif( HB_ISLOGICAL( novscroll ) .AND. novscroll, 0, WS_VSCROLL + LBS_DISABLENOSCROLL ) + ;
+             iif( HB_ISLOGICAL( sort ) .AND. sort, LBS_SORT, 0 ) + ;
+             iif( HB_IsArray( aImage ) .OR. ::nTextHeight > 0,  LBS_OWNERDRAWFIXED, 0) + ;
+             iif( HB_ISLOGICAL( multicol ) .AND. multicol, LBS_MULTICOLUMN, 0 ) + ;
+             iif( ::lMultiTab, LBS_USETABSTOPS, 0 )
 
    ::SetSplitBoxInfo( Break )
 
@@ -267,7 +267,7 @@ METHOD OnEnter( bEnter ) CLASS TList
       ENDIF
       bRet := bEnter
    ELSE
-      bRet := IIF( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
+      bRet := iif( _OOHG_SameEnterDblClick, ::OnDblClick, ::bOnEnter )
    ENDIF
 
    RETURN bRet

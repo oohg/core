@@ -102,8 +102,8 @@
             <spacing>, <helpid>, <.invisible.>, <.notabstop.>, <.bold.>, ;
             <.italic.>, <.underline.>, <.strikeout.>, <backcolor>, ;
             <fontcolor>, <.transparent.>, <.autosize.>, <.horizontal.>, ;
-            <.disabled.>, <.rtl.>, <height>, IIF( #<drawby> == "OOHGDRAW", .T., ;
-            IIF( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.left.>, ;
+            <.disabled.>, <.rtl.>, <height>, iif( #<drawby> == "OOHGDRAW", .T., ;
+            iif( #<drawby> == "WINDRAW", .F., NIL ) ), <bkgrnd>, <.left.>, ;
             <aReadOnly>, <.lnofr.>, <nLimit>, <nShift> )
 
 #xtranslate RADIOGROUP [ <x> ] FOCUSRECT ;

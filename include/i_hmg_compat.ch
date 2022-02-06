@@ -79,7 +79,7 @@
 
 #xtranslate Random( <arg1> ) ;
    => ;
-      HB_Random( <arg1> )
+      hb_Random( <arg1> )
 
 #xtranslate IsThemed() ;
    => ;
@@ -95,51 +95,51 @@
 
 #xtranslate IFNIL( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ( <v1> ) == NIL, <exp1>, <exp2> )
+      iif( ( <v1> ) == NIL, <exp1>, <exp2> )
 
 #xtranslate IFARRAY( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISARRAY( <v1> ), <exp1>, <exp2> )
+      iif( ISARRAY( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFBLOCK( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISBLOCK( <v1> ), <exp1>, <exp2> )
+      iif( ISBLOCK( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFCHARACTER( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISCHARACTER( <v1> ), <exp1>, <exp2> )
+      iif( ISCHARACTER( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFCHAR( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISCHAR( <v1> ), <exp1>, <exp2> )
+      iif( ISCHAR( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFSTRING( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISSTRING( <v1> ), <exp1>, <exp2> )
+      iif( ISSTRING( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFDATE( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISDATE( <v1> ), <exp1>, <exp2> )
+      iif( ISDATE( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFLOGICAL( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISLOGICAL( <v1> ), <exp1>, <exp2> )
+      iif( ISLOGICAL( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFNUMBER( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISNUMBER( <v1> ), <exp1>, <exp2> )
+      iif( ISNUMBER( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFNUMERIC( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISNUMERIC( <v1> ), <exp1>, <exp2> )
+      iif( ISNUMERIC( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFOBJECT( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( ISOBJECT( <v1> ), <exp1>, <exp2> )
+      iif( ISOBJECT( <v1> ), <exp1>, <exp2> )
 
 #xtranslate IFEMPTY( <v1>, <exp1>, <exp2> ) ;
    => ;
-      IIF( EMPTY( <v1> ), <exp1>, <exp2> )
+      iif( EMPTY( <v1> ), <exp1>, <exp2> )
 
 #xtranslate _HMG_ThisFormName ;
    => ;

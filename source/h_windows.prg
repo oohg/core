@@ -558,7 +558,7 @@ METHOD SearchParent( uParent ) CLASS TWindow
       ENDIF
 
       // NOTE: For INTERNALs, sets ::Parent and ::Container
-      // Checks IF parent is a form or container
+      // Checks if parent is a form or container
       IF uParent:lForm
          ::Parent := uParent
          // Checks for an open "control container" structure in the specified parent form

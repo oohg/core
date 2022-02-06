@@ -114,8 +114,8 @@
       [ <align: LEFT, CENTER, RIGHT> ] ;
    => ;
       _SetStatusItem( Dtoc( Date() ), ;
-            IIF( <.w.>, <nSize>, ;
-            IIF( "yyyy" $ Lower( Set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
+            iif( <.w.>, <nSize>, ;
+            iif( "yyyy" $ Lower( Set( _SET_DATEFORMAT ) ), 95, 75 ) ), ;
             <{uAction}>, <cToolTip>, NIL, <(styl)>, <(align)>, NIL )
 
 #xcommand CLOCK ;

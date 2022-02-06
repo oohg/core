@@ -209,8 +209,8 @@ SPLITBOX VERSION
             <.disabled.>, <.firstitem.>, <.fit.>, <backcolor>, <fontcolor>, ;
             <listwidth>, <{listdisplay}>, <{listclose}>, <{imagesource}>, ;
             <{itemimagenumber}>, <.delay.>, <.incremental.>, <.winsize.>, ;
-            IIF( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
-            IIF( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
+            iif( Upper( #<rfrsh> ) == "NOREFRESH", .F., ;
+            iif( Upper( #<rfrsh> ) == "REFRESH", .T., NIL ) ), ;
             <(sourceorder)>, <{refresh}>, <nLapse>, <max>, <editheight>, ;
             <optheight>, <.nohscroll.>, <.noclone.>, <.NoTrans.>, <{cancel}>, ;
             iif( Upper( #<index> ) == "INDEXISVALUE", .T., ;
