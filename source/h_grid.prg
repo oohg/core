@@ -2756,8 +2756,6 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
       Else
          ::SetFocus()
       EndIf
-
-      _OOHG_ThisType := ''
       _ClearThisCellInfo()
 
    EndIf
