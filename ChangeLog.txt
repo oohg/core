@@ -10,37 +10,97 @@
  *   '*' Changed: ...           '!' Fixed: ....
  *   '+' Added: ...             '%' Optimized: ...
  *   '-' Removed: ...           ';' Comment
+ * Use #nnn for referencing an issue.
  */
 
-2022-01-27 14:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\h_browse.ch
-    ! App-pseudo-var _OOHG_ThisObject is not set at:
-      - WM_LBUTTONDBLCLK event handler of TOBrowse class.
-  * core\source\h_controlmisc.ch
-    ! App-pseudo-var _OOHG_ThisObject is not set at:
-      - Method DoEvent of TControl class.
-  * core\source\h_grid.ch
-    ! App-pseudo-var _OOHG_ThisObject is not set at:
-      - Function TGrid_AddColumnColor.
-      - WM_LBUTTONDBLCLK event handler of TGrid class.
-      - LVN_GETDISPINFO event handler of TGrid class.
-      - NM_CLICK event handler of TGrid class.
-      - NM_RCLICK event handler of TGrid class.
-      - Function TGrid_CreateColorArray.
-      - Function TGrid_FillColorArea.
-      - WM_LBUTTONDBLCLK event handler of TGridByCell class.
-      - NM_CLICK event handler of TGridByCell class.
-      - NM_RCLICK event handler of TGridByCell class.
-  * core\source\h_xbrowse.ch
-    ! App-pseudo-var _OOHG_ThisObject is not set at:
-      - NM_CLICK event handler of TXBrowse class.
-      - NM_RCLICK event handler of TXBrowse class.
-      - WM_LBUTTONDBLCLK event handler of TXBrowseByCell class.
-      - NM_CLICK event handler of TXBrowseByCell class.
-      - NM_RCLICK event handler of TXBrowseByCell class.
-   #401
-   
-2022-01-30 15:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2022-02-05 21:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_editbox.ch
+    + NOCONTEXTMENU clause.
+    + UNDO clause.
+  * core\include\i_textbox.ch
+    + UNDO clause.
+  * core\source\h_editbox.prg
+    + Support for NOCONTEXTMENU clause.
+    + Support for UNDO clause.
+    * Indentation changes.
+    - Method LookForKey.
+    * Lettercase style changes.
+    * Some local var names.
+  * core\source\h_textbox.prg
+    + Support for UNDO clause.
+    + Method LookForKey.
+    * Some local var names.
+    * Some comments.
+  ; UNDO clause: when ESCAPE key is pressed the control's
+    content is reset to the value it had before edition start.
+
+2022-02-05 21:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_spinner.ch
+    + NOCONTEXTMENU clause.
+  * core\source\h_spinner.prg
+    + Support for NOCONTEXTMENU clause.
+    ! Cuebanner is not displayed when value clause is ommited.
+
+2022-02-05 21:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    ! _OOHG_ThisType was being cleared after cell edition.
+
+2022-02-05 21:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Indentation changes.
+
+2022-02-05 21:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    * Indentation changes.
+    + Comment.
+
+2022-02-05 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_dll.ch
+  * core\include\i_graph.ch
+  * core\include\i_hyperlink.ch
+  * core\include\i_keybd.ch
+  * core\include\i_media.ch
+    * Indentation changes.
+
+2022-02-05 21:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_init.prg
+    ! Untranslated messages for spanish language.
+
+2022-02-05 21:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+    * Indentation changes.
+    - Pseudofunction _PushEventList.
+
+2022-02-05 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    * Indentation changes.
+
+2022-02-05 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_combobox.ch
+  * core\include\i_hmg_compat.ch
+  * core\include\i_listbox.ch
+  * core\include\i_monthcal.ch
+  * core\include\i_radiogroup.ch
+  * core\include\i_scroll.ch
+  * core\include\i_status.ch
+  * core\source\h_listbox.prg
+  * core\source\h_windows.prg
+    * Lettercase style changes.
+
+2022-01-30 15:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_misc.ch
+    + Some comments to some CSIDL entries.
+  
+2022-01-30 15:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tooltip.ch
+    * Lettercase style changes.
+
+2022-01-30 15:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    * Function hb_osisWin10 was synchronized to Minigui one.
+    ; This should fix some random RTE at function hb_osisWin10.
+
+2022-01-30 15:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
     * Function WINVERSION was synchronized to Minigui one.
     ; This should fix some random RTE at function hb_osisWin10.
@@ -561,7 +621,7 @@
 
 2021-06-20 12:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
-    * Some word's case style was changed.
+    * Lettercase style changes.
 
 2021-06-20 11:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
@@ -1066,7 +1126,7 @@
 
 2020-09-22 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_MINGW.BAT
-    ! Casing of #define switch.
+    ! Lettercase style changes.
   #351
 
 2020-09-22 18:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -1313,6 +1373,8 @@
   * core\source\h_textbox.prg
     + Data cCue to class TText.
     + Method CueBanner to class TText.
+    ; Note that you can't set a cue banner on a EDITBOX nor on a RICHEDITBOX control.
+      See https://docs.microsoft.com/en-us/windows/win32/controls/em-setcuebanner
   #270
   #316PR
 
@@ -1385,7 +1447,7 @@
     + Clear data OnMouseLeave at method Release of class TControl.
     + Handler for WM_MOUSELEAVE at method Event of class TControl.
     - Remove commented out code.
-    * Case of two function names.
+    * Lettercase style changes.
   * core\source\h_image.prg
     + Support for ON MOUSEMOVE.
   * core\source\h_label.prg
@@ -2102,7 +2164,7 @@
 
 2020-05-29 17:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_notify.prg
-    ! Function's name casing.
+    ! Lettercase style changes.
 
 2020-05-29 17:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_richeditbox.prg
