@@ -1988,8 +1988,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
 
    ELSEIF nMsg == WM_LBUTTONDBLCLK
       _PushEventInfo()
-      _OOHG_ThisForm := ::Parent
-      _OOHG_ThisType := 'C'
+      _OOHG_ThisForm    := ::Parent
+      _OOHG_ThisType    := 'C'
       _OOHG_ThisControl := Self
       _OOHG_ThisObject  := Self
 
