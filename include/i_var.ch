@@ -148,16 +148,15 @@ APPLICATION WIDE PSEUDO-FUNCTIONS
 #xtranslate _OOHG_GetNullName( [ <x> ] )  => _OOHG_AppObject():Value_Pos50( [ <x> ] )
 #xtranslate _PushEventInfo()              => _OOHG_AppObject():EventInfoPush()
 #xtranslate _PopEventInfo()               => _OOHG_AppObject():EventInfoPop()
-#xtranslate _PushEventList()              => _OOHG_AppObject():EventInfoList()
 
 #xtranslate _OOHG_DeleteFrame( <cType> ) ;
     => ;
-      ( _OOHG_ActiveFrame != NIL .AND. _OOHG_ActiveFrame:Type == <cType> .AND. _OOHG_AppObject():ActiveFramePop() )
+       ( _OOHG_ActiveFrame != NIL .AND. _OOHG_ActiveFrame:Type == <cType> .AND. _OOHG_AppObject():ActiveFramePop() )
 
 #xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
     => ;
-      _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
+       _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
 
 #xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
     => ;
-      _OOHG_AppObject():HotKeySet( <nKey>, <nFlags>, <bAction> )
+       _OOHG_AppObject():HotKeySet( <nKey>, <nFlags>, <bAction> )
