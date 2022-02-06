@@ -92,6 +92,7 @@
       [ <boundtext: BOUNDTEXT> ] ;
       [ SUBCLASS <subclass> ] ;
       [ <cuebanner: CUEBANNER, PLACEHOLDER> <cuetext> ] ;
+      [ <nocm: NOCONTEXTMENU> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TSpinner(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, ;
@@ -99,4 +100,4 @@
             <{lostfocus}>, <{gotfocus}>, <height>, <helpid>, <.invisible.>, ;
             <.notabstop.>, <.bold.>, <.italic.>, <.underline.>, <.strikeout.>, ;
             <.wrap.>, <.readonly.>, <inc>, <backcolor>, <fontcolor>, <.rtl.>, ;
-            <.noborder.>, <.disabled.>, <.boundtext.>, <cuetext> )
+            <.noborder.>, <.disabled.>, <.boundtext.>, <cuetext>, <.nocm.> )

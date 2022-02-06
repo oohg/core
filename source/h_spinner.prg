@@ -96,7 +96,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
                nMin, nMax, cTooltip, bChange, bLostFocus, bGotFocus, nHeight, nHelpId, ;
                lInvisible, lNoTabStop, lBold, lItalic, lUnderline, lStrikeout, ;
                lWrap, lReadonly, nIncrement, uBackColor, uFontColor, lRtl, ;
-               lNoBorder, lDisabled, lBndTxt, cCue ) CLASS TSpinner
+               lNoBorder, lDisabled, lBndTxt, cCue, lNoCntxtMnu ) CLASS TSpinner
 
    LOCAL nStyle, nStyleEx, nControlHandle
 
@@ -113,7 +113,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
    ASSIGN lReadonly      VALUE lReadonly  TYPE "L" DEFAULT .F.
    ASSIGN lNoBorder      VALUE lNoborder  TYPE "L" DEFAULT .F.
    ASSIGN lInvisible     VALUE lInvisible TYPE "L" DEFAULT .F.
-   ASSIGN nValue         VALUE nValue     TYPE "N" DEFAULT ::nRangeMin
+   ASSIGN nValue         VALUE nValue     TYPE "N" DEFAULT iif( Empty( cCue ), ::nRangeMin, NIL )
 
    ::SetForm( cControlName, uParentForm, cFontName, nFontSize, uFontColor, uBackColor, .T., lRtl )
 
@@ -142,6 +142,10 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
    ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
    ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
    ASSIGN ::OnChange    VALUE bChange    TYPE "B"
+
+   IF HB_ISLOGICAL( lNoCntxtMnu ) .AND. lNoCntxtMnu
+      ::ContextMenu := TMenuContext():Define( Self )
+   ENDIF
 
    RETURN Self
 
