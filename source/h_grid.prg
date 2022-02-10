@@ -6604,15 +6604,16 @@ METHOD Valid() CLASS TGridControl
    Local lValid, uValue, cValidMessage
 
    uValue := ::ControlValue
+   _OOHG_ThisItemCellValue := uValue
+
+   // ::bValid may change _OOHG_ThisItemCellValue (This.CellValue)
+   lValid := _OOHG_Eval( ::bValid, uValue )
+   uValue := _OOHG_ThisItemCellValue
 
    If ValType( ::cMemVar ) $ "CM" .AND. ! Empty( ::cMemVar )
       &( ::cMemVar ) := uValue
    EndIf
 
-   _OOHG_ThisItemCellValue := uValue
-   _PushEventInfo()
-   lValid := _OOHG_Eval( ::bValid, uValue )
-   _PopEventInfo()
    _CheckCellNewValue( Self, @uValue )
    If ! HB_IsLogical( lValid )
       lValid := .T.
