@@ -1968,43 +1968,6 @@ FUNCTION _HMG_PRINTER_aPrinters()
 
    RETURN _HMG_PRINTER_C_aPrinters()
 
-/*
- * The next 6 functions are deprecated and will be removed in a future release.
- * Use _HMG_PRINTER_funcname() instead or add
- * #xtranslate _HMG_PRINTER_funcname() => funcname()
- * to your sources.
- */
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetPrintableAreaWidth()
-
-   RETURN _HMG_PRINTER_GetPrintableAreaWidth()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetPrintableAreaHeight()
-
-   RETURN _HMG_PRINTER_GetPrintableAreaHeight()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetPrintableAreaHorizontalOffset()
-
-   RETURN _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetPrintableAreaVerticalOffset()
-
-   RETURN _HMG_PRINTER_GetPrintableAreaVerticalOffset()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION GetPrinter()
-
-   RETURN _HMG_PRINTER_GetPrinter()
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION aPrinters()
-
-   RETURN _HMG_PRINTER_aPrinters()
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 

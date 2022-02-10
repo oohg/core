@@ -105,6 +105,14 @@ MEMVAR _HMG_MiniPrint
 #xtranslate OpenPrinterGetPageWidth()       => _HMG_PRINTER_GETPAGEWIDTH( OpenPrinterGetDC() )
 #xtranslate OpenPrinterGetPageHeight()      => _HMG_PRINTER_GETPAGEHEIGHT( OpenPrinterGetDC() )
 
+// Pseudofunctions
+#xtranslate GetPrintableAreaWidth()            => _HMG_PRINTER_GetPrintableAreaWidth()
+#xtranslate GetPrintableAreaHeight()           => _HMG_PRINTER_GetPrintableAreaHeight()
+#xtranslate GetPrintableAreaHorizontalOffset() => _HMG_PRINTER_GetPrintableAreaHorizontalOffset()
+#xtranslate GetPrintableAreaVerticalOffset()   => _HMG_PRINTER_GetPrintableAreaVerticalOffset()
+#xtranslate GetPrinter()                       => _HMG_PRINTER_GetPrinter()
+#xtranslate aPrinters()                        => _HMG_PRINTER_aPrinters()
+
 #xcommand SELECT PRINTER <cPrinter> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
       [ <lPaperSize: PAPERSIZE> <nPaperSize> ] ;
@@ -808,3 +816,4 @@ PRINTER CONFIGURATION CONSTANTS
 #endif
 
 #endif
+
