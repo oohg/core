@@ -265,7 +265,7 @@ CLASS TWindow
    METHOD SaveAs
    METHOD SaveData
    METHOD SearchParent
-   METHOD SetBackgroundInvisible  BLOCK { |Self, nClr| SetLayeredWindowAttributes( ::hWnd, iif( nClr == NIL, ::BackColorCode, nClr ), 0, LWA_COLORKEY ) }
+   METHOD SetBackgroundInvisible
    METHOD SetFocus
    METHOD SethWnd
    METHOD SetKey                                                              // Application-controlled hotkeys
@@ -280,7 +280,33 @@ CLASS TWindow
    METHOD Value                   BLOCK { || NIL }
    METHOD Visible                 SETGET
 
+   ACCESS Handle                  INLINE ::hWnd
+   ASSIGN Handle( hWnd )          INLINE ::hWnd := hWnd
+
+   ACCESS OnMouseClick            INLINE ::OnClick
+   ASSIGN OnMouseClick( b )       INLINE ::OnClick := b
+
+   MESSAGE AlphaBlendTransparent  METHOD SetBackgroundInvisible
+   MESSAGE BackColorTransparent   METHOD SetBackgroundInvisible
+
    ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetBackgroundInvisible( uColor ) CLASS TWindow
+
+   LOCAL nColor
+
+   IF ArrayIsValidColor( uColor )
+      nColor := RGB( uColor[ 1 ], uColor[ 2 ], uColor[ 3 ] )
+   ELSEIF HB_ISNUMERIC( uColor )
+      nColor := uColor
+   ELSE
+      nColor := ::BackColorCode
+   ENDIF
+
+   SetLayeredWindowAttributes( ::hWnd, nColor, 0, LWA_COLORKEY )
+
+   RETURN nColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Name( cName ) CLASS TWindow
@@ -4317,3 +4343,4 @@ HB_FUNC( C_CHORD )          /* FUNCTION C_Chord( ... ) -> NIL */
 }
 
 #pragma ENDDUMP
+
