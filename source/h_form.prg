@@ -153,6 +153,11 @@ CLASS TForm FROM TWindow
    DATA aNotifyIcons              INIT {}
 
    METHOD Title                   SETGET
+   METHOD TitleBar                SETGET
+   METHOD SysMenu                 SETGET
+   METHOD Sizable                 SETGET
+   METHOD MaxButton               SETGET
+   METHOD MinButton               SETGET
    METHOD Height                  SETGET
    METHOD Width                   SETGET
    METHOD Col                     SETGET
@@ -232,6 +237,8 @@ CLASS TForm FROM TWindow
    METHOD cNotifyIconName         SETGET
    METHOD cNotifyIconToolTip      SETGET
    METHOD AddNotifyIcon
+
+   MESSAGE OnNotifyClick          METHOD NotifyIconLeftClick
 
    ENDCLASS
 
@@ -800,6 +807,51 @@ METHOD AddNotifyIcon( cPicture, cToolTip, ProcedureName, ControlName ) CLASS TFo
 METHOD Title( cTitle ) CLASS TForm
 
    Return ( ::Caption := cTitle )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD TitleBar( lTitleBar ) CLASS TForm
+
+   IF HB_ISLOGICAL( lTitleBar )
+      WindowStyleFlag( ::hWnd, WS_CAPTION, iif( lTitleBar, WS_CAPTION, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_CAPTION )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SysMenu( lSysMenu ) CLASS TForm
+
+   IF HB_ISLOGICAL( lSysMenu )
+      WindowStyleFlag( ::hWnd, WS_SYSMENU, iif( lSysMenu, WS_SYSMENU, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_SYSMENU )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Sizable( lSizable ) CLASS TForm
+
+   IF HB_ISLOGICAL( lSizable )
+      WindowStyleFlag( ::hWnd, WS_SIZEBOX, iif( lSizable, WS_SIZEBOX, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_SIZEBOX )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MaxButton( lMaxButton ) CLASS TForm
+
+   IF HB_ISLOGICAL( lMaxButton )
+      WindowStyleFlag( ::hWnd, WS_MAXIMIZEBOX, iif( lMaxButton, WS_MAXIMIZEBOX, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_MAXIMIZEBOX )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD MinButton( lMinButton ) CLASS TForm
+
+   IF HB_ISLOGICAL( lMinButton )
+      WindowStyleFlag( ::hWnd, WS_MINIMIZEBOX, iif( lMinButton, WS_MINIMIZEBOX, 0 ) )
+   ENDIF
+
+   RETURN IsWindowStyle( ::hWnd, WS_MINIMIZEBOX )
 
 METHOD Height( nHeight ) CLASS TForm
 
@@ -3624,3 +3676,4 @@ STATIC FUNCTION ChangeObjValue( ooObj, cName, aValues )
    MsgInfo( cName + ' ' + aValues[ 1 ] + ' ' + ValueToStr( aValues[ 2 ] ) )
 
    RETURN NIL
+
