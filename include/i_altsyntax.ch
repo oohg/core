@@ -1216,11 +1216,11 @@ TEXTBOX
       _OOHG_ActiveControlCueBanner    := NIL
 
 #xcommand CUEBANNER <text>;
-   =>;
+   => ;
    _OOHG_ActiveControlCueBanner := <text>
 
 #xcommand PLACEHOLDER <text>;
-   =>;
+   => ;
    _OOHG_ActiveControlCueBanner := <text>
 
 #xcommand CTRLSATLEFT <atleft> ;
