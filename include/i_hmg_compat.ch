@@ -3,7 +3,7 @@
  */
 /*
  * ooHG source code:
- * HGM Extended compatibility commands
+ * HMG Extended compatibility commands
  *
  * Copyright 2005-2021 Vicente Guerra <vicente@guerra.com.mx> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
@@ -64,6 +64,8 @@
 #ifndef __OOHG_HMG_COMPAT__
 
 #define __OOHG_HMG_COMPAT__
+
+#include "i_windefs.ch"
 
 #xtranslate _SetWindowBackColor( <FormHandle>, <aColor> ) ;
    => ;
@@ -676,5 +678,9 @@ TODO: implement this clauses:
 #xtranslate SET TOOLTIP VISIBLETIME TO <t> OF <form> ;
    => ;
       SET TOOLTIP VISIBLETIME TO <t>
+
+#xtranslate SET EVENTS FUNCTION TO <fname> [ RESULT TO <lSuccess> ] ;
+   => ;
+      /* not needed: SET EVENTS FUNCTION TO */
 
 #endif
