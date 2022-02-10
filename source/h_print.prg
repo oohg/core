@@ -6129,10 +6129,10 @@ FUNCTION _Ind25( cCode, lCheck, lShowErrors )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION ArrayIsValidColor( aColor )
 
-   RETURN HB_ISARRAY( aColor ) .AND. ;
+   RETURN HB_ISARRAY( aColor ) .AND. Len( aColor ) == 3 .AND. ;
           HB_ISNUMERIC( aColor[1] ) .AND. aColor[1] >= 0 .AND. aColor[1] <= 255 .AND. ;
-              HB_ISNUMERIC( aColor[2] ) .AND. aColor[2] >= 0 .AND. aColor[2] <= 255 .AND. ;
-              HB_ISNUMERIC( aColor[3] ) .AND. aColor[3] >= 0 .AND. aColor[3] <= 255
+          HB_ISNUMERIC( aColor[2] ) .AND. aColor[2] >= 0 .AND. aColor[2] <= 255 .AND. ;
+          HB_ISNUMERIC( aColor[3] ) .AND. aColor[3] >= 0 .AND. aColor[3] <= 255
 
 
 
