@@ -13,6 +13,10 @@
  * Use #nnn for referencing an issue.
  */
 
+2022-02-11 19:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    - ";;" lines from DECLARE WINDOW.
+
 2022-02-10 22:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
     + Some properties and methods to synchronize with HMG Extended.
