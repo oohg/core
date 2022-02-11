@@ -67,16 +67,63 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
 
 #xcommand DECLARE WINDOW <w> ;
    => ;
-      #xtranslate <w> . \<p: Name, Title, Height, Width, ClientHeight, ;
-            ClientWidth, VirtualHeight, VirtualWidth, Col, Row, BackColor, ;
-            FocusedControl, hWnd, Object, Cursor, NotifyIcon, NotifyToolTip, ;
-            SaveAs, MinWidth, MaxWidth, MinHeight, MaxHeight, Topmost, ;
-            HelpButton, Closable, Handle, BackColorCode, ClientAdjust, ;
-            NoDefWinProc, Cargo, FontColor\> ;
-            => GetExistingFormObject( <(w)> ):\<p\> ;;
-      #xtranslate <w> . \<p: Activate, Center, Release, Maximize, Minimize, ;
-            Restore, Show, Hide, Print, SetFocus, Redraw\> \[()\] ;
-            => GetExistingFormObject( <(w)> ):\<p\> () ;;
+      #xtranslate <w> . \<p: BackColor,BackColorCode, Cargo, ClientAdjust, ;
+            ClientHeight, ClientWidth, Closable, Col, Cursor, Enabled, ;
+            FocusedControl, FontColor, Handle, Height, HelpButton, hWnd, ;
+            MaxButton, MaxHeight, MaxWidth, MinButton, MinHeight, MinWidth, ;
+            Name, NoDefWinProc, NotifyIcon, NotifyToolTip, Object, Row, SaveAs, ;
+            Sizable, SysMenu, Title, TitleBar, Topmost, Type, VirtualHeight, ;
+            VirtualWidth, Visible, Width\> ;
+         => ;
+            GetExistingFormObject( <(w)> ):\<p\> ;;
+            ;;
+      #xtranslate <w> . \<p: BackColor, BackColorCode, Cargo, ClientAdjust, ;
+            ClientHeight, ClientWidth, Closable, Col, Cursor, Enabled, ;
+            FocusedControl, FontColor, Handle, Height, HelpButton, hWnd, ;
+            MaxButton, MaxHeight, MaxWidth, MinButton, MinHeight, MinWidth, ;
+            Name, NoDefWinProc, NotifyIcon, NotifyToolTip, Row, Sizable, ;
+            SysMenu, Title, TitleBar, Topmost, Type, VirtualHeight, ;
+            VirtualWidth, Visible, Width\> := \<n\> ;
+         => ;
+            SetProperty( <(w)>, \<(p)\>, \<n\> ) ;;
+            ;;
+      #xtranslate <w> . \<p: Activate, Center, Hide, Maximize, Minimize, Print, ;
+            Redraw, Release, Restore, SetFocus, Show, Visible\> \[()\] ;
+         => ;
+            GetExistingFormObject( <(w)> ):\<p\>() ;;
+            ;;
+      #xtranslate <w> . \<p: OnClick, OnDblClick, OnDropFiles, OnGotFocus, ;
+            OnHScrollBox, OnInit, OnInterActiveClose, OnLostFocus, OnMaximize, ;
+            OnMClick, OnMDblClick, OnMinimize, OnMouseClick, OnMouseDrag, ;
+            OnMouseLeave, OnMouseMove, OnMove, OnNotifyClick, OnPaint, ;
+            OnRClick, OnRDblClick, OnRelease, OnRestore, OnScrollDown, ;
+            OnScrollLeft, OnScrollRight, OnScrollUp, OnSize, OnVScrollBox\> ;
+         => ;
+            GetProperty( <(w)>, \<"p"\> ) ;;
+            ;;
+      #xtranslate <w> . \<p: OnClick, OnDblClick, OnDropFiles, OnGotFocus, ;
+            OnHScrollBox, OnInit, OnInterActiveClose, OnLostFocus, OnMaximize, ;
+            OnMClick, OnMDblClick, OnMinimize, OnMouseClick, OnMouseDrag, ;
+            OnMouseLeave, OnMouseMove, OnMove, OnNotifyClick, OnPaint, OnRClick, ;
+            OnRDblClick, OnRelease, OnRestore, OnScrollDown, OnScrollLeft, ;
+            OnScrollRight, OnScrollUp, OnSize, OnVScrollBox\> := \<n\> ;
+         => ;
+            SetProperty( <(w)>, \<"p"\>, \<n\> ) ;;
+            ;;
+      #xtranslate <w> . \<p: AlphaBlendTransparent, SetBackgroundInvisible, ;
+            SetBackgroundInvisible\> := \<n\> ;
+         => ;
+            DoMethod( <(w)>, \<"p"\>, \<n\> ) ;;
+            ;;
+      #xtranslate <w> . \<p: Activate, Center, Redraw, Release, Maximize, ;
+            Minimize, Restore, Show, Hide, SetFocus, Print\> \[()\] ;
+         => ;
+            DoMethod ( <(w)>, \<"p"\> ) ;;
+            ;;
+      #xtranslate <w> . \<p:SaveAs\>( \<a\> ) ;
+         => ;
+            DoMethod ( <(w)>, "SaveAs", \<a\> ) ;;
+            ;;
       #xtranslate <w> . \<c\> . DisableEdit ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
       #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, Spacing, ;
@@ -114,7 +161,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             CheckItem, BoldItem\>( \<arg\> ) := \<n\> ;
             => SetProperty( <(w)>, \<(c)>, \<(p)>, \<arg\>, \<n\> ) ;;
       #xtranslate <w> . \<c\> . \<p: EnableUpdate, DisableUpdate\> ;
-            => EMPTY( 0 ) ;;
+            => Empty( 0 ) ;;
       #xtranslate <w> . \<c\> . \<p:Cell\>( \<arg1\>, \<arg2\> ) ;
             => GetProperty( <(w)>, \<(c)>, \<(p)>, \<arg1\>, \<arg2\> ) ;;
       #xtranslate <w> . \<c\> . \<p: Cell\>( \<arg1\>, \<arg2\> ) := \<n\> ;
@@ -578,3 +625,4 @@ WINDOW STATUS, see METHOD GetWindowState() CLASS TForm
 #define FORM_MAXIMIZED 2
 #define FORM_MINIMIZED 1
 #define FORM_NORMAL    0
+
