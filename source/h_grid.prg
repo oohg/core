@@ -2166,10 +2166,11 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, aDynamicColor, nWi
       ENDIF
 
       _PushEventInfo()
-      _OOHG_ThisForm    := ::Parent
-      _OOHG_ThisType    := "C"
-      _OOHG_ThisControl := Self
-      _OOHG_ThisObject  := Self
+      _OOHG_ThisForm      := ::Parent
+      _OOHG_ThisType      := "C"
+      _OOHG_ThisControl   := Self
+      _OOHG_ThisObject    := Self
+      _OOHG_ThisEventType := "SETGRIDCELL"
       FOR x := 1 TO nItemCount
          IF HB_ISARRAY( aGrid[ x ] )
             IF Len( aGrid[ x ] ) < nWidth
@@ -2968,6 +2969,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
             ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             Else
+               _OOHG_ThisEventType := "EDITGRID"
                ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
          ElseIf ::InPlace
@@ -2989,11 +2991,13 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
             ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
                ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
             Else
+               _OOHG_ThisEventType := "EDITCELL"
                ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
             EndIf
          ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          Else
+            _OOHG_ThisEventType := "EDITITEM"
             ::EditItem()
          EndIf
 
@@ -3999,10 +4003,11 @@ STATIC FUNCTION TGrid_CreateColorArray( aGrid, nItem, uColor, uDynamicColor, nWi
    aTemp := Array( nWidth )
 
    _PushEventInfo()
-   _OOHG_ThisForm    := ::Parent
-   _OOHG_ThisType    := "C"
-   _OOHG_ThisControl := Self
-   _OOHG_ThisObject  := Self
+   _OOHG_ThisForm      := ::Parent
+   _OOHG_ThisType      := "C"
+   _OOHG_ThisControl   := Self
+   _OOHG_ThisObject    := Self
+   _OOHG_ThisEventType := "GETGRIDCOLOR"
 
    IF HB_ISLOGICAL( lSetThisCellInfo ) .AND. ! lSetThisCellInfo
       // Set lSetThisCellInfo to .F. to avoid endless loop when calling this function inside the ON QUERYDATA block.
@@ -4287,10 +4292,11 @@ STATIC FUNCTION TGrid_FillColorArea( aGrid, uColor, nTop, nLeft, nBottom, nRight
          ASize( aGrid, nBottom )
       ENDIF
       _PushEventInfo()
-      _OOHG_ThisForm    := ::Parent
-      _OOHG_ThisType    := "C"
-      _OOHG_ThisControl := Self
-      _OOHG_ThisObject  := Self
+      _OOHG_ThisForm      := ::Parent
+      _OOHG_ThisType      := "C"
+      _OOHG_ThisControl   := Self
+      _OOHG_ThisObject    := Self
+      _OOHG_ThisEventType := "FILLCOLORAREA"
       FOR nAux := nTop TO nBottom
          IF ! HB_ISARRAY( aGrid[ nAux ] )
             aGrid[ nAux ] := Array( nRight )
@@ -5807,6 +5813,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TGridByCell
          ElseIf ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          Else
+            _OOHG_ThisEventType := "EDITGRID"
             ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          EndIf
 

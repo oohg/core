@@ -2031,6 +2031,7 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          ELSE
+            _OOHG_ThisEventType := "EDITGRID"
             ::EditGrid( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex )
          ENDIF
       ELSEIF ::InPlace
@@ -2052,11 +2053,13 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TOBrowse
          ELSEIF ! _OOHG_SameEnterDblClick .and. ::lExtendDblClick .and. HB_IsBlock( ::OnDblClick, aCellData )
             ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
          ELSE
+            _OOHG_ThisEventType := "EDITCELL"
             ::EditCell( _OOHG_ThisItemRowIndex, _OOHG_ThisItemColIndex, NIL, NIL, NIL, NIL, .F. )
          ENDIF
       ELSEIF ! _OOHG_SameEnterDblClick .AND. ::lExtendDblClick .AND. HB_ISBLOCK( ::OnDblClick, aCellData )
          ::DoEventMouseCoords( ::OnDblClick, "DBLCLICK" )
       ELSE
+         _OOHG_ThisEventType := "EDITITEM"
          ::EditItem()
       ENDIF
 
