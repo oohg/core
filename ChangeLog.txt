@@ -13,6 +13,13 @@
  * Use #nnn for referencing an issue.
  */
 
+2022-02-11 23:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+  * core\source\h_grid.prg
+  * core\source\h_xbrowse.prg
+    ! Missing setting of var _OOHG_ThisEventType before some
+      control events.
+
 2022-02-11 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\miniprint_dyns.hbx
     * Updated
@@ -167,6 +174,34 @@
     % Some functions.
     % All #defines were replaced by a single #include.
     * Function WindowsVersion was synchronized to Minigui one.
+
+2022-01-27 14:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - WM_LBUTTONDBLCLK event handler of TOBrowse class.
+  * core\source\h_controlmisc.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - Method DoEvent of TControl class.
+  * core\source\h_grid.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - Function TGrid_AddColumnColor.
+      - WM_LBUTTONDBLCLK event handler of TGrid class.
+      - LVN_GETDISPINFO event handler of TGrid class.
+      - NM_CLICK event handler of TGrid class.
+      - NM_RCLICK event handler of TGrid class.
+      - Function TGrid_CreateColorArray.
+      - Function TGrid_FillColorArea.
+      - WM_LBUTTONDBLCLK event handler of TGridByCell class.
+      - NM_CLICK event handler of TGridByCell class.
+      - NM_RCLICK event handler of TGridByCell class.
+  * core\source\h_xbrowse.ch
+    ! App-pseudo-var _OOHG_ThisObject is not set at:
+      - NM_CLICK event handler of TXBrowse class.
+      - NM_RCLICK event handler of TXBrowse class.
+      - WM_LBUTTONDBLCLK event handler of TXBrowseByCell class.
+      - NM_CLICK event handler of TXBrowseByCell class.
+      - NM_RCLICK event handler of TXBrowseByCell class.
+   #401
 
 2021-11-05 08:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.ch
