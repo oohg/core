@@ -98,145 +98,140 @@ void _OOHG_SetMouseCoords( PHB_ITEM pSelf, int iCol, int iRow );
 
 CLASS TForm FROM TWindow
 
-   DATA oToolTip                  INIT NIL
-   DATA Focused                   INIT .T.
-   DATA LastFocusedControl        INIT 0
-   DATA AutoRelease               INIT .F.
+   DATA aChildPopUp               INIT {}    // POP UP windows.
    DATA ActivateCount             INIT { 0, NIL, .T. }
-   DATA oMenu                     INIT NIL
+   DATA aNotifyIcons              INIT {}
+   DATA AutoRelease               INIT .F.
+   DATA Focused                   INIT .T.
+   DATA ForceCol                  INIT NIL   // Must be NIL instead of 0
+   DATA ForceRow                  INIT NIL   // Must be NIL instead of 0
+   DATA GraphCommand              INIT NIL
+   DATA GraphControls             INIT {}
+   DATA GraphData                 INIT {}
+   DATA GraphTasks                INIT {}
+   DATA hBackImage                INIT NIL
+   DATA hParent                   INIT 0
    DATA hWndClient                INIT NIL
-   DATA oWndClient                INIT NIL
-   DATA lInternal                 INIT .F.
+   DATA InteractiveClose          INIT -1
+   DATA LastFocusedControl        INIT 0
+   DATA lDefined                  INIT .F.
+   DATA lEnterSizeMove            INIT .F.
    DATA lForm                     INIT .T.
-   DATA nWidth                    INIT 300
-   DATA nHeight                   INIT 300
+   DATA lInternal                 INIT .F.
+   DATA lRefreshDataOnActivate    INIT .T.
    DATA lShowed                   INIT .F.
    DATA lStretchBack              INIT .T.
-   DATA hBackImage                INIT NIL
-   DATA lEnterSizeMove            INIT .F.
-   DATA lDefined                  INIT .F.
-   DATA uFormCursor               INIT IDC_ARROW
-   DATA lRefreshDataOnActivate    INIT .T.
-   DATA hParent                   INIT 0
-   DATA OnRelease                 INIT NIL
-   DATA OnMove                    INIT NIL
-   DATA OnSize                    INIT NIL
-   DATA OnPaint                   INIT NIL
-   DATA OnScrollUp                INIT NIL
-   DATA OnScrollDown              INIT NIL
-   DATA OnScrollLeft              INIT NIL
-   DATA OnScrollRight             INIT NIL
+   DATA lTopmost                  INIT .F.
+   DATA MaxHeight                 INIT 0
+   DATA MaxWidth                  INIT 0
+   DATA MinHeight                 INIT 0
+   DATA MinWidth                  INIT 0
+   DATA nHeight                   INIT 300
+   DATA nVirtualHeight            INIT 0
+   DATA nVirtualWidth             INIT 0
+   DATA nWidth                    INIT 300
+   DATA oMenu                     INIT NIL
    DATA OnHScrollBox              INIT NIL
-   DATA OnVScrollBox              INIT NIL
    DATA OnInteractiveClose        INIT NIL
    DATA OnMaximize                INIT NIL
    DATA OnMinimize                INIT NIL
+   DATA OnMove                    INIT NIL
+   DATA OnPaint                   INIT NIL
+   DATA OnRelease                 INIT NIL
    DATA OnRestore                 INIT NIL
-   DATA InteractiveClose          INIT -1
-   DATA nVirtualHeight            INIT 0
-   DATA nVirtualWidth             INIT 0
+   DATA OnScrollDown              INIT NIL
+   DATA OnScrollLeft              INIT NIL
+   DATA OnScrollRight             INIT NIL
+   DATA OnScrollUp                INIT NIL
+   DATA OnSize                    INIT NIL
+   DATA OnVScrollBox              INIT NIL
+   DATA oToolTip                  INIT NIL
+   DATA oWndClient                INIT NIL
    DATA RangeHeight               INIT 0
    DATA RangeWidth                INIT 0
-   DATA MinWidth                  INIT 0
-   DATA MaxWidth                  INIT 0
-   DATA MinHeight                 INIT 0
-   DATA MaxHeight                 INIT 0
-   DATA ForceRow                  INIT NIL   // Must be NIL instead of 0
-   DATA ForceCol                  INIT NIL   // Must be NIL instead of 0
-   DATA GraphControls             INIT {}
-   DATA GraphTasks                INIT {}
-   DATA GraphCommand              INIT NIL
-   DATA GraphData                 INIT {}
    DATA SplitChildList            INIT {}    // INTERNAL windows.
-   DATA aChildPopUp               INIT {}    // POP UP windows.
-   DATA lTopmost                  INIT .F.
-   DATA aNotifyIcons              INIT {}
+   DATA uFormCursor               INIT IDC_ARROW
 
-   METHOD Title                   SETGET
-   METHOD TitleBar                SETGET
-   METHOD SysMenu                 SETGET
-   METHOD Sizable                 SETGET
-   METHOD MaxButton               SETGET
-   METHOD MinButton               SETGET
-   METHOD Height                  SETGET
-   METHOD Width                   SETGET
-   METHOD Col                     SETGET
-   METHOD Row                     SETGET
-   METHOD Cursor                  SETGET
-   METHOD BackColor               SETGET
-   METHOD TopMost                 SETGET
-   METHOD VirtualWidth            SETGET
-   METHOD VirtualHeight           SETGET
-   METHOD BackImage               SETGET
-   METHOD AutoAdjust
+   METHOD Activate
+   METHOD AddNotifyIcon
    METHOD AdjustWindowSize
+   METHOD AutoAdjust
+   METHOD BackColor               SETGET
+   METHOD BackImage               SETGET
+   METHOD BackStretch             SETGET
+   METHOD Center                  BLOCK { | Self | C_Center( ::hWnd ) }
+   METHOD CheckInteractiveClose
    METHOD ClientsPos
    METHOD Closable                SETGET
-   METHOD FocusedControl
-   METHOD SizePos
-   METHOD Define
-   METHOD Define2
-   METHOD EndWindow
-   METHOD Register
-   METHOD Visible                 SETGET
-   METHOD Show
-   METHOD Hide
-   METHOD Flash
-   METHOD Activate
-   METHOD Release
-   METHOD ReleaseAttached
-   METHOD RefreshData
-   METHOD Center()                BLOCK { | Self | C_Center( ::hWnd ) }
-   METHOD Restore()               BLOCK { | Self | Restore( ::hWnd ) }
-   METHOD Minimize()              BLOCK { | Self | Minimize( ::hWnd ) }
-   METHOD Maximize()              BLOCK { | Self | Maximize( ::hWnd ) }
-   METHOD DefWindowProc( nMsg, wParam, lParam) BLOCK { | Self, nMsg, wParam, lParam | iif( ValidHandler( ::hWndClient ), ;
-                                                                                           DefFrameProc( ::hWnd, ::hWndClient, nMsg, wParam, lParam ), ;
-                                                                                           DefWindowProc( ::hWnd, nMsg, wParam, lParam ) ) }
-   METHOD LastControl
-   METHOD ToolTipWidth( nWidth )          BLOCK { | Self, nWidth | ::oToolTip:WindowWidth( nWidth ) }
-   METHOD ToolTipMultiLine( lMultiLine )  BLOCK { | Self, lMultiLine | ::oToolTip:MultiLine( lMultiLine ) }
-   METHOD ToolTipAutoPopTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:AutoPopTime( nMilliSec ) }
-   METHOD ToolTipInitialTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:InitialTime( nMilliSec ) }
-   METHOD ToolTipResetDelays( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:ResetDelays( nMilliSec ) }
-   METHOD ToolTipReshowTime( nMilliSec )  BLOCK { | Self, nMilliSec | ::oToolTip:ReshowTime( nMilliSec ) }
-   METHOD ToolTipIcon( nIcon )            BLOCK { | Self, nIcon | ::oToolTip:Icon( nIcon ) }
-   METHOD ToolTipTitle( cTitle )          BLOCK { | Self, cTitle | ::oToolTip:Title( cTitle ) }
-   METHOD ToolTiphWnd()                   INLINE ::oToolTip:hWnd
-
-   METHOD GetWindowState
-
-   METHOD SetActivationFocus
-   METHOD ProcessInitProcedure
-   METHOD DeleteControl
-   METHOD OnHideFocusManagement
-   METHOD CheckInteractiveClose
-   METHOD DoEvent
-
-   METHOD Events
-   METHOD Events_Destroy
-   METHOD Events_VScroll
-   METHOD Events_HScroll
-   METHOD HelpButton              SETGET
-   METHOD HelpTopic(lParam)       BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId, 2 ), Self, NIL }
-   METHOD ScrollControls
-   METHOD MessageLoop
-   METHOD HasStatusBar            BLOCK { | Self | AScan( ::aControls, { |c| c:Type == "MESSAGEBAR" } ) > 0 }
-   METHOD Inspector               BLOCK { | Self | Inspector( Self ) }
-
-   METHOD NotifyIconObject
-   METHOD NotifyIcon              SETGET
-   METHOD NotifyToolTip           SETGET
-   METHOD NotifyIconLeftClick     SETGET
-   METHOD NotifyIconDblClick      SETGET
-   METHOD NotifyIconRightClick    SETGET
-   METHOD NotifyIconRDblClick     SETGET
-   METHOD NotifyIconMidClick      SETGET
-   METHOD NotifyIconMDblClick     SETGET
-   METHOD NotifyMenu              SETGET
    METHOD cNotifyIconName         SETGET
    METHOD cNotifyIconToolTip      SETGET
-   METHOD AddNotifyIcon
+   METHOD Col                     SETGET
+   METHOD Cursor                  SETGET
+   METHOD Define
+   METHOD Define2
+   METHOD DefWindowProc
+   METHOD DeleteControl
+   METHOD DoEvent
+   METHOD EndWindow
+   METHOD Events
+   METHOD Events_Destroy
+   METHOD Events_HScroll
+   METHOD Events_VScroll
+   METHOD Flash
+   METHOD FocusedControl
+   METHOD GetWindowState
+   METHOD HasStatusBar            BLOCK { | Self | AScan( ::aControls, { |c| c:Type == "MESSAGEBAR" } ) > 0 }
+   METHOD Height                  SETGET
+   METHOD HelpButton              SETGET
+   METHOD HelpTopic( lParam )     BLOCK { | Self, lParam | HelpTopic( GetControlObjectByHandle( GetHelpData( lParam ) ):HelpId, 2 ), Self, NIL }
+   METHOD Hide
+   METHOD Inspector               BLOCK { | Self | Inspector( Self ) }
+   METHOD LastControl
+   METHOD MaxButton               SETGET
+   METHOD Maximize                BLOCK { | Self | Maximize( ::hWnd ) }
+   METHOD MessageLoop
+   METHOD MinButton               SETGET
+   METHOD Minimize                BLOCK { | Self | Minimize( ::hWnd ) }
+   METHOD NotifyIcon              SETGET
+   METHOD NotifyIconDblClick      SETGET
+   METHOD NotifyIconLeftClick     SETGET
+   METHOD NotifyIconMDblClick     SETGET
+   METHOD NotifyIconMidClick      SETGET
+   METHOD NotifyIconObject
+   METHOD NotifyIconRDblClick     SETGET
+   METHOD NotifyIconRightClick    SETGET
+   METHOD NotifyMenu              SETGET
+   METHOD NotifyToolTip           SETGET
+   METHOD OnHideFocusManagement
+   METHOD ProcessInitProcedure
+   METHOD RefreshData
+   METHOD Register
+   METHOD Release
+   METHOD ReleaseAttached
+   METHOD Restore                 BLOCK { | Self | Restore( ::hWnd ) }
+   METHOD Row                     SETGET
+   METHOD ScrollControls
+   METHOD SetActivationFocus
+   METHOD Show
+   METHOD Sizable                 SETGET
+   METHOD SizePos
+   METHOD SysMenu                 SETGET
+   METHOD Title                   SETGET
+   METHOD TitleBar                SETGET
+   METHOD ToolTipAutoPopTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:AutoPopTime( nMilliSec ) }
+   METHOD ToolTiphWnd()                   INLINE ::oToolTip:hWnd
+   METHOD ToolTipIcon( nIcon )            BLOCK { | Self, nIcon | ::oToolTip:Icon( nIcon ) }
+   METHOD ToolTipInitialTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:InitialTime( nMilliSec ) }
+   METHOD ToolTipMultiLine( lMultiLine )  BLOCK { | Self, lMultiLine | ::oToolTip:MultiLine( lMultiLine ) }
+   METHOD ToolTipResetDelays( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:ResetDelays( nMilliSec ) }
+   METHOD ToolTipReshowTime( nMilliSec )  BLOCK { | Self, nMilliSec | ::oToolTip:ReshowTime( nMilliSec ) }
+   METHOD ToolTipTitle( cTitle )          BLOCK { | Self, cTitle | ::oToolTip:Title( cTitle ) }
+   METHOD ToolTipWidth( nWidth )          BLOCK { | Self, nWidth | ::oToolTip:WindowWidth( nWidth ) }
+   METHOD TopMost                 SETGET
+   METHOD VirtualHeight           SETGET
+   METHOD VirtualWidth            SETGET
+   METHOD Visible                 SETGET
+   METHOD Width                   SETGET
 
    MESSAGE OnNotifyClick          METHOD NotifyIconLeftClick
 
@@ -522,6 +517,19 @@ METHOD Register( hWnd, cName ) CLASS TForm
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DefWindowProc( nMsg, wParam, lParam) CLASS TForm
+
+   LOCAL nRet
+
+   IF ValidHandler( ::hWndClient )
+      nRet := DefFrameProc( ::hWnd, ::hWndClient, nMsg, wParam, lParam )
+   ELSE
+      nRet := DefWindowProc( ::hWnd, nMsg, wParam, lParam )
+   ENDIF
+
+   RETURN nRet
+
 METHOD Visible( lVisible, nFlags, nTime ) CLASS TForm
 
    ASSIGN nFlags VALUE nFlags TYPE "N"
@@ -804,9 +812,10 @@ METHOD AddNotifyIcon( cPicture, cToolTip, ProcedureName, ControlName ) CLASS TFo
 
    RETURN TNotifyIcon():Define( ControlName, Self, cPicture, cToolTip, ProcedureName )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Title( cTitle ) CLASS TForm
 
-   Return ( ::Caption := cTitle )
+   RETURN ( ::Caption := cTitle )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD TitleBar( lTitleBar ) CLASS TForm
@@ -853,6 +862,7 @@ METHOD MinButton( lMinButton ) CLASS TForm
 
    RETURN IsWindowStyle( ::hWnd, WS_MINIMIZEBOX )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Height( nHeight ) CLASS TForm
 
    if HB_IsNumeric( nHeight )
@@ -861,6 +871,7 @@ METHOD Height( nHeight ) CLASS TForm
 
    Return GetWindowHeight( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Width( nWidth ) CLASS TForm
 
    if HB_IsNumeric( nWidth )
@@ -869,6 +880,7 @@ METHOD Width( nWidth ) CLASS TForm
 
    Return GetWindowWidth( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Col( nCol ) CLASS TForm
 
    if HB_IsNumeric( nCol )
@@ -877,6 +889,7 @@ METHOD Col( nCol ) CLASS TForm
 
    Return GetWindowCol( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Row( nRow ) CLASS TForm
 
    If HB_IsNumeric( nRow )
@@ -885,6 +898,7 @@ METHOD Row( nRow ) CLASS TForm
 
    Return GetWindowRow( ::hWnd )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD VirtualWidth( nSize ) CLASS TForm
 
    If HB_IsNumeric( nSize )
@@ -894,6 +908,7 @@ METHOD VirtualWidth( nSize ) CLASS TForm
 
    Return ::nVirtualWidth
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD VirtualHeight( nSize ) CLASS TForm
 
    If HB_IsNumeric( nSize )
@@ -916,14 +931,14 @@ METHOD LastControl CLASS TForm
 
    RETURN NIL
 
-METHOD FocusedControl() CLASS TForm
+METHOD FocusedControl CLASS TForm
 
-   Local hWnd, nPos
+   LOCAL hWnd, nPos
 
    hWnd := GetFocus()
    nPos := 0
    DO WHILE nPos == 0
-      nPos := ASCAN( ::aControls, { |o| o:hWnd == hWnd } )
+      nPos := AScan( ::aControls, { |o| o:hWnd == hWnd } )
       IF nPos == 0
          hWnd := GetParent( hWnd )
          IF hWnd == ::hWnd .OR. ! ValidHandler( hWnd )
@@ -932,7 +947,7 @@ METHOD FocusedControl() CLASS TForm
       ENDIF
    ENDDO
 
-   Return if( nPos == 0, "", ::aControls[ nPos ]:Name )
+   RETURN iif( nPos == 0, "", ::aControls[ nPos ]:Name )
 
 METHOD Cursor( uValue ) CLASS TForm
 
@@ -1391,6 +1406,16 @@ METHOD BackImage( uBackImage ) CLASS TForm
 
    Return ::hBackImage
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD BackStretch( lStretchBack ) CLASS TForm
+
+   IF HB_ISLOGICAL( lStretchBack )
+      ::lStretchBack := lStretchBack
+   ENDIF
+
+   RETURN ::lStretchBack
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
 
    /*
@@ -2153,7 +2178,7 @@ CLASS TFormModal FROM TForm
 
    DATA Type           INIT "M" READONLY
    DATA LockedForms    INIT {}
-   DATA oPrevWindow    INIT nil
+   DATA oPrevWindow    INIT NIL
 
    METHOD Define
    METHOD Visible      SETGET
@@ -2526,7 +2551,7 @@ METHOD Define( FormName, Caption, x, y, w, h, MouseDragProcedure, ;
    ::Parent:hWndClient := ::hWnd
    ::Parent:oWndClient := Self
 
-   _OOHG_AddMdi( ::hWnd, ::Parent:hWnd )
+   _OOHG_AddMDI( ::hWnd, ::Parent:hWnd )
 
    ::Events_Size()
 
