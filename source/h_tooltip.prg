@@ -91,7 +91,7 @@ CLASS TToolTip FROM TControl
    METHOD InitialTime             SETGET
    METHOD Item
    METHOD MultiLine               SETGET
-   METHOD ResetDelays
+   METHOD ResetDelays             SETGET
    METHOD ReshowTime              SETGET
    METHOD Title                   SETGET
    METHOD WindowWidth             SETGET
@@ -351,7 +351,7 @@ METHOD ResetDelays( nMilliSecs ) CLASS TToolTip
    ENDIF
    SetDelayTime( ::hWnd, nMilliSecs )
 
-   RETURN NIL
+   RETURN nMilliSecs
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Icon( uIcon ) CLASS TToolTip
