@@ -1701,8 +1701,8 @@ METHOD TabsAreaHeight() CLASS TTabRaw
 CLASS TTabPage FROM TControlGroup
 
    DATA Caption                   INIT ""
+   DATA cPicture                  INIT ""
    DATA nImage                    INIT -1
-   DATA Picture                   INIT ""
    DATA Position                  INIT 0
    DATA Type                      INIT "TABPAGE" READONLY
 
@@ -1710,6 +1710,7 @@ CLASS TTabPage FROM TControlGroup
    METHOD ContainerVisible
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
+   METHOD Picture                 SETGET
    METHOD SaveData
    METHOD SetFocus                BLOCK { |Self| ::Container:SetFocus(), ::Container:Value := ::Position, Self }
 
@@ -1725,6 +1726,15 @@ METHOD ContainerVisible() CLASS TTabPage
    ENDIF
 
    RETURN lRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Picture( uValue ) CLASS TTabPage
+
+   IF ValType( uValue ) $ "CM"
+      ::cPicture := uValue
+   ENDIF
+
+   RETURN ::cPicture
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Size() CLASS TTabPage
@@ -1774,10 +1784,10 @@ METHOD SaveData() CLASS TTabPage
 CLASS TTabPageInternal FROM TFormInternal
 
    DATA Caption                   INIT ""
+   DATA cPicture                  INIT ""
    DATA cToolTip                  INIT ""
    DATA lHidden                   INIT .F.
    DATA nImage                    INIT -1
-   DATA Picture                   INIT ""
    DATA Position                  INIT 0
    DATA Type                      INIT "TABPAGE" READONLY
 
@@ -1785,6 +1795,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD Define
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
+   METHOD Picture                 SETGET
    METHOD SetFocus                BLOCK { |Self| ::Container:SetFocus(), ::Container:Value := ::Position, ::Super:SetFocus(), Self }
    METHOD ToolTip                 SETGET
 
@@ -1843,6 +1854,15 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPageInternal
    ENDIF
 
    RETURN NIL
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Picture( uValue ) CLASS TTabPageInternal
+
+   IF ValType( uValue ) $ "CM"
+      ::cPicture := uValue
+   ENDIF
+
+   RETURN ::cPicture
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ToolTip( cToolTip ) CLASS TTabPageInternal
