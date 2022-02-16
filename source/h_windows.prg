@@ -436,7 +436,7 @@ METHOD RefreshData() CLASS TWindow
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLASS TWindow
 
-   LOCAL myobject, cWork, cExt
+   LOCAL myobject, cFile, cExt
 
    IF ValType( cType ) $ "CM"
      cType := Upper( cType )
@@ -454,9 +454,9 @@ METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLA
    ELSEIF cType == "PNG"
       cExt := ".png"
    ENDIF
-   cWork := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
-   DO WHILE File( cWork )
-      cWork := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+   cFile := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+   DO WHILE File( cFile )
+      cFile := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
    ENDDO
 
    ASSIGN y1 VALUE y1 TYPE "N" DEFAULT 44
@@ -464,7 +464,7 @@ METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLA
    ASSIGN x  VALUE x  TYPE "N" DEFAULT 1
    ASSIGN y  VALUE y  TYPE "N" DEFAULT 1
 
-   ::SaveAs( cWork, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
+   ::SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) //// save as BMP by default
 
    myobject := TPrint()
 
@@ -474,14 +474,14 @@ METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLA
       IF ! :lPrError
          :BeginDoc( "ooHG printing" )
          :BeginPage()
-         :PrintImage( y, x, y1, x1, cwork, NIL, lImageSize )
+         :PrintImage( y, x, y1, x1, cFile, NIL, lImageSize )
          :Endpage()
          :EndDoc()
       ENDIF
       :Release()
    END
 
-   FErase( cWork )
+   FErase( cFile )
 
    RETURN NIL
 
