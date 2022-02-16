@@ -237,7 +237,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
       If x > 0
          aPos:= { 0, 0, 0, 0 }
          GetWindowRect( ::hWnd, aPos )
-         ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
+         ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:nPosition - 1 )
          IF ::aControls[ x ]:ContextMenu != NIL
             ::aControls[ x ]:ContextMenu:Activate( aPos[ 2 ] + HiWord( ws ) +( aPos[ 4 ] -aPos[ 2 ] - HiWord( ws ) ) / 2, aPos[ 1 ] + LoWord( ws ) )
          ENDIF
@@ -265,7 +265,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
       If x > 0
          aPos:= {0, 0, 0, 0}
          GetWindowRect( ::hWnd, aPos )
-         ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:Position - 1 )
+         ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:nPosition - 1 )
          // TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd, aPos[1]+LoWord(ws), aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, ::hWnd )
          ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
       EndIf
@@ -324,7 +324,7 @@ METHOD LookForKey( nKey, nFlags ) CLASS TToolBar
       If GetFocus() == ::hWnd
          ButtonIndex := SendMessage( ::hWnd, TB_GETHOTITEM, 0, 0 )
          If ButtonIndex >= 0
-            i := aScan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:Position == ButtonIndex + 1 } )
+            i := aScan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:nPosition == ButtonIndex + 1 } )
             If i > 0
                oControl := ::aControls[ i ]
                If ! oControl:NestedClick
@@ -353,7 +353,7 @@ METHOD DeleteButton( nButtonIndex ) CLASS TToolBar
    Local i, oControl, lRet := .F.
 
    If nButtonIndex > 0 .AND. nButtonIndex <= GetButtonBarCount( ::hWnd )
-      i := aScan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:Position == nButtonIndex } )
+      i := aScan( ::aControls, { |o| o:Type == "TOOLBUTTON" .AND. o:nPosition == nButtonIndex } )
       If i > 0
          oControl := ::aControls[ i ]
          oControl:Release()
@@ -366,24 +366,24 @@ METHOD DeleteButton( nButtonIndex ) CLASS TToolBar
 
 CLASS TToolButton FROM TControl
 
-   DATA Type      INIT "TOOLBUTTON" READONLY
-   DATA Position  INIT 0
-   DATA hImage    INIT 0
-   DATA cPicture  INIT ""
-   DATA oHotKey   INIT Nil
-
-   DATA lAdjust   INIT .F.
+   DATA Type                 INIT "TOOLBUTTON" READONLY
+   DATA nPosition            INIT 0
+   DATA hImage               INIT 0
+   DATA cPicture             INIT ""
+   DATA oHotKey              INIT Nil
+   DATA lAdjust              INIT .F.
 
    METHOD Define
-   METHOD Value         SETGET
-   METHOD Enabled       SETGET
-   METHOD Picture       SETGET
-   METHOD HBitMap       SETGET
-   METHOD Buffer        SETGET
+   METHOD Value              SETGET
+   METHOD Enabled            SETGET
+   METHOD Picture            SETGET
+   METHOD HBitMap            SETGET
+   METHOD Buffer             SETGET
    METHOD Release
-   METHOD Caption       SETGET
+   METHOD Caption            SETGET
    METHOD RePaint
    METHOD Events_Notify
+   METHOD Position           SETGET
 
    ENDCLASS
 
@@ -423,7 +423,7 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 
    ::Register( Nil, ControlName, Nil, Nil, ToolTip, Id )
 
-   ::Position  :=  nPos
+   ::nPosition := nPos
    ::Caption := Caption
 
    nPos := At( '&', Caption )
@@ -439,13 +439,21 @@ METHOD Define( ControlName, x, y, Caption, ProcedureName, w, h, image, ;
 
    Return Self
 
+METHOD Position( nPos ) CLASS TToolButton
+
+   IF HB_ISNUMERIC( nPos ) .AND. nPos > 0
+      ::nPosition := nPos
+   ENDIF
+
+   RETURN ::nPosition
+
 METHOD Value( lValue ) CLASS TToolButton
 
    If ValType( lValue ) == "L"
-      CheckButtonBar( ::ContainerhWnd, ::Position - 1, lValue )
+      CheckButtonBar( ::ContainerhWnd, ::nPosition - 1, lValue )
    EndIf
 
-   Return IsButtonBarChecked( ::ContainerhWnd, ::Position - 1 )
+   Return IsButtonBarChecked( ::ContainerhWnd, ::nPosition - 1 )
 
 METHOD Enabled( lEnabled ) CLASS TToolButton
 
@@ -514,7 +522,7 @@ METHOD Release() CLASS TToolButton
       ::oHotKey:Release()
    EndIf
    If OsIsWinVistaOrLater()
-      SendMessage( ::ContainerhWnd, TB_DELETEBUTTON, ::Position - 1, 0 )
+      SendMessage( ::ContainerhWnd, TB_DELETEBUTTON, ::nPosition - 1, 0 )
    EndIf
    DeleteObject( ::hImage )
 
@@ -523,10 +531,10 @@ METHOD Release() CLASS TToolButton
 METHOD Caption( caption ) CLASS TToolButton
 
    If ValType( caption ) $ "CM"
-      SetToolButtonCaption( ::ContainerhWnd, ::Position - 1, caption )
+      SetToolButtonCaption( ::ContainerhWnd, ::nPosition - 1, caption )
    EndIf
 
-   Return GetToolButtonCaption( ::ContainerhWnd, ::Position - 1 )
+   Return GetToolButtonCaption( ::ContainerhWnd, ::nPosition - 1 )
 
 METHOD RePaint() CLASS TToolButton
 
