@@ -987,8 +987,8 @@ Function DoMethod( ... )
             RetVal := oWnd:Activate()
          EndIf
       ElseIf cMethod == 'SETFOCUS'
+         oWnd := GetExistingFormObject( aPars[1] )
          If oWnd:Active
-            oWnd := GetExistingFormObject( aPars[1] )
             RetVal := oWnd:SetFocus()
          EndIf
       Else
