@@ -75,7 +75,7 @@ CLASS TLabel FROM TControl
    DATA IconWidth                 INIT 0
    DATA nWidth                    INIT 120
    DATA nHeight                   INIT 24
-   DATA Picture                   INIT nil
+   DATA cPicture                  INIT NIL
 
    METHOD SetText( cText )        BLOCK {| Self, cText | ::Caption := cText }
    METHOD GetText()               BLOCK {| Self | ::Caption }
@@ -87,6 +87,7 @@ CLASS TLabel FROM TControl
    METHOD AutoSize                SETGET
    METHOD AutoWidth               SETGET
    METHOD Align                   SETGET
+   METHOD Picture                 SETGET
    METHOD SetFont
    METHOD lAutoSize               SETGET
    METHOD LeftAlign               BLOCK {| Self | ::Align( SS_LEFT ) }
@@ -108,7 +109,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight,
    ASSIGN ::nWidth      VALUE nWidth       TYPE "N"
    ASSIGN ::nHeight     VALUE nHeight      TYPE "N"
    ASSIGN ::Transparent VALUE lTransparent TYPE "L" DEFAULT .F.
-   ASSIGN ::Picture     VALUE cPicture     TYPE "CM"
+   ASSIGN ::cPicture    VALUE cPicture     TYPE "CM"
    ASSIGN lDisabled     VALUE lDisabled    TYPE "L" DEFAULT .F.
    ASSIGN lAutosize     VALUE lAutoSize    TYPE "L" DEFAULT .F.
 
@@ -170,14 +171,23 @@ METHOD Value( cValue ) CLASS TLabel
    ENDIF
 
    IF ValType( cValue ) $ "CFLN"
-      IF ValType( ::Picture ) $ "CM"
-         ::Caption := Transform( cValue, ::Picture )
+      IF ValType( ::cPicture ) $ "CM"
+         ::Caption := Transform( cValue, ::cPicture )
       ELSE
          ::Caption := cValue
       ENDIF
    ENDIF
 
    RETURN ::Caption
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Picture( cPicture ) CLASS TLabel
+
+   IF ValType( cPicture ) $ "CM"
+      ::cPicture := cPicture
+   ENDIF
+
+   RETURN ::cPicture
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Caption( cValue ) CLASS TLabel
