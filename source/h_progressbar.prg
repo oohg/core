@@ -89,6 +89,8 @@ CLASS TProgressBar FROM TControl
    METHOD StopMarquee
    METHOD Value                   SETGET
 
+   MESSAGE ForeColor              METHOD FontColor
+
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
