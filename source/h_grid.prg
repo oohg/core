@@ -85,6 +85,7 @@ CLASS TGrid FROM TControl
    DATA AllowDelete               INIT .F.
    DATA AllowEdit                 INIT .F.
    DATA AllowMoveColumn           INIT .T.
+   DATA aPicture                  INIT {}
    DATA aSelectedColors           INIT {}
    DATA aWhen                     INIT {}
    DATA aWidths                   INIT {}
@@ -169,7 +170,6 @@ CLASS TGrid FROM TControl
    DATA OnEditCell                INIT Nil
    DATA OnEditCellEnd             INIT Nil
    DATA OnInsert                  INIT Nil
-   DATA Picture                   INIT {}
    DATA RClickOnCheckbox          INIT .T.
    DATA ReadOnly                  INIT Nil
    DATA SearchCol                 INIT 0
@@ -262,6 +262,7 @@ CLASS TGrid FROM TControl
    METHOD OnEnter                 SETGET
    METHOD PageDown
    METHOD PageUp
+   METHOD Picture                 SETGET
    METHOD PriorColInOrder
    METHOD RefreshColors
    METHOD Release
@@ -491,12 +492,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
 
    IF ! HB_ISARRAY( aPicture )
-      ::Picture := Array( Len( ::aHeaders ) )
+      ::aPicture := Array( Len( ::aHeaders ) )
    ELSE
-      ::Picture := aPicture
-      ASize( ::Picture, Len( ::aHeaders ) )
+      ::aPicture := aPicture
+      ASize( ::aPicture, Len( ::aHeaders ) )
    ENDIF
-   AEval( ::Picture, { |x,i| ::Picture[ i ] := If( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_IsLogical( x ), x, NIL ) } )
+   AEval( ::aPicture, { |x,i| ::aPicture[ i ] := iif( ( ValType( x ) $ "CM" .AND. ! Empty( x ) ) .OR. HB_ISLOGICAL( x ), x, NIL ) } )
    ::ColType := Array( Len( ::aHeaders ) )
    IF Len( aRows ) > 0
       FOR i := 1 TO Len( ::aHeaders )
@@ -516,9 +517,9 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
          IF ValidHandler( aImageList[ 1 ] )
             SendMessage( ControlHandle, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
             ::ImageList := aImageList[ 1 ]
-            i := AScan( ::Picture, .T. )
+            i := AScan( ::aPicture, .T. )
             IF i == 0
-               ::Picture[ 1 ] := .T.
+               ::aPicture[ 1 ] := .T.
                ::aWidths[ 1 ] := Max( ::aWidths[ 1 ], aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ControlHandle ) + 4, 4 ) ) // Ensure there's enough room for bitmap plus checkboxes
             ELSE
                ::aWidths[ i ] := Max( ::aWidths[ i ], aImageList[ 2 ] )  // Ensure there's enough room for bitmap
@@ -651,6 +652,17 @@ METHOD Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
 
    Return Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Picture( aPicture ) CLASS TGrid
+
+   IF HB_ISARRAY( aPicture )
+      ::aPicture := aPicture
+      ASize( ::aPicture, Len( ::aHeaders ) )
+   ENDIF
+
+   RETURN ::aPicture
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD AddBitMap( uImage ) CLASS TGrid
 
    LOCAL aImageList, nPos, nCount, i
@@ -677,12 +689,12 @@ METHOD AddBitMap( uImage ) CLASS TGrid
          ::ImageList := aImageList[ 1 ]
          nPos := 1
          SendMessage( ::hWnd, ::SetImageListCommand, ::SetImageListWParam, aImageList[ 1 ] )
-         IF ! HB_ISARRAY( ::Picture )
-            ::Picture := Array( Len( ::aHeaders ) )
+         IF ! HB_ISARRAY( ::aPicture )
+            ::aPicture := Array( Len( ::aHeaders ) )
          ENDIF
-         i := AScan( ::Picture, .T. )
+         i := AScan( ::aPicture, .T. )
          IF i == 0
-            ::Picture[ 1 ] := .T.
+            ::aPicture[ 1 ] := .T.
             ::aWidths[ 1 ] := Max( ::ColumnWidth( 1 ), aImageList[ 2 ] + If( ::lCheckBoxes, GetStateListWidth( ::hWnd ) + 4, 4 ) ) // Ensure there's enough room for bitmap plus checkboxes
          ELSE
             ::aWidths[ i ] := Max( ::ColumnWidth( i ), aImageList[ 2 ] )  // Ensure there's enough room for bitmap
@@ -1966,9 +1978,9 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ::aHeaders[ nColIndex ] := cCaption
 
    // Update Pictures
-   ASize( ::Picture, nColumns )
-   AIns( ::Picture, nColIndex )
-   ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+   ASize( ::aPicture, nColumns )
+   AIns( ::aPicture, nColIndex )
+   ::aPicture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
 
    // Update Types
    ASize( ::ColType, nColumns )
@@ -2221,8 +2233,8 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ::aHeaders[ nColIndex ] := cCaption
 
    // Update Pictures
-   ASize( ::Picture, nColumns )
-   ::Picture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
+   ASize( ::aPicture, nColumns )
+   ::aPicture[ nColIndex ] := If( ( ValType( uPicture ) $ "CM" .AND. ! Empty( uPicture ) ) .OR. HB_IsLogical( uPicture ), uPicture, Nil )
 
    // Update Types
    ASize( ::ColType, nColumns )
@@ -2412,7 +2424,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
 
    _OOHG_DeleteArrayItem( ::aHeaders, nColIndex )
    _OOHG_DeleteArrayItem( ::aWidths, nColIndex )
-   _OOHG_DeleteArrayItem( ::Picture, nColIndex )
+   _OOHG_DeleteArrayItem( ::aPicture, nColIndex )
    _OOHG_DeleteArrayItem( ::ColType, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadClick, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeadDblClick, nColIndex )
@@ -6446,15 +6458,15 @@ FUNCTION GetPictureFromArray( Self, nCol )
 
    LOCAL cPicture
 
-   IF HB_ISARRAY( ::Picture )
-      ASize( ::Picture, Len( ::aHeaders ) )
+   IF HB_ISARRAY( ::aPicture )
+      ASize( ::aPicture, Len( ::aHeaders ) )
    ELSE
-      ::Picture := Array( Len( ::aHeaders ) )
+      ::aPicture := Array( Len( ::aHeaders ) )
    ENDIF
 
-   cPicture := ::Picture[ nCol ]
+   cPicture := ::aPicture[ nCol ]
    IF ! ( ( ValType( cPicture ) $ "CM" .AND. ! Empty( cPicture ) ) .OR. HB_ISLOGICAL( cPicture ) )
-      ::Picture[ nCol ] := cPicture := NIL
+      ::aPicture[ nCol ] := cPicture := NIL
    ENDIF
 
    RETURN cPicture
