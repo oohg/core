@@ -571,12 +571,16 @@ Function SetProperty( Arg1, Arg2, Arg3, Arg4, Arg5, Arg6 )
       ElseIf Arg3 == "ZOOM"
          oCtrl:Zoom( Arg4 )
 
-      ElseIf Arg3 == "POSITION"
-         If Arg4 == 0
-            oCtrl:PositionHome()
-         ElseIf Arg4 == 1
-            oCtrl:PositionEnd()
-         EndIf
+      ELSEIF Arg3 == "POSITION"
+         IF oCtrl:Type == "PLAYER"
+            IF Arg4 == 0
+               oCtrl:PositionHome()
+            ELSEIF Arg4 == 1
+               oCtrl:PositionEnd()
+            ENDIF
+         ELSE
+            oCtrl:Position( Arg4 )
+         ENDIF
 
       ElseIf Arg3 == "CARETPOS"
          oCtrl:CaretPos := Arg4
