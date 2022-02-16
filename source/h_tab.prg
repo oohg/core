@@ -1703,7 +1703,7 @@ CLASS TTabPage FROM TControlGroup
    DATA Caption                   INIT ""
    DATA cPicture                  INIT ""
    DATA nImage                    INIT -1
-   DATA Position                  INIT 0
+   DATA nPosition                 INIT 0
    DATA Type                      INIT "TABPAGE" READONLY
 
    METHOD AdjustResize
@@ -1711,6 +1711,7 @@ CLASS TTabPage FROM TControlGroup
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
    METHOD Picture                 SETGET
+   METHOD Position                SETGET
    METHOD SaveData
    METHOD SetFocus                BLOCK { |Self| ::Container:SetFocus(), ::Container:Value := ::Position, Self }
 
@@ -1735,6 +1736,15 @@ METHOD Picture( uValue ) CLASS TTabPage
    ENDIF
 
    RETURN ::cPicture
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Position( nPosition ) CLASS TTabPage
+
+   IF HB_ISNUMERIC( nPosition )
+      ::nPosition := nPosition
+   ENDIF
+
+   RETURN ::nPosition
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Size() CLASS TTabPage
@@ -1788,7 +1798,7 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA cToolTip                  INIT ""
    DATA lHidden                   INIT .F.
    DATA nImage                    INIT -1
-   DATA Position                  INIT 0
+   DATA nPosition                 INIT 0
    DATA Type                      INIT "TABPAGE" READONLY
 
    METHOD AdjustResize
@@ -1796,6 +1806,7 @@ CLASS TTabPageInternal FROM TFormInternal
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
    METHOD Picture                 SETGET
+   METHOD Position                SETGET
    METHOD SetFocus                BLOCK { |Self| ::Container:SetFocus(), ::Container:Value := ::Position, ::Super:SetFocus(), Self }
    METHOD ToolTip                 SETGET
 
@@ -1816,6 +1827,15 @@ METHOD Define( cControlName, uParentForm ) CLASS TTabPageInternal
    ::ColMargin := - aArea[ 1 ]
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Position( nPosition ) CLASS TTabPageInternal
+
+   IF HB_ISNUMERIC( nPosition )
+      ::nPosition := nPosition
+   ENDIF
+
+   RETURN ::nPosition
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_Size() CLASS TTabPageInternal
