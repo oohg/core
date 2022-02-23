@@ -66,156 +66,161 @@
 #include "i_windefs.ch"
 #include "common.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TInternal FROM TControl
 
-   DATA Type      INIT "INTERNAL" READONLY
-   DATA nVirtualHeight INIT 0
-   DATA nVirtualWidth  INIT 0
-   DATA RangeHeight    INIT 0
-   DATA RangeWidth     INIT 0
-   DATA OnScrollUp     INIT nil
-   DATA OnScrollDown   INIT nil
-   DATA OnScrollLeft   INIT nil
-   DATA OnScrollRight  INIT nil
-   DATA OnHScrollBox   INIT nil
-   DATA OnVScrollBox   INIT nil
+   DATA nVirtualHeight            INIT 0
+   DATA nVirtualWidth             INIT 0
+   DATA OnHScrollBox              INIT NIL
+   DATA OnScrollDown              INIT NIL
+   DATA OnScrollLeft              INIT NIL
+   DATA OnScrollRight             INIT NIL
+   DATA OnScrollUp                INIT NIL
+   DATA OnVScrollBox              INIT NIL
+   DATA RangeHeight               INIT 0
+   DATA RangeWidth                INIT 0
+   DATA Type                      INIT "INTERNAL" READONLY
 
+   METHOD BackColor               SETGET
+   METHOD BackColorCode           SETGET
    METHOD Define
-   METHOD Events_VScroll
-   METHOD Events_HScroll
-   METHOD VirtualWidth        SETGET
-   METHOD VirtualHeight       SETGET
-   METHOD SizePos
-   METHOD ScrollControls
    METHOD Events
-   METHOD BackColor           SETGET
-   METHOD BackColorCode       SETGET
+   METHOD Events_HScroll
+   METHOD Events_VScroll
+   METHOD ScrollControls
+   METHOD SizePos
+   METHOD VirtualHeight           SETGET
+   METHOD VirtualWidth            SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, OnClick, w, h, ;
-               backcolor, tooltip, gotfocus, lostfocus, ;
-               Transparent, border, clientedge, icon, ;
-               Virtualheight, VirtualWidth, ;
-               MouseDragProcedure, MouseMoveProcedure, ;
-               NoTabStop, HelpId, invisible, lRtl ) CLASS TInternal
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, bOnClick, nWidth, nHeight, uBackColor, cTooltip, bGotFocus, ;
+               bLostFocus, lTransparent, lBorder, lClientedge, cIcon, Virtualheight, VirtualWidth, bMouseDrag, ;
+               bMouseMove, lNoTabStop, nHelpId, lInvisible, lRtl ) CLASS TInternal
 
-   Local ControlHandle, nStyle, nStyleEx, nError
+   LOCAL nControlHandle, nStyle, nStyleEx, nError
 
-   ASSIGN ::nCol        VALUE x TYPE "N"
-   ASSIGN ::nRow        VALUE y TYPE "N"
-   ASSIGN ::nWidth      VALUE w TYPE "N"
-   ASSIGN ::nHeight     VALUE h TYPE "N"
-   ASSIGN ::Transparent VALUE Transparent TYPE "L" DEFAULT .F.
+   ASSIGN ::nCol        VALUE nCol         TYPE "N"
+   ASSIGN ::nRow        VALUE nRow         TYPE "N"
+   ASSIGN ::nWidth      VALUE nWidth       TYPE "N"
+   ASSIGN ::nHeight     VALUE nHeight      TYPE "N"
+   ASSIGN ::Transparent VALUE lTransparent TYPE "L" DEFAULT .F.
 
-   if valtype( VirtualHeight ) != "N"
+   IF ValType( VirtualHeight ) != "N"
       VirtualHeight := 0
-   endif
+   ENDIF
 
-   if valtype( VirtualWidth ) != "N"
+   IF ValType( VirtualWidth ) != "N"
       VirtualWidth := 0
-   endif
+   ENDIF
 
-   ::SetForm( ControlName, ParentForm,,,, backcolor,, lRtl )
+   ::SetForm( cControlName, uParentForm, NIL, NIL, NIL, uBackColor, NIL, lRtl )
 
-   nStyle := ::InitStyle( NIL, NIL, Invisible, NoTabStop ) + ;
-             iif( ValType( border ) == "L" .AND. border, WS_BORDER, 0 )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop ) + ;
+             iif( HB_ISLOGICAL( lBorder ) .AND. lBorder, WS_BORDER, 0 )
 
    nStyleEx := WS_EX_CONTROLPARENT
-   nStyleEx += iif( ValType( clientedge ) == "L" .AND. clientedge, WS_EX_CLIENTEDGE, 0 )
+   nStyleEx += iif( HB_ISLOGICAL( lClientedge ) .AND. lClientedge, WS_EX_CLIENTEDGE, 0 )
    nStyleEx += iif( ::Transparent, WS_EX_TRANSPARENT, 0 )
 
    IF ( nError := _OOHG_TInternal_Register() ) # 0
       OOHG_MsgError( OOHG_MsgReplace( "TInternal.Define: Registration of _OOHG_TINTERNAL class failed with error @1. Program terminated.", { { "@1", hb_ntos( nError ) } } ) )
    ENDIF
 
-   Controlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
+   nControlhandle := InitInternal( ::ContainerhWnd, ::ContainerCol, ::ContainerRow, ::nWidth, ::nHeight, nStyle, nStyleEx, ::lRtl )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cTooltip )
 
-   ::HScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
+   ::HScrollBar := TScrollBar():Define( "0", Self, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollLeft, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollRight, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
-                   { |Scroll,n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
-                   ,,,,,, SB_HORZ, .T. )
-   ::HScrollBar:nLineSkip  := 1
-   ::HScrollBar:nPageSkip  := 20
+                   { |Scroll, n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
+                   NIL, NIL, NIL, NIL, NIL, NIL, SB_HORZ, .T. )
+   ::HScrollBar:nLineSkip := 1
+   ::HScrollBar:nPageSkip := 20
 
-   ::VScrollBar := TScrollBar():Define( "0", Self,,,,,,,, ;
+   ::VScrollBar := TScrollBar():Define( "0", Self, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollDown, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
-                   { |Scroll,n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
-                   ,,,,,, SB_VERT, .T. )
-   ::VScrollBar:nLineSkip  := 1
-   ::VScrollBar:nPageSkip  := 20
+                   { |Scroll, n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
+                   NIL, NIL, NIL, NIL, NIL, NIL, SB_VERT, .T. )
+   ::VScrollBar:nLineSkip := 1
+   ::VScrollBar:nPageSkip := 20
 
    ::nVirtualHeight := VirtualHeight
    ::nVirtualWidth  := VirtualWidth
    ValidateScrolls( Self, .F. )
 
-   ::hCursor := LoadCursorFromFile( icon )
+   ::hCursor := LoadCursorFromFile( cIcon )
 
-   If ::Transparent
+   IF ::Transparent
       RedrawWindowControlRect( ::ContainerhWnd, ::ContainerRow, ::ContainerCol, ::ContainerRow + ::Height, ::ContainerCol + ::Width )
-   EndIf
+   ENDIF
 
    ::ContainerhWndValue := ::hWnd
+
    _OOHG_AddFrame( Self )
 
-   ASSIGN ::OnClick     VALUE OnClick   TYPE "B"
-   ASSIGN ::OnLostFocus VALUE LostFocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE GotFocus  TYPE "B"
-   ::OnMouseDrag := MouseDragProcedure
-   ::OnMouseMove := MouseMoveProcedure
+   ASSIGN ::OnClick     VALUE bOnClick   TYPE "B"
+   ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
+   ASSIGN ::OnMouseDrag VALUE bMouseDrag TYPE "B"
+   ASSIGN ::OnMouseMove VALUE bMouseMove TYPE "B"
 
-   Return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_VScroll( wParam  ) CLASS TInternal
 
-   Local uRet
+   LOCAL uRet
 
    uRet := ::VScrollBar:Events_VScroll( wParam  )
    ::RowMargin := - ::VScrollBar:Value
    ::ScrollControls()
 
-   Return uRet
+   RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_HScroll( wParam  ) CLASS TInternal
 
-   Local uRet
+   LOCAL uRet
 
    uRet := ::HScrollBar:Events_HScroll( wParam  )
    ::ColMargin := - ::HScrollBar:Value
    ::ScrollControls()
 
-   Return uRet
+   RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD VirtualWidth( nSize ) CLASS TInternal
 
-   If valtype( nSize ) == "N"
+   IF valtype( nSize ) == "N"
       ::nVirtualWidth := nSize
       ValidateScrolls( Self, .T. )
-   EndIf
+   ENDIF
 
-   Return ::nVirtualWidth
+   RETURN ::nVirtualWidth
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD VirtualHeight( nSize ) CLASS TInternal
 
-   If valtype( nSize ) == "N"
+   IF ValType( nSize ) == "N"
       ::nVirtualHeight := nSize
       ValidateScrolls( Self, .T. )
-   EndIf
+   ENDIF
 
-   Return ::nVirtualHeight
+   RETURN ::nVirtualHeight
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SizePos( Row, Col, Width, Height ) CLASS TInternal
 
    LOCAL uRet
@@ -225,18 +230,20 @@ METHOD SizePos( Row, Col, Width, Height ) CLASS TInternal
 
    RETURN uRet
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ScrollControls() CLASS TInternal
 
-   AEVAL( ::aControls, { |o| If( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
+   AEval( ::aControls, { |o| iif( o:Container:hWnd == ::hWnd, o:SizePos(), ) } )
    ReDrawWindow( ::hWnd )
 
    RETURN Self
 
-Function _EndInternal()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _EndInternal()
 
-   Return _OOHG_DeleteFrame( "INTERNAL" )
+   RETURN _OOHG_DeleteFrame( "INTERNAL" )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
