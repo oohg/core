@@ -8237,7 +8237,7 @@ HB_FUNC_STATIC( TGRID_FONTCOLOR )
    /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
-HB_FUNC_STATIC( TGRID_BACKCOLOR )
+HB_FUNC_STATIC( TGRID_BACKCOLOR )          /* METHOD BackColor( uColor ) CLASS TGrid -> aRGB */
 {
    PHB_ITEM pSelf = hb_stackSelfItem();
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
