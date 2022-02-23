@@ -69,30 +69,29 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TLabel FROM TControl
 
-   DATA Type                      INIT "LABEL" READONLY
+   DATA cPicture                  INIT NIL
+   DATA IconWidth                 INIT 0
    DATA lAutoHeight               INIT .F.
    DATA lAutoWidth                INIT .F.
-   DATA IconWidth                 INIT 0
-   DATA nWidth                    INIT 120
    DATA nHeight                   INIT 24
-   DATA cPicture                  INIT NIL
+   DATA nWidth                    INIT 120
+   DATA Type                      INIT "LABEL" READONLY
 
-   METHOD SetText( cText )        BLOCK {| Self, cText | ::Caption := cText }
-   METHOD GetText()               BLOCK {| Self | ::Caption }
-
-   METHOD Define
-   METHOD Value                   SETGET
-   METHOD Caption                 SETGET
+   METHOD Align                   SETGET
    METHOD AutoHeight              SETGET
    METHOD AutoSize                SETGET
    METHOD AutoWidth               SETGET
-   METHOD Align                   SETGET
-   METHOD Picture                 SETGET
-   METHOD SetFont
+   METHOD Caption                 SETGET
+   METHOD CenterAlign             BLOCK {| Self | ::Align( SS_CENTER ) }
+   METHOD Define
+   METHOD GetText()               BLOCK {| Self | ::Caption }
    METHOD lAutoSize               SETGET
    METHOD LeftAlign               BLOCK {| Self | ::Align( SS_LEFT ) }
+   METHOD Picture                 SETGET
    METHOD RightAlign              BLOCK {| Self | ::Align( SS_RIGHT ) }
-   METHOD CenterAlign             BLOCK {| Self | ::Align( SS_CENTER ) }
+   METHOD SetFont
+   METHOD SetText( cText )        BLOCK {| Self, cText | ::Caption := cText }
+   METHOD Value                   SETGET
 
    ENDCLASS
 
@@ -352,3 +351,4 @@ HB_FUNC( INITLABEL )          /* FUNCTION InitLabel( hWnd, cCaption, hMenu, nCol
 }
 
 #pragma ENDDUMP
+
