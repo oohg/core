@@ -147,7 +147,7 @@ CLASS TCombo FROM TLabel
    METHOD ShowDropDown
    METHOD Value                   SETGET
    METHOD ValueSource             SETGET
-   METHOD ValueType               
+   METHOD ValueType
    METHOD Visible                 SETGET
    METHOD VisibleItems
    METHOD WorkArea                SETGET
@@ -1050,7 +1050,7 @@ METHOD CaretPos( nPos ) CLASS TCombo
    RETURN HiWord( SendMessage( ::hWnd, CB_GETEDITSEL, NIL, NIL ) )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ItemValue( cText ) CLASS TCombo    
+METHOD ItemValue( cText ) CLASS TCombo
 
    LOCAL uRet
 
@@ -2011,3 +2011,4 @@ METHOD Skip( nCount ) CLASS TComboArray
    ENDIF
 
    RETURN ::RecNo()
+
