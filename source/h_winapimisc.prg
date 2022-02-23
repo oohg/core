@@ -181,4 +181,4 @@ FUNCTION BmpSize( uImage )
    ENDCASE
 
    RETURN aRet
-   
+
