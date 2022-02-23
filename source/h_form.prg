@@ -493,7 +493,7 @@ METHOD EndWindow() CLASS TForm
    If nPos > 0
       ::nOldw := ::ClientWidth
       ::nOldh := ::ClientHeight
-      ::nWindowState := ::GetWindowState()   ///obtiene el estado inicial de la ventana
+      ::nWindowState := ::GetWindowState()   // save form's initial state
       _OOHG_DeleteArrayItem( _OOHG_ActiveForm, nPos )
    EndIf
   _PopEventInfo()
