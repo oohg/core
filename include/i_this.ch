@@ -91,15 +91,11 @@ WINDOWS (THIS)
    => ;
       _OOHG_ThisForm:<p>()
 
-#xtranslate This . <p: Names, Controls> ;
-   => ;
-      _OOHG_ThisForm:ControlsNames()
-
 /*---------------------------------------------------------------------------
 WINDOWS (THISWINDOW)
 ---------------------------------------------------------------------------*/
 
-#xtranslate ThisWindow . <p: BackColor, BackColorCode, Caption, Cargo, ClientHeight, ;
+#xtranslate ThisWindow . <p: BackColor, BackColorCode, Cargo, ClientHeight, ;
       ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
       HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
       NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
@@ -111,10 +107,6 @@ WINDOWS (THISWINDOW)
       Object, Print, Redraw, Release, Restore, SetFocus, Show> [ () ] ;
    => ;
       _OOHG_ThisForm:<p>()
-
-#xtranslate ThisWindow . <p: Names, Controls> ;
-   => ;
-      _OOHG_ThisForm.<p>
 
 /*---------------------------------------------------------------------------
 CONTROLS
@@ -143,7 +135,8 @@ CONTROLS
 
 #xtranslate This . <p: Item, Caption, Header>( <n> ) := <arg> ;
    => ;
-      SetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <n>, <arg> )
+      SetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <n>, ;
+            <arg> )
 
 // Method without arguments
 #xtranslate This . <p: Refresh, DeleteAllItems, Release, Play, Stop, Close, ;
@@ -182,49 +175,49 @@ EVENT PROCEDURES
 
 #xtranslate This . QueryRowIndex ;
    => ;
-      _OOHG_ThisQueryRowIndex
+      _OOHG_THISQueryRowIndex
 
 #xtranslate This . QueryColIndex ;
    => ;
-      _OOHG_ThisQueryColIndex
+      _OOHG_THISQueryColIndex
 
 #xtranslate This . QueryData ;
    => ;
-      _OOHG_ThisQueryData
+      _OOHG_THISQueryData
 
 #xtranslate This . CellRowIndex ;
    => ;
-      _OOHG_ThisItemRowIndex
+      _OOHG_THISItemRowIndex
 
 #xtranslate This . CellColIndex ;
    => ;
-      _OOHG_ThisItemColIndex
+      _OOHG_THISItemColIndex
 
 #xtranslate This . CellRow ;
    => ;
-      _OOHG_ThisItemCellRow
+      _OOHG_THISItemCellRow
 
 #xtranslate This . CellCol ;
    => ;
-      _OOHG_ThisItemCellCol
+      _OOHG_THISItemCellCol
 
 #xtranslate This . CellWidth ;
    => ;
-      _OOHG_ThisItemCellWidth
+      _OOHG_THISItemCellWidth
 
 #xtranslate This . CellHeight ;
    => ;
-      _OOHG_ThisItemCellHeight
+      _OOHG_THISItemCellHeight
 
 #xtranslate This . CellValue ;
    => ;
-   _OOHG_ThisItemCellValue
+   _OOHG_THISItemCellValue
 
 /*---------------------------------------------------------------------------
 "VIRTUAL" VARIABLES
 ---------------------------------------------------------------------------*/
 
-#xtranslate ThisObject : <x> ;
+#xtranslate This : <x> ;
    => ;
       _OOHG_ThisObject:<x>
 

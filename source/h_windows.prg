@@ -204,7 +204,6 @@ CLASS TWindow
    METHOD ContainerReleasing      BLOCK { |Self| ::lReleasing .OR. iif( ::Container != NIL, ::Container:ContainerReleasing, iif( ::Parent != NIL, ::Parent:ContainerReleasing, .F. ) ) }
    METHOD ContainerVisible        BLOCK { |Self| ::lVisible .AND. iif( ::Container != NIL, ::Container:ContainerVisible, .T. ) }
    METHOD Control
-   METHOD ControlsNames
    METHOD DebugMessageName
    METHOD DebugMessageNameCommand
    METHOD DebugMessageNameNotify
@@ -281,18 +280,14 @@ CLASS TWindow
    METHOD Value                   BLOCK { || NIL }
    METHOD Visible                 SETGET
 
-// METHOD Handle                  SETGET
    ACCESS Handle                  INLINE ::hWnd
    ASSIGN Handle( hWnd )          INLINE ::hWnd := hWnd
-// METHOD OnMouseClick            SETGET
+
    ACCESS OnMouseClick            INLINE ::OnClick
    ASSIGN OnMouseClick( b )       INLINE ::OnClick := b
-// METHOD AlphaBlendTransparent
+
    MESSAGE AlphaBlendTransparent  METHOD SetBackgroundInvisible
-// METHOD BackColorTransparent
    MESSAGE BackColorTransparent   METHOD SetBackgroundInvisible
-// METHOD Save
-   MESSAGE Save                   METHOD SaveData
 
    ENDCLASS
 
@@ -713,15 +708,6 @@ METHOD Control( cControl ) CLASS TWindow
    nPos := AScan( ::aControlsNames, Upper( AllTrim( cControl ) ) + Chr( 255 ) )
 
    RETURN iif( nPos > 0, ::aControls[ nPos ], NIL )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ControlsNames() CLASS TWindow
-
-   LOCAL aNames := {}
-
-   AEval( ::aControlsNames, { |a| AAdd( aNames, SubStr( a, 1, Len( a ) - 1 ) ) } )
-
-   RETURN aNames
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #define HOTKEY_ID        1
