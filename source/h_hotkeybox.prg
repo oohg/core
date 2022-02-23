@@ -65,59 +65,59 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS THotKeyBox FROM TLabel
 
-   DATA Type            INIT "HOTKEYBOX" READONLY
-   DATA nWidth          INIT 120
-   DATA nHeight         INIT 40
-   DATA lForceAlt       INIT .T.
+   DATA lForceAlt                 INIT .T.
+   DATA nHeight                   INIT 40
+   DATA nWidth                    INIT 120
+   DATA Type                      INIT "HOTKEYBOX" READONLY
 
    METHOD Define
-
-   METHOD Value       SETGET
+   METHOD Value                   SETGET
 
    ENDCLASS
 
-METHOD Define( ControlName, ParentForm, x, y, w, h, uValue, ;
-               FontName, FontSize, ToolTip, ;
-               uLostFocus, uGotFocus, uChange, uEnter, ;
-               HelpId, bold, italic, underline, strikeout, ;
-               BackColor, FontColor, invisible, notabstop, lRtl, ;
-               lDisabled, lNoAlt ) CLASS THotKeyBox
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, cFontSize, cToolTip, ;
+               bLostFocus, bGotFocus, bChange, bEnter, nHelpId, lBold, lItalic, lUnderline, lStrikeout, ;
+               uBackColor, uFontColor, lInvisible, lNoTabstop, lRtl, lDisabled, lNoAlt ) CLASS THotKeyBox
 
-   Local ControlHandle, nStyle := 0, nStyleEx := 0
+   LOCAL nControlHandle, nStyle := 0, nStyleEx := 0
 
-   ASSIGN ::nCol      VALUE x TYPE "N"
-   ASSIGN ::nRow      VALUE y TYPE "N"
-   ASSIGN ::nWidth    VALUE w TYPE "N"
-   ASSIGN ::nHeight   VALUE h TYPE "N"
-   If ValType( lNoAlt ) == "L"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N"
+   ASSIGN ::nRow    VALUE nRow    TYPE "N"
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N"
+   ASSIGN ::nHeight VALUE nHeight TYPE "N"
+
+   IF ! HB_ISLOGICAL( lNoAlt )
       ::lForceAlt := ! lNoAlt
-   EndIf
+   ENDIF
 
-   ::SetForm( ControlName, ParentForm, FontName, FontSize, FontColor, BackColor, .T., lRtl )
+   ::SetForm( cControlName, uParentForm, cFontName, cFontSize, uFontColor, uBackColor, .T., lRtl )
 
-   nStyle += ::InitStyle( ,, Invisible, NoTabStop, lDisabled )
+   nStyle += ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled )
 
-   ControlHandle := InitHotKeyBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
+   nControlHandle := InitHotKeyBox( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, ::lRtl, nStyleEx )
 
-   ::Register( ControlHandle, ControlName, HelpId,, ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::Register( nControlHandle, cControlName, nHelpId, NIL, cToolTip )
+   ::SetFont( NIL, NIL, lBold, lItalic, lUnderline, lStrikeout )
 
    ::Value := uValue
 
-   ASSIGN ::OnLostFocus VALUE uLostFocus TYPE "B"
-   ASSIGN ::OnGotFocus  VALUE uGotFocus  TYPE "B"
-   ASSIGN ::OnChange    VALUE uChange    TYPE "B"
-   ASSIGN ::OnEnter     value uEnter     TYPE "B"
+   ASSIGN ::OnLostFocus VALUE bLostFocus TYPE "B"
+   ASSIGN ::OnGotFocus  VALUE bGotFocus  TYPE "B"
+   ASSIGN ::OnChange    VALUE bChange    TYPE "B"
+   ASSIGN ::OnEnter     VALUE bEnter     TYPE "B"
 
-   return Self
+   RETURN Self
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value( uValue ) CLASS THotKeyBox
 
-   Return HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
+   RETURN HotKeyBoxValue( ::hWnd, uValue, ::lForceAlt )
 
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
@@ -207,3 +207,4 @@ HB_FUNC( HOTKEYBOXVALUE )
 }
 
 #pragma ENDDUMP
+
