@@ -6206,9 +6206,6 @@ HB_FUNC( PIXELSPERINCHX )          /* FUNCTION PixelsPerInchX() -> nPPI */
    HDC hDC;
    int iDPI;
 
-   memset( &iDPI, 0, sizeof( iDPI ) );
-   memset( &hDC, 0, sizeof( hDC ) );
-
    hDC = GetDC( HWND_DESKTOP );
 
    iDPI = GetDeviceCaps( hDC, LOGPIXELSX );
@@ -6224,9 +6221,6 @@ HB_FUNC( PIXELSPERINCHY )          /* FUNCTION PixelsPerInchY() -> nPPI */
    HDC hDC;
    int iDPI;
 
-   memset( &iDPI, 0, sizeof( iDPI ) );
-   memset( &hDC, 0, sizeof( hDC ) );
-
    hDC = GetDC( HWND_DESKTOP );
 
    iDPI = GetDeviceCaps( hDC, LOGPIXELSY );
@@ -6237,3 +6231,4 @@ HB_FUNC( PIXELSPERINCHY )          /* FUNCTION PixelsPerInchY() -> nPPI */
 }
 
 #pragma ENDDUMP
+
