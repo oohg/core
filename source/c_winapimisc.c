@@ -2403,3 +2403,4 @@ HB_FUNC( GETKNOWNFOLDER )          /* FUNCTION GETKNOWNFOLDER( nFOLDERID ) -> cP
 
    CoTaskMemFree( path );
 }
+
