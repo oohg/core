@@ -361,3 +361,4 @@ HB_FUNC( SETPROGRESSBARBARCOLOR )          /* FUNCTION SetProgressbarBarColor( h
 }
 
 #pragma ENDDUMP
+
