@@ -66,6 +66,7 @@
 #include "oohg.ch"
 #include "i_init.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION BeginIni( name, cIniFile )
 
    LOCAL hFile
@@ -93,6 +94,7 @@ FUNCTION BeginIni( name, cIniFile )
 
    RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION GetBeginComment
 
    LOCAL aLines, nLen, i, lTest := .T., cComment := ""
@@ -117,6 +119,7 @@ FUNCTION GetBeginComment
 
    RETURN cComment
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION GetEndComment
 
    LOCAL aLines, nLen, i, lTest := .T., cComment := ""
@@ -141,6 +144,7 @@ FUNCTION GetEndComment
 
    RETURN cComment
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SetBeginComment( cComment )
 
    LOCAL aLines, nLen, i, lTest := .T., cMemo := ""
@@ -194,6 +198,7 @@ FUNCTION SetBeginComment( cComment )
 
    RETURN cComment
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION SetEndComment( cComment )
 
    LOCAL aLines, nLen, i, lTest := .T., cMemo := ""
@@ -252,70 +257,76 @@ FUNCTION SetEndComment( cComment )
 
    RETURN cComment
 
-// Code GetIni and SetIni based on source of Grigory Filatov
+// Code GetIni and SetIni based on source by Grigory Filatov
 
-Function _GetIni( cSection, cEntry, cDefault, uVar )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _GetIni( cSection, cEntry, cDefault, uVar )
 
-   Local cFile, cVar :=''
+   LOCAL cFile, cVar :=''
 
-   If !empty(_OOHG_ActiveIniFile)
-      if valtype(cDefault) == 'U'
-         cDefault:=cVar
-      endif
-      cFile:= _OOHG_ActiveIniFile
-      cVar := GetPrivateProfileString(cSection, cEntry, xChar( cDefault ), cFile )
-   else
-      if cDefault != NIL
-         cVar := xChar( cDefault )
-      endif
-   endif
-   uVar := xValue(cVar,ValType( uVar))
-
-   Return uVar
-
-Function _SetIni( cSection, cEntry, cValue )
-
-   Local ret:=.f., cFile
-
-   If ! empty(_OOHG_ActiveIniFile)
+   IF ! Empty( _OOHG_ActiveIniFile )
+      IF ValType( cDefault ) == 'U'
+         cDefault := cVar
+      ENDIF
       cFile := _OOHG_ActiveIniFile
-      ret := WritePrivateProfileString( cSection, cEntry, xChar(cValue), cFile )
-   endif
+      cVar := GetPrivateProfileString( cSection, cEntry, xChar( cDefault ), cFile )
+   ELSE
+      IF cDefault != NIL
+         cVar := xChar( cDefault )
+      ENDIF
+   ENDIF
+   uVar := xValue( cVar, ValType( uVar ) )
 
-   Return ret
+   RETURN uVar
 
-Function  _DelIniEntry( cSection, cEntry )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetIni( cSection, cEntry, cValue )
 
-   Local ret:=.f., cFile
+   LOCAL ret := .F., cFile
 
-   If !empty(_OOHG_ActiveIniFile)
+   IF ! Empty( _OOHG_ActiveIniFile )
+      cFile := _OOHG_ActiveIniFile
+      ret := WritePrivateProfileString( cSection, cEntry, xChar( cValue ), cFile )
+   ENDIF
+
+   RETURN ret
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _DelIniEntry( cSection, cEntry )
+
+   LOCAL ret := .F., cFile
+
+   IF ! Empty( _OOHG_ActiveIniFile )
       cFile := _OOHG_ActiveIniFile
       ret := DelIniEntry( cSection, cEntry, cFile )
-   endif
+   ENDIF
 
-   Return ret
+   RETURN ret
 
-Function  _DelIniSection( cSection )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _DelIniSection( cSection )
 
-   Local ret:=.f., cFile
+   LOCAL ret := .F., cFile
 
-   If !empty(_OOHG_ActiveIniFile)
+   IF ! Empty( _OOHG_ActiveIniFile )
       cFile := _OOHG_ActiveIniFile
       ret := DelIniSection( cSection, cFile )
-   endif
+   ENDIF
 
-   Return ret
+   RETURN ret
 
-Function _EndIni()
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _EndIni()
 
    _OOHG_ActiveIniFile := ''
 
-   Return Nil
+   RETURN NIL
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION xChar( xValue )
 
    LOCAL cType := ValType( xValue )
-   LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS)
+   LOCAL cValue := "", nDecimals := Set( _SET_DECIMALS )
 
    DO CASE
    CASE cType $  "CM";  cValue := xValue
@@ -326,11 +337,12 @@ FUNCTION xChar( xValue )
    CASE cType == "A" ;  cValue := AToC( xValue )
    CASE cType $  "UE";  cValue := "NIL"
    CASE cType == "B" ;  cValue := "{|| ... }"
-   CASE cType == "O";   cValue := "{" + xValue:className + "}"
+   CASE cType == "O" ;  cValue := "{" + xValue:className + "}"
    ENDCASE
 
    RETURN cValue
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION xValue( cValue, cType )
 
    LOCAL xValue
@@ -342,11 +354,12 @@ FUNCTION xValue( cValue, cType )
    CASE cType == "L" ;  xValue := ( cValue == 'T' )
    CASE cType == "T" ;  xValue := SToT( cValue )
    CASE cType == "A" ;  xValue := CToA( cValue )
-   OTHERWISE;           xValue := NIL                     // nil, block, object
+   OTHERWISE         ;  xValue := NIL                     // nil, block, object
    ENDCASE
 
    RETURN xValue
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION AToC( aArray )
 
    LOCAL i, nLen := Len( aArray )
@@ -357,12 +370,13 @@ FUNCTION AToC( aArray )
       IF ( cType := ValType( aArray[ i ] ) ) == "A"
          cArray += cElement
       ELSE
-         cArray += Left( cType, 1) + str( Len( cElement ),4 ) + cElement
+         cArray += Left( cType, 1) + Str( Len( cElement ),4 ) + cElement
       ENDIF
    ENDFOR
 
    RETURN "A" + str( Len( cArray ),4 ) + cArray
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION CToA( cArray )
 
    LOCAL cType, nLen, aArray := {}
@@ -381,13 +395,13 @@ FUNCTION CToA( cArray )
    RETURN aArray
 
 
-EXTERN GETPRIVATEPROFILESTRING, WRITEPRIVATEPROFILESTRING, DELINIENTRY, DELINISECTION
-
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
 #include "oohg.h"
 #include "hbapiitm.h"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETPRIVATEPROFILESTRING )
 {
    TCHAR bBuffer[ 1024 ] = { 0 };
@@ -403,6 +417,7 @@ HB_FUNC( GETPRIVATEPROFILESTRING )
       hb_retc( lpDefault );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( WRITEPRIVATEPROFILESTRING )
 {
    const char * lpSection = hb_parc( 1 );
@@ -416,6 +431,7 @@ HB_FUNC( WRITEPRIVATEPROFILESTRING )
       hb_retl(FALSE);
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DELINIENTRY )
 {
    hb_retl( WritePrivateProfileString( hb_parc( 1 ),         /* Section */
@@ -424,6 +440,7 @@ HB_FUNC( DELINIENTRY )
                                        hb_parc( 3 ) ) );     /* INI File */
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DELINISECTION )
 {
    hb_retl( WritePrivateProfileString( hb_parc( 1 ),       /* Section */
@@ -433,3 +450,4 @@ HB_FUNC( DELINISECTION )
 }
 
 #pragma ENDDUMP
+
