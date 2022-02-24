@@ -69,7 +69,6 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TCheckBox FROM TLabel
 
-   DATA cPicture                  INIT ""
    DATA IconWidth                 INIT 21
    DATA LeftAlign                 INIT .F.
    DATA lFillRect                 INIT NIL
@@ -89,7 +88,7 @@ CLASS TCheckBox FROM TLabel
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontName,  cFontSize, cToolTip, bOnChange, ;
+METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, uValue, cFontName, cFontSize, cToolTip, bOnChange, ;
                nWidth, nHeight, bLostFocus, bGotFocus, nHelpId, lInvisible, lNoTabStop, lBold, lItalic, lUnderline, ;
                lStrikeout, cField, uBackColor, uFontColor, lTransparent, lAutoSize,  lRtl, lDisabled, lThreeState, ;
                lLeftAlign, lDrawBy, oBkGrnd, lNoFocusRect, lFillRect ) CLASS TCheckBox
@@ -500,3 +499,4 @@ HB_FUNC( TCHECKBOX_NOTIFY_CUSTOMDRAW )          /* FUNCTION TCheckBox_Notify_Cus
 }
 
 #pragma ENDDUMP
+
