@@ -495,12 +495,15 @@ METHOD SaveAs( cFile, lAll, cType, nQuality, nColorDepth ) CLASS TWindow
 
    LOCAL hBitMap, aSize
 
+   ::BringToTop()
    IF ValType( cType ) $ "CM"
      cType := Upper( cType )
    ELSE
      cType := "BMP"
    ENDIF
-   ::BringToTop()
+   IF ! HB_ISLOGICAL( lAll )
+      lAll := .T.
+   ENDIF
    hBitMap := ::GetBitMap( lAll )
    aSize := _OOHG_SizeOfHBitmap( hBitmap )
    IF cType == "BMP"
