@@ -1211,7 +1211,7 @@ CLASS TMenuItemMRU FROM TControl
    METHOD IniFile                      SETGET
    METHOD MaxItems                     SETGET
    METHOD Release
-   METHOD Save
+   METHOD SaveMenu
    METHOD SeparatorType                SETGET
 
    ENDCLASS
@@ -1434,7 +1434,7 @@ METHOD Release() CLASS TMenuItemMRU
    RETURN ::Super:Release()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Save() CLASS TMenuItemMRU
+METHOD SaveMenu() CLASS TMenuItemMRU
 
    LOCAL i := 1, m
 
