@@ -109,7 +109,7 @@ CLASS TImage FROM TControl
    METHOD Picture                 SETGET
    METHOD Release
    METHOD RePaint
-   METHOD Save
+   METHOD SaveImage
    METHOD SizePos
    METHOD ToolTip                 SETGET
 
@@ -526,7 +526,7 @@ METHOD Copy( lAsDIB ) CLASS TImage
    RETURN ATail( ::aCopies )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Save( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
+METHOD SaveImage( cFile, cType, uSize, nQuality, nColorDepth ) CLASS TImage
 
    LOCAL nHeight, nWidth
 
