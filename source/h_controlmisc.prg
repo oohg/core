@@ -852,17 +852,6 @@ Function DoMethod( ... )
          EndIf
 
       Else // CONTROL WITH ARGUMENTS
-         // Handle exceptions
-         If PCount() == 7
-            If cMethod == 'ADDCONTROL'
-               // TTabDirect and TMultipage method AddControl( oCtrl, nPageNumber, nRow, nCol )
-               RetVal := oCtrl:AddControl( GetControlObject( aPars[4], aPars[1] ), aPars[5], aPars[6], aPars[7] )
-
-               Return RetVal
-            EndIf
-         EndIf
-
-         // Handle other methods
          If _OOHG_HasMethod( oCtrl, cMethod )
             aDel( aPars, 1 )
             aDel( aPars, 1 )
