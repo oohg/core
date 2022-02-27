@@ -206,3 +206,284 @@
 #xtranslate OOHGVersion() ;
    => ;
       ( "OOHG Ver. " + OOHG_VER_DATE + "." + OOHG_VER_STATUS + iif( IsExe64(), " (64 bits)", " (32 bits)" ) )
+
+#xtranslate _GetValue( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Value
+
+#xtranslate _SetValue( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Value := <Value>
+
+#xtranslate _AddItem( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):AddItem( <Value> )
+
+#xtranslate _DeleteItem( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):DeleteItem( <Value> )
+
+#xtranslate _DeleteAllItems( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):DeleteAllItems()
+
+#xtranslate GetControlName( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Name
+
+#xtranslate GetControlHandle( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):hWnd
+
+#xtranslate GetControlContainerHandle( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Container:hWnd
+
+#xtranslate GetControlParentHandle( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):ContainerhWnd
+
+#xtranslate GetControlId( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Id
+
+#xtranslate GetControlType( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Type
+
+#xtranslate GetControlValue( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Value
+
+#xtranslate _SetFocus( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFocus()
+
+#xtranslate _DisableControl( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Enabled := .F.
+
+#xtranslate _EnableControl( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Enabled := .T.
+
+#xtranslate _ShowControl( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Show()
+
+#xtranslate _HideControl( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Hide()
+
+#xtranslate _SetItem( <ControlName>, <ParentForm>, <Item>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Item( <Item>, <Value> )
+
+#xtranslate _GetItem( <ControlName>, <ParentForm>, <Item> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Item( <Item> )
+
+#xtranslate _SetControlSizePos( <ControlName>, <ParentForm>, <row>, <col>, <width>, <height> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SizePos( <row>, <col>, <width>, <height> )
+
+#xtranslate _GetItemCount( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):ItemCount
+
+#xtranslate _GetControlRow( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Row
+
+#xtranslate _GetControlCol( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Col
+
+#xtranslate _GetControlWidth( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Width
+
+#xtranslate _GetControlHeight( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Height
+
+#xtranslate _SetControlCol( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SizePos( NIL, <Value> )
+
+#xtranslate _SetControlRow( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SizePos( <Value> )
+
+#xtranslate _SetControlWidth( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SizePos( NIL, NIL, <Value> )
+
+#xtranslate _SetControlHeight( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SizePos( NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetPicture( <ControlName>, <ParentForm>, <FileName> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Picture := <FileName>
+
+#xtranslate _GetPicture( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Picture
+
+#xtranslate _GetControlAction( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):OnClick
+
+#xtranslate _GetToolTip( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):ToolTip
+
+#xtranslate _SetToolTip( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):ToolTip := <Value>
+
+#xtranslate _SetRangeMin( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):RangeMin := <Value>
+
+#xtranslate _SetRangeMax( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):RangeMax := <Value>
+
+#xtranslate _GetRangeMin( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):RangeMin
+
+#xtranslate _GetRangeMax( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):RangeMax
+
+#xtranslate _SetMultiCaption( <ControlName>, <ParentForm>, <Column>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Caption( <Column>, <Value> ) ;
+
+#xtranslate _GetMultiCaption( <ControlName>, <ParentForm>, <Item> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Caption( <Item> )
+
+#xtranslate _ReleaseControl( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Release() ;
+
+#xtranslate _IsControlVisibleFromHandle( <Handle> ) ;
+   => ;
+      GetControlObjectByHandle( <Handle> ):ContainerVisible
+
+#xtranslate _SetCaretPos( <ControlName>, <ParentForm>, <Pos> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):CaretPos := <Pos>
+
+#xtranslate _GetCaretPos( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):CaretPos
+
+#xtranslate _GetFontName( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):cFontName
+
+#xtranslate _GetFontSize( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):nFontSize
+
+#xtranslate _GetFontBold( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Bold
+
+#xtranslate _GetFontItalic( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Italic
+
+#xtranslate _GetFontUnderline( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Underline
+
+#xtranslate _GetFontStrikeOut( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):Strikeout
+
+#xtranslate _GetFontAngle( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FntAngle
+
+#xtranslate _GetFontCharset( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FntCharset
+
+#xtranslate _GetFontWidth( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FntWidth
+
+#xtranslate _GetFontOrientation( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FntOrientation
+
+#xtranslate _GetFontAdvancedGM( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FntAdvancedGM
+
+#xtranslate _SetFontName( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( <Value> )
+
+#xtranslate _SetFontSize( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, <Value> )
+
+#xtranslate _SetFontBold( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, <Value> )
+
+#xtranslate _SetFontItalic( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontUnderline( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontStrikeOut( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontAngle( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontCharset( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontWidth( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontOrientation( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontAdvancedGM( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):SetFont( NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <Value> )
+
+#xtranslate _SetFontColor( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):FontColor := <Value>
+
+#xtranslate _SetBackColor( <ControlName>, <ParentForm>, <Value> ) ;
+   => ;
+      GetControlObject( <ControlName>, <ParentForm> ):BackColor := <Value>
+
+#xtranslate _SetStatusIcon( <ControlName>, <ParentForm>, <Item>, <Icon> ) ;
+   => ;
+      SetStatusItemIcon( GetControlObject( <ControlName>, <ParentForm> ):hWnd, <Item>, <Icon> )
+
+#xtranslate _GetCaption( <ControlName>, <ParentForm> ) ;
+   => ;
+      GetWindowText( GetControlObject( <ControlName>, <ParentForm> ):hWnd )
+
