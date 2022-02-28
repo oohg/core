@@ -503,26 +503,30 @@ METHOD ItemVisible( nItem ) CLASS TCheckList
 
 METHOD Item( nItem, uItem, lChecked, uForeColor, uBackColor ) CLASS TCheckList
 
-   Local aRow
+   LOCAL aRow
 
-   If ValidHandler( ::ImageList )
-      IF ! HB_ISARRAY( uItem ) .OR. Len( uItem ) # 2 .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
-         OOHG_MsgError( "TCheckList.Item: Item is not valid. Program terminated." )
+   IF PCount() > 1
+      IF ValidHandler( ::ImageList )
+         IF ! HB_ISARRAY( uItem ) .OR. Len( uItem ) # 2 .OR. ! ValType( uItem[1] ) $ "CM" .OR. ValType( uItem[2] ) # "N"
+            OOHG_MsgError( "TCheckList.Item: Item is not valid. Program terminated." )
+         ENDIF
+      ELSE
+         IF ! ValType( uItem ) $ "CM"
+            OOHG_MsgError( "TCheckList.Item: Item is not a string. Program terminated." )
+         ENDIF
       ENDIF
-   Else
-      If ! ValType( uItem ) $ "CM"
-         OOHG_MsgError( "TCheckList.Item: Item is not a string. Program terminated." )
-      EndIf
-   EndIf
-   aRow := { uItem }
+      aRow := { uItem }
 
-   uItem := ::Super:Item( nItem, aRow, uForeColor, uBackColor)
+      uItem := ::Super:Item( nItem, aRow, uForeColor, uBackColor )
 
-   If HB_IsLogical( lChecked )
-      ::CheckItem( nItem, lChecked )
-   EndIf
+      IF HB_ISLOGICAL( lChecked )
+         ::CheckItem( nItem, lChecked )
+      ENDIF
+   ELSE
+      uItem := ::Super:Item( nItem )
+   ENDIF
 
-   Return uItem
+   RETURN uItem
 
 METHOD SetRangeColor( uForeColor, uBackColor, nTop, nBottom ) CLASS TCheckList
 
