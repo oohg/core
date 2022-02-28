@@ -65,53 +65,54 @@
 #include "hbclass.ch"
 #include "i_windefs.ch"
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMessageBar FROM TControl
 
-   DATA Type        INIT "MESSAGEBAR" READONLY
-   DATA aClicks     INIT Nil
-   DATA aRClicks    INIT Nil
-   DATA aDblClicks  INIT Nil
-   DATA aRDblClicks INIT Nil
-   DATA aWidths     INIT Nil
-   DATA lAutoAdjust INIT .T.
-   DATA lTop        INIT .F.
-   DATA ladjust     INIT .F.
-   DATA cLedOn      INIT "zzz_led_on"
-   DATA cLedOff     INIT "zzz_led_off"
-   DATA aAligns     INIT {}
-   DATA oTimerOut   INIT NIL
-   DATA oTimerClock INIT NIL
-   DATA oTimerKeyb  INIT NIL
-
-   METHOD Define
-   METHOD EndStatus                      BLOCK { || _EndMessageBar() }
+   DATA aAligns                   INIT {}
+   DATA aClicks                   INIT NIL
+   DATA aDblClicks                INIT NIL
+   DATA aRClicks                  INIT NIL
+   DATA aRDblClicks               INIT NIL
+   DATA aWidths                   INIT NIL
+   DATA cLedOff                   INIT "zzz_led_off"
+   DATA cLedOn                    INIT "zzz_led_on"
+   DATA ladjust                   INIT .F.
+   DATA lAutoAdjust               INIT .T.
+   DATA lTop                      INIT .F.
+   DATA oTimerClock               INIT NIL
+   DATA oTimerKeyb                INIT NIL
+   DATA oTimerOut                 INIT NIL
+   DATA Type                      INIT "MESSAGEBAR" READONLY
 
    METHOD AddItem
-   METHOD Item
-   METHOD Caption(nItem, cCaption, cAlign) BLOCK { |Self, nItem, cCaption, cAlign| ::Item( nItem, cCaption, cAlign ) }
-   METHOD ItemWidth
-   METHOD ItemCount                      BLOCK { |Self| GetItemCount( ::hWnd ) }
-   METHOD ItemToolTip
-   METHOD ItemIcon
-   METHOD ItemClick
-   METHOD ItemRClick
-   METHOD ItemDblClick
-   METHOD ItemRDblClick
-   METHOD ClientHeightUsed               BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
-   METHOD MinHeight                      SETGET
-   METHOD BackColor                      SETGET
-   METHOD ItemAlign
-   METHOD SetClock
-   METHOD SetKeybrd
-   METHOD SetDate
-   METHOD InitTimeout
-   METHOD Release
+   METHOD BackColor               SETGET
+   METHOD Caption                 BLOCK { |Self, nItem, cCaption, cAlign| ::Item( nItem, cCaption, cAlign ) }
+   METHOD ClientHeightUsed        BLOCK { |Self| GetWindowHeight( ::hWnd ) * IF( ::lTop, 1, -1 ) }
+   METHOD Define
+   METHOD EndStatus               BLOCK { || _EndMessageBar() }
    METHOD Events_Notify
    METHOD Events_Size
+   METHOD InitTimeout
+   METHOD Item
+   METHOD ItemAlign
+   METHOD ItemClick
+   METHOD ItemCount               BLOCK { |Self| GetItemCount( ::hWnd ) }
+   METHOD ItemDblClick
+   METHOD ItemIcon
+   METHOD ItemRClick
+   METHOD ItemRDblClick
+   METHOD ItemToolTip
+   METHOD ItemWidth
+   METHOD MinHeight               SETGET
    METHOD RefreshData
+   METHOD Release
+   METHOD SetClock
+   METHOD SetDate
+   METHOD SetKeybrd
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ControlName, ParentForm, y, x, w, h, caption, ProcedureName, ;
                fontname, nFontsize, tooltip, clock, date, kbd, nClrF, nClrB, ;
                bold, italic, underline, strikeout, lTop, lNoAutoAdjust, ;
