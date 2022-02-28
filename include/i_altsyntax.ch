@@ -93,6 +93,7 @@ AUXILIARY VARIABLES
 #xtranslate _OOHG_ActiveControlAssignObject           => _OOHG_ActiveControlInfo \( \) \[  26 \]
 #xtranslate _OOHG_ActiveControlSubClass               => _OOHG_ActiveControlInfo \( \) \[  27 \]
 
+#xtranslate _OOHG_ActiveControlFillRect               => _OOHG_ActiveControlInfo \( \) \[  54 \]
 #xtranslate _OOHG_ActiveControlCueBanner              => _OOHG_ActiveControlInfo \( \) \[  55 \]
 #xtranslate _OOHG_ActiveControlNewAtRow               => _OOHG_ActiveControlInfo \( \) \[  56 \]
 #xtranslate _OOHG_ActiveControlTimeOut                => _OOHG_ActiveControlInfo \( \) \[  57 \]
@@ -1929,7 +1930,16 @@ CHECKBOX
       _OOHG_ActiveControlLeft        := .F.    ;;
       _OOHG_ActiveControlBackground  := NIL    ;;
       _OOHG_ActiveControlNoFocusRect := .F.    ;;
-      _OOHG_ActiveControlFocusRect   := .F.
+      _OOHG_ActiveControlFocusRect   := .F.    ;;
+      _OOHG_ActiveControlFillRect    := NIL
+
+#xcommand FILLRECT <fillrect> ;
+   => ;
+      _OOHG_ActiveControlFillRect := <fillrect>
+
+#xcommand NOFILLRECT <nofillrect> ;
+   => ;
+      _OOHG_ActiveControlFillRect := ! ( <nofillrect> )
 
 #xcommand THREESTATE <threestate> ;
    => ;
@@ -1991,7 +2001,8 @@ CHECKBOX
             _OOHG_ActiveControlLeft, ;
             _OOHG_ActiveControlDrawBy, ;
             _OOHG_ActiveControlBackground, ;
-            iif( _OOHG_ActiveControlNoFocusRect, .T., iif( _OOHG_ActiveControlFocusRect, .F., NIL ) ) )
+            iif( _OOHG_ActiveControlNoFocusRect, .T., iif( _OOHG_ActiveControlFocusRect, .F., NIL ) ), ;
+            _OOHG_ActiveControlFillRect )
 
 /*---------------------------------------------------------------------------
 CHECKBUTTON
