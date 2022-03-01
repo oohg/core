@@ -1449,7 +1449,7 @@ METHOD Flash( nWhat, nTimes, nMilliseconds ) CLASS TForm
 void _OOHG_CheckMouseLeave( HWND hWnd );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TFORM_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm */
+HB_FUNC_STATIC( TFORM_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TForm */
 {
    static PHB_SYMB s_Events2 = 0;
 

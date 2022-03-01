@@ -1126,7 +1126,7 @@ HB_FUNC( SETFONTRTF )          /* SetFontRTF( hWnd, nSel, cFontName, nFontSize, 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC ( TEDITRICH_SETTEXT )         /* FUNCTION TEditRich_SetText( hWnd, lReplace, cText ) -> NIL */
+HB_FUNC ( TEDITRICH_SETTEXT )          /* FUNCTION TEditRich_SetText( hWnd, lReplace, cText ) -> NIL */
 {
    SETTEXTEX ST;
 
@@ -1136,13 +1136,13 @@ HB_FUNC ( TEDITRICH_SETTEXT )         /* FUNCTION TEditRich_SetText( hWnd, lRepl
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TEDITRICH_SETOPTIONS )         /* FUNCTION TEditRich_SetOptions( hWnd, nNew ) ->  nOld */
+HB_FUNC( TEDITRICH_SETOPTIONS )          /* FUNCTION TEditRich_SetOptions( hWnd, nNew ) ->  nOld */
 {
    hb_retnl( SendMessage( HWNDparam( 1 ), EM_SETOPTIONS, (WPARAM) ECOOP_SET, (LPARAM) hb_parnl( 2 ) ) );   /* See ECO_* defines */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TEDITRICH_SETSELEX )         /* FUNCTION TEditRich_SetSelEx( hWnd, nStart, nEnd ) -> NIL */
+HB_FUNC( TEDITRICH_SETSELEX )          /* FUNCTION TEditRich_SetSelEx( hWnd, nStart, nEnd ) -> NIL */
 {
    CHARRANGE cRange;
    cRange.cpMin = 0;

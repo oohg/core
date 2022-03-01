@@ -1814,7 +1814,7 @@ void _OOHG_CheckMouseLeave( HWND hWnd );
 HBRUSH GetTabBrush( HWND );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC_STATIC( TCONTROL_EVENTS )   /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl */
+HB_FUNC_STATIC( TCONTROL_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TControl */
 {
    HWND hWnd      = HWNDparam( 1 );
    UINT message   = (UINT) hb_parni( 2 );

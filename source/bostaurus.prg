@@ -2338,7 +2338,7 @@ HB_FUNC( BT_BMP_CREATE )    // ( Width, Height, Color_Fill_Bk )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( BT_BMP_RELEASE )         /* FUNCTION BT_BMP_Release( hBitmap ) -> lSuccess */
+HB_FUNC( BT_BMP_RELEASE )          /* FUNCTION BT_BMP_Release( hBitmap ) -> lSuccess */
 {
    HBITMAP hBitmap = HBITMAPparam( 1 );
    hb_retl( DeleteObject( hBitmap ) );
@@ -3761,7 +3761,7 @@ HB_FUNC( BT_BMP_GET_CLIPBOARD )    // ( hWnd )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( BT_BMP_PUT_CLIPBOARD )         /* FUNCTION BT_BMP_Put_Clipboard( hBitmap ) -> lSuccess */
+HB_FUNC( BT_BMP_PUT_CLIPBOARD )          /* FUNCTION BT_BMP_Put_Clipboard( hBitmap ) -> lSuccess */
 {
    HWND       hWnd;
    HGLOBAL    hClipboard;
