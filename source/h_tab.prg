@@ -559,34 +559,34 @@ METHOD ShowPage( nPage ) CLASS TTabDirect
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Caption( nColumn, uValue ) CLASS TTabDirect
+METHOD Caption( nPage, uValue ) CLASS TTabDirect
 
    LOCAL nRealPosition
 
-   nRealPosition := ::RealPosition( nColumn )
+   nRealPosition := ::RealPosition( nPage )
    IF nRealPosition > 0
       IF ValType( uValue ) $ "CM"
          ::Super:Caption( nRealPosition, uValue )
       ENDIF
-      ::aPages[ nColumn ]:Caption := ::Super:Caption( nRealPosition )
+      ::aPages[ nPage ]:Caption := ::Super:Caption( nRealPosition )
    ELSE
       IF ValType( uValue ) $ "CM"
-         ::aPages[ nColumn ]:Caption := uValue
+         ::aPages[ nPage ]:Caption := uValue
       ENDIF
    ENDIF
 
-   RETURN ::aPages[ nColumn ]:Caption
+   RETURN ::aPages[ nPage ]:Caption
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Picture( nColumn, uValue ) CLASS TTabDirect
+METHOD Picture( nPage, uValue ) CLASS TTabDirect
 
    LOCAL oPage, nRealPosition
 
-   oPage := ::aPages[ nColumn ]
+   oPage := ::aPages[ nPage ]
    IF ValType( uValue ) $ "CM"
       oPage:Picture := uValue
       oPage:nImage := ::AddBitMap( uValue ) - 1
-      nRealPosition := ::RealPosition( nColumn )
+      nRealPosition := ::RealPosition( nPage )
       IF nRealPosition != 0
          SetTabPageImage( ::hWnd, nRealPosition, oPage:nImage )
          ::Refresh()
@@ -598,7 +598,7 @@ METHOD Picture( nColumn, uValue ) CLASS TTabDirect
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SaveData() CLASS TTabDirect
 
-   _OOHG_EVAL( ::Block, ::Value )
+   _OOHG_Eval( ::Block, ::Value )
    AEval( ::aPages, { |o| o:SaveData() } )
 
    RETURN NIL
@@ -917,7 +917,6 @@ METHOD Refresh() CLASS TMultiPage
    AEval( ::aPages, { |p,i| p:Position := i, p:ForceHide() } )
    IF nPage >= 1 .AND. nPage <= Len( ::aPages )
       ::aPages[ nPage ]:Show()
-      ::aPages[ nPage ]:Refresh()
       IF ! ::lProcMsgsOnVisible
          ProcessMessages()
       ENDIF
@@ -1153,24 +1152,22 @@ METHOD DeleteControl( oCtrl ) CLASS TMultiPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DeletePage( nPosition ) CLASS TMultiPage
 
-   LOCAL nValue, nRealPosition
+   LOCAL nRealPosition
 
-   IF !HB_ISNUMERIC( nPosition ) .OR. nPosition < 1 .OR. nPosition > Len( ::aPages )
+   IF ! HB_ISNUMERIC( nPosition ) .OR. nPosition < 1 .OR. nPosition > Len( ::aPages )
       nPosition := Len( ::aPages )
    ENDIF
 
-   nValue := ::Value
    nRealPosition := ::RealPosition( nPosition )
 
    ::aPages[ nPosition ]:Release()
    _OOHG_DeleteArrayItem( ::aPages, nPosition )
+
    IF nRealPosition != 0
       ::DeleteItem( nRealPosition )
    ENDIF
 
-   IF nValue == nPosition
-      ::Refresh()
-   ENDIF
+   ::Refresh()
 
    RETURN NIL
 
@@ -1228,15 +1225,16 @@ METHOD ShowPage( nPage ) CLASS TMultiPage
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Caption( nColumn, uValue ) CLASS TMultiPage
+METHOD Caption( nPage, uValue ) CLASS TMultiPage
 
    LOCAL oPage, nRealPosition
 
-   oPage := ::aPages[ nColumn ]
-   nRealPosition := ::RealPosition( nColumn )
+   oPage := ::aPages[ nPage ]
+   nRealPosition := ::RealPosition( nPage )
    IF nRealPosition > 0
       IF ValType( uValue ) $ "CM"
          ::ContainerCaption( nRealPosition, uValue )
+         ::Refresh()
       ENDIF
       oPage:Caption := ::ContainerCaption( nRealPosition )
    ELSE
@@ -1248,12 +1246,12 @@ METHOD Caption( nColumn, uValue ) CLASS TMultiPage
    RETURN oPage:Caption
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Picture( nColumn, uValue ) CLASS TMultiPage
+METHOD Picture( nPage, uValue ) CLASS TMultiPage
 
    LOCAL oPage, nRealPosition
 
-   oPage := ::aPages[ nColumn ]
-   nRealPosition := ::RealPosition( nColumn )
+   oPage := ::aPages[ nPage ]
+   nRealPosition := ::RealPosition( nPage )
    IF ValType( uValue ) $ "CM"
       oPage:Picture := uValue
       oPage:nImage := ::oContainerBase:AddBitMap( uValue ) - 1
@@ -1465,13 +1463,13 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidht, nHeight, aCaptions
              iif( lRight,    TCS_RIGHT,          0 ) + ;
              iif( lRightJus, TCS_RIGHTJUSTIFY,   0 ) + ;
              iif( lScrollOp, TCS_SCROLLOPPOSITE, 0 ) + ;
-             iif( lVertical, TCS_VERTICAL,       0 )
+             iif( lVertical, TCS_VERTICAL,       0 ) + WS_CLIPSIBLINGS
 /*
 TODO: Use TCS_OWNERDRAWFIXED style to enable real backcolor and paint the upper right unused rectangle.
 TODO: See TCS_EX_FLATSEPARATORS, TCS_EX_REGISTERDROP, TCM_GETEXTENDEDSTYLE and TCM_SETEXTENDEDSTYLE.
 TODO: See TCM_DESELECTALL message.
 TODO: See styles TCS_FOCUSNEVER, TCS_FOCUSONBUTTONDOWN, TCS_MULTISELECT, TCS_OWNERDRAWFIXED, TCS_TOOLTIPS
-A possible solution for painting problemas:Intercept WM_ERASEBKGND and use ExcludeClipRect() with the rectangle of inner controls.
+A possible solution for painting problems:Intercept WM_ERASEBKGND and use ExcludeClipRect() with the rectangle of inner controls.
 */
 
    nControlHandle = InitTabControl( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, {}, nValue, nStyle, ::lRtl )
@@ -1490,6 +1488,7 @@ A possible solution for painting problemas:Intercept WM_ERASEBKGND and use Exclu
    ELSE
       ASSIGN uBackColor VALUE uBackColor TYPE "ANCM" DEFAULT GetSysColor( COLOR_WINDOW )
    ENDIF
+   ::BackColor := uBackColor
 
    ::MinTabWidth( nMinW )       // win10 returns 42
    IF nHPad >= 0 .AND. nVPad >= 0
@@ -1614,39 +1613,39 @@ METHOD DeleteItem( nPosition ) CLASS TTabRaw
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Caption( nColumn, uValue ) CLASS TTabRaw
+METHOD Caption( nPage, uValue ) CLASS TTabRaw
 
    IF ValType( uValue ) $ "CM"
-      SetTabCaption( ::hWnd, nColumn, uValue )
+      SetTabCaption( ::hWnd, nPage, uValue )
       ::Refresh()
    ENDIF
 
-   RETURN GetTabCaption( ::hWnd, nColumn )
+   RETURN GetTabCaption( ::hWnd, nPage )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Picture( nColumn, uValue ) CLASS TTabRaw
+METHOD Picture( nPage, uValue ) CLASS TTabRaw
 
    IF ValType( uValue ) $ "CM"
-      // ::Picture( nColumn ) := uValue
+      // ::Picture( nPage ) := uValue
       uValue := ::AddBitMap( uValue ) - 1
    ENDIF
    IF HB_ISNUMERIC( uValue )
-      SetTabPageImage( ::hWnd, nColumn, uValue )
+      SetTabPageImage( ::hWnd, nPage, uValue )
       ::Refresh()
    ENDIF
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD TabToolTip( nColumn, uToolTip ) CLASS TTabRaw
+METHOD TabToolTip( nPage, uToolTip ) CLASS TTabRaw
 
    LOCAL cRet
 
-   IF HB_ISNUMERIC( nColumn ) .AND. nColumn >= 1 .AND. nColumn <= Len( ::aToolTips )
+   IF HB_ISNUMERIC( nPage ) .AND. nPage >= 1 .AND. nPage <= Len( ::aToolTips )
       IF ValType( uToolTip ) $ "CM" .OR. HB_ISBLOCK( uToolTip )
-         ::aToolTips[ nColumn ] := uToolTip
+         ::aToolTips[ nPage ] := uToolTip
       ENDIF
-      cRet := ::aToolTips[ nColumn ]
+      cRet := ::aToolTips[ nPage ]
    ELSE
       cRet := ""
    ENDIF
@@ -1700,13 +1699,14 @@ METHOD TabsAreaHeight() CLASS TTabRaw
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTabPage FROM TControlGroup
 
-   DATA Caption                   INIT ""
+   DATA cCaption                  INIT ""
    DATA cPicture                  INIT ""
    DATA nImage                    INIT -1
    DATA nPosition                 INIT 0
    DATA Type                      INIT "TABPAGE" READONLY
 
    METHOD AdjustResize
+   METHOD Caption                 SETGET
    METHOD ContainerVisible
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
@@ -1716,6 +1716,15 @@ CLASS TTabPage FROM TControlGroup
    METHOD SetFocus                BLOCK { |Self| ::Container:SetFocus(), ::Container:Value := ::Position, Self }
 
    ENDCLASS
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Caption( cCaption ) CLASS TTabPage
+
+   IF ValType( cCaption ) $ "CM"
+      ::cCaption := cCaption
+   ENDIF
+
+   RETURN ::cCaption
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ContainerVisible() CLASS TTabPage
@@ -1784,7 +1793,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SaveData() CLASS TTabPage
 
-   _OOHG_EVAL( ::Block, ::Value )
+   _OOHG_Eval( ::Block, ::Value )
    AEval( ::aControls, { |o| o:SaveData() } )
 
    RETURN NIL
@@ -1793,7 +1802,7 @@ METHOD SaveData() CLASS TTabPage
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TTabPageInternal FROM TFormInternal
 
-   DATA Caption                   INIT ""
+   DATA cCaption                  INIT ""
    DATA cPicture                  INIT ""
    DATA cToolTip                  INIT ""
    DATA lHidden                   INIT .F.
@@ -1802,6 +1811,7 @@ CLASS TTabPageInternal FROM TFormInternal
    DATA Type                      INIT "TABPAGE" READONLY
 
    METHOD AdjustResize
+   METHOD Caption                 SETGET
    METHOD Define
    METHOD EndPage                 BLOCK { |Self| _OOHG_DeleteFrame( ::Type ) }
    METHOD Events_Size
@@ -1819,7 +1829,7 @@ METHOD Define( cControlName, uParentForm ) CLASS TTabPageInternal
 
    ::SearchParent( uParentForm )
    aArea := _OOHG_TabPage_GetArea( ::Container )
-   ::Super:Define( cControlName,, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], uParentForm )
+   ::Super:Define( cControlName, NIL, aArea[ 1 ], aArea[ 2 ], aArea[ 3 ], aArea[ 4 ], uParentForm )
    END WINDOW
    ::ContainerhWndValue := ::hWnd
 
@@ -1827,6 +1837,15 @@ METHOD Define( cControlName, uParentForm ) CLASS TTabPageInternal
    ::ColMargin := - aArea[ 1 ]
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Caption( cCaption ) CLASS TTabPageInternal
+
+   IF ValType( cCaption ) $ "CM"
+      ::cCaption := cCaption
+   ENDIF
+
+   RETURN ::cCaption
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Position( nPosition ) CLASS TTabPageInternal
@@ -1906,7 +1925,7 @@ STATIC FUNCTION _OOHG_TabPage_GetArea( oTab )
    LOCAL aRect
 
    aRect := TabCtrl_GetItemRect( oTab:hWnd, 0 )
-   aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 2, oTab:Height - 2 }
+   aRect := { 2, aRect[ 4 ] + 2, oTab:Width - 4, oTab:Height - 2 }
 
    RETURN { aRect[ 1 ], aRect[ 2 ], aRect[ 3 ] - aRect[ 1 ], aRect[ 4 ] - aRect[ 2 ] } // { Col, Row, Width, Height }
 
@@ -1944,6 +1963,11 @@ HB_FUNC( INITTABCONTROL )          /* FUNCTION InitTabControl( hWnd, hMenu, nCol
    TC_ITEM tie;
    int i, Style, StyleEx;
    PHB_ITEM hArray;
+   INITCOMMONCONTROLSEX icex;
+
+   icex.dwSize = sizeof( INITCOMMONCONTROLSEX );
+   icex.dwICC  = ICC_TAB_CLASSES ;
+   InitCommonControlsEx( &icex );
 
    Style = WS_CHILD | hb_parni( 9 );
    StyleEx = _OOHG_RTL_Status( hb_parl( 10 ) );
