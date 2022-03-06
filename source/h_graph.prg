@@ -330,13 +330,9 @@ Function EraseWindow( window )
 
 
 /* Copyright Alfredo Arteaga 14/10/2001 original idea
- *
  * Grigory Filatov 23/06/2003 translation for MiniGUI
- *
  * Roberto Lopez 23/06/2003 command definition
- *
  * Copyright Alfredo Arteaga TGRAPH 2, 12/03/2002
- *
  * Grigory Filatov 26/02/2004 translation #2 for MiniGUI
  */
 
