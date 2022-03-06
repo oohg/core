@@ -74,6 +74,8 @@ CLASS TProgressBar FROM TControl
    DATA nRangeMax                 INIT 100
    DATA nRangeMin                 INIT 0
    DATA nVelocity                 INIT 30
+   DATA Smooth                    INIT .F.
+   DATA Vertical                  INIT .F.
 
    METHOD BackColor               SETGET
    METHOD Define
@@ -90,6 +92,7 @@ CLASS TProgressBar FROM TControl
    METHOD Value                   SETGET
 
    MESSAGE ForeColor              METHOD FontColor
+   MESSAGE BarColor               METHOD FontColor
 
    ENDCLASS
 
@@ -99,8 +102,8 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
 
    LOCAL nControlHandle
 
-   ASSIGN lVertical  VALUE lVertical  TYPE "L" DEFAULT .F.
-   ASSIGN lSmooth    VALUE lSmooth    TYPE "L" DEFAULT .F.
+   ASSIGN ::Vertical VALUE lVertical  TYPE "L" DEFAULT .F.
+   ASSIGN ::Smooth   VALUE lSmooth    TYPE "L" DEFAULT .F.
    ASSIGN nHeight    VALUE nHeight    TYPE "N" DEFAULT iif( lVertical, 120, 25 )
    ASSIGN nWidth     VALUE nWidth     TYPE "N" DEFAULT iif( lVertical, 25, 120 )
    ASSIGN nMin       VALUE nMin       TYPE "N" DEFAULT 0
@@ -108,7 +111,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
    ASSIGN nValue     VALUE nValue     TYPE "N" DEFAULT 0
    ASSIGN lInvisible VALUE lInvisible TYPE "L" DEFAULT .F.
 
-   ::SetForm( cControlName, cParentForm, , , uBarColor, uBackColor, , lRtl  )
+   ::SetForm( cControlName, cParentForm, NIL, NIL, NIL, NIL, NIL, lRtl  )
 
    nControlHandle := InitProgressBar( ::ContainerhWnd, 0, nCol, nRow, nWidth, nHeight, nMin, nMax, lVertical, lSmooth, lInvisible, nValue, ::lRtl )
 
@@ -118,14 +121,12 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
    ::nRangeMin := nMin
    ::nRangeMax := nMax
 
-   IF ::BackColor <> NIL
-      /* BackColor is ignored when visual styles are enabled. Use ::DisableVisualStyle() to disable them. */
-      SetProgressBarBkColor( nControlHandle, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
+   IF uBackColor <> NIL
+      ::BackColor := uBackColor
    ENDIF
 
-   IF ::FontColor <> NIL
-      /* FontColor is ignored when visual styles are enabled. Use ::DisableVisualStyle() to disable them. */
-      SetProgressBarBkColor( nControlHandle, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
+   IF uBarColor <> NIL
+      ::FontColor := uBarColor
    ENDIF
 
    IF HB_ISNUMERIC( nVelocity )
@@ -253,22 +254,61 @@ METHOD RangeMax( uValue ) CLASS TProgressBar
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FontColor( uValue ) CLASS TProgressBar
 
-   IF HB_ISNUMERIC( uValue )
-      ::Super:FontColor := uValue
-      SetProgressBarBarColor( ::hWnd, ::FontColor[1], ::FontColor[2], ::FontColor[3] )
+   LOCAL nColor
+
+   IF PCount() > 0
+      nColor := ::Super:FontColor( uValue )
+      IF nColor # NIL
+         /* To change FontColor we must disable control's visual style.
+          * Change can't be reverted.
+          * You must release the control and recreate it.
+          * See FUNCTION TProgressBar_EnableVisualStyle.
+          */
+         ::DisableVisualStyle()
+         SetProgressBarBarColor( ::hWnd, nColor[1], nColor[2], nColor[3] )
+      ENDIF
+   ELSE
+      nColor := ::Super:FontColor()
    ENDIF
 
-   RETURN ::Super:FontColor
+   RETURN nColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD BackColor( uValue ) CLASS TProgressBar
 
-   IF HB_IsArray( uValue )
-      ::Super:BackColor := uValue
-      SetProgressBarBkColor( ::hWnd, ::BackColor[1], ::BackColor[2], ::BackColor[3] )
+   LOCAL nColor
+
+   IF PCount() > 0
+      nColor := ::Super:BackColor( uValue )
+      IF nColor # NIL
+         /* To change BackColor we must disable control's visual style.
+          * Change can't be reverted.
+          * You must release the control and recreate it.
+          * See FUNCTION TProgressBar_EnableVisualStyle.
+          */
+         ::DisableVisualStyle()
+         SetProgressBarBkColor( ::hWnd, nColor[1], nColor[2], nColor[3] )
+      ENDIF
+   ELSE
+      nColor := ::Super:BackColor()
    ENDIF
 
-   RETURN ::Super:BackColor
+   RETURN nColor
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION TProgressBar_EnableVisualStyle( oCtrl )
+
+   LOCAL aData
+
+   WITH OBJECT oCtrl
+      aData := { :Name, :Parent:Name, :Col, :Row, :Width, :Height, :nRangeMin, :nRangeMax, ;
+         { :ToolTip, :ToolTipTitle, :ToolTipIcon }, :Vertical, :Smooth, :HelpId, ! :Visible, :Value, :Rtl, :nVelocity }
+      :Release()
+   END WITH
+   oCtrl := NIL
+
+   RETURN TProgressBar():Define( aData[01], aData[02], aData[03], aData[04], aData[05], aData[06], aData[07], aData[08], ;
+      aData[09], aData[10], aData[11], aData[12], aData[13], aData[14], NIL, NIL, aData[15], aData[16] )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
