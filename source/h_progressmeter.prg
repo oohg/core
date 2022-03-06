@@ -79,12 +79,18 @@ CLASS TProgressMeter FROM TLabel
    METHOD Align                   SETGET
    METHOD Define
    METHOD Events
-   METHOD ForeColor               SETGET
    METHOD RangeMax                SETGET
    METHOD RangeMin                SETGET
    METHOD ReCalc
    METHOD SetPercent              SETGET
    METHOD Value                   SETGET
+
+// METHOD ForeColor               SETGET
+   ACCESS ForeColor               INLINE ::Fontcolor
+   ASSIGN ForeColor( uColor )     INLINE ::Fontcolor( uColor )
+// METHOD BarColor                SETGET
+   ACCESS BarColor                INLINE ::Fontcolor
+   ASSIGN BarColor( uColor )      INLINE ::Fontcolor( uColor )
 
    ENDCLASS
 
@@ -147,15 +153,6 @@ METHOD Value( uValue ) CLASS TProgressMeter
    ENDIF
 
    RETURN ::nValue
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD ForeColor( uColor ) CLASS TProgressMeter
-
-   IF PCount() > 0
-      ::FontColor := uColor
-   ENDIF
-
-   RETURN ::FontColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReCalc( lForce ) CLASS TProgressMeter
