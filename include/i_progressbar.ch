@@ -74,7 +74,7 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ <dummy2: FORECOLOR, BARCOLOR> <barcolor> ] ;
+      [ <dummy2: FONTCOLOR, FORECOLOR, BARCOLOR> <barcolor> ] ;
       [ <rtl: RTL> ] ;
       [ MARQUEE <nVelocity> ] ;
       [ SUBCLASS <subclass> ] ;
