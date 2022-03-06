@@ -8,7 +8,7 @@
   * source\h_textbox.prg
     + added suppor for font and control color changed on focus
 
-2011-08-05 16:43:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-05 16:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    + resources\*
      + Added missing resources.
    * resources\oohg.rc
@@ -23,7 +23,7 @@
    + resources\oohg.o
      + Added missing file.
 
-2011-08-04 16:35:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-04 16:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_combo.prg
      ! Fixed images shown without transparency.
      + Added support for BACKCOLOR and FONTCOLOR clauses at control definition.
@@ -32,18 +32,18 @@
    * doc\classes.txt
      + Added DATA ImageListColor and DATA ImageListFlags in TCOMBO class.
 
-2011-08-04 15:55:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-04 15:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_listbox.prg
      ! Fixed images shown without transparency.
    * doc\classes.txt
      + Added DATA ImageListColor and DATA ImageListFlags in TLIST class.
 
-2011-08-04 10:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-04 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * include\i_listbox.ch
    * include\i_combobox.ch
      * Changed ADJUST was substituted by FIT to avoid confusion with AUTOADJUST.
 
-2011-08-03 22:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-08-03 22:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_listbox.prg
    * source\h_combo.prg
    * include\i_listbox.ch
@@ -57,17 +57,17 @@
      * Changed if TEXTHEIGHT is not enough to display the text, the height
        defaults to the text height plus 2 pixels.
 
-2011-07-30 17:30:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-30 17:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_listbox.prg
    * include\i_listbox.ch
      + Added IMAGE and TEXTHEIGHT clauses to LISTBOX control so
        TList and TListMulti classes can display images.
 
-2011-07-28 23:16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-28 23:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
    * source\h_combo.prg
      ! Fixed not displaying images in combobox.
 
-2011-07-23 12:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-23 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * include\i_menu.ch
   * include\i_window.ch
   * source\h_menu.prg
@@ -96,13 +96,13 @@
   + samples\oohg\stream\TStreamZip.prg
     + TStream class added.
 
-2011-07-16 16:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-16 16:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_controlmisc.prg
   * include\i_window.ch
     + Added support for ColumnBetterAutofit and ColumnsBetterAutofit
       methods in non-oop syntax.
 
-2011-07-15 11:40:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-15 11:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\c_winapimisc.c
     + Added MAKELPARAM function.
   * source\c_image.c
@@ -119,34 +119,34 @@
   * source\h_controlmisc.prg
     + Added support for SetRange method of TDatePick class in non-oop syntax.
 
-2011-07-13 18:25:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-13 18:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\c_image.c
   * source\h_button.prg
     ! Fixed ICON images not correctly displayed in menu items under Win7.
 
-2011-07-12 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-07-12 17:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     ! fixed problem in fillrect of hbprinter printer mode
 
-2011-07-11 23:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-11 23:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\c_image.c
     ! Fixed ICON images always loaded as 32x32, now they are loaded
       with their real size.
     ! Fixed ICON images not being show in menu items.
 
-2011-07-11 16:06:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-11 16:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_status.prg
     ! Fixed image not shown in statusbar.
 
-2011-07-10 23:37:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-10 23:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\c_image.c
     ! Fixed loading ICON images.
 
-2011-07-10 17:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-07-10 17:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_textbox.prg
     * added a call to scrollcaret in caretpos method
 
-2011-07-10 12:15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-10 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * doc\classes.txt
   * source\h_textbox.txt
   * include\i_windefs.ch
@@ -155,11 +155,11 @@
     + Added ScrollCaret method to TText class.
       Contributed by Sergio Castellari.
 
-2011-07-08 10:34:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-08 10:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * compile_mingw.bat
     ! Fixed _oohg_resconfig.h not being deleted after compiling.
 
-2011-07-06 23:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-06 23:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * compile_mingw.bat
     ! Fixed ooHg.res not being compiled when application rc is present.
 
@@ -173,7 +173,7 @@
   * source\h_controlmisc.prg
     ! Fixed _OOHG_UnTransform() when there's no mask.
 
-2011-07-06 10:49:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-06 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\miniprint.prg
     + Added localized title to GetFolder window in procedure _HMG_printer_savepages.
     * Replaced english message in GetPrinter function with localized message.
@@ -182,7 +182,7 @@
     ! Fixed preview window does not get the focus when first displayed.
     ! Fixed some compiler warnings.
 
-2011-07-06 09:21:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-06 09:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_msgbox.prg
     + Added posibility of changing default message and title in message functions.
     ! Fixed MsgInfoExt to avoid translating chr(13)+chr(10) into chr(13)+chr(10)+chr(10).
@@ -199,45 +199,45 @@
       GetPrinter() function. Reported and fixed by
       Fernando Yurisich.
 
-2011-07-05 08:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-07-05 08:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_error.prg
     * updated version number
 
-2011-07-04 20:50:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-04 20:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_tree.prg
     ! fixed nodeimages not shown.
 
-2011-07-02 20:10:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-07-02 20:10 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     ! fixed problem in vertical barcodes.
 
-2011-07-02 16:26:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-02 16:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * samples\oohg\browsecolumncontrols.dbf
   * samples\oohg\browsecolumncontrols.prg
     * Modified to show how to edit date fields in a browse using
       TGridControlDatePicker class.
 
-2011-07-02 16:24:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-02 16:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * doc\classes.txt
     + Added data LSHOWNONE to TGridControlDatePicker class.
 
-2011-07-02 16:23:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-02 16:23 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_grid.prg
     + Added SHOWNONE style to TGridControlDatePicker class.
 
-2011-07-01 19:20:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-01 19:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\makelib_mingw.bat
     ! fixed check for already defined environment variables.
 
-2011-07-01 16:41:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-01 16:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\h_browse.prg
     ! Fixed crash when repainting a minimized browse.
 
-2011-07-01 15:56:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2011-07-01 15:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * source\makelib_mingw.bat
     + Added check for already defined environment variables.
 
-2011-06-29 21:12:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-06-29 21:12 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     ! fixed barcode parameters  nlin , ncol,   cbarcode , ctipo,       , acolor , lhori          , nwidth, nheight
                                 line  , column , barcode , barcode type , color  , .f. = vertical , bar width , bar heihgt
@@ -249,17 +249,17 @@
   * source\h_tooltip.prg
     + TForm:ToolTipWidth and TForm:ToolTipMultiline methods added.
 
-2011-06-27 22:15:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-06-27 22:15 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     * improving PDFPRINT barcode
 
-2011-06-27 20:45:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-06-27 20:45 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     * barcode printing without fonts (second approach)
     +  added barcode printing to PDFPRINT   (I don't know if it's ok)
     ! fixed call to FILLRECT in order to print barcodes in hbprinter.
 
-2011-06-24 20:30:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-06-24 20:30 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     +  added barcode printing without fonts  (first approach)
   * source\winprint.prg
@@ -270,11 +270,11 @@
   * source\h_windows.prg
     ! Terminates last popup menu before execute it's action.
 
-2011-06-01 20:37:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-06-01 20:37 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     ! fixed open calc print mode, with or without preview.
 
-2011-05-31 11:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-05-31 11:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_print.prg
     * now the preview only will be showed if the preview option is true.
       inluding excell, rtf, html, csv, open calc and pdf formats.
@@ -306,11 +306,11 @@
   * source\h_browse.prg
     ! Fixed non-unlocking record when it's deleted()
 
-2011-05-08 19:17:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-05-08 19:17 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * include\i_textbox.ch
     + new syntax when clause.
 
-2011-05-08 00:05:00 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
+2011-05-08 00:05 UTC-0500 Ciro Vargas C. <cvc@oohg.org>
   * source\h_splitbox.prg
     ! fixed problem in clientheightused  method.
 
