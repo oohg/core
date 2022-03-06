@@ -685,8 +685,8 @@ Local RetVal, oWnd, oCtrl, nPos
       ElseIf Arg3 == 'FONTCOLOR'
          RetVal := oCtrl:FontColor
 
-      ElseIf Arg3 == 'FORECOLOR'
-         RetVal := oCtrl:BackColor
+      ElseIf Arg3 == 'FORECOLOR' .OR. Arg3 == 'BARCOLOR'
+         RetVal := oCtrl:FontColor
 
       ElseIf Arg3 == 'ADDRESS'
          RetVal := oCtrl:Address
@@ -1041,9 +1041,20 @@ CLASS TControl FROM TWindow
    METHOD Events_MeasureItem     BLOCK { || NIL }
    METHOD Cursor                 SETGET
    METHOD ExcludeGroupBoxArea
+   METHOD DisplayValue           SETGET
 
    ENDCLASS
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DisplayValue ( cValue ) CLASS TControl
+
+   IF ValType( cValue ) $ "CM"
+      ::Caption := cValue
+   ENDIF
+
+   RETURN GetWindowText( ::hWnd )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ExcludeGroupBoxArea() CLASS TControl
 
    LOCAL lRet
