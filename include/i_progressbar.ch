@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> PROGRESSBAR <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
       [ RANGE <lo>, <hi> ] ;
       [ VALUE <v> ] ;
       [ WIDTH <width> ] ;
@@ -74,7 +74,7 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FORECOLOR <barcolor> ] ;
+      [ <dummy2: FORECOLOR, BARCOLOR> <barcolor> ] ;
       [ <rtl: RTL> ] ;
       [ MARQUEE <nVelocity> ] ;
       [ SUBCLASS <subclass> ] ;
