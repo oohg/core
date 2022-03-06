@@ -2660,6 +2660,10 @@ LABEL
    => ;
       _OOHG_ActiveControlForeColor := <color>
 
+#xcommand BARCOLOR <color> ;
+   => ;
+      _OOHG_ActiveControlForeColor := <color>
+
 #xcommand BORDER <border> ;
    => ;
       _OOHG_ActiveControlBorder := <border>
