@@ -63,7 +63,7 @@
 
 #command @ <row>, <col> PROGRESSMETER <name> ;
       [ OBJ <obj> ] ;
-      [ <dummy: OF, PARENT> <parent> ] ;
+      [ <dummy1: OF, PARENT> <parent> ] ;
       [ RANGE <lo>, <hi> ] ;
       [ VALUE <v> ] ;
       [ WIDTH <width> ] ;
@@ -72,7 +72,7 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FORECOLOR <forecolor> ] ;
+      [ <dummy2: FORECOLOR, BARCOLOR> <forecolor> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
