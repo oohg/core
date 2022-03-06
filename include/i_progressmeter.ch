@@ -72,7 +72,7 @@
       [ HELPID <helpid> ] ;
       [ <invisible: INVISIBLE> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ <dummy2: FORECOLOR, BARCOLOR> <forecolor> ] ;
+      [ <dummy2: FONTCOLOR, FORECOLOR, BARCOLOR> <forecolor> ] ;
       [ FONT <fontname> ] ;
       [ SIZE <fontsize> ] ;
       [ <bold: BOLD> ] ;
