@@ -10,8 +10,271 @@
  *   '*' Changed: ...           '!' Fixed: ....
  *   '+' Added: ...             '%' Optimized: ...
  *   '-' Removed: ...           ';' Comment
- * Use #nnn for referencing an issue.
+ * Use #nnn to refer to an issue.
  */
+
+2022-03-06 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressmeter.prg
+    ! Method ForeColor.
+    + Method BarColor as a synonyn of FontColor.
+
+2022-03-06 19:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_progressmeter.ch
+    + FONTCOLOR as a synonym of FORECOLOR.
+
+2022-03-06 19:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_progressbar.ch
+    + FONTCOLOR as a synonym of FORECOLOR.
+
+2022-03-06 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+    * Methods Fontcolor and Backcolor are now responsible for
+      disabling the control's visual style when a color is set.
+    + Function TProgressBar_EnableVisualStyle( oCtrl ). It returns a
+      new progressbar control with the same name, without backcolor
+      and fontcolor, and with visual styles enabled.
+
+2022-03-06 12:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_graph.prg
+    * Some format.
+
+2022-03-06 11:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + Support for BARCOLOR clause at function GetProperty.
+    ! FORCOLOR clause at function GetProperty.
+    + Method DisplayValue to class TControl.
+
+2022-03-06 11:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Support for BARCOLOR clause.
+
+2022-03-06 11:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_progressmeter.ch
+    + BARCOLOR as a synonym of FORECOLOR.
+
+2022-03-06 11:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_progressbar.ch
+    + BARCOLOR as a synonym of FORECOLOR.
+
+2022-03-06 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\ChangeLog_002.txt
+    ! Some times.
+
+2022-03-01 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_this.ch
+    ! This.BackColor, and another properties and methods, are wrongly
+      translated to the parent form instead of the control.
+    * All GetProperty, SetProperty, and DoMethod function calls have
+      been replaced with their object syntax equivalents.
+
+2022-03-01 19:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated
+
+2022-03-01 19:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    * Var nColumn replaced with nPage.
+    * Some format.
+    * A call to tabpage refresh method was removed from TMultipage:Refresh
+      method because it's not needed.
+    ! The visible tab of a TMultiPage control becomes blank after deleting
+      another tab.
+    ! The visible tab of a TMultiPage control becomes blank after changing
+      its caption or the caption of another tab.
+    ! The caption of a TMultiPage tab is not changed by method Caption.
+    * Data Caption of classes TTabPage and TTabPageInternal has been changed
+      to cCaption.
+    + Method Caption to classes TTabPage and TTabPageInternal.
+    + WS_CLIPSIBLINGS to TTabRaw style.
+    ! TTabPageInternal class was not honoring the backcolor.
+    ! TTabPageInternal was not displaying the right border of the page frame.
+    ! Added missing initialization of common control's lib.
+
+2022-03-01 14:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_bostaurus.prg
+  * core\source\h_controlmisc.prg
+  * core\source\h_form.prg
+  * core\source\h_richeditbox.prg
+    * Some format.
+
+2022-02-28 16:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+    + Support for FILLRECT and NOFILLRECT clauses.
+
+2022-02-28 16:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checklist.prg
+    * Method Item now returns the item's data when called with only the
+      first parameter.
+
+2022-02-28 16:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_status.prg
+    * Some format.
+
+2022-02-27 20:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    * Method Save was renamed to SaveImage to avoid a collision with
+      This.Save pseudomethod. INCOMPATIBLE.
+
+2022-02-27 20:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    * Method Save was renamed to SaveMenu to avoid a collision with
+      This.Save pseudomethod. INCOMPATIBLE.
+
+2022-02-27 20:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + Default value for lAll parameter of SaveAs method.
+
+2022-02-27 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    - Exception handler for method AddControl at function DoMethod
+      because it was wrong and unneeded.
+
+2022-02-27 20:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    - Some functions were replaced by pseudofunctions.
+  * core\include\i_pseudofunc.ch
+    + Pseudofunctions:
+      _AddItem, _DeleteAllItems, _DeleteItem, _DisableControl,
+      _EnableControl, _GetCaption, _GetCaretPos, _GetControlAction,
+      _GetControlCol, _GetControlHeight, _GetControlRow, _GetControlWidth,
+      _GetFontAdvancedGM, _GetFontAngle, _GetFontBold, _GetFontCharset,
+      _GetFontItalic, _GetFontName, _GetFontOrientation, _GetFontSize,
+      _GetFontStrikeOut, _GetFontUnderline, _GetFontWidth, _GetItem,
+      _GetItemCount, _GetMultiCaption, _GetPicture, _GetRangeMax,
+      _GetRangeMin, _GetToolTip, _GetValue, _HideControl,
+      _IsControlVisibleFromHandle, _ReleaseControl, _SetBackColor,
+      _SetCaretPos, _SetControlCol, _SetControlHeight, _SetControlRow,
+      _SetControlSizePos, _SetControlWidth, _SetFocus, _SetFontAdvancedGM,
+      _SetFontAngle, _SetFontBold, _SetFontCharset, _SetFontColor,
+      _SetFontItalic, _SetFontName, _SetFontOrientation, _SetFontSize,
+      _SetFontStrikeOut, _SetFontUnderline, _SetFontWidth, _SetItem,
+      _SetMultiCaption, _SetPicture, _SetRangeMax, _SetRangeMin,
+      _SetStatusIcon, _SetToolTip, _SetValue, _ShowControl,
+      GetControlContainerHandle, GetControlHandle, GetControlId,
+      GetControlName, GetControlParentHandle, GetControlType, GetControlValue
+
+2022-02-23 21:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_checkbox.prg
+    - Unneeded data cPicture.
+    + Add missing CRLF at EOF.
+    * Format.
+
+2022-02-23 20:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressmeter.prg
+    + Method ForeColor as a synonym of FontColor.
+    * Format.
+
+2022-02-23 20:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+    + Add missing CRLF at EOF.
+
+2022-02-23 20:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_combo.prg
+    + Add missing CRLF at EOF.
+    - Spaces al EOL.
+
+2022-02-23 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    + Add missing CRLF at EOF.
+
+2022-02-23 20:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    * Datas and methods were sorted.
+
+2022-02-23 20:32 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Improve comment.
+
+2022-02-23 20:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_ini.prg
+    * Format.
+
+2022-02-23 20:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_hotkeybox.prg
+    * Format.
+
+2022-02-23 20:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Function comment.
+
+2022-02-23 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+    * Format.
+
+2022-02-23 20:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    - Unneeded code at functions PIXELSPERINCHX and PIXELSPERINCHY.
+
+2022-02-23 20:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_winapimisc.prg
+    - Extra spaces.
+
+2022-02-23 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    + Method ControlsNames. Returns an array with the names of
+      the controls added to a container.
+    + Some comments.
+
+2022-02-16 16:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+     + Support for method Position of player, tab and toolbar controls.
+
+2022-02-16 16:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    * Data Position was renamed to nPosition at classes TTabPage
+      and TTabPageInternal.
+    + Method Position to classes TTabPage and TTabPageInternal.
+    ; This facilitates THIS implementation.
+
+2022-02-16 15:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Var cWork was renamed to cFile.
+
+2022-02-16 15:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_toolbar.prg
+    * Data Position was renamed to cPosition.
+    + Method Position.
+    ; This facilitates THIS implementation.
+    * Some format.
+
+2022-02-16 15:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tab.prg
+    * Data Picture was renamed to cPicture.
+    + Method Picture.
+    ; This facilitates THIS implementation.
+
+2022-02-16 15:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+    + Method ForeColor as a synonym of FontColor.
+
+2022-02-16 15:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_label.prg
+    * Data Picture was renamed to cPicture.
+    + Method Picture.
+    ; This facilitates THIS implementation.
+
+2022-02-16 15:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Data Picture was renamed to aPicture.
+    + Method Picture.
+    ; This facilitates THIS implementation.
+
+2022-02-16 15:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    ! SetFocus method at DoMethod function.
+
+2022-02-13 22:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tooltip.prg
+    * DATA and METHOD definitions were sorted alphabetically.
+    * Method DefWindowProc definition was changed from BLOCK to
+      a standard method.
+    + Method BackStretch to set/get data lStretchBack.
+    + Some comments.
+    * Some format.
+
+2022-02-13 22:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tooltip.prg
+    * Method ResetDelays now returns the initial time.
 
 2022-02-11 23:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -1466,8 +1729,9 @@
   * core\source\h_textbox.prg
     + Data cCue to class TText.
     + Method CueBanner to class TText.
-    ; Note that you can't set a cue banner on a EDITBOX nor on a RICHEDITBOX control.
-      See https://docs.microsoft.com/en-us/windows/win32/controls/em-setcuebanner
+    ; Note that you can't set a cue banner on a EDITBOX nor on a
+      RICHEDITBOX control. See
+      https://docs.microsoft.com/en-us/windows/win32/controls/em-setcuebanner
   #270
   #316PR
 
@@ -2990,7 +3254,6 @@
   * core\compile_MINGW.BAT
     + #include "oohgversion.h"
 
-C:\GitOOHG\core\compile_MINGW.BAT
 2020-05-15 00:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
     + #include "oohgversion.h"
