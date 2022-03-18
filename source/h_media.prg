@@ -303,27 +303,27 @@ HB_FUNC( MCIFUNC )
 
    switch( func )
    {
-      case  1:  hb_retnl( MCIWndPlay(mcihand)) ; break;
-      case  2:  hb_retnl( MCIWndStop(mcihand)) ; break;
-      case  3:  hb_retnl( MCIWndPause(mcihand)) ; break;
-      case  4:  hb_retnl( MCIWndClose(mcihand)) ; break;
-      case  5:            MCIWndDestroy(mcihand) ; hb_retnl(0);break;
-      case  6:  hb_retnl( MCIWndEject(mcihand)) ; break;
-      case  7:  hb_retnl( MCIWndEnd(mcihand)) ; break;
-      case  8:  hb_retnl( MCIWndHome(mcihand)) ; break;
-      case  9:  hb_retnl( MCIWndOpen(mcihand, (LPTSTR ) HB_UNCONST( hb_parc( 3 ) ),NULL)) ; break;
-      case 10:  hb_retnl( MCIWndOpenDialog(mcihand)) ; break;
-      case 11:  hb_retnl( MCIWndPlayReverse(mcihand)) ; break;
-      case 12:  hb_retnl( MCIWndResume(mcihand)) ; break;
-      case 13:            MCIWndSetRepeat(mcihand,hb_parl(3)) ;hb_retnl(0); break;
-      case 14:  hb_retnl( MCIWndSetSpeed(mcihand,hb_parni(3))) ; break;
-      case 15:  hb_retnl( MCIWndSetVolume(mcihand,hb_parni(3))) ; break;
-      case 16:            MCIWndSetZoom(mcihand,hb_parni(3)) ; hb_retnl(0); break;
-      case 17:  hb_retnl( MCIWndGetLength(mcihand)) ; break;
-      case 18:  hb_retnl( MCIWndGetPosition(mcihand)) ; break;
-      case 19:  hb_retnl( MCIWndGetVolume(mcihand) ) ; break;
-      case 20:  hb_retnl( MCIWndSeek(mcihand,hb_parni(3)) ) ; hb_retnl(0); break;
-      default: hb_retnl( 0 ) ;
+      case  1: HB_RETNL( MCIWndPlay( mcihand ) ); break;
+      case  2: HB_RETNL( MCIWndStop( mcihand ) ); break;
+      case  3: HB_RETNL( MCIWndPause( mcihand ) ); break;
+      case  4: HB_RETNL( MCIWndClose( mcihand ) ); break;
+      case  5:           MCIWndDestroy( mcihand ); HB_RETNL( 0 ); break;
+      case  6: HB_RETNL( MCIWndEject( mcihand ) ); break;
+      case  7: HB_RETNL( MCIWndEnd( mcihand ) ); break;
+      case  8: HB_RETNL( MCIWndHome( mcihand ) ); break;
+      case  9: HB_RETNL( MCIWndOpen( mcihand, (LPTSTR) HB_UNCONST( hb_parc( 3 ) ), 0 ) ); break;
+      case 10: HB_RETNL( MCIWndOpenDialog( mcihand ) ); break;
+      case 11: HB_RETNL( MCIWndPlayReverse( mcihand ) ); break;
+      case 12: HB_RETNL( MCIWndResume( mcihand ) ); break;
+      case 13:           MCIWndSetRepeat( mcihand, hb_parl( 3 ) ); HB_RETNL( 0 ); break;
+      case 14: HB_RETNL( MCIWndSetSpeed( mcihand, hb_parni( 3 ) ) ); break;
+      case 15: HB_RETNL( MCIWndSetVolume( mcihand, hb_parni( 3 ) ) ); break;
+      case 16:           MCIWndSetZoom( mcihand, hb_parni( 3 ) ); HB_RETNL( 0 ); break;
+      case 17: HB_RETNL( MCIWndGetLength( mcihand ) ); break;
+      case 18: HB_RETNL( MCIWndGetPosition( mcihand ) ); break;
+      case 19: HB_RETNL( MCIWndGetVolume( mcihand ) ); break;
+      case 20: HB_RETNL( MCIWndSeek( mcihand, hb_parni( 3 ) ) ); HB_RETNL( 0 ); break;
+      default: HB_RETNL( 0 );
    }
 }
 
