@@ -32,8 +32,11 @@
 -cflag=-Wstrict-prototypes
 -cflag=-Wundef
 -cflag=-Wunused
+{clang|clang64}-cflag=-Wno-reserved-identifier
 {clang|clang64}-cflag=-Wno-used-but-marked-unused
+{clang|clang64}-cflag=-Wno-extra-semi
 {clang|clang64}-cflag=-Wno-extra-semi-stmt
+{clang|clang64}-cflag=-Wno-duplicate-decl-specifier
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloc-zero
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Walloca
 {HG_CFLAGS&(hb32|hb34)}-cflag=-Warray-bounds=2
