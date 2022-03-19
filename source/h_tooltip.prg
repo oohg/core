@@ -920,7 +920,7 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
    PHB_ITEM aRect = hb_param( 2, HB_IT_ANY );
    RECT rect;
    LPTSTR lpszText = (LPTSTR) NULL;
-   LPTSTR lpszTitle = (LPTSTR) ( HB_ISCHAR( 4 ) ? hb_parc( 4 ) : NULL );
+   LPTSTR lpszTitle = (LPTSTR) ( HB_ISCHAR( 4 ) ? HB_UNCONST( hb_parc( 4 ) ) : NULL );
    int nIcon = HB_ISNUM( 5 ) ? hb_parni( 5 ) : TTI_NONE;
    DWORD dwStyle = WS_POPUP;
    HWND hwndToolTip;
@@ -939,7 +939,7 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
 
    if( hb_parclen( 3 ) > 0 )
    {
-      lpszText = (LPTSTR) hb_parc( 3 );
+      lpszText = (LPTSTR) HB_UNCONST( hb_parc( 3 ) );
    }
    else if( HB_ISNUM( 3 ) )
    {
@@ -1212,7 +1212,7 @@ HB_FUNC( TTM_UPDATETIPTEXT )          /* FUNCTION TTM_UpdateTipText( hWnd, hWnd,
       ti.hinst    = (HINSTANCE) 0;
       ti.hwnd     = hwndTool;
       ti.uId      = (UINT_PTR) hwndTool;
-      ti.lpszText = (LPTSTR) hb_parc( 3 );
+      ti.lpszText = (LPTSTR) HB_UNCONST( hb_parc( 3 ) );
 
       SendMessage( HWNDparam( 1 ), TTM_UPDATETIPTEXT, 0, (LPARAM) (LPTOOLINFO) &ti );
    }
