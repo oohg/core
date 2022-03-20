@@ -2012,21 +2012,17 @@ HB_PTRUINT _OOHG_GetProcAddress( HMODULE hmodule, LPCSTR lpProcName )
    return (HB_PTRUINT) p;
 }
 
+// For Harbour 3.0 with GCC 4.5.2
+// Note that each DEFINE_KNOWN_FOLDER generates the warning: initialized and declared 'extern'
 #ifndef REFKNOWNFOLDERID
    typedef GUID KNOWNFOLDERID;
    #define REFKNOWNFOLDERID KNOWNFOLDERID * /*__MIDL_CONST*/
    #ifdef DEFINE_KNOWN_FOLDER
       #undef DEFINE_KNOWN_FOLDER
    #endif
-   #define INITKNOWNFOLDERS
-   #if defined(INITGUID) || defined(INITKNOWNFOLDERS)
-      #define DEFINE_KNOWN_FOLDER(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-                 EXTERN_C const GUID DECLSPEC_SELECTANY name \
-                 = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
-   #else
-      #define DEFINE_KNOWN_FOLDER(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-                 EXTERN_C const GUID name
-   #endif // INITGUID || INITKNOWNFOLDERS
+   #define DEFINE_KNOWN_FOLDER(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
+              EXTERN_C const GUID DECLSPEC_SELECTANY name \
+              = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
    // legacy CSIDL value: CSIDL_NETWORK
    // display name: "Network"
    // legacy display name: "My Network Places"
