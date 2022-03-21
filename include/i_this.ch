@@ -62,49 +62,49 @@
 
 
 /*---------------------------------------------------------------------------
-COMMON (THIS)
+FORMS & CONTROLS
 ---------------------------------------------------------------------------*/
 
-#xtranslate This . <p: Release, Show, Hide, SetFocus, Object> [ () ] ;
+#xtranslate This . <p: Hide, Release, Save, SaveData, SetFocus, Show> [ () ] ;
    => ;
       _OOHG_ThisObject:<p>()
 
-#xtranslate This . <p: Name, Row, Col, Width, Height, Caption, BackColor, ;
-      Visible, Enabled, Cargo> ;
+#xtranslate This . <p: BackColor, BackColorCode, Caption, Cargo, ClientHeight, ;
+      ClientWidth, Col, Cursor, Enabled, Handle, Height, hWnd, Name, Object, ;
+      Row, VirtualHeight, VirtualWidth, Visible, Width> ;
    => ;
       _OOHG_ThisObject:<p>
 
 /*---------------------------------------------------------------------------
-WINDOWS (THIS)
+FORMS
 ---------------------------------------------------------------------------*/
 
-#xtranslate This . <p: BackColor, BackColorCode, Cargo, ClientHeight, ;
-      ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
-      HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
-      NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
-      VirtualHeight, VirtualWidth, Width, Cargo> ;
+#xtranslate This . <p: Closable, FocusedControl, HelpButton, MaxButton, ;
+      MaxHeight, MaxWidth, MinButton, MinHeight, MinWidth, NotifyIcon, ;
+      NotifyToolTip, Sizable, SysMenu, Title, TitleBar, Topmost> ;
    => ;
       _OOHG_ThisForm:<p>
 
-#xtranslate This . <p: Activate, Center, Hide, Maximize, Minimize, ;
-      Object, Print, Redraw, Release, Restore, SetFocus, Show> [ () ] ;
+#xtranslate This . <p: Activate, Center, Maximize, Minimize, Print, Redraw, ;
+      Restore, SaveAs> [ () ] ;
    => ;
       _OOHG_ThisForm:<p>()
 
-/*---------------------------------------------------------------------------
-WINDOWS (THISWINDOW)
----------------------------------------------------------------------------*/
+#xtranslate ThisForm . <p: Names, Controls> ;
+   => ;
+      _OOHG_ThisForm:ControlsNames()
 
-#xtranslate ThisWindow . <p: BackColor, BackColorCode, Cargo, ClientHeight, ;
-      ClientWidth, Closable, Col, Cursor, FocusedControl, Handle, Height, ;
-      HelpButton, hWnd, MaxHeight, MaxWidth, MinHeight, MinWidth, Name, ;
-      NotifyIcon, NotifyToolTip, Object, Row, SaveAs, Title, Topmost, ;
-      VirtualHeight, VirtualWidth, Width, Cargo> ;
+#xtranslate ThisForm . <p: BackColor, BackColorCode, Caption, Cargo, ;
+      ClientHeight, ClientWidth, Closable, Col, Cursor, Enabled, ;
+      FocusedControl, Handle, Height, HelpButton, hWnd, MaxButton, MaxHeight, ;
+      MaxWidth, MinButton, MinHeight, MinWidth, Name, NotifyIcon, ;
+      NotifyToolTip, Object, OnNotifyClick, Row, Sizable, SysMenu, Title, ;
+      TitleBar, Topmost, VirtualHeight, VirtualWidth, Visible, Width> ;
    => ;
       _OOHG_ThisForm:<p>
 
-#xtranslate ThisWindow . <p: Activate, Center, Hide, Maximize, Minimize, ;
-      Object, Print, Redraw, Release, Restore, SetFocus, Show> [ () ] ;
+#xtranslate ThisForm . <p: Activate, Center, Hide, Maximize, Minimize, ;
+      Print, Redraw, Release, Restore, SaveAs, SetFocus, Show> [ () ] ;
    => ;
       _OOHG_ThisForm:<p>()
 
@@ -112,62 +112,68 @@ WINDOWS (THISWINDOW)
 CONTROLS
 ---------------------------------------------------------------------------*/
 
-// Property without arguments
-#xtranslate This . <p: FontColor, ForeColor, Value, Address, Picture, Tooltip, ;
-      FontName, FontSize, FontBold, FontItalic, FontUnderline, FontStrikeout, ;
-      Displayvalue, Checked, ItemCount, RangeMin, RangeMax, Length, Position, ;
-      CaretPos, ScrollCaret, Cargo, Cursor> ;
+#xtranslate <o: This, ThisControl> . <p: Address, CaretPos, Checked, DisplayValue, ;
+      FontColor, FontBold, FontItalic, FontName, FontSize, FontStrikeout, ;
+      FontUnderline, ForeColor, ItemCount, Length, Picture, Position, RangeMax, ;
+      RangeMin, ReadOnly, ScrollCaret, Tooltip, Value, Volume> ;
    => ;
-      GetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)> )
+      _OOHG_ThisControl:<p>
 
-#xtranslate This . <p: FontColor, ForeColor, Value, ReadOnly, Address, ;
-      Picture, Tooltip, FontName, FontSize, FontBold, FontItalic, ;
-      FontUnderline, FontStrikeout, DisplayValue, Checked, RangeMin, RangeMax, ;
-      Repeat, Speed, Volume, Zoom, Position, CaretPos, ScrollCaret, Cargo, ;
-      Cursor> := <arg> ;
+#xtranslate <o: This, ThisControl> . <p: Address, CaretPos, Checked, DisplayValue, ;
+      FontColor, FontBold, FontItalic, FontName, FontSize, FontStrikeout, ;
+      FontUnderline, ForeColor, ItemCount, Picture, RangeMax, RangeMin, ;
+      ReadOnly, ScrollCaret, Speed, Tooltip, Value, Volume, Zoom> := <arg> ;
    => ;
-      SetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg> )
+      _OOHG_ThisControl:<p> := <arg>
 
-// Property with 1 argument
-#xtranslate This . <p: Item, Caption, Header>( <n> ) ;
+#xtranslate <o: This, ThisControl> . Position := <arg> ;
    => ;
-      GetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <n> )
+      iif( _OOHG_ThisControl:Type == "PLAYER", ;
+           iif( <arg> == 0, ;
+                _OOHG_ThisControl:PositionHome(), ;
+                iif( <arg> == 1, ;
+                     _OOHG_ThisControl:PositionEnd(), ;
+                     NIL ) ), ;
+           _OOHG_ThisControl:Position( <arg> ) )
 
-#xtranslate This . <p: Item, Caption, Header>( <n> ) := <arg> ;
+#xtranslate <o: This, ThisControl> . Repeat := <arg> ;
    => ;
-      SetProperty( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <n>, ;
-            <arg> )
+     iif( <arg>, _OOHG_ThisControl:RepeatOn(), _OOHG_ThisControl:RepeatOff() )
 
-// Method without arguments
-#xtranslate This . <p: Refresh, DeleteAllItems, Release, Play, Stop, Close, ;
-      PlayReverse, Pause, Eject, OpenDialog, Resume, Save> [ () ] ;
+#xtranslate <o: This, ThisControl> . <p: Action, OnClick> [ () ] ;
    => ;
-      DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)> )
+      _OOHG_ThisControl:DoEvent( _OOHG_ThisControl:OnClick, "CLICK" )
 
-// Method with 1 argument
-#xtranslate This . <p: AddItem, DeleteItem, Open, Seek, DeletePage, ;
-      DeleteColumn, Expand, Collapse, HidePage, ShowPage> (<arg>) ;
+#xtranslate <o: This, ThisControl> . OnChange [ () ] ;
    => ;
-      DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg> )
+      _OOHG_ThisControl:DoEvent( _OOHG_ThisControl:OnChange, "CHANGE" )
 
-// Method with 2 arguments
-#xtranslate This . <p: AddItem>( <arg1>, <arg2> ) ;
+#xtranslate <o: This, ThisControl> . OnDblClick [ () ] ;
    => ;
-      DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg1>, ;
-            <arg2> )
+      _OOHG_ThisControl:DoEvent( _OOHG_ThisControl:OnDblClick, "DBLCLICK" )
 
-// Method with 3 arguments
-#xtranslate This . <p: AddItem, AddPage>( <arg1>, <arg2>, <arg3> ) ;
+#xtranslate <o: This, ThisControl> . OnGotFocus [ () ] ;
    => ;
-      DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg1>, ;
-            <arg2>, <arg3> )
+      _OOHG_ThisControl:DoEvent( _OOHG_ThisControl:OnGotFocus, "GOTFOCUS" )
 
-// Method with 4 arguments
-#xtranslate This . <p: AddControl, AddColumn> ;
-      ( <arg1>, <arg2>, <arg3> , <arg4> ) ;
+#xtranslate <o: This, ThisControl> . OnLostFocus [ () ] ;
    => ;
-      DoMethod( _OOHG_ThisForm:Name, _OOHG_ThisControl:Name, <(p)>, <arg1>, ;
-            <arg2>, <arg3>, <arg4> )
+      _OOHG_ThisControl:DoEvent( _OOHG_ThisControl:OnLostFocus, "LOSTFOCUS" )
+
+#xtranslate <o: This, ThisControl> . <p: AddColumn, Refresh, DeleteAllItems, Play, Stop, ;
+      Close, PlayReverse, Pause, Eject, OpenDialog, Resume> [ () ] ;
+   => ;
+      _OOHG_ThisControl:<p>()
+
+#xtranslate <o: This, ThisControl> . <p: AddColumn, AddControl, AddItem, AddPage, Caption, ;
+      Collapse, DeleteColumn, DeleteItem, DeletePage, Expand, Header, HidePage, ;
+      Item, Open, Seek, ShowPage> ( <arg,...> ) ;
+   => ;
+      _OOHG_ThisControl:<p>( <arg> )
+
+#xtranslate <o: This, ThisControl> . <p: Item, Caption, Header> ( <n> ) := <arg> ;
+   => ;
+      _OOHG_ThisControl:<p>( <n>, <arg> )
 
 /*---------------------------------------------------------------------------
 EVENT PROCEDURES
@@ -175,49 +181,53 @@ EVENT PROCEDURES
 
 #xtranslate This . QueryRowIndex ;
    => ;
-      _OOHG_THISQueryRowIndex
+      _OOHG_ThisQueryRowIndex
 
 #xtranslate This . QueryColIndex ;
    => ;
-      _OOHG_THISQueryColIndex
+      _OOHG_ThisQueryColIndex
 
 #xtranslate This . QueryData ;
    => ;
-      _OOHG_THISQueryData
+      _OOHG_ThisQueryData
 
 #xtranslate This . CellRowIndex ;
    => ;
-      _OOHG_THISItemRowIndex
+      _OOHG_ThisItemRowIndex
 
 #xtranslate This . CellColIndex ;
    => ;
-      _OOHG_THISItemColIndex
+      _OOHG_ThisItemColIndex
 
 #xtranslate This . CellRow ;
    => ;
-      _OOHG_THISItemCellRow
+      _OOHG_ThisItemCellRow
 
 #xtranslate This . CellCol ;
    => ;
-      _OOHG_THISItemCellCol
+      _OOHG_ThisItemCellCol
 
 #xtranslate This . CellWidth ;
    => ;
-      _OOHG_THISItemCellWidth
+      _OOHG_ThisItemCellWidth
 
 #xtranslate This . CellHeight ;
    => ;
-      _OOHG_THISItemCellHeight
+      _OOHG_ThisItemCellHeight
 
 #xtranslate This . CellValue ;
    => ;
-   _OOHG_THISItemCellValue
+   _OOHG_ThisItemCellValue
 
 /*---------------------------------------------------------------------------
-"VIRTUAL" VARIABLES
+MISCELANEOUS
 ---------------------------------------------------------------------------*/
 
 #xtranslate This : <x> ;
+   => ;
+      _OOHG_ThisObject:<x>
+
+#xtranslate ThisObject : <x> ;
    => ;
       _OOHG_ThisObject:<x>
 
@@ -260,3 +270,16 @@ EVENT PROCEDURES
 #xtranslate LastForm . LastControl . <y> ;
    => ;
       _OOHG_LastDefinedForm:LastControl():<y>
+
+#xtranslate ThisWindow ;
+   => ;
+      ThisForm
+
+#xtranslate This . IsControl [ () ] ;
+   => ;
+      ( _OOHG_ThisType == "C" )
+
+#xtranslate This . IsForm [ () ] ;
+   => ;
+      ( _OOHG_ThisType == "W" )
+
