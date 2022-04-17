@@ -13,6 +13,61 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-03-20 21:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_this.ch
+    ! Missing support for This.Save pseudofunction.
+    + Methods This.Save and This.SaveAs.
+    + Properties This.<ReadOnly, Sizable, SisMenu, TitleBar, TopMost,
+      VirtualHeight, VirtualWidth, Volume>.
+    ! This.<BackColor, BackColorCode, Cargo, ClientHeight, ClientWidth,
+      Col, Cursor, Handle, Height, hWnd, Name, Object, Row> are
+      allways translated to _OOHG_ThisForm:<property>.
+    ! This.<Hide, Object, Release, SetFocus, Show> were wrongly
+      translated to _OOHG_ThisForm:<function()>.
+    + Properties ThisForm.<p: Names, Controls>.
+    * ThisWindow.<x> defines were replaced by ThisForm.<x>.
+    + Properties ThisForm.<Caption, Enabled, MaxButton, MinButton,
+      OnNotifyClick, Sizable, SysMenu, TitleBar, Visible>.
+    + Method ThisForm.<SaveAs>.
+    + Properties This.<ReadOnly, Volume>.
+    * GetProperty and SetProperty calls were replace by object syntax.
+    ! This.Position := <arg> translation.
+    ! This.Repeat := <arg> translation.
+    + This.<Action, OnClick, OnChange, OnDblClick, OnGotFocus, OnLostFocus>.
+    * The casing of the event procedures.
+    + ThisObject:<x>.
+    + ThisWindow as a synonyn of ThisForm.
+    + Pseudofunctions This.IsControl() and This.IsForm().
+
+2022-03-20 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg.hbc
+  - Some comments.
+  * Command lib= was replace by hbcs= to pacify HB34's hbmk2 warnings.
+
+2022-03-20 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    - Unneeded code.
+    + Comment.
+
+2022-03-19 16:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tooltip.prg
+    * Pacify some 64-bit compiler warnings.
+
+2022-03-19 16:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\oohg.hbp
+    + Compiler flags to pacify warnings.
+    + Unneeded compiler flag.
+
+2022-03-19 16:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.hbp
+  * core\source\hbprinter.hbp
+  * core\source\miniprint.hbp
+    + Compiler flags to pacify warnings.
+
+2022-03-18 19:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_media.prg
+    ! Return value of MCIFunc is wrong for 64 bits version.
+
 2022-03-06 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_progressmeter.prg
     ! Method ForeColor.
