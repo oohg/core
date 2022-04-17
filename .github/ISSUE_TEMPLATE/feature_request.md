@@ -1,8 +1,8 @@
 ---
 name: Enhancement request
 about: Suggest an idea for this project
-title: ''
-labels: enhancement,
+title: 'Enter a meaningful title here!'
+labels: enhancement
 assignees: ''
 
 ---
