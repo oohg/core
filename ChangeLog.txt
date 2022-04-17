@@ -47,7 +47,8 @@
   * core\oohg.hbc
   - Some comments.
   * Command lib= was replace by hbcs= to pacify HB34's hbmk2 warnings.
-
+  #407
+  
 2022-03-20 19:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
     - Unneeded code.
