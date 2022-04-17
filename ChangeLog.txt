@@ -17,7 +17,7 @@
   * core\include\i_this.ch
     ! Missing support for This.Save pseudofunction.
     + Methods This.Save and This.SaveAs.
-    + Properties This.<ReadOnly, Sizable, SisMenu, TitleBar, TopMost,
+    + Properties This.<ReadOnly, Sizable, SysMenu, TitleBar, TopMost,
       VirtualHeight, VirtualWidth, Volume>.
     ! This.<BackColor, BackColorCode, Cargo, ClientHeight, ClientWidth,
       Col, Cursor, Handle, Height, hWnd, Name, Object, Row> are
@@ -29,7 +29,6 @@
     + Properties ThisForm.<Caption, Enabled, MaxButton, MinButton,
       OnNotifyClick, Sizable, SysMenu, TitleBar, Visible>.
     + Method ThisForm.<SaveAs>.
-    + Properties This.<ReadOnly, Volume>.
     * GetProperty and SetProperty calls were replace by object syntax.
     ! This.Position := <arg> translation.
     ! This.Repeat := <arg> translation.
@@ -38,6 +37,11 @@
     + ThisObject:<x>.
     + ThisWindow as a synonyn of ThisForm.
     + Pseudofunctions This.IsControl() and This.IsForm().
+  #400
+  #403
+  #404
+  #405
+  #406
 
 2022-03-20 19:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg.hbc
@@ -96,7 +100,7 @@
 2022-03-06 11:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_controlmisc.prg
     + Support for BARCOLOR clause at function GetProperty.
-    ! FORCOLOR clause at function GetProperty.
+    ! FORECOLOR clause at function GetProperty.
     + Method DisplayValue to class TControl.
 
 2022-03-06 11:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -519,7 +523,7 @@
       - WM_LBUTTONDBLCLK event handler of TXBrowseByCell class.
       - NM_CLICK event handler of TXBrowseByCell class.
       - NM_RCLICK event handler of TXBrowseByCell class.
-   #401
+  #401
 
 2021-11-05 08:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tab.ch
