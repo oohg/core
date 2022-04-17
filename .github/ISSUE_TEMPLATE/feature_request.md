@@ -2,7 +2,7 @@
 name: Enhancement request
 about: Suggest an idea for this project
 title: 'Enter a meaningful title here!'
-labels: enhancement
+labels: enhancement, not yet assigned
 assignees: ''
 
 ---
