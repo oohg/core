@@ -7,15 +7,13 @@ assignees: ''
 
 ---
 
-**Is your enhancement request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-A clear and concise description of the solution you'd like.
+Enter a clear and concise description of your request and the expected solution:
+- I'm always frustrated when [...]
+- The behaviour should be [...] instead of [...]
+- I want to add or change [...]
 
-**Is your enhancement request related to another enhancement? Please describe.**
-A clear and concise description of what you want to add, change or happen.
+Indicate if your request is related to another enhancement and how.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or changes you've considered.
+Describe alternatives you've considered.
 
-**Additional context**
 Add any other information, files or screenshots about your request here.
