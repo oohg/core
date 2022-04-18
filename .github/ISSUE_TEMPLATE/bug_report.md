@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us fix bugs
-title: 'Enter a meaningful title here!'
+title: Enter a meaningful title here!
 labels: bug, pending
 assignees: ''
 
@@ -16,7 +16,7 @@ Ask the community if someone has the same problem.
 A clear and concise description of what the bug is.
 
 **Error logs and screenshots**
-If applicable, add a copy of ErrorLog.htm and/or hb_out.log file and screenshots to help explain your problem.
+If applicable, add a copy of ErrorLog.htm and/or hb_out.log files and screenshots to help explain your problem.
 
 **To Reproduce**
 Add a PRG file (minimal, self-contained and compilable) that reproduces the bug.
