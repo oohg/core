@@ -1099,9 +1099,9 @@
     ; Added support for headers backcolors.
     ; Note that setting a header backcolor disables grid's
       visual styles and makes the control look old styled.
-    ; TODO: use custom-draw or owner-drawo to get backcolor
+    ; TODO: use custom-draw or owner-draw to get backcolor
       with visual style .
-  #PENDING
+  #439
 
 2021-06-29 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_toolbar.prg
@@ -1390,11 +1390,6 @@
     ! Use Harbour's function win_oleCreateObject when __XHARBOUR__
       is not defined. This removes Harbour's dependency on lib xhb.
   #385
-
-2021-02-07 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\h_browse.prg
-    + Parameter lJustAdd to method EditCell of class TOBrowse.
-  #PENDING
 
 2021-02-06 12:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
