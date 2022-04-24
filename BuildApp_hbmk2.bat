@@ -44,6 +44,7 @@ rem
    set HG_LOG=1^>nul
    set HG_RUNEXE=-run
    set HG_STRIP=-strip
+   set HG_TRACE=
    set HG_USE_HBC=%HG_ROOT%\oohg.hbc
    set HG_USE_RC=TRUE
 
@@ -61,6 +62,7 @@ rem
    if /I "%2" == "/NR"      goto SUPPRESS_RUN
    if /I "%2" == "/S"       goto SUPPRESS_LOG
    if /I "%2" == "/SL"      goto SUPPRESS_LOG
+   if /I "%2" == "/T"       goto SW_TRACE
    if /I "%2" == "/V"       goto SW_VERBOSE
    if /I "%2" == "-C"       goto SW_CONSOLE
    if /I "%2" == "-D"       goto SW_DEBUG
@@ -73,6 +75,7 @@ rem
    if /I "%2" == "-NOSTRIP" goto SW_NOSTRIP
    if /I "%2" == "-S"       goto SUPPRESS_LOG
    if /I "%2" == "-SL"      goto SUPPRESS_LOG
+   if /I "%2" == "-T"       goto SW_TRACE
    if /I "%2" == "-V"       goto SW_VERBOSE
    set HG_EXTRA=%HG_EXTRA% %2
    shift
@@ -128,6 +131,12 @@ rem
    shift
    goto LOOP_START
 
+:SW_TRACE
+
+   set HG_TRACE=-trace
+   shift
+   goto LOOP_START
+
 :SW_VERBOSE
 
    set HG_LOG=
@@ -168,7 +177,7 @@ rem
 :BUILD
 
    rem *** Compile and Link ***
-   hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_STRIP% %HG_EXTRA% %HG_LOG%
+   hbmk2 %HG_FILE% "%HG_USE_RC%" %HG_USE_HBC% %HG_RUNEXE% -prgflag=-q0 %HG_STRIP% %HG_EXTRA% %HG_LOG% %HG_TRACE%
    if exist oohglog.txt type oohglog.txt
 
 :CLEANUP
@@ -182,6 +191,7 @@ rem
    set HG_RUNEXE=
    set HG_LOG=
    set HG_EXTRA=
+   set HG_TRACE=
    set HG_USE_RC=
    goto END
 
