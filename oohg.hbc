@@ -8,9 +8,6 @@ incpaths=${HG_ROOT}\include
 # c compiler will search this folder for OOHG's libs
 libpaths=${HG_ROOT}\${LIB_GUI}
 
-# libs must be statically linked to avoid "missing lib" runtime errors
-fullstatic=YES
-
 # add harbour contrib folder to search for additional include files
 incpaths=${HG_HRB}\contrib\hbzebra
 incpaths=${HG_HRB}\contrib\hbhpdf
@@ -26,5 +23,5 @@ libs=oohg hbprinter miniprint bostaurus
 
 # harbour's contrib libs
 # hbhpdf must precede hbwin and xhb
-hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
+hbcs=hbcurl hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
 

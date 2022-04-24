@@ -245,7 +245,7 @@ rem
 :OTHER_LIBS
 
    rem oohg.lib must be linked first to avoid "multiple definition of hb_gtsys" error
-   set HG_C_LIBS=-looHG %HG_C_LIBS% -lbostaurus -lhbprinter -lminiprint
+   set HG_C_LIBS=-looHG %HG_C_LIBS% -lbostaurus -lhbprinter -lminiprint -lhbcurl -llibcurl-4
    set HG_C_LIBS=%HG_C_LIBS% -luser32 -lwinspool -lgdi32 -lcomctl32 -lcomdlg32 -lole32 -loleaut32 -luuid
    set HG_C_LIBS=%HG_C_LIBS% -lmpr -lwsock32 -lws2_32 -lmapi32 -lwinmm -lvfw32 -lmsimg32 -liphlpapi
 
@@ -253,7 +253,7 @@ rem
 
    set HG_SEARCH=-L. -L%HG_ROOT%\%LIB_GUI% -L%HG_HRB%\%LIB_HRB% -L%HG_MINGW%\lib
    set HG_C_LIBS=-Wl,--start-group %HG_C_LIBS% -Wl,--end-group
-   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_C_FLAGS% %HG_STRIP% %HG_SEARCH% %HG_C_LIBS% %HG_STATIC_LIBS% %HG_C_LOG%
+   gcc -o %HG_FILE%.exe %HG_OBJS% %HG_C_FLAGS% %HG_STRIP% %HG_SEARCH% %HG_C_LIBS% %HG_STATIC_LIBS%
    if errorlevel 1 set HG_NO_RUN=TRUE
    if errorlevel 1 echo Error linking %HG_FILE%.exe! %HG_PRG_LOG%
 
@@ -313,3 +313,4 @@ rem
    goto END
 
 :END
+
