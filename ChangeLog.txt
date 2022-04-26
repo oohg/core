@@ -1210,7 +1210,7 @@
   * core\ofmt.bat
   * core\oide.bat
     ! App is not executed.
-  #PENDING
+  #449
 
 2021-06-18 12:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_label.prg
@@ -1227,7 +1227,7 @@
 2021-06-01 17:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_windefs.ch
     + New constants for functions ShellExecute and ShowWindow.
-  #PENDING
+  #448
 
 2021-05-27 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
@@ -1236,7 +1236,7 @@
       will not necessarily be stored in the original buffer passed
       by the application. It is possible that pszText will point
       to text in a new buffer rather than place it in the old buffer.
-  #PENDING
+  #447
 
 2021-05-27 20:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
@@ -1247,7 +1247,7 @@
     + Added ArraysAreEqual pseudo-function.
   * core\source\h_checklist.prg
     - Removed function ArraysAreEqual.
-  #PENDING
+  #446
 
 2021-05-19 15:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_windows.c
@@ -1257,7 +1257,7 @@
     + Function GETCUEBANNERTEXT from c_windows.c
     + Some defines at C level to fix broken compilation under
       BCC 5.82 compiler.
-  #PENDING
+  #445
 
 2021-05-19 15:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
@@ -1271,29 +1271,31 @@
   * core\source\h_grid.prg
     % Use constants LVS_EX_GRIDLINES and LVS_EX_NOGRIDLINES to
       improve code.
+  #443
 
 2021-05-19 15:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
     * Some format was changed.
     ! xHarbour builds were broken because BCC 5.8.2 does not have
       native support for function SHGetKnownFolderPath.
-  #PENDING
+  #444
 
 2021-05-19 15:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_windefs.ch
     + New constants LVS_EX_GRIDLINES and LVS_EX_NOGRIDLINES.
-  #PENDING
+  #443
 
 2021-05-19 15:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_MINGW.BAT
     + Support for source filenames that include .prg
-  #PENDING
+  #442
 
 2021-05-19 15:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_bcc.bat
     ! Temporary _oohg_resconfig.h was not removed after build.
+  #440
     + Support for source filenames that include .prg
-  #PENDING
+  #441
 
 2021-04-19 15:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
