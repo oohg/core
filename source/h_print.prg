@@ -5420,7 +5420,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION OO_ConvertToURL( cFile )
 
-   // From https://github.com/harbour/core/blob/master/contrib/hbwin/tests/ole.prg
+   // From https://github.com/harbour/core/blob/main/contrib/hbwin/tests/ole.prg
    IF ! Left( cFile, 2 ) == "\\"
       cFile := StrTran( cFile, ":", "|" )
       cFile := "///" + cFile
