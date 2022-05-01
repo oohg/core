@@ -36,8 +36,8 @@ http://sourceforge.net/projects/oohg/files/
 ## Using OOHG
 
 See
-* https://github.com/oohg/doc/blob/master/english/Install_and_Update.md
-* https://github.com/oohg/doc/blob/master/english/How_to_Configure_and_Use.md
+* https://github.com/oohg/doc/blob/main/english/Install_and_Update.md
+* https://github.com/oohg/doc/blob/main/english/How_to_Configure_and_Use.md
 
 ## Asking for help
 
@@ -86,4 +86,4 @@ Alternatively see the GitHub documentation on [creating a pull request](https://
 
 ## License
 
-See https://github.com/oohg/core/blob/master/LICENSE.txt
+See https://github.com/oohg/core/blob/main/LICENSE.txt
