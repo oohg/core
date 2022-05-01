@@ -228,3 +228,7 @@
 #xtranslate XBROWSE [ <x> ] DOUBLEBUFFER ;
    => ;
       XBROWSE [ <x> ]
+
+#xtranslate XBROWSE [ <x> ] ENABLEALTA ;
+   => ;
+      XBROWSE [ <x> ]
