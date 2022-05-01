@@ -796,7 +796,7 @@ Local RetVal, oWnd, oCtrl, nPos
 
    Return RetVal
 
-Function DoMethod( ... )
+Function DoMethod( ... )          /* FUNCTION DoMethod( cParent, cControl, cMethod [, uParameter ...] ) */
 
    Local RetVal, aPars, cMethod, oWnd, oCtrl
 
