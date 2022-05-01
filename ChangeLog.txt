@@ -666,7 +666,7 @@
     ! At Define method the call to SetFont was moved after setting
       the TabHande to avoid a premature call to Events_Color that
       may end with the background painted with the wrong color.
-  #PENDING
+  #484
 
 2021-07-23 21:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_checkbox.ch
@@ -688,32 +688,31 @@
     * Controls with the OOHGDRAW clause are now painted more
       similar to the way Windows does.
   ; This changes add new options to display the control's text.
-    See https://github.com/oohg/samples/tree/master/checkbox
-  #PENDING
+  #483
 
 2021-07-23 20:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
   * core\compile_MINGW.BAT
     + Support for 'strip' C compiler switch to reduce exe size.
     ; It's enable by default. To disable use /NOSTRIP or -NOSTRIP.
-  #PENDING
+  #482
 
 2021-07-20 20:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_button.ch
     + Support for FOCUSRECT clause: it's just ignored.
-  #PENDING
+  #479
 
 2021-07-20 20:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     - Method lFocusRect from TOBrowseByCell class.
     + Default value for lFocusRect parameter at method
       Define3 of TOBrowseByCell class.
-  #PENDING
+  #481
 
 2021-07-20 20:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_button.prg
     + Method lFocusRect.
-  #PENDING
+  #479
 
 2021-07-20 20:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
@@ -721,29 +720,29 @@
     - Data lFocusRect of TGridByCell class.
     + Default value for lFocusRect parameter at method
       Events_Notify of TGridByCell class.
-  #PENDING
+  #480
 
 2021-07-20 20:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
     + Method lFocusRect.
     * Some format.
-  #PENDING
+  #479
 
 2021-07-19 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
     * The focus rectangle is now always painted in black.
-  #PENDING
+  #477
 
 2021-07-19 01:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_checklist.prg
     ! Parameter validation at AddItem, InsertItem and Item methods.
-  #PENDING
+  #478
 
 2021-07-18 11:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_radio.prg
     * Improve readability.
     * Changed focusrect drawing to be more Windows-like.
-  #PENDING
+  #476
 
 2021-07-18 11:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_error.prg
@@ -777,7 +776,8 @@
   * core\source\h_xbrowse.prg
     * References to MsgOOHGError were changed to OOHG_MsgError.
     * Some messages were changed to be more meaningful.
-  #PENDING
+  #474
+  #475
 
 2021-07-10 17:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\bostaurus.ch
@@ -842,19 +842,19 @@
   * core\source\c_graph.c
     * Some changes to improve consistency and readability
       throughout files.
-  #PENDING
+  #473
 
 2021-07-10 16:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_edit.ch
     * SAVE, SEARCH, ON SAVE, ON FIND and ON PRINT clauses of
       EDIT WORKAREA and EDIT EXTENDED controls now use blockify
       result markers.
-  #PENDING
+  #472
 
 2021-07-08 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\include\i_ini.ch
+  * core\include\h_ini.prg
     ! Compilation under xharbour.
-  #PENDING
+  #471
 
 2021-07-08 13:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg_license_template.txt
@@ -868,13 +868,13 @@
 2021-07-08 12:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.ch
     ! Duplicated marker.
-  #PENDING
+  #469
 
 2021-07-07 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_frame.prg
     ! WM_MOUSELEAVE handler is blocking the message when
       POSTPARENT clause is not in use.
-  #PENDING
+  #470
 
 2021-07-06 22:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg_dyns.hbx
@@ -886,7 +886,7 @@
     ! Recently added static libs are not recognized by old MinGW
       compiler in HB30 version.
   ; Partially reverts commit "2021-06-18 12:56 UTC-0300", hash 0740c39.
-  #PENDING
+  #468
 
 2021-07-06 10:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_frame.ch
@@ -900,7 +900,7 @@
   * core\source\c_controlmisc.c
     + Symbols ContainerhWnd and lPostParent were added to static
       symbols array.
-  #PENDING
+  #467
 
 2021-07-05 12:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_frame.ch
@@ -911,7 +911,7 @@
     + New control DEFINE GROUPBOX ... END GROUPBOX.
       ; This control is a FRAME that automatically adds to its
         excludearea the areas of the controls defined between
-        DEFINE GROUPOX and END GROUPBOX clauses.
+        DEFINE GROUPBOX and END GROUPBOX clauses.
       ; Use the NOAUTOEXCLUDE clause to disable automatic addition.
     ; According to the Windows implementation, a FRAME control is
       completely transparent to mouse messages: all of them are sent
@@ -944,18 +944,19 @@
     ! ON MOUSELEAVE event is not triggered because the control
       doesn't receive the WM_MOUSELEAVE message when the mouse
       is moving too fast over it.
-  #PENDING
+  #460
 
 2021-07-05 10:33 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_image.prg
     ! Default value of lCtrlCoords data was changed to .F. to
       restore the default behavior.
-  #PENDING
+  #466
 
 2021-07-05 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_picture.prg
     ! Default value of lCtrlCoords data was changed to .F. to
       restore the default behavior.
+  #466
 
 2021-07-05 10:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
@@ -965,13 +966,13 @@
     ! ON MOUSELEAVE event is not triggered because the control
       doesn't receive the WM_MOUSELEAVE message when the mouse
       is moving too fast over it.
-  #PENDING
+  #465
 
 2021-07-05 10:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     * Protect static var _OOHG_ShowContextMenus with mutex so
       it's thread safe.
-  #PENDING
+  #8
 
 2021-07-03 15:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_image.ch
@@ -979,15 +980,20 @@
     ; This allows to indicate the coordinates of the excluded
       areas using coordinates relative to the image control or
       relative to the container form. Defaults to OF CONTROL.
+  #462
     + Clause ON MOUSELEAVE.
+  #463
   * core\source\h_image.prg
     + Data lCtrlCoords to TPicture class.
-    + Support for new clause and sub-clauses.
+    + Support for new sub-clauses.
+  #462
+    + Support for new clause.
+  #463
     ! ON RCLICK block is wrongly assigned to ON DBLCLICK event.
     ! ON DBLCLICK block is wrongly assigned to ON MDBLCLICK event.
     ! ON MDBLCLICK block is wrongly assigned to ON RDBLCLICK event.
     ! ON RDBLCLICK block is wrongly assigned to ON RCLICK event.
-  #PENDING
+  #464
 
 2021-07-03 15:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg.h
@@ -1001,7 +1007,7 @@
     ; This allows to indicate the coordinates of the excluded
       areas using coordinates relative to the picture control or
       relative to the container form. Defaults to OF CONTROL.
-  #PENDING
+  #462
 
 2021-07-03 13:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_pseudofunc.ch
@@ -1014,9 +1020,9 @@
       GetFontParamByRef, _OOHG_SetMultiple, _PushEventInfo,
       _PopEventInfo and _PushEventList pseudo-functions were moved
       from i_pseudofunc.ch.
-   * _OOHG_GetNullName definition was replaced by a pseudo-function.
-   + _OOHG_ActiveGroupBox pseudo-var.
-   + _OOHG_AddFrame, _OOHG_LastFrameType, _OOHG_AddGroupBox,
+  * _OOHG_GetNullName definition was replaced by a pseudo-function.
+  + _OOHG_ActiveGroupBox pseudo-var.
+  + _OOHG_AddFrame, _OOHG_LastFrameType, _OOHG_AddGroupBox,
      _OOHG_DeleteGroupBox and _OOHG_DeleteFrame pseudo-functions.
      ; _OOHG_LastFrame was renamed to _OOHG_LastFrameType.
   * core\source\h_button.prg
@@ -1034,12 +1040,11 @@
   * core\source\h_windows.prg
     - Functions _OOHG_AddFrame and _OOHG_DeleteFrame were removed
       because they are no longer needed.
-  #PENDING
+  #460
 
 2021-07-03 11:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_status.prg
     * _EndMessageBar function now returns .T./.F. on success/fail.
-  #PENDING
 
 2021-07-02 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_pseudofunc.ch
@@ -1047,21 +1052,21 @@
       ArraysAreEqual() functions definitions were changed from
       #translate to #xtranslate. From now on you must use the
       functions' full names in your code.
-  #PENDING
+  #461
 
 2021-07-02 19:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_tooltip.ch
     * IsToolTipBalloonActive variable definition was changed from
       #translate to #xtranslate. From now on you must use the
       variable's full name in your code.
-  #PENDING
+  #461
 
 2021-07-02 19:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_menu.ch
     * IsExtendedMenuStyleActive() function definition was changed
       from #translate to #xtranslate. From now on you must use the
       function's full name in your code.
-  #PENDING
+  #461
 
 2021-07-02 16:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
@@ -1074,13 +1079,12 @@
       removed or .F. if not.
     * Method ActiveFramePush now returns the just addeed frame.
     + Method Release: added support for releasing the new stack.
-  #PENDING
+  #460
 
 2021-07-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg.hbc
     - The flags related to .prg have been removed because they
       should be set in the .hbp file if necessary.
-  #PENDING
 
 2021-07-01 21:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_browse.ch
@@ -1127,14 +1131,14 @@
       a comment at the first line of an INI file.
     + GetEndComment and SetEndComment functions to get/set
       a comment at the last line of an INI file.
-  #PENDING
+  #459
 
 2021-06-20 12:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     * ListViewGetItem, CellRawValue, _OOHG_SortItems and
       TGrid_Notify_CustomDraw functions were modified to comply
       with Microsoft's documentation on LVM_GETITEM message.
-  #PENDING
+  #458
 
 2021-06-20 12:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
@@ -1145,7 +1149,7 @@
     + Function AIsEmpty( array ). Returns .T. when array is NIL
       or when every element of array is NIL. Note that the function
       will throw an RTE when HB_ISARRAY( array ) is .F.
-  #PENDING
+  #457
 
 2021-06-20 11:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
@@ -1161,18 +1165,17 @@
   * core\source\h_controlmisc.prg
     * Release method of TControl class no longer sets hWnd data to NIL.
   ; Partially reverts commit "2019-09-08 20:13 UTC-0300", hash 59dfed7.
-  #PENDING
+  #456
 
 2021-06-19 10:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     * A function comment.
     ! Test for valid pointer at SethWnd method.
-  #PENDING
+  #455
 
 2021-06-18 23:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_controlmisc.c
     + Some casting.
-  #PENDING
 
 2021-06-18 14:47 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
@@ -1180,7 +1183,7 @@
     + A call to CoInitialize function as indicated by Microsoft
       documentation for ShellExecute function.
     + A pause after the call to ShellExecute function.
-  #PENDING
+  #454
 
 2021-06-18 14:14 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_tree.ch
@@ -1189,22 +1192,22 @@
     + Data RedrawOnAdd. Defaults to .F.
     + Support for clause REDRAWONADD at method AddItem.
     * Some format.
-  #PENDING
+  #453
 
 2021-06-18 13:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\i_hmg_compat.ch
     + Support for PICTALIGNMENT clause.
-  #PENDING
+  #452
 
 2021-06-18 13:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\i_altsyntax.ch
     + Support for PICTALIGNMENT clause.
-  #PENDING
+  #451
 
 2021-06-18 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile_MINGW.BAT
     + Static libs were synchronized with the ones used by HBMK2 tool.
-  #PENDING
+  #450
 
 2021-06-18 12:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\ofmt.bat
