@@ -122,11 +122,11 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
    ::nRangeMax := nMax
 
    IF uBackColor <> NIL
-      ::BackColor := uBackColor
+      ::BackColor := uBackColor   // Defaults to form's backcolor, if set it removes visual styles, see method below.
    ENDIF
 
    IF uBarColor <> NIL
-      ::FontColor := uBarColor
+      ::FontColor := uBarColor    // If backcolor is set it defaults to BLUE. If not the current theme is applied.
    ENDIF
 
    IF HB_ISNUMERIC( nVelocity )
