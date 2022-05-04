@@ -13,6 +13,16 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-05-04 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+    + Some comments about fontcolor and backcolor.
+  #419
+
+2022-05-04 18:03 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressmeter.prg
+    + Some comments about fontcolor and backcolor.
+  #419
+
 2022-05-01 10:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   + core\include\i_xbrowse.ch
     + A dummy translate for ENABLEALTA property.
