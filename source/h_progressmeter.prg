@@ -106,14 +106,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, lo, hi, value, tooltip, ;
       ::FontColor := FontColor
    ENDIF
    IF ::FontColor == NIL
-      ::FontColor := 0xFFFFFF
+      ::FontColor := 0xFFFFFF   // WHITE - percentage of completion (number) and remaining percentage (right part of the bar)
    ENDIF
 
    IF BackColor != NIL
       ::BackColor := BackColor
    ENDIF
    IF ::BackColor == NIL
-      ::BackColor := 0xFF0000
+      ::BackColor := 0xFF0000   // BLUE - percentage of completion (left part of the bar)
    ENDIF
 
    ASSIGN ::nCol        VALUE x TYPE "N"
