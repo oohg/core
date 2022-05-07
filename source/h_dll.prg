@@ -2,26 +2,24 @@
  * $Id: h_dll.prg $
  */
 /*
- * ooHG source code:
+ * OOHG source code:
  * DLL access functions
  *
- * Copyright 2009-2021 Ciro Vargas C. <cvc@oohg.org> and contributors of
+ * Copyright 2009-2022 Ciro Vargas C. <cvc@oohg.org> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
  *
- * Based upon:
- * Original source code of Vic McClung
- * Copyright 2005 <vicmcclung@vicmcclung.com>
- *
  * Portions of this project are based upon:
+ *    Original source code of Vic McClung
+ *       Copyright 2005 <vicmcclung@vicmcclung.com>
  *    "Harbour MiniGUI Extended Edition Library"
- *       Copyright 2005-2021 MiniGUI Team, http://hmgextended.com
+ *       Copyright 2005-2022 MiniGUI Team, http://hmgextended.com
  *    "Harbour GUI framework for Win32"
  *       Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
  *       Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *    "Harbour MiniGUI"
  *       Copyright 2002-2016 Roberto Lopez <mail.box.hmg@gmail.com>
  *    "Harbour Project"
- *       Copyright 1999-2021 Contributors, https://harbour.github.io/
+ *       Copyright 1999-2022 Contributors, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
