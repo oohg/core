@@ -13,6 +13,15 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-05-07 16:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg_license_template.txt
+  * core\include\*.ch
+  * core\include\*.h
+  * core\resources\*.rc
+  * core\source\*.c
+  * core\source\*.prg
+    * Copyright updated.
+
 2022-05-04 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_progressbar.prg
     + Some comments about fontcolor and backcolor.
