@@ -343,7 +343,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TTabDirect
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip ) CLASS TTabDirect
+METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip, uCargo ) CLASS TTabDirect
 
    LOCAL oPage, nPos
 
@@ -380,6 +380,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    oPage:Picture   := cImage
    oPage:Position  := nPosition
    oPage:ToolTip   := uToolTip
+   oPage:Cargo     := uCargo
    oPage:BackColor := ::BackColor
 
    AAdd( ::aPages, NIL )
@@ -411,7 +412,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    RETURN oPage
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip )
+FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip, uCargo )
 
    LOCAL oCtrl, oPage
 
@@ -419,7 +420,7 @@ FUNCTION _BeginTabPage( cCaption, cImage, nPosition, cName, oSubClass, uToolTip 
       _EndTabPage()
    ENDIF
    oCtrl := _OOHG_ActiveFrame
-   oPage := oCtrl:AddPage( nPosition, cCaption, cImage, NIL, NIL, cName, oSubClass, uToolTip )
+   oPage := oCtrl:AddPage( nPosition, cCaption, cImage, NIL, NIL, cName, oSubClass, uToolTip, uCargo )
    _OOHG_AddFrame( oPage )
 
    RETURN oPage
@@ -748,11 +749,11 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, aCaptions
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip ) CLASS TTabMulti
+METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip, uCargo ) CLASS TTabMulti
 
    LOCAL oPage
 
-   oPage := ::Super:AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip )
+   oPage := ::Super:AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip, uCargo )
    oPage:nFixedHeightUsed := ::oContainerBase:TabsAreaHeight()
 
    RETURN oPage
@@ -1041,7 +1042,7 @@ METHOD AdjustResize( nDivh, nDivw, lSelfOnly ) CLASS TMultiPage
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip ) CLASS TMultiPage
+METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubClass, uToolTip, uCargo ) CLASS TMultiPage
 
    LOCAL oPage, nPos
 
@@ -1076,6 +1077,7 @@ METHOD AddPage( nPosition, cCaption, cImage, aControls, bMnemonic, cName, oSubCl
    oPage:Picture   := cImage
    oPage:Position  := nPosition
    oPage:ToolTip   := uToolTip
+   oPage:Cargo     := uCargo
    oPage:BackColor := ::BackColor
 
    AAdd( ::aPages, NIL )

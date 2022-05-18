@@ -119,9 +119,10 @@
       [ SUBCLASS <subclass> ] ;
       [ POSITION <position> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ CARGO <cargo> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ], [ <cargo> ] )
 
 #command DEFINE PAGE <caption> ;
       [ IMAGE <image> ] ;
@@ -130,9 +131,10 @@
       [ SUBCLASS <subclass> ] ;
       [ POSITION <position> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ CARGO <cargo> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ], [ <cargo> ] )
 
 #command DEFINE TAB PAGE <caption> ;
       [ IMAGE <image> ] ;
@@ -141,9 +143,10 @@
       [ SUBCLASS <subclass> ] ;
       [ POSITION <position> ] ;
       [ TOOLTIP <tooltip> ] ;
+      [ CARGO <cargo> ] ;
    => ;
       [ <obj> := ] ;
-            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ] )
+            _BeginTabPage( <caption>, <image>, [ <position> ], <(name)>, [ <subclass>() ], [ <tooltip> ], [ <cargo> ] )
 
 #command END PAGE ;
    => ;
