@@ -337,7 +337,7 @@ BEGIN
          VALUE "CompanyName",      OOHG_COMPANY_NAME "\0"
          VALUE "FileDescription",  OOHG_NAME "\0"
          VALUE "FileVersion",      OOHG_VER_FILE_STR "\0"
-         VALUE "LegalCopyright",   "© 2005-2021 OOHG Development Team" "\0"
+         VALUE "LegalCopyright",   "© 2005-2022 OOHG Development Team" "\0"
          VALUE "ProductName",      OOHG_NAME "\0"
          VALUE "ProductVersion",   OOHG_VER_PROD_STR "\0"
       END
