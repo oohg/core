@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-05-18 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tab.ch
+  * core\source\h_tab.prg
+    + Support for CARGO property.
+    ; This facilitates the implementation of the property in the IDE.
+
 2022-05-07 16:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg_license_template.txt
   * core\include\*.ch
