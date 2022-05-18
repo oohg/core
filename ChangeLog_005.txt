@@ -1646,7 +1646,7 @@
 2016-05-31 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * ide\prgs\mgide.prg
     + Logic to read/save 'FMG Syntax' option from/to INI file.
-    * 'Snap to Grid' option is now save to INI file without decimals.
+    * 'Snap to Grid' option is now saved to INI file without decimals.
   * manual\Changelog.htm
     * Updated.
 
