@@ -92,7 +92,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<p: OnClick, OnDblClick, OnDropFiles, OnGotFocus, ;
             OnHScrollBox, OnInit, OnInterActiveClose, OnLostFocus, OnMaximize, ;
             OnMClick, OnMDblClick, OnMinimize, OnMouseClick, OnMouseDrag, ;
-            OnMouseLeave, OnMouseMove, OnMove, OnNotifyClick, OnPaint, ;
+            OnMouseMove, OnMove, OnNotifyClick, OnPaint, ;
             OnRClick, OnRDblClick, OnRelease, OnRestore, OnScrollDown, ;
             OnScrollLeft, OnScrollRight, OnScrollUp, OnSize, OnVScrollBox\> ;
          => ;
@@ -100,7 +100,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<p: OnClick, OnDblClick, OnDropFiles, OnGotFocus, ;
             OnHScrollBox, OnInit, OnInterActiveClose, OnLostFocus, OnMaximize, ;
             OnMClick, OnMDblClick, OnMinimize, OnMouseClick, OnMouseDrag, ;
-            OnMouseLeave, OnMouseMove, OnMove, OnNotifyClick, OnPaint, OnRClick, ;
+            OnMouseMove, OnMove, OnNotifyClick, OnPaint, OnRClick, ;
             OnRDblClick, OnRelease, OnRestore, OnScrollDown, OnScrollLeft, ;
             OnScrollRight, OnScrollUp, OnSize, OnVScrollBox\> := \<n\> ;
          => ;
@@ -127,7 +127,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             Action, OnClick, Length, hWnd, Object, ReadOnly, Cargo, TabStop, ;
             ItemHeight, RichValue, OnGotFocus, OnLostFocus, OnDblClick, ;
             HBitMap, Handle, oBkGrnd, Transparent, Parent, Container, ;
-            OnRClick, BackColorCode, Cursor, CueBanner\> ;
+            OnMouseLeave, OnRClick, BackColorCode, Cursor, CueBanner\> ;
             => GetExistingControlObject( \<(c)\>, <(w)> ):\<p\> ;;
       #xtranslate <w> . \<c: VScrollBar, HScrollBar\> . \<p\> ;
             => GetExistingFormObject( <(w)> ):\<c\>:\<p\> ;;
@@ -167,7 +167,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       #xtranslate <w> . \<c\> . \<p: Save\> \[()\] ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
       #xtranslate <w> . \<c\> . \<p: Action, OnClick, OnGotFocus, OnLostFocus, ;
-            OnDblClick, OnChange, OnRClick\>() ;
+            OnMouseLeave, OnDblClick, OnChange, OnRClick\>() ;
             => DoMethod( <(w)>, \<(c)\>, \<(p)> ) ;;
       #xtranslate <w> . \<c\> . \<p: AddItem, DeleteItem, Open, DeletePage, ;
             DeleteColumn, Expand, Collapse, ColumnAutoFit, ColumnAutoFitH, ;
