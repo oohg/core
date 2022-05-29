@@ -312,7 +312,7 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_ADJUSTFONT ]            := .T.
       ::aVars[ NDX_OOHG_ADJUSTWIDTH ]           := .T.
       ::aVars[ NDX_OOHG_AUTOADJUST ]            := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]      := NIL
+      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]      := BLACK
       ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]       := 'Arial'
       ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]       := 9
       ::aVars[ NDX_OOHG_DIALOGCANCELLED ]       := .F.
