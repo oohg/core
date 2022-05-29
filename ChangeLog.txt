@@ -13,11 +13,16 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-05-29 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! Default fontcolor must be BLACK instead of NIL.
+  #524
+
 2022-05-21 20:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
     ! Support for OnMouseLeave.
   #524
-  
+
 2022-05-18 19:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_tab.ch
   * core\source\h_tab.prg
