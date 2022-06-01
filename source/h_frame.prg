@@ -100,10 +100,17 @@ METHOD Define( cControlName, uParentForm, nRow, nCol, nWidth, nHeight, cCaption,
    ASSIGN cCaption         VALUE cCaption     TYPE "CM" DEFAULT ""
    ASSIGN lOpaque          VALUE lOpaque      TYPE "L"  DEFAULT .F.
    ASSIGN lTransparent     VALUE lTransparent TYPE "L"  DEFAULT .F.
-   ASSIGN ::aExcludeArea   VALUE aArea        TYPE "A"
    ASSIGN ::lNoAutoExclude VALUE lNoAutoExc   TYPE "L"
    ASSIGN ::lGroupBox      VALUE lGroupBox    TYPE "L"
    ASSIGN ::lPostParent    VALUE lPostParent  TYPE "L"
+
+   IF HB_ISARRAY( aArea )
+      IF Len( aArea ) > 4
+         ::AddExcludeArea( aArea[5], ASize( aArea, 4 ) )
+      ELSE
+         ::AddExcludeArea( "", ASize( aArea, 4 ) )
+      ENDIF
+   ENDIF
 
    IF HB_ISSTRING( cRelativeTo ) .AND. Upper( AllTrim( cRelativeTo ) ) == "CONTROL"
       ::lCtrlCoords := .T.
@@ -161,14 +168,16 @@ METHOD AddExcludeArea( cControlName, aAreas ) CLASS TFrame
 
    LOCAL lRet
 
-   ASSIGN cControlName VALUE cControlName TYPE "CM" DEFAULT NIL
-   ASSIGN aAreas       VALUE aAreas       TYPE "A"  DEFAULT NIL
+   IF ! ValType( cControlName ) $ "CM" .OR. Empty( cControlName )
+      cControlName := _OOHG_GetNullName()
+   ENDIF
 
-   IF Empty( cControlName ) .OR. Empty( aAreas )
+   // aAreas must be an array {left, top, right, bottom} or an array of arrays with such format
+   ASSIGN aAreas VALUE aAreas TYPE "A" DEFAULT {}
+   IF Len( aAreas ) < 1
       lRet := .F.
    ELSE
       AAdd( ::aCtrlNames, cControlName )
-      // aAreas must be an array {left, top, right, bottom} or an array of arrays with such format
       AAdd( ::aExcludeArea, aAreas )
       lRet := .T.
    ENDIF
@@ -176,7 +185,7 @@ METHOD AddExcludeArea( cControlName, aAreas ) CLASS TFrame
    RETURN lRet
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DelExcludeArea( cControlName )
+METHOD DelExcludeArea( cControlName ) CLASS TFrame
 
    LOCAL nPos, lRet
 
