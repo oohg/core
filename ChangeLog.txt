@@ -15,9 +15,9 @@
 
 2022-05-31 21:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_frame.prg
-    ! Exclude area is not added to FRAME control when the control is
-      defined using traditional sintax. This does not work because
-      the area is not asociated to a control.
+    ! Exclude area is not added to FRAME control when it's
+      defined using traditional sintax. This does not work
+      because the area is not asociated to a control.
   #525
 
 2022-05-29 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
