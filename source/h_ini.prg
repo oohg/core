@@ -260,19 +260,19 @@ FUNCTION SetEndComment( cComment )
 // Code GetIni and SetIni based on source by Grigory Filatov
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _GetIni( cSection, cEntry, cDefault, uVar )
+FUNCTION _GetIni( cSection, cEntry, uDefault, uVar )
 
-   LOCAL cFile, cVar :=''
+   LOCAL cFile, cVar := ''
 
    IF ! Empty( _OOHG_ActiveIniFile )
-      IF ValType( cDefault ) == 'U'
-         cDefault := cVar
+      IF ValType( uDefault ) == 'U'
+         uDefault := cVar
       ENDIF
       cFile := _OOHG_ActiveIniFile
-      cVar := GetPrivateProfileString( cSection, cEntry, xChar( cDefault ), cFile )
+      cVar := GetPrivateProfileString( cSection, cEntry, xChar( uDefault ), cFile )
    ELSE
-      IF cDefault != NIL
-         cVar := xChar( cDefault )
+      IF uDefault != NIL
+         cVar := xChar( uDefault )
       ENDIF
    ENDIF
    uVar := xValue( cVar, ValType( uVar ) )
