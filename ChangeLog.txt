@@ -13,6 +13,19 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-06-11 19:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_ini.prg
+    * The third parameter of function _GetIni was renamed to
+      to properly reflect is type.
+  #527
+
+2022-06-11 18:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    + Add support for bold, italic, strikeout, underline and charset
+      attributes to OOHG's default font.
+  #526
+
 2022-05-31 21:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_frame.prg
     ! Exclude area is not added to FRAME control when it's
