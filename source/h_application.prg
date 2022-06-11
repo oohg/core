@@ -147,7 +147,12 @@
 #define NDX_OOHG_ACTIVETREE            59
 #define NDX_OOHG_CMBINDEXISVALUEARRAY  60
 #define NDX_OOHG_CMBINDEXISVALUEDBF    61
-#define NUMBER_OF_APP_WIDE_VARS        61
+#define NDX_OOHG_DEFAULTFONTBOLD       62
+#define NDX_OOHG_DEFAULTFONTITALIC     63
+#define NDX_OOHG_DEFAULTFONTSTRIKEOUT  64
+#define NDX_OOHG_DEFAULTFONTUNDERLINE  65
+#define NDX_OOHG_DEFAULTFONTCHARSET    66
+#define NUMBER_OF_APP_WIDE_VARS        66
 
 STATIC oAppObj := NIL
 
@@ -280,6 +285,12 @@ CLASS TApplication
    METHOD Value_Pos59             SETGET
    METHOD Value_Pos60             SETGET
    METHOD Value_Pos61             SETGET
+   METHOD Value_Pos62             SETGET
+   METHOD Value_Pos63             SETGET
+   METHOD Value_Pos64             SETGET
+   METHOD Value_Pos65             SETGET
+   METHOD Value_Pos66             SETGET
+
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -368,6 +379,11 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_ACTIVETREE ]            := NIL
       ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ]  := .F.
       ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]    := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTBOLD ]       := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTITALIC ]     := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTSTRIKEOUT ]  := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTUNDERLINE ]  := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ]    := 0
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -2241,6 +2257,76 @@ METHOD Value_Pos61( lValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ] := lValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos62( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTBOLD ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTBOLD ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos63( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTITALIC ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTITALIC ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos64( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTSTRIKEOUT ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTSTRIKEOUT ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos65( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTUNDERLINE ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTUNDERLINE ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos66( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ]
    ::MutexUnlock()
 
    RETURN ( uRet )

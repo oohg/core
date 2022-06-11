@@ -125,6 +125,11 @@ APPLICATION WIDE PSEUDO-VARIABLES
 #xtranslate _OOHG_ActiveTree              => _OOHG_AppObject():Value_Pos59
 #xtranslate _OOHG_ComboIndexIsValueArray  => _OOHG_AppObject():Value_Pos60
 #xtranslate _OOHG_ComboIndexIsValueDbf    => _OOHG_AppObject():Value_Pos61
+#xtranslate _OOHG_DefaultFontBold         => _OOHG_AppObject():Value_Pos62
+#xtranslate _OOHG_DefaultFontItalic       => _OOHG_AppObject():Value_Pos63
+#xtranslate _OOHG_DefaultFontStrikeOut    => _OOHG_AppObject():Value_Pos64
+#xtranslate _OOHG_DefaultFontUnderLine    => _OOHG_AppObject():Value_Pos65
+#xtranslate _OOHG_DefaultFontCharSet      => _OOHG_AppObject():Value_Pos66
 #xtranslate _OOHG_ActiveFrame             => _OOHG_AppObject():ActiveFrameGet()
 #xtranslate _OOHG_ActiveGroupBox          => _OOHG_AppObject():ActiveGroupBoxGet()
 #xtranslate _OOHG_LastDefinedForm         => ATail( _OOHG_RegisteredForms )
