@@ -67,18 +67,20 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
 
 #xcommand DECLARE WINDOW <w> ;
    => ;
-      #xtranslate <w> . \<p: BackColor,BackColorCode, Cargo, ClientAdjust, ;
+      #xtranslate <w> . \<p: BackColor, BackColorCode, Caption, Cargo, ClientAdjust, ;
             ClientHeight, ClientWidth, Closable, Col, Cursor, Enabled, ;
-            FocusedControl, FontColor, Handle, Height, HelpButton, hWnd, ;
+            FocusedControl, FontBold, FontCharset, FontColor, FontItalic, FontName, ;
+            FontSize, FontStrikeOut, FontUnderline, Handle, Height, HelpButton, hWnd, ;
             MaxButton, MaxHeight, MaxWidth, MinButton, MinHeight, MinWidth, ;
             Name, NoDefWinProc, NotifyIcon, NotifyToolTip, Object, Row, SaveAs, ;
             Sizable, SysMenu, Title, TitleBar, Topmost, Type, VirtualHeight, ;
             VirtualWidth, Visible, Width\> ;
          => ;
             GetExistingFormObject( <(w)> ):\<p\> ;;
-      #xtranslate <w> . \<p: BackColor, BackColorCode, Cargo, ClientAdjust, ;
+      #xtranslate <w> . \<p: BackColor, BackColorCode, Caption, Cargo, ClientAdjust, ;
             ClientHeight, ClientWidth, Closable, Col, Cursor, Enabled, ;
-            FocusedControl, FontColor, Handle, Height, HelpButton, hWnd, ;
+            FocusedControl, FontBold, FontCharset, FontColor, FontItalic, FontName, ;
+            FontSize, FontStrikeOut, FontUnderline, Handle, Height, HelpButton, hWnd, ;
             MaxButton, MaxHeight, MaxWidth, MinButton, MinHeight, MinWidth, ;
             Name, NoDefWinProc, NotifyIcon, NotifyToolTip, Row, Sizable, ;
             SysMenu, Title, TitleBar, Topmost, Type, VirtualHeight, ;
@@ -105,7 +107,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             OnScrollRight, OnScrollUp, OnSize, OnVScrollBox\> := \<n\> ;
          => ;
             SetProperty( <(w)>, \<"p"\>, \<n\> ) ;;
-      #xtranslate <w> . \<p: AlphaBlendTransparent, SetBackgroundInvisible, ;
+      #xtranslate <w> . \<p: AlphaBlendTransparent, BackColorTransparent, ;
             SetBackgroundInvisible\> := \<n\> ;
          => ;
             DoMethod( <(w)>, \<"p"\>, \<n\> ) ;;
@@ -120,7 +122,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             => GetExistingControlObject( \<(c)\>, <(w)> ):ReadOnly ;;
       #xtranslate <w> . \<c\> . \<p: Value, Name, Address, BackColor, Spacing, ;
             FontColor, Picture, ToolTip, FontName, FontSize, FontBold, Col, ;
-            FontUnderline, FontItalic, FontStrikeOut, Caption, Row, ;
+            FontCharset, FontUnderline, FontItalic, FontStrikeOut, Caption, Row, ;
             Width, Height, Visible, Enabled, Checked, ItemCount, RangeMin, ;
             RangeMax, CaretPos, ForeColor, ScrollCaret, GetEditSel, Stretch, ;
             Indent, SelColor, OnChange, AllowAppend, AllowDelete, AllowEdit, ;
@@ -239,7 +241,7 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
             FontBold, FontItalic, FontUnderline, FontStrikeOut, Caption, ;
             Row, DisplayValue, Col, Width, Height, Visible, Enabled, Checked, ;
             ItemCount, RangeMin, RangeMax, Position, CaretPos, ForeColor, ;
-            ScrollCaret, BackColorCode\> ;
+            ScrollCaret, BackColorCode, FontCharset\> ;
             => <w> . \<c\> . \<p\> ;;
       #xtranslate <w> . \<x\>( \<k\> ) . \<c\> . \<p: Caption, Header, Item, ;
             Icon\>( \<arg\> ) ;
