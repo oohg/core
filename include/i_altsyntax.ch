@@ -425,7 +425,7 @@ AUXILIARY VARIABLES
    => ;
       _OOHG_ActiveControlFontUnderline := <u>
 
-#xcommand FONTCOLOR   <color> ;
+#xcommand FONTCOLOR <color> ;
    => ;
       _OOHG_ActiveControlFontColor := <color>
 
