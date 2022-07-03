@@ -218,7 +218,7 @@ METHOD Picture( cPicture ) CLASS TImage
       ENDIF
 
       // load image at full size
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F., ::lNoTransparent )
       IF ValidHandler( ::hImage )
          IF ::ImageSize
             ::nWidth  := _OOHG_BitMapWidth( ::hImage )
