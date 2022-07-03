@@ -312,8 +312,8 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
       [ ON RESTORE <RestoreProcedure> ] ;
       [ ON PAINT <PaintProcedure> ] ;
       [ BACKCOLOR <backcolor> ] ;
-      [ FONT <fontname> ] ;
-      [ SIZE <fontsize> ] ;
+      [ <dummy: FONT, FONTNAME> <fontname> ] ;
+      [ <dummy: SIZE, FONTSIZE> <fontsize> ] ;
       [ FONTCOLOR <FontColor> ] ;
       [ NOTIFYICON <NotifyIcon> ] ;
       [ NOTIFYTOOLTIP <NotifyIconTooltip> ] ;
