@@ -1473,7 +1473,7 @@
 2013-05-25 17:29 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * .\Changelog
     * Some entries corrected.
-  * source\c_image.prg
+  * source\c_image.c
     ! _OOHG_BITMAPFROMFILE function was clipping the image instead of
       scaling it to the control's rect when lAutosize is .T.
     + Added _OOHG_SIZEOFBITMAPFROMFILE function.
