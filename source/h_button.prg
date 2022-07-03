@@ -135,12 +135,12 @@ CLASS TButton FROM TControl
    Note that when themes are enabled the area for the content is reduced by a 3 pixel margin.
    Note that when themes are not enabled or the painting is done by the OS then IMAGEMARGIN is ignored.
 
-Image painting, see functionS SetImageXP and TButton_Notify_CustomDraw:
+Image painting, see functions SetImageXP and TButton_Notify_CustomDraw:
 
    The image is always loaded at its full size.
    The image is drawn centered at the image area.
    The image has precedence over the text thus, if there's no room left, the text is not shown.
-   In such case, you can use NOPRINTOVER clause to displayed the text over the image.
+   In such case, you can use NOPRINTOVER clause to display the text over the image.
 
    IMAGESIZE: Button's size is adjusted to the image's size plus theme's margins.
               STRETCH, AUTOFIT AND FITIMG are ignored.
