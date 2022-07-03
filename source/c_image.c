@@ -627,7 +627,7 @@ HB_FUNC( _OOHG_SIZEOFBITMAPFROMFILE )          /* FUNCTION _OOHG_SizeOfBitmapFro
 
    memset( &bm, 0, sizeof( bm ) );
 
-   if( hb_parclen( 2 ) )
+   if( hb_parclen( 1 ) )
    {
       hBitmap = (HBITMAP) _OOHG_LoadImage( hb_parc( 1 ), LR_CREATEDIBSECTION, 0, 0, NULL, -1, TRUE );
 
