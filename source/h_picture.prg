@@ -192,7 +192,7 @@ METHOD Picture( cPicture, lNoRepaint ) CLASS TPicture
       ENDIF
 
       // load image at full size
-      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F. )
+      ::hImage := _OOHG_BitmapFromFile( Self, cPicture, nAttrib, .F., ::lNoTransparent )
       If ! HB_IsLogical( lNoRepaint ) .OR. ! lNoRepaint
          ::RePaint()
       EndIf
