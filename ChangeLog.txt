@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-03 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_image.c
+    ! Function _OOHG_SIZEOFBITMAPFROMFILE returns wrong values.
+  #529
+
 2022-06-21 17:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_window.ch
     + Some properties and methods to DEFINE WINDOW.
