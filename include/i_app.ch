@@ -123,6 +123,7 @@
    => ;
       ProcessMessages()
 
-#xtranslate SET LOGFILE TO <(name)> ;
+#xtranslate SET LOGFILE TO <name> ;
    => ;
       _OOHG_AppObject():LogFile( <(name)> )
+

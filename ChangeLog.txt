@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-07 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    ! Extra parenthesis at SET LOGFILE TO xtranslate removed.
+  #534
+
 2022-07-07 18:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_font.ch
     + SET DEFAULT FONT TO
