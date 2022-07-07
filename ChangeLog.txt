@@ -13,6 +13,25 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-03 19:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_picture.prg
+    ! Method Picture does not honor the value of data lNoTransparent.
+  #531
+
+2022-07-03 19:57 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_image.prg
+    ! Method Picture does not honor the value of data lNoTransparent.
+  #531
+
+2022-07-03 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_button.prg
+    * Some misspelled words.
+
+2022-07-03 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Tags FONTNAME and FONTSIZE to DEFINE WINDOWS syntax.
+  #530
+
 2022-07-03 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_image.c
     ! Function _OOHG_SIZEOFBITMAPFROMFILE returns wrong values.
