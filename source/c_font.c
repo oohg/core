@@ -201,10 +201,11 @@ HB_FUNC( ENUMFONTSEX )
    if( hb_parclen( 2 ) > 0 )
       hb_strncpy( lf.lfFaceName, hb_parc( 2 ), HB_MIN( LF_FACESIZE - 1, hb_parclen( 2 ) ) );
    else
-      lf.lfFaceName[ 0 ] = '\0';
+      lf.lfFaceName[ 0 ] = TEXT( '\0' );
 
-   lf.lfCharSet= (BYTE) hb_parni( 3 );
-   lf.lfPitchAndFamily = (BYTE) ( hb_parnidef( 4, DEFAULT_PITCH ) | FF_DONTCARE );
+   lf.lfCharSet        = (BYTE) ( HB_ISNUM( 3 ) ? ( hb_parni( 3 ) == DEFAULT_CHARSET ? GetTextCharset ( hdc ) : hb_parni( 3 ) ) : -1 );
+   lf.lfPitchAndFamily = (BYTE) ( HB_ISNUM( 4 ) ? ( hb_parni( 4 ) == DEFAULT_PITCH ? -1 : ( hb_parni( 4 ) | FF_DONTCARE ) ) : -1 );
+   /* TODO - nFontType */
 
    EnumFontFamiliesEx( hdc, &lf, _EnumFontFamExProc, (LPARAM) pArray, 0 );
 
@@ -217,7 +218,7 @@ HB_FUNC( ENUMFONTSEX )
    if( HB_ISBYREF( 7 ) )
    {
       PHB_ITEM aFontName = hb_param( 7, HB_IT_ANY );
-      int nLen = hb_arrayLen( pArray ), i;
+      int nLen = (int) hb_arrayLen( pArray ), i;
 
       hb_arrayNew( aFontName, nLen );
 
@@ -244,3 +245,4 @@ static int CALLBACK _EnumFontFamExProc( const LOGFONT * lpelfe, const TEXTMETRIC
    }
    return 1;
 }
+
