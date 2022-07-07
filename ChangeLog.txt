@@ -13,6 +13,35 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-07 18:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_font.ch
+    + SET DEFAULT FONT TO
+      ; It allows to set all the attributes of the default font.
+  * core\include\i_var.ch
+    + App-pseudo-vars _OOHG_DefaultBackColor, _OOHG_DefaultFormBackColor,
+      _OOHG_DefaultFontAngle,_OOHG_DefaultFontWidth,
+      _OOHG_DefaultFontOrientation and _OOHG_DefaultFontAdvanced.
+  * core\source\h_application.prg
+    + Support for new app-pseudo-vars.
+    + Support for setting a default backcolor to all the controls
+      in a form.
+    + Support for setting a default backcolor to all the forms in
+      the application.
+    + Support for setting Angle, Width, Orientation and Advanced
+      attributes of the default font.
+  * core\source\h_form.prg
+    + Method FontName to class TForm. This allows to set/get the
+      default fontname for newly created controls in the form.
+    + Support for setting a default backcolor to all the forms in
+      the application.
+   #533
+
+2022-07-07 17:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    ! Default value of EnumFontFamiliesEx parameter at
+      function ENUMFONTSEX.
+  #532
+
 2022-07-03 19:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_picture.prg
     ! Method Picture does not honor the value of data lNoTransparent.
