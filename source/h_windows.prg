@@ -109,7 +109,7 @@ CLASS TWindow
    DATA FocusStrikeout            INIT .F.
    DATA FocusUnderline            INIT .F.
    DATA HasDragFocus              INIT .F.                                    // .T. when drag image is over a drop-enabled control
-   DATA hDC                                                                   
+   DATA hDC
    DATA hDynamicValues            INIT NIL
    DATA HScrollBar                INIT NIL
    DATA hWnd                      INIT 0
