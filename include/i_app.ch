@@ -127,3 +127,7 @@
    => ;
       _OOHG_AppObject():LogFile( <(name)> )
 
+#xtranslate SET FORM DEFAULT BACKCOLOR TO <color>;
+   => ;
+      _OOHG_DefaultFormBackColor := <color>
+
