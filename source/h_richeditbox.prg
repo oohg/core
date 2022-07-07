@@ -90,11 +90,13 @@ CLASS TEditRich FROM TEdit
    METHOD GetSelFont
    METHOD GetSelText
    METHOD GetSelType              BLOCK { |Self| TEditRich_SelectionType( ::hWnd ) }
+   METHOD GetTextLength           BLOCK { |Self| TEditRich_GetTextLen( ::hWnd ) }
    METHOD HideSelection
    METHOD LoadFile
    METHOD MaxLength               SETGET
    METHOD ReDo                    BLOCK { |Self| SendMessage( ::hWnd, EM_REDO, 0, 0 ) }
    METHOD Release
+   METHOD Render
    METHOD RichValue               SETGET
    METHOD SaveFile
    METHOD SetOptions              BLOCK { |Self, nOptions| TEditRich_SetOptions( ::hWnd, nOptions ) }
@@ -655,7 +657,7 @@ HB_FUNC( RICHSTREAMOUT )          /* FUNCTION RichStreamOut( hWnd ) -> NIL */
 
    es.dwCookie = (DWORD_PTR) si;
    es.dwError = 0;
-   es.pfnCallback = ( EDITSTREAMCALLBACK ) EditStreamCallbackOut;
+   es.pfnCallback = (EDITSTREAMCALLBACK) EditStreamCallbackOut;
 
    SendMessage( HWNDparam( 1 ), EM_STREAMOUT, (WPARAM) iType, (LPARAM) &es );
 
@@ -750,19 +752,19 @@ HB_FUNC( FILESTREAMIN )          /* FUNCTION FileStreamIn( hWnd, cFile, nType ) 
       }
       case 4:
       {
-         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( (ULONG) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          lMode = TM_PLAINTEXT;
          break;
       }
       case 5:
       {
-         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
+         lFlag = ( (ULONG) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
          lMode = TM_RICHTEXT;
          break;
       }
       case 6:
       {
-         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( (ULONG) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          lMode = TM_PLAINTEXT;
          break;
       }
@@ -824,17 +826,17 @@ HB_FUNC( FILESTREAMOUT )          /* FUNCTION FileStreamOut( hWnd, cFile, nType 
       }
       case 4:
       {
-         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( (ULONG) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          break;
       }
       case 5:
       {
-         lFlag = ( ( ULONG ) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
+         lFlag = ( (ULONG) CP_UTF8 << 16 ) | SF_USECODEPAGE | SF_RTF;
          break;
       }
       case 6:
       {
-         lFlag = ( ( ULONG ) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
+         lFlag = ( (ULONG) CP_UTF7 << 16 ) | SF_USECODEPAGE | SF_TEXT;
          break;
       }
       default:
@@ -964,6 +966,20 @@ HB_FUNC_STATIC( TEDITRICH_HIDESELECTION )          /* METHOD HideSelection( lHid
    POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
 
    SendMessage( oSelf->hWnd, EM_HIDESELECTION, (WPARAM) ( hb_parl( 1 ) ? 1 : 0 ), 0 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( TEDITRICH_GETTEXTLEN )          /* FUNCTION TEditRich_GetTextLen( hWnd ) -> nLen */
+{
+   LRESULT lResult;
+   GETTEXTLENGTHEX gtl;
+
+   gtl.flags = GTL_PRECISE;
+   gtl.codepage = CP_ACP;
+
+   lResult = SendMessage( HWNDparam( 1 ), EM_GETTEXTLENGTHEX, (WPARAM) &gtl, 0 );
+
+   hb_retnl( lResult );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1206,19 +1222,62 @@ To use with EN_MSGFILTER notification codes for events.
 In the mask sent with the EM_SETEVENTMASK, use one or more of these: ENM_KEYEVENTS, ENM_MOUSEEVENTS, ENM_SCROLLEVENTS.
 */
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETMSKTEXTMESSAGE )
 {
    HB_RETNL( (UINT_PTR) ( MSGFILTERparam( 1 )->msg ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETMSKTEXTWPARAM )
 {
    HB_RETNL( (LONG_PTR) ( MSGFILTERparam( 1 )->wParam ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETMSKTEXTLPARAM )
 {
    HB_RETNL( (LONG_PTR) ( MSGFILTERparam( 1 )->lParam ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC_STATIC( TEDITRICH_RENDER )          /* METHOD TEditRich_Render( hDC, top, left, bottom, right, nCPMin, nCPMax, lDisplayBand ) -> lIndex */
+{
+   PHB_ITEM pSelf = hb_stackSelfItem();
+   POCTRL oSelf = _OOHG_GetControlInfo( pSelf );
+   RECT rcArea, rcPage;
+   CHARRANGE cprng;
+   FORMATRANGE fmtrng;
+   LRESULT lResult;
+
+   rcArea.top    = hb_parni( 2 );
+   rcArea.left   = hb_parni( 3 );
+   rcArea.bottom = hb_parni( 4 );
+   rcArea.right  = hb_parni( 5 );
+
+   rcPage = rcArea;
+
+   cprng.cpMin = hb_parni( 6 );
+   cprng.cpMax = hb_parni( 7 );
+
+   fmtrng.hdc       = HDCparam( 1 );
+   fmtrng.hdcTarget = HDCparam( 1 );
+   fmtrng.rc        = rcArea;
+   fmtrng.rcPage    = rcPage;
+   fmtrng.chrg      = cprng;
+
+   lResult = SendMessage( oSelf->hWnd, (UINT) EM_FORMATRANGE, 0, (LPARAM) &fmtrng );
+
+   if( hb_parl( 8 ) )
+   {
+      SendMessage( oSelf->hWnd, (UINT) EM_DISPLAYBAND, 0, (LPARAM) &rcPage );
+   }
+
+   SendMessage( oSelf->hWnd, (UINT) EM_FORMATRANGE, 0, 0 );
+
+   // Index of the last character that fits in the region, plus 1.
+   HB_RETNL( lResult );
+}
+
 #pragma ENDDUMP
+
