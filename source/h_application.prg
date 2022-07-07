@@ -65,94 +65,100 @@
 #include "oohg.ch"
 #include "i_init.ch"
 
-#define MAX_OBJ_NUMBER   9999999999
+#define MAX_OBJ_NUMBER                  9999999999
 
-#define HOTKEY_ID        1
-#define HOTKEY_MOD       2
-#define HOTKEY_KEY       3
-#define HOTKEY_ACTION    4
+#define HOTKEY_ID                       1
+#define HOTKEY_MOD                      2
+#define HOTKEY_KEY                      3
+#define HOTKEY_ACTION                   4
 
-#define FONT_ID          01
-#define FONT_HANDLE      02
-#define FONT_NAME        03
-#define FONT_SIZE        04
-#define FONT_BOLD        05
-#define FONT_ITALIC      06
-#define FONT_UNDERLINE   07
-#define FONT_STRIKEOUT   08
-#define FONT_ANGLE       09
-#define FONT_CHARSET     10
-#define FONT_WIDTH       11
-#define FONT_ORIENTATION 12
-#define FONT_ADVANCED    13
+#define FONT_ID                         01
+#define FONT_HANDLE                     02
+#define FONT_NAME                       03
+#define FONT_SIZE                       04
+#define FONT_BOLD                       05
+#define FONT_ITALIC                     06
+#define FONT_UNDERLINE                  07
+#define FONT_STRIKEOUT                  08
+#define FONT_ANGLE                      09
+#define FONT_CHARSET                    10
+#define FONT_WIDTH                      11
+#define FONT_ORIENTATION                12
+#define FONT_ADVANCED                   13
 
-#define NDX_OOHG_ACTIVECONTROLINFO     01
-#define NDX_OOHG_ACTIVETOOLBAR         02
-#define NDX_OOHG_ADJUSTFONT            03
-#define NDX_OOHG_ADJUSTWIDTH           04
-#define NDX_OOHG_AUTOADJUST            05
-#define NDX_OOHG_DEFAULTFONTCOLOR      06
-#define NDX_OOHG_DEFAULTFONTNAME       07
-#define NDX_OOHG_DEFAULTFONTSIZE       08
-#define NDX_OOHG_DIALOGCANCELLED       09
-#define NDX_OOHG_EXTENDEDNAVIGATION    10
-#define NDX_OOHG_MAIN                  11
-#define NDX_OOHG_SAMEENTERDBLCLICK     12
-#define NDX_OOHG_TEMPWINDOWNAME        13
-#define NDX_OOHG_THISCONTROL           14
-#define NDX_OOHG_THISEVENTTYPE         15
-#define NDX_OOHG_THISFORM              16
-#define NDX_OOHG_THISITEMCELLCOL       17
-#define NDX_OOHG_THISITEMCELLHEIGHT    18
-#define NDX_OOHG_THISITEMCELLROW       19
-#define NDX_OOHG_THISITEMCELLVALUE     20
-#define NDX_OOHG_THISITEMCELLWIDTH     21
-#define NDX_OOHG_THISITEMCOLINDEX      22
-#define NDX_OOHG_THISITEMROWINDEX      23
-#define NDX_OOHG_THISOBJECT            24
-#define NDX_OOHG_THISQUERYCOLINDEX     25
-#define NDX_OOHG_THISQUERYDATA         26
-#define NDX_OOHG_THISQUERYROWINDEX     27
-#define NDX_OOHG_THISTYPE              28
-#define NDX_OOHG_MAIN_ICON             29
-#define NDX_OOHG_MULTIPLEINSTANCES     30
-#define NDX_OOHG_APP_CARGO             31
-#define NDX_BROWSE_SYNCSTATUS          32
-#define NDX_BROWSE_FIXEDBLOCKS         33
-#define NDX_BROWSE_FIXEDCONTROLS       34
-#define NDX_XBROWSE_FIXEDBLOCKS        35
-#define NDX_XBROWSE_FIXEDCONTROLS      36
-#define NDX_GRID_FIXEDCONTROLS         37
-#define NDX_OOHG_ERRORLEVEL            38
-#define NDX_OOHG_WINRELEASESAMEORDER   39
-#define NDX_OOHG_INITTGRIDCONTROLDATAS 40
-#define NDX_OOHG_COMBOREFRESH          41
-#define NDX_OOHG_SAVEASDWORD           42
-#define NDX_OOHG_ACTIVEINIFILE         43
-#define NDX_OOHG_ACTIVEMESSAGEBAR      44
-#define NDX_OOHG_BKEYDOWN              45
-#define NDX_OOHG_HOTKEYS               46
-#define NDX_OOHG_DEFAULTSTATUSBARMSG   47
-#define NDX_OOHG_DEFAULTMENUPARAMS     48
-#define NDX_OOHG_OWNERDRAWMENUS        49
-#define NDX_OOHG_GETNULLNAME           50
-#define NDX_OOHG_SETTINGFOCUS          51
-#define NDX_OOHG_VALIDATING            52
-#define NDX_OOHG_ACTIVEHELPFILE        53
-#define NDX_OOHG_USELIBRARYDRAW        54
-#define NDX_OOHG_ENABLEUNREGUNUSED     55
-#define NDX_OOHG_EXITONMAINRELEASE     56
-#define NDX_OOHG_LOGFILE               57
-#define NDX_OOHG_INTERACTIVECLOSE      58
-#define NDX_OOHG_ACTIVETREE            59
-#define NDX_OOHG_CMBINDEXISVALUEARRAY  60
-#define NDX_OOHG_CMBINDEXISVALUEDBF    61
-#define NDX_OOHG_DEFAULTFONTBOLD       62
-#define NDX_OOHG_DEFAULTFONTITALIC     63
-#define NDX_OOHG_DEFAULTFONTSTRIKEOUT  64
-#define NDX_OOHG_DEFAULTFONTUNDERLINE  65
-#define NDX_OOHG_DEFAULTFONTCHARSET    66
-#define NUMBER_OF_APP_WIDE_VARS        66
+#define NDX_OOHG_ACTIVECONTROLINFO      01
+#define NDX_OOHG_ACTIVETOOLBAR          02
+#define NDX_OOHG_ADJUSTFONT             03
+#define NDX_OOHG_ADJUSTWIDTH            04
+#define NDX_OOHG_AUTOADJUST             05
+#define NDX_OOHG_DEFAULTFONTCOLOR       06
+#define NDX_OOHG_DEFAULTFONTNAME        07
+#define NDX_OOHG_DEFAULTFONTSIZE        08
+#define NDX_OOHG_DIALOGCANCELLED        09
+#define NDX_OOHG_EXTENDEDNAVIGATION     10
+#define NDX_OOHG_MAIN                   11
+#define NDX_OOHG_SAMEENTERDBLCLICK      12
+#define NDX_OOHG_TEMPWINDOWNAME         13
+#define NDX_OOHG_THISCONTROL            14
+#define NDX_OOHG_THISEVENTTYPE          15
+#define NDX_OOHG_THISFORM               16
+#define NDX_OOHG_THISITEMCELLCOL        17
+#define NDX_OOHG_THISITEMCELLHEIGHT     18
+#define NDX_OOHG_THISITEMCELLROW        19
+#define NDX_OOHG_THISITEMCELLVALUE      20
+#define NDX_OOHG_THISITEMCELLWIDTH      21
+#define NDX_OOHG_THISITEMCOLINDEX       22
+#define NDX_OOHG_THISITEMROWINDEX       23
+#define NDX_OOHG_THISOBJECT             24
+#define NDX_OOHG_THISQUERYCOLINDEX      25
+#define NDX_OOHG_THISQUERYDATA          26
+#define NDX_OOHG_THISQUERYROWINDEX      27
+#define NDX_OOHG_THISTYPE               28
+#define NDX_OOHG_MAIN_ICON              29
+#define NDX_OOHG_MULTIPLEINSTANCES      30
+#define NDX_OOHG_APP_CARGO              31
+#define NDX_BROWSE_SYNCSTATUS           32
+#define NDX_BROWSE_FIXEDBLOCKS          33
+#define NDX_BROWSE_FIXEDCONTROLS        34
+#define NDX_XBROWSE_FIXEDBLOCKS         35
+#define NDX_XBROWSE_FIXEDCONTROLS       36
+#define NDX_GRID_FIXEDCONTROLS          37
+#define NDX_OOHG_ERRORLEVEL             38
+#define NDX_OOHG_WINRELEASESAMEORDER    39
+#define NDX_OOHG_INITTGRIDCONTROLDATAS  40
+#define NDX_OOHG_COMBOREFRESH           41
+#define NDX_OOHG_SAVEASDWORD            42
+#define NDX_OOHG_ACTIVEINIFILE          43
+#define NDX_OOHG_ACTIVEMESSAGEBAR       44
+#define NDX_OOHG_BKEYDOWN               45
+#define NDX_OOHG_HOTKEYS                46
+#define NDX_OOHG_DEFAULTSTATUSBARMSG    47
+#define NDX_OOHG_DEFAULTMENUPARAMS      48
+#define NDX_OOHG_OWNERDRAWMENUS         49
+#define NDX_OOHG_GETNULLNAME            50
+#define NDX_OOHG_SETTINGFOCUS           51
+#define NDX_OOHG_VALIDATING             52
+#define NDX_OOHG_ACTIVEHELPFILE         53
+#define NDX_OOHG_USELIBRARYDRAW         54
+#define NDX_OOHG_ENABLEUNREGUNUSED      55
+#define NDX_OOHG_EXITONMAINRELEASE      56
+#define NDX_OOHG_LOGFILE                57
+#define NDX_OOHG_INTERACTIVECLOSE       58
+#define NDX_OOHG_ACTIVETREE             59
+#define NDX_OOHG_CMBINDEXISVALUEARRAY   60
+#define NDX_OOHG_CMBINDEXISVALUEDBF     61
+#define NDX_OOHG_DEFAULTFONTBOLD        62
+#define NDX_OOHG_DEFAULTFONTITALIC      63
+#define NDX_OOHG_DEFAULTFONTSTRIKEOUT   64
+#define NDX_OOHG_DEFAULTFONTUNDERLINE   65
+#define NDX_OOHG_DEFAULTFONTCHARSET     66
+#define NDX_OOHG_DEFAULTBACKCOLOR       67
+#define NDX_OOHG_DEFAULTFORMBACKCOLOR   68
+#define NDX_OOHG_DEFAULTFONTANGLE       69
+#define NDX_OOHG_DEFAULTFONTWIDTH       70
+#define NDX_OOHG_DEFAULTFONTORIENTATION 71
+#define NDX_OOHG_DEFAULTFONTADVANCED    72
+#define NUMBER_OF_APP_WIDE_VARS         72
 
 STATIC oAppObj := NIL
 
@@ -290,6 +296,12 @@ CLASS TApplication
    METHOD Value_Pos64             SETGET
    METHOD Value_Pos65             SETGET
    METHOD Value_Pos66             SETGET
+   METHOD Value_Pos67             SETGET
+   METHOD Value_Pos68             SETGET
+   METHOD Value_Pos69             SETGET
+   METHOD Value_Pos70             SETGET
+   METHOD Value_Pos71             SETGET
+   METHOD Value_Pos72             SETGET
 
    METHOD Width                   SETGET
    METHOD WinClassReg
@@ -318,72 +330,78 @@ METHOD New() CLASS TApplication
 
       ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
 
-      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]     := {}
-      ::aVars[ NDX_OOHG_ACTIVETOOLBAR ]         := {}
-      ::aVars[ NDX_OOHG_ADJUSTFONT ]            := .T.
-      ::aVars[ NDX_OOHG_ADJUSTWIDTH ]           := .T.
-      ::aVars[ NDX_OOHG_AUTOADJUST ]            := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]      := BLACK
-      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]       := 'Arial'
-      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]       := 9
-      ::aVars[ NDX_OOHG_DIALOGCANCELLED ]       := .F.
-      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ]    := .F.
-      ::aVars[ NDX_OOHG_MAIN ]                  := NIL
-      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]     := .F.
-      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]        := ""
-      ::aVars[ NDX_OOHG_THISCONTROL ]           := NIL
-      ::aVars[ NDX_OOHG_THISEVENTTYPE ]         := ''
-      ::aVars[ NDX_OOHG_THISFORM ]              := NIL
-      ::aVars[ NDX_OOHG_THISITEMCELLCOL ]       := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ]    := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLROW ]       := 0
-      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]     := NIL
-      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]     := 0
-      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]      := 0
-      ::aVars[ NDX_OOHG_THISITEMROWINDEX ]      := 0
-      ::aVars[ NDX_OOHG_THISOBJECT ]            := NIL
-      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]     := 0
-      ::aVars[ NDX_OOHG_THISQUERYDATA ]         := ""
-      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]     := 0
-      ::aVars[ NDX_OOHG_THISTYPE ]              := ''
-      ::aVars[ NDX_OOHG_MAIN_ICON ]             := NIL
-      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]     := .T.
-      ::aVars[ NDX_OOHG_APP_CARGO ]             := NIL
-      ::aVars[ NDX_BROWSE_SYNCSTATUS ]          := .F.
-      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]         := .T.
-      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]       := .F.
-      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]        := .T.
-      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]      := .F.
-      ::aVars[ NDX_GRID_FIXEDCONTROLS ]         := .F.
-      ::aVars[ NDX_OOHG_ERRORLEVEL ]            := 0
-      ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ]   := .T.
-      ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ] := NIL
-      ::aVars[ NDX_OOHG_COMBOREFRESH ]          := .T.
-      ::aVars[ NDX_OOHG_SAVEASDWORD ]           := .F.
-      ::aVars[ NDX_OOHG_ACTIVEINIFILE ]         := ""
-      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]      := NIL
-      ::aVars[ NDX_OOHG_BKEYDOWN ]              := NIL
-      ::aVars[ NDX_OOHG_HOTKEYS ]               := {}
-      ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]   := NIL
-      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]     := DefaultMenuParams( 0 )
-      ::aVars[ NDX_OOHG_OWNERDRAWMENUS ]        := .F.
-      ::aVars[ NDX_OOHG_GETNULLNAME ]           := 0
-      ::aVars[ NDX_OOHG_SETTINGFOCUS ]          := {}
-      ::aVars[ NDX_OOHG_VALIDATING ]            := {}
-      ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]        := ""
-      ::aVars[ NDX_OOHG_USELIBRARYDRAW ]        := .F.
-      ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]     := .T.
-      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]     := .F.
-      ::aVars[ NDX_OOHG_LOGFILE ]               := {}
-      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]      := 1
-      ::aVars[ NDX_OOHG_ACTIVETREE ]            := NIL
-      ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ]  := .F.
-      ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]    := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTBOLD ]       := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTITALIC ]     := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTSTRIKEOUT ]  := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTUNDERLINE ]  := .F.
-      ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ]    := 0
+      ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]      := {}
+      ::aVars[ NDX_OOHG_ACTIVETOOLBAR ]          := {}
+      ::aVars[ NDX_OOHG_ADJUSTFONT ]             := .T.
+      ::aVars[ NDX_OOHG_ADJUSTWIDTH ]            := .T.
+      ::aVars[ NDX_OOHG_AUTOADJUST ]             := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTCOLOR ]       := BLACK
+      ::aVars[ NDX_OOHG_DEFAULTFONTNAME ]        := 'Arial'
+      ::aVars[ NDX_OOHG_DEFAULTFONTSIZE ]        := 9
+      ::aVars[ NDX_OOHG_DIALOGCANCELLED ]        := .F.
+      ::aVars[ NDX_OOHG_EXTENDEDNAVIGATION ]     := .F.
+      ::aVars[ NDX_OOHG_MAIN ]                   := NIL
+      ::aVars[ NDX_OOHG_SAMEENTERDBLCLICK ]      := .F.
+      ::aVars[ NDX_OOHG_TEMPWINDOWNAME ]         := ""
+      ::aVars[ NDX_OOHG_THISCONTROL ]            := NIL
+      ::aVars[ NDX_OOHG_THISEVENTTYPE ]          := ''
+      ::aVars[ NDX_OOHG_THISFORM ]               := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLCOL ]        := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLHEIGHT ]     := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLROW ]        := 0
+      ::aVars[ NDX_OOHG_THISITEMCELLVALUE ]      := NIL
+      ::aVars[ NDX_OOHG_THISITEMCELLWIDTH ]      := 0
+      ::aVars[ NDX_OOHG_THISITEMCOLINDEX ]       := 0
+      ::aVars[ NDX_OOHG_THISITEMROWINDEX ]       := 0
+      ::aVars[ NDX_OOHG_THISOBJECT ]             := NIL
+      ::aVars[ NDX_OOHG_THISQUERYCOLINDEX ]      := 0
+      ::aVars[ NDX_OOHG_THISQUERYDATA ]          := ""
+      ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]      := 0
+      ::aVars[ NDX_OOHG_THISTYPE ]               := ''
+      ::aVars[ NDX_OOHG_MAIN_ICON ]              := NIL
+      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]      := .T.
+      ::aVars[ NDX_OOHG_APP_CARGO ]              := NIL
+      ::aVars[ NDX_BROWSE_SYNCSTATUS ]           := .F.
+      ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]          := .T.
+      ::aVars[ NDX_BROWSE_FIXEDCONTROLS ]        := .F.
+      ::aVars[ NDX_XBROWSE_FIXEDBLOCKS ]         := .T.
+      ::aVars[ NDX_XBROWSE_FIXEDCONTROLS ]       := .F.
+      ::aVars[ NDX_GRID_FIXEDCONTROLS ]          := .F.
+      ::aVars[ NDX_OOHG_ERRORLEVEL ]             := 0
+      ::aVars[ NDX_OOHG_WINRELEASESAMEORDER ]    := .T.
+      ::aVars[ NDX_OOHG_INITTGRIDCONTROLDATAS ]  := NIL
+      ::aVars[ NDX_OOHG_COMBOREFRESH ]           := .T.
+      ::aVars[ NDX_OOHG_SAVEASDWORD ]            := .F.
+      ::aVars[ NDX_OOHG_ACTIVEINIFILE ]          := ""
+      ::aVars[ NDX_OOHG_ACTIVEMESSAGEBAR ]       := NIL
+      ::aVars[ NDX_OOHG_BKEYDOWN ]               := NIL
+      ::aVars[ NDX_OOHG_HOTKEYS ]                := {}
+      ::aVars[ NDX_OOHG_DEFAULTSTATUSBARMSG ]    := NIL
+      ::aVars[ NDX_OOHG_DEFAULTMENUPARAMS ]      := DefaultMenuParams( 0 )
+      ::aVars[ NDX_OOHG_OWNERDRAWMENUS ]         := .F.
+      ::aVars[ NDX_OOHG_GETNULLNAME ]            := 0
+      ::aVars[ NDX_OOHG_SETTINGFOCUS ]           := {}
+      ::aVars[ NDX_OOHG_VALIDATING ]             := {}
+      ::aVars[ NDX_OOHG_ACTIVEHELPFILE ]         := ""
+      ::aVars[ NDX_OOHG_USELIBRARYDRAW ]         := .F.
+      ::aVars[ NDX_OOHG_ENABLEUNREGUNUSED ]      := .T.
+      ::aVars[ NDX_OOHG_EXITONMAINRELEASE ]      := .F.
+      ::aVars[ NDX_OOHG_LOGFILE ]                := {}
+      ::aVars[ NDX_OOHG_INTERACTIVECLOSE ]       := 1
+      ::aVars[ NDX_OOHG_ACTIVETREE ]             := NIL
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEARRAY ]   := .F.
+      ::aVars[ NDX_OOHG_CMBINDEXISVALUEDBF ]     := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTBOLD ]        := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTITALIC ]      := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTSTRIKEOUT ]   := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTUNDERLINE ]   := .F.
+      ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ]     := DEFAULT_CHARSET
+      ::aVars[ NDX_OOHG_DEFAULTBACKCOLOR ]       := NIL
+      ::aVars[ NDX_OOHG_DEFAULTFORMBACKCOLOR ]   := -1
+      ::aVars[ NDX_OOHG_DEFAULTFONTANGLE ]       := 0
+      ::aVars[ NDX_OOHG_DEFAULTFONTWIDTH ]       := 0
+      ::aVars[ NDX_OOHG_DEFAULTFONTORIENTATION ] := 0
+      ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]    := .F.
 
       ::ArgC     := hb_argc()
       ::Args     := GetCommandLineArgs()
@@ -2327,6 +2345,90 @@ METHOD Value_Pos66( nValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ] := nValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_DEFAULTFONTCHARSET ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos67( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF PCount() > 0
+      ::aVars[ NDX_OOHG_DEFAULTBACKCOLOR ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTBACKCOLOR ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos68( uValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF PCount() > 0
+      ::aVars[ NDX_OOHG_DEFAULTFORMBACKCOLOR ] := uValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFORMBACKCOLOR ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos69( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTANGLE ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTANGLE ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos70( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTWIDTH ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTWIDTH ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos71( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTORIENTATION ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTORIENTATION ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos72( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]
    ::MutexUnlock()
 
    RETURN ( uRet )

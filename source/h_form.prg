@@ -179,6 +179,7 @@ CLASS TForm FROM TWindow
    METHOD Events_VScroll
    METHOD Flash
    METHOD FocusedControl
+   METHOD FontName                SETGET
    METHOD GetWindowState
    METHOD HasStatusBar            BLOCK { | Self | AScan( ::aControls, { |c| c:Type == "MESSAGEBAR" } ) > 0 }
    METHOD Height                  SETGET
@@ -330,7 +331,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
    ENDIF
 
    If ! Valtype( aRGB ) $ 'AN'
-      aRGB := -1
+      aRGB := _OOHG_DefaultFormBackColor
    Endif
 
    If HB_IsLogical( helpbutton ) .AND. helpbutton
@@ -918,6 +919,16 @@ METHOD VirtualHeight( nSize ) CLASS TForm
 
    Return ::nVirtualHeight
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD FontName( cFontName ) CLASS TForm
+
+   IF ValType( cFontName ) $ "CM"
+      ::cFontName := cFontName
+   ENDIF
+
+   RETURN ::cFontName
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD LastControl CLASS TForm
 
    LOCAL i, aControls := _OOHG_RegisteredControls, oCtrl

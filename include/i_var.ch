@@ -130,6 +130,13 @@ APPLICATION WIDE PSEUDO-VARIABLES
 #xtranslate _OOHG_DefaultFontStrikeOut    => _OOHG_AppObject():Value_Pos64
 #xtranslate _OOHG_DefaultFontUnderLine    => _OOHG_AppObject():Value_Pos65
 #xtranslate _OOHG_DefaultFontCharSet      => _OOHG_AppObject():Value_Pos66
+#xtranslate _OOHG_DefaultBackColor        => _OOHG_AppObject():Value_Pos67
+#xtranslate _OOHG_DefaultFormBackColor    => _OOHG_AppObject():Value_Pos68
+#xtranslate _OOHG_DefaultFontAngle        => _OOHG_AppObject():Value_Pos69
+#xtranslate _OOHG_DefaultFontWidth        => _OOHG_AppObject():Value_Pos70
+#xtranslate _OOHG_DefaultFontOrientation  => _OOHG_AppObject():Value_Pos71
+#xtranslate _OOHG_DefaultFontAdvanced     => _OOHG_AppObject():Value_Pos72
+
 #xtranslate _OOHG_ActiveFrame             => _OOHG_AppObject():ActiveFrameGet()
 #xtranslate _OOHG_ActiveGroupBox          => _OOHG_AppObject():ActiveGroupBoxGet()
 #xtranslate _OOHG_LastDefinedForm         => ATail( _OOHG_RegisteredForms )

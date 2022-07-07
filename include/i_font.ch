@@ -118,6 +118,40 @@ TYPE CONSTANTS
       _OOHG_DefaultFontSize := <fontsize> ;;
       _OOHG_DefaultFontColor := <fontcolor>
 
+#command SET DEFAULT FONT TO [ NAME <fontname> ] [ SIZE <fontsize> ] ;
+      [ COLOR <fontcolor> ] [ <bold: BOLD> ] [ <italic: ITALIC> ] ;
+      [ <strikeout: STRIKEOUT> ] [ <underline: UNDERLINE> ] ;
+      [ CHARSET <charset> ] [ ANGLE <angle> ] [ WIDTH <width> ] ;
+      [ ORIENTATION <orientation> ] [ <advanced: ADVANCED> ] ;
+   => ;
+      [ _OOHG_DefaultFontName := <fontname> ] ;;
+      [ _OOHG_DefaultFontSize := <fontsize> ] ;;
+      [ _OOHG_DefaultFontColor := <fontcolor> ] ;;
+      [ _OOHG_DefaultFontBold := <.bold.> ] ;;
+      [ _OOHG_DefaultFontItalic := <.italic.> ] ;;
+      [ _OOHG_DefaultFontStrikeOut := <.strikeout.> ] ;;
+      [ _OOHG_DefaultFontUnderLine := <.underline.> ] ;;
+      [ _OOHG_DefaultFontCharSet := <charset> ] ;;
+      [ _OOHG_DefaultFontAngle := <angle> ] ;;
+      [ _OOHG_DefaultFontWidth := <width> ] ;;
+      [ _OOHG_DefaultFontOrientation := <orientation> ] ;;
+      [ _OOHG_DefaultFontAdvanced := <.advanced.> ] ;;
+
+#command SET DEFAULT FONT TO ;
+   => ;
+      _OOHG_DefaultFontName := 'Arial' ;;
+      _OOHG_DefaultFontSize := 9 ;;
+      _OOHG_DefaultFontColor := BLACK ;;
+      _OOHG_DefaultFontBold := .F. ;;
+      _OOHG_DefaultFontItalic := .F. ;;
+      _OOHG_DefaultFontStrikeOut := .F. ;;
+      _OOHG_DefaultFontUnderLine := .F. ;;
+      _OOHG_DefaultFontCharSet := DEFAULT_CHARSET ;;
+      _OOHG_DefaultFontAngle := 0 ;;
+      _OOHG_DefaultFontWidth := 0 ;;
+      _OOHG_DefaultFontOrientation := 0 ;;
+      _OOHG_DefaultFontAdvanced := .F.
+
 #command DEFINE FONT <name> ;
       FONTNAME <fontname> ;
       [ SIZE <fontsize> ] ;
