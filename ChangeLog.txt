@@ -13,12 +13,27 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-07 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_richeditbox.prg
+    + Support for printing the control's content.
+    - Some extra spaces.
+    + Some format.
+    + Method GetTextLength.
+    + Method Render.
+    ; These methods enable the rendering the content of the control
+      to a printer's DC.
+   #537
+   
+2022-07-07 20:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg_dyns.hbx
+    * Updated
+
 2022-07-07 20:05 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
     + Clause SET FORM DEFAULT BACKCOLOR TO.
       Defaults to -1.
   #535
-  
+
 2022-07-07 19:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
     ! Extra parenthesis at SET LOGFILE TO xtranslate removed.
