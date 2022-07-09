@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-08 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    ! Infinite loop in method EditGrid of class TGridByCell
+      when the last column of the last row is readonly.
+  #538
+
 2022-07-07 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_richeditbox.prg
     + Support for printing the control's content.
@@ -23,7 +29,7 @@
     ; These methods enable the rendering the content of the control
       to a printer's DC.
    #537
-   
+
 2022-07-07 20:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\oohg_dyns.hbx
     * Updated
