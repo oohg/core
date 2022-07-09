@@ -4786,7 +4786,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridMulti
          uValue := ::FirstSelectedItem
          If uValue > 0
             If ValType( ::bDelWhen ) == "B"
-               lGo := _OOHG_EVAL( ::bDelWhen )
+               lGo := _OOHG_Eval( ::bDelWhen )
             Else
                lGo := .t.
             EndIf
@@ -6060,7 +6060,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGridByCell
          // detect item
          If ::nRowPos > 0
             If ValType( ::bDelWhen ) == "B"
-               lGo := _OOHG_EVAL( ::bDelWhen )
+               lGo := _OOHG_Eval( ::bDelWhen )
             Else
                lGo := .t.
             EndIf
