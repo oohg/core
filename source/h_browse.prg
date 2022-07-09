@@ -3599,8 +3599,13 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
          ENDIF
       ELSE                                           // OK
          IF ::FullMove
-            ::Right( .F. )
-            lAppend := ::Eof() .AND. ::AllowAppend
+            IF ::Right( .F. )
+               lAppend := .F.
+            ELSE
+               IF ! ( lAppend := ::Eof() .AND. ::AllowAppend )
+                  EXIT
+               ENDIF
+            ENDIF
          ELSEIF ::nColPos # ::LastColInOrder
             ::Right( .F. )
          ELSE
