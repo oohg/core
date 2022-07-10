@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-07-10 11:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_activex.prg
+    + Support for extended styles to ActiveX windows.
+  #539
+  
 2022-07-08 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Infinite loop in method EditGrid of class TGridByCell
