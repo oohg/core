@@ -91,7 +91,7 @@
 #include <hbstack.h>
 #include <hbapiitm.h>
 #include <hbvmopt.h>
-#include "oohg.h"         
+#include "oohg.h"
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -148,13 +148,13 @@ void _Ax_DeInit( void )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId -> hActiveXWnd */
+HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId, nCol, nRow, nWidth, nHeight, nStyle, nStyleEx -> hActiveXhWnd */
 {
    HWND hControl = NULL;
    int iStyle, iStyleEx;
 
    iStyle = WS_CHILD | WS_CLIPCHILDREN | hb_parni( 7 );
-   iStyleEx = 0;
+   iStyleEx = hb_parni( 8 );
 
    if( _Ax_Init() )
    {
