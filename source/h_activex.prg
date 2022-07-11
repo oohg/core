@@ -11,7 +11,7 @@
  * Portions of this project are based upon:
  *    "TActiveX for [x]Harbour Minigui" by Marcelo Torres and Fernando Santolin
  *       Copyright 2006 <lichitorres@yahoo.com.ar> and <CarozoDeQuilmes@gmail.com>
- *    "TActiveX_FreeWin class for Fivewin" by Oscar Joel Lira Lira Oscar
+ *    "TActiveX_FreeWin class for Fivewin" by Oscar Joel Lira Lira
  *       Copyright 2006-2007 [oSkAr] <oscarlira78@hotmail.com>
  *    "Harbour MiniGUI Extended Edition Library"
  *       Copyright 2005-2022 MiniGUI Team, http://hmgextended.com
@@ -67,6 +67,7 @@
 
 #include "oohg.ch"
 #include "hbclass.ch"
+#include "i_windefs.ch"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TActiveX FROM TControl
@@ -76,8 +77,6 @@ CLASS TActiveX FROM TControl
    DATA cProgId                   INIT ""
    DATA hAtl                      INIT NIL
    DATA hSink                     INIT NIL
-   DATA nHeight                   INIT NIL
-   DATA nWidth                    INIT NIL
    DATA oOle                      INIT NIL
    DATA Type                      INIT "ACTIVEX" READONLY
 
@@ -93,27 +92,26 @@ CLASS TActiveX FROM TControl
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
-               lNoTabStop, lDisabled, lInvisible ) CLASS TActiveX
+               lNoTabStop, lDisabled, lInvisible, lClientEdge ) CLASS TActiveX
 
-   LOCAL nStyle, oError, nControlHandle, bErrorBlock, hSink
-
-   ASSIGN ::nCol    VALUE nCol      TYPE "N"
-   ASSIGN ::nRow    VALUE nRow      TYPE "N"
-   ASSIGN ::nWidth  VALUE nWidth    TYPE "N"
-   ASSIGN ::nHeight VALUE nHeight   TYPE "N"
+   LOCAL nStyle, nStyleEx, oError, nControlHandle, bErrorBlock, hSink
 
    ::SetForm( ControlName, ParentForm )
 
-   ASSIGN ::nWidth  VALUE ::nWidth  TYPE "N" DEFAULT ::Parent:Width
-   ASSIGN ::nHeight VALUE ::nHeight TYPE "N" DEFAULT ::Parent:Height
-   ASSIGN ::cProgId VALUE cProgId   TYPE "CM"
+   ASSIGN ::nCol    VALUE nCol    TYPE "N" DEFAULT 0
+   ASSIGN ::nRow    VALUE nRow    TYPE "N" DEFAULT 0
+   ASSIGN ::nWidth  VALUE nWidth  TYPE "N" DEFAULT ::Parent:Width
+   ASSIGN ::nHeight VALUE nHeight TYPE "N" DEFAULT ::Parent:Height
+   ASSIGN ::cProgId VALUE cProgId TYPE "CM"
 
-   nStyle := ::InitStyle( ,, lInvisible, lNoTabStop, lDisabled )
+   nStyle := ::InitStyle( NIL, NIL, lInvisible, lNoTabStop, lDisabled )
+   nStyleEx := iif( HB_ISLOGICAL( lClientEdge ) .AND. lClientEdge, WS_EX_CLIENTEDGE, 0 )
 
-   nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle )
+   nControlHandle := InitActiveX( ::ContainerhWnd, ::cProgId, ::ContainerCol, ::ContainerRow, ::Width, ::Height, nStyle, nStyleEx )
    IF ! ValidHandler( nControlHandle )
       OOHG_MsgError( "TActiveX.Define: Container initialization failed. Program terminated." )
    ENDIF
+
    ::hAtl := AtlAxGetDisp( nControlHandle )
    IF ! ValidHandler( ::hAtl )
       OOHG_MsgError( OOHG_MsgReplace( "TActiveX.Define: Interface pointer initialization failed with code @1. Program terminated.", { { "@1", LTrim( Str( AtlAxHResult() ) ) } } ) )
@@ -137,16 +135,19 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, cProgId, ;
    #endif
    ErrorBlock( bErrorBlock )
 
-   SetupConnectionPoint( ::hAtl, @hSink, ::aAxEv, ::aAxExec )
-   ::hSink := hSink
+   IF SetupConnectionPoint( ::hAtl, @hSink, ::aAxEv, ::aAxExec ) == S_OK
+      ::hSink := hSink
+   ENDIF
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Release() CLASS TActiveX
 
+   IF ! Empty( ::hSink )
+      ShutdownConnectionPoint( ::hSink )
+   ENDIF
    ::oOle := NIL
-   ShutdownConnectionPoint( ::hSink )
    ReleaseDispatch( ::hAtl )
 
    RETURN ::Super:Release()

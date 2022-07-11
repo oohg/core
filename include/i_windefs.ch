@@ -1212,4 +1212,10 @@ SHOWWINDOW() AND SHELLEXECUTE() COMMANDS
 #define SW_FORCEMINIMIZE                          11
 #define SW_MAX                                    11
 
+/*---------------------------------------------------------------------------
+HRESULT
+---------------------------------------------------------------------------*/
+
+#define S_OK                                      0
+
 #endif

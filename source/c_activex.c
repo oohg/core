@@ -97,6 +97,10 @@
    #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
+#ifdef UNICODE
+   LPWSTR AnsiToWide( LPCSTR );
+#endif
+
 typedef HRESULT ( WINAPI *LPAtlAxWinInit )       ( void );
 typedef HRESULT ( WINAPI *LPAtlAxGetControl )    ( HWND, IUnknown** );
 
@@ -114,7 +118,7 @@ static BOOL _Ax_Init( void )
 
    if( ! hAtl )
    {
-      hAtl = LoadLibrary( "ATL.DLL" );
+      hAtl = LoadLibrary( TEXT( "ATL.DLL" ) );
       AtlAxWinInit       = (LPAtlAxWinInit) _OOHG_GetProcAddress( hAtl, "AtlAxWinInit" );
       AtlAxGetControl    = (LPAtlAxGetControl) _OOHG_GetProcAddress( hAtl, "AtlAxGetControl" );
       bSuccess = ( AtlAxWinInit )();
@@ -158,7 +162,13 @@ HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId, nCol, nR
 
    if( _Ax_Init() )
    {
-      hControl = CreateWindowEx( iStyleEx, "AtlAxWin", hb_parc( 2 ), iStyle,
+      hControl = CreateWindowEx( iStyleEx, TEXT( "AtlAxWin" ),
+#ifndef UNICODE
+                                 hb_parc( 2 ),
+#else
+                                 AnsiToWide( (char *) hb_parc( 2 ) ),
+#endif
+                                 iStyle,
                                  hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                  HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
    }
@@ -181,7 +191,11 @@ HB_FUNC( ATLAXGETDISP )          /* FUNCTION AtlAxGetDisp( hWnd ) -> pDisp */
    if( _Ax_Init() )
    {
       res = AtlAxGetControl( HWNDparam( 1 ), &pUnk );
+#if defined( __cplusplus )
+      pUnk->QueryInterface( IID_IDispatch, (void **) &pDisp );
+#else
       pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, (void **) (void *) &pDisp );
+#endif
       pUnk->lpVtbl->Release( pUnk );
    }
 
@@ -195,40 +209,6 @@ HB_FUNC( ATLAXGETDISP )          /* FUNCTION AtlAxGetDisp( hWnd ) -> pDisp */
 HRESULT hb_oleVariantToItem( PHB_ITEM pItem, VARIANT *pVariant );
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM** pItems )
-{
-   PHB_ITEM itmRef;
-   ULONG ulParam;
-
-   if( ulPCount )
-   {
-      itmRef = hb_itemNew( NULL );
-
-      /* initialize the reference item */
-      itmRef->type = HB_IT_BYREF;
-      itmRef->item.asRefer.offset = -1;
-      itmRef->item.asRefer.BasePtr.itemsbasePtr = pItems;
-      for( ulParam = 0; ulParam < ulPCount; ulParam++ )
-      {
-         if( ulRefMask & ( 1L << ulParam ) )
-         {
-            /* when item is passed by reference then we have to put
-             * the reference on the stack instead of the item itself
-             */
-            itmRef->item.asRefer.value = ulParam + 1;
-            hb_vmPush( itmRef );
-         }
-         else
-         {
-            hb_vmPush( (*pItems)[ulParam] );
-         }
-      }
-
-      hb_itemRelease( itmRef );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 /* self is a macro which defines our IEventHandler struct as:
  * typedef struct {
  *    IEventHandlerVtbl *lpVtbl;
@@ -237,17 +217,17 @@ static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount, PHB_ITEM
 #undef  INTERFACE
 #define INTERFACE IEventHandler
 
-DECLARE_INTERFACE_ ( INTERFACE, IDispatch )
+DECLARE_INTERFACE_( INTERFACE, IDispatch )
 {
    /* IUnknown functions */
-   STDMETHOD  ( QueryInterface          ) ( THIS_ REFIID, void **                                                          ) PURE;
-   STDMETHOD_ ( ULONG, AddRef           ) ( THIS                                                                           ) PURE;
-   STDMETHOD_ ( ULONG, Release          ) ( THIS                                                                           ) PURE;
+   STDMETHOD( QueryInterface           ) ( THIS_ REFIID, void **                                                          ) PURE;
+   STDMETHOD_( ULONG, AddRef           ) ( THIS                                                                           ) PURE;
+   STDMETHOD_( ULONG, Release          ) ( THIS                                                                           ) PURE;
    /* IDispatch functions */
-   STDMETHOD_ ( ULONG, GetTypeInfoCount ) ( THIS_ UINT *                                                                   ) PURE;
-   STDMETHOD_ ( ULONG, GetTypeInfo      ) ( THIS_ UINT, LCID, ITypeInfo **                                                 ) PURE;
-   STDMETHOD_ ( ULONG, GetIDsOfNames    ) ( THIS_ REFIID, LPOLESTR *, UINT, LCID, DISPID *                                 ) PURE;
-   STDMETHOD_ ( ULONG, Invoke           ) ( THIS_ DISPID, REFIID, LCID, WORD, DISPPARAMS *, VARIANT *, EXCEPINFO *, UINT * ) PURE;
+   STDMETHOD_( ULONG, GetTypeInfoCount ) ( THIS_ UINT *                                                                   ) PURE;
+   STDMETHOD_( ULONG, GetTypeInfo      ) ( THIS_ UINT, LCID, ITypeInfo **                                                 ) PURE;
+   STDMETHOD_( ULONG, GetIDsOfNames    ) ( THIS_ REFIID, LPOLESTR *, UINT, LCID, DISPID *                                 ) PURE;
+   STDMETHOD_( ULONG, Invoke           ) ( THIS_ DISPID, REFIID, LCID, WORD, DISPPARAMS *, VARIANT *, EXCEPINFO *, UINT * ) PURE;
 };
 
 /* In other words, it defines our IEventHandler to have nothing
@@ -286,7 +266,7 @@ typedef struct {
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* IEventHandler's functions.
- * Every COM object's interface must have the 3 functions QueryInterface(), AddRef(), and Release().
+ * Every COM object's interface must have the 3 functions QueryInterface(), AddRef() and Release().
  */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -385,26 +365,24 @@ static ULONG STDMETHODCALLTYPE GetIDsOfNames( IEventHandler *self, REFIID riid, 
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* self is where the action happens
- * self function receives events (by their ID number) and distributes the processing
- * or them or ignores them
+ * self function receives events (by their ID number) and distributes the processing or ignores them
  */
 static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFIID riid,
    LCID lcid, WORD wFlags, DISPPARAMS *params, VARIANT *result, EXCEPINFO *pexcepinfo,
    UINT *puArgErr )
 {
    PHB_ITEM pItem;
-   UINT iArg, i;
+   int iArg, i;
    PHB_ITEM pItemArray[32]; /* max 32 parameters? */
    PHB_ITEM *pItems;
-   ULONG ulRefMask = 0;
-   ULONG ulPos;
+   HB_SIZE ulPos;
    PHB_ITEM Key;
 
    Key = hb_itemNew( NULL );
 
    /* We implement only a "default" interface */
    if( ! IsEqualIID( riid, &IID_NULL ) )
-      return( DISP_E_UNKNOWNINTERFACE );
+      return( (ULONG) DISP_E_UNKNOWNINTERFACE );
 
    HB_SYMBOL_UNUSED( lcid );
    HB_SYMBOL_UNUSED( wFlags );
@@ -438,111 +416,119 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler *self, DISPID dispid, REFII
 
       if( pExec )
       {
-         hb_vmRequestReenter();
-
-         switch ( hb_itemType( pExec ) )
+         if( hb_vmRequestReenter() )
          {
-            case HB_IT_BLOCK:
+            switch ( hb_itemType( pExec ) )
             {
-               hb_vmPushSymbol( &hb_symEval );
-               hb_vmPush( pExec );
-               break;
-            }
-            case HB_IT_STRING:
-            {
-               PHB_ITEM pObject = hb_arrayGetItemPtr( pArray, 2 );
-               hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName( hb_itemGetCPtr( pExec ) ) ) );
-
-               if( HB_IS_OBJECT( pObject ) )
-                  hb_vmPush( pObject );
-               else
-                  hb_vmPushNil();
-               break;
-            }
-            case HB_IT_POINTER:
-            {
-               hb_vmPushSymbol( hb_dynsymSymbol( ( (PHB_SYMB) pExec )->pDynSym ) );
-               hb_vmPushNil();
-               break;
-            }
-            default:
-               break;
-         }
-
-         iArg = params->cArgs;
-         for( i = 1; i<= iArg; i++ )
-         {
-            pItem = hb_itemNew( NULL );
-            hb_oleVariantToItem( pItem, &( params->rgvarg[iArg-i] ) );
-            pItemArray[i-1] = pItem;
-            /* set bit i */
-            ulRefMask |= ( 1L << (i-1) );
-         }
-
-         if( iArg )
-         {
-            pItems = pItemArray;
-            hb_itemPushList( ulRefMask, iArg, &pItems );
-         }
-
-         /* execute */
-         hb_vmDo( (USHORT) iArg );
-
-         /* En caso de que los parametros sean pasados por referencia */
-         for( i = iArg; i > 0; i-- )
-         {
-            if( ( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt & VT_BYREF ) == VT_BYREF )
-            {
-               switch( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt )
+               case HB_IT_BLOCK:
                {
-               /* case VT_UI1|VT_BYREF:
-                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pbVal ) = va_arg( argList, unsigned char * );  // pItemArray[i-1]
-                *    break;
-                */
-                  case VT_I2|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.piVal )    = (short) hb_itemGetNI( pItemArray[i-1] );
-                     break;
-                  case VT_I4|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.plVal )    = (long) hb_itemGetNL( pItemArray[i-1] );
-                     break;
-                  case VT_R4|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pfltVal )  = (float) hb_itemGetND( pItemArray[i-1] );
-                     break;
-                  case VT_R8|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pdblVal )  = (double) hb_itemGetND( pItemArray[i-1] );
-                     break;
-                  case VT_BOOL|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pboolVal ) = (VARIANT_BOOL) ( hb_itemGetL( pItemArray[i-1] ) ? 0xFFFF : 0 );
-                     break;
-               /* case VT_ERROR|VT_BYREF:
-                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pscode ) = va_arg( argList, SCODE * );
-                *    break;
-                */
-                  case VT_DATE|VT_BYREF:
-                     *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pdate ) = (DATE) (double) ( hb_itemGetDL( pItemArray[i-1] ) - 2415019 );
-                     break;
-               /* case VT_CY|VT_BYREF:
-                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pcyVal ) = va_arg( argList, CY * );
-                *    break;
-                * case VT_BSTR|VT_BYREF:
-                *    *( ( &( params->rgvarg[iArg-i] ) )->n1.n2.n3.pbstrVal ) = va_arg( argList, BSTR * );
-                *    break;
-                * case VT_UNKNOWN|VT_BYREF:
-                *    pArg->ppunkVal = va_arg( argList, LPUNKNOWN * );
-                *    break;
-                * case VT_DISPATCH|VT_BYREF:
-                *    pArg->ppdispVal = va_arg( argList, LPDISPATCH * );
-                *    break;
-                */
-                  default:
-                     break;
-               } /* EOF switch( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt ) */
-            } /* EOF if( ( &( params->rgvarg[iArg-i] ) )->n1.n2.vt & VT_BYREF == VT_BYREF ) */
-         } /* EOF for( i = iArg; i > 0; i-- ) */
+#ifdef __XHARBOUR__
+                  hb_vmPushSymbol( &hb_symEval );
+#else
+                  hb_vmPushEvalSym();
+#endif
+                  hb_vmPush( pExec );
+                  break;
+               }
+               case HB_IT_STRING:
+               {
+                  PHB_ITEM pObject = hb_arrayGetItemPtr( pArray, 2 );
+                  hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName( hb_itemGetCPtr( pExec ) ) ) );
 
-         hb_vmRequestRestore();
-      } /* EOF if( pExec ) */
-   }  /* EOF if( hb_hashScan ) */
+                  if( HB_IS_OBJECT( pObject ) )
+                     hb_vmPush( pObject );
+                  else
+                     hb_vmPushNil();
+                  break;
+               }
+               case HB_IT_POINTER:
+               {
+                  hb_vmPushSymbol( hb_dynsymSymbol( ( (PHB_SYMB) pExec )->pDynSym ) );
+                  hb_vmPushNil();
+                  break;
+               }
+               default:
+                  break;
+            }
+
+            iArg = params->cArgs;
+            for( i = 1; i <= iArg; i++ )
+            {
+               pItem = hb_itemNew( NULL );
+               hb_oleVariantToItem( pItem, &( params->rgvarg[ iArg - i ] ) );
+               pItemArray[ i - 1 ] = pItem;
+               /* set bit i */
+               //ulRefMask |= ( 1L << ( i - 1 ) );
+            }
+
+            if( iArg )
+            {
+               pItems = pItemArray;
+               if( iArg )
+               {
+                  for( i = 0; i < iArg; i++ )
+                  {
+                     hb_vmPush( ( pItems )[ i ] );
+                  }
+               }
+            }
+
+            /* execute */
+            hb_vmDo( (USHORT) iArg );
+
+            // En caso de que los parametros sean pasados por referencia
+            for( i = iArg; i > 0; i-- )
+            {
+               if( ( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.vt & VT_BYREF ) == VT_BYREF )
+               {
+
+                  switch( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.vt )
+                  {
+
+                     //case VT_UI1|VT_BYREF:
+                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbVal) = va_arg(argList,unsigned char*);  //pItemArray[i-1]
+                     //   break;
+                     case VT_I2 | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.piVal ) = ( short ) hb_itemGetNI( pItemArray[ i - 1 ] );
+                        break;
+                     case VT_I4 | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.plVal ) = ( long ) hb_itemGetNL( pItemArray[ i - 1 ] );
+                        break;
+                     case VT_R4 | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.pfltVal ) = ( float ) hb_itemGetND( pItemArray[ i - 1 ] );
+                        break;
+                     case VT_R8 | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.pdblVal ) = ( double ) hb_itemGetND( pItemArray[ i - 1 ] );
+                        break;
+                     case VT_BOOL | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.pboolVal ) = ( VARIANT_BOOL ) ( hb_itemGetL( pItemArray[ i - 1 ] ) ? 0xFFFF : 0 );
+                        break;
+                     //case VT_ERROR|VT_BYREF:
+                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pscode) = va_arg(argList, SCODE*);
+                     //   break;
+                     case VT_DATE | VT_BYREF:
+                        *( ( &( params->rgvarg[ iArg - i ] ) )->n1.n2.n3.pdate ) = ( DATE ) ( double ) ( hb_itemGetDL( pItemArray[ i - 1 ] ) - 2415019 );
+                        break;
+                     //case VT_CY|VT_BYREF:
+                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pcyVal) = va_arg(argList, CY*);
+                     //   break;
+                     //case VT_BSTR|VT_BYREF:
+                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbstrVal = va_arg(argList, BSTR*);
+                     //   break;
+                     //case VT_UNKNOWN|VT_BYREF:
+                     //   pArg->ppunkVal = va_arg(argList, LPUNKNOWN*);
+                     //   break;
+                     //case VT_DISPATCH|VT_BYREF:
+                     //   pArg->ppdispVal = va_arg(argList, LPDISPATCH*);
+                     //   break;
+                  }
+               }
+            }
+
+            hb_vmRequestRestore();
+         }
+      }
+   }
 
    hb_itemRelease( Key );
 
@@ -635,7 +621,6 @@ HB_FUNC( SETUPCONNECTIONPOINT )
                         break;
                      }
                   }
-
                }
                while( hr == S_OK );
                m_pIEnumConnectionPoints->lpVtbl->Release( m_pIEnumConnectionPoints );
@@ -684,13 +669,14 @@ HB_FUNC( SETUPCONNECTIONPOINT )
       HANDLEstor( pThis, 2 );
    }
 
-   HWNDret( hr );
+   hb_retnl( hr );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 {
    MyRealIEventHandler *self = HSINKparam( 1 );
+
    if( self->pIConnectionPoint )
    {
       self->pIConnectionPoint->lpVtbl->Unadvise( self->pIConnectionPoint, self->dwEventCookie );
@@ -704,6 +690,7 @@ HB_FUNC( SHUTDOWNCONNECTIONPOINT )
 HB_FUNC( RELEASEDISPATCH )
 {
    IDispatch *pObj;
+
    pObj = (IDispatch *) HWNDparam( 1 );
    pObj->lpVtbl->Release( pObj );
 }

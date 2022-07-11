@@ -70,8 +70,9 @@
       [ <notabstop: NOTABSTOP> ] ;
       [ <disabled: DISABLED> ] ;
       [ <invisible: INVISIBLE> ] ;
+      [ <clientedge: CLIENTEDGE> ] ;
       [ SUBCLASS <subclass> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TActiveX(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, ;
-            <progid>, <.notabstop.>, <.disabled.>, <.invisible.> )
+            <progid>, <.notabstop.>, <.disabled.>, <.invisible.>, <.clientedge.> )
