@@ -879,7 +879,7 @@
 
 2021-07-20 20:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
-    - Method lFocusRect from TOBrowseByCell class.
+    - Data lFocusRect from TOBrowseByCell class.
     + Default value for lFocusRect parameter at method
       Define3 of TOBrowseByCell class.
   #481
