@@ -23,5 +23,5 @@ libs=oohg hbprinter miniprint bostaurus
 
 # harbour's contrib libs
 # hbhpdf must precede hbwin and xhb
-hbcs=hbcurl hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
-
+hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
+{!hb30}hbcs=hbcurl

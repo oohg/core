@@ -245,7 +245,7 @@ rem
 :OTHER_LIBS
 
    rem oohg.lib must be linked first to avoid "multiple definition of hb_gtsys" error
-   set HG_C_LIBS=-looHG %HG_C_LIBS% -lbostaurus -lhbprinter -lminiprint -lhbcurl -llibcurl-4
+   set HG_C_LIBS=-looHG %HG_C_LIBS% -lbostaurus -lhbprinter -lminiprint
    set HG_C_LIBS=%HG_C_LIBS% -luser32 -lwinspool -lgdi32 -lcomctl32 -lcomdlg32 -lole32 -loleaut32 -luuid
    set HG_C_LIBS=%HG_C_LIBS% -lmpr -lwsock32 -lws2_32 -lmapi32 -lwinmm -lvfw32 -lmsimg32 -liphlpapi
 

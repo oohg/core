@@ -212,7 +212,7 @@ rem
    if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM32.o
-   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lhbcurl -llibcurl-4
    if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
@@ -231,7 +231,7 @@ rem
    if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\mingw64
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3264.o
-   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre -lhbhpdf -llibhpdf -lhbuddall -lhbcurl -llibcurl-4
    if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
@@ -250,7 +250,7 @@ rem
    if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\clang
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM34.o
-   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf -lhbcurl -llibcurl-4
    if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
@@ -269,7 +269,7 @@ rem
    if "%LIB_HRB%"      == "" set LIB_HRB=lib\win\clang64
    if "%BIN_HRB%"      == "" set BIN_HRB=bin
    if "%HG_RC%"        == "" set HG_RC=%HG_ROOT%\resources\ooHG_HM3464.o
-   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf
+   if "%HG_ADDLIBS%"   == "" set HG_ADDLIBS=-lhbpcre2 -lhpdf -lhbhpdf -lhbcurl -llibcurl-4
    if "%HG_ADDSTATIC%" == "" set HG_ADDSTATIC=-static-libstdc++ -pthread -lpthread
    if "%HG_INC_HRB%"   == "" set HG_INC_HRB=%HG_HRB%\contrib\hbct;%HG_HRB%\contrib\hbhpdf;%HG_HRB%\contrib\hbmysql;%HG_HRB%\contrib\hbmzip;%HG_HRB%\contrib\hbwin;%HG_HRB%\contrib\hbzebra;%HG_HRB%\contrib\xhb;
    if "%HG_INC_CCOMP%" == "" set HG_INC_CCOMP=-I%HG_HRB%\contrib\hbct -I%HG_HRB%\contrib\hbhpdf -I%HG_HRB%\contrib\hbmysql -I%HG_HRB%\contrib\hbmzip -I%HG_HRB%\contrib\hbwin -I%HG_HRB%\contrib\hbzebra -I%HG_HRB%\contrib\xhb
