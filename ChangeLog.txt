@@ -13,11 +13,28 @@
  * Use #nnn to refer to an issue.
  */
 
-2022-07-10 11:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\c_activex.prg
+
+2022-07-11 18:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_activex.ch
+    + Clause CLIENTEDGE.
+  * core\include\i_windefs.ch
+    + S_OK
+  * core\source\c_activex.c
+    * Synchronized with Minigui Extended.
+  * core\source\h_activex.prg
+    - Duplicated datas.
+    % Parameter checking.
     + Support for extended styles to ActiveX windows.
+    * Synchronized with Minigui Extended.
   #539
-  
+
+2022-07-11 17:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile.bat
+  * core\compile_MINGW.BAT
+  * core\oohg.hbc
+    ! Compilation under HB30 cancels with message "hbcurl lib not found".
+  #540
+
 2022-07-08 21:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Infinite loop in method EditGrid of class TGridByCell
