@@ -1246,10 +1246,13 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
    ENDIF
 
    IF lAppend
+      IF ::lAppendMode
+         RETURN .F.
+      ENDIF
+      ::lAppendMode := .T.
       ::GoBottom( .T. )
       ::InsertBlank( ::ItemCount + 1 )
       nRow := ::CurrentRow := ::ItemCount
-      ::lAppendMode := .T.
    ELSE
       IF ! HB_ISNUMERIC( nRow )
          nRow := Max( ::CurrentRow, 1 )
