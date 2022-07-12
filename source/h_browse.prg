@@ -1262,7 +1262,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
       ENDIF
       ASSIGN lChange VALUE lChange TYPE "L" DEFAULT ::lChangeBeforeEdit
       IF lChange
-         ::Value := { ::aRecMap[ nRow ], nCol }
+         ::Value := ::aRecMap[ nRow ]
       ENDIF
    ENDIF
 
