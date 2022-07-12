@@ -1221,6 +1221,11 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
 
    LOCAL lRet, lSomethingEdited, lRowAppended, _RecNo, cWorkArea
 
+   cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
+
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    IF ::FullMove .OR. ! lOneRow
       RETURN ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
@@ -1259,11 +1264,6 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
    ENDIF
 
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
-
-   cWorkArea := ::WorkArea
-   IF Select( cWorkArea ) == 0
-      RETURN .F.
-   ENDIF
 
    lSomethingEdited := .F.
 
@@ -1365,6 +1365,11 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLA
 
    LOCAL lRet := .T., lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
+   cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
+
    IF ::FirstVisibleColumn == 0
       RETURN .F.
    ENDIF
@@ -1377,11 +1382,6 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLA
       ENDIF
    ENDIF
    IF nCol < 1 .OR. nCol > Len( ::aHeaders )
-      RETURN .F.
-   ENDIF
-
-   cWorkArea := ::WorkArea
-   IF Select( cWorkArea ) == 0
       RETURN .F.
    ENDIF
 
@@ -3209,6 +3209,11 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
 
    LOCAL lRet, lSomethingEdited, lRowAppended, _RecNo, cWorkArea, nNextCol
 
+   cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
+
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    IF ::FullMove .OR. ! lOneRow
       RETURN ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh )
@@ -3248,11 +3253,6 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
    ENDIF
 
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
-
-   cWorkArea := ::WorkArea
-   IF Select( cWorkArea ) == 0
-      RETURN .F.
-   ENDIF
 
    lSomethingEdited := .F.
 
@@ -3372,6 +3372,9 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLA
    ENDIF
 
    cWorkArea := ::WorkArea
+   IF Select( cWorkArea ) == 0
+      RETURN .F.
+   ENDIF
 
    IF lChange
       ::Value := { ::aRecMap[ nRow ], nCol }
