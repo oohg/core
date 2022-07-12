@@ -14,6 +14,71 @@
  */
 
 
+2022-07-12 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * Remove unused extra parameter at aScan calls.
+    #547
+
+2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    ! Method EditGrid of class TOBrowseByCell fails when a work area is
+      not open.
+    #546
+
+2022-07-12 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    ! Methods EditAllCells and EditGrid of class TOBrowse and method
+      EditAllCells of class TOBrowseByCell are calling method
+      IsColumnReadOnly with the wrong row number when a record append
+      is ongoing.
+    #545
+
+2022-07-12 12:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    ! Method EditAllCells of class TOBrowse doesn't change the control's
+      value when parameter lChange is .T.
+    #544
+
+2022-07-12 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    ! Missing check to prevent the execution of method EditAllCells of
+      class TOBrowse while a record is being appended.
+    #543
+
+2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+    * Methods EditAllCells and EditGrid of class TOBrowse: the test for
+      an open workarea was moved to the method's beginning.
+    * Method EditAllCells of class TOBrowseByCell: the test for an open
+      workarea was moved to the method's beginning.
+    #542
+
+2022-07-12 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    + Parameter lJustAdd to method EditCell of class TOBrowse.
+    + Parameter lJustAdd to method EditAllCells of class TOBrowse.
+    + Parameter lJustAdd to method EditGrid of class TOBrowse.
+    + Parameter lJustAdd to method EditCell of class TOBrowseByCell.
+    + Parameter lJustAdd to method EditAllCells of class TOBrowseByCell.
+    + Parameter lJustAdd to method EditGrid of class TOBrowseByCell.
+    ; If the lAppend and lJustAdd parameters are .T. and the specified
+      column is hidden, read only, or its When clause evaluates to .F.
+      then a record is added to the workarea, its fields are populated
+      with default values, the ON APPEND codeblock is evaluated, and
+      the method is ended with .T. as if the user had pressed the
+      Enter key.
+    #541
+
+2022-07-12 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
+    + Parameter lJustAdd to method EditCell of class TOBrowse.
+    + Parameter lJustAdd to method EditAllCells of class TOBrowse.
+    + Parameter lJustAdd to method EditGrid of class TOBrowse.
+    + Parameter lJustAdd to method EditCell of class TOBrowseByCell.
+    + Parameter lJustAdd to method EditAllCells of class TOBrowseByCell.
+    + Parameter lJustAdd to method EditGrid of class TOBrowseByCell.
+    ; If the lAppend and lJustAdd parameters are .T. and the specified
+      column is hidden, read only, or its When clause evaluates to .F.
+      then a record is added to the workarea, its fields are populated
+      with default values, the ON APPEND codeblock is evaluated, and
+      the method is ended with .T. as if the user had pressed the
+      Enter key.
+    #541
+
 2022-07-11 18:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_activex.ch
     + Clause CLIENTEDGE.
