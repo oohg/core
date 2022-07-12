@@ -1284,7 +1284,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
         // Read only column
       ELSEIF ! ::IsColumnWhen( nCol, iif( lAppend, 0, nRow ) )
         // When returned .F.
-      ELSEIF AScan( ::aHiddenCols, nCol, nRow ) > 0
+      ELSEIF AScan( ::aHiddenCols, nCol ) > 0
         // Hidden column
       ELSE
          ::DbGoTo( _RecNo )
@@ -1440,7 +1440,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLA
            // Read only column, skip
          ELSEIF ! ::IsColumnWhen( nCol, iif( lAppend, 0, nRow ) )
            // When returned .F., skip
-         ELSEIF AScan( ::aHiddenCols, nCol, nRow ) > 0
+         ELSEIF AScan( ::aHiddenCols, nCol ) > 0
            // Hidden column, skip
          ELSE
             ::DbGoTo( _RecNo )
@@ -3273,7 +3273,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
         // Read only column
       ELSEIF ! ::IsColumnWhen( ::nColPos, iif( lAppend, 0, ::nRowPos ) )
         // WHEN returned .F.
-      ELSEIF AScan( ::aHiddenCols, ::nColPos, ::nRowPos ) > 0
+      ELSEIF AScan( ::aHiddenCols, ::nColPos ) > 0
         // Hidden column
       ELSE
          ::DbGoTo( _RecNo )
