@@ -1123,7 +1123,7 @@ METHOD EditItem( lAppend, lOneRow ) CLASS TOBrowse
 
    RETURN lSomethingEdited
 
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange ) CLASS TOBrowse
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange, lJustAdd ) CLASS TOBrowse
 
    LOCAL lRet, _RecNo, cWorkArea, lBefore
 
@@ -1154,7 +1154,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
-   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F., lAppend )
+   lRet := ::Super:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F., lAppend, lJustAdd )
    ::lCalledFromClass := lBefore
 
    IF lRet .AND. lAppend
@@ -1217,13 +1217,13 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
 
    RETURN lRet
 
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLASS TOBrowse
 
    LOCAL lRet, lSomethingEdited, lRowAppended, _RecNo, cWorkArea
 
    ASSIGN lOneRow VALUE lOneRow TYPE "L" DEFAULT .T.
    IF ::FullMove .OR. ! lOneRow
-      RETURN ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh )
+      RETURN ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd )
    ENDIF
    IF ::FirstVisibleColumn == 0
       RETURN .F.
@@ -1287,7 +1287,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
          ::DbGoTo( _RecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F. )
+         lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F., lJustAdd )
          ::lCalledFromClass := .F.
 
          IF ! lRet
@@ -1361,7 +1361,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
 
    RETURN lSomethingEdited
 
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowse
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLASS TOBrowse
 
    LOCAL lRet := .T., lRowEdited, lSomethingEdited, _RecNo, lRowAppended, nNewRec, nNextRec, cWorkArea
 
@@ -1443,7 +1443,7 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
             ::DbGoTo( _RecNo )
 
             ::lCalledFromClass := .T.
-            lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F. )
+            lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F., lJustAdd )
             ::lCalledFromClass := .F.
 
             IF ! lRet
@@ -3027,7 +3027,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TOBrowseByCell
 
    RETURN ::Super:Events_Notify( wParam, lParam )
 
-METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange, lKeys ) CLASS TOBrowseByCell
+METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, nOnFocusPos, lRefresh, lChange, lKeys, lJustAdd ) CLASS TOBrowseByCell
 
    LOCAL lRet, _RecNo, cWorkArea, lBefore
 
@@ -3037,6 +3037,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
    ASSIGN lRefresh VALUE lRefresh TYPE "L" DEFAULT ( ::RefreshType == REFRESH_FORCE )
    ASSIGN lChange  VALUE lChange  TYPE "L" DEFAULT ::lChangeBeforeEdit
    ASSIGN lKeys    VALUE lKeys    TYPE "L" DEFAULT .T.
+   ASSIGN lJustAdd VALUE lJustAdd TYPE "L" DEFAULT .T.
 
    IF nRow < 1 .OR. nRow > ::ItemCount .OR. nCol < 1 .OR. nCol > Len( ::aHeaders ) .OR. AScan( ::aHiddenCols, nCol ) # 0
       RETURN .F.
@@ -3060,7 +3061,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, lAppend, n
 
    lBefore := ::lCalledFromClass
    ::lCalledFromClass := .T.
-   lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange, lAppend )
+   lRet := ::TXBrowse:EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F., lAppend, lJustAdd )
    ::lCalledFromClass := lBefore
 
    IF lRet .AND. lAppend
@@ -3204,7 +3205,7 @@ METHOD EditItem_B( lAppend, lOneRow ) CLASS TOBrowseByCell
 
    RETURN ::EditAllCells( NIL, NIL, lAppend, lOneRow, .T., ::RefreshType == REFRESH_DEFAULT .OR. ::RefreshType == REFRESH_FORCE )
 
-METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
+METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLASS TOBrowseByCell
 
    LOCAL lRet, lSomethingEdited, lRowAppended, _RecNo, cWorkArea, nNextCol
 
@@ -3275,7 +3276,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
          ::DbGoTo( _RecNo )
 
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( ::nRowPos, ::nColPos, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F., .F. )
+         lRet := ::EditCell( ::nRowPos, ::nColPos, NIL, NIL, NIL, NIL, lAppend, NIL, .F., .F., .F., lJustAdd )
          ::lCalledFromClass := .F.
 
          IF ! lRet
@@ -3351,7 +3352,7 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOB
 
    RETURN lSomethingEdited
 
-METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrowseByCell
+METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh, lJustAdd ) CLASS TOBrowseByCell
 
    LOCAL lSomethingEdited, _RecNo, lRet, lRowAppended, cWorkArea
 
@@ -3399,10 +3400,10 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange, lRefresh ) CLASS TOBrows
          ::bPosition := ::NextPosToEdit()
       ELSE
          ::DbGoTo( _RecNo )
-
          lRowAppended := .F.
+
          ::lCalledFromClass := .T.
-         lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, lRefresh, .F., .F. )
+         lRet := ::EditCell( nRow, nCol, NIL, NIL, NIL, NIL, lAppend, NIL, lRefresh, .F., .F., lJustAdd )
          ::lCalledFromClass := .F.
 
          IF ! lRet
@@ -4266,4 +4267,3 @@ METHOD Right( lAppend ) CLASS TOBrowseByCell
    ENDIF
 
    RETURN lRet
-
