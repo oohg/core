@@ -517,51 +517,36 @@ TREEVIEW CONTROL
 ---------------------------------------------------------------------------*/
 
 #define TV_FIRST                      0x1100
-#define TVM_INSERTITEM                ( TV_FIRST + 0 )  // + 50
-#define TVM_DELETEITEM                ( TV_FIRST + 1 )
 #define TVM_EXPAND                    ( TV_FIRST + 2 )
-#define TVM_GETITEMRECT               ( TV_FIRST + 4 )
-#define TVM_GETCOUNT                  ( TV_FIRST + 5 )
-#define TVM_GETINDENT                 ( TV_FIRST + 6 )
-#define TVM_SETINDENT                 ( TV_FIRST + 7 )
-#define TVM_GETIMAGELIST              ( TV_FIRST + 8 )
 #define TVM_SETIMAGELIST              ( TV_FIRST + 9 )
-#define TVM_GETNEXTITEM               ( TV_FIRST + 10 )
-#define TVM_SELECTITEM                ( TV_FIRST + 11 )
 #define TVM_GETEDITCONTROL            ( TV_FIRST + 15 )
 #define TVM_SETTOOLTIPS               ( TV_FIRST + 24 )
 #define TVSIL_NORMAL                  0
 #define TVSIL_STATE                   2
 #define TVE_COLLAPSE                  1
 #define TVE_EXPAND                    2
+#define TVE_TOGGLE                    3
 #define TVS_HASBUTTONS                1
 #define TVS_HASLINES                  2
 #define TVS_LINESATROOT               4
 #define TVS_EDITLABELS                8
 #define TVS_DISABLEDRAGDROP           16
 #define TVS_SHOWSELALWAYS             32
-#define TVS_RTLREADING                64
 #define TVS_NOTOOLTIPS                128
 #define TVS_CHECKBOXES                256
 #define TVS_TRACKSELECT               512
 #define TVS_SINGLEEXPAND              1024
-#define TVS_INFOTIP                   2048
 #define TVS_FULLROWSELECT             4096
 #define TVS_NOSCROLL                  8192
-#define TVS_NONEVENHEIGHT             16384
 #define TVS_NOHSCROLL                 32768
-#define TVN_ITEMEXPANDINGA           ( - 405 )
-#define TVN_ITEMEXPANDING             TVN_ITEMEXPANDINGA
-#define TVN_SELCHANGINGA              ( -401 )
-#define TVN_SELCHANGING               TVN_SELCHANGINGA
-#define TVN_SELCHANGED                TVN_SELCHANGEDA
-#define TVN_SELCHANGEDA               ( -402 )
-#define TVN_BEGINLABELEDIT            TVN_BEGINLABELEDITA
-#define TVN_BEGINLABELEDITA           ( -410 )
-#define TVN_ENDLABELEDIT              TVN_ENDLABELEDITA
-#define TVN_ENDLABELEDITA             ( -411 )
-#define TVN_BEGINDRAGA                ( -407 )
-#define TVN_BEGINDRAG                 TVN_BEGINDRAGA
+#define TVN_FIRST                     ( -400 )
+#define TVN_SELCHANGING               ( TVN_FIRST - 1 )
+#define TVN_SELCHANGED                ( TVN_FIRST - 2 )
+#define TVN_ITEMEXPANDING             ( TVN_FIRST - 5 )
+#define TVN_ITEMEXPANDED              ( TVN_FIRST - 6 )
+#define TVN_BEGINLABELEDIT            ( TVN_FIRST - 10 )
+#define TVN_ENDLABELEDIT              ( TVN_FIRST - 11 )
+#define TVN_BEGINDRAG                 ( TVN_FIRST - 7 )
 #define DLGC_WANTCHARS                128
 #define DLGC_WANTMESSAGE              4
 
