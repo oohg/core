@@ -15,15 +15,18 @@
 
 
 2022-07-12 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     * Remove unused extra parameter at aScan calls.
     #547
 
 2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     ! Method EditGrid of class TOBrowseByCell fails when a work area is
       not open.
     #546
 
 2022-07-12 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     ! Methods EditAllCells and EditGrid of class TOBrowse and method
       EditAllCells of class TOBrowseByCell are calling method
       IsColumnReadOnly with the wrong row number when a record append
@@ -31,16 +34,19 @@
     #545
 
 2022-07-12 12:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     ! Method EditAllCells of class TOBrowse doesn't change the control's
       value when parameter lChange is .T.
     #544
 
 2022-07-12 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     ! Missing check to prevent the execution of method EditAllCells of
       class TOBrowse while a record is being appended.
     #543
 
 2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_browse.prg
     * Methods EditAllCells and EditGrid of class TOBrowse: the test for
       an open workarea was moved to the method's beginning.
     * Method EditAllCells of class TOBrowseByCell: the test for an open
