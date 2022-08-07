@@ -3706,7 +3706,9 @@ HYPERLINK
             _OOHG_ActiveControlFontItalic, ;
             _OOHG_ActiveControlAutosize, ;
             _OOHG_ActiveControlHandCursor, ;
-            _OOHG_ActiveControlRtl )
+            _OOHG_ActiveControlRtl, ;
+            _OOHG_ActiveControlRight, ;
+            _OOHG_ActiveControlCenter )
 
 /*---------------------------------------------------------------------------
 SPINNER

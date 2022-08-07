@@ -86,10 +86,13 @@
       [ <invisible: INVISIBLE> ] ;
       [ <rtl: RTL> ] ;
       [ SUBCLASS <subclass> ] ;
+      [ <rightalign: RIGHTALIGN> ]	;
+      [ <centeralign: CENTERALIGN> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( THyperLink(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <value>, <address>, ;
             <width>, <height>, <fontname>, <fontsize>, <.bold.>, <.border.>, ;
             <.clientedge.>, <.hscroll.>, <.vscroll.>, <.transparent.>, ;
             <backcolor>, <fontcolor>, <tooltip>, <helpid>, ;
-            <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.> )
+            <.invisible.>, <.italic.>, <.autosize.>, <.handcursor.>, <.rtl.>, ;
+            <.rightalign.>, <.centeralign.> )

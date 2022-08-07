@@ -79,17 +79,19 @@ CLASS THyperLink FROM TLabel
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( cControlName, uParentForm, nCol, nRow, cCaption, cURL, nWidth, nHeight, cFontName, nFontSize, lBold, lBorder, ;
                lClientEdge, lHScroll, lVScroll, lTransparent, aRGB_bk, aRGB_font, cToolTip, nHelpId, lInvisible, lItalic, ;
-               lAutoSize, lHandCursor, lRtl ) CLASS THyperLink
+               lAutoSize, lHandCursor, lRtl, lRightAlign, lHorzCenter ) CLASS THyperLink
 
    ASSIGN cURL        VALUE cURL        TYPE "CM" DEFAULT "https://oohg.github.io/"
    ASSIGN cCaption    VALUE cCaption    TYPE "CM" DEFAULT "oohg at github"
    ASSIGN aRGB_font   VALUE aRGB_font   TYPE "A"  DEFAULT BLUE
    ASSIGN lHandCursor VALUE lHandCursor TYPE "L"  DEFAULT .F.
+   ASSIGN lRightAlign VALUE lRightAlign TYPE "L"  DEFAULT .F.
+   ASSIGN lHorzCenter VALUE lHorzCenter TYPE "L"  DEFAULT .F.
 
    ::Super:Define( cControlName, uParentForm, nCol, nRow, cCaption, nWidth, nHeight, cFontName, ;
                    nFontSize, lBold, lBorder, lClientEdge, lHScroll, lVScroll, lTransparent, ;
                    aRGB_bk, aRGB_font, NIL, cToolTip, nHelpId, lInvisible, lItalic, .T., .F., ;
-                   lAutoSize, .F., .F., lRtl, .F., .F., NIL, .F., .F., NIL )
+                   lAutoSize, lRightAlign, lHorzCenter, lRtl, .F., .F., NIL, .F., .F., NIL )
 
    ::Address := cURL
 
