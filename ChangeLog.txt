@@ -14,6 +14,13 @@
  */
 
 
+2022-08-07 09:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_altsyntax.ch
+  * core\include\i_hyperlink.ch
+  * core\source\h_hyperlink.prg
+    + Support for clauses RIGHTALIGN and CENTERALIGN.
+    #559
+
 2022-07-12 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     * Remove unused extra parameter at aScan calls.
