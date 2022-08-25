@@ -13,24 +13,28 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-08-25 15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    * Add support for loading JPG images to image lists.
+  #560
 
 2022-08-07 09:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_altsyntax.ch
   * core\include\i_hyperlink.ch
   * core\source\h_hyperlink.prg
     + Support for clauses RIGHTALIGN and CENTERALIGN.
-    #559
+  #559
 
 2022-07-12 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     * Remove unused extra parameter at aScan calls.
-    #547
+  #547
 
 2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Method EditGrid of class TOBrowseByCell fails when a work area is
       not open.
-    #546
+  #546
 
 2022-07-12 12:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -38,19 +42,19 @@
       EditAllCells of class TOBrowseByCell are calling method
       IsColumnReadOnly with the wrong row number when a record append
       is ongoing.
-    #545
+  #545
 
 2022-07-12 12:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Method EditAllCells of class TOBrowse doesn't change the control's
       value when parameter lChange is .T.
-    #544
+  #544
 
 2022-07-12 12:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
     ! Missing check to prevent the execution of method EditAllCells of
       class TOBrowse while a record is being appended.
-    #543
+  #543
 
 2022-07-12 12:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -58,7 +62,7 @@
       an open workarea was moved to the method's beginning.
     * Method EditAllCells of class TOBrowseByCell: the test for an open
       workarea was moved to the method's beginning.
-    #542
+  #542
 
 2022-07-12 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -74,7 +78,7 @@
       with default values, the ON APPEND codeblock is evaluated, and
       the method is ended with .T. as if the user had pressed the
       Enter key.
-    #541
+  #541
 
 2022-07-12 12:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -90,7 +94,7 @@
       with default values, the ON APPEND codeblock is evaluated, and
       the method is ended with .T. as if the user had pressed the
       Enter key.
-    #541
+  #541
 
 2022-07-11 18:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_activex.ch
@@ -1719,15 +1723,15 @@
     ! The parameters of a call to EditCell method of the TXBrowse
       class are in the wrong order.
       Thanks to Jacek Pospischil for reporting.
-    #378
+  #378
     + Check for workarea existence was added to EditAllCells and
       Delete methods of TOBrowseBycell class.
     ! Double execution of ON APPEND codeblock at EditGrid method of
       TOBrowseByCell class.
-    #379
+  #379
     ! RTE at PageDown and Down methods of TOBrowseByCell class when
       data VScroll is not a valid object.
-    #380
+  #380
 
 2021-01-27 20:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
@@ -1746,7 +1750,7 @@
     + Parameter lJustAdd to method EditAllCells of class TXBrowseByCell.
     ! When you try to add a new record to a browse whose first field
       is readonly, the record is added but the edition doesn't start.
-    #377
+  #377
 
 2021-01-24 19:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
@@ -1765,13 +1769,13 @@
     - Unnecessary sentence at C function ListViewGetItem.
     ! RTE at method EditCell2 of class TGrid when the form is
       released while a cell is being edited.
-    #374
+  #374
     ! Method IsColumnReadOnly of class TGrid forces nRow to
       ::FirstSelectedItem when nRow is zero.
-    #375
+  #375
     ! Method IsColumnWhen of class TGrid forces nRow to
       ::FirstSelectedItem when nRow is zero.
-    #376
+  #376
 
 2021-01-10 11:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
@@ -1780,7 +1784,7 @@
       a valid object.
     ! RTE at method SetScrollPos of class TOBrowseByCell class when
       data VScroll is not a valid object.
-    #372
+  #372
 
 2021-01-04 20:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_xbrowse.prg
@@ -1791,8 +1795,8 @@
       of TXBrowse class when data VScroll is not a valid object.
     ! RTE at methods Right and Down of TXBrowseByCell class when
       data VScroll is not a valid object.
-    #368
-    #369
+  #368
+  #369
 
 2021-01-04 20:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
