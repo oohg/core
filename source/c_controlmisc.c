@@ -567,6 +567,8 @@ HB_FUNC( GETPROGRAMFILENAME )
    hb_retc( (char *) bBuffer );
 }
 
+HANDLE _OOHG_LoadImage( const CHAR *, INT, INT, INT, HWND, LONG, BOOL );
+
 HB_FUNC( IMAGELIST_INIT )
 {
    HIMAGELIST himl = 0;
@@ -588,11 +590,7 @@ HB_FUNC( IMAGELIST_INIT )
       {
          caption = (char *) HB_UNCONST( hb_arrayGetCPtr( hArray, s ) );
 
-         hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle );
-         if( hbmp == NULL )
-         {
-            hbmp = (HBITMAP) LoadImage( GetModuleHandle( NULL ), caption, IMAGE_BITMAP, 0, 0, iStyle | LR_LOADFROMFILE );
-         }
+         hbmp = (HBITMAP) _OOHG_LoadImage( caption, iStyle, 0, 0, 0, 0, TRUE );
 
          if( hbmp )
          {
@@ -619,8 +617,8 @@ HB_FUNC( IMAGELIST_INIT )
 
    hb_reta( 3 );
    HIMAGELISTstor3( himl, -1, 1 );
-   HB_STORNI(       cx,   -1, 2 );
-   HB_STORNI(       cy,   -1, 3 );
+   HB_STORNI( cx, -1, 2 );
+   HB_STORNI( cy, -1, 3 );
 }
 
 HB_FUNC( IMAGELIST_DESTROY )
