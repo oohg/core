@@ -179,6 +179,7 @@ STANDARD VERSION
       [ <dummy: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
+      [ STOPEDIT <aStopEdit> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
             iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -208,7 +209,7 @@ STANDARD VERSION
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
             <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
-            <aHeadBkClrs> )
+            <aHeadBkClrs>, <aStopEdit> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -321,6 +322,7 @@ SPLITBOX VERSION
       [ <dummy: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
+      [ STOPEDIT <aStopEdit> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
             iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
@@ -350,7 +352,7 @@ SPLITBOX VERSION
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
             <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
-            <aHeadBkClrs> )
+            <aHeadBkClrs>, <aStopEdit> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;

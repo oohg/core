@@ -87,6 +87,7 @@ CLASS TGrid FROM TControl
    DATA AllowMoveColumn           INIT .T.
    DATA aPicture                  INIT {}
    DATA aSelectedColors           INIT {}
+   DATA aStopEdit                 INIT {}
    DATA aWhen                     INIT {}
    DATA aWidths                   INIT {}
    DATA bAfterColMove             INIT Nil
@@ -249,7 +250,7 @@ CLASS TGrid FROM TControl
    METHOD IsColumnReadOnly
    METHOD IsColumnWhen
    METHOD Item
-   METHOD ItemCount               SETGET 
+   METHOD ItemCount               SETGET
    METHOD ItemHeight
    METHOD Justify
    METHOD LastColInOrder
@@ -311,7 +312,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs ) CLASS TGrid
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs, ;
+               aStopEdit ) CLASS TGrid
 
    ::Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
               value, fontname, fontsize, tooltip, aHeadClick, nogrid, ;
@@ -326,7 +328,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs, ;
+              aStopEdit )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -351,7 +354,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
                 lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
                 lNoShowAlways, lNone, lCBE, lAtFirst, klc, lLabelTip, ;
                 lNoHSB, lNoVSB, aHeadDblClick, aHeaderColors, nTimeOut, ;
-                lNoDefMsg, aHeaderBkClrs ) CLASS TGrid
+                lNoDefMsg, aHeaderBkClrs, aStopEdit ) CLASS TGrid
 
    LOCAL ControlHandle, aImageList, i, lIsVisualStyled
 
@@ -423,6 +426,16 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
          AFill( ::aHeaderBkClrs, aHeaderBkClrs )
       ENDIF
       lIsVisualStyled := .T.
+   ENDIF
+
+   IF HB_ISARRAY( aStopEdit )
+      ::aStopEdit := aStopEdit
+      ASize( ::aStopEdit, Len( ::aHeaders ) )
+   ELSE
+      ::aStopEdit := Array( Len( ::aHeaders ) )
+      IF HB_ISBLOCK( aStopEdit )
+         AFill( ::aStopEdit, aStopEdit )
+      ENDIF
    ENDIF
 
    If HB_IsLogical( lFixedCols )
@@ -1054,7 +1067,7 @@ METHOD AppendItem( lAppend ) CLASS TGrid
 
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
 
-   Local lRet, lSomethingEdited, nNextCol
+   LOCAL lRet, lSomethingEdited, nNextCol, lStopEdit
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -1130,6 +1143,12 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
          Else
             Exit
          EndIf
+
+         lStopEdit := iif( HB_ISBLOCK( ::aStopEdit[ ::nColPos ] ), Eval( ::aStopEdit[ ::nColPos ], ::nColPos ), ::aStopEdit[ ::nColPos ] )
+         ASSIGN lStopEdit VALUE lStopEdit TYPE "L" DEFAULT .F.
+         IF lStopEdit
+            EXIT
+         ENDIF
 
          If ::bPosition == 9                     // MOUSE EXIT
             // Edition window lost focus, resume click processing and process delayed click
@@ -1941,7 +1960,8 @@ METHOD IsColumnWhen( nCol, nRow ) CLASS TGrid
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly, cColType, uHeadDblClick, uHeaderColor, uHeaderBkClr ) CLASS TGrid
+                  uReadOnly, cColType, uHeadDblClick, uHeaderColor, uHeaderBkClr, ;
+                  uStopEdit ) CLASS TGrid
 
    Local nColumns, i
 
@@ -2040,6 +2060,11 @@ METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    ASize( ::aHeaderBkClrs, nColumns )
    AIns( ::aHeaderBkClrs, nColIndex )
    ::aHeaderBkClrs[ nColIndex ] := uHeaderBkClr
+
+   // Update STOPEDIT values
+   ASize( ::aStopEdit, nColumns )
+   AIns( ::aStopEdit, nColIndex )
+   ::aStopEdit[ nColIndex ] := uStopEdit
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2204,7 +2229,8 @@ STATIC FUNCTION TGrid_AddColumnColor( aGrid, nColumn, uColor, aDynamicColor, nWi
 METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadonly, cColType, uHeadDblClick, uHeaderColor, uHeaderBkClr ) CLASS TGrid
+                  uReadonly, cColType, uHeadDblClick, uHeaderColor, uHeaderBkClr, ;
+                  uStopEdit ) CLASS TGrid
 
    Local nColumns, i
 
@@ -2286,6 +2312,10 @@ METHOD SetColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor,
    // Update HEADERBACKCOLORS values
    ASize( ::aHeaderBkClrs, nColumns )
    ::aHeaderBkClrs[ nColIndex ] := uHeaderBkClr
+
+   // Update STOPEDIT values
+   ASize( ::aStopEdit, nColumns )
+   ::aStopEdit[ nColIndex ] := uStopEdit
 
    // Update valid
    If HB_IsArray( ::Valid )
@@ -2430,6 +2460,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGrid
    _OOHG_DeleteArrayItem( ::aHeadDblClick, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeaderColors, nColIndex )
    _OOHG_DeleteArrayItem( ::aHeaderBkClrs, nColIndex )
+   _OOHG_DeleteArrayItem( ::aStopEdit, nColIndex )
    _OOHG_DeleteArrayItem( ::aJust, nColIndex )
    _OOHG_DeleteArrayItem( ::Valid, nColIndex )
    _OOHG_DeleteArrayItem( ::ValidMessages, nColIndex )
@@ -2494,7 +2525,7 @@ METHOD Cell( nRow, nCol, uValue ) CLASS TGrid
 
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange ) CLASS TGrid
 
-   Local lRet, lRet2
+   LOCAL lRet, lRet2, lStopEdit
 
    If ::FirstVisibleColumn == 0
       Return .F.
@@ -2533,6 +2564,9 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
    EndIf
 
    If lRet2
+      lStopEdit := iif( HB_ISBLOCK( ::aStopEdit[ nCol ] ), Eval( ::aStopEdit[ nCol ], nCol ), ::aStopEdit[ nCol ] )
+      ASSIGN lStopEdit VALUE lStopEdit TYPE "L" DEFAULT .F.
+
       lRet := ::EditCell2( @nRow, @nCol, @EditControl, uOldValue, @uValue, cMemVar, nOnFocusPos )
    Else
       lRet := .F.
@@ -2568,7 +2602,7 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
          _ClearThisCellInfo()
 
          If lRet
-            If ! ::lCalledFromClass .AND. ::bPosition == 9
+            If ! ::lCalledFromClass .AND. ::bPosition == 9 .AND. ! lStopEdit
                // Edition window lost focus, resume clic processing and process delayed click
                ::bPosition := 0
                If ::nDelayedClick[ 1 ] > 0
@@ -2779,7 +2813,7 @@ METHOD EditCell2( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusP
 
 METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
 
-   Local lRet, lSomethingEdited
+   LOCAL lRet, lSomethingEdited, lStopEdit
 
    If ::FullMove
       Return ::EditGrid( nRow, nCol, lAppend, lOneRow, lChange )
@@ -2839,6 +2873,9 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
       ElseIf AScan( ::aHiddenCols, nCol ) > 0
         // Hidden column
       Else
+         lStopEdit := iif( HB_ISBLOCK( ::aStopEdit[ nCol ] ), Eval( ::aStopEdit[ nCol ], nCol ), ::aStopEdit[ nCol ] )
+         ASSIGN lStopEdit VALUE lStopEdit TYPE "L" DEFAULT .F.
+
          ::lCalledFromClass := .T.
          lRet := ::EditCell( nRow, nCol, , , , , , .F. )
          ::lCalledFromClass := .F.
@@ -2856,6 +2893,10 @@ METHOD EditAllCells( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGrid
          Else
             Exit
          EndIf
+
+         IF lStopEdit
+            EXIT
+         ENDIF
 
          If ::bPosition == 9                     // MOUSE EXIT
             // Edition window lost focus, resume clic processing and process delayed click
@@ -3132,7 +3173,7 @@ METHOD VScrollUpdate CLASS TGrid
 
    SetScrollRange( ::hWnd, SB_VERT, 0, ::ItemCount - 1, .T. )
    // This fires WM_NCCALCSIZE
-   SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage)   
+   SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage)
 
    RETURN NIL
 
@@ -3362,7 +3403,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          EndIf
 
          // Repaint the grid
-         RedrawWindow( ::ContainerhWnd )       
+         RedrawWindow( ::ContainerhWnd )
 
          // Update column's width in array
          _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
@@ -3392,7 +3433,7 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
          EndIf
 
          // Repaint the grid
-         RedrawWindow( ::ContainerhWnd )    
+         RedrawWindow( ::ContainerhWnd )
 
          // Update column's width in array
          _OOHG_GridArrayWidths( ::hWnd, ::aWidths )
@@ -3932,7 +3973,7 @@ FUNCTION TGrid_SetArray( Self, uValue )
             ELSE
                oEditControl := GridControlObjectByType( uValue, Self )
             ENDIF
-            ::aEditControls[ nColumn ] := oEditControl 
+            ::aEditControls[ nColumn ] := oEditControl
          ENDIF
          IF HB_ISOBJECT( oEditControl )
             aTemp[ nColumn ] := oEditControl:GridValue( xValue )
@@ -4652,7 +4693,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs ) CLASS TGridMulti
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs, ;
+               aStopEdit ) CLASS TGridMulti
 
    Local nStyle := 0
 
@@ -4671,7 +4713,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs, ;
+              aStopEdit )
 
    // Must be set after control is initialized
    ::Define4( change, dblclick, gotfocus, lostfocus, ondispinfo, editcell, ;
@@ -4883,7 +4926,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
                lExtDbl, lSilent, lAltA, lNoShowAlways, lNone, lCBE, onrclick, ;
                oninsert, editend, lAtFirst, bbeforeditcell, bEditCellValue, klc, ;
                lLabelTip, lNoHSB, lNoVSB, bbeforeinsert, aHeadDblClick, ;
-               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs ) CLASS TGridByCell
+               aHeaderColors, nTimeOut, bEditKeysFun, lNoDefMsg, aHeaderBkClrs, ;
+               aStopEdit ) CLASS TGridByCell
 
    ASSIGN lFocusRect VALUE lFocusRect TYPE "L" DEFAULT .F.
    ASSIGN lNone      VALUE lNone      TYPE "L" DEFAULT .T.
@@ -4902,7 +4946,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
               DelMsg, lNoDelMsg, AllowAppend, lNoModal, lFixedCtrls, ;
               lClickOnCheckbox, lRClickOnCheckbox, lExtDbl, lSilent, lAltA, ;
               lNoShowAlways, .T., lCBE, lAtFirst, klc, lLabelTip, lNoHSB, lNoVSB, ;
-              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs )
+              aHeadDblClick, aHeaderColors, nTimeOut, lNoDefMsg, aHeaderBkClrs, ;
+              aStopEdit )
 
    // Search the current column
    ::SearchCol := -1
@@ -4919,12 +4964,12 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, ;
 METHOD AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                   lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                   uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                  uReadOnly, cColType, uHeadDblClick, uHeaderColor ) CLASS TGridByCell
+                  uReadOnly, cColType, uHeadDblClick, uHeaderColor, uStopEdit ) CLASS TGridByCell
 
    nColIndex := ::Super:AddColumn( nColIndex, cCaption, nWidth, nJustify, uForeColor, uBackColor, ;
                                    lNoDelete, uPicture, uEditControl, uHeadClick, uValid, ;
                                    uValidMessage, uWhen, nHeaderImage, nHeaderImageAlign, ;
-                                   uReadOnly, cColType, uHeadDblClick, uHeaderColor )
+                                   uReadOnly, cColType, uHeadDblClick, uHeaderColor, uStopEdit )
 
    If nColIndex <= ::nColPos
       ::Value := { ::nRowPos, ::nColPos + 1 }
@@ -5063,7 +5108,7 @@ METHOD Value( uValue ) CLASS TGridByCell
 
 METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
 
-   Local lRet, lSomethingEdited
+   LOCAL lRet, lSomethingEdited, lStopEdit
 
    HB_SYMBOL_UNUSED( lChange )
 
@@ -5119,6 +5164,9 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
          // Hidden column
          ::bPosition := ::NextPosToEdit()
       Else
+         lStopEdit := iif( HB_ISBLOCK( ::aStopEdit[ ::nColPos ] ), Eval( ::aStopEdit[ ::nColPos ], ::nColPos ), ::aStopEdit[ ::nColPos ] )
+         ASSIGN lStopEdit VALUE lStopEdit TYPE "L" DEFAULT .F.
+
          ::lCalledFromClass := .T.
          lRet := ::Super:EditCell( ::nRowPos, ::nColPos, , , , , , .F. )
          ::lCalledFromClass := .F.
@@ -5135,6 +5183,10 @@ METHOD EditGrid( nRow, nCol, lAppend, lOneRow, lChange ) CLASS TGridByCell
          Else
             Exit
          EndIf
+
+         IF lStopEdit
+            EXIT
+         ENDIF
       EndIf
 
       /*
@@ -5653,7 +5705,7 @@ METHOD DeleteColumn( nColIndex, lNoDelete ) CLASS TGridByCell
 
 METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, lChange ) CLASS TGridByCell
 
-   Local lRet
+   LOCAL lRet, lStopEdit
 
    HB_SYMBOL_UNUSED( lChange )
 
@@ -5679,9 +5731,12 @@ METHOD EditCell( nRow, nCol, EditControl, uOldValue, uValue, cMemVar, nOnFocusPo
 
    ::Value := { nRow, nCol }
 
+   lStopEdit := iif( HB_ISBLOCK( ::aStopEdit[ ::nColPos ] ), Eval( ::aStopEdit[ ::nColPos ], ::nColPos ), ::aStopEdit[ ::nColPos ] )
+   ASSIGN lStopEdit VALUE lStopEdit TYPE "L" DEFAULT .F.
+
    lRet := ::Super:EditCell( ::nRowPos, ::nColPos, EditControl, uOldValue, uValue, cMemVar, nOnFocusPos, .F. )
 
-   If lRet
+   IF lRet .AND. ! lStopEdit
       // ::bPosition is set by TGridControl()
       If ::bPosition == 1                            // UP
          ::Up()
@@ -8150,8 +8205,8 @@ HB_FUNC_STATIC( TGRID_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
    WPARAM wParam  = WPARAMparam( 3 );
    LPARAM lParam  = LPARAMparam( 4 );
    PHB_ITEM pSelf = hb_stackSelfItem();
-   static PHB_SYMB s_Events2 = 0;  
-   static PHB_SYMB s_Notify2 = 0;  
+   static PHB_SYMB s_Events2 = 0;
+   static PHB_SYMB s_Notify2 = 0;
    BOOL bDefault = TRUE;
 
    switch( message )
