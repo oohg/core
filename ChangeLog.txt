@@ -13,6 +13,14 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-04 11:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_grid.ch
+    + Clause STOPEDIT.
+  * core\source\h_grid.prg
+    + Support for clause STOPEDIT.
+  ; Adds the possibility to stay in a cell after its edition has ended.
+  #561
+
 2022-08-25 15:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_controlmisc.c
     * Add support for loading JPG images to image lists.
