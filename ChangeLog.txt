@@ -13,6 +13,37 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-05 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Update constants related to TTree controls.
+  #553
+  * core\include\i_tree.ch
+    + Synonyms for some clauses.
+  #550
+    + Clause ON EXPANDED. It's evaluated after the expansion of a
+      node has ended.
+    + Clause ON COLLAPSED. It's evaluated after the colapse of a
+      node has ended.
+  #551
+  * core\source\h_tree.prg
+    + Support for new clauses.
+  #551
+  #554
+    + Method Toggle to class TTree to change an item from collapsed
+      to expanded or from expanded to collapsed.
+  #553
+    + Method IsItemCollapseReseted to class TTree.
+  #549
+    + Method CollapseReset to class TTree.
+  #552
+    + Method WasItemExpanded to class TTree.
+  #555
+    ! Support for REDRAWONADD parameter is missing at method Define.
+  #556
+    + Send previous item label to VALID block.
+  #557
+    * Method ItemImages was simplified.
+
 2022-09-04 11:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_grid.ch
     + Clause STOPEDIT.
@@ -32,6 +63,11 @@
   * core\source\h_hyperlink.prg
     + Support for clauses RIGHTALIGN and CENTERALIGN.
   #559
+
+2022-07-15 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Update constants related to TTree controls.
+  #548
 
 2022-07-12 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_browse.prg
