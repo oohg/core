@@ -526,6 +526,7 @@ TREEVIEW CONTROL
 #define TVE_COLLAPSE                  1
 #define TVE_EXPAND                    2
 #define TVE_TOGGLE                    3
+#define TVE_COLLAPSERESET             32768
 #define TVS_HASBUTTONS                1
 #define TVS_HASLINES                  2
 #define TVS_LINESATROOT               4

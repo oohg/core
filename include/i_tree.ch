@@ -106,14 +106,16 @@
       [ TARGET <aTarget> ] ;
       [ <single: SINGLEEXPAND> ] ;
       [ <noborder: BORDERLESS, NOBORDER> ] ;
-      [ ON LABELEDIT <labeledit> ] ;
+      [ <dummy: ONLABELEDIT, ON LABELEDIT> <labeledit> ] ;
       [ VALID <valid> ] ;
-      [ ON CHECKCHANGE <checkchange> ] ;
+      [ <dummy: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ INDENT <pixels> ] ;
-      [ ON DROP <ondrop> ] ;
-      [ ON EXPAND <bExpand> ] ;
-      [ ON COLLAPSE <bCollapse> ] ;
+      [ <dummy: ONDROP, ON DROP> <ondrop> ] ;
+      [ <dummy: ONEXPAND, ON EXPAND, ONEXPANDING, ON EXPANDING> <bExpand> ] ;
+      [ <dummy: ONCOLLAPSE, ON COLLAPSE, ONCOLLAPSING, ON COLLAPSING> <bCollapse> ] ;
       [ <redraw: REDRAWONADD> ] ;
+      [ <dummy: ONEXPANDED, ON EXPANDED> <bExpanded> ] ;
+      [ <dummy: ONCOLLAPSED, ON COLLAPSED> <bCollapsed> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, ;
@@ -126,7 +128,7 @@
             .F., <.nobuts.>, <.drag.>, <.single.>, <.noborder.>, <selcolor>, ;
             <{labeledit}>, <{valid}>, <{checkchange}>, <pixels>, <.selbold.>, ;
             <.drop.>, <aTarget>, <{ondrop}>, <.own.>, <{bExpand}>, ;
-            <{bCollapse}>, <.redraw.> )
+            <{bCollapse}>, <.redraw.>, <{bExpanded}>, <{bCollapsed}> )
 
 #xcommand DEFINE TREE <name> ;
       [ OBJ <obj> ] ;
@@ -173,14 +175,16 @@
       [ TARGET <aTarget> ] ;
       [ <single: SINGLEEXPAND> ] ;
       [ <noborder: BORDERLESS, NOBORDER> ] ;
-      [ ON LABELEDIT <labeledit> ] ;
+      [ <dummy: ONLABELEDIT, ON LABELEDIT> <labeledit> ] ;
       [ VALID <valid> ] ;
       [ <dummy: ONCHECKCHANGE, ON CHECKCHANGE> <checkchange> ] ;
       [ INDENT <pixels> ] ;
-      [ ON DROP <ondrop> ] ;
-      [ ON EXPAND <bExpand> ] ;
-      [ ON COLLAPSE <bCollapse> ] ;
+      [ <dummy: ONDROP, ON DROP> <ondrop> ] ;
+      [ <dummy: ONEXPAND, ON EXPAND, ONEXPANDING, ON EXPANDING> <bExpand> ] ;
+      [ <dummy: ONCOLLAPSE, ON COLLAPSE, ONCOLLAPSING, ON COLLAPSING> <bCollapse> ] ;
       [ <redraw: REDRAWONADD> ] ;
+      [ <dummy: ONEXPANDED, ON EXPANDED> <bExpanded> ] ;
+      [ <dummy: ONCOLLAPSED, ON COLLAPSED> <bCollapsed> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TTree(), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <row>, <col>, <width>, <height>, ;
@@ -193,7 +197,8 @@
             <.noScr.>, <.hott.>, <.nolines.>, <.nobuts.>, <.drag.>, ;
             <.single.>, <.noborder.>, <selcolor>, <{labeledit}>, <{valid}>, ;
             <{checkchange}>, <pixels>, <.selbold.>, <.drop.>, <aTarget>, ;
-            <{ondrop}>, <.own.>, <{bExpand}>, <{bCollapse}>, <.redraw.> )
+            <{ondrop}>, <.own.>, <{bExpand}>, <{bCollapse}>, <.redraw.>, ;
+            <{bExpanded}>, <{bCollapsed}> )
 
 #xcommand NODE <text> ;
       [ IMAGES <aImage> ] ;
