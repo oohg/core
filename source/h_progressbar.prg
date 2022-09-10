@@ -104,8 +104,8 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
 
    ASSIGN ::Vertical VALUE lVertical  TYPE "L" DEFAULT .F.
    ASSIGN ::Smooth   VALUE lSmooth    TYPE "L" DEFAULT .F.
-   ASSIGN nHeight    VALUE nHeight    TYPE "N" DEFAULT iif( lVertical, 120, 25 )
-   ASSIGN nWidth     VALUE nWidth     TYPE "N" DEFAULT iif( lVertical, 25, 120 )
+   ASSIGN nHeight    VALUE nHeight    TYPE "N" DEFAULT iif( ::Vertical, 120, 25 )
+   ASSIGN nWidth     VALUE nWidth     TYPE "N" DEFAULT iif( ::Vertical, 25, 120 )
    ASSIGN nMin       VALUE nMin       TYPE "N" DEFAULT 0
    ASSIGN nMax       VALUE nMax       TYPE "N" DEFAULT 100
    ASSIGN nValue     VALUE nValue     TYPE "N" DEFAULT 0
@@ -113,7 +113,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, nMin, nMa
 
    ::SetForm( cControlName, cParentForm, NIL, NIL, NIL, NIL, NIL, lRtl  )
 
-   nControlHandle := InitProgressBar( ::ContainerhWnd, 0, nCol, nRow, nWidth, nHeight, nMin, nMax, lVertical, lSmooth, lInvisible, nValue, ::lRtl )
+   nControlHandle := InitProgressBar( ::ContainerhWnd, 0, nCol, nRow, nWidth, nHeight, nMin, nMax, ::Vertical, lSmooth, lInvisible, nValue, ::lRtl )
 
    ::Register( nControlHandle, cControlName, nHelpId, ! lInvisible, cToolTip )
    ::SizePos( nRow, nCol, nWidth, nHeight )
