@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-10 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_progressbar.prg
+    ! RTE when method Define is called with the lVertical parameter
+      set to a non-logical value.
+  #562
+
 2022-09-05 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_windefs.ch
     + Update constants related to TTree controls.
