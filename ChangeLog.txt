@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-19 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + Function cFilePath: returns the path of a filename.
+    + Function cFileExt: returns the extension of a filename.
+  #564
+
 2022-09-19 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
     * Set THIS.CELLVALUE before executing the ON ENTER events of
