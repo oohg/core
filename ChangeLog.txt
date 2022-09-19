@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-19 19:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Set THIS.CELLVALUE before executing the ON ENTER events of
+      Grid, Browse and XBrowse controls.
+  #563
+
 2022-09-10 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_progressbar.prg
     ! RTE when method Define is called with the lVertical parameter
