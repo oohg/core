@@ -3457,7 +3457,22 @@ METHOD Events_Enter() CLASS TGrid
       ::lNestedEdit := .T.
       ::cText := ""
       If ! ::AllowEdit
+         _PushEventInfo()
+         _OOHG_ThisForm      := ::Parent
+         _OOHG_ThisType      := "C"
+         _OOHG_ThisControl   := Self
+         _OOHG_ThisObject    := Self
+         _OOHG_ThisEventType := "EVENTS_ENTER"
+         If "BYCELL" $ ::Type
+            _OOHG_ThisItemCellValue := ::Cell( ::Value[ 1 ], ::Value[ 2 ] )
+         ElseIf ::Type == "MULTIGRID"
+            _OOHG_ThisItemCellValue := ::Cell( ::Value[ 1 ], 1 )
+         Else
+            _OOHG_ThisItemCellValue := ::Cell( ::Value, 1 )
+         EndIf
          ::DoEvent( ::OnEnter, "ENTER" )
+         _ClearThisCellInfo()
+         _PopEventInfo()
       ElseIf ::FullMove
          ::EditGrid()
       ElseIf ::InPlace
