@@ -920,6 +920,14 @@ Function _OOHG_HasData( obj, msg )
 
    Return .F.
 
+FUNCTION cFilePath( cPathMask )
+
+   RETURN AllTrim( Left( cPathMask, RAt( "\", cPathMask ) - 1 ) )
+
+FUNCTION cFileExt( cPathMask )
+
+   RETURN SubStr( cPathMask, RAt( ".", cPathMask ) + 1 )
+
 Function cFileNoPath( cPathMask )
 
    local n := RAt( "\", cPathMask )
@@ -2080,6 +2088,7 @@ METHOD FocusEffect CLASS TControl
       lMod := .T.
    ElseIf ::Parent == Nil
       lMod := .F.
+// TODO: Add other font attributes
    ElseIf ( _OOHG_HasData( ::Parent, "CFOCUSFONTNAME" ) .OR. _OOHG_HasMethod( ::Parent, "CFOCUSFONTNAME" ) ) .AND. ! Empty( ::Parent:cFocusFontName )
       lMod := .T.
    ElseIf ( _OOHG_HasData( ::Parent, "NFOCUSFONTSIZE" ) .OR. _OOHG_HasMethod( ::Parent, "NFOCUSFONTSIZE" ) ) .AND. ! Empty( ::Parent:nFocusFontSize )
