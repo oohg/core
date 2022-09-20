@@ -115,7 +115,7 @@
 #define NDX_OOHG_THISQUERYROWINDEX      27
 #define NDX_OOHG_THISTYPE               28
 #define NDX_OOHG_MAIN_ICON              29
-#define NDX_OOHG_MULTIPLEINSTANCES      30
+#define NDX_OOHG_APPNAME                30
 #define NDX_OOHG_APP_CARGO              31
 #define NDX_BROWSE_SYNCSTATUS           32
 #define NDX_BROWSE_FIXEDBLOCKS          33
@@ -176,7 +176,6 @@ CLASS TApplication
    DATA aFramesStack              INIT {}  HIDDEN
    DATA aGroupBoxesStack          INIT {}  HIDDEN
    DATA aMenusStack               INIT {}  HIDDEN
-   DATA AppMutex                  INIT NIL HIDDEN
    DATA ArgC                      INIT NIL READONLY
    DATA Args                      INIT NIL READONLY
    DATA aVars                     INIT NIL HIDDEN
@@ -221,9 +220,9 @@ CLASS TApplication
    METHOD MainName
    METHOD MainObject
    METHOD MainStyle               SETGET
-   METHOD MultipleInstances       SETGET
    METHOD MutexLock
    METHOD MutexUnlock
+   METHOD Name                    SETGET
    METHOD New
    METHOD Release
    METHOD ReleaseLogFont
@@ -302,7 +301,6 @@ CLASS TApplication
    METHOD Value_Pos70             SETGET
    METHOD Value_Pos71             SETGET
    METHOD Value_Pos72             SETGET
-
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -328,7 +326,13 @@ METHOD New() CLASS TApplication
          OOHG_MsgError( "TApplication.New: Global mutex creation failed. Program terminated." )
       ENDIF
 
-      ::aVars := Array( NUMBER_OF_APP_WIDE_VARS )
+      ::ArgC     := hb_argc()
+      ::Args     := GetCommandLineArgs()
+      ::ExeName  := GetProgramFileName()
+      ::Drive    := Left( ::ExeName, 1 )
+      ::Path     := cFilePath( ::ExeName )
+      ::FileName := cFileNoPath( ::ExeName )
+      ::aVars    := Array( NUMBER_OF_APP_WIDE_VARS )
 
       ::aVars[ NDX_OOHG_ACTIVECONTROLINFO ]      := {}
       ::aVars[ NDX_OOHG_ACTIVETOOLBAR ]          := {}
@@ -359,7 +363,7 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_THISQUERYROWINDEX ]      := 0
       ::aVars[ NDX_OOHG_THISTYPE ]               := ''
       ::aVars[ NDX_OOHG_MAIN_ICON ]              := NIL
-      ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]      := .T.
+      ::aVars[ NDX_OOHG_APPNAME ]                := cFileNoExt( ::FileName )
       ::aVars[ NDX_OOHG_APP_CARGO ]              := NIL
       ::aVars[ NDX_BROWSE_SYNCSTATUS ]           := .F.
       ::aVars[ NDX_BROWSE_FIXEDBLOCKS ]          := .T.
@@ -402,13 +406,6 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTFONTWIDTH ]       := 0
       ::aVars[ NDX_OOHG_DEFAULTFONTORIENTATION ] := 0
       ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]    := .F.
-
-      ::ArgC     := hb_argc()
-      ::Args     := GetCommandLineArgs()
-      ::ExeName  := GetProgramFileName()
-      ::Drive    := Left( ::ExeName, 1 )
-      ::Path     := Left( ::ExeName, RAt( '\', ::ExeName ) - 1 )
-      ::FileName := SubStr( ::ExeName, RAt( '\', ::ExeName ) + 1 )
 
       _GetDDLMessage()
 
@@ -1129,49 +1126,6 @@ METHOD MainStyle( nStyle ) CLASS TApplication
    RETURN ( uRet )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MultipleInstances( lMultiple, lWarning ) CLASS TApplication
-
-   LOCAL lBefore, lRet
-
-   ::MutexLock()
-   IF lMultiple == NIL
-      lRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
-   ELSE
-      lBefore := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
-
-      IF HB_ISLOGICAL( lMultiple )
-         ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := lMultiple
-      ELSEIF HB_ISNUMERIC( lMultiple )
-         ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := ( lMultiple != 0 )
-      ELSEIF ValType( lMultiple ) $ "CM"
-         IF Upper( AllTrim( lMultiple ) ) == "ON"
-            ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .T.
-         ELSEIF Upper( AllTrim( lMultiple ) ) == "OFF"
-            ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ] := .F.
-         ENDIF
-      ENDIF
-
-      lRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
-      IF lRet # lBefore
-         IF lRet
-            CloseHandle( ::AppMutex )
-            ::AppMutex := NIL
-         ELSE
-            ::AppMutex := CreateMutex( , .T., StrTran( GetModuleFileName(), '\', '_' ) )
-            IF Empty( ::AppMutex ) .OR. _OOHG_GetLastError() > 0
-               IF HB_ISLOGICAL( lWarning ) .AND. lWarning
-                  MsgStop( _OOHG_Messages( MT_MISCELL, 4 ) )
-               ENDIF
-               ExitProcess( 1 )
-            ENDIF
-         ENDIF
-      ENDIF
-   ENDIF
-   ::MutexUnlock()
-
-   RETURN ( lRet )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE Destroy() CLASS TApplication
 
    ::Release()
@@ -1228,9 +1182,6 @@ METHOD Release() CLASS TApplication
       _OOHG_TInternal_UnRegister()
       _OOHG_PictureControl_UnRegister()
       _OOHG_TTextArray_UnRegister()
-
-      CloseHandle( ::AppMutex )
-      ::AppMutex := NIL
 
       ::MutexUnlock()
 
@@ -1778,13 +1729,57 @@ METHOD Value_Pos29( uValue ) CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Value_Pos30( uValue ) CLASS TApplication
 
-   LOCAL uRet
+   LOCAL uRet, lCurrent, lMultiple, lWarning := .F., lValid := .F.
 
    ::MutexLock()
-   IF uValue != NIL
-      ::MultipleInstances( uValue, .F. )
+
+   IF HB_ISARRAY( uValue )
+      IF Len( uValue ) > 1
+         ASSIGN lWarning VALUE uValue[ 2 ] TYPE "L" DEFAULT .F.
+      ENDIF
+      IF Len( uValue ) > 0
+        lMultiple := uValue[ 1 ]
+      ENDIF
+   ELSE
+      lMultiple := uValue
    ENDIF
-   uRet := ::aVars[ NDX_OOHG_MULTIPLEINSTANCES ]
+
+   IF HB_ISLOGICAL( lMultiple )
+      lValid := .T.
+   ELSEIF HB_ISNUMERIC( lMultiple )
+      lMultiple := ( lMultiple != 0 )
+      lValid := .T.
+   ELSEIF ValType( lMultiple ) $ "CM"
+      IF Upper( AllTrim( lMultiple ) ) == "ON"
+         lMultiple := .T.
+         lValid := .T.
+      ELSEIF Upper( AllTrim( lMultiple ) ) == "OFF"
+         lMultiple := .F.
+         lValid := .T.
+      ENDIF
+   ENDIF
+
+   IF lValid
+      lCurrent := ( GetExeMutex() == NIL )
+
+      IF lMultiple # lCurrent
+         IF lMultiple
+            // SET MULTIPLE ON
+            CloseExeMutex()
+         ELSE
+            // SET MULTIPLE OFF
+            IF IsExeRunning( ::FileName )
+               // Another instance is already running
+               IF HB_ISLOGICAL( lWarning ) .AND. lWarning
+                  MsgStop( _OOHG_Messages( MT_MISCELL, 4 ) )
+               ENDIF
+               ExitProcess( 1 )
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+
+   uRet := { ( GetExeMutex() == NIL ), lWarning }
    ::MutexUnlock()
 
    RETURN ( uRet )
@@ -2429,6 +2424,20 @@ METHOD Value_Pos72( lValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ] := lValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Name( cValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF PCount() > 0 .AND. HB_ISSTRING( cValue ) .AND. ! Empty( cValue )
+      ::aVars[ NDX_OOHG_APPNAME ] := cValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_APPNAME ]
    ::MutexUnlock()
 
    RETURN ( uRet )

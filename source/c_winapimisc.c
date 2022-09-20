@@ -625,31 +625,56 @@ HB_FUNC( WAITRUNTERM )
    hb_retnl( dwExitCode );
 }
 
+/*
+NULL means the app doesn't care if more than one instance is running
+*/
+static HANDLE hMutex = NULL;
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( ISEXERUNNING )          /* FUNCTION IsExeRunnnig( cExeNameCaseSensitive ) -> lResult */
 {
-   HANDLE hMutex = CreateMutex( NULL, FALSE, (LPTSTR) HB_UNCONST( hb_parc( 1 ) ) );
+   hMutex = CreateMutex( NULL, FALSE, (LPCSTR) hb_parc( 1 ) );
 
    hb_retl( GetLastError() == ERROR_ALREADY_EXISTS );
 
    if( hMutex )
    {
       ReleaseMutex( hMutex );
+      hMutex = NULL;
    }
 }
 
-HB_FUNC( CREATEMUTEX )
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETEXEMUTEX )          /* FUNCTION GetExeMutex() -> handle */
+{
+   if( hMutex )
+      HANDLEret( hMutex );
+   else
+      hb_ret();
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( CLOSEEXEMUTEX )          /* FUNCTION CloseExeMutex() -> lResult */
+{
+   BOOL bResult = CloseHandle( hMutex );
+   hMutex = NULL;
+   hb_retl( bResult );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( CREATEMUTEX )          /* FUNCTION CreateMutex( cAttributes, lOwner, cName ) -> handle */
 {
    SECURITY_ATTRIBUTES *sa = NULL;
 
-   if( HB_ISCHAR( 2 ) && ! HB_ISNIL( 1 ) )
+   if( HB_ISCHAR( 1 ) )
    {
-      sa = ( SECURITY_ATTRIBUTES * ) HB_UNCONST( hb_itemGetCPtr( hb_param( 1, HB_IT_STRING ) ) );
+      sa = (SECURITY_ATTRIBUTES *) hb_parc( 1 );
    }
 
-   HANDLEret( CreateMutex( sa, hb_parnl( 2 ), hb_parc( 3 ) ) );
+   HANDLEret( CreateMutex( sa, hb_parl( 2 ), (LPCSTR) hb_parc( 3 ) ) );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( _OOHG_GETLASTERROR )
 {
    hb_retnl( (long) GetLastError() );

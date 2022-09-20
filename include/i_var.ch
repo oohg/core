@@ -165,9 +165,9 @@ APPLICATION WIDE PSEUDO-FUNCTIONS
     => ;
        ( _OOHG_ActiveFrame != NIL .AND. _OOHG_ActiveFrame:Type == <cType> .AND. _OOHG_AppObject():ActiveFramePop() )
 
-#xtranslate _OOHG_SetMultiple( [ <lMultiple>, <lWarning> ] ) ;
+#xtranslate _OOHG_SetMultiple( <x, ...> ) ;
     => ;
-       _OOHG_AppObject():MultipleInstances( [ <lMultiple>, <lWarning> ] )
+       _OOHG_AppObject():Value_Pos30( [ { <x> } ] )
 
 #xtranslate SetAppHotKey( [ <nKey> [, <nFlags> [, <bAction> ] ] ] ) ;
     => ;

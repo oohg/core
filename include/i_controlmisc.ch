@@ -164,7 +164,7 @@ STANDARD CURSORS
 
 #translate SET MULTIPLE <x: ON, OFF> [<warning: WARNING>] ;
    => ;
-      _OOHG_SetMultiple( <(x)>, <.warning.> )
+      _OOHG_AppObject():Value_Pos30( { <(x)>, <.warning.> } )
 
 #translate SET CONTEXTMENUS OFF ;
    => ;
