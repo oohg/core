@@ -13,6 +13,32 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-20 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_controlmisc.ch
+    * _OOHG_SetMultiple was replace by _OOHG_AppObject():Value_Pos30.
+  * core\include\i_var.ch
+    * Updated xtranslate for _OOHG_SetMultiple.
+    * MultipleInstances was replace by Value_Pos30.
+  * core\source\c_winapimisc.c
+    * Support for app mutex was improved.
+  * core\source\h_application.prg
+    - DATA AppMutex.
+    - METHOD MultipleInstances.
+    ! SET MULTIPLE OFF WARNING clause is not working.
+  #567
+    + Method Name to allow the change of the app's name, set by
+      default to cFileNoExt( ::FileName ).
+  #568
+
+2022-09-20 19:06 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + App.IsAlreadyRunning definition.
+    * Replace references to method App:MultipleInstances
+      by method _OOHG_AppObject():Value_Pos30.
+    ! Specific clauses were moved so they follow the more general
+      ones. This fixes compiler error E0022 Invalid lvalue ':'.
+  # 566
+
 2022-09-19 19:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_controlmisc.prg
     + Function cFilePath: returns the path of a filename.
