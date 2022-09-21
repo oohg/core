@@ -79,6 +79,7 @@ CLASS TEdit FROM TText
    METHOD Define
    METHOD Events_Command
    METHOD Events_Enter            BLOCK { || NIL }
+   METHOD Value                   SETGET
 
    ENDCLASS
 
@@ -125,3 +126,16 @@ METHOD Events_Command( wParam ) CLASS TEdit
 
    RETURN ::Super:Events_Command( wParam )
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value( uValue ) CLASS TEdit
+
+   LOCAL cRet
+
+   IF ValType( uValue ) $ "CM"
+      cRet := ::xStartValue := ::Caption := RTrim( uValue )
+      ::DoChange()
+   ELSE
+      cRet := ::Caption
+   ENDIF
+
+   RETURN cRet
