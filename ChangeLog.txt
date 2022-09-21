@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-21 19:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_editbox.prg
+    ! ON CHANGE clause is not executed when the control's value
+      is changed programmatically.
+  #569
+
 2022-09-20 19:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_controlmisc.ch
     * _OOHG_SetMultiple was replace by _OOHG_AppObject():Value_Pos30.
