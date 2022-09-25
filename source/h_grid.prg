@@ -1723,10 +1723,10 @@ METHOD EditItem2( nItem, aItemValues, aEditControls, aMemVars, cTitle ) CLASS TG
    nWidth += If( lSplitWindow, 170, 140 )
 
    GCol := actpos[ 1 ] + ( ( ( actpos[ 3 ] - actpos[ 1 ] ) - nWidth ) / 2 )
-   GCol := Max( Min( GCol, ( GetSystemMetrics( SM_CXFULLSCREEN ) - nWidth ) ), 0 )
+   GCol := Max( Min( GCol, ( GetFullScreenWidth() - nWidth ) ), 0 )
 
    nMaxHigh := Min( nControlsMaxHeight, nRow ) + 70 + GetTitleHeight()
-   iRow := Max( Min( iRow, ( GetSystemMetrics( SM_CYFULLSCREEN ) - nMaxHigh ) ), 0 )
+   iRow := Max( Min( iRow, ( GetFullScreenHeight() - nMaxHigh ) ), 0 )
 
    aReturn := {}
 
