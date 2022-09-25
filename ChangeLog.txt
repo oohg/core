@@ -13,6 +13,13 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-25 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    * Replace GetSystemMetrics( SM_CXFULLSCREEN ) by
+      GetFullScreenWidth() and GetSystemMetrics( SM_CYFULLSCREEN )
+      by GetFullScreenHeight().
+  #575
+  
 2022-09-25 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_windows.c
     + Functions GetVScrollbarWidth, GetHScrollbarHeight,
