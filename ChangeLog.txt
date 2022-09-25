@@ -13,9 +13,20 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-25 19:12 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    + Functions GetVScrollbarWidth, GetHScrollbarHeight,
+      GetFullScreenWidth, GetFullScreenHeight, GetWindowMinWidth
+      and GetWindowMinHeight.
+  * core\source\h_scroll.prg
+    - Functions GetVScrollbarWidth and GetHScrollbarHeight.
+  #573
+  #574
+
 2022-09-25 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   + core\include\i_metrics.ch
     * Support for Windows system metrics constants.
+  #572
 
 2022-09-25 09:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_winapimisc.c
