@@ -668,7 +668,7 @@ HB_FUNC( CREATEMUTEX )          /* FUNCTION CreateMutex( cAttributes, lOwner, cN
 
    if( HB_ISCHAR( 1 ) )
    {
-      sa = (SECURITY_ATTRIBUTES *) hb_parc( 1 );
+      sa = (SECURITY_ATTRIBUTES *) HB_UNCONST( hb_parc( 1 ) );
    }
 
    HANDLEret( CreateMutex( sa, hb_parl( 2 ), (LPCSTR) hb_parc( 3 ) ) );
@@ -808,6 +808,8 @@ HB_FUNC( WINVERSION )
             {
                if( osvi.wProductType == VER_NT_WORKSTATION )
                {
+                  if( osvi.dwMajorVersion == 10 && osvi.dwBuildNumber == 22000 )
+                     szVersion = TEXT( "Windows 11 " );
                   if( osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 )
                      szVersion = TEXT( "Windows 10 " );
                   else if( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3 )
@@ -890,7 +892,6 @@ HB_FUNC( WINVERSION )
                                              NULL, 
                                              (LPBYTE) szProductType, 
                                              &dwBufLen );
-                                             
                   if( ( lRetVal != ERROR_SUCCESS ) || ( dwBufLen > 80 ) )
                      szVersion = TEXT( "Unknown Operating System" );
                }
@@ -913,7 +914,7 @@ HB_FUNC( WINVERSION )
                   szVersion = lstrcat( szVersion, _OOHG_ULTOA( osvi.dwMinorVersion, buffer, 10 ) );
                }
             }
-  
+
             if( osvi.dwMajorVersion == 4 && lstrcmpi( osvi.szCSDVersion, TEXT( "Service Pack 6" ) ) == 0 )
             {
                HKEY hKey;
@@ -924,7 +925,7 @@ HB_FUNC( WINVERSION )
                                        0,
                                        KEY_QUERY_VALUE,
                                        &hKey );
-                                       
+
                if( lRetVal == ERROR_SUCCESS )
                {
                   szServicePack = TEXT( "Service Pack 6a" );
@@ -943,7 +944,7 @@ HB_FUNC( WINVERSION )
                szServicePack = osvi.szCSDVersion;
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0xFFFF, buffer, 10 );
             }
-            
+
             break;
 
          case VER_PLATFORM_WIN32_WINDOWS:
@@ -992,7 +993,7 @@ HB_FUNC( WINVERSION )
                szVersion = TEXT( "Windows ME" );
                szBuild = _OOHG_ULTOA( osvi.dwBuildNumber & 0x0000FFFF, buffer, 10 );
             }
-            
+
             break;
       }
    }
@@ -1109,13 +1110,14 @@ HB_FUNC( GETSHORTPATHNAME )
    hb_retni( (int) iRet );
 }
 
+/* szWide must be freed by the caller */
 LPWSTR AnsiToWide( const char * szString )
 {
    int iLen;
    LPWSTR szWide;
 
    iLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, NULL, 0 );
-   szWide = ( LPWSTR ) hb_xgrab( (UINT) ( iLen ) * sizeof( WCHAR ) );
+   szWide = (LPWSTR) hb_xgrab( ( (UINT) iLen ) * sizeof( WCHAR ) );
    MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, szString, -1, szWide, iLen );
    return szWide;
 }
