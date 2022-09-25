@@ -16,6 +16,7 @@
 2022-09-25 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   + core\include\i_windefs.ch
     * Remove the defines now included in i_metrics.ch.
+  #576
 
 2022-09-25 19:18 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_grid.prg
