@@ -13,6 +13,15 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-25 09:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_activex.c
+  * core\source\h_checkbox.prg
+  * core\source\h_combo.prg
+  * core\source\h_radio.prg
+    ! Some memory leaks caused by calls to hb_xgrab without
+      a correspondiente call to hb_xfree.
+  #570
+
 2022-09-21 19:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_editbox.prg
     ! ON CHANGE clause is not executed when the control's value
