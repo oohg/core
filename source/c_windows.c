@@ -733,12 +733,42 @@ HB_FUNC( GETTITLEHEIGHT )
 
 HB_FUNC( GETEDGEHEIGHT )
 {
-   hb_retni( GetSystemMetrics(  SM_CYEDGE ) );
+   hb_retni( GetSystemMetrics( SM_CYEDGE ) );
 }
 
 HB_FUNC( GETBORDERHEIGHT )
 {
-   hb_retni( GetSystemMetrics(  SM_CYSIZEFRAME ) );
+   hb_retni( GetSystemMetrics( SM_CYSIZEFRAME ) );
+}
+
+HB_FUNC( GETVSCROLLBARWIDTH )
+{
+   hb_retni( GetSystemMetrics( SM_CXVSCROLL ) );
+}
+
+HB_FUNC( GETHSCROLLBARHEIGHT )
+{
+   hb_retni( GetSystemMetrics( SM_CYHSCROLL ) );
+}
+
+HB_FUNC( GETFULLSCREENWIDTH )
+{
+   hb_retni( GetSystemMetrics( SM_CXFULLSCREEN ) );
+}
+
+HB_FUNC( GETFULLSCREENHEIGHT )
+{
+   hb_retni( GetSystemMetrics( SM_CYFULLSCREEN ) );
+}
+
+HB_FUNC( GETWINDOWMINWIDTH )
+{
+   hb_retni( GetSystemMetrics( SM_CXMIN ) );
+}
+
+HB_FUNC( GETWINDOWMINHEIGHT )
+{
+   hb_retni( GetSystemMetrics( SM_CYMIN ) );
 }
 
 HB_FUNC( GETBORDERWIDTH )

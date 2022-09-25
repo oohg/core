@@ -130,10 +130,10 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
    LOCAL ControlHandle, nStyle
 
    IF ::nWidth == 0
-      ::nWidth := GETVSCROLLBARWIDTH()
+      ::nWidth := GetVScrollBarWidth()
    ENDIF
    IF ::nHeight == 0
-      ::nHeight := GETHSCROLLBARHEIGHT()
+      ::nHeight := GetHScrollBarHeight()
    ENDIF
    ASSIGN ::nWidth    VALUE w         TYPE "N"
    ASSIGN ::nHeight   VALUE h         TYPE "N"
@@ -418,7 +418,7 @@ FUNCTION InitHScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl )
    RETURN InitScrollBar( hWnd, nCol, nRow, nWidth, nHeight, lRtl, SB_HORZ )
 
 
-EXTERN GetVScrollbarWidth, GetHScrollbarHeight, SetScrollPos, SetScrollPage
+EXTERN SetScrollPos, SetScrollPage
 EXTERN SetScrollRange, GetScrollPos, IsScrollLockActive, _SetScroll
 EXTERN InitScrollbar, SetScrollInfo, GetScrollRangeMin, GetScrollRangeMax
 
@@ -474,16 +474,6 @@ HB_FUNC( INITSCROLLBAR )          /* FUNCTION InitScrollBar( hWnd, nCol, nRow, n
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETVSCROLLBARWIDTH )
-{
-   hb_retni( GetSystemMetrics( SM_CXVSCROLL ) );
-}
-
-HB_FUNC( GETHSCROLLBARHEIGHT )
-{
-   hb_retni( GetSystemMetrics( SM_CYHSCROLL ) );
-}
-
 HB_FUNC( SETSCROLLPOS )          /* FUNCTION SetScrollPos( hWnd, fnBar, nPos, lRedraw ) -> nPos */
 {
    hb_retni( SetScrollPos( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), hb_parl( 4 ) ) );
