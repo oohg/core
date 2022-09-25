@@ -13,6 +13,13 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-09-25 09:26 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * Support for Windows 11 to function WinVersion.
+  #571
+    * Some format.
+    * Pacify an HB34's compiler warning.
+
 2022-09-25 09:15 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_activex.c
   * core\source\h_checkbox.prg
