@@ -1040,6 +1040,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
    RECT textrect, aux_rect;
    SIZE s;
    OSVERSIONINFO osvi;
+   LPWSTR cCaptionW;
    static const int rb_states[ 2 ][ 5 ] =
    {
       { RBS_UNCHECKEDNORMAL, RBS_UNCHECKEDHOT, RBS_UNCHECKEDPRESSED, RBS_UNCHECKEDDISABLED, RBS_UNCHECKEDNORMAL },
@@ -1129,6 +1130,8 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
 
       if( strlen( cCaption ) > 0 )
       {
+         cCaptionW = AnsiToWide( cCaption );
+
          getwinver( &osvi );
          if( osvi.dwMajorVersion >= 6 )
          {
@@ -1140,14 +1143,14 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
                pOptions.dwFlags |= DTT_TEXTCOLOR;
                pOptions.crText = (COLORREF) oSelf->lFontColor;
             }
-            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &textrect, &pOptions );
+            ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, cCaptionW, -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, &textrect, &pOptions );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
             {
                aux_rect = textrect;
                pOptions.dwFlags = DTT_CALCRECT;
-               ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
+               ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, cCaptionW, -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE | DT_CALCRECT, &aux_rect, &pOptions );
 
                aux_rect.left -= 2;
                aux_rect.bottom = textrect.bottom;
@@ -1159,7 +1162,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
          else
          {
             /* paint caption */
-            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, AnsiToWide( cCaption ), -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &textrect );
+            ProcDrawThemeText( hTheme, pCustomDraw->hdc, BP_RADIOBUTTON, state_id, cCaptionW, -1, DT_VCENTER | DT_LEFT | DT_SINGLELINE, 0, &textrect );
 
             /* paint focus rectangle */
             if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
@@ -1168,6 +1171,7 @@ int TRadioItem_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption
                DrawFocusRect( pCustomDraw->hdc, &textrect );
             }
          }
+         hb_xfree( cCaptionW );
       }
 
       /* cleanup */

@@ -653,7 +653,7 @@ HB_FUNC( LISTBOXGETSTRING )
    if( ( iLen > 0 ) && ( NULL != ( cString = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) ) )
    {
       SendMessage( HWNDparam( 1 ), LB_GETTEXT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) cString );
-      hb_retclen_buffer( cString, iLen );
+      hb_retclen_buffer( cString, iLen );   // this calls hb_xfree
    }
    else
    {

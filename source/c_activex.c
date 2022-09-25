@@ -156,19 +156,18 @@ HB_FUNC( INITACTIVEX )          /* FUNCTION InitActivex( hWnd, cProgId, nCol, nR
 {
    HWND hControl = NULL;
    int iStyle, iStyleEx;
+#ifndef UNICODE
+   char * cProgId = HB_UNCONST( hb_parc( 2 ) );
+#else
+   LPWSTR cProgId = AnsiToWide( (char *) hb_parc( 2 ) );
+#endif
 
    iStyle = WS_CHILD | WS_CLIPCHILDREN | hb_parni( 7 );
    iStyleEx = hb_parni( 8 );
 
    if( _Ax_Init() )
    {
-      hControl = CreateWindowEx( iStyleEx, TEXT( "AtlAxWin" ),
-#ifndef UNICODE
-                                 hb_parc( 2 ),
-#else
-                                 AnsiToWide( (char *) hb_parc( 2 ) ),
-#endif
-                                 iStyle,
+      hControl = CreateWindowEx( iStyleEx, TEXT( "AtlAxWin" ), cProgId, iStyle,
                                  hb_parni( 3 ), hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ),
                                  HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
    }

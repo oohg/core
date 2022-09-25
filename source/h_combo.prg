@@ -1346,7 +1346,7 @@ HB_FUNC( COMBOGETSTRING )          /* FUNCTION ComboGetString( hWnd, nPos ) -> c
    if( iLen > 0 && NULL != ( cString = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
    {
       SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, (WPARAM) ( hb_parni( 2 ) - 1 ), (LPARAM) cString );
-      hb_retclen_buffer( cString, iLen );
+      hb_retclen_buffer( cString, iLen );   // this calls hb_xfree
    }
    else
    {
@@ -1383,6 +1383,7 @@ HB_FUNC( COMBOBOXGETALLITEMS )          /* FUNCTION ComboboxGetAllItems( hWnd ) 
          {
             SendMessage( HWNDparam( 1 ), CB_GETLBTEXT, (WPARAM) ( i - 1 ), (LPARAM) cString );
             HB_STORC( cString, -1, i );
+            hb_xfree( cString);
          }
          else
          {
@@ -1621,7 +1622,7 @@ HB_FUNC( COMBOITEM )          /* FUNCTION ComboItem( Self, nItem, uData ) -> cIt
    if( iLen > 0 && NULL != ( cBuffer = (char *) hb_xgrab( ( iLen + 1 ) * sizeof( TCHAR ) ) ) )
    {
       SendMessage( oSelf->hWnd, CB_GETLBTEXT, (WPARAM) nItem, (LPARAM) cBuffer );
-      hb_retclen_buffer( cBuffer, iLen );
+      hb_retclen_buffer( cBuffer, iLen );   // this calls hb_xfree
    }
    else
    {

@@ -293,6 +293,7 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
    SIZE s;
    DWORD txt_style;
    TEXTMETRICW ptm;
+   LPWSTR cCaptionW;
    static const int cb_states[ 3 ][ 5 ] =
    {
       { CBS_UNCHECKEDNORMAL, CBS_UNCHECKEDHOT, CBS_UNCHECKEDPRESSED, CBS_UNCHECKEDDISABLED, CBS_UNCHECKEDNORMAL },
@@ -390,6 +391,8 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
 
       if( strlen( cCaption ) > 0 )
       {
+         cCaptionW = AnsiToWide( cCaption );
+
          /* set the text style */
          if( bLeftAlign )
          {
@@ -425,14 +428,14 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
          }
 
          /* draw the text */
-         ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, txt_style, &txt_rect, &pOptions );
+         ProcDrawThemeTextEx( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, cCaptionW, -1, txt_style, &txt_rect, &pOptions );
 
          /* paint the focus rectangle */
          if( ( state & BST_FOCUS ) && ( ! bNoFocusRect ) )
          {
             /* get the rectangle actually occupied by the text */
             fcs_rect = txt_rect;
-            ProcGetThemeTextExtent( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, AnsiToWide( cCaption ), -1, txt_style, &txt_rect, &fcs_rect );
+            ProcGetThemeTextExtent( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, cCaptionW, -1, txt_style, &txt_rect, &fcs_rect );
 
             /* get the font metrics */
             ProcGetThemeTextMetrics( hTheme, pCustomDraw->hdc, BP_CHECKBOX, state_id, &ptm );
@@ -482,6 +485,8 @@ int TCheckBox_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, LPCSTR cCaption,
             SetTextColor( pCustomDraw->hdc, (COLORREF) 0 );
             DrawFocusRect( pCustomDraw->hdc, &fcs_rect );
          }
+         
+         hb_xfree( cCaptionW );
       }
 
       /* cleanup */
