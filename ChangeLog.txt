@@ -13,6 +13,13 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-10-12 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_edit.ch
+    ! Changes made by #472 were reverted because OOHG's sample
+      edit_extended/s002.prg does not allow to make changes
+      to the database.
+  #577
+
 2022-09-25 19:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   + core\include\i_windefs.ch
     * Remove the defines now included in i_metrics.ch.
