@@ -69,7 +69,7 @@
       [ SEARCH <bsearch> ] ;
    => ;
       ABM( <(workarea)>, <title>, <fields>, NoArray( <editablefields> ), ;
-            <{bsave}>, <{bsearch}> )
+            <bsave>, <bsearch> )
 
 #xtranslate EDIT EXTENDED ;
       [ WORKAREA <cWorkArea> ] ;
@@ -84,5 +84,5 @@
       [ ON PRINT <bPrint> ] ;
    => ;
       ABM2( <(cWorkArea)>, <cTitle>, <acFieldNames>, <acFieldMessages>, ;
-            <alFieldView>, <alTableView>, <aOptions>, <{bSave}>, <{bFind}>, ;
-            <{bPrint}> )
+            <alFieldView>, <alTableView>, <aOptions>, <bSave>, <bFind>, ;
+            <bPrint> )
