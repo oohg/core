@@ -175,15 +175,9 @@ Function _ActivateScrSaver( aForm, cParam )
 
       IF File( cFileDes )
 
-         IF IsWinXP()
-            EXECUTE FILE "Rundll32.exe" ;
-               PARAMETERS "desk.cpl,InstallScreenSaver " + ;
-               GetSystemFolder() + "\" + cFileNoExt( cFileScr ) + ".SCR"
-         ELSE
-            BEGIN INI FILE GetWindowsFolder() + "\" + 'system.ini'
-               SET SECTION "boot" ENTRY "SCRNSAVE.EXE" TO cFileDes
-            END INI
-         ENDIF
+         BEGIN INI FILE GetWindowsFolder() + "\" + 'system.ini'
+            SET SECTION "boot" ENTRY "SCRNSAVE.EXE" TO cFileDes
+         END INI
 
          MsgInfo( cFileNoPath( cFileDes ) + _OOHG_Messages( MT_MISCELL, 16 ), _OOHG_Messages( MT_PRINTER, 33 ) )
 
