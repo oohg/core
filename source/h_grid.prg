@@ -521,7 +521,7 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
 
    ::SetSplitBoxInfo( Break )
-   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( ::lNoGrid, LVS_EX_NOGRIDLINES, LVS_EX_GRIDLINES ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, OSisWinXPorLater() .AND. lDblBffr, lLabelTip )
+   ControlHandle := InitListView( ::ContainerhWnd, 0, ::ContainerCol, ::ContainerRow, ::Width, ::Height, '', 0, iif( ::lNoGrid, LVS_EX_NOGRIDLINES, LVS_EX_GRIDLINES ), ownerdata, itemcount, nStyle, ::lRtl, ::lCheckBoxes, lDblBffr, lLabelTip )
 
    IF Len( ::aHeaders ) > 0
       IF HB_ISARRAY( aImage )
@@ -9236,8 +9236,8 @@ HB_FUNC( LISTVIEW_HITONCHECKBOX )
     * The width of the state area is defined by the state imagelist width (XP=16 Win7=13)
     * and the height equals the height of the row. The checkbox dimensions are 13x13.
     * Under Win7 the clickable zone of the checkbox does not include it's rightmost 2 pixels.
-    * Under WinXP the gap between the item's state image area and the item's icon area is
-    * 2 pixels wide. Under Win7 is only 1 pixel wide.
+    * Under Win7 the gap between the item's state image area and the item's icon area is
+    * 1 pixel wide.
     * Win7 places the checkbox centered in the y axe, but instead of using it's real height
     * it uses 16. XP uses a fixed 4 pixel margin.
     * The listview, as far as I know, exports no way of knowing the checkbox's rect nor
