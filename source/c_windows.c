@@ -1529,6 +1529,13 @@ HB_FUNC( OSISWINVISTAORLATER )
    hb_retl( osvi.dwMajorVersion >= 6 );
 }
 
+HB_FUNC( OSISWINSEVENORLATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion > 6 && osvi.dwMinorVersion >= 1 );
+}
+
 HBRUSH GetTabBrush( HWND hWnd )
 {
    HBRUSH hBrush;
