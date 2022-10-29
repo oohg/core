@@ -70,13 +70,13 @@ PROCEDURE HMG_UNZIPFILE ( zipfile , block , extractpath )
 
    #ifndef __XHARBOUR__
       IF ( objZip := win_oleCreateObject( "XStandard.Zip" ) ) == NIL
-         MsgStop( "Zip interfase is not available, error: " + win_oleErrorText(), "Error" )
+         MsgStop( "Zip interface is not available, error: " + win_oleErrorText(), "Error" )
          RETURN
       ENDIF
    #else
       objZip := TOleAuto():New( "XStandard.Zip" )
       IF Ole2TxtError() != "S_OK"
-         MsgStop( "Zip interfase is not available.","Error" )
+         MsgStop( "Zip interface is not available.","Error" )
          RETURN
       ENDIF
    #endif
@@ -88,7 +88,7 @@ PROCEDURE HMG_UNZIPFILE ( zipfile , block , extractpath )
       objItem := objZip:Contents(zipfile):Item(i)
 
       if valtype (block) = 'B'
-         Eval ( block , objItem:Name , i )
+         Eval( block , objItem:Name , i )
       endif
 
       objZip:UnPack( zipfile , extractpath , objItem:Name )
@@ -111,7 +111,7 @@ PROCEDURE HMG_ZIPFILE( zipfile , afiles , level , block , ovr )
    endif
 
    For i := 1 To Len (afiles)
-      Eval ( block , aFiles [i] , i )
+      Eval( block , aFiles [i] , i )
       oZip:pack( afiles [i] , zipfile , , , level )
    Next i
 
