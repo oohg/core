@@ -324,10 +324,10 @@ function ABM2( cArea, cTitulo, aNombreCampo, ;
    local   nColumna       as numeric       // Columna de creación del control de edición.
    local   aTextoOp       as numeric       // Texto de las opciones de usuario.
    local   _BakExtendedNavigation          // Estado de SET NAVIAGTION.
-   Local _BackDeleted
-   Local cFiltroAnt     as character     // Condición del filtro anterior.
+   Local   _BackDeleted
+   Local   cFiltroAnt     as character     // Condición del filtro anterior.
 
-   ////////// Gusrdar estado actual de SET DELETED y activarlo
+   ////////// Guardar estado actual de SET DELETED y activarlo
    _BackDeleted := set( _SET_DELETED )
    SET DELETED ON
 
