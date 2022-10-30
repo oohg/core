@@ -241,7 +241,7 @@
       #define HRSRCparam( n )             ( (HRSRC) HB_PARPTR( n ) )
       #define HWNDparam( n )              ( (HWND) HB_PARPTR( n ) )
 
-      #define DEVICEINTERFASEparam( n )   ( (device_interface *) HB_PARPTR( n ) )
+      #define DEVICEINTERFACEparam( n )   ( (device_interface *) HB_PARPTR( n ) )
       #define DRAWITEMSTRUCTparam( n )    ( (LPDRAWITEMSTRUCT) HB_PARPTR( n ) )
       #define HBPRINTERDATAparam( n )     ( (LPHBPRINTERDATA) HB_PARPTR( n ) )
       #define HELPINFOparam( n )          ( (LPHELPINFO) HB_PARPTR( n ) )
@@ -373,7 +373,7 @@
       #define HRSRCparam( n )             ( (HRSRC) HB_PARNL( n ) )
       #define HWNDparam( n )              ( (HWND) HB_PARNL( n ) )
 
-      #define DEVICEINTERFASEparam( n )   ( (device_interface *) HB_PARNL( n ) )
+      #define DEVICEINTERFACEparam( n )   ( (device_interface *) HB_PARNL( n ) )
       #define DRAWITEMSTRUCTparam( n )    ( (LPDRAWITEMSTRUCT) (LPARAM) HB_PARNL( n ) )
       #define HBPRINTERDATAparam( n )     ( (LPHBPRINTERDATA) HB_PARNL( n ) )
       #define HELPINFOparam( n )          ( (LPHELPINFO) HB_PARNL( n ) )

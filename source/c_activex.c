@@ -570,7 +570,7 @@ HB_FUNC( SETUPCONNECTIONPOINT )
    IID                       rriid = IID_NULL;
    register IEventHandler    *selfobj;
    DWORD                     dwCookie = 0;
-   device_interface          *pdevice_interface = DEVICEINTERFASEparam( 1 );
+   device_interface          *pdevice_interface = DEVICEINTERFACEparam( 1 );
    MyRealIEventHandler       *pThis;
 
    /* Allocate our IEventHandler object (actually a MyRealIEventHandler)
