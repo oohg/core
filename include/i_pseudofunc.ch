@@ -151,6 +151,30 @@
    => ;
       OSIsWinVistaOrLater()
 
+#xtranslate IsSevenOrLater() ;
+   => ;
+      OSIsWinSevenOrLater()
+
+#xtranslate IsEightOrLater() ;
+   => ;
+      OSIsWinEightOrLater()
+
+#xtranslate IsWin10OrLater() ;
+   => ;
+      OSIsWin10OrLater()
+
+#xtranslate IsWin11OrLater() ;
+   => ;
+      OSIsWin11OrLater()
+
+#xtranslate hb_osisWin11() ;
+   => ;
+      '11' $ WinVersion() \[ 1 ]
+
+#xtranslate IsWin64() ;
+   => ;
+      hb_osIs64Bit()
+
 #xtranslate MsgAlert( <c>, <t> ) ;
    => ;
       MsgExclamation( <c>, <t> )
