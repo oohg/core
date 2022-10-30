@@ -1536,6 +1536,27 @@ HB_FUNC( OSISWINSEVENORLATER )
    hb_retl( osvi.dwMajorVersion > 6 && osvi.dwMinorVersion >= 1 );
 }
 
+HB_FUNC( OSISWINEIGHTORLATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion > 6 && osvi.dwMinorVersion >= 2 );
+}
+
+HB_FUNC( OSISWINTENORLATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion >= 10 );
+}
+
+HB_FUNC( OSISWINELEVENORLATER )
+{
+   OSVERSIONINFO osvi;
+   getwinver( &osvi );
+   hb_retl( osvi.dwMajorVersion > 10 | ( osvi.dwMajorVersion == 10 && osvi.dwBuildNumber >= 22000 ) );
+}
+
 HBRUSH GetTabBrush( HWND hWnd )
 {
    HBRUSH hBrush;
