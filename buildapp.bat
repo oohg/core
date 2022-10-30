@@ -29,12 +29,6 @@ rem
 
 :TEST
 
-   set HG_HM30=
-   set HG_HM32=
-   set HG_HM3264=
-   set HG_HM34=
-   set HG_HM3464=
-
    if /I "%1" == "HM30"   goto TEST_HM30
    if /I "%1" == "HM32"   goto TEST_HM32
    if /I "%1" == "HM3264" goto TEST_HM3264
@@ -158,7 +152,6 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib
    if "%LIB_HRB%"  == "" set LIB_HRB=lib
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   set HG_HM30=yes
    call "%HG_ROOT%\BuildApp_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -171,7 +164,6 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   set HG_HM32=yes
    call "%HG_ROOT%\BuildApp_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -184,7 +176,6 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb\mingw64
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\mingw64
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   set HG_HM3264=yes
    call "%HG_ROOT%\BuildApp_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -197,7 +188,6 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   set HG_HM34=yes
    call "%HG_ROOT%\BuildApp_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
@@ -210,7 +200,6 @@ rem
    if "%LIB_GUI%"  == "" set LIB_GUI=lib\hb34\mingw64
    if "%LIB_HRB%"  == "" set LIB_HRB=lib\win\clang64
    if "%BIN_HRB%"  == "" set BIN_HRB=bin
-   set HG_HM3464=yes
    call "%HG_ROOT%\BuildApp_hbmk2.bat" %1 %2 %3 %4 %5 %6 %7 %8 %9
    goto END
 
