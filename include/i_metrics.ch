@@ -76,9 +76,9 @@ SYSTEM METRICS AND SYSTEM CONFIGURATION SETTINGS
 #define SM_CXBORDER                    5
 #define SM_CYBORDER                    6
 #define SM_CXDLGFRAME                  7
-#define SM_CXFIXEDFRAME                7
+#define SM_CXFIXEDFRAME                SM_CXDLGFRAME
 #define SM_CYDLGFRAME                  8
-#define SM_CYFIXEDFRAME                8
+#define SM_CYFIXEDFRAME                SM_CYDLGFRAME
 #define SM_CYVTHUMB                    9
 #define SM_CXHTHUMB                    10
 #define SM_CXICON                      11
@@ -102,10 +102,10 @@ SYSTEM METRICS AND SYSTEM CONFIGURATION SETTINGS
 #define SM_CYMIN                       29
 #define SM_CXSIZE                      30
 #define SM_CYSIZE                      31
-#define SM_CXSIZEFRAME                 32
 #define SM_CXFRAME                     32
-#define SM_CYSIZEFRAME                 33
+#define SM_CXSIZEFRAME                 SM_CXFRAME
 #define SM_CYFRAME                     33
+#define SM_CYSIZEFRAME                 SM_CYFRAME
 #define SM_CXMINTRACK                  34
 #define SM_CYMINTRACK                  35
 #define SM_CXDOUBLECLK                 36
@@ -158,6 +158,9 @@ SYSTEM METRICS AND SYSTEM CONFIGURATION SETTINGS
 #define SM_MEDIACENTER                 87
 #define SM_STARTER                     88
 #define SM_SERVERR2                    89
+#define SM_MOUSEHORIZONTALWHEELPRESENT 91
+#define SM_CXPADDEDBORDER              92
+#define SM_MAXIMUMTOUCHES              95
 #define SM_REMOTESESSION               4096
 #define SM_SHUTTINGDOWN                8192
 #define SM_REMOTECONTROL               8193
