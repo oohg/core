@@ -81,6 +81,7 @@ CLASS TText FROM TLabel
    DATA lAutoSkip                 INIT .F.
    DATA lFocused                  INIT .F.
    DATA lInsert                   INIT .T.
+   DATA lNoRTrim                  INIT .F.
    DATA lPrevUndo                 INIT .F.
    DATA lRecreateOnReset          INIT .T.
    DATA lUndo                     INIT .F.
@@ -161,7 +162,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
                lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
                lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo ) CLASS TText
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TText
 
    LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -172,7 +173,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
               lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
               lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
               nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-              lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+              lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
 
    RETURN Self
 
@@ -181,7 +182,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
                 bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
                 cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
                 nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-                lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo ) CLASS TText
+                lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TText
 
    LOCAL nControlHandle, aAux, lBreak := NIL
 
@@ -191,6 +192,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
    ASSIGN ::nHeight      VALUE h        TYPE "N"
    ASSIGN ::bWhen        VALUE bWhen    TYPE "B"
    ASSIGN ::nInsertType  VALUE nInsType TYPE "N"
+   ASSIGN ::lNoRTrim     VALUE lNoRTrim TYPE "L"
 
    IF HB_ISNUMERIC( nMaxLength ) .AND. nMaxLength >= 0
       ::nMaxLength := Int( nMaxLength )
@@ -506,11 +508,9 @@ METHOD PasswordChar( uPassChr ) CLASS TText
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RefreshData() CLASS TText
 
-   LOCAL uValue
-
    IF HB_ISBLOCK( ::Block )
       uValue := Eval( ::Block )
-      IF ValType ( uValue ) $ 'CM'
+      IF lNoRTrim .AND. ValType ( uValue ) $ 'CM'
          uValue := RTrim( uValue )
       ENDIF
       ::Value := uValue
@@ -598,7 +598,7 @@ METHOD Value( uValue ) CLASS TText
    LOCAL cRet
 
    IF ValType( uValue ) $ "CM"
-      cRet := ::xStartValue := ::Caption := RTrim( uValue )
+      cRet := ::xStartValue := ::Caption := iif( ::lNoRTrim, uValue, RTrim( uValue ) )
    ELSE
       cRet := ::Caption
    ENDIF
@@ -1183,7 +1183,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, c
                bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
                cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, nOnFocusPos, lDisabled, ;
                bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo ) CLASS TTextPicture
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TTextPicture
 
    LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1211,7 +1211,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, c
               bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
               cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
               nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, ;
-              nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+              nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
 
    RETURN Self
 
@@ -1906,7 +1906,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
                lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
                lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo ) CLASS TTextNum
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TTextNum
 
    LOCAL nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1917,7 +1917,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
               lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
               lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, ;
               lNoBorder, nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-              bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+              bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
 
    RETURN Self
 
@@ -1971,7 +1971,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, 
                         lReadOnly, lBold, lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, ;
                         lNoTabStop, lRtl, lAutoSkip, lNoBorder, nOnFocusPos, lDisabled, bValid, lDate, lNumeric, cInputmask, ;
                         cFormat, oSubclass, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, ;
-                        nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+                        nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
 
    LOCAL Self, lInsert
 
@@ -2017,14 +2017,14 @@ FUNCTION DefineTextBox( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, 
                 cTooltip, bLostfocus, bGotfocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
                 lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                 nOnFocusPos, lDisabled, bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-                nYear, bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+                nYear, bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
    ELSE
       Self := _OOHG_SelectSubClass( iif( lNumeric, TTextNum(), TText() ), oSubclass )
       ::Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
                 lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, ;
                 lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, ;
                 lNoBorder, nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-                bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo )
+                bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
    ENDIF
 
    ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
