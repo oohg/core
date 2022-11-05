@@ -142,35 +142,31 @@ HB_FUNC( _SETFONT )          /* FUNCTION _SetFont( hWnd, cFontName, nFontSize, l
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( GETSYSTEMFONT )          /* FUNCTION GetSystemFont() -> hFont */
+HB_FUNC( GETSYSTEMFONT )          /* FUNCTION GetSystemFont() -> { cFontName, nSize } */
 {
    LOGFONT lfDlgFont;
    NONCLIENTMETRICS ncm;
-   OSVERSIONINFO osvi;
-   char *szFName;
-   int iHeight;
+#ifdef UNICODE
+   LPSTR pStr;
+#endif
 
-   getwinver( &osvi );
-   if( osvi.dwMajorVersion >= 5 )
-   {
-      ncm.cbSize = sizeof( ncm );
+   ncm.cbSize = sizeof( ncm );
 
-      SystemParametersInfo( SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, 0 );
+   /* Get metrics associated with the nonclient area of a nonminimized window */
+   SystemParametersInfo( SPI_GETNONCLIENTMETRICS, sizeof( ncm ), &ncm, 0 );
 
-      lfDlgFont = ncm.lfMessageFont;
-
-      szFName = lfDlgFont.lfFaceName;
-      iHeight = 21 + lfDlgFont.lfHeight;
-   }
-   else
-   {
-      szFName = HB_UNCONST( "MS Sans Serif" );
-      iHeight = 21 + 8;
-   }
+   /* information about the font used in message boxes */
+   lfDlgFont = ncm.lfMessageFont;
 
    hb_reta( 2 );
-   HB_STORC( szFName, -1, 1 );
-   HB_STORNI( iHeight, -1, 2 );
+#ifndef UNICODE
+   HB_STORC( lfDlgFont.lfFaceName, -1, 1 );
+#else
+   pStr = WideToAnsi( lfDlgFont.lfFaceName );
+   HB_STORC( pStr, -1, 1 );
+   hb_xfree( pStr );
+#endif
+   HB_STORNI( 21 + lfDlgFont.lfHeight, -1, 2 );
 }
 
 /*
