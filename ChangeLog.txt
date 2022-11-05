@@ -13,6 +13,69 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-10-31 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    + Support for not trimming trailing spaces.
+  #591
+
+2022-10-30 10:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    ! Win 11 detection.
+  #580
+
+2022-10-30 10:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_window.c
+    + Function OSIsWinEightOrLater.
+    + Function OSIsWinTenOrLater.
+    + Function OSIsWinElevenOrLater.
+  #581
+
+2022-10-30 09:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_metrics.ch
+    + Add more defines.
+  #585
+
+2022-10-30 09:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\buildapp.bat
+    - Remove unused env vars.
+  #582
+
+2022-10-30 09:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohg.h
+  * core\source\c_activex.c
+    * Define DEVICEINTERFASEparam was renamed DEVICEINTERFACEparam.
+  #586
+
+2022-10-30 09:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\resources\Windows.Manifest
+    * Align lines.
+  #583
+
+2022-10-29 18:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Add OsIsWinSevenOrLater function.
+  #584
+
+2022-10-29 16:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    - Remove no longer needed function call.
+  #587
+
+2022-10-29 16:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_edit_ex.prg
+    * Minor cosmetic changes.
+  #588
+
+2022-10-29 16:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_scrsaver.prg
+    - XP related code was removed.
+  #589
+
+2022-10-29 16:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_zip.prg
+    ! Spell error.
+  #590
+
 2022-10-12 19:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_edit.ch
     ! Changes made by #472 were reverted because OOHG's sample
