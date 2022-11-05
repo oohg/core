@@ -161,11 +161,11 @@
 
 #xtranslate IsWin10OrLater() ;
    => ;
-      OSIsWin10OrLater()
+      OSIsWinTenOrLater()
 
 #xtranslate IsWin11OrLater() ;
    => ;
-      OSIsWin11OrLater()
+      OSIsWinElevenOrLater()
 
 #xtranslate hb_osisWin11() ;
    => ;
