@@ -267,7 +267,7 @@ HB_FUNC( C_GETFOLDER )
    hb_xfree( lpBuffer );
 }
 
-HB_FUNC( C_GETSPECIALFOLDER ) 
+HB_FUNC( C_GETSPECIALFOLDER )
 /* Contributed By Ryszard Ryüko */
 {
    char * lpBuffer = (char *) hb_xgrab( MAX_PATH + 1 );
