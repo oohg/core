@@ -123,7 +123,7 @@ FUNCTION WindowsVersion()
 
    LOCAL cKey, aRetVal := Array( 4 )
 
-   IF OSIsWin10OrLater()
+   IF OSIsWinTenOrLater()
       cKey := "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
       aRetVal[ 1 ] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ProductName" )
       aRetVal[ 2 ] := GetRegistryValue( HKEY_LOCAL_MACHINE, cKey, "ReleaseId" )
