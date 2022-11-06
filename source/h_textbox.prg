@@ -508,9 +508,11 @@ METHOD PasswordChar( uPassChr ) CLASS TText
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RefreshData() CLASS TText
 
+   LOCAL uValue
+
    IF HB_ISBLOCK( ::Block )
       uValue := Eval( ::Block )
-      IF lNoRTrim .AND. ValType ( uValue ) $ 'CM'
+      IF ::lNoRTrim .AND. ValType ( uValue ) $ 'CM'
          uValue := RTrim( uValue )
       ENDIF
       ::Value := uValue
