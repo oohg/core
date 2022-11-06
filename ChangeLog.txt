@@ -13,6 +13,36 @@
  * Use #nnn to refer to an issue.
  */
 
+2022-11-06 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_textbox.prg
+    ! Undefined var lNorRTrim.
+  #594
+
+2022-11-05 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_winapimisc.prg
+    * Synchronize function GetSystemFont with Extended.
+  #593
+
+2022-11-05 15:45 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_winapimisc.prg
+    ! Replace a call to OSIsWin10OrLater() by OSIsWinTenOrLater().
+  #592
+
+2022-11-05 15:36 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    ! Fix support for newer Windows versions: the preprocessor rules
+      for IsWin10OrLater() and IsWin11OrLater() must translate to
+      OSIsWinTenOrLater() and OSIsWinElevenOrLater() respectively.
+  #592
+
+2022-11-05 15:25 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    * Pacify C compilar warning.
+
+2022-11-05 15:22 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_winapimisc.c
+    * Remove space at EOL.
+
 2022-10-31 18:19 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_textbox.prg
     + Support for not trimming trailing spaces.
