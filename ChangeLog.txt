@@ -13,6 +13,18 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-03-14 16:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\bostaurus.prg
+  * core\source\c_controlmisc.c
+  * core\source\c_winapimisc.c
+  * core\source\h_grid.prg
+  * core\source\h_ini.prg
+  * core\source\winprint.prg
+    ! Replace struct = { 0 } with memset( &struct, 0, sizeof( struct ) ).
+      Such BCC syntax does not clear the whole structure body in most of
+      other C compilers..
+  #596
+
 2022-11-06 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_textbox.prg
     ! Undefined var lNorRTrim.
