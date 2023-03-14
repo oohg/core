@@ -397,21 +397,24 @@ HB_FUNC( PAINTBKGND )
 
 HB_FUNC( GETWINDOWSDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = { 0 };
+   char szBuffer[ MAX_PATH + 1 ];
+   memset( &szBuffer, 0, sizeof( szBuffer ) );
    GetWindowsDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETSYSTEMDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = { 0 };
+   char szBuffer[ MAX_PATH + 1 ];
+   memset( &szBuffer, 0, sizeof( szBuffer ) );
    GetSystemDirectory( szBuffer, MAX_PATH );
    hb_retc( szBuffer );
 }
 
 HB_FUNC( GETTEMPDIR )
 {
-   char szBuffer[ MAX_PATH + 1 ] = { 0 };
+   char szBuffer[ MAX_PATH + 1 ];
+   memset( &szBuffer, 0, sizeof( szBuffer ) );
    GetTempPath( MAX_PATH, szBuffer );
    hb_retc( szBuffer );
 }
@@ -697,7 +700,8 @@ HB_FUNC( REMOVEFOLDER )
 
 HB_FUNC( GETCURRENTFOLDER )
 {
-   char Path[ MAX_PATH + 1 ] = { 0 };
+   char Path[ MAX_PATH + 1 ];
+   memset( &Path, 0, sizeof( Path ) );
    GetCurrentDirectory( MAX_PATH, (LPSTR) Path );
    hb_retc( Path );
 }
@@ -1095,9 +1099,10 @@ HB_FUNC( GETCOMPACTPATH )
 HB_FUNC( GETSHORTPATHNAME )
 /* Jacek Kubica <kubica@wssk.wroc.pl> HMG 1.1 Experimental Build 11a */
 {
-   char buffer[ MAX_PATH + 1 ] = { 0 };
+   char buffer[ MAX_PATH + 1 ];
    DWORD iRet;
 
+   memset( &buffer, 0, sizeof( buffer ) );
    iRet = GetShortPathName( hb_parc( 1 ), buffer, MAX_PATH );
    if( iRet < MAX_PATH )
    {
@@ -1291,7 +1296,8 @@ HB_FUNC( DIRECTORYINFO )          /* FUNCTION DirectoryInfo( [ nCSIDL | cPath], 
 
       if( HB_ISBYREF( 4 ) )
       {
-         TCHAR cParsingName[ MAX_PATH ] = { 0 };
+         TCHAR cParsingName[ MAX_PATH ];
+         memset( &cParsingName, 0, sizeof( cParsingName ) );
          IShellFolder2_GetDisplayNameOf( psfDeskTop, pidlFolders, SHGDN_INFOLDER, &strDispName );
          win_StrRetToBuf( &strDispName, pidlItems, cParsingName, MAX_PATH );
          hb_storc( cParsingName, 4 );

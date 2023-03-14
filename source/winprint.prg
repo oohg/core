@@ -5845,8 +5845,9 @@ HB_FUNC( RR_LOADSTRING )          /* FUNCTION RR_LoadString( nIdentifier ) -> cS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( RR_GETTEMPFOLDER )          /* FUNCTION RR_GetTempFolder() -> cFolder */
 {
-   char szBuffer[ MAX_PATH + 1 ] = { 0 };
+   char szBuffer[ MAX_PATH + 1 ];
 
+   memset( &szBuffer, 0, sizeof( szBuffer ) );
    GetTempPath( MAX_PATH, szBuffer );
    hb_retc( szBuffer );
 }

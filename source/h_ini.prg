@@ -404,12 +404,15 @@ FUNCTION CToA( cArray )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( GETPRIVATEPROFILESTRING )
 {
-   TCHAR bBuffer[ 1024 ] = { 0 };
+   TCHAR bBuffer[ 1024 ];
    DWORD dwLen ;
    const char * lpSection = hb_parc( 1 );
    const char * lpEntry = HB_ISCHAR(2) ? hb_parc( 2 ) : NULL ;
    const char * lpDefault = hb_parc( 3 );
    const char * lpFileName = hb_parc( 4 );
+
+   memset( &bBuffer, 0, sizeof( bBuffer ) );
+
    dwLen = GetPrivateProfileString( lpSection , lpEntry ,lpDefault , bBuffer, sizeof( bBuffer ) , lpFileName);
    if( dwLen )
       hb_retclen( (char *) bBuffer, dwLen );

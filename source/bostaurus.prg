@@ -4204,7 +4204,8 @@ HB_FUNC( BT_DIRECTORYINFO )    // ( [ nCSIDL | cPath] , [nTypeList] , @nIndexRoo
 
       if( HB_ISBYREF( 4 ) )
       {
-         TCHAR cParsingName[ MAX_PATH ] = { 0 };
+         TCHAR cParsingName[ MAX_PATH ];
+         memset( &cParsingName, 0, sizeof( cParsingName ) );
          IShellFolder2_GetDisplayNameOf( psfDeskTop, pidlFolders, SHGDN_INFOLDER, &strDispName );
          win_StrRetToBuf( &strDispName, pidlItems, cParsingName, MAX_PATH );
          hb_storc( cParsingName, 4 );

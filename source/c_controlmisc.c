@@ -456,7 +456,8 @@ HB_FUNC( RELEASECONTROL )
 
 HB_FUNC( GETMODULEFILENAME )
 {
-   TCHAR bBuffer[ MAX_PATH + 1 ] = { 0 };
+   TCHAR bBuffer[ MAX_PATH + 1 ];
+   memset( &bBuffer, 0, sizeof( bBuffer ) );
 
    GetModuleFileName( (HMODULE) HWNDparam( 1 ), (LPTSTR) bBuffer, MAX_PATH + 1 );
 
@@ -560,7 +561,8 @@ HB_FUNC( GETSHOWCMD )
 
 HB_FUNC( GETPROGRAMFILENAME )
 {
-   TCHAR bBuffer[ MAX_PATH + 1 ] = { 0 };
+   TCHAR bBuffer[ MAX_PATH + 1 ];
+   memset( &bBuffer, 0, sizeof( bBuffer ) );
 
    GetModuleFileName( GetModuleHandle( NULL ), (LPTSTR) bBuffer, MAX_PATH + 1 );
 

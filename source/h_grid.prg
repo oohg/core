@@ -8781,11 +8781,13 @@ HB_FUNC( LISTVIEWSETITEM )
 
 HB_FUNC( LISTVIEWGETITEM )
 {
-   char buffer[ 1024 ] = { 0 };
+   char buffer[ 1024 ];
    HWND h;
    int s, c, l;
    LV_ITEM LI;
    PHB_ITEM pArray, pString;
+
+   memset( &buffer, 0, sizeof( buffer ) );
 
    h = HWNDparam( 1 );
 
@@ -8862,8 +8864,10 @@ HB_FUNC( CELLRAWVALUE )          /* FUNCTION CellRawValue( hWnd, nRow, nCol, nTy
 {
    HWND hwnd;
    LV_ITEM LI;
-   char buffer[ 1024 ] = { 0 };
+   char buffer[ 1024 ];
    int iType;
+
+   memset( &buffer, 0, sizeof( buffer ) );
 
    hwnd = HWNDparam( 1 );
    iType = hb_parni( 4 );
@@ -8915,7 +8919,10 @@ int CALLBACK _OOHG_SortItems( LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort 
    _OOHG_SortItemsInfo *si;
    int iRet;
    LVITEM lvItem1, lvItem2;
-   char cString1[ 1024 ] = { 0 }, cString2[ 1024 ] = { 0 };
+   char cString1[ 1024 ], cString2[ 1024 ];
+
+   memset( &cString1, 0, sizeof( cString1 ) );
+   memset( &cString2, 0, sizeof( cString2 ) );
 
    si = (_OOHG_SortItemsInfo *) lParamSort;
 
@@ -9627,7 +9634,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
    LPRECT lprcBack = &rcBack;
    HBRUSH hBrush;
    LV_ITEM LI;
-   char buffer[ 1024 ] = { 0 };
+   char buffer[ 1024 ];
+   memset( &buffer, 0, sizeof( buffer ) );
 
    lplvcd = ( LPNMLVCUSTOMDRAW ) lParam;
 
