@@ -3060,7 +3060,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       Return 0
 
    ElseIf nMsg == WM_MOUSEWHEEL
-      If GET_WHEEL_DELTA_WPARAM( wParam  ) > 0
+      If GET_WHEEL_DELTA_WPARAM( wParam ) > 0
          ::Up()
       Else
          ::Down()
@@ -3173,7 +3173,7 @@ METHOD VScrollUpdate CLASS TGrid
 
    SetScrollRange( ::hWnd, SB_VERT, 0, ::ItemCount - 1, .T. )
    // This fires WM_NCCALCSIZE
-   SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage)
+   SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage )
 
    RETURN NIL
 
