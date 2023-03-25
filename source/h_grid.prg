@@ -3498,6 +3498,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_ENDSCROLL
+      // Returns the horizontal or vertical amount scrolled: + down/right - up/left
       aData := Get_DXDY_LPARAM( lParam )
       AAdd( aData, GetScrollPos( ::hWnd, SB_HORZ ) )
       AAdd( aData, GetScrollPos( ::hWnd, SB_VERT ) )
