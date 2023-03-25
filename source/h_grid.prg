@@ -3598,12 +3598,6 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
          Return Nil
       EndIf
 
-   ElseIf nNotify == LVN_ENDSCROLL
-      // There is a bug in ListView under XP that causes the gridlines to be
-      // incorrectly scrolled when the left button is clicked to scroll.
-      // This is supposedly documented at KB 813791.
-      RedrawWindow( ::hWnd )
-
    ElseIf nNotify == NM_CLICK
       aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
       // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
