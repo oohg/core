@@ -395,6 +395,10 @@ DECLARE WINDOW TRANSLATE MAP (SEMI-OOP PROPERTIES/METHODS ACCESS)
    => ;
       ReleaseAllWindows( .T. )
 
+#xcommand QUIT ;
+   => ;
+      ReleaseAllWindows( .T. )
+
 #command RELEASE WINDOW MAIN ;
    => ;
       iif( HB_ISOBJECT( _OOHG_Main ), _OOHG_Main:Release(), ReleaseAllWindows( .T. ) )
