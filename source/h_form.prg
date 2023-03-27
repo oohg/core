@@ -2106,8 +2106,8 @@ Procedure ValidateScrolls( Self, lMove )
       hscroll := .T.
    EndIf
 
-   // Reubicates controls
-   If lMove .AND. ( vscroll .OR. hscroll )
+   // Relocate controls
+   If lMove .AND. ( vscroll .OR. hscroll ) .AND. _OOHG_AutoScroll
       ::ScrollControls()
    EndIf
 

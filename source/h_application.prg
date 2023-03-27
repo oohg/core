@@ -158,7 +158,10 @@
 #define NDX_OOHG_DEFAULTFONTWIDTH       70
 #define NDX_OOHG_DEFAULTFONTORIENTATION 71
 #define NDX_OOHG_DEFAULTFONTADVANCED    72
-#define NUMBER_OF_APP_WIDE_VARS         72
+#define NDX_OOHG_DEFAULTSCROLLPAGE      73
+#define NDX_OOHG_DEFAULTSCROLLSTEP      74
+#define NDX_OOHG_AUTOSCROLL             75
+#define NUMBER_OF_APP_WIDE_VARS         75
 
 STATIC oAppObj := NIL
 
@@ -301,6 +304,9 @@ CLASS TApplication
    METHOD Value_Pos70             SETGET
    METHOD Value_Pos71             SETGET
    METHOD Value_Pos72             SETGET
+   METHOD Value_Pos73             SETGET
+   METHOD Value_Pos74             SETGET
+   METHOD Value_Pos75             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -2424,6 +2430,48 @@ METHOD Value_Pos72( lValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ] := lValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos73( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTSCROLLPAGE ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTSCROLLPAGE ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos74( nValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISNUMERIC( nValue )
+      ::aVars[ NDX_OOHG_DEFAULTSCROLLSTEP ] := nValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_DEFAULTSCROLLSTEP ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos75( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_AUTOSCROLL ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_AUTOSCROLL ]
    ::MutexUnlock()
 
    RETURN ( uRet )

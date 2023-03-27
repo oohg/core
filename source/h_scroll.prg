@@ -142,8 +142,8 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, RangeMin, RangeMax, ;
    ASSIGN ::nRow      VALUE y         TYPE "N"
    ASSIGN ::nCol      VALUE x         TYPE "N"
    ASSIGN ::nOrient   VALUE nOrient   TYPE "N" DEFAULT SB_VERT
-   ASSIGN ::nLineSkip VALUE nLineSkip TYPE "N"
-   ASSIGN ::nPageSkip VALUE nPageSkip TYPE "N"
+   ASSIGN ::nLineSkip VALUE nLineSkip TYPE "N" DEFAULT _OOHG_DefaultScrollStep
+   ASSIGN ::nPageSkip VALUE nPageSkip TYPE "N" DEFAULT _OOHG_DefaultScrollPage
    ASSIGN ::lAutoMove VALUE lAutoMove TYPE "L"
 
    ::SetForm( ControlName, ParentForm,,,,,, lRtl )

@@ -63,6 +63,7 @@
 
 #xtranslate App.ArgC                       => _OOHG_AppObject():ArgC
 #xtranslate App.Args                       => _OOHG_AppObject():Args
+#xtranslate App.AutoScroll := <arg>        => _OOHG_AppObject():Value_Pos75( <arg> )
 #xtranslate App.BackColor                  => _OOHG_AppObject():BackColor()
 #xtranslate App.BackColor := <arg>         => _OOHG_AppObject():BackColor( <arg> )
 #xtranslate App.Cargo                      => _OOHG_AppObject():Cargo()
@@ -107,6 +108,10 @@
 #xtranslate App.ReleaseFont( <arg> )       => _OOHG_AppObject():ReleaseLogFont( <arg> )
 #xtranslate App.Row                        => _OOHG_AppObject():Row()
 #xtranslate App.Row := <arg>               => _OOHG_AppObject():Row( <arg> )
+#xtranslate App.ScrollPage                 => _OOHG_AppObject():Value_Pos73()
+#xtranslate App.ScrollPage := <arg>        => _OOHG_AppObject():Value_Pos73( <arg> )
+#xtranslate App.ScrollStep                 => _OOHG_AppObject():Value_Pos74()
+#xtranslate App.ScrollStep := <arg>        => _OOHG_AppObject():Value_Pos74( <arg> )
 #xtranslate App.Title                      => _OOHG_AppObject():Title()
 #xtranslate App.Title := <arg>             => _OOHG_AppObject():Title( <arg> )
 #xtranslate App.Topmost                    => _OOHG_AppObject():Topmost()
@@ -132,5 +137,21 @@
 
 #xtranslate SET FORM DEFAULT BACKCOLOR TO <color>;
    => ;
-      _OOHG_DefaultFormBackColor := <color>
+      _OOHG_AppObject():Value_Pos68( <color> )
+
+#xtranslate SET SCROLLPAGE TO <step> ;
+   => ;
+      _OOHG_AppObject():Value_Pos73( <step> )
+
+#xtranslate SET SCROLLSTEP TO <step> ;
+   => ;
+      _OOHG_AppObject():Value_Pos74( <step> )
+
+#xtranslate SET AUTOSCROLL OFF ;
+   => ;
+      _OOHG_AppObject():Value_Pos75 := .F.
+
+#xtranslate SET AUTOSCROLL ON ;
+   => ;
+      _OOHG_AppObject():Value_Pos75 := .T.
 

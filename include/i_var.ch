@@ -136,7 +136,9 @@ APPLICATION WIDE PSEUDO-VARIABLES
 #xtranslate _OOHG_DefaultFontWidth        => _OOHG_AppObject():Value_Pos70
 #xtranslate _OOHG_DefaultFontOrientation  => _OOHG_AppObject():Value_Pos71
 #xtranslate _OOHG_DefaultFontAdvanced     => _OOHG_AppObject():Value_Pos72
-
+#xtranslate _OOHG_DefaultScrollPage       => _OOHG_AppObject():Value_Pos73
+#xtranslate _OOHG_DefaultScrollStep       => _OOHG_AppObject():Value_Pos74
+#xtranslate _OOHG_AutoScroll              => _OOHG_AppObject():Value_Pos75
 #xtranslate _OOHG_ActiveFrame             => _OOHG_AppObject():ActiveFrameGet()
 #xtranslate _OOHG_ActiveGroupBox          => _OOHG_AppObject():ActiveGroupBoxGet()
 #xtranslate _OOHG_LastDefinedForm         => ATail( _OOHG_RegisteredForms )
