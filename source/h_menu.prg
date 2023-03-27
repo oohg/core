@@ -822,7 +822,7 @@ METHOD DefineSeparator( cName, uParent, lRight ) CLASS TMenuItem
       ::xData := CreateMenuItemData( nId )
       AppendMenu( ::Container:hWnd, nId, ::xData, nStyle )
    ELSE
-      AppendMenu( ::Container:hWnd, nId, NIL, nStyle ) 
+      AppendMenu( ::Container:hWnd, nId, NIL, nStyle )
    ENDIF
    ::Register( 0, cName, NIL, NIL, NIL, nId )
    ::lIsSeparator := .T.
@@ -855,7 +855,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
       ::xData := CreateMenuItemData( nId )
       InsertMenu( ::Container:hWnd, nId, ::xData, nStyle, nPos )
    ELSE
-      InsertMenu( ::Container:hWnd, nId, NIL, nStyle, nPos )      
+      InsertMenu( ::Container:hWnd, nId, NIL, nStyle, nPos )
    ENDIF
    ::Register( 0, cName, NIL, NIL, NIL, nId )
    ::lIsSeparator := .T.
@@ -1645,7 +1645,7 @@ HB_FUNC( INSERTMENU )          /* FUNCTION InsertMenu( hMenu, hMenu/nId, uData/c
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( APPENDMENU )          /* FUNCTION AppendMenu( hMenu, hMenu/nId, uData/cCaption, nStyle ) -> NIL */
+HB_FUNC( APPENDMENU )          /* FUNCTION AppendMenu( hMenu, hMenu/nId, uData/cCaption, nStyle ) -> lSuccess */
 {
    HMENU hMenu;
    UINT uFlags;
@@ -1853,9 +1853,30 @@ HB_FUNC( GETMENUBARHEIGHT )          /* FUNCTION GetMenuBarHeight() -> nHeight *
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETMENU )          /* FUNCTION GetMenu( hWnd ) -> hMenu */
+{
+   HMENUret( GetMenu( HWNDparam( 1 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( EXISTMAINMENU )          /* FUNCTION ExistMainMenu( hWnd ) -> lExists */
+{
+   hb_retl( GetMenu( HWNDparam( 1 ) ) != NULL );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( DESTROYMENU )          /* FUNCTION DestroyMenu( hWnd ) -> lSuccess */
 {
    hb_retl( DestroyMenu( HMENUparam( 1 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC (DELETEMAINMENU)          /* FUNCTION DeleteMainMenu( hWnd ) -> lSuccess */
+{
+   HWND hWnd = HWNDparam( 1 );
+
+   DestroyMenu( GetMenu( hWnd ) );
+   SetMenu( hWnd, NULL );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2573,7 +2594,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
          DeleteObject( brush );
       }
    }
-   
+
    /* draw menu item background */
    CopyRect( &rect, &lpdis->rcItem );
    if( bCheckMark )
