@@ -156,7 +156,7 @@ MEMVAR _HMG_MiniPrint
       _HMG_PRINTER_UserCopies := <.lCopies.> ;;
       _HMG_PRINTER_UserCollate := <.lCollate.> ;;
       _HMG_PRINTER_TimeStamp := StrZero( Seconds() * 100, 8 ) ;;
-      _HMG_PRINTER_Name := <cPrinter> 
+      _HMG_PRINTER_Name := <cPrinter>
 
 #xcommand SELECT PRINTER <cPrinter> TO <lSuccess> ;
       [ <lOrientation: ORIENTATION> <nOrientation> ] ;
