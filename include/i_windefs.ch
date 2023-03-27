@@ -85,20 +85,37 @@ WINDOWS MESSAGES
 #define WM_ACTIVATEAPP                28
 #define WM_CANCELMODE                 31
 #define WM_MOUSEACTIVATE              33
+#define WM_PAINTICON                  38
+#define WM_ICONERASEBKGND             39
 #define WM_NEXTDLGCTL                 40
 #define WM_DRAWITEM                   43
 #define WM_VKEYTOITEM                 46
+#define WM_SETFONT                    48
+#define WM_GETFONT                    49
 #define WM_WINDOWPOSCHANGING          70
 #define WM_WINDOWPOSCHANGED           71
 #define WM_NOTIFY                     78
 #define WM_HELP                       83
 #define WM_CONTEXTMENU                123
 #define WM_NCCALCSIZE                 131
+#define WM_NCHITTEST                  132
 #define WM_NCPAINT                    133
 #define WM_NCACTIVATE                 134
 #define WM_GETDLGCODE                 135
-#define WM_NCLBUTTONUP                162
+#define WM_SYNCPAINT                  136
+#define WM_NCMOUSEMOVE                160
 #define WM_NCLBUTTONDOWN              161
+#define WM_NCLBUTTONUP                162
+#define WM_NCLBUTTONDBLCLK            163
+#define WM_NCRBUTTONDOWN              164
+#define WM_NCRBUTTONUP                165
+#define WM_NCRBUTTONDBLCLK            166
+#define WM_NCMBUTTONDOWN              167
+#define WM_NCMBUTTONUP                168
+#define WM_NCMBUTTONDBLCLK            169
+#define WM_NCXBUTTONDOWN              171
+#define WM_NCXBUTTONUP                172
+#define WM_NCXBUTTONDBLCLK            173
 #define WM_KEYDOWN                    256
 #define WM_KEYUP                      257
 #define WM_CHAR                       258
@@ -110,6 +127,11 @@ WINDOWS MESSAGES
 #define WM_HSCROLL                    276
 #define WM_VSCROLL                    277   // 0x0115
 #define WM_MENUSELECT                 287   // 0x011F
+#define WM_MENUCHAR                   288
+#define WM_MENURBUTTONUP              290
+#define WM_MENUDRAG                   291
+#define WM_MENUGETOBJECT              292
+#define WM_MENUCOMMAND                294
 #define WM_CTLCOLORMSGBOX             306
 #define WM_CTLCOLOREDIT               307
 #define WM_CTLCOLORLISTBOX            308
@@ -118,6 +140,7 @@ WINDOWS MESSAGES
 #define WM_CTLCOLORSCROLLBAR          311
 #define WM_CTLCOLORSTATIC             312
 #define WM_MOUSEMOVE                  512   // 0x0200
+#define WM_MOUSEFIRST                 512
 #define WM_LBUTTONDOWN                513   // 0x0201
 #define WM_LBUTTONUP                  514   // 0x0202
 #define WM_LBUTTONDBLCLK              515   // 0x0203
@@ -128,24 +151,36 @@ WINDOWS MESSAGES
 #define WM_MBUTTONUP                  520   // 0x0208
 #define WM_MBUTTONDBLCLK              521   // 0x0209
 #define WM_MOUSEWHEEL                 522   // 0x020a
+#define WM_XBUTTONDOWN                523
+#define WM_XBUTTONUP                  524
+#define WM_XBUTTONDBLCLK              525
 #define WM_MOUSEHWHEEL                526   // 0x020e
+#define WM_NEXTMENU                   531
 #define WM_MDIACTIVATE                546
 #define WM_MDITILE                    550
 #define WM_MDICASCADE                 551
 #define WM_MDIICONARRANGE             552
 #define WM_MDIGETACTIVE               553
 #define WM_MOUSEHOVER                 673   // 0x02a1
+#define WM_MOUSELEAVE	              675   // 0x02a3
 #define WM_SIZING                     532
 #define WM_CAPTURECHANGED             533
 #define WM_MOVING                     534
 #define WM_ENTERSIZEMOVE              561
 #define WM_EXITSIZEMOVE               562
+#define WM_TOUCHMOVE                  576
+#define WM_TOUCHDOWN                  577
+#define WM_TOUCHUP                    578
+#define WM_NCMOUSEHOVER               672
+#define WM_NCMOUSELEAVE               674
 #define WM_CUT                        768
 #define WM_COPY                       769
 #define WM_PASTE                      770
 #define WM_CLEAR                      771
 #define WM_UNDO                       772
 #define WM_HOTKEY                     786
+#define WM_PRINT                      791
+#define WM_PRINTCLIENT                792
 
 /*---------------------------------------------------------------------------
 PRIVATE MESSAGES
@@ -469,6 +504,7 @@ LISTVIEW CONTROL
 #define LVS_OWNERDRAWFIXED            0x0400
 #define LVS_NOCOLUMNHEADER            0x4000
 #define LVS_NOSORTHEADER              0x8000
+#define LVN_BEGINSCROLL               ( -180 )
 #define LVN_ENDSCROLL                 ( -181 )
 #define LVN_BEGINDRAG                 ( -109 )
 #define LVN_GETDISPINFO               ( -150 )
@@ -1196,5 +1232,6 @@ HRESULT
 ---------------------------------------------------------------------------*/
 
 #define S_OK                                      0
+#define S_FALSE                                   1
 
 #endif
