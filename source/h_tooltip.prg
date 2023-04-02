@@ -1219,7 +1219,7 @@ HB_FUNC( TTM_UPDATETIPTEXT )          /* FUNCTION TTM_UpdateTipText( hWnd, hWnd,
 }
 
 /*
- * Allows  a  subclass  procedure to cause a tooltip to display text for a
+ * Allows a subclass procedure to cause a tooltip to display text for a
    window other than the one beneath the mouse cursor.
  */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
