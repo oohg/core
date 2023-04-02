@@ -13,6 +13,46 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-02 11:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_menu.ch
+    + Add PARENT as a synonym of OF.
+    + Add clause DEFINE DROPDOWNMENU OWNERBUTTON as a synonym of
+      DEFINE DROPDOWN MENU BUTTON.
+    + Add missing clauses NOTRANSPARENT and TOOLTIP to pp rules
+      #xcommand ITEM and #xcommand MENUITEM.
+  #601
+
+2023-03-27 20:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    + Functions GetMenu, ExistMainMenu and DeleteMainMenu.
+  #600
+
+2023-03-27 20:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_window.ch
+    + Translate for QUIT command.
+  #600
+
+2023-03-27 20:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+    + Some WM constants.
+  #600
+
+2023-03-27 20:07 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+  * core\include\i_var.ch
+  * core\source\h_application.prg
+    + SET SCROLLPAGE TO
+    + SET SCROLLSTEP TO
+    + SET AUTOSCROLL ON/OFF
+    + App-pseudo-vars _OOHG_DefaultScrollPage, _OOHG_DefaultScrollStep
+      and _OOHG_AutoScroll.
+  * core\source\h_form.prg
+    + Support for AutoScroll.
+  * core\source\h_scroll.prg
+    + Support for DefaultScrollPage and DefaultScrollStep.
+  #598
+  #599
+
 2023-03-14 16:27 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\bostaurus.prg
   * core\source\c_controlmisc.c
