@@ -92,7 +92,7 @@
       GetControlObject( <(control)>, <(form)> ):DefaultItemByID()
 
 #xcommand DEFINE MAIN MENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -107,7 +107,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE MAINMENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -122,7 +122,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE CONTEXT MENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -137,7 +137,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE CONTEXTMENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -151,8 +151,8 @@
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
-#xcommand DEFINE CONTEXT MENU CONTROL <Control> ;
-      [ OF <parent> ] ;
+#xcommand DEFINE CONTEXT MENU CONTROL <control> ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -163,11 +163,11 @@
       [ <win: WINDRAW> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
-            Define( <(Control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
+            Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
-#xcommand DEFINE CONTEXTMENU CONTROL <Control> ;
-      [ OF <parent> ] ;
+#xcommand DEFINE CONTEXTMENU CONTROL <control> ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -178,11 +178,26 @@
       [ <win: WINDRAW> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
-            Define( <(Control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
+            Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE DROPDOWN MENU BUTTON <button> ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ OBJ <obj> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ NAME <name> ] ;
+      [ MESSAGE <msg> ] ;
+      [ FONT <fontname> ] ;
+      [ TIMEOUT <tout> ] ;
+      [ <own: OWNERDRAW> ] ;
+      [ <win: WINDRAW> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+            Define( <(button)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
+            iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand DEFINE DROPDOWNMENU OWNERBUTTON <button> ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -197,7 +212,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE NOTIFY MENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -212,7 +227,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE NOTIFYMENU ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -227,7 +242,7 @@
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
 #xcommand DEFINE MENU DYNAMIC ;
-      [ OF <parent> ] ;
+      [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
       [ SUBCLASS <subclass> ] ;
       [ NAME <name> ] ;
@@ -321,12 +336,14 @@
       [ <default: DEFAULT> ] ;
       [ FONT <fontname> ] ;                      
       [ TIMEOUT <tout> ] ;
+      [ <notrans: NOTRANSPARENT> ] ;
+      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefineItem( <caption>, <{action}>, <(name)>, <image>, <.checked.>, ;
             <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, ;
             iif( <.breakmenu.>, iif( <.separator.>, 2, 1 ), NIL ), <msg>, ;
-            <.default.>, <fontname>, <tout> )
+            <.default.>, <fontname>, <tout>, <.notrans.>, <tooltip>)
 
 #xcommand MENUITEM <caption> ;
       [ <dummy: ACTION, ONCLICK> <action> ] ;
@@ -345,12 +362,14 @@
       [ <default: DEFAULT> ] ;
       [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
+      [ <notrans: NOTRANSPARENT> ] ;
+      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefineItem( <caption>, <{action}>, <(name)>, <image>, <.checked.>, ;
             <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, ;
             iif( <.breakmenu.>, iif( <.separator.>, 2, 1 ), NIL ), <msg>, ;
-            <.default.>, <fontname>, <tout> )
+            <.default.>, <fontname>, <tout>, <.notrans.>, <tooltip>)
 
 #xcommand SEPARATOR ;
       [ NAME <name> ] ;
