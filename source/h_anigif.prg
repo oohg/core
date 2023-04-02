@@ -101,7 +101,7 @@ CLASS TAniGIF FROM TImage
    ENDCLASS
 
 METHOD Define( ControlName, ParentForm, nCol, nRow, cFile, nWidth, nHeight, ;
-               ProcedureName, nHelpId, lInvisible, lWhiteBack, lRtl, uBkClr, ;
+               bOnClick, nHelpId, lInvisible, lWhiteBack, lRtl, uBkClr, ;
                cTooltip, lBorder, lClientedge, lDisabled ) CLASS TAniGIF
 
    ::Load( cFile )
@@ -109,7 +109,7 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, cFile, nWidth, nHeight, ;
    ASSIGN nWidth     VALUE nWidth     TYPE "N"  DEFAULT ::FrameWidth
    ASSIGN nHeight    VALUE nHeight    TYPE "N"  DEFAULT ::FrameHeight
 
-   ::Super:Define( ControlName, ParentForm, nCol, nRow, Nil, nWidth, nHeight, ProcedureName, ;
+   ::Super:Define( ControlName, ParentForm, nCol, nRow, Nil, nWidth, nHeight, bOnClick, ;
                    nHelpId, lInvisible, .F., lWhiteBack, lRtl, uBkClr, ;
                    Nil, Nil, .F., .F., cTooltip, lBorder, lClientedge, ;
                    .F., .F., .F., .F., Nil, lDisabled )

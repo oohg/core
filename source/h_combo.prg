@@ -156,10 +156,10 @@ CLASS TCombo FROM TLabel
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
-               fontsize, tooltip, changeprocedure, h, gotfocus, lostfocus, ;
+               fontsize, tooltip, bChange, h, gotfocus, lostfocus, ;
                uEnter, HelpId, invisible, notabstop, sort, bold, italic, ;
                underline, strikeout, itemsource, valuesource, displaychange, ;
-               ondisplaychangeprocedure, break, GripperText, aImage, lRtl, ;
+               bOndisplay, break, GripperText, aImage, lRtl, ;
                TextHeight, lDisabled, lFirstItem, lAdjustImages, backcolor, ;
                fontcolor, listwidth, onListDisplay, onListClose, ImageSource, ;
                ItemImgNum, lDelayLoad, lIncremental, lWinSize, lRefresh, ;
@@ -302,14 +302,14 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
 
    ::Value := Value
 
-   ASSIGN ::OnClick       VALUE ondisplaychangeprocedure TYPE "B"
-   ASSIGN ::OnLostFocus   VALUE LostFocus                TYPE "B"
-   ASSIGN ::OnGotFocus    VALUE GotFocus                 TYPE "B"
-   ASSIGN ::OnChange      VALUE ChangeProcedure          TYPE "B"
-   ASSIGN ::OnEnter       VALUE uEnter                   TYPE "B"
-   ASSIGN ::OnListDisplay VALUE onListDisplay            TYPE "B"
-   ASSIGN ::OnListClose   VALUE onListClose              TYPE "B"
-   ASSIGN ::OnCancel      VALUE bOnCancel                TYPE "B"
+   ASSIGN ::OnClick       VALUE bOndisplay    TYPE "B"
+   ASSIGN ::OnLostFocus   VALUE LostFocus     TYPE "B"
+   ASSIGN ::OnGotFocus    VALUE GotFocus      TYPE "B"
+   ASSIGN ::OnChange      VALUE bChange       TYPE "B"
+   ASSIGN ::OnEnter       VALUE uEnter        TYPE "B"
+   ASSIGN ::OnListDisplay VALUE onListDisplay TYPE "B"
+   ASSIGN ::OnListClose   VALUE onListClose   TYPE "B"
+   ASSIGN ::OnCancel      VALUE bOnCancel     TYPE "B"
 
    RETURN Self
 
