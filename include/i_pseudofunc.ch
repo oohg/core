@@ -73,9 +73,9 @@
    => ;
       ( "[" + <x> + "]")
 
-#xtranslate SendMessageWideString( <hWnd>, <nMsg>, <wparam>, <lparam> ) ;
+#xtranslate SendMessageWideString( <hwnd>, <nmsg>, <wparam>, <lparam> ) ;
    => ;
-      SendMessageStringW( <hWnd>, <nMsg>, <wparam>, <lparam> )
+      SendMessageStringW( <hwnd>, <nmsg>, <wparam>, <lparam> )
 
 #if ( __HARBOUR__ - 0 < 0x030200 )
 #xtranslate hb_osisWin10() ;
@@ -277,7 +277,7 @@
 
 #xtranslate GetControlValue( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Value
+      GetControlObject( <ControlName>, <ParentForm> ):value
 
 #xtranslate _SetFocus( <ControlName>, <ParentForm> ) ;
    => ;
