@@ -101,6 +101,10 @@
    => ;
       _IsWindowDefined( <(FormName)> )
 
+#xtranslate IsContextMenuDefined( <FormName> ) ;
+   => ;
+      iif( IsWindowDefined( <FormName> ), GetExistingFormObject( <FormName> ):ContextMenu != NIL, .F. )
+
 #xtranslate ArraysAreEqual( <array1>, <array2> ) ;
    => ;
       AEqual( <array1>, <array2> )
