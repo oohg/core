@@ -333,7 +333,7 @@
 
 #xtranslate _GetControlHeight( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Height
+      GetControlObject( <ControlName>, <ParentForm> ):height
 
 #xtranslate _SetControlCol( <ControlName>, <ParentForm>, <Value> ) ;
    => ;
