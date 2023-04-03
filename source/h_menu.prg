@@ -646,7 +646,7 @@ METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParent, lHilited, ;
-                   lRight, lStretch, nBreak, cMsg, lDefault, cFontId, nTimeout ) CLASS TMenuItem
+                   lRight, lStretch, nBreak, cMsg, lDefault, cFontId, nTimeout, lNoTransp, cToolTip ) CLASS TMenuItem
 
    LOCAL nStyle, nId, hFont := NIL
 
@@ -677,6 +677,11 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
          nStyle += MF_MENUBARBREAK
       ENDIF
    ENDIF
+   IF HB_ISLOGICAL( lNoTransp )
+      ::Transparent := ! lNoTransp
+   ELSE
+      ::Transparent := .T.
+   ENDIF
    IF ::lOwnerDraw
       nStyle += MF_OWNERDRAW
       IF ValidHandler( cFontId )
@@ -700,7 +705,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
       nStyle += MF_STRING
       AppendMenu( ::Container:hWnd, nId, cCaption, nStyle )
    ENDIF
-   ::Register( 0, cName, NIL, NIL, NIL, nId )
+   ::Register( 0, cName, NIL, NIL, cToolTip, nId )
 
    ASSIGN ::OnClick VALUE bAction TYPE "B"
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
@@ -968,9 +973,9 @@ METHOD Picture( uImages ) CLASS TMenuItem
    nAttributes := iif( ::lOwnerDraw, 0, iif( OSisWinVISTAorLater(), 1, 2) )
 
    IF ::lIsPopUp
-      ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Position(), ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .T. )
+      ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Position(), ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .T., ::Transparent )
    ELSE
-      ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Id, ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .F. )
+      ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Id, ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .F., ::Transparent )
    ENDIF
 
    RETURN ::aPicture
@@ -1782,7 +1787,7 @@ HB_FUNC( MENUCAPTION )          /* FUNCTION MenuCaption( hWnd, nId, cCaption/NIL
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, nId/nPos, cImg1, cImg2, lStretch, iAttrFlag, lPopUp ) -> { hBitmap1, hBitmap2 } */
+HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, nId/nPos, cImg1, cImg2, lStretch, iAttrFlag, lPopUp, lTransp ) -> { hBitmap1, hBitmap2 } */
 {
    HMENU hMenu = HMENUparam( 1 );
    UINT iItem = (UINT) hb_parni( 2 );
@@ -1790,7 +1795,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
    int iAttributes;
    int nWidth = 0;
    int nHeight = 0;
-   BOOL bIgnoreBkClr;
+   BOOL bIgnoreBkClr, bTransparent;
 
    if( HB_ISLOG( 5 ) )
    {
@@ -1810,7 +1815,10 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
    else
    {
       bIgnoreBkClr = FALSE;
-      if( hb_parni( 6 ) == 1 )
+
+      bTransparent = HB_ISLOG( 8 ) ? hb_parl( 8 ) : TRUE;
+
+      if( ( hb_parni( 6 ) == 1 ) && bTransparent )
       {
          /* is Vista or later */
          iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
@@ -2918,3 +2926,9 @@ FUNCTION _OOHG_MenuBitmapMetrics( aMetrics )
    ENDIF
 
    RETURN { aMenuParams[ MNUBMP_SIZE ], aMenuParams[ MNUBMP_XDELTA ], aMenuParams[ MNUBMP_YDELTA ] }
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _OOHG_GetMenuColor()
+
+   RETURN ASize( AClone( _OOHG_DefaultMenuParams ), MNUCLR_COUNT )
+
