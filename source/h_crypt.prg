@@ -68,7 +68,7 @@
 #include "i_init.ch"
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _ENCRYPT( cStr, cPass )
+FUNCTION _Encrypt( cStr, cPass )
 
    LOCAL cXorStr := CHARXOR( cStr, "<ORIGINAL>" )
 
@@ -79,12 +79,12 @@ FUNCTION _ENCRYPT( cStr, cPass )
    RETURN cXorStr
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION _DECRYPT( cStr, cPass )
+FUNCTION _Decrypt( cStr, cPass )
 
    RETURN CHARXOR( CHARXOR( cStr, cPass ), "<ORIGINAL>" )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
+FUNCTION fi_Code( cInFile, cPass, cOutFile, lDelete )
 
    LOCAL nHandle, cBuffer, cStr, nRead := 1, nOutHandle
 
@@ -161,7 +161,7 @@ FUNCTION FI_CODE( cInFile, cPass, cOutFile, lDelete )
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
+FUNCTION fi_Decode( cInFile, cPass, cOutFile, lDelete )
 
    LOCAL nHandle, cBuffer, cStr, nRead := 1, nOutHandle
 
@@ -243,7 +243,7 @@ FUNCTION FI_DECODE( cInFile, cPass, cOutFile, lDelete )
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION DB_ENCRYPT( cFile, cPass )
+FUNCTION db_Encrypt( cFile, cPass )
 
    LOCAL nHandle, cBuffer := Space( 4 ), cFlag := Space( 3 )
 
@@ -355,7 +355,7 @@ FUNCTION DB_ENCRYPT( cFile, cPass )
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION DB_UNENCRYPT( cFile, cPass )
+FUNCTION db_UnEncrypt( cFile, cPass )
 
    LOCAL nHandle, cBuffer := Space( 4 ), cSavePass := Space( 10 ), cFlag := Space( 3 )
 
@@ -474,7 +474,7 @@ FUNCTION DB_UNENCRYPT( cFile, cPass )
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-FUNCTION DB_CODE( cData, cKey, aFields, cPass, cFor, cWhile )
+FUNCTION db_Code( cData, cKey, aFields, cPass, cFor, cWhile )
 
    LOCAL cTmpFile, nRecno, cVal, cBuf, cAlias, cTmpAlias
    LOCAL aString[ Len( aFields ) ], nFields, cSeek, i
