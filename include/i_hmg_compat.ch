@@ -67,6 +67,10 @@
 
 #include "i_windefs.ch"
 
+#xtranslate HMG_Is64Bits() ;
+   => ;
+      IsExe64()
+
 #xtranslate _SetWindowBackColor( <FormHandle>, <aColor> ) ;
    => ;
       GetFormObjectByHandle( <FormHandle> ):BackColor( <aColor> )
@@ -205,7 +209,7 @@ SPLITBOX VERSION
             <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
             <aWhenFields>, <dynamicforecolor>, NIL, NIL, ;
-            , NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <.notabstop.>, NIL, NIL, NIL, NIL, NIL, <aImageHeader> )
+            NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <.notabstop.>, NIL, NIL, NIL, NIL, NIL, <aImageHeader> )
 
 /*
 TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
@@ -682,5 +686,98 @@ TODO: implement this clauses:
 #xtranslate SET EVENTS FUNCTION TO <fname> [ RESULT TO <lSuccess> ] ;
    => ;
       /* not needed: SET EVENTS FUNCTION TO */
+
+#translate SET OOP [SUPPORT] <x:ON,OFF> ;
+   => ;
+      /* not needed: SET OOP */
+
+#translate SET OOP [SUPPORT] TO <x> ;
+   => ;
+      /* not needed: SET OOP */
+
+#define NO_ERROR                    0
+#define ERROR_INVALID_FUNCTION      1
+#define ERROR_PATH_NOT_FOUND        3
+#define ERROR_TOO_MANY_OPEN_FILES   4
+#define ERROR_INVALID_HANDLE        6
+#define ERROR_ALREADY_EXISTS        183
+
+#xtranslate GetMenuColors() ;
+   => ;
+      _OOHG_GetMenuColor()
+
+#define MNUCLR_THEME_DEFAULT      0
+#define MNUCLR_THEME_XP           1
+#define MNUCLR_THEME_2000         2
+#define MNUCLR_THEME_DARK         3
+#define MNUCLR_THEME_USER_DEFINED 99
+
+#xcommand SET MENUTHEME DEFAULT [ OF <parent> ] ;
+=> ;
+// HMG_SetMenuTheme( MNUCLR_THEME_DEFAULT, <(parent)> )
+
+#xcommand SET MENUTHEME XP [ OF <parent> ] ;
+=> ;
+// HMG_SetMenuTheme( MNUCLR_THEME_XP, <(parent)> )
+
+#xcommand SET MENUTHEME 2000 [ OF <parent> ] ;
+=> ;
+// HMG_SetMenuTheme( MNUCLR_THEME_2000, <(parent)> )
+
+#xcommand SET MENUTHEME DARK [ OF <parent> ] ;
+=> ;
+// HMG_SetMenuTheme( MNUCLR_THEME_DARK, <(parent)> )
+
+#xcommand SET MENUTHEME USER <aUser> [ OF <parent> ] ;
+=> ;
+// HMG_SetMenuTheme( MNUCLR_THEME_USER_DEFINED, <(parent)>, <aUser> )
+
+#xcommand RELEASE MAIN MENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):oMenu:Release
+
+#xcommand RELEASE MAINMENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):oMenu:Release
+
+#xcommand RELEASE CONTEXT MENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):ContextMenu:Release
+
+#xcommand RELEASE CONTEXTMENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):ContextMenu:Release
+
+#xcommand RELEASE CONTROL CONTEXT MENU <control> [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+
+#xcommand RELEASE CONTROL CONTEXTMENU <control> [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+
+#xcommand DEFINE CONTROL CONTEXT MENU <cControlName> [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      DEFINE CONTEXT MENU CONTROL <cControlName> [ <dummy: OF, PARENT> <parent> ]
+
+#xcommand DEFINE CONTROL CONTEXTMENU <cControlName> [ <dummy: OF, PARENT> <parent> ] ;
+   => ;
+      _OOHG_SelectSubClass( TMenuDropDown() ):Define( <(cControlName)>, <(parent)> )
+
+#xcommand RELEASE NOTIFY MENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+
+#xcommand RELEASE NOTIFYMENU OF <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+
+#xcommand RELEASE DROPDOWNBUTTON <button> OF <parent> ;
+   => ;
+      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
+
+#xcommand RELEASE DROPDOWNMENU OWNERBUTTON <button> OF <parent> ;
+   => ;
+      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
 
 #endif
