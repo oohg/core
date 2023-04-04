@@ -61,6 +61,13 @@
  */
 
 
+#define FP_NONE_FIRST     -5
+#define FP_RESTORE        -4
+#define FP_LEFT_RIGHT     -3
+#define FP_ALL_RIGHT      -2
+#define FP_NONE_RIGHT     -1
+#define FP_NONE_LEFT      0
+
 #command @ <row>, <col> TEXTBOX <name> ;
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
