@@ -172,7 +172,7 @@ METHOD SeparatorType( nType ) CLASS TMenuParams
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenu FROM TControl
 
-   DATA bOnInitPopUp                   INIT NIL
+   DATA bOnInitPopup                   INIT NIL
    DATA cFontID                        INIT NIL
    DATA cStatMsg                       INIT NIL
    DATA nTimeout                       INIT NIL
@@ -189,13 +189,13 @@ CLASS TMenu FROM TControl
    METHOD DisableVisualStyle
    METHOD Enabled                      SETGET
    METHOD EndMenu
-   METHOD Events_InitMenuPopUp( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopUp, Self, nPos ) }
+   METHOD Events_InitMenuPopup( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopup, Self, nPos ) }
    METHOD Gradient                     SETGET
    METHOD ItemCount                    BLOCK { |Self| GetMenuItemCount( ::hWnd ) }
    METHOD ItemPosition( nItemId )      BLOCK { |Self, nItemId| FindItemPosition( ::hWnd, nItemId ) }
    METHOD OwnerDraw                    SETGET
    METHOD Params                       SETGET
-   METHOD PopUpPosition( hWndPopUp )   BLOCK { |Self, hWndPopUp| FindPopUpPosition( ::hWnd, hWndPopUp ) }
+   METHOD PopupPosition( hWndPopup )   BLOCK { |Self, hWndPopup| FindPopupPosition( ::hWnd, hWndPopup ) }
    METHOD Refresh
    METHOD Release                      BLOCK { |Self| DestroyMenu( ::hWnd ), ::oMenuParams := NIL, ::Super:Release() }
    METHOD Separator                    BLOCK { |Self| TMenuItem():DefineSeparator( NIL, Self ) }
@@ -209,7 +209,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
 
    ::SetForm( cName, uParent )
    ::Container := NIL
-   ::Register( CreatePopUpMenu() )
+   ::Register( CreatePopupMenu() )
    ::oMenuParams := TMenuParams()
    ::OwnerDraw   := lOwnerDraw
    ::cStatMsg    := cMsg
@@ -441,7 +441,7 @@ FUNCTION _EndMenu()
 CLASS TMenuItem FROM TControl
 
    DATA aPicture                       INIT { "", "" }
-   DATA bOnInitPopUp                   INIT NIL
+   DATA bOnInitPopup                   INIT NIL
    DATA cCaption                       INIT NIL
    DATA cFontID                        INIT NIL
    DATA cStatMsg                       INIT NIL
@@ -450,7 +450,7 @@ CLASS TMenuItem FROM TControl
    DATA lAdjust                        INIT .F.
    DATA lIsAtBar                       INIT .F.
    DATA lIsMenuBreak                   INIT .F.
-   DATA lIsPopUp                       INIT .F.
+   DATA lIsPopup                       INIT .F.
    DATA lIsSeparator                   INIT .F.
    DATA lMain                          INIT .F.
    DATA lOwnerDraw                     INIT .F.
@@ -468,19 +468,19 @@ CLASS TMenuItem FROM TControl
    METHOD DefaultItem( nItem )         BLOCK { |Self, nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }   // one-based position or 0 for no default
    METHOD DefaultItemById              BLOCK { |Self| SetMenuDefaultItemById( ::Container:hWnd, ::Id ) }
    METHOD DefineItem
-   METHOD DefinePopUp
+   METHOD DefinePopup
    METHOD DefineSeparator
    METHOD DoEvent
    METHOD Enabled                      SETGET
-   METHOD EndPopUp
+   METHOD EndPopup
    METHOD Events_DrawItem
-   METHOD Events_InitMenuPopUp
+   METHOD Events_InitMenuPopup
    METHOD Events_MeasureItem
    METHOD Events_MenuHilited
    METHOD Gradient                     SETGET
    METHOD Hilited                      SETGET
    METHOD InsertItem
-   METHOD InsertPopUp
+   METHOD InsertPopup
    METHOD InsertSeparator
    METHOD OwnerDraw                    SETGET
    METHOD Picture                      SETGET
@@ -494,8 +494,8 @@ CLASS TMenuItem FROM TControl
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DefinePopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
-                    lRight, lStretch, nBreak, cMsg, cFontId, bOnInitPopUp, nTimeout ) CLASS TMenuItem
+METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
+                    lRight, lStretch, nBreak, cMsg, cFontId, bOnInitPopup, nTimeout ) CLASS TMenuItem
 
    LOCAL nStyle, nId, hFont := NIL
 
@@ -516,7 +516,7 @@ METHOD DefinePopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
    _OOHG_AppObject():ActiveMenuPush( Self )
 
-   ::lIsPopUp := .T.
+   ::lIsPopup := .T.
    nStyle := MF_POPUP
    IF HB_ISLOGICAL( lRight ) .AND. lRight
       nStyle += MF_RIGHTJUSTIFY
@@ -564,13 +564,13 @@ METHOD DefinePopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ENDIF
    ASSIGN ::nTimeout     VALUE nTimeout     TYPE "N"
    ASSIGN ::cStatMsg     VALUE cMsg         TYPE "CM"
-   ASSIGN ::bOnInitPopUp VALUE bOnInitPopUp TYPE "B"
+   ASSIGN ::bOnInitPopup VALUE bOnInitPopup TYPE "B"
 
    RETURN Self
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
-                    lRight, lStretch, nBreak, nPos, cMsg, cFontId, bOnInitPopUp, nTimeout ) CLASS TMenuItem
+METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
+                    lRight, lStretch, nBreak, nPos, cMsg, cFontId, bOnInitPopup, nTimeout ) CLASS TMenuItem
 
    LOCAL nStyle, nID, hFont := NIL
 
@@ -591,7 +591,7 @@ METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
    _OOHG_AppObject():ActiveMenuPush( Self )
 
-   ::lIsPopUp := .T.
+   ::lIsPopup := .T.
    nStyle := MF_POPUP + MF_BYPOSITION
    IF HB_ISLOGICAL( lRight ) .AND. lRight
       nStyle += MF_RIGHTJUSTIFY
@@ -640,7 +640,7 @@ METHOD InsertPopUp( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    ENDIF
    ASSIGN ::nTimeout     VALUE nTimeout     TYPE "N"
    ASSIGN ::cStatMsg     VALUE cMsg         TYPE "CM"
-   ASSIGN ::bOnInitPopUp VALUE bOnInitPopUp TYPE "B"
+   ASSIGN ::bOnInitPopup VALUE bOnInitPopup TYPE "B"
 
    RETURN Self
 
@@ -972,7 +972,7 @@ METHOD Picture( uImages ) CLASS TMenuItem
 
    nAttributes := iif( ::lOwnerDraw, 0, iif( OSisWinVISTAorLater(), 1, 2) )
 
-   IF ::lIsPopUp
+   IF ::lIsPopup
       ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Position(), ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .T., ::Transparent )
    ELSE
       ::hBitMaps := MenuItem_SetBitMaps( ::Container:hWnd, ::Id, ::aPicture[1], ::aPicture[2], ::lStretch, nAttributes, .F., ::Transparent )
@@ -1049,7 +1049,7 @@ METHOD Release() CLASS TMenuItem
    RETURN ::Super:Release()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD EndPopUp() CLASS TMenuItem
+METHOD EndPopup() CLASS TMenuItem
 
    _OOHG_AppObject():ActiveMenuRemove( Self )
 
@@ -1058,7 +1058,7 @@ METHOD EndPopUp() CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetItemsColor( uColor, lApplyToSubItems ) CLASS TMenuItem
 
-   IF ::lIsPopUp
+   IF ::lIsPopup
       TMenuItemSetItemsColor( Self, uColor, lApplyToSubItems )
    ENDIF
 
@@ -1095,9 +1095,9 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
    RETURN ::Super:DoEvent( bBlock, cEventType, aNew )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Events_InitMenuPopUp( nPos ) CLASS TMenuItem
+METHOD Events_InitMenuPopup( nPos ) CLASS TMenuItem
 
-   _OOHG_Eval( ::bOnInitPopUp, Self, nPos )
+   _OOHG_Eval( ::bOnInitPopup, Self, nPos )
 
   RETURN NIL
 
@@ -1129,8 +1129,8 @@ METHOD Position() CLASS TMenuItem
 
    LOCAL uRet
 
-   IF ::lIsPopUp
-      uRet := FindPopUpPosition( ::Container:hWnd, ::hWnd )
+   IF ::lIsPopup
+      uRet := FindPopupPosition( ::Container:hWnd, ::hWnd )
    ELSE
       uRet := FindItemPosition( ::Container:hWnd, ::Id )
    ENDIF
@@ -1182,7 +1182,7 @@ FUNCTION _EndMenuPopup()
    LOCAL oActiveMenu := _OOHG_AppObject():ActiveMenuGet()
 
    IF oActiveMenu # NIL
-      oActiveMenu:EndPopUp()
+      oActiveMenu:EndPopup()
    ENDIF
 
    RETURN NIL
@@ -1495,7 +1495,7 @@ HB_FUNC( DELETEMENUITEMDATA )          /* FUNCTION DeleteMenuItemData( hStruct )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TRACKPOPUPMENU )          /* FUNCTION TrackPopUpMenu( hMenu, nCol, nRow, hWnd ) -> NIL */
+HB_FUNC( TRACKPOPUPMENU )          /* FUNCTION TrackPopupMenu( hMenu, nCol, nRow, hWnd ) -> NIL */
 {
    HWND hWnd = HWNDparam( 4 );
 
@@ -1557,7 +1557,7 @@ HB_FUNC( FINDITEMPOSITION )          /* FUNCTION FindItemPosition( hMenu, ItemID
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static int FindPopUpPos( HMENU hMenu, HMENU hPopUp )
+static int FindPopupPos( HMENU hMenu, HMENU hPopup )
 {
    HMENU hSubMenu;
    int nPos, nFound;
@@ -1573,10 +1573,10 @@ static int FindPopUpPos( HMENU hMenu, HMENU hPopUp )
       hSubMenu = GetSubMenu( hMenu, nPos );
       if( hSubMenu != NULL )
       {
-         if( hSubMenu == hPopUp )
+         if( hSubMenu == hPopup )
             return nPos;
 
-         nFound = FindPopUpPos( hSubMenu, hPopUp );
+         nFound = FindPopupPos( hSubMenu, hPopup );
          if( nFound >= 0 )
          {
             return nFound;
@@ -1588,12 +1588,12 @@ static int FindPopUpPos( HMENU hMenu, HMENU hPopUp )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( FINDPOPUPPOSITION )          /* FUNCTION FindPopUpPosition( hWndMenu, hWndPopUp ) -> nPos */
+HB_FUNC( FINDPOPUPPOSITION )          /* FUNCTION FindPopupPosition( hWndMenu, hWndPopup ) -> nPos */
 {
    HMENU hMenu = HMENUparam( 1 );
-   HMENU hPopUp = HMENUparam( 2 );
+   HMENU hPopup = HMENUparam( 2 );
 
-  hb_retni( FindPopUpPos( hMenu, hPopUp ) );
+  hb_retni( FindPopupPos( hMenu, hPopup ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1707,7 +1707,7 @@ HB_FUNC( CREATEMENU )          /* FUNCTION CreateMenu() -> hMenu */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( CREATEPOPUPMENU )          /* FUNCTION CreatePopUpMenu() -> hMenu */
+HB_FUNC( CREATEPOPUPMENU )          /* FUNCTION CreatePopupMenu() -> hMenu */
 {
    HMENUret( CreatePopupMenu() );
 }
@@ -1787,7 +1787,7 @@ HB_FUNC( MENUCAPTION )          /* FUNCTION MenuCaption( hWnd, nId, cCaption/NIL
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, nId/nPos, cImg1, cImg2, lStretch, iAttrFlag, lPopUp, lTransp ) -> { hBitmap1, hBitmap2 } */
+HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, nId/nPos, cImg1, cImg2, lStretch, iAttrFlag, lPopup, lTransp ) -> { hBitmap1, hBitmap2 } */
 {
    HMENU hMenu = HMENUparam( 1 );
    UINT iItem = (UINT) hb_parni( 2 );
@@ -1879,7 +1879,7 @@ HB_FUNC( DESTROYMENU )          /* FUNCTION DestroyMenu( hWnd ) -> lSuccess */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC (DELETEMAINMENU)          /* FUNCTION DeleteMainMenu( hWnd ) -> lSuccess */
+HB_FUNC( DELETEMAINMENU )          /* FUNCTION DeleteMainMenu( hWnd ) -> lSuccess */
 {
    HWND hWnd = HWNDparam( 1 );
 
@@ -2931,4 +2931,3 @@ FUNCTION _OOHG_MenuBitmapMetrics( aMetrics )
 FUNCTION _OOHG_GetMenuColor()
 
    RETURN ASize( AClone( _OOHG_DefaultMenuParams ), MNUCLR_COUNT )
-
