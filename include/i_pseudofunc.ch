@@ -105,6 +105,10 @@
    => ;
       iif( IsWindowDefined( <FormName> ), GetExistingFormObject( <FormName> ):ContextMenu != NIL, .F. )
 
+#xtranslate IsNotifyMenuDefined( <FormName> ) ;
+   => ;
+      iif( IsWindowDefined( <FormName> ), GetExistingFormObject( <FormName> ):NotifyMenu != NIL, .F. )
+
 #xtranslate ArraysAreEqual( <array1>, <array2> ) ;
    => ;
       AEqual( <array1>, <array2> )
@@ -177,7 +181,7 @@
 
 #xtranslate IsWin64() ;
    => ;
-      hb_osIs64Bit()
+      IsExe64()
 
 #xtranslate MsgAlert( <c>, <t> ) ;
    => ;
@@ -257,15 +261,15 @@
 
 #xtranslate GetControlName( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Name
+      GetControlObject( <ControlName>, <ParentForm> ):name
 
 #xtranslate GetControlHandle( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):hWnd
+      GetControlObject( <ControlName>, <ParentForm> ):hwnd
 
 #xtranslate GetControlContainerHandle( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Container:hWnd
+      GetControlObject( <ControlName>, <ParentForm> ):Container:hwnd
 
 #xtranslate GetControlParentHandle( <ControlName>, <ParentForm> ) ;
    => ;
@@ -273,11 +277,11 @@
 
 #xtranslate GetControlId( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Id
+      GetControlObject( <ControlName>, <ParentForm> ):id
 
 #xtranslate GetControlType( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Type
+      GetControlObject( <ControlName>, <ParentForm> ):type
 
 #xtranslate GetControlValue( <ControlName>, <ParentForm> ) ;
    => ;
@@ -317,19 +321,19 @@
 
 #xtranslate _GetItemCount( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):ItemCount
+      GetControlObject( <ControlName>, <ParentForm> ):itemcount
 
 #xtranslate _GetControlRow( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Row
+      GetControlObject( <ControlName>, <ParentForm> ):row
 
 #xtranslate _GetControlCol( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Col
+      GetControlObject( <ControlName>, <ParentForm> ):col
 
 #xtranslate _GetControlWidth( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Width
+      GetControlObject( <ControlName>, <ParentForm> ):width
 
 #xtranslate _GetControlHeight( <ControlName>, <ParentForm> ) ;
    => ;
@@ -397,7 +401,7 @@
 
 #xtranslate _ReleaseControl( <ControlName>, <ParentForm> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):Release() ;
+      GetControlObject( <ControlName>, <ParentForm> ):release() ;
 
 #xtranslate _IsControlVisibleFromHandle( <Handle> ) ;
    => ;
@@ -505,13 +509,40 @@
 
 #xtranslate _SetBackColor( <ControlName>, <ParentForm>, <Value> ) ;
    => ;
-      GetControlObject( <ControlName>, <ParentForm> ):BackColor := <Value>
+      GetControlObject( <ControlName>, <ParentForm> ):backcolor := <Value>
 
 #xtranslate _SetStatusIcon( <ControlName>, <ParentForm>, <Item>, <Icon> ) ;
    => ;
-      SetStatusItemIcon( GetControlObject( <ControlName>, <ParentForm> ):hWnd, <Item>, <Icon> )
+      SetStatusItemIcon( GetControlObject( <ControlName>, <ParentForm> ):hwnd, <Item>, <Icon> )
 
 #xtranslate _GetCaption( <ControlName>, <ParentForm> ) ;
    => ;
-      GetWindowText( GetControlObject( <ControlName>, <ParentForm> ):hWnd )
+      GetWindowText( GetControlObject( <ControlName>, <ParentForm> ):hwnd )
 
+#xtranslate GetWindowsFolder() ;
+   => ;
+      GetWindowsDir()
+
+#xtranslate GetSystemFolder() ;
+   => ;
+      GetSystemDir()
+
+#xtranslate GetTempFolder() ;
+   => ;
+      GetTempDir()
+
+#xtranslate GetMyDocumentsFolder() ;
+   => ;
+      GetSpecialFolder( CSIDL_PERSONAL )
+
+#xtranslate GetDesktopFolder() ;
+   => ;
+      GetSpecialFolder( CSIDL_DESKTOPDIRECTORY )
+
+#xtranslate GetProgramFilesFolder() ;
+   => ;
+      GetSpecialFolder( CSIDL_PROGRAM_FILES )
+
+#xtranslate GetSpecialFolder( <nCSIDL> ) ;
+   => ;
+      C_GetSpecialFolder( <nCSIDL> )
