@@ -70,6 +70,8 @@ STANDARD CURSORS
 #define IDC_WAIT        32514
 #define IDC_CROSS       32515
 #define IDC_UPARROW     32516
+#define IDC_SIZE        32640
+#define IDC_ICON        32641
 #define IDC_SIZENWSE    32642
 #define IDC_SIZENESW    32643
 #define IDC_SIZEWE      32644
@@ -189,3 +191,43 @@ STANDARD CURSORS
 #translate SET SAMEENTERDBLCLICK ON ;
    => ;
       _OOHG_SameEnterDblClick := .T.
+
+#xtranslate SET CONTROL CONTEXTMENUS OFF ;
+   => ;
+      _OOHG_ShowContextMenus( .F. )
+
+#xtranslate SET CONTROL CONTEXTMENUS ON ;
+   => ;
+      _OOHG_ShowContextMenus( .T. )
+
+#xtranslate SET CONTROL CONTEXTMENU OFF ;
+   => ;
+      _OOHG_ShowContextMenus( .F. )
+
+#xtranslate SET CONTROL CONTEXTMENU ON ;
+   => ;
+      _OOHG_ShowContextMenus( .T. )
+
+#xtranslate SET CONTROL CONTEXT MENU OFF ;
+   => ;
+      _OOHG_ShowContextMenus( .F. )
+
+#xtranslate SET CONTROL CONTEXT MENU ON ;
+   => ;
+      _OOHG_ShowContextMenus( .T. )
+
+#xtranslate SET CONTROL <control> OF <parent> CLIENTEDGE ;
+   => ;
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_CLIENTEDGE, NIL, .T. )
+
+#xtranslate SET CONTROL <control> OF <parent> STATICEDGE ;
+   => ;
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_STATICEDGE, NIL, .T.)
+
+#xtranslate SET CONTROL <control> OF <parent> WINDOWEDGE ;
+   => ;
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_WINDOWEDGE, NIL, .T.)
+
+#xtranslate SET CONTROL <control> OF <parent> NOTEDGE ;
+   => ;
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), NIL, hb_bitOr( WS_EX_CLIENTEDGE, WS_EX_STATICEDGE, WS_EX_WINDOWEDGE ), .T. )

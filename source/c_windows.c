@@ -826,7 +826,7 @@ HB_FUNC( GETWINDOWSTATE )
 
 HB_FUNC( REDRAWWINDOW )
 {
-   RedrawWindow( HWNDparam( 1 ), NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   hb_retl( RedrawWindow( HWNDparam( 1 ), NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) );
 }
 
 HB_FUNC( REDRAWWINDOWCONTROLRECT )
@@ -838,7 +838,7 @@ HB_FUNC( REDRAWWINDOWCONTROLRECT )
    r.bottom= hb_parni( 4 );
    r.right = hb_parni( 5 );
 
-   RedrawWindow( HWNDparam( 1 ), &r, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   hb_retl( RedrawWindow( HWNDparam( 1 ), &r, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW ) );
 }
 
 HB_FUNC( C_SETWINDOWRGN )
@@ -1495,6 +1495,36 @@ HB_FUNC( WINDOWEXSTYLEFLAG )
    }
 
    HB_RETNL( GetWindowLongPtr( HWNDparam( 1 ), GWL_EXSTYLE ) & lMask );
+}
+
+/*
+ * Adapted from HGM Extended.
+ * CHANGESTYLE (hWnd,dwAdd,dwRemove,lExStyle)
+ * Action: Modifies the basic styles of a window
+ * Parameters: hWnd - handle to window
+ *             dwAdd - window styles to add
+ *             dwRemove - window styles to remove
+ *             lExStyle - TRUE for Extended style otherwise FALSE
+ * HMG 1.1 Expermental Build 12a
+ * (C)Jacek Kubica <kubica@wssk.wroc.pl>
+ */
+HB_FUNC( CHANGESTYLE )          /* FUNCTION ChangeStyle( hWnd, nTime, nFlags, lHide, lRedrawWindow ) -> NIL */
+{
+   HWND hWnd = HWNDparam( 1 );
+   LONG_PTR dwAdd = (LONG_PTR) hb_parnl( 2 );
+   LONG_PTR dwRemove = (LONG_PTR) hb_parnl( 3 );
+   int iStyle = hb_parl( 4 ) ? GWL_EXSTYLE : GWL_STYLE;
+   LONG_PTR dwStyle = GetWindowLongPtr( hWnd, iStyle );
+   LONG_PTR dwNewStyle = ( dwStyle & ( ~dwRemove ) ) | dwAdd;
+
+   HB_RETNL( SetWindowLongPtr( hWnd, iStyle, dwNewStyle ) );
+
+   SetWindowPos( hWnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER );
+
+   if( hb_parl( 5 ) )
+   {
+      RedrawWindow( hWnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_ERASENOW | RDW_UPDATENOW );
+   }
 }
 
 HB_FUNC( ANIMATEWINDOW )          /* FUNCTION AnimateWindow( hWnd, nTime, nFlags, lHide ) -> NIL */
