@@ -368,7 +368,7 @@ HB_FUNC( SETFOCUS )
 HB_FUNC( GETDLGITEMTEXT )
 {
    USHORT iLen = 32768;
-   char *cText = (char*) hb_xgrab( iLen + 1 );
+   char *cText = (char *) hb_xgrab( iLen + 1 );
 
    GetDlgItemText( HWNDparam( 2 ), hb_parni( 1 ), (LPTSTR) cText, iLen );
 
@@ -401,6 +401,11 @@ HB_FUNC( INSERTSHIFTTAB )
    keybd_event( VK_SHIFT, 0, 0, 0 );
    keybd_event( VK_TAB, 0, 0, 0 );
    keybd_event( VK_SHIFT, 0, KEYEVENTF_KEYUP, 0 );
+}
+
+HB_FUNC( INSERTOEMCOMMA )
+{
+   keybd_event( VK_OEM_COMMA, 0, 0, 0 );
 }
 
 HB_FUNC( INSERTBACKSPACE )
@@ -486,7 +491,8 @@ HB_FUNC( SYSTEMPARAMETERSINFO )
    }
 }
 
-HB_FUNC( GETTEXTWIDTH )  /* returns the width of a string in pixels */
+/* returns the width of a string in pixels */
+HB_FUNC( GETTEXTWIDTH )
 {
    HDC   hDC = HDCparam( 1 );
    HWND  hWnd = 0;
@@ -516,7 +522,8 @@ HB_FUNC( GETTEXTWIDTH )  /* returns the width of a string in pixels */
    hb_retni( LOWORD( sz.cx ) );
 }
 
-HB_FUNC( GETTEXTHEIGHT )  /* returns the height of a string in pixels */
+/* returns the height of a string in pixels */
+HB_FUNC( GETTEXTHEIGHT )
 {
    HDC   hDC = HDCparam( 1 );
    HWND  hWnd = 0;

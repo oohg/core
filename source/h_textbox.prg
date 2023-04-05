@@ -72,6 +72,7 @@
 CLASS TText FROM TLabel
 
    DATA aBitmap                   INIT NIL
+   DATA aLastSelection            INIT { 0, 0 }
    DATA bAction1                  INIT NIL
    DATA bAction2                  INIT NIL
    DATA bWhen                     INIT NIL
@@ -119,6 +120,7 @@ CLASS TText FROM TLabel
    METHOD DefineAction2
    METHOD DeleteControl
    METHOD DoAutoSkip
+   METHOD DoLostFocus
    METHOD Enabled                      SETGET
    METHOD Events
    METHOD Events_Command
@@ -613,29 +615,41 @@ METHOD SetFocus() CLASS TText
    LOCAL uRet, nLen
 
    uRet := ::Super:SetFocus()
-   IF ::nOnFocusPos == -3
+
+   // Do not change the order of these tests.
+   IF ::nOnFocusPos == FP_RESTORE
+      // Restore the selection that existed the last time the control lost the focus.
+      SendMessage( ::hWnd, EM_SETSEL, ::aLastSelection[ 1 ], ::aLastSelection[ 2 ] )
+   ELSEIF ::nOnFocusPos == FP_LEFT_RIGHT
       // The control's leftmost non-blank characters are selected the first character
       // becomes the anchor point and the caret is placed after the last character.
       nLen := Len( RTrim( ::Caption ) )
       SendMessage( ::hWnd, EM_SETSEL, 0, nLen )
-   ELSEIF ::nOnFocusPos == -2
+   ELSEIF ::nOnFocusPos == FP_ALL_RIGHT
       // All the text is selected, the first character becomes the
       // anchor point and the caret is placed after the last character.
       SendMessage( ::hWnd, EM_SETSEL, 0, -1 )
-   ELSEIF ::nOnFocusPos == -1
+   ELSEIF ::nOnFocusPos == FP_NONE_RIGHT
       // No text is selected and the caret is placed after the last character.
       nLen := Len( ::Caption )
       SendMessage( ::hWnd, EM_SETSEL, nLen, nLen )
-   ELSEIF ::nOnFocusPos >= 0
+   ELSEIF ::nOnFocusPos >= FP_NONE_LEFT
       // No text is selected and the caret is placed before the corresponding character,
       // being 0 the first. When ::nOnFocusPos >= Len(text), it behaves likes -1.
       SendMessage( ::hWnd, EM_SETSEL, ::nOnFocusPos, ::nOnFocusPos )
-   ELSE
+   ELSE   // FP_NONE_FIRST
       // No text is selected and the caret is placed before the first character.
       SendMessage( ::hWnd, EM_SETSEL, -1, 0 )
    ENDIF
 
    RETURN uRet
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD DoLostFocus() CLASS TText
+
+   ::aLastSelection := ::GetSelection()
+
+   RETURN ::Super:DoLostFocus()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CaretPos( nPos ) CLASS TText
@@ -1158,6 +1172,7 @@ CLASS TTextPicture FROM TText
    DATA cPicture                  INIT ""
    DATA DataType                  INIT "."
    DATA lBritish                  INIT .F.
+   DATA lIgnoreKey                INIT .F.
    DATA lNumericScroll            INIT .F.
    DATA lToUpper                  INIT .F.
    DATA nDecimal                  INIT 0
@@ -1573,6 +1588,10 @@ FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
    LOCAL aValidMask := ::ValidMask
 
    IF nMsg == WM_CHAR .AND. wParam >= 32
+      IF ::lBritish .AND. ! IsWindowStyle( ::hWnd, ES_READONLY ) .AND. wParam == Asc( "." ) .AND. ::lIgnoreKey
+         ::lIgnoreKey := .F.
+         RETURN 0
+      ENDIF
       aPos := ::GetSelection()
       nPos1 := aPos[ 1 ]
       nPos2 := aPos[ 2 ]
@@ -1592,6 +1611,10 @@ FUNCTION TTextPicture_Events2( hWnd, nMsg, wParam, lParam )
          ::DoAutoSkip()
       ENDIF
       RETURN 1
+
+   ELSEIF nMsg == WM_KEYDOWN .AND. wParam == VK_DECIMAL .AND. GetKeyFlagState() == 0 .AND. ::lBritish .AND. ! IsWindowStyle( ::hWnd, ES_READONLY )
+      ::lIgnoreKey := .T.
+      InsertOEMComma()
 
    ELSEIF nMsg == WM_KEYDOWN .AND. wParam == VK_DELETE .AND. GetKeyFlagState() == 0
       aPos := ::GetSelection()
@@ -1664,7 +1687,7 @@ STATIC FUNCTION TTextPicture_Events2_Key( Self, cText, nPos, cChar, aValidMask, 
 
    LOCAL lChange := .F., nPos1, cMask
 
-   IF ::nDecimal != 0 .AND. cChar $ iif( ::lBritish, ",.", "." )
+   IF ::nDecimal != 0 .AND. cChar $ iif( ::lBritish, ",", "." )
       cText := xUnTransform( Self, cText )
       nPos1 := iif( Left( LTrim( cText ), 1 ) == "-", 1, 0 )
       cText := Transform( Val( StrTran( cText, " ", "" ) ), iif( ::lBritish, "@E ", "" ) + cPictureMask )
