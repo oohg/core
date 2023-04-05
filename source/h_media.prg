@@ -155,25 +155,25 @@ METHOD Position( nPosition ) CLASS TPlayer
 
    Return mcifunc( ::hWnd, 18 )
 
-Function PlayWave(wave,r,s,ns,l,nd)
+FUNCTION PlayWave( wave, r, s, ns, l, nd )
 
-   if PCount() == 1
+   IF PCount() == 1
       r := .F.
       s := .F.
       ns := .F.
       l := .F.
       nd := .F.
-   endif
+   ENDIF
 
-   c_PlayWave(wave,r,s,ns,l,nd)
+   C_PlayWave( wave, r, s, ns, l, nd )
 
-   Return Nil
+   RETURN NIL
 
-Function PlayWaveFromResource(wave)
+FUNCTION PlayWaveFromResource( wave )
 
-   c_PlayWave(wave,.t.,.f.,.f.,.f.,.f.)
+   C_PlayWave( wave, .T., .F., .F., .F., .F. )
 
-   Return Nil
+   RETURN NIL
 
 
 CLASS TAnimateBox FROM TControl
@@ -184,7 +184,7 @@ CLASS TAnimateBox FROM TControl
 
    METHOD Release            BLOCK { |Self| destroyanimate( ::hWnd ) , ::Super:Release() }
    METHOD Open(File)         BLOCK { |Self,File| openanimate( ::hWnd, File ) }
-   METHOD Play               BLOCK { |Self| playanimate( ::hWnd ) }
+   METHOD Play               BLOCK { |Self| PlayAnimate( ::hWnd ) }
    METHOD Stop               BLOCK { |Self| stopanimate( ::hWnd ) }
    METHOD Close              BLOCK { |Self| closeanimate( ::hWnd ) }
    METHOD Seek(Frame)        BLOCK { |Self,Frame| seekanimate( ::hWnd, Frame ) }
