@@ -1499,7 +1499,7 @@ HB_FUNC( WINDOWEXSTYLEFLAG )
 
 /*
  * Adapted from HGM Extended.
- * CHANGESTYLE (hWnd,dwAdd,dwRemove,lExStyle)
+ * CHANGESTYLE( hWnd, dwAdd, dwRemove, lExStyle, lRedraw )
  * Action: Modifies the basic styles of a window
  * Parameters: hWnd - handle to window
  *             dwAdd - window styles to add
