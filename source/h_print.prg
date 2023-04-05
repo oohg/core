@@ -74,7 +74,7 @@
 MEMVAR _OOHG_PrintLibrary
 
 #define hbprn ::oHBPrn
-#define TEMP_FILE_NAME ( GetTempDir() + "T" + AllTrim( Str( Int( hb_Random( 999999 ) ), 8 ) ) + ".prn" )
+#define TEMP_FILE_NAME ( GetTempDir() + "T" + AllTrim( Str( hb_RandomInt( 999999 ), 8 ) ) + ".prn" )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION TPrint( cLibX )
@@ -2825,7 +2825,7 @@ METHOD PrintModeX( cFile ) CLASS TDosPrint
    LOCAL cBat, nHdl, lOk := .T.
 
    IF HB_ISSTRING( cFile ) .AND. ! Empty( cFile )
-      cBat := 'b' + AllTrim( Str( hb_Random( 999999 ), 6 ) ) + '.bat'
+      cBat := 'b' + AllTrim( Str( hb_RandomInt( 999999 ), 6 ) ) + '.bat'
       nHdl := FCreate( cBat )
       FWrite( nHdl, 'copy "' + cFile + '" ' + ::cPort + Chr( 13 ) + Chr( 10 ) )
       FWrite( nHdl, "rem " + _OOHG_Messages( MT_PRINTER, 3 ) + Chr( 13 ) + Chr( 10 ) )

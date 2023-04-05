@@ -460,9 +460,9 @@ METHOD Print( y, x, y1, x1, lAll, cType, nQuality, nColorDepth, lImageSize ) CLA
    ELSEIF cType == "PNG"
       cExt := ".png"
    ENDIF
-   cFile := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+   cFile := "_oohg_t" + AllTrim( Str( hb_RandomInt( 999999 ) ) ) + cExt
    DO WHILE File( cFile )
-      cFile := "_oohg_t" + AllTrim( Str( Int( hb_Random( 999999 ) ) ) ) + cExt
+      cFile := "_oohg_t" + AllTrim( Str( hb_RandomInt( 999999 ) ) ) + cExt
    ENDDO
 
    ASSIGN y1 VALUE y1 TYPE "N" DEFAULT 44

@@ -2308,7 +2308,7 @@ Function _GetId()
    Local RetVal
 
    Do While .T.
-      RetVal := Int( hb_random( 59000 ) ) + 2001   // Lower than 0xF000
+      RetVal := hb_RandomInt( 59000 ) + 2001   // Lower than 0xF000
       If RetVal < 61440 .AND. aScan( _OOHG_aControlIds , { |a| a[ 1 ] == RetVal } ) == 0          // TODO: thread safe, move to h_application.prg
          Exit
       EndIf
