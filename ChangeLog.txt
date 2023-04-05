@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-05 16:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    + System/Sys commands.
+  #600
+
 2023-04-05 15:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print.prg
   * core\source\h_windows.prg
