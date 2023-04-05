@@ -13,6 +13,13 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-05 15:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+  * core\source\h_windows.prg
+  * core\source\h_controlmisc.prg
+    * Replace Int + hb_Random with hb_RandomInt.
+  #606
+
 2023-04-04 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     * Improve support of menu controls.
