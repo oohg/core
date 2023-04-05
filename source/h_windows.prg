@@ -97,6 +97,7 @@ CLASS TWindow
    DATA cStatMsg                  INIT NIL
    DATA DefBkColorEdit            INIT NIL
    DATA DropEnabled               INIT .F.                                    // .T. if control accepts drops
+   DATA DynamicMenu               INIT NIL
    DATA FntAdvancedGM             INIT .F.
    DATA FntAngle                  INIT 0
    DATA FntCharset                INIT DEFAULT_CHARSET
@@ -335,7 +336,7 @@ METHOD IsVisualStyled CLASS TWindow
 METHOD DisableVisualStyle CLASS TWindow
 
    IF ::IsVisualStyled
-      IF DisableVisualStyle( ::hWnd )
+      IF DISABLEVISUALSTYLE( ::hWnd )
          ::lVisualStyled := .F.
          ::Redraw()
       ENDIF
