@@ -155,3 +155,27 @@
    => ;
       _OOHG_AppObject():Value_Pos75 := .T.
 
+#xtranslate <p:System,Sys>.AsteriskSound      => PLAYASTERISK()
+#xtranslate <p:System,Sys>.BeepSound          => PLAYBEEP()
+#xtranslate <p:System,Sys>.ClientCol          => GETDESKTOPAREA()\[ 1 \]
+#xtranslate <p:System,Sys>.ClientHeight       => GETDESKTOPREALHEIGHT()
+#xtranslate <p:System,Sys>.ClientRow          => GETDESKTOPAREA()\[ 2 \]
+#xtranslate <p:System,Sys>.ClientWidth        => GETDESKTOPREALWIDTH()
+#xtranslate <p:System,Sys>.Clipboard          => GETCLIPBOARDTEXT()
+#xtranslate <p:System,Sys>.Clipboard := <arg> => SETCLIPBOARDTEXT( <arg> )
+#xtranslate <p:System,Sys>.DefaultPrinter     => GetDefaultPrinter()
+#xtranslate <p:System,Sys>.DesktopFolder      => GetDesktopFolder()
+#xtranslate <p:System,Sys>.DesktopHeight      => GETDESKTOPHEIGHT()
+#xtranslate <p:System,Sys>.DesktopWidth       => GETDESKTOPWIDTH()
+#xtranslate <p:System,Sys>.EmptyClipboard     => CLEARCLIPBOARD()
+#xtranslate <p:System,Sys>.ExclamationSound   => PLAYEXCLAMATION()
+#xtranslate <p:System,Sys>.Folder             => GetSystemFolder()
+#xtranslate <p:System,Sys>.HandSound          => PLAYHAND()
+#xtranslate <p:System,Sys>.MyDocumentsFolder  => GetMyDocumentsFolder()
+#xtranslate <p:System,Sys>.OkSound            => PLAYOK()
+#xtranslate <p:System,Sys>.ProgramFilesFolder => GetProgramFilesFolder()
+#xtranslate <p:System,Sys>.QuestionSound      => PLAYQUESTION()
+#xtranslate <p:System,Sys>.SystemFolder       => GetSystemFolder()
+#xtranslate <p:System,Sys>.TempFolder         => GetTempFolder()
+#xtranslate <p:System,Sys>.UserTempFolder     => GetUserTempFolder()
+#xtranslate <p:System,Sys>.WindowsFolder      => GetWindowsFolder()
