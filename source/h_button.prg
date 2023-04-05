@@ -533,7 +533,7 @@ METHOD RePaint( lChange ) CLASS TButton
    ::AuxHandle := NIL
 
    IF ValidHandler( ::hImage )
-      ::TControl():SizePos()
+      ::TControl():SizePos()   // We don't want TButton:SizePos
       IF ::IsVisualStyled .AND. ( Len( ::Caption ) > 0 .OR. ! ::lNoImgLst )
          IF HB_ISLOGICAL( lChange ) .AND. lChange
             SetImageXP( ::hWnd, ::hImage, ::nAlign, ::ImageBkClr, ::aImageMargin, ::Stretch, ::AutoFit, ::lFitImg, ::ImageSize )
