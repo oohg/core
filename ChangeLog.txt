@@ -13,6 +13,65 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-04 23:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Improve support of menu controls.
+  #600
+
+2023-04-04 22:41 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+  * core\include\i_menu.ch
+  * core\source\h_menu.prg
+    * Improve support of menu controls.
+  #600
+
+2023-04-04 15:35 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_textbox.ch
+    + FocusedPos related constants.
+  #597
+
+2023-04-03 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    + Function InsertOEMComma.
+    + Unicode support to function SetClipboardText.
+    + Function ClearClipboard.
+    + Function GetClipboard.
+
+2023-04-03 22:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_windows.c
+    + Function ChangeStyle borrowed from Minigui.
+  * core\source\i_controlmic.ch
+    + Support for SET CONTROL ... CLIENTEDGE, STATICEDGE,
+      WINDOWEDGE and NOTEDGE commands from Minigui.
+    + Support for SET CONTROL CONTEXTMENU from Minigui.
+  #600
+
+2023-04-03 22:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_winapimisc.prg
+    - Functions GetWindowsFolder,GetSystemFolder, GetTempFolder,
+      GetMyDocumentsFolder, GetDesktopFolder, GetProgramFilesFolder
+      and GetSpecialFolder.
+  #604
+
+2023-04-03 21:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    + SET OOP command.
+    + Error constants.
+    + GetMenuColors and some constants.
+    + SET MENUTHEME.
+    + RELEASE MAINMENU, CONTEXTMENU, CONTROL CONTEXTMENU,
+      NOTIFY MENU, DROPDOWNBUTTON.
+  #600
+
+2023-04-03 21:31 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_pseudofunc.ch
+    + IsNotifyMenuDefined.
+    * IsWin64 is now translated to IsExe64.
+  #600
+    + GetWindowsFolder, GetSystemFolder, GetTempFolder, GetSpecialFolder,
+      GetMyDocumentsFolder, GetDesktopFolder, GetProgramFilesFolder.
+  #604
+
 2023-04-02 11:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_menu.ch
     + Add PARENT as a synonym of OF.
