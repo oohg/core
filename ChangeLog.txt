@@ -13,6 +13,25 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-03 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    + Unicode support to function SetClipboardText.
+    + Function ClearClipboard.
+    + Function GetClipboard.
+
+2023-04-05 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_controlmisc.c
+    + Function InsertOEMComma.
+  * core\source\h_textbox.prg
+    * Pasting 45.671,17 to a NUMERIC with INPUTMASK '@E 999,999.99'
+      enters 45,67 because @E inputmask is not working properly.
+  #595
+    + Constants to handle the TEXTBOX's FOCUSEDPOS property.
+  #578
+    + Add support for restoring the selection that existed the last
+      time the control lost the focus.
+  #597
+
 2023-04-05 16:48 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
     + System/Sys commands.
@@ -41,13 +60,6 @@
   * core\include\i_textbox.ch
     + FocusedPos related constants.
   #597
-
-2023-04-03 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\c_controlmisc.c
-    + Function InsertOEMComma.
-    + Unicode support to function SetClipboardText.
-    + Function ClearClipboard.
-    + Function GetClipboard.
 
 2023-04-03 22:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_windows.c
