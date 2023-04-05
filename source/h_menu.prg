@@ -197,7 +197,8 @@ CLASS TMenu FROM TControl
    METHOD Params                       SETGET
    METHOD PopupPosition( hWndPopup )   BLOCK { |Self, hWndPopup| FindPopupPosition( ::hWnd, hWndPopup ) }
    METHOD Refresh
-   METHOD Release                      BLOCK { |Self| DestroyMenu( ::hWnd ), ::oMenuParams := NIL, ::Super:Release() }
+   METHOD Release
+   METHOD RemoveFromParent             BLOCK { |Self| ::Parent:DynamicMenu := NIL }
    METHOD Separator                    BLOCK { |Self| TMenuItem():DefineSeparator( NIL, Self ) }
    METHOD SeparatorType                SETGET
    METHOD SetMenuBarColor
@@ -216,6 +217,23 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
    ::cFontId     := cFontId
    ::nTimeout    := nTimeout
    _OOHG_AppObject():ActiveMenuPush( Self )
+
+   IF ::Parent:DynamicMenu != NIL
+      // Dynamic menu already defined for this window
+      ::Parent:DynamicMenu:Release()
+   ENDIF
+   SetMenu( ::Parent:hWnd, ::hWnd )
+   ::Parent:DynamicMenu := Self
+
+   RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Release() CLASS TMenu
+
+   ::RemoveFromParent()
+   DestroyMenu( ::hWnd )
+   ::oMenuParams := NIL
+   ::Super:Release()
 
    RETURN Self
 
@@ -318,7 +336,7 @@ CLASS TMenuMain FROM TMenu
 
    METHOD Activate                     BLOCK { || NIL }
    METHOD Define
-   METHOD Release                      BLOCK { |Self| ::Parent:oMenu := NIL, ::Super:Release() }
+   METHOD RemoveFromParent             BLOCK { |Self| ::Parent:oMenu := NIL }
 
    ENDCLASS
 
@@ -354,7 +372,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
 CLASS TMenuContext FROM TMenu
 
    METHOD Define
-   METHOD Release                      BLOCK { |Self| ::Parent:ContextMenu := NIL, ::Super:Release() }
+   METHOD RemoveFromParent             BLOCK { |Self| ::Parent:ContextMenu := NIL }
 
    ENDCLASS
 
@@ -374,7 +392,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
 CLASS TMenuNotify FROM TMenu
 
    METHOD Define
-   METHOD Release                      BLOCK { |Self| ::Parent:NotifyMenu := NIL, ::Super:Release() }
+   METHOD RemoveFromParent             BLOCK { |Self| ::Parent:NotifyMenu := NIL }
 
    ENDCLASS
 
@@ -394,7 +412,7 @@ METHOD Define( Parent, Name, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenuNo
 CLASS TMenuDropDown FROM TMenu
 
    METHOD Define
-   METHOD Release
+   METHOD RemoveFromParent             BLOCK { |Self| ::Container:ContextMenu := NIL }
 
    ENDCLASS
 
@@ -415,15 +433,6 @@ METHOD Define( uButton, uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CL
    oContainer:ContextMenu := Self
 
    RETURN Self
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Release() CLASS TMenuDropDown
-
-   IF ::Container != NIL
-      ::Container:ContextMenu := NIL
-   ENDIF
-
-   RETURN ::Super:Release()
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndMenu()

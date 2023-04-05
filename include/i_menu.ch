@@ -106,6 +106,10 @@
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE MAIN MENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):oMenu:Release
+
 #xcommand DEFINE MAINMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -120,6 +124,10 @@
       [ <obj> := ] _OOHG_SelectSubClass( TMenuMain(), [ <subclass>() ] ): ;
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE MAINMENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):oMenu:Release
 
 #xcommand DEFINE CONTEXT MENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -136,6 +144,10 @@
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE CONTEXT MENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):ContextMenu:Release
+
 #xcommand DEFINE CONTEXTMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -150,6 +162,10 @@
       [ <obj> := ] _OOHG_SelectSubClass( TMenuContext(), [ <subclass>() ] ): ;
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE CONTEXTMENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):ContextMenu:Release
 
 #xcommand DEFINE CONTEXT MENU CONTROL <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -166,6 +182,29 @@
             Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE CONTEXT MENU CONTROL <control> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+
+#xcommand DEFINE CONTROL CONTEXT MENU <control> ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ OBJ <obj> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ NAME <name> ] ;
+      [ MESSAGE <msg> ] ;
+      [ FONT <fontname> ] ;
+      [ TIMEOUT <tout> ] ;
+      [ <own: OWNERDRAW> ] ;
+      [ <win: WINDRAW> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+            Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
+            iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE CONTROL CONTEXT MENU <control> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+
 #xcommand DEFINE CONTEXTMENU CONTROL <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -180,6 +219,29 @@
       [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
             Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE CONTEXTMENU CONTROL <control> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+
+#xcommand DEFINE CONTROL CONTEXTMENU <control> ;
+      [ <dummy: OF, PARENT> <parent> ] ;
+      [ OBJ <obj> ] ;
+      [ SUBCLASS <subclass> ] ;
+      [ NAME <name> ] ;
+      [ MESSAGE <msg> ] ;
+      [ FONT <fontname> ] ;
+      [ TIMEOUT <tout> ] ;
+      [ <own: OWNERDRAW> ] ;
+      [ <win: WINDRAW> ] ;
+   => ;
+      [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
+            Define( <(control)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
+            iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE CONTROL CONTEXTMENU <control> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
 
 #xcommand DEFINE DROPDOWN MENU BUTTON <button> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -196,6 +258,10 @@
             Define( <(button)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE DROPDOWNBUTTON <button> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
+
 #xcommand DEFINE DROPDOWNMENU OWNERBUTTON <button> ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -210,6 +276,10 @@
       [ <obj> := ] _OOHG_SelectSubClass( TMenuDropDown(), [ <subclass>() ] ): ;
             Define( <(button)>, <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE DROPDOWNMENU OWNERBUTTON <button> <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
 
 #xcommand DEFINE NOTIFY MENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -226,6 +296,10 @@
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE NOTIFY MENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+
 #xcommand DEFINE NOTIFYMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -241,6 +315,10 @@
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
 
+#xcommand RELEASE NOTIFYMENU <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+
 #xcommand DEFINE MENU DYNAMIC ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -255,6 +333,10 @@
       [ <obj> := ] _OOHG_SelectSubClass( TMenu(), [ <subclass>() ] ): ;
             Define( <(parent)>, <(name)>, <msg>, <fontname>, <tout>, ;
             iif( <.own.>, .T., iif( <.win.>, .F., NIL ) ) )
+
+#xcommand RELEASE MENU DYNAMIC <dummy: OF, PARENT> <parent> ;
+   => ;
+      GetExistingFormObject( <"parent"> ):DynamicMenu:Release
 
 #xcommand POPUP <caption> ;
       [ NAME <name> ] ;
