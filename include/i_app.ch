@@ -79,7 +79,7 @@
 #xtranslate App.DefineFont( <arg> )        => _OOHG_AppObject():DefineLogFont( <arg> )
 #xtranslate App.DoEvents                   => ProcessMessages()
 #xtranslate App.Drive                      => _OOHG_AppObject():Drive
-#xtranslate App.ErrorLevel                 => _OOHG_AppObject():ErrorLevel
+#xtranslate App.ErrorLevel                 => _OOHG_AppObject():Value_Pos38
 #xtranslate App.ExeName                    => _OOHG_AppObject():ExeName
 #xtranslate App.FileName                   => _OOHG_AppObject():FileName
 #xtranslate App.FormName                   => _OOHG_AppObject():MainName()
