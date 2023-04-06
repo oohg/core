@@ -222,11 +222,11 @@ STANDARD CURSORS
 
 #xtranslate SET CONTROL <control> OF <parent> STATICEDGE ;
    => ;
-      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_STATICEDGE, NIL, .T.)
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_STATICEDGE, NIL, .T. )
 
 #xtranslate SET CONTROL <control> OF <parent> WINDOWEDGE ;
    => ;
-      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_WINDOWEDGE, NIL, .T.)
+      ChangeStyle( GetControlHandle( <"control">, <"parent"> ), WS_EX_WINDOWEDGE, NIL, .T. )
 
 #xtranslate SET CONTROL <control> OF <parent> NOTEDGE ;
    => ;
