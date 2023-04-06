@@ -3012,7 +3012,7 @@ FUNCTION ReleaseAllWindows( lExit )
 
    _ReleaseWindowList( _OOHG_aFormObjects )
    IF _OOHG_ExitOnMainRelease .OR. ( HB_ISLOGICAL( lExit ) .AND. lExit )
-      ExitProcess( _OOHG_ErrorLevel )
+      ExitProcess( ErrorLevel() )
       // Processing will never reach this point
    ENDIF
    _OOHG_Main := NIL

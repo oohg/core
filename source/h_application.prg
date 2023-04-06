@@ -1894,10 +1894,11 @@ METHOD Value_Pos38( uValue ) CLASS TApplication
    LOCAL uRet
 
    ::MutexLock()
-   IF uValue != NIL
-      ::aVars[ NDX_OOHG_ERRORLEVEL ] := uValue
+   IF HB_ISNUMERIC( uValue ) .AND. uValue >= 0 .AND. uValue <= 255
+      uRet := ::aVars[ NDX_OOHG_ERRORLEVEL ] := ErrorLevel( uValue )
+   ELSE
+      uRet := ::aVars[ NDX_OOHG_ERRORLEVEL ] := ErrorLevel()
    ENDIF
-   uRet := ::aVars[ NDX_OOHG_ERRORLEVEL ]
    ::MutexUnlock()
 
    RETURN ( uRet )

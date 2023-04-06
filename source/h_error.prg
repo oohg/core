@@ -666,7 +666,7 @@ METHOD ErrorMessage( cError, nPosition ) CLASS OOHG_TErrorHtml
    dbCloseAll()
    ::CreateLog()
    C_MSGSTOP( ::cBufferScreen, ::aMessages[12] )
-   ExitProcess( 1 )
+   ExitProcess( Max( ErrorLevel(), 1 ) )
 
    RETURN NIL
 
