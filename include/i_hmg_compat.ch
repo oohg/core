@@ -75,21 +75,33 @@
    => ;
       GetFormObjectByHandle( <FormHandle> ):BackColor( <aColor> )
 
+#xtranslate EmptyClipboard( [ <x> ] ) ;
+   => ;
+      CLEARCLIPBOARD( <x> )
+
 #xtranslate CopyToClipboard( [ <x> ] ) ;
    => ;
-      SetClipboardText( <x> )
+      SETCLIPBOARDTEXT( <x> )
 
-#xtranslate RetrieveTextFromClipboard() ;
+#xtranslate SetClipboard( [ <x> ] ) ;
    => ;
-      GetClipboardText()
+      SETCLIPBOARDTEXT( <x> )
 
 #xtranslate Random( <arg1> ) ;
    => ;
-      hb_Random( <arg1> )
+      HMG_Random( <arg1> )
+
+#xtranslate GetClipboard() ;
+   => ;
+      GETCLIPBOARDTEXT()
+
+#xtranslate RetrieveTextFromClipboard() ;
+   => ;
+      GETCLIPBOARDTEXT()
 
 #xtranslate IsThemed() ;
    => ;
-      .T.
+      ISAPPTHEMED()
 
 #xtranslate GlobalMemoryStatusEx() ;
    => ;
@@ -731,5 +743,18 @@ TODO: implement this clauses:
 #xcommand SET MENUTHEME USER <aUser> [ OF <parent> ] ;
 => ;
 // HMG_SetMenuTheme( MNUCLR_THEME_USER_DEFINED, <(parent)>, <aUser> )
+
+#xtranslate _GetAppCargo() ;
+   => ;
+      App.Cargo
+
+#xtranslate HMG_GarbageCall( [ <x> ] ) ;
+   => ;
+      CollectGarbage( <x> )
+
+#xtranslate RELEASE MEMORY ;
+   => ;
+      CollectGarbage() ;;
+      EmptyWorkingSet()
 
 #endif
