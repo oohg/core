@@ -13,6 +13,18 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-06 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    * App.Errorlevel, _OOHG_AppObject():ErrorLevel, _OOHG_ErrorLevel
+      and _OOHG_AppObject():Value_Pos38 now set/return ErrorLevel().
+  * core\source\h_error.prg
+    ! ExitProcess( 1 ) was replaced by ExitProcess( Max( ErrorLevel(), 1 ) ).
+  * core\source\h_form.prg
+  * ExitProcess( _OOHG_ErrorLevel ) was replaced by ExitProcess( ErrorLevel() ).
+    ; Fix ErrorLevel value on program's error: since the user can change the ErrorLevel
+      at any time, _OOHG_ErrorLevel maybe out of sync when the program crashes.
+  #607
+
 2023-04-05 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_controlmisc.c
     + Function InsertOEMComma.
