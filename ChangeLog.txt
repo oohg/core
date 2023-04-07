@@ -13,13 +13,7 @@
  * Use #nnn to refer to an issue.
  */
 
-2023-04-03 22:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\c_controlmisc.c
-    + Unicode support to function SetClipboardText.
-    + Function ClearClipboard.
-    + Function GetClipboard.
-
-2023-04-05 18:52 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+2023-04-05 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_controlmisc.c
     + Function InsertOEMComma.
   * core\source\h_textbox.prg
