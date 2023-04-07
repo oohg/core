@@ -63,62 +63,67 @@
 
 #xtranslate App.ArgC                       => _OOHG_AppObject():ArgC
 #xtranslate App.Args                       => _OOHG_AppObject():Args
+#xtranslate App.AutoScroll                 => _OOHG_AppObject():Value_Pos75
 #xtranslate App.AutoScroll := <arg>        => _OOHG_AppObject():Value_Pos75( <arg> )
-#xtranslate App.BackColor                  => _OOHG_AppObject():BackColor()
+#xtranslate App.BackColor                  => _OOHG_AppObject():BackColor
 #xtranslate App.BackColor := <arg>         => _OOHG_AppObject():BackColor( <arg> )
-#xtranslate App.Cargo                      => _OOHG_AppObject():Cargo()
+#xtranslate App.Cargo                      => _OOHG_AppObject():Cargo
 #xtranslate App.Cargo := <arg>             => _OOHG_AppObject():Cargo( <arg> )
-#xtranslate App.ClientHeight               => _OOHG_AppObject():ClientHeight()
+#xtranslate App.ClientHeight               => _OOHG_AppObject():ClientHeight
 #xtranslate App.ClientHeight := <arg>      => _OOHG_AppObject():ClientHeight( <arg> )
-#xtranslate App.ClientWidth                => _OOHG_AppObject():ClientWidth()
+#xtranslate App.ClientWidth                => _OOHG_AppObject():ClientWidth
 #xtranslate App.ClientWidth := <arg>       => _OOHG_AppObject():ClientWidth( <arg> )
-#xtranslate App.Col                        => _OOHG_AppObject():Col()
+#xtranslate App.Col                        => _OOHG_AppObject():Col
 #xtranslate App.Col := <arg>               => _OOHG_AppObject():Col( <arg> )
-#xtranslate App.Cursor                     => _OOHG_AppObject():Cursor()
+#xtranslate App.Cursor                     => _OOHG_AppObject():Cursor
 #xtranslate App.Cursor := <arg>            => _OOHG_AppObject():Cursor( <arg> )
 #xtranslate App.DefineFont( <arg> )        => _OOHG_AppObject():DefineLogFont( <arg> )
 #xtranslate App.DoEvents                   => ProcessMessages()
 #xtranslate App.Drive                      => _OOHG_AppObject():Drive
 #xtranslate App.ErrorLevel                 => _OOHG_AppObject():ErrorLevel
+#xtranslate App.ErrorLevel := <arg>        => _OOHG_AppObject():ErrorLevel( <arg> )
 #xtranslate App.ExeName                    => _OOHG_AppObject():ExeName
 #xtranslate App.FileName                   => _OOHG_AppObject():FileName
-#xtranslate App.FormName                   => _OOHG_AppObject():MainName()
-#xtranslate App.FormObject                 => _OOHG_AppObject():MainObject()
-#xtranslate App.Handle                     => _OOHG_AppObject():Handle()
-#xtranslate App.Height                     => _OOHG_AppObject():Height()
+#xtranslate App.FontName                   => _OOHG_AppObject():Value_Pos07
+#xtranslate App.FontSize                   => _OOHG_AppObject():Value_Pos08
+#xtranslate App.FormName                   => _OOHG_AppObject():MainName
+#xtranslate App.FormObject                 => _OOHG_AppObject():MainObject
+#xtranslate App.Handle                     => _OOHG_AppObject():Handle
+#xtranslate App.Height                     => _OOHG_AppObject():Height
 #xtranslate App.Height := <arg>            => _OOHG_AppObject():Height( <arg> )
-#xtranslate App.HelpButton                 => _OOHG_AppObject():HelpButton()
+#xtranslate App.HelpButton                 => _OOHG_AppObject():HelpButton
 #xtranslate App.HelpButton := <arg>        => _OOHG_AppObject():HelpButton( <arg> )
-#xtranslate App.hWnd                       => _OOHG_AppObject():Handle()
-#xtranslate App.Icon                       => _OOHG_AppObject():Icon()
+#xtranslate App.hWnd                       => _OOHG_AppObject():Handle
+#xtranslate App.Icon                       => _OOHG_AppObject():Icon
+#xtranslate App.Icon.Handle                => LoadTrayIconSmall( GetResources(), _OOHG_AppObject():Icon, 32, 32 )
 #xtranslate App.Icon := <arg>              => _OOHG_AppObject():Icon( <arg> )
 #xtranslate App.IsAlreadyRunning           => IsExeRunning( _OOHG_AppObject():FileName )
-#xtranslate App.LogFile                    => _OOHG_AppObject():LogFile()
+#xtranslate App.LogFile                    => _OOHG_AppObject():LogFile
 #xtranslate App.LogFile := <arg>           => _OOHG_AppObject():LogFile( <arg> )
-#xtranslate App.MainName                   => _OOHG_AppObject():MainName()
-#xtranslate App.MainObject                 => _OOHG_AppObject():MainObject()
+#xtranslate App.MainName                   => _OOHG_AppObject():MainName
+#xtranslate App.MainObject                 => _OOHG_AppObject():MainObject
 #xtranslate App.MultipleInstances          => _OOHG_AppObject():Value_Pos30
 #xtranslate App.MultipleInstances := <arg> => _OOHG_AppObject():Value_Pos30( <arg> )
 #xtranslate App.MutexLock                  => _OOHG_AppObject():MutexLock()
 #xtranslate App.MutexUnlock                => _OOHG_AppObject():MutexUnlock()
-#xtranslate App.Name                       => _OOHG_AppObject():Name()
+#xtranslate App.Name                       => _OOHG_AppObject():Name
 #xtranslate App.Name := <arg>              => _OOHG_AppObject():Name( <arg> )
 #xtranslate App.Path                       => _OOHG_AppObject():Path
 #xtranslate App.Release                    => _OOHG_AppObject():Release()
 #xtranslate App.ReleaseFont( <arg> )       => _OOHG_AppObject():ReleaseLogFont( <arg> )
-#xtranslate App.Row                        => _OOHG_AppObject():Row()
+#xtranslate App.Row                        => _OOHG_AppObject():Row
 #xtranslate App.Row := <arg>               => _OOHG_AppObject():Row( <arg> )
 #xtranslate App.ScrollPage                 => _OOHG_AppObject():Value_Pos73()
 #xtranslate App.ScrollPage := <arg>        => _OOHG_AppObject():Value_Pos73( <arg> )
-#xtranslate App.ScrollStep                 => _OOHG_AppObject():Value_Pos74()
+#xtranslate App.ScrollStep                 => _OOHG_AppObject():Value_Pos74
 #xtranslate App.ScrollStep := <arg>        => _OOHG_AppObject():Value_Pos74( <arg> )
-#xtranslate App.Title                      => _OOHG_AppObject():Title()
+#xtranslate App.Title                      => _OOHG_AppObject():Title
 #xtranslate App.Title := <arg>             => _OOHG_AppObject():Title( <arg> )
-#xtranslate App.Topmost                    => _OOHG_AppObject():Topmost()
+#xtranslate App.Topmost                    => _OOHG_AppObject():Topmost
 #xtranslate App.Topmost := <arg>           => _OOHG_AppObject():Topmost( <arg> )
-#xtranslate App.Width                      => _OOHG_AppObject():Width()
+#xtranslate App.Width                      => _OOHG_AppObject():Width
 #xtranslate App.Width := <arg>             => _OOHG_AppObject():Width( <arg> )
-#xtranslate App.WindowStyle                => _OOHG_AppObject():WindowStyle()
+#xtranslate App.WindowStyle                => _OOHG_AppObject():WindowStyle
 #xtranslate App.WindowStyle := <arg>       => _OOHG_AppObject():WindowStyle( <arg> )
 
 #xtranslate Application.<*x*> => App.<x>
@@ -157,6 +162,7 @@
 
 #xtranslate <p:System,Sys>.AsteriskSound      => PLAYASTERISK()
 #xtranslate <p:System,Sys>.BeepSound          => PLAYBEEP()
+#xtranslate <p:System,Sys>.Cargo              => _OOHG_AppObject():Cargo
 #xtranslate <p:System,Sys>.ClientCol          => GETDESKTOPAREA()\[ 1 \]
 #xtranslate <p:System,Sys>.ClientHeight       => GETDESKTOPREALHEIGHT()
 #xtranslate <p:System,Sys>.ClientRow          => GETDESKTOPAREA()\[ 2 \]
