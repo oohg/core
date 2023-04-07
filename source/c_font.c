@@ -169,6 +169,110 @@ HB_FUNC( GETSYSTEMFONT )          /* FUNCTION GetSystemFont() -> { cFontName, nS
    HB_STORNI( 21 + lfDlgFont.lfHeight, -1, 2 );
 }
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETSYSTEMFONTEX )
+{
+   NONCLIENTMETRICS ncm;
+	LONG PointSize;
+	INT isBold;
+   LOGFONT lf;
+
+   ncm.cbSize = sizeof( ncm );
+
+	if ( ! SystemParametersInfo( SPI_GETNONCLIENTMETRICS, sizeof( ncm ), &ncm, 0 ) )
+	{
+		hb_reta( 7 );
+		HB_STORC( "", -1, 1 );
+		HB_STORNL3( 0, -1, 2 );
+		HB_STORL( 0, -1, 3 );
+		HB_STORL( 0, -1, 4 );
+		HB_STORNL3( 0, -1, 5 );
+		HB_STORL( 0, -1, 6 );
+		HB_STORL( 0, -1, 7 );
+		return;
+	}
+
+  switch( hb_parni( 1 ) )
+  {
+    case 1:
+      /* information about the font used in message boxes */
+      lf = ncm.lfMessageFont;
+      break;
+    case 2:
+      /* information about the caption font */
+      lf = ncm.lfCaptionFont;
+      break;
+    case 3:
+      /* information about the small caption font */
+      lf = ncm.lfSmCaptionFont;
+      break;
+    case 4:
+      /* information about the font used in menu bars */
+      lf = ncm.lfMenuFont;
+      break;
+    case 5:
+      /* information about the font used in status bars and tooltips */
+      lf = ncm.lfStatusFont;
+      break;
+   }
+
+   PointSize = - MulDiv( lf.lfHeight, 72, GetDeviceCaps( GetDC( GetActiveWindow() ), LOGPIXELSY ) );
+
+   if ( lf.lfWeight == 700 )
+	{
+		isBold = 1;
+	}
+	else
+	{
+		isBold = 0;
+	}
+
+   hb_reta( 7 );
+	HB_STORC( lf.lfFaceName, -1, 1 );
+	HB_STORNL3( PointSize, -1, 2 );
+	HB_STORL( isBold, -1, 3 );
+	HB_STORL( lf.lfItalic, -1, 4 );
+	HB_STORL( lf.lfUnderline, -1, 5 );
+	HB_STORL( lf.lfStrikeOut, -1, 6 );
+	HB_STORNI( lf.lfCharSet, -1, 7 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( GETOTHERMETRICS )
+{
+   NONCLIENTMETRICS ncm;
+
+   ncm.cbSize = sizeof( ncm );
+
+	if ( ! SystemParametersInfo( SPI_GETNONCLIENTMETRICS, sizeof( ncm ), &ncm, 0 ) )
+	{
+		hb_reta( 10 );
+		HB_STORNI( 0, -1, 1 );
+		HB_STORNI( 0, -1, 2 );
+		HB_STORNI( 0, -1, 3 );
+		HB_STORNI( 0, -1, 4 );
+		HB_STORNI( 0, -1, 5 );
+		HB_STORNI( 0, -1, 6 );
+		HB_STORNI( 0, -1, 7 );
+		HB_STORNI( 0, -1, 8 );
+		HB_STORNI( 0, -1, 9 );
+		HB_STORNI( 0, -1, 10 );
+		return;
+	}
+
+   hb_reta( 10 );
+	HB_STORNI( ncm.iBorderWidth, -1, 1 );
+	HB_STORNI( ncm.iScrollWidth, -1, 2 );
+	HB_STORNI( ncm.iScrollHeight, -1, 3 );
+	HB_STORNI( ncm.iCaptionWidth, -1, 4 );
+	HB_STORNI( ncm.iCaptionHeight, -1, 5 );
+	HB_STORNI( ncm.iSmCaptionWidth, -1, 6 );
+	HB_STORNI( ncm.iSmCaptionHeight, -1, 7 );
+	HB_STORNI( ncm.iMenuWidth, -1, 8 );
+	HB_STORNI( ncm.iMenuHeight, -1, 9 );
+	HB_STORNI( ncm.iPaddedBorderWidth, -1, 10 );
+}
+
 /*
  * Borrowed from HGM Extended.
  * Based on the works of Petr Chornyj, Claudio Soto, Viktor Szakats and Grigory Filatov.
