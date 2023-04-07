@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-06 22:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\incluide\i_statuc.ch
+    ! STATUSITEM DEFAULT clauses throws error
+      "Variable does not exist: DEFAULT" at runtime.
+  #608
+
 2023-04-06 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_controlmisc.prg
     + HMG's Random function as HMG_Random.
