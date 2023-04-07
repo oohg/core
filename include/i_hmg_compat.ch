@@ -757,4 +757,9 @@ TODO: implement this clauses:
       CollectGarbage() ;;
       EmptyWorkingSet()
 
+
+#xtranslate CLEAN MEMORY ;
+   => ;
+      EmptyWorkingSet()
+
 #endif
