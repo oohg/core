@@ -202,6 +202,7 @@ CLASS TApplication
    METHOD ActiveMenuRemove
    METHOD BackColor               SETGET
    METHOD Col                     SETGET
+   METHOD CollectGarbage
    METHOD CreateGlobalMutex       HIDDEN
    METHOD Cursor                  SETGET
    METHOD DefineLogFont
@@ -2587,6 +2588,18 @@ METHOD WinMHRelease CLASS TApplication
    ENDIF
 
    RETURN ( ::oWinMH )
+
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD CollectGarbage( lAll ) CLASS TApplication
+
+   IF ! HB_ISLOGICAL( lAll ) .OR. lAll
+      hb_gcAll()
+   ELSE
+      hb_gcStep()
+   ENDIF
+
+   RETURN ( NIL )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 STATIC FUNCTION GetCommandLineArgs
