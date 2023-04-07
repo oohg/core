@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-07 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    * Remove unnecessary parentheses.
+    + Some missing 'get' translates.
+    + Missing 'set' translate for App.ErrorLevel.
+
 2023-04-06 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\c_controlmisc.c
     * Replace NULL with GetActiveWindow() in OpenClipboard calls.
