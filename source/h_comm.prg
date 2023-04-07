@@ -78,7 +78,7 @@ FUNCTION GetData()
    App.MutexLock
    cph := _OOHG_CommPath
    stn := _OOHG_StationName
-   App.MutexUnLock
+   App.MutexUnlock
 
    PacketNames := Array( ADir( cph + stn + '.*' ) )
 
