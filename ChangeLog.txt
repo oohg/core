@@ -13,6 +13,10 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-06 21:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_controlmisc.prg
+    + HMG's Random function as HMG_Random.
+
 2023-04-06 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     * App.Errorlevel, _OOHG_AppObject():ErrorLevel, _OOHG_ErrorLevel
