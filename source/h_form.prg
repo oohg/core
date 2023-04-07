@@ -2899,7 +2899,7 @@ Function GetFormObject( FormName )
 
    mVar := '_' + FormName
 
-   Return IF( Type( mVar ) == "O", &mVar, TForm() )
+   Return iif( Type( mVar ) == "O", &mVar, TForm() )
 
 Function GetExistingFormObject( FormName )
 
