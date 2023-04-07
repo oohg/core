@@ -70,7 +70,26 @@
 STATIC _OOHG_aControlhWnd := {}, _OOHG_aControlObjects := {}         // TODO: Thread safe?
 STATIC _OOHG_aControlIds := {},  _OOHG_aControlNames := {}           // TODO: Thread safe?
 
-Function _IsControlDefined( ControlName, FormName )
+FUNCTION HMG_Random( nLimit )
+
+   STATIC snRandom := NIL
+   LOCAL nDecimals, cLimit
+
+   ASSIGN snRandom VALUE snRandom TYPE "N" DEFAULT ( Seconds() / Exp( 1 ) )
+   ASSIGN nLimit   VALUE nLimit   TYPE "N" DEFAULT 65535
+
+   snRandom  := Log( snRandom + Sqrt( 2 ) ) * Exp( 3 )
+   snRandom  := Val( Str( snRandom - Int( snRandom ), 17, 15 ) )
+   cLimit    := Transform( nLimit, "@N" )
+
+   nDecimals := At( ".", cLimit )
+   IF nDecimals > 0
+      nDecimals := Len( cLimit ) - nDecimals
+   ENDIF
+
+   RETURN Round( nLimit * snRandom, nDecimals )
+
+FUNCTION _IsControlDefined( ControlName, FormName )
 
    Local mVar
 
