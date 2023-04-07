@@ -75,6 +75,7 @@
 #xtranslate App.ClientWidth := <arg>       => _OOHG_AppObject():ClientWidth( <arg> )
 #xtranslate App.Col                        => _OOHG_AppObject():Col
 #xtranslate App.Col := <arg>               => _OOHG_AppObject():Col( <arg> )
+#xtranslate App.CollectGarbage( <arg> )    => _OOHG_AppObject():CollectGarbage( <arg> )
 #xtranslate App.Cursor                     => _OOHG_AppObject():Cursor
 #xtranslate App.Cursor := <arg>            => _OOHG_AppObject():Cursor( <arg> )
 #xtranslate App.DefineFont( <arg> )        => _OOHG_AppObject():DefineLogFont( <arg> )
@@ -169,6 +170,7 @@
 #xtranslate <p:System,Sys>.ClientWidth        => GETDESKTOPREALWIDTH()
 #xtranslate <p:System,Sys>.Clipboard          => GETCLIPBOARDTEXT()
 #xtranslate <p:System,Sys>.Clipboard := <arg> => SETCLIPBOARDTEXT( <arg> )
+#xtranslate <p:System,Sys>.CollectGarbage( <arg> ) => _OOHG_AppObject():CollectGarbage( <arg> )
 #xtranslate <p:System,Sys>.DefaultPrinter     => GetDefaultPrinter()
 #xtranslate <p:System,Sys>.DesktopFolder      => GetDesktopFolder()
 #xtranslate <p:System,Sys>.DesktopHeight      => GETDESKTOPHEIGHT()
