@@ -2593,11 +2593,13 @@ METHOD WinMHRelease CLASS TApplication
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD CollectGarbage( lAll ) CLASS TApplication
 
+   ::MutexLock()
    IF ! HB_ISLOGICAL( lAll ) .OR. lAll
       hb_gcAll()
    ELSE
       hb_gcStep()
    ENDIF
+   ::MutexUnlock()
 
    RETURN ( NIL )
 
