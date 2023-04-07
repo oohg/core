@@ -915,7 +915,7 @@ HB_FUNC( SETCLIPBOARDTEXT )
    LPTSTR lptstrCopy;
    int nLen = hb_parclen( 1 );
 
-   if( OpenClipboard( NULL ) )
+   if( OpenClipboard( GetActiveWindow() ) )
    {
       EmptyClipboard();
 
@@ -939,7 +939,7 @@ HB_FUNC( GETCLIPBOARDTEXT )
    HGLOBAL hClip;
    LPTSTR  cString;
 
-   if( IsClipboardFormatAvailable( CF_TEXT ) && OpenClipboard( NULL ) )
+   if( IsClipboardFormatAvailable( CF_TEXT ) && OpenClipboard( GetActiveWindow() ) )
    {
       hClip = GetClipboardData( CF_TEXT );
       if( hClip )
