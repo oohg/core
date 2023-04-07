@@ -104,7 +104,7 @@
       [ <default: DEFAULT> ] ;
    => ;
       _SetStatusItem( <cMsg>, <nSize>, <{uAction}>, <cToolTip>, <cBitmap>, ;
-            <(styl)>, <(align)>, <default> )
+            <(styl)>, <(align)>, <.default.> )
 
 #xcommand DATE ;
       [ <w: WIDTH> <nSize> ] ;
