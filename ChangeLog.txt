@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-08 20:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_grid.prg
+    + Codeblock bOnScroll will be executed when the mouse wheel is
+      moved over the Grid's row. Current implementation just executes
+      Up and Down method.
+
 2023-04-07 15:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_hmg_compat.ch
     + Translation for CLEAN MEMORY command.
