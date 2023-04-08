@@ -136,6 +136,8 @@ CLASS TGrid FROM TControl
    DATA lFixedControls            INIT .F.
    DATA lFocusRect                INIT .T.
    DATA lKeysLikeClipper          INIT .F.
+   DATA nLastPosH                 INIT 0
+   DATA nLastPosV                 INIT 0
    DATA lLikeExcel                INIT .F.
    DATA lKeysOn                   INIT .T.
    DATA lNeedsAdjust              INIT .F.
@@ -245,6 +247,7 @@ CLASS TGrid FROM TControl
    METHOD HeaderSetFont
    METHOD HScrollUpdate
    METHOD HScrollVisible          SETGET
+   METHOD hWndHeader              BLOCK { | Self | GetHeader( ::hWnd ) }
    METHOD InsertBlank
    METHOD InsertItem
    METHOD IsColumnReadOnly
@@ -544,13 +547,14 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
    ENDIF
 
    IF ! lIsVisualStyled
-      DisableVisualStyle( GetHeader( ControlHandle ) )
+      // Can't use ::hWndHeader because ::hWnd is not set yet
+      DISABLEVISUALSTYLE( GetHeader( ControlHandle ) )
    ENDIF
 
    InitListViewColumns( ControlHandle, ::aHeaders, ::aWidths, ::aJust )
 
    ::Register( ControlHandle, ControlName, HelpId, , ToolTip )
-   ::SetFont( , , bold, italic, underline, strikeout )
+   ::SetFont( NIL, NIL, bold, italic, underline, strikeout )
 
    ::FontColor := ::Super:FontColor
    ::BackColor := ::Super:BackColor
@@ -1886,7 +1890,7 @@ STATIC FUNCTION TGrid_EditItem_When( aEditControls )
 
    Return aValues
 
-STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn, lNoMsg )
+STATIC FUNCTION TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn, lNoMsg )
 
    Local lRet, nItem, aValues, lValid, cValidMessage
 
@@ -1923,7 +1927,7 @@ STATIC PROCEDURE TGrid_EditItem_Check( aEditControls, aItemValues, oWnd, aReturn
       oWnd:Release()
    EndIf
 
-   Return
+   RETURN NIL
 
 METHOD IsColumnReadOnly( nCol, nRow ) CLASS TGrid
 
@@ -3065,6 +3069,9 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       Else
          ::Down()
       EndIf
+      IF IsWindowStyle( ::hWnd, WS_VSCROLL )
+         ::VScrollUpdate()
+      ENDIF
       Return 1
 
    ElseIf nMsg == WM_CHAR
@@ -3171,9 +3178,17 @@ METHOD HScrollVisible( lState ) CLASS TGrid
 
 METHOD VScrollUpdate CLASS TGrid
 
+   LOCAL nH, nV
+
    SetScrollRange( ::hWnd, SB_VERT, 0, ::ItemCount - 1, .T. )
    // This fires WM_NCCALCSIZE
    SetScrollPage( ::hWnd, SB_VERT, ::CountPerPage )
+   SetScrollPos( ::hWnd, SB_VERT, ::Value )
+   nH := ::nLastPosH
+   nV := ::nLastPosV
+   ::nLastPosH := GetScrollPos( ::hWnd, SB_HORZ )
+   ::nLastPosV := GetScrollPos( ::hWnd, SB_VERT )
+   _OOHG_Eval( ::bOnScroll, { ::nLastPosH - nH, ::nLastPosV - nV, ::nLastPosH, ::nLastPosV } )
 
    RETURN NIL
 
@@ -3210,7 +3225,7 @@ METHOD VScrollVisible( lState ) CLASS TGrid
 
 METHOD HScrollUpdate CLASS TGrid
 
-   LOCAL nSum, i, r, nClientWidth
+   LOCAL nSum, i, r, nClientWidth, nH, nV
 
    r := { 0, 0, 0, 0 }
    GetClientRect( ::hWnd, r )
@@ -3225,6 +3240,11 @@ METHOD HScrollUpdate CLASS TGrid
       SetScrollRange( ::hWnd, SB_HORZ, 0, nSum - 1, .T. )
       // This fires WM_NCCALCSIZE
       SetScrollPage( ::hWnd, SB_HORZ, r[3] - r[1] )
+      nH := ::nLastPosH
+      nV := ::nLastPosV
+      ::nLastPosH := GetScrollPos( ::hWnd, SB_HORZ )
+      ::nLastPosV := GetScrollPos( ::hWnd, SB_VERT )
+      _OOHG_Eval( ::bOnScroll, { ::nLastPosH - nH, ::nLastPosV - nV, ::nLastPosH, ::nLastPosV } )
    ELSE
       ::Style( ::Style() - WS_HSCROLL )
       // This fires WM_NCCALCSIZE
@@ -3500,8 +3520,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
    ElseIf nNotify == LVN_ENDSCROLL
       // Returns the horizontal or vertical amount scrolled: + down/right - up/left
       aData := Get_DXDY_LPARAM( lParam )
-      AAdd( aData, GetScrollPos( ::hWnd, SB_HORZ ) )
-      AAdd( aData, GetScrollPos( ::hWnd, SB_VERT ) )
+      // Ending positions
+      ::nLastPosH := GetScrollPos( ::hWnd, SB_HORZ )
+      ::nLastPosV := GetScrollPos( ::hWnd, SB_VERT )
+      AAdd( aData, ::nLastPosH )
+      AAdd( aData, ::nLastPosV )
       _OOHG_Eval( ::bOnScroll, aData )
 
    ElseIf nNotify == LVN_KEYDOWN
@@ -4242,14 +4265,12 @@ METHOD HeaderSetBkColors( aHeaderBkClrs ) CLASS TGrid
       ENDIF
    ENDIF
 
-   DisableVisualStyle( GetHeader( ::hWnd ) )
+   DISABLEVISUALSTYLE( ::hWndHeader )
    ::Redraw()
 
    RETURN ::aHeaderBkClrs
 
 METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharSet, nWidth, nOrientation, lAdvanced ) CLASS TGrid
-
-   LOCAL HeaderHandle
 
    IF ValidHandler( ::HeaderFontHandle )
       DeleteObject( ::HeaderFontHandle )
@@ -4265,9 +4286,8 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
    ASSIGN nWidth       VALUE nWidth       TYPE "N"  DEFAULT 0
    ASSIGN nOrientation VALUE nOrientation TYPE "N"  DEFAULT 0
    ASSIGN lAdvanced    VALUE lAdvanced    TYPE "L"  DEFAULT .F.
-   HeaderHandle := GetHeader( ::hWnd )
-   IF ValidHandler( HeaderHandle )
-      ::HeaderFontHandle := _SetFont( HeaderHandle, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
+   IF ValidHandler( ::hWndHeader )
+      ::HeaderFontHandle := _SetFont( ::hWndHeader, cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeout, nAngle, nCharset, nWidth, nOrientation, lAdvanced )
    ENDIF
 
    RETURN NIL
@@ -6375,7 +6395,7 @@ FUNCTION _GetGridCellData( Self, aPos, uExtra )
 
    Return aCellData
 
-PROCEDURE _SetThisCellInfo( hWnd, nRow, nCol, uValue )
+FUNCTION _SetThisCellInfo( hWnd, nRow, nCol, uValue )
 
    Local aControlRect, aCellRect
 
@@ -6391,9 +6411,9 @@ PROCEDURE _SetThisCellInfo( hWnd, nRow, nCol, uValue )
    _OOHG_ThisItemCellHeight := aCellRect[ 4 ]
    _OOHG_ThisItemCellValue  := uValue
 
-   Return
+   RETURN NIL
 
-PROCEDURE _ClearThisCellInfo()
+FUNCTION _ClearThisCellInfo()
 
    _OOHG_ThisItemRowIndex   := 0
    _OOHG_ThisItemColIndex   := 0
@@ -6402,7 +6422,7 @@ PROCEDURE _ClearThisCellInfo()
    _OOHG_ThisItemCellWidth  := 0
    _OOHG_ThisItemCellHeight := 0
 
-   Return
+   RETURN NIL
 
 // uValue may be passed by reference
 FUNCTION _CheckCellNewValue( oControl, uValue )
