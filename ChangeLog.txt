@@ -13,6 +13,46 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-07 15:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    + Translation for CLEAN MEMORY command.
+
+2023-04-07 15:38 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\c_font.c
+    + Function GetSystemFontEx to retrieve information of the fonts
+      used in message boxes, captions, small captions, menu bars,
+      status bars and tooltips. It returns an array:
+      { name, size, bold, italic, underline, strikout, charset }.
+    + Function GetOtherMetrics to retrive the metrics associated with
+      the nonclient area of a nonminimized window. It returns an array:
+      { BorderWidth, ScrollWidth, ScrollHeight, CaptionWidth,
+        CaptionHeight, SmCaptionWidth, SmCaptionHeight, MenuWidth,
+        MenuHeight, iPaddedBorderWidth}
+
+2023-04-07 14:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+    + Translations for some HMG/MINIGUI clipboard related functions.
+    * Function Random now translates to a copy of the HMG function
+      that was renamed as HMG_Random.
+    ! IsThemed translation.
+    + Translations for _GetAppCargo, HMG_GarbageCall, RELEASE MEMORY.
+
+2023-04-07 13:11 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_aplication.prg
+    + Protect CollectGarbage with mutex.
+
+2023-04-07 12:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\incluide\i_window.ch
+    + Clause ANIMATE WINDOW.
+
+2023-04-07 12:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\incluide\i_app.ch
+    + Support for App/Sys/System.CollectGarbage.
+
+2023-04-07 12:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_aplication.prg
+    + Method CollectGarbage.
+
 2023-04-07 11:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
     * Remove unnecessary parentheses.
@@ -40,9 +80,10 @@
   * core\source\h_error.prg
     ! ExitProcess( 1 ) was replaced by ExitProcess( Max( ErrorLevel(), 1 ) ).
   * core\source\h_form.prg
-  * ExitProcess( _OOHG_ErrorLevel ) was replaced by ExitProcess( ErrorLevel() ).
-    ; Fix ErrorLevel value on program's error: since the user can change the ErrorLevel
-      at any time, _OOHG_ErrorLevel maybe out of sync when the program crashes.
+  * ExitProcess(_OOHG_ErrorLevel) was replaced by ExitProcess( ErrorLevel() ).
+    ; Fix ErrorLevel value on program's error: since the user can change the
+      ErrorLevel at any time, _OOHG_ErrorLevel maybe out of sync when the
+      program crashes.
   #607
 
 2023-04-05 18:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
