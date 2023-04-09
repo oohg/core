@@ -416,7 +416,7 @@
       [ <separator: SEPARATOR> ] ] ;
       [ MESSAGE <msg> ] ;
       [ <default: DEFAULT> ] ;
-      [ FONT <fontname> ] ;                      
+      [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
       [ <notrans: NOTRANSPARENT> ] ;
       [ TOOLTIP <tooltip> ] ;
