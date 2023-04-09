@@ -3394,7 +3394,7 @@ LRESULT APIENTRY _OOHG_WndProcForm( HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM
    pSave = hb_itemNew( NULL );
    pSelf = hb_itemNew( NULL );
    hb_itemCopy( pSave, hb_param( -1, HB_IT_ANY ) );
-   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd, TRUE ) );  
+   hb_itemCopy( pSelf, GetFormObjectByHandle( hWnd, TRUE ) );
 
    iReturn = _OOHG_WndProc( pSelf, hWnd, uiMsg, wParam, lParam, lpfnOldWndProc );
 
