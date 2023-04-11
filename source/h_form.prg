@@ -710,7 +710,7 @@ METHOD ProcessInitProcedure() CLASS TForm
 
 METHOD NotifyIconObject() CLASS TForm
 
-   IF LEN( ::aNotifyIcons ) == 0
+   IF Len( ::aNotifyIcons ) == 0
       TNotifyIcon():Define( "0", Self )
    ENDIF
 
