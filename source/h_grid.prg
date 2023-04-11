@@ -3069,7 +3069,7 @@ FUNCTION _OOHG_TGrid_Events2( Self, hWnd, nMsg, wParam, lParam ) // CLASS TGrid
       Else
          ::Down()
       EndIf
-      IF IsWindowStyle( ::hWnd, WS_VSCROLL )
+      IF _OOHG_GridScrollOnWheel .AND. IsWindowStyle( ::hWnd, WS_VSCROLL )
          ::VScrollUpdate()
       ENDIF
       Return 1

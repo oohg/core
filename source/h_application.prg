@@ -161,7 +161,8 @@
 #define NDX_OOHG_DEFAULTSCROLLPAGE      73
 #define NDX_OOHG_DEFAULTSCROLLSTEP      74
 #define NDX_OOHG_AUTOSCROLL             75
-#define NUMBER_OF_APP_WIDE_VARS         75
+#define NDX_OOHG_GRIDSCROLLONWHEEL      76
+#define NUMBER_OF_APP_WIDE_VARS         76
 
 STATIC oAppObj := NIL
 
@@ -308,6 +309,7 @@ CLASS TApplication
    METHOD Value_Pos73             SETGET
    METHOD Value_Pos74             SETGET
    METHOD Value_Pos75             SETGET
+   METHOD Value_Pos76             SETGET
    METHOD Width                   SETGET
    METHOD WinClassReg
    METHOD WinClassUnreg
@@ -2474,6 +2476,20 @@ METHOD Value_Pos75( lValue ) CLASS TApplication
       ::aVars[ NDX_OOHG_AUTOSCROLL ] := lValue
    ENDIF
    uRet := ::aVars[ NDX_OOHG_AUTOSCROLL ]
+   ::MutexUnlock()
+
+   RETURN ( uRet )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD Value_Pos76( lValue ) CLASS TApplication
+
+   LOCAL uRet
+
+   ::MutexLock()
+   IF HB_ISLOGICAL( lValue )
+      ::aVars[ NDX_OOHG_GRIDSCROLLONWHEEL ] := lValue
+   ENDIF
+   uRet := ::aVars[ NDX_OOHG_GRIDSCROLLONWHEEL ]
    ::MutexUnlock()
 
    RETURN ( uRet )

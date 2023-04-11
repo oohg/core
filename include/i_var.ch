@@ -114,6 +114,7 @@ APPLICATION WIDE PSEUDO-VARIABLES
 #xtranslate _OOHG_DefaultStatusBarMsg     => _OOHG_AppObject():Value_Pos47
 #xtranslate _OOHG_DefaultMenuParams       => _OOHG_AppObject():Value_Pos48
 #xtranslate _OOHG_OwnerDrawMenus          => _OOHG_AppObject():Value_Pos49
+#xtranslate _OOHG_GetNextNullName         => _OOHG_AppObject():Value_Pos50
 #xtranslate _OOHG_SettingFocus            => _OOHG_AppObject():Value_Pos51
 #xtranslate _OOHG_Validating              => _OOHG_AppObject():Value_Pos52
 #xtranslate _OOHG_ActiveHelpFile          => _OOHG_AppObject():Value_Pos53
@@ -139,6 +140,7 @@ APPLICATION WIDE PSEUDO-VARIABLES
 #xtranslate _OOHG_DefaultScrollPage       => _OOHG_AppObject():Value_Pos73
 #xtranslate _OOHG_DefaultScrollStep       => _OOHG_AppObject():Value_Pos74
 #xtranslate _OOHG_AutoScroll              => _OOHG_AppObject():Value_Pos75
+#xtranslate _OOHG_GridScrollOnWheel       => _OOHG_AppObject():Value_Pos76
 #xtranslate _OOHG_ActiveFrame             => _OOHG_AppObject():ActiveFrameGet()
 #xtranslate _OOHG_ActiveGroupBox          => _OOHG_AppObject():ActiveGroupBoxGet()
 #xtranslate _OOHG_LastDefinedForm         => ATail( _OOHG_RegisteredForms )

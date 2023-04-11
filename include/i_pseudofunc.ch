@@ -227,6 +227,10 @@
    => ;
       _OOHG_GridFixedControls := [ <lValue> ]
 
+#xtranslate SetGridScrollOnWheel( [ <lValue> ] ) ;
+   => ;
+      _OOHG_GridScrollOnWheel := [ <lValue> ]
+
 #xtranslate SetComboRefresh( [ <lValue> ] ) ;
    => ;
       _OOHG_ComboRefresh [ := <lValue> ]
