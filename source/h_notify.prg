@@ -282,7 +282,7 @@ HB_FUNC( CHANGENOTIFYICON )          /* FUNCTION ChangeNotifyIcon( hWnd, hIcon, 
    nid.uID = 0;
    nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
    nid.uCallbackMessage = WM_TASKBAR;
-   nid.hIcon = (HICON) HWNDparam( 2 );
+   nid.hIcon = HICONparam( 2 );
    pText = hb_strndup( hb_parc( 3 ), sizeof( nid.szTip ) );
    lstrcpy( nid.szTip, pText );
    hb_xfree( pText );
