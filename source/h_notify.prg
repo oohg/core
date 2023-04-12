@@ -246,6 +246,9 @@ METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
    #define WM_TASKBAR ( WM_USER + 1043 )
 #endif
 
+/*
+ * For OOHG and HMG
+ */
 HB_FUNC( LOADTRAYICON )          /* FUNCTION LoadTrayIcon( hInstance, cIcon ) -> hIcon */
 {
    HINSTANCE hInstance = HINSTANCEparam( 1 );   /* handle to application instance */
@@ -345,7 +348,7 @@ HB_FUNC( SETNOTIFYICONDATA )          /* FUNCTION SetNotifyIconData( hWnd, nId, 
    }
 }
 
-HB_FUNC( REMOVENOTIFYICON )
+HB_FUNC( REMOVENOTIFYICON )          /* FUNCTION RemoveNotifyIcon( hWnd, nId ) -> NIL */
 {
    NOTIFYICONDATA nid;
    ZeroMemory( &nid, sizeof( nid ) );
