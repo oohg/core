@@ -321,7 +321,7 @@ HB_FUNC( SETNOTIFYICONDATA )          /* FUNCTION SetNotifyIconData( hWnd, nId, 
    if( ! HB_ISNIL( 4 ) )
    {
       nid.uFlags |= NIF_ICON;
-      nid.hIcon = (HICON) HWNDparam( 4 );
+      nid.hIcon = HICONparam( 4 );
    }
    if( HB_ISCHAR( 5 ) )
    {
