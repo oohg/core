@@ -284,7 +284,7 @@ HB_FUNC( CHANGENOTIFYICON )          /* FUNCTION ChangeNotifyIcon( hWnd, hIcon, 
    nid.uCallbackMessage = WM_TASKBAR;
    nid.hIcon = HICONparam( 2 );
    pText = hb_strndup( hb_parc( 3 ), sizeof( nid.szTip ) );
-   lstrcpy( nid.szTip, pText );
+   lstrcpy( nid.szTip, TEXT( pText ) );
    hb_xfree( pText );
    Shell_NotifyIcon( NIM_MODIFY, &nid );
 }
@@ -327,7 +327,7 @@ HB_FUNC( SETNOTIFYICONDATA )          /* FUNCTION SetNotifyIconData( hWnd, nId, 
    {
       nid.uFlags |= NIF_TIP;
       pText = hb_strndup( hb_parc( 5 ), sizeof( nid.szTip ) );
-      lstrcpy( nid.szTip, pText );
+      lstrcpy( nid.szTip, TEXT( pText ) );
       hb_xfree( pText );
    }
    if( hb_parl( 3 ) )
