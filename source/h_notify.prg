@@ -246,20 +246,30 @@ METHOD Events_TaskBar( lParam ) CLASS TNotifyIcon
    #define WM_TASKBAR ( WM_USER + 1043 )
 #endif
 
-HB_FUNC( LOADTRAYICON )
+HB_FUNC( LOADTRAYICON )          /* FUNCTION LoadTrayIcon( hInstance, cIcon ) -> hIcon */
 {
-   HICON hImage;
-   HINSTANCE hInstance = HINSTANCEparam( 1 );     /* handle to application instance */
-   LPCTSTR lpIconName = (LPCTSTR) hb_parc( 2 );   /* name string or resource identifier */
+   HINSTANCE hInstance = HINSTANCEparam( 1 );   /* handle to application instance */
+#ifndef UNICODE
+   TCHAR* lpIconName = (TCHAR *) ( HB_ISCHAR( 2 ) ? hb_parc( 2 ) : MAKEINTRESOURCE( hb_parni( 2 ) ) );
+#else
+   TCHAR* lpIconName = (TCHAR *) ( HB_ISCHAR( 2 ) ? AnsiToWide( (char *) hb_parc( 2 ) ) : MAKEINTRESOURCE( hb_parni( 2 ) ) );
+#endif
 
-   hImage = LoadIcon( hInstance, lpIconName );
+   HICON hIcon = LoadIcon( hInstance, lpIconName );
 
-   if( hImage == NULL )
+   if( hIcon == NULL )
    {
-      hImage = (HICON) LoadImage( hInstance, lpIconName, IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
+      hIcon = (HICON) LoadImage( hInstance, lpIconName, IMAGE_ICON, 0, 0, LR_LOADFROMFILE + LR_DEFAULTSIZE );
    }
 
-   HWNDret( (HWND) hImage );
+   HICONret( hIcon );
+
+#ifdef UNICODE
+   if( HB_ISCHAR( 2 ) )
+   {
+      hb_xfree( (TCHAR *) lpIconName );
+   }
+#endif
 }
 
 HB_FUNC( CHANGENOTIFYICON )          /* FUNCTION ChangeNotifyIcon( hWnd, hIcon, cTooltip ) -> NIL */
