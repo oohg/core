@@ -362,7 +362,7 @@ HB_FUNC( MEMORYSTATUS )          /* FUNCTION MemoryStatus() -> nValue | aValue *
 
 HB_FUNC( SHELLABOUT )
 {
-   ShellAbout( 0, hb_parc( 1 ), hb_parc( 2 ), HICONparam(3) );
+   ShellAbout( NULL, hb_parc( 1 ), hb_parc( 2 ), HICONparam(3) );
 }
 
 HB_FUNC( PAINTBKGND )
