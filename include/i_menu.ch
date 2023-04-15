@@ -108,7 +108,7 @@
 
 #xcommand RELEASE MAIN MENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):oMenu:Release
+      GetExistingFormObject( <(parent)> ):oMenu:Release()
 
 #xcommand DEFINE MAINMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -127,7 +127,7 @@
 
 #xcommand RELEASE MAINMENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):oMenu:Release
+      GetExistingFormObject( <(parent)> ):oMenu:Release()
 
 #xcommand DEFINE CONTEXT MENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -146,7 +146,7 @@
 
 #xcommand RELEASE CONTEXT MENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):ContextMenu:Release
+      GetExistingFormObject( <"parent"> ):ContextMenu:Release()
 
 #xcommand DEFINE CONTEXTMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -165,7 +165,7 @@
 
 #xcommand RELEASE CONTEXTMENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):ContextMenu:Release
+      GetExistingFormObject( <(parent)> ):ContextMenu:Release()
 
 #xcommand DEFINE CONTEXT MENU CONTROL <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -184,7 +184,7 @@
 
 #xcommand RELEASE CONTEXT MENU CONTROL <control> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(control)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE CONTROL CONTEXT MENU <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -203,7 +203,7 @@
 
 #xcommand RELEASE CONTROL CONTEXT MENU <control> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(control)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE CONTEXTMENU CONTROL <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -222,7 +222,7 @@
 
 #xcommand RELEASE CONTEXTMENU CONTROL <control> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(control)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE CONTROL CONTEXTMENU <control> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -241,7 +241,7 @@
 
 #xcommand RELEASE CONTROL CONTEXTMENU <control> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"control">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(control)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE DROPDOWN MENU BUTTON <button> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -260,7 +260,7 @@
 
 #xcommand RELEASE DROPDOWNBUTTON <button> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(button)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE DROPDOWNMENU OWNERBUTTON <button> ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -279,7 +279,7 @@
 
 #xcommand RELEASE DROPDOWNMENU OWNERBUTTON <button> <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingControlObject( <"button">, <"parent"> ):ContextMenu:Release
+      GetExistingControlObject( <(button)>, <(parent)> ):ContextMenu:Release
 
 #xcommand DEFINE NOTIFY MENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -298,7 +298,7 @@
 
 #xcommand RELEASE NOTIFY MENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+      GetExistingFormObject( <(parent)> ):NotifyMenu:Release()
 
 #xcommand DEFINE NOTIFYMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -317,7 +317,7 @@
 
 #xcommand RELEASE NOTIFYMENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):NotifyMenu:Release
+      GetExistingFormObject( <(parent)> ):NotifyMenu:Release()
 
 #xcommand DEFINE MENU DYNAMIC ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -336,7 +336,7 @@
 
 #xcommand RELEASE MENU DYNAMIC <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):DynamicMenu:Release
+      GetExistingFormObject( <(parent)> ):DynamicMenu:Release()
 
 #xcommand POPUP <caption> ;
       [ NAME <name> ] ;
