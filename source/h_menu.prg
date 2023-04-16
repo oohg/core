@@ -354,7 +354,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
    _OOHG_AppObject():ActiveMenuPush( Self )
 
    IF ::Parent:oMenu != NIL
-      // MAIN MENU already defined for this window
+      // MAIN MENU already defined for this form
       ::Parent:oMenu:Release()
    ENDIF
    SetMenu( ::Parent:hWnd, ::hWnd )
