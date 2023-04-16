@@ -13,6 +13,17 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-16 19:17 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    ! Error "No exported variable CONTEXTMENU" in line 415.
+    ; TMenuDropDown can't inherit ::Super:Define method because
+      this menu is for controls not for forms.
+  * core\source\h_windows.prg
+    - DATA DynamicMenu.
+  * core\source\h_form.prg
+    + DATA DynamicMenu.
+  #609
+
 2023-04-15 14:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_menu.ch
     * Replace normal stringify result markers with smart ones
