@@ -102,6 +102,7 @@ CLASS TForm FROM TWindow
    DATA ActivateCount             INIT { 0, NIL, .T. }
    DATA aNotifyIcons              INIT {}
    DATA AutoRelease               INIT .F.
+   DATA DynamicMenu               INIT NIL
    DATA Focused                   INIT .T.
    DATA ForceCol                  INIT NIL   // Must be NIL instead of 0
    DATA ForceRow                  INIT NIL   // Must be NIL instead of 0

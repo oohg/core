@@ -219,7 +219,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
    _OOHG_AppObject():ActiveMenuPush( Self )
 
    IF ::Parent:DynamicMenu != NIL
-      // Dynamic menu already defined for this window
+      // DYNAMIC MENU is already defined for this form
       ::Parent:DynamicMenu:Release()
    ENDIF
    SetMenu( ::Parent:hWnd, ::hWnd )
@@ -354,7 +354,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
    _OOHG_AppObject():ActiveMenuPush( Self )
 
    IF ::Parent:oMenu != NIL
-      // MAIN MENU already defined for this form
+      // MAIN MENU is already defined for this form
       ::Parent:oMenu:Release()
    ENDIF
    SetMenu( ::Parent:hWnd, ::hWnd )
@@ -381,6 +381,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
 
    ::Super:Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw )
    IF ::Parent:ContextMenu != NIL
+      // CONTEXT MENU is already defined for this form
       ::Parent:ContextMenu:Release()
    ENDIF
    ::Parent:ContextMenu := Self
@@ -401,6 +402,7 @@ METHOD Define( Parent, Name, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenuNo
 
    ::Super:Define( Parent, Name, cMsg, cFontId, nTimeout, lOwnerDraw )
    IF ::Parent:NotifyMenu != NIL
+      // NOTIFY MENU is already defined for this form
       ::Parent:NotifyMenu:Release()
    ENDIF
    ::Parent:NotifyMenu := Self
@@ -417,20 +419,26 @@ CLASS TMenuDropDown FROM TMenu
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define( uButton, uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenuDropDown
+METHOD Define( uControl, uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenuDropDown
 
-   LOCAL oContainer
-
-   IF HB_ISOBJECT( uButton )
-      uParent := uButton:Parent
-      uButton := uButton:Name
+   IF HB_ISOBJECT( uControl )
+      uParent := uControl:Parent
+      uControl := uControl:Name
    ENDIF
-   ::Super:Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw )
-   oContainer := GetControlObject( uButton, ::Parent:Name )
-   IF oContainer:ContextMenu != NIL
-      oContainer:ContextMenu:Release()
+   ::SetForm( cName, uParent )
+   ::Register( CreatePopupMenu() )
+   ::oMenuParams := TMenuParams()
+   ::OwnerDraw   := lOwnerDraw
+   ::cStatMsg    := cMsg
+   ::cFontId     := cFontId
+   ::nTimeout    := nTimeout
+   _OOHG_AppObject():ActiveMenuPush( Self )
+   SetMenu( ::Parent:hWnd, ::hWnd )
+   ::Container := GetControlObject( uControl, ::Parent:Name )
+   IF ::Container:ContextMenu != NIL
+      ::Container:ContextMenu:Release()
    ENDIF
-   oContainer:ContextMenu := Self
+   ::Container:ContextMenu := Self
 
    RETURN Self
 
@@ -474,7 +482,7 @@ CLASS TMenuItem FROM TControl
    METHOD Checked                      SETGET
    METHOD Colors                       SETGET
    METHOD CursorType                   SETGET
-   METHOD DefaultItem( nItem )         BLOCK { |Self, nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }   // one-based position or 0 for no default
+   METHOD DefaultItem( nItem )         BLOCK { |Self, nItem| SetMenuDefaultItem( ::Container:hWnd, nItem ) }   // One-based position or 0 for no default
    METHOD DefaultItemById              BLOCK { |Self| SetMenuDefaultItemById( ::Container:hWnd, ::Id ) }
    METHOD DefineItem
    METHOD DefinePopup
@@ -863,7 +871,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
    IF HB_ISLOGICAL( lRight ) .AND. lRight
       nStyle += MF_RIGHTJUSTIFY
    ENDIF
-   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // default is at the end
+   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Default is at the end
    IF ::lOwnerDraw
       nStyle += MF_OWNERDRAW
       ::xData := CreateMenuItemData( nId )
@@ -917,7 +925,6 @@ METHOD Hilited( lHilited ) CLASS TMenuItem
 
    lRet := MenuHilited( ::Container:hWnd, ::Position(), lHilited, ::Parent:hWnd )
    ::Container:Refresh()
-//   ::Parent:Redraw()
 
    RETURN lRet
 
@@ -993,13 +1000,13 @@ METHOD Picture( uImages ) CLASS TMenuItem
 METHOD Stretch( lStretch ) CLASS TMenuItem
 
    /*
-   When .F. (default behavior)
-      XP clips big images to expected size (defined by system metrics' parameters
-      SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
-      Vista and Win7 show big images at their real size.
-   When .T.
-     XP, Vista and Win7 scale down big images to expected size.
-   */
+    * When .F. (default behavior)
+    *   XP clips big images to expected size (defined by system metrics' parameters
+    *   SM_CXMENUCHECK and SM_CYMENUCHECK, usually 13x13 pixels).
+    *   Vista and Win7 show big images at their real size.
+    * When .T.
+    *   XP, Vista and Win7 scale down big images to expected size.
+    */
    IF HB_ISLOGICAL( lStretch )
       IF lStretch != ::lStretch
          ::lStretch := lStretch
@@ -1170,7 +1177,7 @@ METHOD Events_MeasureItem( lParam ) CLASS TMenuItem
       nBmpSize :=::oMenuParams:aMenuParams[ MNUBMP_SIZE ]
       nHeight = nYDelta + Max( nHeight, nBmpSize + nYDelta )
       IF ! ::lIsMenuBreak .AND. ! ::lIsAtBar
-         // leave space for the checkmark
+         // Leave space for the checkmark
          nXDelta := ::oMenuParams:aMenuParams[ MNUBMP_XDELTA ]
          nWidth += nXDelta + nBmpSize + nXDelta + 8                  // TODO: Check 8
       ENDIF
@@ -1315,16 +1322,16 @@ METHOD AddItem( cCaption, uAction ) CLASS TMenuItemMRU
    LOCAL i, bAction, oItem, cNew, nLen, nPos
 
    IF ValType( cCaption ) $ "CM" .AND. ! Empty( cCaption )
-      // check if the item is already in the list
+      // Check if the item is already in the list
       i := AScan( ::aItems, { |a| Upper( a[ 2 ] ) == Upper( cCaption ) } )
       IF i > 0
-         // found, remove old item
+         // Found, remove old item
          ::aItems[ i, 1 ]:Release()
          ADel( ::aItems, i )
          ASize( ::aItems, Len( ::aItems ) - 1 )
       ENDIF
 
-      // see what to do when clicked
+      // See what to do when clicked
       IF PCount() > 1
          IF ValType( uAction ) $ "CM"
             IF ( i := At( "(", uAction ) ) > 0
@@ -1347,7 +1354,7 @@ METHOD AddItem( cCaption, uAction ) CLASS TMenuItemMRU
 
       nPos := ::oTopItem:Position() + 2
 
-      // add new item to position 1
+      // Add new item to position 1
       oItem := TMenuItem():InsertItem( "&1 " + cCaption, bAction, NIL, NIL, NIL, NIL, ::oTopItem:Container, ;
                                        NIL, NIL, NIL, NIL, nPos, ::cMsgItems, .F., ::cFontId, ::nTimeout )
 
@@ -1356,13 +1363,13 @@ METHOD AddItem( cCaption, uAction ) CLASS TMenuItemMRU
       ::aItems[ 1 ] := { oItem, cCaption }
       oItem:Cargo := cCaption
 
-      // remove last item if needed
+      // Remove last item if needed
       IF Len( ::aItems ) > ::nMaxItems
          ::aItems[ Len( ::aItems ), 1 ]:Release()
          ASize( ::aItems, ::nMaxItems )
       ENDIF
 
-      // update item's captions
+      // Update item's captions
       FOR i := 2 to Len( ::aItems )
          cNew := ::aItems[ i, 2 ]
          nLen := Len( cNew )
@@ -1490,7 +1497,7 @@ HB_FUNC( CREATEMENUITEMDATA )          /* FUNCTION CreateMenuItemData( nId ) -> 
 {
    LPMYITEM lpItem = (MYITEM *) hb_xgrab( ( sizeof( MYITEM ) ) );
 
-   lpItem->id = hb_parnl( 1 );         /* used by WM_DRAWITEM and WM_MEASUREITEM handlers in h_windows.prg */
+   lpItem->id = hb_parnl( 1 );         /* Used by WM_DRAWITEM and WM_MEASUREITEM handlers in h_windows.prg */
 
    HANDLEret( lpItem );
 }
@@ -1522,7 +1529,8 @@ HB_FUNC( GETMENUITEMCOUNT )          /* FUNCTION GetItemCount( hMenu ) -> nCount
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 static int FindItemPos( HMENU hMenu, UINT iItem )
 {
-   /* based on the original work of Jochen Ruhland
+   /*
+    * Based on the original work of Jochen Ruhland
     * https://www.codeguru.com/cpp/controls/menu/miscellaneous/article.php/c191/Finding-a-menuitem-from-command-id.htm
     */
    HMENU hSubMenu;
@@ -1532,13 +1540,13 @@ static int FindItemPos( HMENU hMenu, UINT iItem )
    {
       if( (int) GetMenuState( hMenu, nPos, MF_BYPOSITION ) == -1 )
       {
-         /* invalid Menu/Position combination, return 'not found' */
+         /* Invalid Menu/Position combination, return 'not found' */
          return -1;
       }
 
       if( GetMenuItemID( hMenu, nPos ) == iItem )
       {
-         /* found! */
+         /* Found! */
          return nPos;
       }
 
@@ -1575,7 +1583,7 @@ static int FindPopupPos( HMENU hMenu, HMENU hPopup )
    {
       if( (int) GetMenuState( hMenu, nPos, MF_BYPOSITION ) == -1 )
       {
-         /* invalid Menu/Position combination, return 'not found' */
+         /* Invalid Menu/Position combination, return 'not found' */
          return -1;
       }
 
@@ -1817,7 +1825,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
 
    if( hb_parni( 6 ) == 0 )
    {
-      /* ownerdraw */
+      /* Ownerdraw */
       bIgnoreBkClr = TRUE;
       iAttributes = LR_DEFAULTCOLOR;
    }
@@ -1829,7 +1837,7 @@ HB_FUNC( MENUITEM_SETBITMAPS )          /* FUNCTION MenuItem_SetBitmaps( hWnd, n
 
       if( ( hb_parni( 6 ) == 1 ) && bTransparent )
       {
-         /* is Vista or later */
+         /* Is Vista or later */
          iAttributes = LR_LOADMAP3DCOLORS | LR_LOADTRANSPARENT;
       }
       else
@@ -1939,7 +1947,7 @@ HB_FUNC_STATIC( TMENU_SETMENUBARCOLOR )          /* METHOD SetMenuBarColor( uCol
       }
    }
 
-   /* return value was set in _OOHG_DetermineColorReturn() */
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -1973,7 +1981,7 @@ HB_FUNC( TMENUITEMSETITEMSCOLOR )          /* FUNCTION TMenuItemSetItemsColor( o
       }
    }
 
-   /* return value was set in _OOHG_DetermineColorReturn() */
+   /* Return value was set in _OOHG_DetermineColorReturn() */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -2473,7 +2481,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
    BOOL bSelected, bGrayed, bChecked;
    HFONT hOldFont = 0;
    HBRUSH brush;
-   /* colors */
+   /* Colors */
    COLORREF clrMenuBar1             = (COLORREF) HB_PARNL2( 4, MNUCLR_MENUBARBACKGROUND1 );
    COLORREF clrMenuBar2             = (COLORREF) HB_PARNL2( 4, MNUCLR_MENUBARBACKGROUND2 );
    COLORREF clrMenuBarText          = (COLORREF) HB_PARNL2( 4, MNUCLR_MENUBARTEXT );
@@ -2502,7 +2510,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
    COLORREF clrCheckMarkBk          = (COLORREF) HB_PARNL2( 4, MNUCLR_CHECKMARKBACKGROUND );
    COLORREF clrCheckMarkSq          = (COLORREF) HB_PARNL2( 4, MNUCLR_CHECKMARKSQUARE );
    COLORREF clrCheckMarkGr          = (COLORREF) HB_PARNL2( 4, MNUCLR_CHECKMARKGRAYED );
-   /* other parameters */
+   /* Other parameters */
    BOOL bShortCursor                = (BOOL)     HB_PARNL2( 4, MNUCUR_SIZE );
    BOOL bDoubleSeparator            = (BOOL)     HB_PARNL2( 4, MNUSEP_TYPE );
    UINT uSeparatorPosition          = (UINT)     HB_PARNL2( 4, MNUSEP_POSITION );
@@ -2527,7 +2535,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
  * ODS_DEFAULT - The item is the default item.
  */
 
-   /* draw separator */
+   /* Draw separator */
    if( bSeparator )
    {
       if( bGradient )
@@ -2544,18 +2552,18 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       return;
    }
 
-   /* set font */
+   /* Set font */
    if( hFont )
    {
       hOldFont = (HFONT) SelectObject( lpdis->hDC, hFont );
    }
 
-   /* save previous colours state */
+   /* Save previous colours state */
    clrText = SetTextColor( lpdis->hDC, clrText1 );
    clrBackground = SetBkColor( lpdis->hDC, clrBk1 );
    bkMode = SetBkMode( lpdis->hDC, TRANSPARENT );
 
-   /* set colors and flags */
+   /* Set colors and flags */
    if( ( ( lpdis->itemAction & ODA_SELECT ) || ( lpdis->itemAction & ODA_DRAWENTIRE ) ) && ! ( lpdis->itemState & ODS_GRAYED ) )
    {
       if( lpdis->itemState & ODS_SELECTED )
@@ -2595,7 +2603,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       bChecked = FALSE;
    }
 
-   /* draw menu item bitmap background */
+   /* Draw menu item bitmap background */
    if( bCheckMark )
    {
       CopyRect( &rect, &lpdis->rcItem );
@@ -2612,7 +2620,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       }
    }
 
-   /* draw menu item background */
+   /* Draw menu item background */
    CopyRect( &rect, &lpdis->rcItem );
    if( bCheckMark )
    {
@@ -2641,7 +2649,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
                           clrMenuBar1, clrMenuBar1, clrBk1, clrBk1, clrGrayedBk1, clrGrayedBk1 );
    }
 
-   /* draw menu item border */
+   /* Draw menu item border */
    if( bSelected && ! bGrayed )
    {
       CopyRect( &rect, &lpdis->rcItem );
@@ -2654,7 +2662,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
                                   clrSelectedItemBorder2, clrSelectedItemBorder3, clrSelectedItemBorder4 );
    }
 
-   /* draw bitmap */
+   /* Draw bitmap */
    if( ( hBmpUnchecked != NULL ) && ! bChecked )
    {
       CopyRect( &rect, &lpdis->rcItem );
@@ -2688,7 +2696,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       }
    }
 
-   /* draw menu item text */
+   /* Draw menu item text */
    if( bCheckMark )
    {
       CopyRect( &rect, &lpdis->rcItem );
@@ -2700,7 +2708,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       DrawText( lpdis->hDC, hb_parc( 2 ), -1, &lpdis->rcItem, DT_CENTER | DT_VCENTER | DT_SINGLELINE | DT_END_ELLIPSIS | DT_EXPANDTABS );
    }
 
-   /* draw menu item checked mark */
+   /* Draw menu item checked mark */
    if( bChecked )
    {
       if( hBmpChecked )
@@ -2719,7 +2727,7 @@ HB_FUNC( TMENUITEMDRAW )          /* FUNCTION TMenuItemDraw( lParam, cCaption, h
       }
    }
 
-   /* restore state */
+   /* Restore state */
    if( hFont )
    {
       SelectObject( lpdis->hDC, hOldFont );
