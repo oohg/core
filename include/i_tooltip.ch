@@ -167,11 +167,11 @@
 
 #xcommand SET TOOLTIPMAXWIDTH [ TO ] <width> ;
    => ;
-      _SetToolTipMaxWidth ( <width> )
+      _SetToolTipMaxWidth( <width> )
 
 #xcommand SET TOOLTIP MAXWIDTH [ TO ] <width> ;
    => ;
-      _SetToolTipMaxWidth ( <width> )
+      _SetToolTipMaxWidth( <width> )
 
 #xcommand ADD TOOLTIP ICON <x> ;
    => ;
@@ -180,8 +180,8 @@
 #xcommand ADD TOOLTIPICON <icon> WITH <dummy: MESSAGE, TITLE> <title> <dummy: TO, OF> <form> ;
    => ;
       WITH OBJECT GetExistingFormObject( <(form)> ) ;;
-         :ToolTipIcon( icon ) ;;
-         :ToolTipTitle( title ) ;;
+         :ToolTipIcon( <icon> ) ;;
+         :ToolTipTitle( <title> ) ;;
       END OBJECT
 
 #xcommand ADD TOOLTIPICON <icon: ERROR, ERROR_LARGE, INFO, INFO_LARGE, WARNING, WARNING_LARGE> ;
@@ -201,11 +201,11 @@
 
 #xcommand SET TOOLTIP [ACTIVATE] <x: ON, OFF> OF <form> ;
    => ;
-      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd(), Upper( <(x)> ) == "ON" )
+      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd, Upper( <(x)> ) == "ON" )
 
 #xcommand SET TOOLTIP [ACTIVATE] TO <t> OF <form> ;
    => ;
-      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd(), <t> )
+      TTM_Activate( GetExistingFormObject( <(form)> ):ToolTiphWnd, <t> )
 
 #xcommand SET TOOLTIP [ACTIVATE] <x: ON, OFF> ;
    => ;
