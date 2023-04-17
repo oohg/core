@@ -981,11 +981,11 @@ void SetDragCursorARROW( BOOL isCtrlKeyDown )
 {
    if( isCtrlKeyDown )
    {
-      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_COPY" ) );
+      SetCursor( LoadCursor( GetModuleHandle( NULL ), "DRAG_ARROW_COPY" ) );
    }
    else
    {
-      SetCursor( LoadCursor( GetModuleHandle(NULL), "DRAG_ARROW_MOVE" ) );
+      SetCursor( LoadCursor( GetModuleHandle( NULL ), "DRAG_ARROW_MOVE" ) );
    }
 }
 
