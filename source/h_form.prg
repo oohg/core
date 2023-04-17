@@ -405,7 +405,7 @@ METHOD Define2( FormName, Caption, x, y, w, h, hParent, helpbutton, nominimize, 
    EndIf
 
    ::Register( FormHandle, FormName )
-   ::oToolTip := TToolTip():Define( NIL, Self )
+   ::oToolTip := TToolTip():Define( "0", Self )
 
    ASSIGN clientarea VALUE clientarea TYPE "L" DEFAULT .F.
    If clientarea
