@@ -152,7 +152,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, h, caption, ProcedureName, ;
       lOwnToolTip := .T.
    EndIf
    If lOwnToolTip
-      oCtrl := TToolTip():Define( Nil, Self )
+      oCtrl := TToolTip():Define( "0", Self )
       If HB_IsObject( ::Parent:oToolTip )
          With Object ::Parent:oToolTip
             oCtrl:AutoPopTime := :AutoPopTime

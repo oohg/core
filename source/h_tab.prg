@@ -723,7 +723,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nHeight, aCaptions
                    lInvisible, lDisabled, lRtl, bChange, nValue, lNoProc )
 
    ::oContainerBase := TTabRaw()
-   ::oContainerBase:Define( NIL, Self, 0, 0, nWidth, nHeight, NIL, NIL, ;
+   ::oContainerBase:Define( "0", Self, 0, 0, nWidth, nHeight, NIL, NIL, ;
                             NIL, NIL, cToolTip, NIL, lButtons, lFlatBut, ;
                             lHotTrack, lVertical, lNoTabStop, NIL, NIL, NIL, ;
                             NIL, NIL, NIL, NIL, NIL, lMultiLin, ;

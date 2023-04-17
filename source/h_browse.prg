@@ -344,12 +344,12 @@ METHOD Define( ControlName, ParentForm, nCol, nRow, nWidth, nHeight, aHeaders, a
       nCol2 := nWidth2
    ENDIF
 
-   ::ScrollButton := TScrollButton():Define( NIL, Self, nCol2, ::nHeight - GetHScrollBarHeight(), GetVScrollBarWidth(), GetHScrollBarHeight(), NIL )
+   ::ScrollButton := TScrollButton():Define( "0", Self, nCol2, ::nHeight - GetHScrollBarHeight(), GetVScrollBarWidth(), GetHScrollBarHeight(), NIL )
    IF lNoHSB
       ::ScrollButton:Visible := .F.
    ENDIF
 
-   ::VScroll := TScrollBar():Define( NIL, Self, nCol2, 0, GetVScrollBarWidth(), iif( lNoHSB, ::nHeight, ::nHeight - GetHScrollBarHeight() ) )
+   ::VScroll := TScrollBar():Define( "0", Self, nCol2, 0, GetVScrollBarWidth(), iif( lNoHSB, ::nHeight, ::nHeight - GetHScrollBarHeight() ) )
    ::VScroll:OnLineUp   := { || ::SetFocus():Up(), 0 }
    ::VScroll:OnLineDown := { || ::SetFocus():Down(), 0 }
    ::VScroll:OnPageUp   := { || ::SetFocus():PageUp(), 0 }

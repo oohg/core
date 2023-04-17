@@ -188,7 +188,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, aOptions, uValue, cFontNam
    ENDIF
 
    FOR i := 1 TO Len( aOptions )
-      oItem := TRadioItem():Define( NIL, Self, NIL, NIL, NIL, NIL, aOptions[ i ], .F., ( i == 1 ), NIL, NIL, ;
+      oItem := TRadioItem():Define( "0", Self, NIL, NIL, NIL, NIL, aOptions[ i ], .F., ( i == 1 ), NIL, NIL, ;
                   NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
                   .T., .T., NIL, NIL, NIL, NIL, NIL, NIL )
       AAdd( ::aOptions, oItem )
@@ -448,7 +448,7 @@ METHOD InsertItem( nPosition, cCaption, nImage, uToolTip, oBkGrnd, lLeft, lDisab
       nPosition := Len( ::aOptions ) + 1
    ENDIF
 
-   oItem := TRadioItem():Define( NIL, Self, nCol, nRow, nWidth, nHeight, cCaption, .F., ( nPosition == 1 ), NIL, NIL, ;
+   oItem := TRadioItem():Define( "0", Self, nCol, nRow, nWidth, nHeight, cCaption, .F., ( nPosition == 1 ), NIL, NIL, ;
                NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, uToolTip, NIL, ;
                .T., .T., lDisabled, NIL, oBkGrnd, lLeft, NIL, NIL )
 
