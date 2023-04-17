@@ -66,7 +66,7 @@
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( LOADICON )
 {
-   HICONret( LoadIcon( HINSTANCEparam( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ): (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
+   HICONret( LoadIcon( HINSTANCEparam( 1 ), HB_ISCHAR( 2 ) ? hb_parc( 2 ) : (LPCTSTR) MAKEINTRESOURCE( hb_parni( 2 ) ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
