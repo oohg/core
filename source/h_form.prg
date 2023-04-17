@@ -2753,8 +2753,8 @@ FUNCTION DefineWindow( FormName, Caption, x, y, w, h, nominimize, nomaximize, no
                nosysmenu, nocaption, initprocedure, ReleaseProcedure, ;
                MouseDragProcedure, SizeProcedure, ClickProcedure, ;
                MouseMoveProcedure, aRGB, PaintProcedure, noshow, topmost, ;
-               icon, fontname, fontsize, NotifyIconName, NotifyIconTooltip, ;
-               NotifyIconLeftClick, GotFocus, LostFocus, virtualheight, ;
+               icon, fontname, fontsize, NIL, NIL, ;
+               NIL, GotFocus, LostFocus, virtualheight, ;
                VirtualWidth, scrollleft, scrollright, scrollup, scrolldown, ;
                hscrollbox, vscrollbox, helpbutton, maximizeprocedure, ;
                minimizeprocedure, cursor, InteractiveCloseProcedure, lRtl, mdi, ;
