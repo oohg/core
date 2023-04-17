@@ -221,7 +221,7 @@ CLASS TForm FROM TWindow
    METHOD Title                   SETGET
    METHOD TitleBar                SETGET
    METHOD ToolTipAutoPopTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:AutoPopTime( nMilliSec ) }
-   METHOD ToolTiphWnd()                   INLINE ::oToolTip:hWnd
+   METHOD ToolTiphWnd                     INLINE ::oToolTip:hWnd
    METHOD ToolTipIcon( nIcon )            BLOCK { | Self, nIcon | ::oToolTip:Icon( nIcon ) }
    METHOD ToolTipInitialTime( nMilliSec ) BLOCK { | Self, nMilliSec | ::oToolTip:InitialTime( nMilliSec ) }
    METHOD ToolTipMultiLine( lMultiLine )  BLOCK { | Self, lMultiLine | ::oToolTip:MultiLine( lMultiLine ) }
