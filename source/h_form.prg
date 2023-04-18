@@ -1584,7 +1584,7 @@ HB_FUNC_STATIC( TFORM_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
                         memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                         MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                         MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                        GetMenuItemInfo( hMenu, iPos, MF_BYPOSITION, &MenuItemInfo );
+                        GetMenuItemInfo( hMenu, iPos, TRUE, &MenuItemInfo );  // by position
                         if( MenuItemInfo.hSubMenu )
                         {
                            hb_itemCopy( pMenuItem, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
@@ -1594,7 +1594,8 @@ HB_FUNC_STATIC( TFORM_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
                            hb_itemCopy( pMenuItem, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
                         }
                         _OOHG_Send( pMenuItem, s_Events_MenuHilited );
-                        hb_vmSend( 0 );
+                        hb_vmPushInteger( iPos );
+                        hb_vmSend( 1 );
                         hb_itemRelease( pMenuItem );
                      }
                   }
