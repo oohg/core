@@ -2794,7 +2794,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                      memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                      MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                      MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-                     GetMenuItemInfo( (HMENU) lParam, LOWORD( wParam ), MF_BYPOSITION, &MenuItemInfo );
+                     GetMenuItemInfo( (HMENU) lParam, LOWORD( wParam ), TRUE, &MenuItemInfo );  // by position
                      if( MenuItemInfo.hSubMenu )
                      {
                         hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );
@@ -2841,7 +2841,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                memset( &MenuItemInfo, 0, sizeof( MenuItemInfo ) );
                MenuItemInfo.cbSize = sizeof( MenuItemInfo );
                MenuItemInfo.fMask = MIIM_ID | MIIM_SUBMENU;
-               GetMenuItemInfo( (HMENU) lParam, wParam, MF_BYPOSITION, &MenuItemInfo );
+               GetMenuItemInfo( (HMENU) lParam, wParam, TRUE, &MenuItemInfo );  // by position
                if( MenuItemInfo.hSubMenu )
                {
                   hb_itemCopy( pMenu, GetControlObjectByHandle( (HWND) MenuItemInfo.hSubMenu, TRUE ) );

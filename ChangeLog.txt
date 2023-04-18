@@ -13,6 +13,10 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-18 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_windows.prg
+    * Change the third parameter of two GetMenuItemInfo calls.
+
 2023-04-17 08:51 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_form.prg
     * Remove duplicated assignments.
