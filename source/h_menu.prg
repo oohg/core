@@ -172,7 +172,6 @@ METHOD SeparatorType( nType ) CLASS TMenuParams
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenu FROM TControl
 
-   DATA bOnInitPopup                   INIT NIL
    DATA cFontID                        INIT NIL
    DATA cStatMsg                       INIT NIL
    DATA nTimeout                       INIT NIL
@@ -189,7 +188,6 @@ CLASS TMenu FROM TControl
    METHOD DisableVisualStyle
    METHOD Enabled                      SETGET
    METHOD EndMenu
-   METHOD Events_InitMenuPopup( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopup, Self, nPos ) }
    METHOD Gradient                     SETGET
    METHOD ItemCount                    BLOCK { |Self| GetMenuItemCount( ::hWnd ) }
    METHOD ItemPosition( nItemId )      BLOCK { |Self, nItemId| FindItemPosition( ::hWnd, nItemId ) }
@@ -491,7 +489,7 @@ CLASS TMenuItem FROM TControl
    METHOD Enabled                      SETGET
    METHOD EndPopup
    METHOD Events_DrawItem
-   METHOD Events_InitMenuPopup
+   METHOD Events_InitMenuPopup( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopup, Self, nPos ) }
    METHOD Events_MeasureItem
    METHOD Events_MenuHilited
    METHOD Gradient                     SETGET
@@ -1109,13 +1107,6 @@ METHOD DoEvent( bBlock, cEventType, aParams ) CLASS TMenuItem
    ENDIF
 
    RETURN ::Super:DoEvent( bBlock, cEventType, aNew )
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Events_InitMenuPopup( nPos ) CLASS TMenuItem
-
-   _OOHG_Eval( ::bOnInitPopup, Self, nPos )
-
-  RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events_MenuHilited() CLASS TMenuItem
