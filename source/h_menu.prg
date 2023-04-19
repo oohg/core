@@ -330,6 +330,7 @@ METHOD SeparatorType( nType ) CLASS TMenu
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenuMain FROM TMenu
 
+   DATA Type                           INIT "MENUMAIN" READONLY
    DATA lMain                          INIT .T.
 
    METHOD Activate                     BLOCK { || NIL }
@@ -369,6 +370,8 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenuContext FROM TMenu
 
+   DATA Type                           INIT "MENUCONTEXT" READONLY
+
    METHOD Define
    METHOD RemoveFromParent             BLOCK { |Self| ::Parent:ContextMenu := NIL }
 
@@ -390,6 +393,8 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenuNotify FROM TMenu
 
+   DATA Type                           INIT "MENUNOTIFY" READONLY
+
    METHOD Define
    METHOD RemoveFromParent             BLOCK { |Self| ::Parent:NotifyMenu := NIL }
 
@@ -410,6 +415,8 @@ METHOD Define( Parent, Name, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenuNo
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TMenuDropDown FROM TMenu
+
+   DATA Type                           INIT "MENUDROPDOWN" READONLY
 
    METHOD Define
    METHOD RemoveFromParent             BLOCK { |Self| ::Container:ContextMenu := NIL }
@@ -508,6 +515,7 @@ CLASS TMenuItem FROM TControl
 
    ENDCLASS
 
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
                     lRight, lStretch, nBreak, cMsg, cFontId, bOnInitPopup, nTimeout ) CLASS TMenuItem
@@ -521,7 +529,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
-      ::lIsAtBar           := ( uParent:Type == "MENU" .AND. uParent:lMain )
+      ::lIsAtBar           := ( uParent:Type == "MENUMAIN" )
       DEFAULT cMsg     TO uParent:cStatMsg
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
@@ -596,7 +604,7 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
-      ::lIsAtBar           := ( uParent:Type == "MENU" .AND. uParent:lMain )
+      ::lIsAtBar           := ( uParent:Type == "MENUMAIN" )
       DEFAULT cMsg     TO uParent:cStatMsg
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
@@ -672,7 +680,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
-      ::lIsAtBar           := ( uParent:Type == "MENU" .AND. uParent:lMain )
+      ::lIsAtBar           := ( uParent:Type == "MENUMAIN" )
       DEFAULT cMsg     TO uParent:cStatMsg
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
@@ -753,7 +761,7 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
-      ::lIsAtBar           := ( uParent:Type == "MENU" .AND. uParent:lMain )
+      ::lIsAtBar           := ( uParent:Type == "MENUMAIN" )
       DEFAULT cMsg     TO uParent:cStatMsg
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
@@ -1241,7 +1249,7 @@ METHOD Define( uParent, cName, cCaption, uAction, nItems, cFile, cSection, uImag
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::lOwnerDraw         := uParent:OwnerDraw
-      ::lIsAtBar           := ( uParent:Type == "MENU" .AND. uParent:lMain )
+      ::lIsAtBar           := ( uParent:Type == "MENUMAIN" )
       DEFAULT cMsgTop   TO uParent:cStatMsg
       DEFAULT cMsgItems TO uParent:cStatMsg
       DEFAULT cFontID   TO uParent:cFontID
