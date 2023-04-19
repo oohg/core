@@ -177,7 +177,6 @@ CLASS TMenu FROM TControl
    DATA nTimeout                       INIT NIL
    DATA oMenuParams                    INIT NIL
    DATA lAdjust                        INIT .F.
-   DATA lMain                          INIT .F.
    DATA Type                           INIT "MENU" READONLY
 
    METHOD Activate
@@ -194,7 +193,7 @@ CLASS TMenu FROM TControl
    METHOD OwnerDraw                    SETGET
    METHOD Params                       SETGET
    METHOD PopupPosition( hWndPopup )   BLOCK { |Self, hWndPopup| FindPopupPosition( ::hWnd, hWndPopup ) }
-   METHOD Refresh
+   METHOD Refresh                      BLOCK { || NIL }
    METHOD Release
    METHOD RemoveFromParent             BLOCK { |Self| ::Parent:DynamicMenu := NIL }
    METHOD Separator                    BLOCK { |Self| TMenuItem():DefineSeparator( NIL, Self ) }
@@ -278,15 +277,6 @@ METHOD EndMenu() CLASS TMenu
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Refresh() CLASS TMenu
-
-   IF ::lMain
-      DrawMenuBar( ::Parent:hWnd )
-   ENDIF
-
-   RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Border3D( lValue ) CLASS TMenu
 
     RETURN ::oMenuParams:Border3D( lValue )
@@ -331,10 +321,10 @@ METHOD SeparatorType( nType ) CLASS TMenu
 CLASS TMenuMain FROM TMenu
 
    DATA Type                           INIT "MENUMAIN" READONLY
-   DATA lMain                          INIT .T.
 
    METHOD Activate                     BLOCK { || NIL }
    METHOD Define
+   METHOD Refresh                      BLOCK { |Self| DrawMenuBar( ::Parent:hWnd ) }
    METHOD RemoveFromParent             BLOCK { |Self| ::Parent:oMenu := NIL }
 
    ENDCLASS
@@ -474,7 +464,6 @@ CLASS TMenuItem FROM TControl
    DATA lIsMenuBreak                   INIT .F.
    DATA lIsPopup                       INIT .F.
    DATA lIsSeparator                   INIT .F.
-   DATA lMain                          INIT .F.
    DATA lOwnerDraw                     INIT .F.
    DATA lStretch                       INIT .F.
    DATA nTimeout                       INIT NIL
