@@ -174,9 +174,9 @@ CLASS TMenu FROM TControl
 
    DATA cFontID                        INIT NIL
    DATA cStatMsg                       INIT NIL
+   DATA lAdjust                        INIT .F.
    DATA nTimeout                       INIT NIL
    DATA oMenuParams                    INIT NIL
-   DATA lAdjust                        INIT .F.
    DATA Type                           INIT "MENU" READONLY
 
    METHOD Activate
