@@ -146,7 +146,7 @@
 
 #xcommand RELEASE CONTEXT MENU <dummy: OF, PARENT> <parent> ;
    => ;
-      GetExistingFormObject( <"parent"> ):ContextMenu:Release()
+      GetExistingFormObject( <(parent)> ):ContextMenu:Release()
 
 #xcommand DEFINE CONTEXTMENU ;
       [ <dummy: OF, PARENT> <parent> ] ;
