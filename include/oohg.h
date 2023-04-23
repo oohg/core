@@ -626,6 +626,7 @@ void             _oohg_calldump( char *, char * );
 BOOL             _OOHG_ChangeWindowMessageFilter( UINT, DWORD );
 BOOL             _OOHG_DetermineColor( PHB_ITEM, LONG * );
 BOOL             _OOHG_DetermineColorReturn( PHB_ITEM, LONG *, BOOL );
+HANDLE           _OOHG_LoadImage( const CHAR *, INT, INT, INT, HWND, LONG, BOOL );
 BOOL             _OOHG_UseGDIP( void );
 DWORD            _OOHG_RTL_Status( BOOL );
 HANDLE           _OOHG_GDIPLoadPicture( HGLOBAL, HWND, LONG, LONG, LONG, BOOL );
