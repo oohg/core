@@ -221,7 +221,6 @@ CLASS THotKey FROM TControl
    DATA Type      INIT "HOTKEY" READONLY
    DATA nKey      INIT 0
    DATA nMod      INIT 0
-   DATA OnClick
 
    METHOD Define
    METHOD Enabled      SETGET
