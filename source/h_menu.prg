@@ -190,7 +190,7 @@ CLASS TMenu FROM TControl
    METHOD Gradient                     SETGET
    METHOD ItemCount                    BLOCK { |Self| GetMenuItemCount( ::hWnd ) }
    METHOD ItemPosition( nItemId )      BLOCK { |Self, nItemId| FindItemPosition( ::hWnd, nItemId ) }
-   METHOD OwnerDraw                    BLOCK { |Self, lValue| ::oMenuParams:OwnerDraw( lValue ) }
+   METHOD OwnerDraw                    SETGET
    METHOD Params                       SETGET
    METHOD PopupPosition( hWndPopup )   BLOCK { |Self, hWndPopup| FindPopupPosition( ::hWnd, hWndPopup ) }
    METHOD Refresh                      BLOCK { || NIL }
@@ -295,6 +295,11 @@ METHOD CursorType( nSize ) CLASS TMenu
 METHOD Gradient( lValue ) CLASS TMenu
 
    RETURN ::oMenuParams:Gradient( lValue )
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD OwnerDraw( lValue ) CLASS TMenu
+
+   RETURN ::oMenuParams:OwnerDraw( lValue )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Params( aNewParams ) CLASS TMenu
