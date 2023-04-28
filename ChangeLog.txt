@@ -13,8 +13,15 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-28 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    + Default values were added for some parameters of the
+      INSERT ITEM clause.
+    ! METHOD Picture of TMenuItem class: checked and unchecked
+      bitmaps are not being displayed.
+
 2023-04-22 10:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\source\i_menu.ch
+  * core\include\i_menu.ch
     * Replace normal stringify result marker
       with smart result marker in RELEASE clause.
 
