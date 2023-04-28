@@ -509,7 +509,7 @@
       [ <separator: SEPARATOR> ] ] ;
       [ MESSAGE <msg> ] ;
       [ <default: DEFAULT> ] ;
-      [ FONT <fontname> ] ;                           
+      [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
@@ -544,7 +544,7 @@
       [ <breakmenu: BREAKMENU> ;
       [ <separator: SEPARATOR> ] ] ;
       [ <default: DEFAULT> ] ;
-      [ FONT <fontname> ] ;                          
+      [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItemMRU(), [ <subclass>() ] ): ;
