@@ -744,9 +744,15 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    LOCAL nStyle, nId, hFont := NIL
 
    ::oMenuParams := TMenuParams()
+   ASSIGN cCaption VALUE cCaption TYPE "CM" DEFAULT ""
+   ASSIGN bAction  VALUE bAction  TYPE "B"  DEFAULT NIL
+
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
+   ::SetForm( cName, uParent )
+   nId := _GetId()
+
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
@@ -755,8 +761,6 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
-   ::SetForm( cName, uParent )
-   nId := _GetId()
 
    nStyle := MF_BYPOSITION
    IF HB_ISLOGICAL( lRight ) .AND. lRight
@@ -770,7 +774,10 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
          nStyle += MF_MENUBARBREAK
       ENDIF
    ENDIF
-   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
+
+   ASSIGN nPos    VALUE nPos    TYPE "N"  DEFAULT -1       // Append to the end
+   ASSIGN cFontID VALUE cFontID TYPE "CM" DEFAULT uParent:cFontID
+
    IF ::lOwnerDraw
       nStyle += MF_OWNERDRAW
       IF ValidHandler( cFontId )
@@ -803,11 +810,11 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    ::Picture := uImage
    ::Checked := lChecked
    ::Hilited := lHilited
-   IF HB_ISLOGICAL( lDisabled )  .AND. lDisabled
+   IF HB_ISLOGICAL( lDisabled ) .AND. lDisabled
       ::Enabled := .F.
    ENDIF
-   ASSIGN ::nTimeout VALUE nTimeout TYPE "N"
-   ASSIGN ::cStatMsg VALUE cMsg     TYPE "CM"
+   ASSIGN ::nTimeout VALUE nTimeout TYPE "N"  DEFAULT uParent:nTimeout
+   ASSIGN ::cStatMsg VALUE cMsg     TYPE "CM" DEFAULT uParent:cStatMsg
    IF HB_ISLOGICAL( lDefault ) .AND. lDefault
       ::DefaultItemById()
    ENDIF
@@ -866,7 +873,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
    IF HB_ISLOGICAL( lRight ) .AND. lRight
       nStyle += MF_RIGHTJUSTIFY
    ENDIF
-   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Default is at the end
+   ASSIGN nPos VALUE nPos TYPE "N" DEFAULT -1       // Append to the end
    IF ::lOwnerDraw
       nStyle += MF_OWNERDRAW
       ::xData := CreateMenuItemData( nId )
@@ -949,7 +956,7 @@ METHOD Picture( uImages ) CLASS TMenuItem
    IF HB_ISARRAY( uImages )
       IF Len( uImages ) > 1
          // Change checked bitmap
-         IF ValType( uImages[2] ) # "CM"
+         IF ValType( uImages[2] ) $ "CM"
             ::aPicture[2] := uImages[2]
          ELSE
             ::aPicture[2] := ""
@@ -958,7 +965,7 @@ METHOD Picture( uImages ) CLASS TMenuItem
 
       IF Len( uImages ) > 0
          // Change unchecked bitmap
-         IF ValType( uImages[1] ) # "CM"
+         IF ValType( uImages[1] ) $ "CM"
             ::aPicture[1] := uImages[1]
          ELSE
             ::aPicture[1] := ""
