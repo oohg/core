@@ -13,6 +13,32 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-04-22 10:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\i_menu.ch
+    * Replace normal stringify result marker
+      with smart result marker in RELEASE clause.
+
+2023-04-19 18:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    - DATA lMain from TMenu, TMenuMain and TMenuItem classes.
+    * METHOD Refresh of TMenu class was changed to do nothing.
+    + METHOD Refresh to TMenuMain class (copy of old TMenu's Refresh).
+
+2023-04-19 17:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    + DATA Type to TMenuMain, TMenuContext, TMenuNotify and
+      TMenuDropDown classes.
+
+2023-04-19 17:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    - Remove unneeded data bOnInitPopup from the TMenu class.
+    - Remove unneeded method Events_InitMenuPopup from the TMenu class.
+    * Method Events_InitMenuPopup of TMenuItem is now defined as Block.
+
+2023-04-18 19:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_form.prg
+    * Change the third parameter of two GetMenuItemInfo calls.
+
 2023-04-18 19:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     * Change the third parameter of two GetMenuItemInfo calls.
