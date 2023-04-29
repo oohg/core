@@ -1158,7 +1158,7 @@ HB_FUNC( TTM_SETTIPTEXTCOLOR )          /* FUNCTION TTM_SetTipTextColor( hWnd, u
  * Activates or deactivates a tracking tooltip.
  */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( TTM_TRACKACTIVATE )          /* FUNCTION TTM_TrackActivate( hWnd, hWnd ) -> NIL */
+HB_FUNC( TTM_TRACKACTIVATE )          /* FUNCTION TTM_TrackActivate( hWnd, hWnd, lActivate ) -> NIL */
 {
    HWND hwndTool = HWNDparam( 2 );
    TOOLINFO ti;
