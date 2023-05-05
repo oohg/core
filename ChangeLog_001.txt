@@ -537,7 +537,7 @@
   * source\h_windows.prg
     + oSelf->lOldBackColor property added for avoid creation of
       BRUSHes with the same color.
-    + oSelf->lUseBackColor property added for paint a control
+    + oSelf->lUseBackColor property added for painting a control
       with another color than oSelf->lBackColor.
 
 2006-10-08 6:52 UTC-0500 Ciro Vargas C. <pcman2010@yahoo.com>
