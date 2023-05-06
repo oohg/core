@@ -317,7 +317,7 @@ METHOD Define( ControlName, ParentForm, x, y, w, aRows, value, fontname, ;
 METHOD CueBanner( cCue ) CLASS TCombo
 
    IF HB_ISSTRING( cCue )
-      SendMessageWideString( ::hWnd, CB_SETCUEBANNER, .T., cCue )
+      SendMessageStringW( ::hWnd, CB_SETCUEBANNER, .T., cCue )
       ::cCue := cCue
    ENDIF
 
@@ -1876,7 +1876,7 @@ METHOD Define( Parent, hWnd ) CLASS TEditCombo
 METHOD CueBanner( cCue ) CLASS TEditCombo
 
    IF HB_ISSTRING( cCue )
-      SendMessageWideString( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      SendMessageStringW( ::hWnd, EM_SETCUEBANNER, .T., cCue )
       ::cCue := cCue
    ENDIF
 

@@ -153,7 +153,7 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, nWidth, nValue, cFontname,
 METHOD CueBanner( cCue ) CLASS TSpinner
 
    IF HB_ISSTRING( cCue )
-      SendMessageWideString( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      SendMessageStringW( ::hWnd, EM_SETCUEBANNER, .T., cCue )
       ::cCue := cCue
    ENDIF
 

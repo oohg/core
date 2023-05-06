@@ -269,7 +269,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
 METHOD CueBanner( cCue ) CLASS TText
 
    IF HB_ISSTRING( cCue )
-      SendMessageWideString( ::hWnd, EM_SETCUEBANNER, .T., cCue )
+      SendMessageStringW( ::hWnd, EM_SETCUEBANNER, .T., cCue )
       ::cCue := cCue
    ENDIF
 
