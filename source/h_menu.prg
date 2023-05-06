@@ -188,7 +188,7 @@ CLASS TMenu FROM TControl
    METHOD DisableVisualStyle
    METHOD Enabled                      SETGET
    METHOD EndMenu
-   METHOD Events_InitMenuPopUp( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopUp, Self, nPos ) }
+   METHOD Events_InitMenuPopup( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopup, Self, nPos ) }
    METHOD Gradient                     SETGET
    METHOD ItemCount                    BLOCK { |Self| GetMenuItemCount( ::hWnd ) }
    METHOD ItemPosition( nItemId )      BLOCK { |Self, nItemId| FindItemPosition( ::hWnd, nItemId ) }
