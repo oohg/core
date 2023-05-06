@@ -62,4 +62,4 @@
 
 
 #include "oohg.ch"
-#include "i_hmg_compat.ch"
+#include "i_minigui_compat.ch"

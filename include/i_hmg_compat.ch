@@ -71,17 +71,9 @@
    => ;
       IsExe64()
 
-#xtranslate _SetWindowBackColor( <FormHandle>, <aColor> ) ;
-   => ;
-      GetFormObjectByHandle( <FormHandle> ):BackColor( <aColor> )
-
 #xtranslate EmptyClipboard( [ <x> ] ) ;
    => ;
       CLEARCLIPBOARD( <x> )
-
-#xtranslate CopyToClipboard( [ <x> ] ) ;
-   => ;
-      SETCLIPBOARDTEXT( <x> )
 
 #xtranslate SetClipboard( [ <x> ] ) ;
    => ;
@@ -95,124 +87,54 @@
    => ;
       GETCLIPBOARDTEXT()
 
-#xtranslate RetrieveTextFromClipboard() ;
-   => ;
-      GETCLIPBOARDTEXT()
-
-#xtranslate IsThemed() ;
-   => ;
-      ISAPPTHEMED()
-
 #xtranslate GlobalMemoryStatusEx() ;
    => ;
       GlobalMemoryStatus()
 
-#xtranslate GetExeFileName() ;
+#xcommand BROWSE <name> 		;
+		[ OF <parent> ] 		;
+		[ WIDTH <w> ] 			;
+		[ HEIGHT <h> ] 			;
+		[ HEADERS <headers> ] 		;
+		[ WIDTHS <widths> ] 		;
+		[ WORKAREA <workarea> ]		;
+		[ FIELDS <Fields> ] 		;
+		[ VALUE <value> ] 		;
+		[ FONT <fontname> ] 		;
+		[ SIZE <fontsize> ] 		;
+		[ <bold : BOLD> ] ;
+		[ <italic : ITALIC> ] ;
+		[ <underline : UNDERLINE> ] ;
+		[ <strikeout : STRIKEOUT> ] ;
+		[ TOOLTIP <tooltip> ]  		;
+		[ BACKCOLOR <backcolor> ] ;
+		[ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+		[ INPUTMASK <inputmask> ]	;
+		[ FONTCOLOR <fontcolor> ] ;
+		[ ON GOTFOCUS <gotfocus> ] 	;
+		[ ON CHANGE <change> ]  	;
+		[ ON LOSTFOCUS <lostfocus> ] 	;
+		[ ON DBLCLICK <dblclick> ]  	;
+		[ <edit : EDIT> ] 		;
+		[ <inplace : INPLACE> ]		;
+		[ <append : APPEND> ] 		;
+		[ ON HEADCLICK <aHeadClick> ] 	;
+		[ WHEN <aWhenFields> ]		;
+		[ VALID <aValidFields> ]	;
+		[ VALIDMESSAGES <aValidMessages> ] ;
+		[ READONLY <aReadOnly> ] 	;
+		[ <lock: LOCK> ] 		;
+		[ <delete: DELETE> ]		;
+		[ <style: NOLINES> ] 		;
+		[ IMAGE <aImage> ] 		;
+		[ JUSTIFY <aJust> ] 		;
+		[ <novscroll: NOVSCROLL> ] 	;
+		[ HELPID <helpid> ] 		;
+		[ <break: BREAK> ] 		;
+		[ HEADERIMAGES <headerimages> ] ;
    => ;
-      GetModuleFileName()
-
-#xtranslate IFNIL( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ( <v1> ) == NIL, <exp1>, <exp2> )
-
-#xtranslate IFARRAY( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISARRAY( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFBLOCK( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISBLOCK( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFCHARACTER( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISCHARACTER( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFCHAR( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISCHAR( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFSTRING( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISSTRING( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFDATE( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISDATE( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFLOGICAL( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISLOGICAL( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFNUMBER( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISNUMBER( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFNUMERIC( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISNUMERIC( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFOBJECT( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( ISOBJECT( <v1> ), <exp1>, <exp2> )
-
-#xtranslate IFEMPTY( <v1>, <exp1>, <exp2> ) ;
-   => ;
-      iif( EMPTY( <v1> ), <exp1>, <exp2> )
-
-#xtranslate _HMG_ThisFormName ;
-   => ;
-      _OOHG_ThisForm:Name
-
-/*---------------------------------------------------------------------------
-SPLITBOX VERSION
----------------------------------------------------------------------------*/
-
-#xcommand BROWSE <name> ;
-      [ OF <parent> ] ;
-      [ WIDTH <width> ] ;
-      [ HEIGHT <height> ] ;
-      [ HEADERS <headers> ] ;
-      [ WIDTHS <widths> ] ;
-      [ WORKAREA <workarea> ] ;
-      [ FIELDS <Fields> ] ;
-      [ VALUE <value> ] ;
-      [ FONT <fontname> ] ;
-      [ SIZE <fontsize> ] ;
-      [ <bold: BOLD> ] ;
-      [ <italic: ITALIC> ] ;
-      [ <underline: UNDERLINE> ] ;
-      [ <strikeout: STRIKEOUT> ] ;
-      [ TOOLTIP <tooltip> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
-      [ DYNAMICFORECOLOR <dynamicforecolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-      [ ON GOTFOCUS <gotfocus> ] ;
-      [ ON CHANGE <change> ] ;
-      [ ON LOSTFOCUS <lostfocus> ] ;
-      [ ON DBLCLICK <dblclick> ] ;
-      [ <edit: EDIT> ] ;
-      [ <inplace: INPLACE> ] ;
-      [ <append: APPEND> ] ;
-      [ INPUTITEMS <inputitems> ] ;
-      [ DISPLAYITEMS <displayitems> ] ;
-      [ ON HEADCLICK <aHeadClick> ] ;
-      [ WHEN <aWhenFields> ] ;
-      [ VALID <aValidFields> ] ;
-      [ VALIDMESSAGES <aValidMessages> ] ;
-      [ READONLY <aReadOnly> ] ;
-      [ <lock: LOCK> ] ;
-      [ <delete: DELETE> ] ;
-      [ <style: NOLINES> ] ;
-      [ IMAGE <aImage> ] ;
-      [ JUSTIFY <aJust> ] ;
-      [ <novscroll: NOVSCROLL> ] ;
-      [ HELPID <helpid> ] ;
-      [ <break: BREAK> ] ;
-      [ HEADERIMAGE <aImageHeader> ] ;
-      [ <notabstop: NOTABSTOP> ] ;
-   => ;
-      TOBrowse():Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, <headers>, ;
+      TOBrowse():Define( <(name)>, <(parent)>, NIL, NIL, <w>, <h>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
             <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
@@ -220,152 +142,97 @@ SPLITBOX VERSION
             <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
             <.inplace.>, <.novscroll.>, <.append.>, <aReadOnly>, ;
             <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
-            <aWhenFields>, <dynamicforecolor>, NIL, NIL, ;
-            NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, <.notabstop.>, NIL, NIL, NIL, NIL, NIL, <aImageHeader> )
+            <aWhenFields>, <dynamicforecolor>, <inputmask>, NIL, ;
+            NIL, NIL, NIL, NIL,
+            NIL, NIL, NIL, NIL,
+            NIL, <.notabstop.>, NIL, NIL,
+            NIL, NIL, NIL, <headerimages> )
 
-/*
-TODO: Try to implement this BROWSE clauses using COLUMNCONTROLS:
-      [ INPUTITEMS <inputitems> ] ;
-      [ DISPLAYITEMS <displayitems> ] ;
-*/
+#xcommand @ <row>,<col> BROWSE <name> 		;
+		[ OF <parent> ] 		;
+		[ WIDTH <w> ] 			;
+		[ HEIGHT <h> ] 			;
+		[ HEADERS <headers> ] 		;
+		[ WIDTHS <widths> ] 		;
+		[ WORKAREA <workarea> ]	;
+		[ FIELDS <Fields> ] 		;
+		[ VALUE <value> ] 		;
+		[ FONT <fontname> ] 		;
+		[ SIZE <fontsize> ] 		;
+		[ <bold : BOLD> ] ;
+		[ <italic : ITALIC> ] ;
+		[ <underline : UNDERLINE> ] ;
+		[ <strikeout : STRIKEOUT> ] ;
+		[ TOOLTIP <tooltip> ]  		;
+		[ BACKCOLOR <backcolor> ] ;
+		[ DYNAMICBACKCOLOR <dynamicbackcolor> ] ;
+		[ DYNAMICFORECOLOR <dynamicforecolor> ] ;
+		[ INPUTMASK <inputmask> ]	;
+		[ FORMAT <format> ]	;
+		[ INPUTITEMS <inputitems> ]	;
+		[ DISPLAYITEMS <displayitems> ]	;
+		[ FONTCOLOR <fontcolor> ]	;
+		[ ON GOTFOCUS <gotfocus> ] 	;
+		[ ON CHANGE <change> ]  	;
+		[ ON LOSTFOCUS <lostfocus> ] 	;
+		[ ON DBLCLICK <dblclick> ]  	;
+		[ <edit : EDIT> ] 		;
+		[ <inplace : INPLACE> ]		;
+		[ <append : APPEND> ] 		;
+		[ ON HEADCLICK <aHeadClick> ] 	;
+		[ WHEN <aWhenFields> ]		;
+		[ VALID <aValidFields> ]	;
+		[ VALIDMESSAGES <aValidMessages> ] ;
+		[ READONLY <aReadOnly> ] 	;
+		[ <lock: LOCK> ] 		;
+		[ <Delete: DELETE> ]		;
+		[ <style: NOLINES> ] 		;
+		[ IMAGE <aImage> ] 		;
+		[ JUSTIFY <aJust> ] 		;
+		[ <novscroll: NOVSCROLL> ] 	;
+		[ HELPID <helpid> ] 		;
+		[ <break: BREAK> ] 		;
+		[ HEADERIMAGES <headerimages> ] ;
+	=>;
+      TOBrowse():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
+            <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
+            <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
+            <aJust>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
+            <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
+            <.inplace.>, <.novsb.>, <.append.>, <aReadOnly>, ;
+            <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
+            <aWhenFields>, <dynamicforecolor>, <inputmask>, NIL, ;
+            NIL, NIL, NIL, NIL, ;
+            NIL, NIL, NIL, NIL, ;
+            NIL, NIL, NIL, NIL, ;
+            NIL, NIL, NIL, <headerimages> )
 
-#xcommand @ <row>, <col> BUTTONEX <name> ;
-      [ <dummy: OF, PARENT> <parent> ] ;
-      [ CAPTION <caption> ] ;
-      [ <dummy: PICTURE, ICON> <bitmap> ] ;
-      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
-      [ WIDTH <width> ] ;
-      [ HEIGHT <height> ] ;
-      [ FONT <fontname> ] ;
-      [ SIZE <fontsize> ] ;
-      [ <bold: BOLD> ] ;
-      [ <italic: ITALIC> ] ;
-      [ <underline: UNDERLINE> ] ;
-      [ <strikeout: STRIKEOUT> ] ;
-      [ <uptext: UPPERTEXT> ] ;
-      [ <autofit: ADJUST> ] ;
-      [ TOOLTIP <tooltip> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight: NOHOTLIGHT> ] ;
-      [ <flat: FLAT> ] ;
-      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
-      [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy: ON GOTFOCUS, ON MOUSEHOVER> <gotfocus> ] ;
-      [ <dummy: ON LOSTFOCUS, ON MOUSELEAVE>> <lostfocus> ] ;
-      [ <notabstop: NOTABSTOP> ] ;
-      [ HELPID <helpid> ] ;
-      [ <invisible: INVISIBLE> ] ;
-      [ <default: DEFAULT> ] ;
+#xtranslate BROWSE [ <x> ] INPUTITEMS <inputitems> [ <y> ] ;
    => ;
-      @ <row>, <col> BUTTON <name> ;
-            [ PARENT <parent> ] ;
-            [ ACTION <action> ] ;
-            [ WIDTH <width> ] ;
-            [ HEIGHT <height> ] ;
-            [ FONT <fontname> ] ;
-            [ SIZE <fontsize> ] ;
-            [ <bold> ] ;
-            [ <italic> ] ;
-            [ <underline> ] ;
-            [ <strikeout> ] ;
-            [ TOOLTIP <tooltip> ] ;
-            [ <flat> ] ;
-            [ ON GOTFOCUS <gotfocus> ] ;
-            [ ON LOSTFOCUS <lostfocus> ] ;
-            [ <notabstop> ] ;
-            [ HELPID <helpid> ] ;
-            [ <invisible> ] ;
-            [ CAPTION <caption> ] ;
-            [ PICTURE <bitmap> DIBSECTION ] ;
-            [ <lnoldtr> ] ;
-            BOTTOM ;
-            [ <autofit> ] ;
-            [ BACKCOLOR <backcolor> ] ;
-            [ <nohotlight> ]
+      BROWSE [ <x> ] [ <y> ]
 
-#xcommand @ <row>, <col> BUTTONEX <name> ;
-      [ <dummy: OF, PARENT> <parent> ] ;
-      [ CAPTION <caption> ] ;
-      [ <dummy: PICTURE, ICON> <bitmap> ] ;
-      [ <dummy: ACTION, ON CLICK, ONCLICK> <action> ] ;
-      [ WIDTH <width> ] ;
-      [ HEIGHT <height> ] ;
-      [ FONT <fontname> ] ;
-      [ SIZE <fontsize> ] ;
-      [ <bold: BOLD> ] ;
-      [ <italic: ITALIC> ] ;
-      [ <underline: UNDERLINE> ] ;
-      [ <strikeout: STRIKEOUT> ] ;
-      [ <uptext: UPPERTEXT> ] ;
-      [ <autofit: ADJUST> ] ;
-      [ TOOLTIP <tooltip> ] ;
-      [ BACKCOLOR <backcolor> ] ;
-      [ FONTCOLOR <fontcolor> ] ;
-      [ <nohotlight: NOHOTLIGHT> ] ;
-      [ <flat: FLAT> ] ;
-      [ <lnoldtr: NOLOADTRANSPARENT> ] ;
-      [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <dummy: ON GOTFOCUS> <gotfocus> ] ;
-      [ <dummy: ON LOSTFOCUS> <lostfocus> ] ;
-      [ <notabstop: NOTABSTOP> ] ;
-      [ HELPID <helpid> ] ;
-      [ <invisible: INVISIBLE> ] ;
-      [ <default: DEFAULT> ] ;
-      [ <imgalign: RIGHT, TOP, BOTTOM> ] ;
+#xtranslate BROWSE [ <x> ] DISPLAYITEMS <displayitems> [ <y> ] ;
    => ;
-      @ <row>, <col> BUTTON <name> ;
-            [ PARENT <parent> ] ;
-            [ ACTION <action> ] ;
-            [ WIDTH <width> ] ;
-            [ HEIGHT <height> ] ;
-            [ FONT <fontname> ] ;
-            [ SIZE <fontsize> ] ;
-            [ <bold> ] ;
-            [ <italic> ] ;
-            [ <underline> ] ;
-            [ <strikeout> ] ;
-            [ TOOLTIP <tooltip> ] ;
-            [ <flat> ] ;
-            [ ON GOTFOCUS <gotfocus> ] ;
-            [ ON LOSTFOCUS <lostfocus> ] ;
-            [ <notabstop> ] ;
-            [ HELPID <helpid> ] ;
-            [ <invisible> ] ;
-            [ CAPTION <caption> ] ;
-            [ PICTURE <bitmap> DIBSECTION ] ;
-            [ <lnoldtr> ] ;
-            [ <imgalign> ] ;
-            [ <autofit> ] ;
-            [ BACKCOLOR <backcolor> ] ;
-            [ <nohotlight> ]
+      BROWSE [ <x> ] [ <y> ]
 
-/*
-TODO: Try to implement this BUTTONEX clauses
-      [ FONTCOLOR <fontcolor> ] ;
-      [ <noxpstyle: NOXPSTYLE> ] ;
-      [ <default: DEFAULT> ] ;
-*/
-
-#xtranslate BUTTONEX [ <x> ] NOTRANSPARENT ;
+#xtranslate BROWSE [ <x> ] FORMAT <format> [ <y> ] ;
    => ;
-      BUTTONEX [ <x> ] NOLOADTRANSPARENT
+      BROWSE [ <x> ] [ <y> ]
 
-#xtranslate BUTTONEX [ <x> ] LEFTTEXT ;
+#xtranslate @ <row>,<col> BROWSE [ <x> ] INPUTITEMS <inputitems> [ <y> ] ;
    => ;
-      BUTTONEX [ <x> ] RIGHT
+      @ <row>,<col> BROWSE [ <x> ] [ <y> ]
 
-#xtranslate BUTTONEX [ <x> ] VERTICAL ;
+#xtranslate @ <row>,<col> BROWSE [ <x> ] DISPLAYITEMS <displayitems> [ <y> ] ;
    => ;
-      BUTTONEX [ <x> ] TOP
+      @ <row>,<col> BROWSE [ <x> ] [ <y> ]
 
-#xtranslate BUTTONEX [ <x> ] VERTICAL [ <y> ] UPPERTEXT ;
+#xtranslate @ <row>,<col> BROWSE [ <x> ] FORMAT <format> [ <y> ] ;
    => ;
-      BUTTONEX [ <x> ] BOTTOM [ <y> ]
+      @ <row>,<col> BROWSE [ <x> ] [ <y> ]
 
-#xtranslate BUTTONEX [ <x> ] UPPERTEXT [ <y> ] VERTICAL ;
-   => ;
-      BUTTONEX [ <x> ] BOTTOM [ <y> ]
+// desde aca
 
 #xtranslate <Form> . <Button> . Icon ;
    => ;
@@ -654,12 +521,6 @@ TODO: implement this clauses:
 #xtranslate ITEM [ <x> ] CHECKMARK <mark> ;
    => ITEM [ <x> ] IMAGE { "", <mark> }
 
-#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
-   => MENUITEM [ <x> ] IMAGE { "", <mark> }
-
-#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
-   => MENUITEM [ <x> ] IMAGE { "", <mark> }
-
 #xtranslate ITEM [ <x> ] IMAGE <image> [ <y> ] CHECKMARK <mark> [ <z> ] ;
    => ITEM [ <x> ] [ <y> ] [ <z> ] IMAGE { <image>, <mark> }
 
@@ -669,84 +530,16 @@ TODO: implement this clauses:
 #xtranslate ITEM [ <x> ] ICON <image> CHECKMARK <mark> ;
    => ITEM [ <x> ] IMAGE { <image>, <mark> }
 
-#xtranslate MENUITEM [ <x> ] IMAGE <image> CHECKMARK <mark> ;
+#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { "", <mark> }
+
+#xtranslate MENUITEM [ <x> ] CHECKMARK <mark> ;
+   => MENUITEM [ <x> ] IMAGE { "", <mark> }
+
+#xtranslate MENUITEM [ <x> ] IMAGE <image> CHECKED ;
    => MENUITEM [ <x> ] IMAGE { <image>, <mark> }
 
-#xtranslate MENUITEM [ <x> ] ICON <image> CHECKMARK <mark> ;
-   => MENUITEM [ <x> ] IMAGE { <image>, <mark> }
-
-#xtranslate _GetSysFont() ;
-   => ;
-      GetDefaultFontName()
-
-#xtranslate SET TOOLTIP TEXTCOLOR TO <color> OF <form> ;
-   => ;
-      SET TOOLTIP TEXTCOLOR TO <color>
-
-#xtranslate SET TOOLTIP BACKCOLOR TO <color> OF <form> ;
-   => ;
-      SET TOOLTIP BACKCOLOR TO <color>
-
-#xtranslate SET TOOLTIP MAXWIDTH TO <width> OF <form> ;
-   => ;
-      SET TOOLTIP MAXWIDTH TO <width>
-
-#xtranslate SET TOOLTIP VISIBLETIME TO <t> OF <form> ;
-   => ;
-      SET TOOLTIP VISIBLETIME TO <t>
-
-#xtranslate SET EVENTS FUNCTION TO <fname> [ RESULT TO <lSuccess> ] ;
-   => ;
-      /* not needed: SET EVENTS FUNCTION TO */
-
-#translate SET OOP [SUPPORT] <x:ON,OFF> ;
-   => ;
-      /* not needed: SET OOP */
-
-#translate SET OOP [SUPPORT] TO <x> ;
-   => ;
-      /* not needed: SET OOP */
-
-#define NO_ERROR                    0
-#define ERROR_INVALID_FUNCTION      1
-#define ERROR_PATH_NOT_FOUND        3
-#define ERROR_TOO_MANY_OPEN_FILES   4
-#define ERROR_INVALID_HANDLE        6
-#define ERROR_ALREADY_EXISTS        183
-
-#xtranslate GetMenuColors() ;
-   => ;
-      _OOHG_GetMenuColor()
-
-#define MNUCLR_THEME_DEFAULT      0
-#define MNUCLR_THEME_XP           1
-#define MNUCLR_THEME_2000         2
-#define MNUCLR_THEME_DARK         3
-#define MNUCLR_THEME_USER_DEFINED 99
-
-#xcommand SET MENUTHEME DEFAULT [ OF <parent> ] ;
-=> ;
-// HMG_SetMenuTheme( MNUCLR_THEME_DEFAULT, <(parent)> )
-
-#xcommand SET MENUTHEME XP [ OF <parent> ] ;
-=> ;
-// HMG_SetMenuTheme( MNUCLR_THEME_XP, <(parent)> )
-
-#xcommand SET MENUTHEME 2000 [ OF <parent> ] ;
-=> ;
-// HMG_SetMenuTheme( MNUCLR_THEME_2000, <(parent)> )
-
-#xcommand SET MENUTHEME DARK [ OF <parent> ] ;
-=> ;
-// HMG_SetMenuTheme( MNUCLR_THEME_DARK, <(parent)> )
-
-#xcommand SET MENUTHEME USER <aUser> [ OF <parent> ] ;
-=> ;
-// HMG_SetMenuTheme( MNUCLR_THEME_USER_DEFINED, <(parent)>, <aUser> )
-
-#xtranslate _GetAppCargo() ;
-   => ;
-      App.Cargo
+******************************************** ok en adelante
 
 #xtranslate HMG_GarbageCall( [ <x> ] ) ;
    => ;
@@ -755,11 +548,6 @@ TODO: implement this clauses:
 #xtranslate RELEASE MEMORY ;
    => ;
       CollectGarbage() ;;
-      EmptyWorkingSet()
-
-
-#xtranslate CLEAN MEMORY ;
-   => ;
       EmptyWorkingSet()
 
 #endif
