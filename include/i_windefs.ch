@@ -664,6 +664,7 @@ STOCK BRUSHES
 #define DEVICE_DEFAULT_FONT           14
 #define DEFAULT_PALETTE               15
 #define SYSTEM_FIXED_FONT             16
+#define DEFAULT_GUI_FONT              17
 
 /*---------------------------------------------------------------------------
 WM_SIZE PARAMETERS
@@ -737,6 +738,7 @@ TOOLTIP CONTROL
 #define TTI_ERROR_LARGE               6
 #define TTN_NEEDTEXT                  ( -520 )
 #define TTN_GETDISPINFO               ( -520 )
+#define TTN_SHOW                      ( -521 )
 
 /*---------------------------------------------------------------------------
 LABEL, IMAGE, INTERNAL, PICTURE, BUTTON AND SCROLLBUTTON CONTROLS
