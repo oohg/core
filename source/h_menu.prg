@@ -177,6 +177,7 @@ CLASS TMenu FROM TControl
    DATA lAdjust                        INIT .F.
    DATA nTimeout                       INIT NIL
    DATA oMenuParams                    INIT NIL
+   DATA bOnInitPopup                   INIT NIL
    DATA Type                           INIT "MENU" READONLY
 
    METHOD Activate
@@ -187,6 +188,7 @@ CLASS TMenu FROM TControl
    METHOD DisableVisualStyle
    METHOD Enabled                      SETGET
    METHOD EndMenu
+   METHOD Events_InitMenuPopUp( nPos ) BLOCK { |Self, nPos| _OOHG_Eval( ::bOnInitPopUp, Self, nPos ) }
    METHOD Gradient                     SETGET
    METHOD ItemCount                    BLOCK { |Self| GetMenuItemCount( ::hWnd ) }
    METHOD ItemPosition( nItemId )      BLOCK { |Self, nItemId| FindItemPosition( ::hWnd, nItemId ) }
@@ -1156,7 +1158,6 @@ METHOD Events_MeasureItem( lParam ) CLASS TMenuItem
    IF ValidHandler( ::hExternFont )
       hFont := ::hExternFont
    ELSE
-#define DEFAULT_GUI_FONT    17
       hFont := GetStockObject( DEFAULT_GUI_FONT )
    ENDIF
 
