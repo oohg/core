@@ -173,7 +173,7 @@
    => ;
       _SetToolTipMaxWidth( <width> )
 
-#xcommand ADD TOOLTIP ICON <x> ;
+#xtranslate ADD TOOLTIP ICON <x> ;
    => ;
       ADD TOOLTIPICON <x>
 
