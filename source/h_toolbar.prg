@@ -266,7 +266,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TToolBar
          aPos:= {0, 0, 0, 0}
          GetWindowRect( ::hWnd, aPos )
          ws := GetButtonBarRect( ::hWnd, ::aControls[ x ]:nPosition - 1 )
-         // TrackPopupMenu ( ::aControls[ x ]:ContextMenu:hWnd, aPos[1]+LoWord(ws), aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, ::hWnd )
+         // TrackPopupMenu( ::aControls[ x ]:ContextMenu:hWnd, aPos[1]+LoWord(ws), aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, ::hWnd )
          ::aControls[ x ]:ContextMenu:Activate( aPos[2]+HiWord(ws)+(aPos[4]-aPos[2]-HiWord(ws))/2, aPos[1]+LoWord(ws) )
       EndIf
       Return Nil
