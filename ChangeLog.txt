@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-05-06 11:39 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_tooltip.prg
+    ! Fix ADD TOOLTIP ICON clause.
+  #612
+
 2023-04-28 20:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_menu.prg
     + Default values were added for some parameters of the
