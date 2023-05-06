@@ -13,6 +13,14 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-05-06 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_hmg_compat.ch
+  + core\include\i_minigui_compat.ch
+  * core\include\i_minigui.ch
+    * Remove from compatibility header i_hmg_compat.ch all items
+      related to Minigui and create a new specific header for it.
+  #600
+
 2023-05-06 17:24 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_menu.prg
     + DATA bOnInitPopup and METHOD Events_InitMenuPopUp of
