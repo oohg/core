@@ -511,7 +511,7 @@ CLASS TMenuItem FROM TControl
 METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
                     lRight, lStretch, nBreak, cMsg, cFontId, bOnInitPopup, nTimeout ) CLASS TMenuItem
 
-   LOCAL nStyle, nId, hFont := NIL
+   LOCAL nStyle, hFont := NIL
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
@@ -526,8 +526,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
    ::SetForm( cName, uParent )
-   nId := _GetId()
-   ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
+   ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, _GetId() )
    _OOHG_AppObject():ActiveMenuPush( Self )
 
    ::lIsPopup := .T.
@@ -586,7 +585,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uImage, ;
                     lRight, lStretch, nBreak, nPos, cMsg, cFontId, bOnInitPopup, nTimeout ) CLASS TMenuItem
 
-   LOCAL nStyle, nID, hFont := NIL
+   LOCAL nStyle, hFont := NIL
 
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
@@ -601,8 +600,7 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
    ::SetForm( cName, uParent )
-   nId := _GetId()
-   ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, nId )
+   ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, _GetId() )
    _OOHG_AppObject():ActiveMenuPush( Self )
 
    ::lIsPopup := .T.
@@ -678,6 +676,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    ENDIF
    ::SetForm( cName, uParent )
    nId := _GetId()
+   ::Register( 0, cName, NIL, NIL, cToolTip, nId )
 
    nStyle := 0
    IF HB_ISLOGICAL( lRight ) .AND. lRight
@@ -719,7 +718,6 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
       nStyle += MF_STRING
       AppendMenu( ::Container:hWnd, nId, cCaption, nStyle )
    ENDIF
-   ::Register( 0, cName, NIL, NIL, cToolTip, nId )
 
    ASSIGN ::OnClick VALUE bAction TYPE "B"
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
@@ -754,6 +752,7 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    ENDIF
    ::SetForm( cName, uParent )
    nId := _GetId()
+   ::Register( 0, cName, NIL, NIL, NIL, nId )
 
    IF ! Empty( uParent )
       ::oMenuParams:Colors := uParent:Colors
@@ -803,7 +802,6 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
       nStyle += MF_STRING
       InsertMenu( ::Container:hWnd, nId, cCaption, nStyle, nPos )
    ENDIF
-   ::Register( 0, cName, NIL, NIL, NIL, nId )
 
    ASSIGN ::OnClick VALUE bAction TYPE "B"
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
@@ -838,6 +836,7 @@ METHOD DefineSeparator( cName, uParent, lRight ) CLASS TMenuItem
    ENDIF
    ::SetForm( cName, uParent )
    nId := _GetId()
+   ::Register( 0, cName, NIL, NIL, NIL, nId )
 
    nStyle := MF_SEPARATOR
    IF HB_ISLOGICAL( lRight ) .AND. lRight
@@ -850,7 +849,6 @@ METHOD DefineSeparator( cName, uParent, lRight ) CLASS TMenuItem
    ELSE
       AppendMenu( ::Container:hWnd, nId, NIL, nStyle )
    ENDIF
-   ::Register( 0, cName, NIL, NIL, NIL, nId )
    ::lIsSeparator := .T.
 
    RETURN Self
@@ -870,6 +868,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
    ENDIF
    ::SetForm( cName, uParent )
    nId := _GetId()
+   ::Register( 0, cName, NIL, NIL, NIL, nId )
 
    nStyle := MF_BYPOSITION + MF_SEPARATOR
    IF HB_ISLOGICAL( lRight ) .AND. lRight
@@ -883,7 +882,6 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
    ELSE
       InsertMenu( ::Container:hWnd, nId, NIL, nStyle, nPos )
    ENDIF
-   ::Register( 0, cName, NIL, NIL, NIL, nId )
    ::lIsSeparator := .T.
 
    RETURN Self
@@ -1907,7 +1905,7 @@ HB_FUNC( DRAWMENUBAR )          /* FUNCTION DrawMenuBar( hWnd ) -> lSuccess */
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( DELETEMENU )          /* FUNCTION DeleteMenu( hWnd, nID ) -> lSuccess */
+HB_FUNC( DELETEMENU )          /* FUNCTION DeleteMenu( hWnd, nId ) -> lSuccess */
 {
    hb_retl( DeleteMenu( HMENUparam( 1 ), hb_parni( 2 ), MF_BYCOMMAND ) );
 }
