@@ -2643,7 +2643,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
                hb_vmSend( 0 );
                if( hb_parni( -1 ) != 0 )
                {
-                  /* From menu by Iid */
+                  /* From menu by Id */
                   BOOL bClicked = 0;
 
                   _OOHG_Send( pControl, s_NestedClick );
