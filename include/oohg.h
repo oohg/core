@@ -736,7 +736,7 @@ void             _UxTheme_DeInit( void );
 #define s_CompareItems          79
 #define s_Events_Drag           80
 #define s_Events_MenuHilited    81
-#define s_Events_InitMenuPopUp  82
+#define s_Events_InitMenuPopup  82
 #define s_oMenu                 83
 #define s_Events_TimeOut        84
 #define s_RangeWidth            85

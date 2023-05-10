@@ -2771,7 +2771,7 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_INITMENUPOPUP:
          if( ! HIWORD( lParam ) )
          {
-            _OOHG_Send( GetControlObjectByHandle( (HWND) (HMENU) wParam, TRUE ), s_Events_InitMenuPopUp );
+            _OOHG_Send( GetControlObjectByHandle( (HWND) (HMENU) wParam, TRUE ), s_Events_InitMenuPopup );
             hb_vmPushLong( (long) LOWORD( lParam ) );
             hb_vmSend( 1 );
          }
