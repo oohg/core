@@ -513,6 +513,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    LOCAL nStyle, hFont := NIL
 
+   ASSIGN cCaption VALUE cCaption TYPE "CM" DEFAULT ""
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
@@ -587,6 +588,7 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    LOCAL nStyle, hFont := NIL
 
+   ASSIGN cCaption VALUE cCaption TYPE "CM" DEFAULT ""
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
@@ -662,6 +664,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
 
    LOCAL nStyle, nId, hFont := NIL
 
+   ASSIGN cCaption VALUE cCaption TYPE "CM" DEFAULT ""
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
