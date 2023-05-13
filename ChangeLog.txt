@@ -13,6 +13,16 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-05-13 16:40 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+  * core\source\h_pdf.prg
+  * core\source\h_print.prg
+  * core\source\h_report.prg
+    ! Wrong string comparison.
+    ; Never use a#b or a!=b.
+    ; Always use !a==b
+  #615
+
 2023-05-06 18:37 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_hmg_compat.ch
   + core\include\i_minigui_compat.ch
