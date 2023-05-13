@@ -456,7 +456,7 @@ CLASS TMenuItem FROM TControl
 
    DATA aPicture                       INIT { "", "" }
    DATA bOnInitPopup                   INIT NIL
-   DATA cCaption                       INIT NIL
+   DATA cCaption                       INIT ""
    DATA cFontID                        INIT NIL
    DATA cStatMsg                       INIT NIL
    DATA hBitMaps                       INIT { NIL, NIL }
@@ -513,6 +513,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    LOCAL nStyle, hFont := NIL
 
+   ASSIGN ::cCaption VALUE cCaption TYPE "CM"
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
@@ -565,7 +566,6 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
       nStyle += MF_STRING
       AppendMenu( ::Container:hWnd, ::hWnd, cCaption, nStyle )
    ENDIF
-
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
       ::Stretch := .T.
    ENDIF
@@ -587,6 +587,7 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
 
    LOCAL nStyle, hFont := NIL
 
+   ASSIGN ::cCaption VALUE cCaption TYPE "CM"
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
@@ -662,6 +663,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
 
    LOCAL nStyle, nId, hFont := NIL
 
+   ASSIGN ::cCaption VALUE cCaption TYPE "CM"
    ::oMenuParams := TMenuParams()
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
@@ -744,7 +746,7 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    LOCAL nStyle, nId, hFont := NIL
 
    ::oMenuParams := TMenuParams()
-   ASSIGN cCaption VALUE cCaption TYPE "CM" DEFAULT ""
+   ASSIGN ::cCaption VALUE cCaption TYPE "CM"
    ASSIGN bAction  VALUE bAction  TYPE "B"  DEFAULT NIL
 
    IF Empty( uParent )
@@ -795,12 +797,11 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
                                      cFontId[ 7 ], cFontId[ 8 ], cFontId[ 9 ], cFontId[ 10 ], cFontId[ 11 ] )
          ::cFontId := cFontId
       ENDIF
-      ::cCaption := cCaption
       ::xData := CreateMenuItemData( nId )
       InsertMenu( ::Container:hWnd, nId, ::xData, nStyle, nPos )
    ELSE
       nStyle += MF_STRING
-      InsertMenu( ::Container:hWnd, nId, cCaption, nStyle, nPos )
+      InsertMenu( ::Container:hWnd, nId, ::cCaption, nStyle, nPos )
    ENDIF
 
    ASSIGN ::OnClick VALUE bAction TYPE "B"
