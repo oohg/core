@@ -470,6 +470,7 @@ CLASS TMenuItem FROM TControl
    DATA lStretch                       INIT .F.
    DATA nTimeout                       INIT NIL
    DATA oMenuParams                    INIT NIL
+   DATA oParentMenu                    INIT NIL
    DATA Type                           INIT "MENUITEM" READONLY
    DATA xData                          INIT NIL
 
@@ -526,6 +527,7 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, _GetId() )
    _OOHG_AppObject():ActiveMenuPush( Self )
@@ -600,6 +602,7 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    ::Register( CreatePopupMenu(), cName, NIL, NIL, NIL, _GetId() )
    _OOHG_AppObject():ActiveMenuPush( Self )
@@ -676,6 +679,7 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
       DEFAULT cFontID  TO uParent:cFontID
       DEFAULT nTimeout TO uParent:nTimeout
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( 0, cName, NIL, NIL, cToolTip, nId )
@@ -752,6 +756,7 @@ METHOD InsertItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
    IF Empty( uParent )
       uParent := _OOHG_AppObject():ActiveMenuGet()
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( 0, cName, NIL, NIL, NIL, nId )
@@ -835,6 +840,7 @@ METHOD DefineSeparator( cName, uParent, lRight ) CLASS TMenuItem
       ::oMenuParams:Colors := uParent:Colors
       ::OwnerDraw          := uParent:OwnerDraw
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( 0, cName, NIL, NIL, NIL, nId )
@@ -867,6 +873,7 @@ METHOD InsertSeparator( cName, uParent, lRight, nPos ) CLASS TMenuItem
       ::oMenuParams:Colors := uParent:Colors
       ::lOwnerDraw := uParent:OwnerDraw
    ENDIF
+   ::oParentMenu := uParent
    ::SetForm( cName, uParent )
    nId := _GetId()
    ::Register( 0, cName, NIL, NIL, NIL, nId )
