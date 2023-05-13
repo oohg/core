@@ -113,7 +113,7 @@ FUNCTION JustificaLinea( cLine, nLastCol )
       IF nCant == nLastCol
          EXIT
       ENDIF
-      IF SubStr( cLine, i, 1 ) == " " .AND. SubStr( cLine, i - 1, 1 ) # " "
+      IF SubStr( cLine, i, 1 ) == " " .AND. ! ( SubStr( cLine, i - 1, 1 ) == " " )
          cLine := LTrim( SubStr( cLine, 1, i - 1 ) ) + "  " + LTrim( SubStr( cLine, i + 1, Len( cLine ) - i ) )
          nCant ++
       ENDIF
@@ -1454,8 +1454,8 @@ METHOD PrintRecord() CLASS TReportFormWin
          ENDIF
 
          // Check if the group changed
-         IF hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ;
-            ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] ) # ::aGroupTotals[ nGroup ]
+         IF ! ( hb_ValToStr( Eval( ::aReportData[ RP_GROUPS, nGroup, RG_EXP ] ), ;
+            ::aReportData[ RP_GROUPS, nGroup, RG_TYPE ] ) == ::aGroupTotals[ nGroup ] )
             AAdd( aRecordHeader, iif( nGroup == 1, NationMsg( _RF_SUBTOTAL ), NationMsg( _RF_SUBSUBTOTAL ) ) )
             AAdd( aRecordHeader, "" )
 
@@ -1800,7 +1800,7 @@ STATIC FUNCTION ConvPic( sPic )
                     "9999,999,999", "9,999,999,999", "99,999,999,999", "999,999,999,999" }
 
    nPto := At( ".", sPic )
-   IF Left( sPic, 1 ) # "9" .OR. nPto == 0
+   IF ! ( Left( sPic, 1 ) == "9" ) .OR. nPto == 0
       RETURN sPic
    ENDIF
 

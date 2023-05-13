@@ -934,13 +934,13 @@ METHOD Hilited( lHilited ) CLASS TMenuItem
 METHOD Caption( cCaption ) CLASS TMenuItem
 
    IF ::lOwnerDraw
-      IF HB_ISSTRING( cCaption ) .AND. cCaption # ::cCaption
+      IF HB_ISSTRING( cCaption ) .AND. ! ( cCaption == ::cCaption )
          ::cCaption := cCaption
          ::Container:Refresh()
       ENDIF
    ELSE
       ::cCaption := MenuCaption( ::Container:hWnd, ::Id )
-      IF HB_ISSTRING( cCaption ) .AND. cCaption # ::cCaption
+      IF HB_ISSTRING( cCaption ) .AND. ! ( cCaption == ::cCaption )
          ::cCaption := MenuCaption( ::Container:hWnd, ::Id, cCaption )
          ::Container:Refresh()
       ENDIF

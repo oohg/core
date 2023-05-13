@@ -1618,7 +1618,7 @@ METHOD PageNumber( n ) CLASS TPDF
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Reverse( cString ) CLASS TPDF
 
-   IF Right( cString, 1 ) # Chr( 255 )
+   IF ! ( Right( cString, 1 ) == Chr( 255 ) )
       IF Right( cString, 1 ) == Chr( 254 )
          cString := Left( cString, Len( cString ) - 1 )
       ENDIF
@@ -1819,7 +1819,7 @@ METHOD Text( cString, nTop, nLeft, nLength, nTab, nJustify, cUnits, cColor, lPri
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD UnderLine( cString ) CLASS TPDF
 
-   IF Right( cString, 1 ) # Chr( 254 )
+   IF ! ( Right( cString, 1 ) == Chr( 254 ) )
       IF Right( cString, 1 ) == Chr( 255 )
          cString := Left( cString, Len( cString ) - 1 )
       ENDIF

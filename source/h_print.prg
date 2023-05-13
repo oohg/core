@@ -3653,7 +3653,7 @@ METHOD PrintDataX( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen,
 
    ::oHoja:Cells( nLin, aLinCellX ):Value := "'" + Space( nCol ) + cText
 
-   IF cFont # ::cFontName
+   IF ! ( cFont == ::cFontName )
       ::oHoja:Cells( nLin, aLinCellX ):Font:Name := cFont
    ENDIF
    IF nSize # ::nFontSize
@@ -4319,7 +4319,7 @@ METHOD EndPageX() CLASS TRtfPrint
          IF ::aLinCelda[ i1, 9 ]        // Strikeout
             ::aPrintRtf[ Len( ::aPrintRtf ) ] += "\strike "
          ENDIF
-         IF Right( ::aPrintRtf[ Len( ::aPrintRtf ) ], 1 ) # " "
+         IF ! ( Right( ::aPrintRtf[ Len( ::aPrintRtf ) ], 1 ) == " " )
             ::aPrintRtf[ Len( ::aPrintRtf ) ] += " "
          ENDIF
          ::aPrintRtf[ Len( ::aPrintRtf ) ] += space(::aLinCelda[ i1, 2 ]) + ::aLinCelda[ i1, 3 ]
