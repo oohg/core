@@ -561,12 +561,11 @@ METHOD DefinePopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
                                      cFontId[ 7 ], cFontId[ 8 ], cFontId[ 9 ], cFontId[ 10 ], cFontId[ 11 ] )
          ::cFontId := cFontId
       ENDIF
-      ::cCaption := cCaption
       ::xData := CreateMenuItemData( ::Id )
       AppendMenu( ::Container:hWnd, ::hWnd, ::xData, nStyle )
    ELSE
       nStyle += MF_STRING
-      AppendMenu( ::Container:hWnd, ::hWnd, cCaption, nStyle )
+      AppendMenu( ::Container:hWnd, ::hWnd, ::cCaption, nStyle )
    ENDIF
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
       ::Stretch := .T.
@@ -637,12 +636,11 @@ METHOD InsertPopup( cCaption, cName, lChecked, lDisabled, uParent, lHilited, uIm
                                      cFontId[ 7 ], cFontId[ 8 ], cFontId[ 9 ], cFontId[ 10 ], cFontId[ 11 ] )
          ::cFontId := cFontId
       ENDIF
-      ::cCaption := cCaption
       ::xData := CreateMenuItemData( ::Id )
       InsertMenu( ::Container:hWnd, ::hWnd, ::xData, nStyle, nPos )
    ELSE
       nStyle += MF_STRING
-      InsertMenu( ::Container:hWnd, ::hWnd, cCaption, nStyle, nPos )
+      InsertMenu( ::Container:hWnd, ::hWnd, ::cCaption, nStyle, nPos )
    ENDIF
 
    IF HB_ISLOGICAL( lStretch ) .AND. lStretch
@@ -717,12 +715,11 @@ METHOD DefineItem( cCaption, bAction, cName, uImage, lChecked, lDisabled, uParen
                                      cFontId[ 7 ], cFontId[ 8 ], cFontId[ 9 ], cFontId[ 10 ], cFontId[ 11 ] )
          ::cFontId := cFontId
       ENDIF
-      ::cCaption := cCaption
       ::xData := CreateMenuItemData( nId )
       AppendMenu( ::Container:hWnd, nId, ::xData, nStyle )
    ELSE
       nStyle += MF_STRING
-      AppendMenu( ::Container:hWnd, nId, cCaption, nStyle )
+      AppendMenu( ::Container:hWnd, nId, ::cCaption, nStyle )
    ENDIF
 
    ASSIGN ::OnClick VALUE bAction TYPE "B"
