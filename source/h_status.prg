@@ -182,7 +182,8 @@ METHOD AddItem( Caption, Width, action, ToolTip, icon, cstyl, cAlign, lDefault )
 
    Local styl, nItem, i, nRep
 
-   ASSIGN Width VALUE Width TYPE "N" DEFAULT 50
+   ASSIGN Width   VALUE Width   TYPE "N"  DEFAULT 50
+   ASSIGN Caption VALUE Caption TYPE "CM" DEFAULT ""
 
    styl := 0
    If ValType( cStyl ) $ "CM" .AND. ! Empty( cStyl )
