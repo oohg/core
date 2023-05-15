@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-05-15 19:55 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_menu.prg
+    ! Method Caption for a ITEM returns NIL..
+  #618
+
 2023-05-14 11:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_status.prg
     ! StatusBar's STATUSITEM clause without a parameter causes
