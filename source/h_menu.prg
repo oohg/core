@@ -938,15 +938,18 @@ METHOD Hilited( lHilited ) CLASS TMenuItem
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Caption( cCaption ) CLASS TMenuItem
 
+   LOCAL uId
+
    IF ::lOwnerDraw
       IF HB_ISSTRING( cCaption ) .AND. ! ( cCaption == ::cCaption )
          ::cCaption := cCaption
          ::Container:Refresh()
       ENDIF
    ELSE
-      ::cCaption := MenuCaption( ::Container:hWnd, ::Id )
+      uId := iif( ::lIsPopup, ::hWnd, ::Id )
+      ::cCaption := MenuCaption( ::Container:hWnd, uId )
       IF HB_ISSTRING( cCaption ) .AND. ! ( cCaption == ::cCaption )
-         ::cCaption := MenuCaption( ::Container:hWnd, ::Id, cCaption )
+         ::cCaption := MenuCaption( ::Container:hWnd, uId, cCaption )
          ::Container:Refresh()
       ENDIF
    ENDIF
@@ -1698,17 +1701,17 @@ HB_FUNC( APPENDMENU )          /* FUNCTION AppendMenu( hMenu, hMenu/nId, uData/c
    {
       if( ( uFlags & MF_OWNERDRAW ) == MF_OWNERDRAW )
       {
-         uIDNewItem = (UINT) hb_parni( 2 );
+         uIDNewItem = (UINT_PTR) hb_parni( 2 );
          lpNewItem  = (LPCSTR) MYITEMparam( 3 );
       }
       else if( ( uFlags & MF_BITMAP ) == MF_BITMAP )
       {
-         uIDNewItem = (UINT) hb_parni( 2 );
+         uIDNewItem = (UINT_PTR) hb_parni( 2 );
          lpNewItem  = (LPCSTR) HBITMAPparam( 3 );
       }
       else
       {
-         uIDNewItem = (UINT) hb_parni( 2 );
+         uIDNewItem = (UINT_PTR) hb_parni( 2 );
          lpNewItem  = (LPCSTR) hb_parc( 3 );
       }
    }
