@@ -419,13 +419,12 @@
       [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
       [ <notrans: NOTRANSPARENT> ] ;
-      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefineItem( <caption>, <{action}>, <(name)>, <image>, <.checked.>, ;
             <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, ;
             iif( <.breakmenu.>, iif( <.separator.>, 2, 1 ), NIL ), <msg>, ;
-            <.default.>, <fontname>, <tout>, <.notrans.>, <tooltip>)
+            <.default.>, <fontname>, <tout>, <.notrans.> )
 
 #xcommand MENUITEM <caption> ;
       [ <dummy: ACTION, ONCLICK> <action> ] ;
@@ -445,13 +444,12 @@
       [ FONT <fontname> ] ;
       [ TIMEOUT <tout> ] ;
       [ <notrans: NOTRANSPARENT> ] ;
-      [ TOOLTIP <tooltip> ] ;
    => ;
       [ <obj> := ] _OOHG_SelectSubClass( TMenuItem(), [ <subclass>() ] ): ;
             DefineItem( <caption>, <{action}>, <(name)>, <image>, <.checked.>, ;
             <.disabled.>, <parent>, <.hilited.>, <.right.>, <.stretch.>, ;
             iif( <.breakmenu.>, iif( <.separator.>, 2, 1 ), NIL ), <msg>, ;
-            <.default.>, <fontname>, <tout>, <.notrans.>, <tooltip>)
+            <.default.>, <fontname>, <tout>, <.notrans.> )
 
 #xcommand SEPARATOR ;
       [ NAME <name> ] ;
