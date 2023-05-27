@@ -923,7 +923,7 @@ HB_FUNC_STATIC( TTEXT_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
 
          iRet = DefWindowProc( hWnd, message, wParam, lParam );
 
-         if( iRet == 0 )
+         if( iRet == HTNOWHERE )
          {
             iRet = HTTRANSPARENT;
          }
