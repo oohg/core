@@ -3548,7 +3548,7 @@
   * core\source\h_menu.prg
   * core\source\h_window.prg
   * core\source\h_xbrowse.prg
-    * hb_IsNil() replace by '== NIL' to avoid using xhb library.
+    * replace hb_IsNil(x) with ( x == NIL ) to avoid using xhb library.
 
 2017-12-18 20:01 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\ChangeLog_003.txt
