@@ -71,6 +71,7 @@ STATIC _OOHG_ToolTipReShowTime  := 0
 STATIC _OOHG_ToolTipMultiLine   := .F.
 STATIC _OOHG_ToolTipBalloon     := .F.
 STATIC _OOHG_ToolTipClose       := .F.
+STATIC _OOHG_ToolTipNoPrefix    := .F.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS TToolTip FROM TControl
@@ -109,7 +110,7 @@ METHOD Activate( lOnOff ) CLASS TToolTip
    RETURN ::lActive
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose, nMaxWidth ) CLASS TToolTip
+METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBalloon, lClose, nMaxWidth, lNoPrefix ) CLASS TToolTip
 
    LOCAL ControlHandle
 
@@ -119,10 +120,11 @@ METHOD Define( ControlName, ParentForm, nInitial, nAutoPop, nReShow, lMulti, lBa
    ASSIGN lMulti    VALUE lMulti    TYPE "L" DEFAULT _OOHG_ToolTipMultiLine
    ASSIGN lBalloon  VALUE lBalloon  TYPE "N" DEFAULT _OOHG_ToolTipBalloon
    ASSIGN lClose    VALUE lClose    TYPE "L" DEFAULT _OOHG_ToolTipClose
+   ASSIGN lNoPrefix VALUE lNoPrefix TYPE "L" DEFAULT _OOHG_ToolTipNoPrefix
    ASSIGN nMaxWidth VALUE nMaxWidth TYPE "L" DEFAULT _SetToolTipMaxWidth()
 
    ::SetForm( ControlName, ParentForm )
-   ControlHandle := InitToolTip( ::ContainerhWnd, lBalloon, lClose )
+   ControlHandle := InitToolTip( ::ContainerhWnd, lBalloon, lClose, lNoPrefix )
    ::Register( ControlHandle, ControlName )
    IF nInitial > 0
       ::InitialTime := nInitial
@@ -232,6 +234,22 @@ FUNCTION _SetToolTipClose( lNewClose )
    App.MutexUnlock
 
    RETURN lOldClose
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+FUNCTION _SetToolTipNoPrefix( lNewNoPrefix )
+
+   LOCAL lOldNoPrefix
+
+   App.MutexLock
+
+   lOldNoPrefix := _OOHG_ToolTipNoPrefix
+   IF HB_ISLOGICAL( lNewNoPrefix )
+      _OOHG_ToolTipNoPrefix := lNewNoPrefix
+   ENDIF
+
+   App.MutexUnlock
+
+   RETURN lOldNoPrefix
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _SetToolTipInitialTime( nMilliSec )
@@ -489,11 +507,11 @@ static LRESULT APIENTRY SubClassFunc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose ) -> hWnd */
+HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose, lNoPrefix ) -> hWnd */
 {
    INITCOMMONCONTROLSEX i;
    HWND hwndToolTip;
-   int Style = TTS_ALWAYSTIP;
+   int Style = TTS_ALWAYSTIP;   // WS_POPUP and WS_EX_TOOLWINDOW styles are added automatically
 
    if( hb_parl( 2 ) )
    {
@@ -503,6 +521,10 @@ HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose 
       {
          Style |= TTS_CLOSE;
       }
+   }
+   if( hb_parl( 4 ) )
+   {
+      Style |= TTS_NOPREFIX;
    }
 
    i.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -514,6 +536,10 @@ HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose 
                                  HWNDparam( 1 ), NULL, GetModuleHandle( NULL ), NULL );
 
    WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( hwndToolTip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
+
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    if( ( _OOHG_TooltipBackcolor != -1 ) || ( _OOHG_TooltipForecolor != -1 ) )
    {
@@ -533,10 +559,6 @@ HB_FUNC( INITTOOLTIP )          /* FUNCTION InitToolTip( hWnd, lBalloon, lClose 
          }
       }
    }
-
-   ReleaseMutex( _OOHG_GlobalMutex() );
-
-   _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( hwndToolTip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
    HWNDret( hwndToolTip );
 }
@@ -560,26 +582,25 @@ HB_FUNC( _SETTOOLTIPACTIVATE )          /* FUNCTION _SetToolTipActivate( lOnOf )
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolTip ) -> 0 */
+HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hwndTool, cToolTip, hWndToolTip ) -> 0 */
 {
    TOOLINFO ti;
-   HWND hWnd;
-   HWND hWndToolTip;
-
-   hWnd = HWNDparam( 1 );
-   hWndToolTip = HWNDparam( 3 );
+   HWND hwndTool = HWNDparam( 1 );
+   HWND hWndToolTip = HWNDparam( 3 );
 
    memset( &ti, 0, sizeof( ti ) );
 
    ti.cbSize = sizeof( ti );
 /* TODO: TTF_CENTERTIP, TTF_PARSELINKS, TTF_RTLREADING, TTF_TRACK */
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
-   ti.hwnd = GetParent( hWnd );
-   ti.uId = (UINT_PTR) hWnd;
+   ti.hwnd = GetParent( hwndTool );
+   ti.uId = (UINT_PTR) hwndTool;
 
-   if( SendMessage( hWndToolTip, (UINT) TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
+   if( SendMessage( hWndToolTip, TTM_GETTOOLINFO, (WPARAM) 0, (LPARAM) &ti ) )
    {
-      SendMessage( hWndToolTip, (UINT) TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
+      SendMessage( hWndToolTip, TTM_DELTOOL, (WPARAM) 0, (LPARAM) &ti );
    }
 
    if( HB_ISBLOCK( 2 ) )
@@ -588,16 +609,23 @@ HB_FUNC( SETTOOLTIP )          /* FUNCTION SetToolTip( hWnd, cToolTip, hWndToolT
    }
    else
    {
-      ti.lpszText = (LPTSTR) HB_UNCONST( hb_parc( 2 ) );
+#ifndef UNICODE
+         LPSTR lpText = (LPSTR) hb_parc( 2 );
+#else
+         LPWSTR lpText = AnsiToWide( (char *) hb_parc( 2 ) );
+#endif
+      ti.lpszText = lpText;
    }
 
    hb_retl( SendMessage( hWndToolTip, TTM_ADDTOOL, (WPARAM) 0, (LPARAM) &ti ) ? HB_TRUE : HB_FALSE );
 
-   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-
    SendMessage( hWndToolTip, TTM_ACTIVATE, (WPARAM) _OOHG_ToolTipActivate, 0 );
 
    ReleaseMutex( _OOHG_GlobalMutex() );
+
+#ifdef UNICODE
+   hb_xfree( (TCHAR *) lpText );
+#endif
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
@@ -973,6 +1001,8 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
    ti.hinst    = GetModuleHandle( NULL );
    ti.lpszText = lpszText;
 
+   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
+
    // Associate the tooltip with the "tool" window.
    SendMessage( hwndToolTip, TTM_ADDTOOL, 0, (LPARAM) (LPTOOLINFO) &ti );
 
@@ -981,8 +1011,6 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
       SendMessage( hwndToolTip, TTM_SETTITLE, nIcon, (LPARAM) lpszTitle );
    }
 
-   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-
    if( _OOHG_ToolTipMaxWidth != -1 )
    {
       SendMessage( hwndToolTip, TTM_SETMAXTIPWIDTH, 0, (LPARAM) _OOHG_ToolTipMaxWidth );
@@ -990,10 +1018,9 @@ HB_FUNC( INITTOOLTIPEX )          /* FUNCTION InitToolTipEx( hWnd, aRect, cToolT
 
    SendMessage( hwndToolTip, TTM_ACTIVATE, (WPARAM) _OOHG_ToolTipActivate, 0 );
 
-   ReleaseMutex( _OOHG_GlobalMutex() );
-
    _OOHG_TToolTip_lpfnOldWndProc( SetWindowLongPtr( hwndToolTip, GWLP_WNDPROC, (LONG_PTR) SubClassFunc ) );
 
+   ReleaseMutex( _OOHG_GlobalMutex() );
 
    HWNDret( hwndToolTip );
 }
