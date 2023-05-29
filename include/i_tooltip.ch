@@ -60,6 +60,21 @@
  * If you do not wish that, delete this exception notice.
  */
 
+#xcommand SET TOOLTIPNOPREFIX [ TO ] <x: ON, OFF> ;
+   => ;
+      _SetToolTipNoPrefix( Upper( <(x)> ) == "ON" )
+
+#xcommand SET TOOLTIP NOPREFIX [ TO ] <x: ON, OFF> ;
+   => ;
+      _SetToolTipNoPrefix( Upper( <(x)> ) == "ON" )
+
+#xcommand SET TOOLTIPSTYLE [ TO ] NOPREFIX ;
+   => ;
+      _SetToolTipNoPrefix( .T. )
+
+#xcommand SET TOOLTIPSTYLE [ TO ] PREFIX ;
+   => ;
+      _SetToolTipNoPrefix( .F. )
 
 #xcommand SET TOOLTIPCLOSE [ TO ] <x: ON, OFF> ;
    => ;
