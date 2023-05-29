@@ -1594,7 +1594,9 @@ HB_FUNC_STATIC( TFORM_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, lP
                            hb_itemCopy( pMenuItem, GetControlObjectById( MenuItemInfo.wID, hWnd ) );
                         }
                         _OOHG_Send( pMenuItem, s_Events_MenuHilited );
-                        hb_vmSend( 0 );
+                        hb_vmPushLong( GET_Y_LPARAM( lParam ) );
+                        hb_vmPushLong( GET_X_LPARAM( lParam ) );
+                        hb_vmSend( 2 );
                         hb_itemRelease( pMenuItem );
                      }
                   }
