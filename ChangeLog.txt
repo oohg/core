@@ -13,12 +13,6 @@
  * Use #nnn to refer to an issue.
  */
 
-2023-05-29 17:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
-  * core\include\i_tooltip.ch
-    + SET TOOLTIPNOPREFIX [TO] ON/OFF.
-    + SET TOOLTIP NOPREFIX [TO] ON/OFF.
-    + SET TOOLTIPSTYLE [TO] PREFIX/NOPREFIX.
-
 2023-05-28 20:28 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tooltip.prg
     + Style NOPREFIX.
