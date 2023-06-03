@@ -149,7 +149,7 @@ CLASS TPrintBase
    DATA lFontItalic               INIT .F.                   READONLY
    DATA lFontStrikeout            INIT .F.                   READONLY
    DATA lFontUnderline            INIT .F.                   READONLY
-   DATA lIgnorePropertyError      INIT .T.                   
+   DATA lIgnorePropertyError      INIT .T.
    DATA lIndentAll                INIT .F.                   READONLY    // Indent RicheEdit lines
    DATA lLandscape                INIT .F.                   READONLY    // Page orientation
    DATA lNoErrMsg                 INIT .T.
@@ -2590,7 +2590,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
    IF ::cUnits == "MM"
       IF aSize
          @ nLin, nCol PICTURE cImage IMAGESIZE
-      ELSE 
+      ELSE
          @ nLin, nCol PICTURE cImage SIZE ( nLinF - nLin ), ( nColF - nCol ) EXTEND aExt[ 1 ], aExt[ 2 ]
       ENDIF
    ELSE
