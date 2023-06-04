@@ -150,6 +150,7 @@ CLASS TPrintBase
    DATA lFontStrikeout            INIT .F.                   READONLY
    DATA lFontUnderline            INIT .F.                   READONLY
    DATA lIgnorePropertyError      INIT .T.
+   DATA lHonorMargins             INIT .F.                               // See PrintBarcode
    DATA lIndentAll                INIT .F.                   READONLY    // Indent RicheEdit lines
    DATA lLandscape                INIT .F.                   READONLY    // Page orientation
    DATA lNoErrMsg                 INIT .T.
@@ -241,6 +242,7 @@ CLASS TPrintBase
    METHOD SetFont
    METHOD SetFontType
    METHOD SetFontX                BLOCK { || NIL }
+   METHOD SetHonorMargins
    METHOD SetIndentation
    METHOD SetLMargin
    METHOD SetPageOrientation
@@ -526,6 +528,15 @@ METHOD BeginDoc( cDocm ) CLASS TPrintBase
    RETURN lOk
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
+METHOD SetHonorMargins( lHonor ) CLASS TPrintBase
+
+   IF HB_ISLOGICAL( lHonor )
+      ::lHonorMargins := lHonor
+   ENDIF
+
+   RETURN ::lHonorMargins
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetLMargin( nLMar ) CLASS TPrintBase
 
    IF HB_ISNUMERIC( nLMar ) .AND. nLMar >= 0
@@ -801,6 +812,11 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
       ::nhFij := ( 12 / 3.70 )
     ENDIF
 
+    IF ::lHonorMargins
+       nLin += ::nTMargin
+       nCol += ::nLMargin
+    ENDIF
+
    DO CASE
    CASE cType == "CODE128A"
       ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, "A", aColor, lHori, nWidth, nHeight )
@@ -833,6 +849,7 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
    ::Go_Code( _Upc( cCode, 7 ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
@@ -843,6 +860,7 @@ METHOD Ean8( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBas
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
    ::Go_Code( _Ean13( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
@@ -853,6 +871,7 @@ METHOD Ean13( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBa
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Code128( cCode, cMode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -860,6 +879,7 @@ METHOD Code128( nRow, nCol, cCode, cMode, aColor, lHorz, nWidth, nHeigth ) CLASS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Code3_9( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Code3_9( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -869,6 +889,7 @@ METHOD Int25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth, lMode ) CLASS T
 
    ASSIGN lMode VALUE lMode TYPE "L" DEFAULT .T.
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Int25( cCode, lMode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -878,6 +899,7 @@ METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBas
 
    ASSIGN nHeigth VALUE nHeigth TYPE "N" DEFAULT 1.5
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Upc( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth * 0.90 )
    ::Go_Code( _Upcabl( cCode ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
@@ -886,6 +908,7 @@ METHOD Upca( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBas
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Sup5( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Sup5( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -893,6 +916,7 @@ METHOD Sup5( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBas
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Codabar( cCode, ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -900,6 +924,7 @@ METHOD Codabar( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrint
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Ind25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -907,6 +932,7 @@ METHOD Ind25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBa
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBase
 
+   // nRow and nCol must be in MM
    ::Go_Code( _Mat25( cCode, .T., ::lShowErrors ), nRow, nCol, lHorz, aColor, nWidth, nHeigth )
 
    RETURN .T.
@@ -916,12 +942,12 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
 
    LOCAL n
 
-   ASSIGN ny     VALUE ny     TYPE "N" DEFAULT 0
-   ASSIGN nx     VALUE nx     TYPE "N" DEFAULT 0
+   ASSIGN ny     VALUE ny     TYPE "N" DEFAULT 0               // MM from top
+   ASSIGN nx     VALUE nx     TYPE "N" DEFAULT 0               // MM from left
    ASSIGN aColor VALUE aColor TYPE "A" DEFAULT { 0, 0, 0 }
    ASSIGN lHorz  VALUE lHorz  TYPE "L" DEFAULT .T.
    ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT 0.495           // 1/3 M/mm 0.25 width
-   ASSIGN nLen   VALUE nLen   TYPE "N" DEFAULT 15              // mm height
+   ASSIGN nLen   VALUE nLen   TYPE "N" DEFAULT 15              // MM height
 
    FOR n := 1 TO Len( cBarcode )
       IF SubStr( cBarcode, n, 1 ) == '1'
