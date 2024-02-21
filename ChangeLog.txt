@@ -13,6 +13,14 @@
  * Use #nnn to refer to an issue.
  */
 
+2023-06-03 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    + Data lHonorMargins to class TPrintBase.
+    + Method SetHonorMargins to set/get the new data.
+    * Method PrintBarcode of class TPrintBase will take into account
+      the margins of the current page when the new data is set to .T.
+  #621
+
 2023-05-29 17:13 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_tooltip.ch
     + SET TOOLTIPNOPREFIX [TO] ON/OFF.
