@@ -1312,7 +1312,7 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTree
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
 
-   Local nItem, lChecked, TargetHandle, i, oAux, Value
+   Local nItem, lChecked, TargetHandle, i, oAux, Value, aPos
 
    If nMsg == WM_APP + 8
       If HB_IsBlock( ::OnCheckChange )
@@ -1331,7 +1331,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
             ::LastTarget:HasDragFocus := .F.
          EndIf
 
-         _OOHG_SetMouseCoords( Self, LOWORD( lParam ), HIWORD( lParam ) )
+          aPos := Get_XY_LPARAM( lParam )
+         _OOHG_SetMouseCoords( Self, aPos[ 1 ], aPos[ 2 ] )
 
          TargetHandle := GetWindowUnderCursor()
 
@@ -1428,7 +1429,8 @@ METHOD Events( hWnd, nMsg, wParam, lParam ) CLASS TTree
             Next
 
             If i <= len( ::aTarget ) .AND. oAux:DropEnabled
-               _OOHG_SetMouseCoords( Self, LOWORD( lParam ), HIWORD( lParam ) )
+                aPos := Get_XY_LPARAM( lParam )
+               _OOHG_SetMouseCoords( Self, aPos[ 1 ], aPos[ 2 ] )
 
                ::CtrlLastDrop := oAux
                ::ItemLastDrop := _OOHG_EVAL( oAux:OnMouseDrop, Self, oAux, wParam )
