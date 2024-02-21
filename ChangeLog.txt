@@ -13,6 +13,11 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-02-21 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    * Some changes for 64 bits support.
+  #622
+
 2023-06-03 22:08 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print.prg
     + Data lHonorMargins to class TPrintBase.
