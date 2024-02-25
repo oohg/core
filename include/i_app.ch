@@ -85,11 +85,11 @@
 #xtranslate App.ErrorLevel := <arg>        => _OOHG_AppObject():ErrorLevel( <arg> )
 #xtranslate App.ExeName                    => _OOHG_AppObject():ExeName
 #xtranslate App.FileName                   => _OOHG_AppObject():FileName
-#xtranslate App.GridScrollOnWheel          => _OOHG_AppObject():Value_Pos76
 #xtranslate App.FontName                   => _OOHG_AppObject():Value_Pos07
 #xtranslate App.FontSize                   => _OOHG_AppObject():Value_Pos08
 #xtranslate App.FormName                   => _OOHG_AppObject():MainName
 #xtranslate App.FormObject                 => _OOHG_AppObject():MainObject
+#xtranslate App.GridScrollOnWheel          => _OOHG_AppObject():Value_Pos76
 #xtranslate App.Handle                     => _OOHG_AppObject():Handle
 #xtranslate App.Height                     => _OOHG_AppObject():Height
 #xtranslate App.Height := <arg>            => _OOHG_AppObject():Height( <arg> )
