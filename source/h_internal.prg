@@ -141,8 +141,8 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, bOnClick, nWidth, nHeight,
                    { |Scroll| _OOHG_Eval( ::OnHScrollBox, Scroll ) }, ;
                    { |Scroll, n| _OOHG_Eval( ::OnHScrollBox, Scroll, n ) }, ;
                    NIL, NIL, NIL, NIL, NIL, NIL, SB_HORZ, .T. )
-   ::HScrollBar:nLineSkip := 1
-   ::HScrollBar:nPageSkip := 20
+   ::HScrollBar:nLineSkip := _OOHG_DefaultScrollStep
+   ::HScrollBar:nPageSkip := _OOHG_DefaultScrollPage
 
    ::VScrollBar := TScrollBar():Define( "0", Self, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
                    { |Scroll| _OOHG_Eval( ::OnScrollUp, Scroll ) }, ;
@@ -153,8 +153,8 @@ METHOD Define( cControlName, uParentForm, nCol, nRow, bOnClick, nWidth, nHeight,
                    { |Scroll| _OOHG_Eval( ::OnVScrollBox, Scroll ) }, ;
                    { |Scroll, n| _OOHG_Eval( ::OnVScrollBox, Scroll, n ) }, ;
                    NIL, NIL, NIL, NIL, NIL, NIL, SB_VERT, .T. )
-   ::VScrollBar:nLineSkip := 1
-   ::VScrollBar:nPageSkip := 20
+   ::VScrollBar:nLineSkip := _OOHG_DefaultScrollStep
+   ::VScrollBar:nPageSkip := _OOHG_DefaultScrollPage
 
    ::nVirtualHeight := VirtualHeight
    ::nVirtualWidth  := VirtualWidth
