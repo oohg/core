@@ -13,6 +13,10 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-02-25 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_app.ch
+    * Changes clause order.
+
 2024-02-21 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
     * Some changes for 64 bits support.
