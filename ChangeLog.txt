@@ -13,9 +13,15 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-02-25 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! Missing initialization of _OOHG_DefaultScrollPage,
+      _OOHG_DefaultScrollStep, _OOHG_AutoScroll and
+      _OOHG_GridScrollOnWheel.
+
 2024-02-25 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
-    * Changes clause order.
+    * Change clause order.
 
 2024-02-21 19:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
