@@ -13,11 +13,17 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-02-25 19:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_internal.prg
+    * Replace fixed constants with app-pseudo vars.
+  #624
+
 2024-02-25 19:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     ! Missing initialization of _OOHG_DefaultScrollPage,
       _OOHG_DefaultScrollStep, _OOHG_AutoScroll and
       _OOHG_GridScrollOnWheel.
+  #623
 
 2024-02-25 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_app.ch
@@ -387,7 +393,7 @@
   * core\source\winprint.prg
     ! Replace struct = { 0 } with memset( &struct, 0, sizeof( struct ) ).
       Such BCC syntax does not clear the whole structure body in most of
-      other C compilers..
+      other C compilers.
   #596
 
 2022-11-06 10:42 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
