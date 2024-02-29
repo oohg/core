@@ -1236,4 +1236,32 @@ HRESULT
 #define S_OK                                      0
 #define S_FALSE                                   1
 
+/*---------------------------------------------------------------------------
+WM_NCHITTEST
+---------------------------------------------------------------------------*/
+
+#define HTBORDER      18 // In the border of a window that does not have a sizing border.
+#define HTBOTTOM      15 // In the lower-horizontal border of a resizable window (the user can click the mouse to resize the window vertically).
+#define HTBOTTOMLEFT  16 // In the lower-left corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).
+#define HTBOTTOMRIGHT 17 // In the lower-right corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).
+#define HTCAPTION      2 // In a title bar.
+#define HTCLIENT       1 // In a client area.
+#define HTCLOSE       20 // In a Close button.
+#define HTERROR       -2 // On the screen background or on a dividing line between windows (same as HTNOWHERE, except that the DefWindowProc function produces a system beep to indicate an error).
+#define HTHELP        21 // In a Help button.
+#define HTHSCROLL      6 // In a horizontal scroll bar.
+#define HTLEFT        10 // In the left border of a resizable window (the user can click the mouse to resize the window horizontally).
+#define HTMAXBUTTON    9 // In a Maximize button.
+#define HTMENU         5 // In a menu.
+#define HTMINBUTTON    8 // In a Minimize button.
+#define HTNOWHERE      0 // On the screen background or on a dividing line between windows.
+#define HTRIGHT       11 // In the right border of a resizable window (the user can click the mouse to resize the window horizontally).
+#define HTSIZE         4 // In a size box (same as HTGROWBOX).
+#define HTSYSMENU      3 // In a window menu or in a Close button in a child window.
+#define HTTOP         12 // In the upper-horizontal border of a window.
+#define HTTOPLEFT     13 // In the upper-left corner of a window border.
+#define HTTOPRIGHT    14 // In the upper-right corner of a window border.
+#define HTTRANSPARENT -1 // In a window currently covered by another window in the same thread (the message will be sent to underlying windows in the same thread until one of them returns a code that is not HTTRANSPARENT).
+#define HTVSCROLL      7 // In the vertical scroll bar.
+
 #endif

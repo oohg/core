@@ -167,6 +167,7 @@ static const char *s_SymbolNames[] = {
    "LCTRLCOORDS",
    "CONTAINERHWND",
    "LPOSTPARENT",
+   "EVENTS_HITTEST",
    "LastSymbol" };
 
 void _OOHG_Send( PHB_ITEM pSelf, int iSymbol )

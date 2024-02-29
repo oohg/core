@@ -2132,10 +2132,11 @@ METHOD Error( xParam ) CLASS TDynamicValues
 #pragma BEGINDUMP
 
 #include "oohg.h"
+#include <windowsx.h>
 #include <olectl.h>
-#include "hbapiitm.h"
-#include "hbvm.h"
-#include "hbstack.h"
+#include <hbapiitm.h>
+#include <hbvm.h>
+#include <hbstack.h>
 
 #ifdef HB_ITEM_NIL
    #define hb_dynsymSymbol( pDynSym )  ( ( pDynSym )->pSymbol )
@@ -2726,34 +2727,61 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CONTEXTMENU:
          if( _OOHG_ShowContextMenus )
          {
+/*
+         https://devblogs.microsoft.com/oldnewthing/20031027-00/?p=42023
+         if (lParam != -1 &&
+            SendMessage(hwnd, WM_NCHITTEST,
+                        0, lParam) == HTSYSMENU) {
+            HMENU hmenu = CreatePopupMenu();
+            if (hmenu) {
+                AppendMenu(hmenu, MF_STRING, 1,
+                           TEXT("Custom menu"));
+                TrackPopupMenu(hmenu, TPM_LEFTALIGN | TPM_TOPALIGN |
+                                      TPM_RIGHTBUTTON,
+                               GET_X_LPARAM(lParam),
+                               GET_Y_LPARAM(lParam), 0, hwnd, NULL);
+                DestroyMenu(hmenu);
+            }
+            return 0;
+         }
+         break;
+*/
             PHB_ITEM pControl, pContext;
 
-            /* Sets mouse coords */
-            _OOHG_SetMouseCoords( pSelf, LOWORD( lParam ), HIWORD( lParam ) );
-
             SetFocus( (HWND) wParam );
-            pControl = GetControlObjectByHandle( (HWND) wParam, TRUE );
+            _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
 
-            /* Check if control have context menu */
+            /* Check if it's a control and if it has a context menu */
+            pControl = GetControlObjectByHandle( (HWND) wParam, TRUE );
             _OOHG_Send( pControl, s_ContextMenu );
             hb_vmSend( 0 );
             pContext = hb_param( -1, HB_IT_OBJECT );
+
             if( ! pContext )
             {
-               /* TODO: Check for CONTEXTMENU at container control. */
-
-               /* Check if form have context menu */
-               _OOHG_Send( pSelf, s_ContextMenu );
+               /* Check if it's a control and if it has a container control with context menu */
+               _OOHG_Send( pControl, s_ContainerhWnd );
+               hb_vmSend( 0 );
+               pControl = GetControlObjectByHandle( HWNDparam( -1 ), TRUE );
+               _OOHG_Send( pControl, s_ContextMenu );
                hb_vmSend( 0 );
                pContext = hb_param( -1, HB_IT_OBJECT );
+
+               if( ! pContext )
+               {
+                  /* Check if it's a form and if it has a context menu */
+                  _OOHG_Send( pSelf, s_ContextMenu );
+                  hb_vmSend( 0 );
+                  pContext = hb_param( -1, HB_IT_OBJECT );
+               }
             }
 
             /* If there's a context menu, show it */
             if( pContext )
             {
                _OOHG_Send( pContext, s_Activate );
-               hb_vmPushLong( HIWORD( lParam ) );
-               hb_vmPushLong( LOWORD( lParam ) );
+               hb_vmPushLong( GET_Y_LPARAM( lParam ) );
+               hb_vmPushLong( GET_X_LPARAM( lParam ) );
                hb_vmSend( 2 );
                hb_retni( 1 );
             }

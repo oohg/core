@@ -13,6 +13,15 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-02-29 07:54 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_windefs.ch
+  * core\include\oohg.h
+  * core\source\c_controlmisc.c
+  * core\source\h_form.prg
+  * core\source\h_windows.prg
+    * Add support for WM_NCHITTEST message.
+  #625
+
 2024-02-25 19:56 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_internal.prg
     * Replace fixed constants with app-pseudo vars.

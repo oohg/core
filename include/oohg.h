@@ -744,7 +744,8 @@ void             _UxTheme_DeInit( void );
 #define s_lCtrlCoords           87
 #define s_ContainerhWnd         88
 #define s_lPostParent           89
-#define s_LastSymbol            90
+#define s_Events_HitTest        90
+#define s_LastSymbol            91
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 /* Substitute some macros under xHarbour */
