@@ -2727,56 +2727,27 @@ HB_FUNC_STATIC( TWINDOW_EVENTS )          /* METHOD Events( hWnd, nMsg, wParam, 
       case WM_CONTEXTMENU:
          if( _OOHG_ShowContextMenus )
          {
-/*
-         https://devblogs.microsoft.com/oldnewthing/20031027-00/?p=42023
-         if (lParam != -1 &&
-            SendMessage(hwnd, WM_NCHITTEST,
-                        0, lParam) == HTSYSMENU) {
-            HMENU hmenu = CreatePopupMenu();
-            if (hmenu) {
-                AppendMenu(hmenu, MF_STRING, 1,
-                           TEXT("Custom menu"));
-                TrackPopupMenu(hmenu, TPM_LEFTALIGN | TPM_TOPALIGN |
-                                      TPM_RIGHTBUTTON,
-                               GET_X_LPARAM(lParam),
-                               GET_Y_LPARAM(lParam), 0, hwnd, NULL);
-                DestroyMenu(hmenu);
-            }
-            return 0;
-         }
-         break;
-*/
             PHB_ITEM pControl, pContext;
 
-            SetFocus( (HWND) wParam );
+            /* Screen coordinates */
             _OOHG_SetMouseCoords( pSelf, GET_X_LPARAM( lParam ), GET_Y_LPARAM( lParam ) );
+            SetFocus( (HWND) wParam );
 
-            /* Check if it's a control and if it has a context menu */
+            /* Check if it is a control and if it has a context menu */
             pControl = GetControlObjectByHandle( (HWND) wParam, TRUE );
             _OOHG_Send( pControl, s_ContextMenu );
             hb_vmSend( 0 );
             pContext = hb_param( -1, HB_IT_OBJECT );
 
+            /* Check if it has a context menu */
             if( ! pContext )
             {
-               /* Check if it's a control and if it has a container control with context menu */
-               _OOHG_Send( pControl, s_ContainerhWnd );
-               hb_vmSend( 0 );
-               pControl = GetControlObjectByHandle( HWNDparam( -1 ), TRUE );
-               _OOHG_Send( pControl, s_ContextMenu );
+               _OOHG_Send( pSelf, s_ContextMenu );
                hb_vmSend( 0 );
                pContext = hb_param( -1, HB_IT_OBJECT );
-
-               if( ! pContext )
-               {
-                  /* Check if it's a form and if it has a context menu */
-                  _OOHG_Send( pSelf, s_ContextMenu );
-                  hb_vmSend( 0 );
-                  pContext = hb_param( -1, HB_IT_OBJECT );
-               }
             }
 
-            /* If there's a context menu, show it */
+            /* If there is a context menu, show it */
             if( pContext )
             {
                _OOHG_Send( pContext, s_Activate );
