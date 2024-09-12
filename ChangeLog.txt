@@ -13,6 +13,12 @@
  * Use #nnn to refer to an issue.
  */
 
+2024-09-12 09:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_application.prg
+    ! Wrong initialization of _OOHG_AutoScroll and _OOHG_GridScrollOnWheel.
+  #628
+  #629
+
 2024-03-21 09:21 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_windows.prg
     ! Program crashes after displaying the context menu of a control.
