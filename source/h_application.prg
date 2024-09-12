@@ -417,8 +417,8 @@ METHOD New() CLASS TApplication
       ::aVars[ NDX_OOHG_DEFAULTFONTADVANCED ]    := .F.
       ::aVars[ NDX_OOHG_DEFAULTSCROLLPAGE ]      := 20
       ::aVars[ NDX_OOHG_DEFAULTSCROLLSTEP ]      := 1
-      ::aVars[ NDX_OOHG_AUTOSCROLL ]             := 75
-      ::aVars[ NDX_OOHG_GRIDSCROLLONWHEEL ]      := 76
+      ::aVars[ NDX_OOHG_AUTOSCROLL ]             := .T.
+      ::aVars[ NDX_OOHG_GRIDSCROLLONWHEEL ]      := .T.
 
       _GetDDLMessage()
 
