@@ -30,8 +30,7 @@ Optionaly you may download and install at folder C:\OOHG the following repositor
 
 ## Distros
 
-Alternatively you can download a full package installer from:
-http://sourceforge.net/projects/oohg/files/
+Alternatively you can download a full package installer from [Miguel's site](http://www.teycen.com/pages/minigui/programas_harbour.php).
 
 ## Using OOHG
 
@@ -83,6 +82,7 @@ Alternatively see the GitHub documentation on [creating a pull request](https://
 * Ron Pinkas
 * José M. C. Quintas
 * Jacek Pospischil
+* Miguel
 
 ## License
 
