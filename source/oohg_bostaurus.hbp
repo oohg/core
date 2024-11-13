@@ -1,0 +1,81 @@
+#
+# $Id: oohg_bostaurus.hbp $
+# alternative
+#
+
+-hblib
+-inc
+-o../lib/${hb_name}
+-hbx=../lib/${hb_name}.hbx
+-i../include
+-m -n -q0 -w3 -es2
+oohg_hb.hbc
+
+# c compiler flags
+# to check for more warnings add "SET HG_CFLAGS=ON" before building
+-cflag=-fdiagnostics-show-option
+-cflag=-Wall
+-cflag=-Wstrict-prototypes
+-cflag=-Wundef
+-cflag=-Wunused
+{clang|clang64}-cflag=-Wno-reserved-identifier
+{clang|clang64}-cflag=-Wno-used-but-marked-unused
+{clang|clang64}-cflag=-Wno-extra-semi
+{clang|clang64}-cflag=-Wno-extra-semi-stmt
+{clang|clang64}-cflag=-Wno-duplicate-decl-specifier
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Walloc-zero
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Walloca
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Warray-bounds=2
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wattribute-alias=2
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wc11-c2x-compat
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wc99-c11-compat
+{HG_CFLAGS}-cflag=-Wcast-qual
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wdangling-else
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wdate-time
+{HG_CFLAGS}-cflag=-Wdeclaration-after-statement
+{HG_CFLAGS}-cflag=-Wdisabled-optimization
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wdouble-promotion
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wduplicated-branches
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wduplicated-cond
+{HG_CFLAGS}-cflag=-Werror
+{HG_CFLAGS}-cflag=-Wextra
+{HG_CFLAGS}-cflag=-Wformat-nonliteral
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wformat-overflow=2
+{HG_CFLAGS}-cflag=-Wformat-security
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wformat-signedness
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wformat-truncation=2
+{HG_CFLAGS}-cflag=-Wformat=2
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wframe-address
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wimplicit-fallthrough=4
+{HG_CFLAGS}-cflag=-Winit-self
+{HG_CFLAGS}-cflag=-Winline
+{HG_CFLAGS}-cflag=-Winvalid-pch
+{HG_CFLAGS}-cflag=-Wmissing-format-attribute
+{HG_CFLAGS}-cflag=-Wmissing-include-dirs
+{HG_CFLAGS}-cflag=-Wmissing-noreturn
+{HG_CFLAGS}-cflag=-Wnested-externs
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wno-aggressive-loop-optimizations
+{HG_CFLAGS}-cflag=-Wno-variadic-macros
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wnull-dereference
+{HG_CFLAGS}-cflag=-Wold-style-definition
+{HG_CFLAGS}-cflag=-Woverlength-strings
+{HG_CFLAGS}-cflag=-Wpacked
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wshift-overflow=2
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wstringop-overflow=4
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wstringop-truncation
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wtrampolines
+{HG_CFLAGS}-cflag=-Wuninitialized
+{HG_CFLAGS}-cflag=-Wunused
+{HG_CFLAGS&(hb32|hb34)}-cflag=-Wunused-const-variable=1
+{HG_CFLAGS}-cflag=-Wwrite-strings
+
+#alerts on exit
+-beep
+
+# uncomment the following line to build .ppo files
+#-p.\ppo\
+
+# files to compile
+..\source\bostaurus.prg
+
+# EOF
