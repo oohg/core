@@ -1,0 +1,10 @@
+#
+# $Id: oohg_hb.hbp $
+# alternative
+#
+
+-hbcontainer
+source/oohg_main.hbp
+source/oohg_hbprinter.hbp
+source/oohg_miniprint.hbp
+source/oohg_bostaurus.hbp
