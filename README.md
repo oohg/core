@@ -64,7 +64,7 @@ Alternatively see the GitHub documentation on [creating a pull request](https://
 * Paola Bruccoleri
 * Gustavo Carlos Asborno
 * Miguel Angel Juarez A.
-* Fernando Yurisich [(send a donation)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VYXQYCKWXLWAG&currency_code=USD&source=url)
+* Fernando Yurisich
 * Pierpaolo Martinello
 * Johan
 * Daniel Piperno
