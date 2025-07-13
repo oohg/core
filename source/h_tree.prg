@@ -1185,7 +1185,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTree
       TreeItemHandle := TreeView_ItemExpandingItem( lParam )
       Item := ::HandleToItem( TreeItemHandle )
       IF TreeView_ItemExpandingAction( lParam ) == TVE_EXPAND
-         lValid := ::DoEvent( ::OnExpand, "TREEVIEW_ITEMEXPANDING", {Item, ::Item( Item )} )
+         IF HB_IsBlock( ::OnExpand )
+            lValid := ::DoEvent( ::OnExpand, "TREEVIEW_ITEMEXPANDING", {Item, ::Item( Item )} )
+         ELSE
+            lValid := .T.
+         ENDIF
       ELSE   // TVE_COLLAPSE
          lValid := ::DoEvent( ::OnCollapse, "TREEVIEW_ITEMCOLLAPSING", {Item, ::Item( Item )} )
       ENDIF
