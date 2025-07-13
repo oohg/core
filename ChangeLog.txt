@@ -13,6 +13,17 @@
  * Use #nnn to refer to an issue.
  */
 
+2025-07-13 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_tree.prg
+    ! Tree control does not expand its nodes.
+  #631
+
+2025-07-13 01:16 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    + Support for printing QR codes.
+    ; Thanks to Ciro Vargas C. for this contribution.
+  #630
+
 2024-09-12 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_application.prg
     ! Wrong initialization of _OOHG_AutoScroll and _OOHG_GridScrollOnWheel.
