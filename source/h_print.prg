@@ -5,7 +5,7 @@
  * OOHG source code:
  * TPrint object
  *
- * Copyright 2006-2025 Ciro Vargas C. <cvc@oohg.org> and contributors of
+ * Copyright 2006-2022 Ciro Vargas C. <cvc@oohg.org> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
  *
  * Portions of this project are based upon:
@@ -67,8 +67,6 @@
 #include "i_windefs.ch"
 #include "i_init.ch"
 #include "miniprint.ch"
-#include "bostaurus.ch"
-#include "hbzebra.ch"
 
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
@@ -205,8 +203,6 @@ CLASS TPrintBase
    METHOD Ind25
    METHOD Init
    METHOD InitX                   BLOCK { || NIL }
-   METHOD QRCode
-   METHOD QRCodeX                 BLOCK { || NIL }
    METHOD Int25
    METHOD IsDocOpen
    METHOD IsDocOpenX              INLINE ::lDocIsOpen
@@ -788,7 +784,6 @@ METHOD PrintData( nLin, nCol, uData, cFont, nSize, lBold, aColor, cAlign, nLen, 
 METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight, lMode ) CLASS TPrintBase
 
    LOCAL nSize := 10
-   LOCAL cBarCodeU
 
    ASSIGN nHeight  VALUE nHeight  TYPE "N" DEFAULT 10
    ASSIGN nWidth   VALUE nWidth   TYPE "N" DEFAULT NIL
@@ -799,7 +794,7 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
    ASSIGN nLin     VALUE nLin     TYPE "N" DEFAULT 1
    ASSIGN nCol     VALUE nCol     TYPE "N" DEFAULT 1
 
-   cBarcodeU := Upper( cBarcode )
+   cBarcode := Upper( cBarcode )
 
    IF ::cUnits == "MM"
       ::nmVer := 1
@@ -847,8 +842,6 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
       ::Ind25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
    CASE cType == "MAT25"
       ::Mat25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
-   CASE cType == "QRCODE"
-       ::Qrcode( cBarCodeU, nCol * ::nmHor + ::nhFij * 2 , nLin * ::nmVer + ::nvFij , nWidth, nHeight, aColor )
    ENDCASE
 
    RETURN .T.
@@ -945,42 +938,6 @@ METHOD Mat25( nRow, nCol, cCode, aColor, lHorz, nWidth, nHeigth ) CLASS TPrintBa
    RETURN .T.
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD QRCode( cCode, nX, nY, nWidth, nHeight, aBarColor, aBackColor )
-   LOCAL cqrcodefile
-   LOCAL hBitmap
-
-   DEFAULT aBarColor := {0, 0, 0}     // Black
-   DEFAULT aBackColor := {255, 255, 255} // White
-
-   if nWidth == NIL
-      nWidth := nHeight
-   endif
-
-   cqrcodefile := STRTRAN(GetTempFolder()+"test" + STR(SECONDS()) + ".jpg", " ", "")
-
-   hBitmap := Zebra_CreateBitmapBarcode( aBarColor, aBackColor, nWidth, nHeight, "QRCODE", cCode, Nil, .F., "" )
-   BT_BitmapSaveFile( hBitmap, cqrcodefile , BT_FILEFORMAT_JPG )
-
-   IF hBitmap != 0
-      IF ::cUnits == "ROWCOL"
-        ::nmVer := 1
-        ::nvFij := 0
-        ::nmHor := 1
-        ::nhFij := 0
-      ENDIF
-      IF ::cUnits == "ROWCOL"
-         ::cUnits := "MM"
-         ::PrintImage( nY, nX, nY+nHeight, nX+nWidth, cqrcodefile )
-         ::cUnits := "ROWCOL"
-      ELSE
-         ::PrintImage( nY, nX, nY+nHeight, nX+nWidth, cqrcodefile )
-      ENDIF
-   ELSE
-      MsgInfo( "Failed to generate QR code" )
-   ENDIF
-RETURN NIL
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
 
    LOCAL n
@@ -989,7 +946,7 @@ METHOD Go_Code( cBarcode, ny, nx, lHorz, aColor, nWidth, nLen ) CLASS TPrintBase
    ASSIGN nx     VALUE nx     TYPE "N" DEFAULT 0               // MM from left
    ASSIGN aColor VALUE aColor TYPE "A" DEFAULT { 0, 0, 0 }
    ASSIGN lHorz  VALUE lHorz  TYPE "L" DEFAULT .T.
-   ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT 0.495           // 1/3 M/MM 0.25 width
+   ASSIGN nWidth VALUE nWidth TYPE "N" DEFAULT 0.495           // 1/3 M/mm 0.25 width
    ASSIGN nLen   VALUE nLen   TYPE "N" DEFAULT 15              // MM height
 
    FOR n := 1 TO Len( cBarcode )
@@ -5489,7 +5446,7 @@ METHOD PrintImageX( nLin, nCol, nLinF, nColF, cImage, aResol, aSize, aExt ) CLAS
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION OO_ConvertToURL( cFile )
 
-   // From https://github.com/harbour/core/blob/master/contrib/hbwin/tests/ole.prg
+   // From https://github.com/harbour/core/blob/main/contrib/hbwin/tests/ole.prg
    IF ! Left( cFile, 2 ) == "\\"
       cFile := StrTran( cFile, ":", "|" )
       cFile := "///" + cFile
@@ -6205,85 +6162,6 @@ FUNCTION ArrayIsValidColor( aColor )
 
 
 
-
-STATIC FUNCTION Zebra_CreateBitmapBarcode( aBarColor, aBackColor, nLineWidth, nLineHeight, cType, cCode, nFlags, lShowDigits, cTextCode )
-   LOCAL hBitmap := 0, hZebra
-   LOCAL hDC, BTstruct, nFontSize
-   LOCAL nSizeWidth, nSizeHeight
-   LOCAL cFont := 'Arial'
-
-   SWITCH cType
-   CASE "EAN13"      ; hZebra := hb_zebra_create_ean13( cCode, nFlags )      ;                                                      EXIT
-   CASE "EAN8"       ; hZebra := hb_zebra_create_ean8( cCode, nFlags )       ;                                                      EXIT
-   CASE "UPCA"       ; hZebra := hb_zebra_create_upca( cCode, nFlags )       ;                                                      EXIT
-   CASE "UPCE"       ; hZebra := hb_zebra_create_upce( cCode, nFlags )       ;                                                      EXIT
-   CASE "CODE39"     ; hZebra := hb_zebra_create_code39( cCode, nFlags )     ;                                                      EXIT
-   CASE "ITF"        ; hZebra := hb_zebra_create_itf( cCode, nFlags )        ;                                                      EXIT
-   CASE "MSI"        ; hZebra := hb_zebra_create_msi( cCode, nFlags )        ;                                                      EXIT
-   CASE "CODABAR"    ; hZebra := hb_zebra_create_codabar( cCode, nFlags )    ;                                                      EXIT
-   CASE "CODE93"     ; hZebra := hb_zebra_create_code93( cCode, nFlags )     ;                                                      EXIT
-   CASE "CODE11"     ; hZebra := hb_zebra_create_code11( cCode, nFlags )     ;                                                      EXIT
-   CASE "CODE128"    ; hZebra := hb_zebra_create_code128( cCode, nFlags )    ;                                                      EXIT
-   CASE "PDF417"     ; hZebra := hb_zebra_create_pdf417( cCode, nFlags )     ; nLineHeight := nLineWidth * 3 ; lShowDigits := .F. ; EXIT
-   CASE "DATAMATRIX" ; hZebra := hb_zebra_create_datamatrix( cCode, nFlags ) ; nLineHeight := nLineWidth     ; lShowDigits := .F. ; EXIT
-   CASE "QRCODE"     ; hZebra := hb_zebra_create_qrcode( cCode, nFlags )     ; nLineHeight := nLineWidth     ; lShowDigits := .F. ; EXIT
-   ENDSWITCH
-
-   IF hZebra != Nil
-      IF hb_zebra_geterror( hZebra ) == 0
-         cTextCode   := hb_zebra_getcode( hZebra )
-         nSizeWidth  := Zebra_GetWidth( hZebra, nLineWidth, nLineHeight, Nil )
-         nSizeHeight := Zebra_GetHeight( hZebra, nLineWidth, nLineHeight, Nil ) + IIF( lShowDigits, ( nLineWidth * 10 ) + 20, 0 )
-         hBitmap     := BT_BitmapCreateNew( nSizeWidth, nSizeHeight, aBackColor )
-         hDC         := BT_CreateDC( hBitmap, BT_HDC_BITMAP, @BTstruct )
-         Zebra_Draw( hZebra, hDC, aBarColor, 0, 0, nLineWidth, nLineHeight, Nil )
-         IF lShowDigits
-            nFontSize := ( ( nSizeWidth / LEN( cTextCode ) ) / 96 * 72 * 1 )
-            BT_DrawText( hDC, nSizeHeight - ( ( nLineWidth * 10 ) + 20 ) + 5, nSizeWidth / 2, cTextCode, cFont, nFontSize, aBarColor, aBackColor, Nil, BT_TEXT_CENTER )
-         ENDIF
-         BT_DeleteDC( BTstruct )
-      ELSE
-         MsgInfo( "Type " + cType + CRLF + "Code " + cCode + CRLF + "Error  " + LTRIM( HB_VALTOSTR( hb_zebra_geterror( hZebra ) ) ) )
-      ENDIF
-      hb_zebra_destroy( hZebra )
-   ELSE
-      MsgStop( "Invalid barcode type !", cType )
-   ENDIF
-RETURN hBitmap
-
-
-STATIC FUNCTION Zebra_Draw( hZebra, hDC, aBarColor, nRow, nCol, nLineWidth, nLineHeight, iFlags )
-   IF hb_zebra_GetError( hZebra ) != 0
-      RETURN HB_ZEBRA_ERROR_INVALIDZEBRA
-   ENDIF
-//     hb_zebra_draw( hZebra, bCodeBlock,                                                          dX,   dY,   dWidth,     dHeight,     iFlags )
-RETURN hb_zebra_draw( hZebra, { |x, y, w, h| BT_DrawFillRectangle( hDC, y, x, w, h, aBarColor ) }, nCol, nRow, nLineWidth, nLineHeight, iFlags )
-
-
-STATIC FUNCTION Zebra_GetWidth( hZebra, nLineWidth, nLineHeight, iFlags )
-   LOCAL x1 := 0, y1 := 0, nBarWidth := 0, nBarHeight := 0
-
-   // always --> nBarHeight = nLineHeight
-   IF hb_zebra_GetError( hZebra ) != 0
-      RETURN HB_ZEBRA_ERROR_INVALIDZEBRA
-   ENDIF
-// hb_zebra_draw( hZebra, bCodeBlock,                                                         dX, dY, dWidth,     dHeight,     iFlags )
-   hb_zebra_draw( hZebra, { |x, y, w, h| nBarWidth := x + w - x1, nBarHeight := y + h - y1 }, x1, y1, nLineWidth, nLineHeight, iFlags )
-RETURN nBarWidth
-
-
-STATIC FUNCTION Zebra_GetHeight( hZebra, nLineWidth, nLineHeight, iFlags )
-   LOCAL x1 := 0, y1 := 0, nBarWidth := 0, nBarHeight := 0
-
-   // always --> nBarHeight = nLineHeight
-   IF hb_zebra_GetError( hZebra ) != 0
-      RETURN HB_ZEBRA_ERROR_INVALIDZEBRA
-   ENDIF
-// hb_zebra_draw( hZebra, bCodeBlock,                                                          dX, dY, dWidth,     dHeight,     iFlags )
-   hb_zebra_draw( hZebra, { |x, y, w, h | nBarWidth := x + w - x1, nBarHeight := y + h - y1 }, x1, y1, nLineWidth, nLineHeight, iFlags )
-RETURN nBarHeight
-
-
 #pragma BEGINDUMP
 
 #include "oohg.h"
@@ -6351,14 +6229,10 @@ HB_FUNC( GETPRINTERSINFO )          /* FUNCTION GetPrintersInfo() -> cBuffer */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( PIXELSPERINCHX )          /* FUNCTION PixelsPerInchX() -> nPPI */
 {
-   HDC hDC = GetDC( HWND_DESKTOP );
-   int iDPI = 96;
+   HDC hDC;
+   int iDPI;
 
-   if( hDC )
-   {
-      iDPI = GetDeviceCaps( hDC, LOGPIXELSX );
-      ReleaseDC( HWND_DESKTOP, hDC );
-   }
+   hDC = GetDC( HWND_DESKTOP );
 
    iDPI = GetDeviceCaps( hDC, LOGPIXELSX );
 
@@ -6370,14 +6244,15 @@ HB_FUNC( PIXELSPERINCHX )          /* FUNCTION PixelsPerInchX() -> nPPI */
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 HB_FUNC( PIXELSPERINCHY )          /* FUNCTION PixelsPerInchY() -> nPPI */
 {
-   HDC hDC = GetDC( HWND_DESKTOP );
-   int iDPI = 96;
+   HDC hDC;
+   int iDPI;
 
-   if( hDC )
-   {
-      iDPI = GetDeviceCaps( hDC, LOGPIXELSY );
-      ReleaseDC( HWND_DESKTOP, hDC );
-   }
+   hDC = GetDC( HWND_DESKTOP );
+
+   iDPI = GetDeviceCaps( hDC, LOGPIXELSY );
+
+   ReleaseDC( HWND_DESKTOP, hDC );
+
    hb_retni( iDPI );
 }
 
