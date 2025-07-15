@@ -824,31 +824,31 @@ METHOD PrintBarcode( nLin, nCol, cBarcode, cType, aColor, lHori, nWidth, nHeight
 
    DO CASE
    CASE cType == "CODE128A"
-      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, "A", aColor, lHori, nWidth, nHeight )
+      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, "A", aColor, lHori, nWidth, nHeight )
    CASE cType == "CODE128B"
-      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, "B", aColor, lHori, nWidth, nHeight )
+      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, "B", aColor, lHori, nWidth, nHeight )
    CASE cType == "CODE128C"
-      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, "C", aColor, lHori, nWidth, nHeight )
+      ::Code128( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, "C", aColor, lHori, nWidth, nHeight )
    CASE cType == "CODE39"
-      ::Code3_9( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Code3_9( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "EAN8"
-      ::Ean8( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Ean8( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "EAN13"
-      ::Ean13( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Ean13( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "INTER25"
-      ::Int25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight, lMode )
+      ::Int25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight, lMode )
    CASE cType == "UPCA"
-      ::Upca( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Upca( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "SUP5"
-      ::Sup5( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Sup5( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "CODABAR"
-      ::Codabar( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Codabar( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "IND25"
-      ::Ind25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Ind25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "MAT25"
-      ::Mat25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcode, aColor, lHori, nWidth, nHeight )
+      ::Mat25( nLin * ::nmVer + ::nvFij, nCol * ::nmHor + ::nhFij * 2, cBarcodeU, aColor, lHori, nWidth, nHeight )
    CASE cType == "QRCODE"
-       ::Qrcode( cBarCodeU, nCol * ::nmHor + ::nhFij * 2 , nLin * ::nmVer + ::nvFij , nWidth, nHeight, aColor )
+       ::Qrcode( cBarCode, nCol * ::nmHor + ::nhFij * 2 , nLin * ::nmVer + ::nvFij , nWidth, nHeight, aColor )
    ENDCASE
 
    RETURN .T.
