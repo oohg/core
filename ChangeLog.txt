@@ -13,6 +13,13 @@
  * Use #nnn to refer to an issue.
  */
 
+2025-07-14 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_print.prg
+    ! Barcodes are printed incorrectly: QR codes are always printed
+      in capital letters while the others are not forced to capital
+      letters, and they should be printed in the opposite manner.
+  #632
+
 2025-07-13 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
     ! Tree control does not expand its nodes.
