@@ -18,6 +18,7 @@
     ! Barcodes are printed incorrectly: QR codes are always printed
       in capital letters while the others are not forced to capital
       letters, and they should be printed in the opposite manner.
+    ; Thanks to Ciro Vargas C. for this contribution.
   #632
 
 2025-07-13 18:20 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
