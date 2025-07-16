@@ -159,7 +159,7 @@ STATIC FUNCTION DefError( oError )
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _OOHG_ErrorMessage( oError )
 
-   LOCAL cMessage
+   LOCAL cMessage, xArg
 
    // start error message
    cMessage := iif( oError:severity > ES_WARNING, aMsgs[ 1 ], aMsgs [ 2 ] ) + " "
@@ -195,6 +195,16 @@ FUNCTION _OOHG_ErrorMessage( oError )
       cMessage += " (DOS " + aMsgs[ 1 ] + " " + LTrim( Str( oError:osCode ) ) + ")"
    ENDIF
 
+   IF ValType( oError:Args ) == "A"
+      cMessage += hb_Eol()
+      FOR EACH xArg IN oError:Args
+         cMessage += [(] + Ltrim( Str( xArg:__EnumIndex() ) ) + [) = Tipo: ] + ValType( xArg )
+         IF xArg != NIL
+            cMessage +=  [ Value: ] + Alltrim( hb_ValToExp( xArg ) )
+         ENDIF
+         cMessage += hb_Eol()
+      NEXT
+   ENDIF
    RETURN cMessage
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
