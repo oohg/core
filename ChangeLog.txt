@@ -11,7 +11,21 @@
  *   '+' Added: ...             '%' Optimized: ...
  *   '-' Removed: ...           ';' Comment
  * Use #nnn to refer to an issue.
+ * Use #nnn-PRG to refer to a pull request.
  */
+
+2025-07-16 19:34 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_error.prg
+    * Function _OOHG_ErrorMessage now displays the content of
+      the Arg member of the error object.
+  + core\oohg_hb.hbc
+  + core\oohg_hb.hbp
+  + core\oohg_bostaurus.hbp
+  + core\oohg_hbprinter.hbp
+  + core\oohg_main.hbp
+  + core\oohg_miniprint.hbp
+  ; Thanks to José M. C. Quintas.
+  #633-PR
 
 2025-07-14 23:09 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print.prg
