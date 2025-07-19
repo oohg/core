@@ -196,15 +196,15 @@ FUNCTION _OOHG_ErrorMessage( oError )
    ENDIF
 
    IF ValType( oError:Args ) == "A"
-      cMessage += hb_Eol()
+      cMessage += "<br>Arguments:"
       FOR EACH xArg IN oError:Args
-         cMessage += [(] + Ltrim( Str( xArg:__EnumIndex() ) ) + [) = Tipo: ] + ValType( xArg )
+         cMessage += "<br>(" + Ltrim( Str( xArg:__EnumIndex() ) ) + ") = Tipo: " + ValType( xArg )
          IF xArg != NIL
-            cMessage +=  [ Value: ] + Alltrim( hb_ValToExp( xArg ) )
+            cMessage +=  " Value: " + Alltrim( hb_ValToExp( xArg ) )
          ENDIF
-         cMessage += hb_Eol()
       NEXT
    ENDIF
+
    RETURN cMessage
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
