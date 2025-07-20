@@ -14,6 +14,14 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-07-20 10:04 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\source\h_report.prg
+    ! Missing space was added.
+
+2025-07-20 10:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\oohgversion.h
+    * Version number was updated.
+
 2025-07-19 20:44 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_error.prg
     ! _OOHG_ErrorMessage() output function is not formatted properly.
