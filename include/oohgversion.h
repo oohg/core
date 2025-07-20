@@ -77,16 +77,16 @@
    #define OOHG_VER_STATUS "rc1"
 #endif
 
-#define OOHG_VER_MAJOR        20
-#define OOHG_VER_MINOR         6
-#define OOHG_VER_RELEASE       8
+#define OOHG_VER_MAJOR        25
+#define OOHG_VER_MINOR         7
+#define OOHG_VER_RELEASE      20
 
-#define OOHG_VER_DATE         "2020.06.08"
+#define OOHG_VER_DATE         "2025.07.20"
 #define OOHG_VER_PROD         OOHG_VER_MAJOR,OOHG_VER_MINOR,OOHG_VER_RELEASE,0
 
 #define OOHG_NAME             "Object Oriented (x)Harbour GUI"
 #define OOHG_COMPANY_NAME     "OOHG Project"
 
-#define __OOHG__              0x140608   /* Three bytes: Major + Minor + Build. */
+#define __OOHG__              0x190714   /* Three bytes: Major + Minor + Build. */
 
 #endif /* OOHG_VER_H_ */
