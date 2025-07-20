@@ -128,6 +128,7 @@ CLASS TReport FROM TPRINTBASE
    DATA aLines                    INIT {}
    DATA aNGrpBy                   INIT {}
    DATA lExcel                    INIT .F.
+   DATA nCount                    INIT 0
    DATA nFSize                    INIT 0
    DATA nLMargin                  INIT 0
    DATA nLinesLeft                INIT 0
@@ -1417,7 +1418,7 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DoEvents CLASS TReportFormWin
 
-   IF ++ ::nCount % 10 == 0
+   IF ++ ::nCount% 10 == 0
       DO EVENTS
       ::nCount := 0
    ENDIF
