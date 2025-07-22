@@ -510,6 +510,7 @@
   #296
     ! Default TPrint object is not selected by function
       TPrint when the parameter is an empty string.
+  #292
   #303
 
 2020-08-08 10:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
