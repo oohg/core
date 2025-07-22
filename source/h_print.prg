@@ -1185,9 +1185,7 @@ METHOD PrintRoundRectangle( nLin, nCol, nLinF, nColF, atColor, ntwPen, lSolid, a
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintMode( cFile ) CLASS TPrintBase
 
-   ::PrintModeX( cFile )
-
-   RETURN .T.
+   RETURN ::PrintModeX( cFile )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetDosPort( cPort ) CLASS TPrintBase
