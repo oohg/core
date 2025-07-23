@@ -131,12 +131,13 @@
       [ PAPERLENGTH <nlength> ] ;
       [ PAPERWIDTH <nwidth> ] ;
       [ NAME <cname> ] ;
+      [ <linfo: INFO> ] ;
    => ;
       __ReportFormWin( <(frm)>, <.prn.>, <(f)>, <.nocon.>, <{for}>, <{while}>, ;
             <next>, <rec>, <.rest.>, <.plain.>, <head>, <.noej.>, <.sum.>, ;
             <.nosep.>, <.lselect.>, <.lpreview.>, <.llandscape.>, <npapersize>, ;
             <nres>, <nbin>, <nduplex>, <.lcollate.>, <ncopies>, <.lcolor.>, ;
-            <nscale>, <nlength>, <nwidth>, <cname> )
+            <nscale>, <nlength>, <nwidth>, <cname>, <linfo> )
 
 #xcommand DO REPORT FORM <cfilerep> ;
       [ HEADING <cheading> ] ;

@@ -128,7 +128,6 @@ CLASS TReport FROM TPRINTBASE
    DATA aLines                    INIT {}
    DATA aNGrpBy                   INIT {}
    DATA lExcel                    INIT .F.
-   DATA nCount                    INIT 0
    DATA nFSize                    INIT 0
    DATA nLMargin                  INIT 0
    DATA nLinesLeft                INIT 0
@@ -154,7 +153,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
       lSelect, cAlias, nLLMargin, aFormats, nPapersize, cHeader, lNoProp, lGroupEject, ;
       nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cDocName ) CLASS TReport
 
-   LOCAL nFieldsCount, i, lHasTotals, aResul, nOldArea, nLin, cRompe, nCount
+   LOCAL nFieldsCount, i, lHasTotals, aResul, nOldArea, nLin, cRompe, nTimes
    LOCAL cLinea, aLenMemo, aValues, nCantLin, cField, uValue, cType, j
 
    ASSIGN cTitle      VALUE cTitle      TYPE "CM" DEFAULT ""
@@ -272,7 +271,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
          ::oPrint:CondenDos()
       ENDIF
    ELSE
-      ::oPrint := TPrint()                          // if _OOHG_PrintLibrary is not set defaults TO MINIPRINT
+      ::oPrint := TPrint()                          // if _OOHG_PrintLibrary is not set then it defaults TO MINIPRINT
       ::oPrint:Init()
       IF ::oPrint:Type == "EXCELPRINT"
          ::lExcel := .T.
@@ -364,13 +363,13 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
       cRompe := &( cGrpBy )
    ENDIF
 
-   nCount := 0
+   nTimes := 0
 
    DO WHILE ! Eof()
-      nCount ++
-      IF nCount % 10 == 0
+      nTimes ++
+      IF nTimes % 10 == 0
          DO EVENTS
-         nCount := 0
+         nTimes := 0
       ENDIF
 
       IF cGrpBy <> NIL
@@ -475,7 +474,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
 
       nLin ++
       IF nLin > nLPP
-         IF ! lDos      
+         IF ! lDos
             ::oPrint:EndPage()
             ::oPrint:BeginPage()
             IF ! Empty( cGraphic ) .AND. lMul
@@ -543,7 +542,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
          IF lgroupeject
             ::oPrint:EndPage()
             ::oPrint:BeginPage()
-            nLin := ( ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader ) - 1 )
+            nLin := ::Headers( aHeaders1, aHeaders2, aWidths, 1, cTitle, NIL, cGrpBy, cHdrGrp, cHeader ) - 1
          ENDIF
 
          nLin ++
@@ -667,7 +666,7 @@ METHOD Headers( aHeaders1, aHeaders2, aWidths, nLin, cTitle, lMode, cGrpBy, cHdr
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ExtReport1( cFileRep, cHeader, cDocName ) CLASS TReport
 
-   LOCAL nCount, i, cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, aFormats, lGroupEject
+   LOCAL nLines, i, cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, aFormats, lGroupEject
    LOCAL nLPP, nCPL, nLLMargin, cAlias, lDos, lPreview, lSelect, cGraphic, lMul, nFI, nCI, cData
    LOCAL nFF, nCF, cGrpBy, cHdrGrp, lLandscape, lNoProp, cReport, nPaperSize, cGraphicAlt
    LOCAL nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth, cLine
@@ -680,9 +679,9 @@ METHOD ExtReport1( cFileRep, cHeader, cDocName ) CLASS TReport
    // load file
    cReport := MemoRead( cFileRep + '.rpt' )
    // count lines
-   nCount := MLCount( cReport )
+   nLines := MLCount( cReport )
    // find "DO REPORT" or "DEFINE REPORT" line
-   FOR i := 1 TO nCount
+   FOR i := 1 TO nLines
       cLine := AllTrim( MemoLine( cReport, 500, i ) )
       IF Right( cLine, 1 ) == ";"
          cLine := RTrim( Left( cLine, Len( cLine ) - 1 ) )
@@ -694,13 +693,13 @@ METHOD ExtReport1( cFileRep, cHeader, cDocName ) CLASS TReport
          EXIT
       ENDIF
    NEXT i
-   IF i > nCount
+   IF i > nLines
       MsgStop( _OOHG_Messages( MT_MISCELL, 23, 1 ), _OOHG_Messages( MT_MISCELL, 9 ) )
       RETURN NIL
    ENDIF
    // load lines until EOF or END REPORT line
    i ++
-   DO WHILE i <= nCount
+   DO WHILE i <= nLines
       cLine := AllTrim( MemoLine( cReport, 500, i ) )
       IF Right( cLine, 1 ) == ";"
          cLine := RTrim( Left( cLine, Len( cLine ) - 1 ) )
@@ -937,7 +936,7 @@ METHOD LeaImage() CLASS TReport
    RETURN ''
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD LeaDatoH( cName, cKey, cDefault, nPar ) CLASS TReport           
+METHOD LeaDatoH( cName, cKey, cDefault, nPar ) CLASS TReport
 
    LOCAL i, nPos, nPos1, nPos2, cLine
 
@@ -965,7 +964,7 @@ METHOD LeaDatoH( cName, cKey, cDefault, nPar ) CLASS TReport
    RETURN cDefault
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD LeaDatoLogic( cName, cKey ) CLASS TReport           
+METHOD LeaDatoLogic( cName, cKey ) CLASS TReport
 
    LOCAL i
 
@@ -1174,7 +1173,7 @@ METHOD LeaColI( nPar ) CLASS TReport
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION __ReportFormWin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth, cDocName )
+      nCopies, lColor, nScale, nLength, nWidth, cDocName, lInfo )
 
    LOCAL nPrevious
 
@@ -1183,7 +1182,7 @@ FUNCTION __ReportFormWin( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile
 
    TReportFormWin():DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth, cDocName )
+      nCopies, lColor, nScale, nLength, nWidth, cDocName, lInfo )
 
    SetInteractiveClose( nPrevious )
 
@@ -1200,6 +1199,7 @@ CLASS TReportFormWin FROM TPRINTBASE
    DATA cOffsetsBuff              INIT NIL
    DATA lFirstPass                INIT .T.
    DATA lNoSeps                   INIT .F.
+   DATA nCount                    INIT 0
    DATA nLinesLeft                INIT 0
    DATA nMaxLinesAvail            INIT 0
    DATA nPageNumber               INIT 0
@@ -1222,7 +1222,7 @@ CLASS TReportFormWin FROM TPRINTBASE
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, nRecord, lRest, lPlain, cHeading, ;
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
-      nCopies, lColor, nScale, nLength, nWidth, cDocName ) CLASS TReportFormWin
+      nCopies, lColor, nScale, nLength, nWidth, cDocName, lInfo ) CLASS TReportFormWin
 
    LOCAL oError, lSale := .F., nCol, nGroup, lAnySubTotals, sAuxST, lAnyTotals, xBreakVal, lBroke := .F.
 
@@ -1257,6 +1257,7 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
    ASSIGN nLength    VALUE nLength    TYPE "N"  DEFAULT NIL
    ASSIGN nLength    VALUE nLength    TYPE "N"  DEFAULT NIL
    ASSIGN nWidth     VALUE nWidth     TYPE "N"  DEFAULT NIL
+   ASSIGN lInfo      VALUE lInfo      TYPE "L"  DEFAULT .F.
 
    BEGIN SEQUENCE
 
@@ -1270,7 +1271,7 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
          ENDIF
       ENDIF
 
-      ::oPrint := Tprint()
+      ::oPrint := TPrint()
       ::oPrint:Init()
       ::oPrint:SelPrinter( lSelect, lPreview, lLandscape, nPapersize, NIL, NIL, nRes, nBin, nDuplex, lCollate, nCopies, lColor, nScale, nLength, nWidth )
       IF ::oPrint:lPrError
@@ -1391,6 +1392,10 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
          ::PrintLine( SubStr( sAuxSt, 2 ), .T. )
       ENDIF
 
+      IF lInfo .AND. ! Empty( ::oPrint:cDocument )
+         MsgInfo( "Document " + ::oPrint:cDocument + " was created." )
+      ENDIF
+
       // Eject the paper. Needed under DOS. It's better not to send this under Windows.
       /*
       IF ::aReportData[ RP_AEJECT ]
@@ -1418,7 +1423,8 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DoEvents CLASS TReportFormWin
 
-   IF ++ ::nCount% 10 == 0
+   ::nCount ++
+   IF ::nCount % 10 == 0
       DO EVENTS
       ::nCount := 0
    ENDIF
@@ -1563,7 +1569,7 @@ METHOD PrintRecord() CLASS TReportFormWin
          ENDIF
       NEXT
       ASize( aRecordToPrint, nMaxLines )
-      aFill( aRecordToPrint, "" )
+      AFill( aRecordToPrint, "" )
 
       // Load the record in the array to print it
       FOR nCol := 1 TO Len( ::aReportData[ RP_COLUMNS ] )
@@ -1743,18 +1749,18 @@ STATIC FUNCTION Occurs( cSearch, cTarget )
 
    // How many times <cSearch> appears in <cTarget>
 
-   LOCAL nPos, nCount := 0
+   LOCAL nPos, nTimes := 0
 
    DO WHILE ! Empty( cTarget )
       IF ( nPos := At( cSearch, cTarget ) ) # 0
-         nCount ++
+         nTimes ++
          cTarget := SubStr( cTarget, nPos + 1 )
       ELSE
          cTarget := ""
       ENDIF
    ENDDO
 
-   RETURN nCount
+   RETURN nTimes
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD EjectPage() CLASS TReportFormWin
@@ -1837,7 +1843,7 @@ METHOD PrintLine( sLin, lBold ) CLASS TReportFormWin
 METHOD LoadFRM( cFrmFile ) CLASS TReportFormWin
 
    LOCAL nFieldOffset, cFileBuff := Space( SIZE_FILE_BUFF )
-   LOCAL cGroupExp, cSubGroupExp, nColCount, nCount, nFrmHandle, nBytesRead
+   LOCAL cGroupExp, cSubGroupExp, nColCount, nCol, nFrmHandle, nBytesRead
    LOCAL nPointer, nFileError, cOptionByte, aReport[ RP_COUNT ], oError
    LOCAL cDefPath, aPaths, nPathIndex, aHeader, nHeaderIndex, cParamsBuff
    LOCAL aColumn, cType, cFieldsBuff
@@ -1973,7 +1979,7 @@ METHOD LoadFRM( cFrmFile ) CLASS TReportFormWin
       // Columns
       nFieldOffset := 12
       nColCount := Bin2W( SubStr( cParamsBuff, COL_COUNT_OFFSET, 2 ) )
-      FOR nCount := 1 TO nColCount
+      FOR nCol := 1 TO nColCount
          aColumn := Array( RC_COUNT )
          // Column width
          aColumn[ RC_WIDTH ] := Bin2W( SubStr( cFieldsBuff, nFieldOffset + FIELD_WIDTH_OFFSET, 2 ) )
@@ -2011,7 +2017,7 @@ METHOD LoadFRM( cFrmFile ) CLASS TReportFormWin
          AAdd( aReport[ RP_COLUMNS ], aColumn )
          // Next
          nFieldOffset += 12
-      NEXT nCount
+      NEXT nCol
    ENDIF
 
    RETURN aReport
