@@ -19,7 +19,7 @@
   * core\source\h_report.prg
     ! DO REPORT crashes because message _NCOUNT was not found.
   #634
-    * Rename local var nCount to  to improve readability and
+    * Rename local var nCount to improve readability and
       avoid confusion with the data nCount.
   #637
     + Option INFO was added to REPORTFORMWIN to show an informative
