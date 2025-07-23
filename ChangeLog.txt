@@ -14,6 +14,18 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-07-22 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_report.ch
+  * core\source\h_report.prg
+    ! DO REPORT crashes because message _NCOUNT was not found.
+  #634
+    * Rename local var nCount to  to improve readability and
+      avoid confusion with the data nCount.
+  #637
+    + Option INFO was added to REPORTFORMWIN to show an informative
+      dialog when a report is save to a file.
+  #638
+
 2025-07-22 18:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_print.prg
     ! Method TPrintBase:PrintMode returns wrong value.
