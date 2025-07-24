@@ -14,6 +14,12 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-07-24 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_report.ch
+    ! RTE "Variable INFO does not exist" caused by option INFO of
+      REPORTFORMWIN which is not defined properly.
+  #639
+
 2025-07-22 22:30 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\include\i_report.ch
   * core\source\h_report.prg
