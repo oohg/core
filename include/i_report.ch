@@ -137,7 +137,7 @@
             <next>, <rec>, <.rest.>, <.plain.>, <head>, <.noej.>, <.sum.>, ;
             <.nosep.>, <.lselect.>, <.lpreview.>, <.llandscape.>, <npapersize>, ;
             <nres>, <nbin>, <nduplex>, <.lcollate.>, <ncopies>, <.lcolor.>, ;
-            <nscale>, <nlength>, <nwidth>, <cname>, <linfo> )
+            <nscale>, <nlength>, <nwidth>, <cname>, <.linfo.> )
 
 #xcommand DO REPORT FORM <cfilerep> ;
       [ HEADING <cheading> ] ;
