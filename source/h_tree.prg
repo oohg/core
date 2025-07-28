@@ -1191,7 +1191,11 @@ METHOD Events_Notify( wParam, lParam ) CLASS TTree
             lValid := .T.
          ENDIF
       ELSE   // TVE_COLLAPSE
-         lValid := ::DoEvent( ::OnCollapse, "TREEVIEW_ITEMCOLLAPSING", {Item, ::Item( Item )} )
+         IF HB_IsBlock( ::OnCollapse )
+            lValid := ::DoEvent( ::OnCollapse, "OnCollapse", {Item, ::Item( Item )} )
+         ELSE
+            lValid := .T.
+         ENDIF
       ENDIF
       IF HB_ISLOGICAL( lValid ) .AND. ! lValid
          // do not expand or collapse
