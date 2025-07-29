@@ -14,6 +14,15 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-07-29 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\compile.bat
+  * core\compile_MINGW.BAT
+  * core\oohg.hbc
+    ! Compilation under HB30 cancels with message "hbcurl lib not found".
+  #540
+    ! Compilation under HB32 cancels with message "hbcurl lib not found".
+  #642
+
 2025-07-28 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\source\h_tree.prg
     ! Tree control does not collapse its nodes.
