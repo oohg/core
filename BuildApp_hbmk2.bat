@@ -35,7 +35,7 @@ rem
 
    rem *** Set PATH ***
    set "HG_PATH=%PATH%"
-   set "PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%"
+   set "PATH=%HG_CCOMP%\bin;%HG_HRB%\%BIN_HRB%;%PATH%"
 
 :PARSE_SWITCHES
 
