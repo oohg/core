@@ -17,10 +17,7 @@ gui=yes
 libs=oohg_main oohg_hbprinter oohg_miniprint oohg_bostaurus
 
 # harbour's contrib libs
-hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc
 # hbhpdf must precede hbwin and xhb
-hbcs=hbwin
-# caution xhb is a problem
-hbcs=xhb
+hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
 
 #{!hb30}hbcs=hbcurl
