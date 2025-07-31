@@ -102,7 +102,7 @@ PROCEDURE HMG_ZIPFILE( zipfile , afiles , level , block , ovr )
    LOCAL oZip
    LOCAL I
 
-   oZip:=TOleAuto():New( "XStandard.Zip")
+   oZip := TOleAuto():New( "XStandard.Zip")
 
    if ovr == .t.
       if file (zipfile)
