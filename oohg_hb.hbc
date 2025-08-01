@@ -20,4 +20,7 @@ libs=oohg_main oohg_hbprinter oohg_miniprint oohg_bostaurus
 # hbhpdf must precede hbwin and xhb
 hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc hbwin xhb
 
+# mingw extra libs
+{mingw}libs=vfw32
+
 #{!hb30}hbcs=hbcurl
