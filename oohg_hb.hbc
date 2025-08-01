@@ -14,7 +14,7 @@ mt=yes
 gui=yes
 
 # oohg libs
-libs=oohg_main oohg_hbprinter oohg_miniprint oohg_bostaurus
+libs=vfw32 oohg_main oohg_hbprinter oohg_miniprint oohg_bostaurus
 
 # harbour's contrib libs
 hbcs=hbct hbhpdf hbmemio hbmisc hbmzip hbodbc hbtip hbzebra hbziparc rddsql sddodbc
