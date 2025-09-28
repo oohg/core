@@ -775,6 +775,7 @@ PRINTER CONFIGURATION CONSTANTS
 #define ERR_PRINTDLG                                0x00100000
 
 /* printer status codes for _HMG_PRINTER_C_GETSTATUS */
+#ifndef WIN_PRINTER_STATUS_PAUSED
 #define WIN_PRINTER_STATUS_PAUSED                   0x00000001
 #define WIN_PRINTER_STATUS_ERROR                    0x00000002
 #define WIN_PRINTER_STATUS_PENDING_DELETION         0x00000004
@@ -800,6 +801,7 @@ PRINTER CONFIGURATION CONSTANTS
 #define WIN_PRINTER_STATUS_DOOR_OPEN                0x00400000
 #define WIN_PRINTER_STATUS_SERVER_UNKNOWN           0x00800000
 #define WIN_PRINTER_STATUS_POWER_SAVE               0x01000000
+#endif
 
 /* text alignment */
 #ifndef __HBPRN__
