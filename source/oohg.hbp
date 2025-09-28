@@ -19,7 +19,7 @@
 -hbx=..\include\${hb_name}_dyns.hbx
 
 # path to headers files (.ch)
--i..\include
+..\oohg.hbc
 
 # harbour compiler flags
 # this define is needed to handle GT_GUI in Harbour builds
