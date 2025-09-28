@@ -14,8 +14,16 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-09-28 12:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+ * core\source\winprint.prg
+   ! Content was reverted to commit 10f80af of 2019-09-23 to address
+     the missing "Print Preview" icon. TODO: Reintroduce improvements
+     from subsequent commits.
+  * core\include\oohg_dyns.hbx
+    * Updated
+
 2025-09-28 09:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\source\h.report.prg
+ * core\source\h_report.prg
    + Support for handling print errors under xHarbour in
      TReportFormWin:DoReport method.
 

@@ -2,27 +2,30 @@
  * $Id: winprint.prg $
  */
 /*
- * OOHG source code:
+ * ooHG source code:
  * HBPRINTER printing library
  *
- * Copyright 2005-2022 Vicente Guerra <vicente@guerra.com.mx> and contributors of
+ * Copyright 2005-2019 Vicente Guerra <vicente@guerra.com.mx> and contributors of
  * the Object Oriented (x)Harbour GUI (aka OOHG) Project, https://oohg.github.io/
  *
+ * Based upon:
+ * HBPRINT and HBPRINTER libraries
+ * Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
+ * http://rrylko.republika.pl
+ * Original contributions made by
+ * Eduardo Fernandes <modalsist@yahoo.com.br> and
+ * Mitja Podgornik <yamamoto@rocketmail.com>
+ *
  * Portions of this project are based upon:
- *    HBPRINT and HBPRINTER libraries
- *       Copyright 2002 Richard Rylko <rrylko@poczta.onet.pl>
- *    Original contributions made by
- *       Eduardo Fernandes <modalsist@yahoo.com.br>
- *       Mitja Podgornik <yamamoto@rocketmail.com>
  *    "Harbour MiniGUI Extended Edition Library"
- *       Copyright 2005-2022 MiniGUI Team, http://hmgextended.com
+ *       Copyright 2005-2019 MiniGUI Team, http://hmgextended.com
  *    "Harbour GUI framework for Win32"
  *       Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
  *       Copyright 2001 Antonio Linares <alinares@fivetech.com>
  *    "Harbour MiniGUI"
  *       Copyright 2002-2016 Roberto Lopez <mail.box.hmg@gmail.com>
  *    "Harbour Project"
- *       Copyright 1999-2022 Contributors, https://harbour.github.io/
+ *       Copyright 1999-2019 Contributors, https://harbour.github.io/
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -38,7 +41,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file LICENSE.txt. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1335, USA (or download from http://www.gnu.org/licenses/).
+ * Boston, MA 02110-1335,USA (or download from http://www.gnu.org/licenses/).
  *
  * As a special exception, the ooHG Project gives permission for
  * additional uses of the text contained in its release of ooHG.
@@ -78,201 +81,96 @@
    #include "oohg.ch"
 #endif
 
+#ifndef __OOHG__
+#define ArrayRGB_TO_COLORREF(aRGB) RGB( aRGB[1], aRGB[2], aRGB[3] )
+#endif
+
 #define NO_HBPRN_DECLARATION
 #include "winprint.ch"
-
-// For DevCaps
-#define DI_VERT_SIZE          1
-#define DI_HORZ_SIZE          2
-#define DI_VERT_RES           3
-#define DI_HORZ_RES           4
-#define DI_VERT_LOGPIX        5
-#define DI_HORZ_LOGPIX        6
-#define DI_VERT_PHYSIZE       7
-#define DI_HORZ_PHYSIZE       8
-#define DI_VERT_PHYOFFS       9
-#define DI_HORZ_PHYOFFS       10
-#define DI_VERT_FONTSIZE      11
-#define DI_HORZ_FONTSIZE      12
-#define DI_ROWS               13
-#define DI_COLS               14
-#define DI_ORIENTATION        15
-#define DI_TMASCENT           16
-#define DI_PAPERSIZE          17
-
-// For Pages ( ::MetaFiles)
-#define PG_FILE               1
-#define PG_VERT_SIZE          2
-#define PG_HORZ_SIZE          3
-#define PG_VERT_RES           4
-#define PG_HORZ_RES           5
-#define PG_ORIENTATION        6
-#define PG_PAPER_SIZE         7
-
-// For ::aTH
-#define TH_ROW                1
-#define TH_COL                2
-#define TH_HEIGHT             3
-#define TH_WIDTH              4
-#define TH_HWND               5
-
-// For ::aHS
-#define PREVIEW_RECT          1
-#define PREVIEW_RECT_TOP      1, 1
-#define PREVIEW_RECT_LEFT     1, 2
-#define PREVIEW_RECT_BOTTOM   1, 3
-#define PREVIEW_RECT_RIGHT    1, 4
-#define PREVIEW_RECT_HEIGHT   1, 5
-#define PREVIEW_RECT_WIDTH    1, 6
-
-#define PREVIEW_FORM          2
-#define PREVIEW_FORM_TOP      2, 1
-#define PREVIEW_FORM_LEFT     2, 2
-#define PREVIEW_FORM_BOTTOM   2, 3
-#define PREVIEW_FORM_RIGHT    2, 4
-#define PREVIEW_FORM_HEIGHT   2, 5
-#define PREVIEW_FORM_WIDTH    2, 6
-#define PREVIEW_FORM_HWND     2, 7
-
-#define PREVIEW_TB            3
-#define PREVIEW_TB_TOP        3, 1
-#define PREVIEW_TB_LEFT       3, 2
-#define PREVIEW_TB_BOTTOM     3, 3
-#define PREVIEW_TB_RIGHT      3, 4
-#define PREVIEW_TB_HEIGHT     3, 5
-#define PREVIEW_TB_WIDTH      3, 6
-#define PREVIEW_TB_HWND       3, 7
-
-#define PREVIEW_SB            4
-#define PREVIEW_SB_TOP        4, 1
-#define PREVIEW_SB_LEFT       4, 2
-#define PREVIEW_SB_BOTTOM     4, 3
-#define PREVIEW_SB_RIGHT      4, 4
-#define PREVIEW_SB_HEIGHT     4, 5
-#define PREVIEW_SB_WIDTH      4, 6
-#define PREVIEW_SB_HWND       4, 7
-
-#define PREVIEW_PAGE          5
-#define PREVIEW_PAGE_TOP      5, 1
-#define PREVIEW_PAGE_LEFT     5, 2
-#define PREVIEW_PAGE_BOTTOM   5, 3
-#define PREVIEW_PAGE_RIGHT    5, 4
-#define PREVIEW_PAGE_HEIGHT   5, 5
-#define PREVIEW_PAGE_WIDTH    5, 6
-#define PREVIEW_PAGE_HWND     5, 7
-
-#define PREVIEW_IMAGE         6
-#define PREVIEW_IMAGE_TOP     6, 1
-#define PREVIEW_IMAGE_LEFT    6, 2
-#define PREVIEW_IMAGE_BOTTOM  6, 3
-#define PREVIEW_IMAGE_RIGHT   6, 4
-#define PREVIEW_IMAGE_HEIGHT  6, 5
-#define PREVIEW_IMAGE_WIDTH   6, 6
-#define PREVIEW_IMAGE_HWND    6, 7
-
-#define PREVIEW_THUMBS        7
-#define PREVIEW_THUMBS_TOP    7, 1
-#define PREVIEW_THUMBS_LEFT   7, 2
-#define PREVIEW_THUMBS_BOTTOM 7, 3
-#define PREVIEW_THUMBS_RIGHT  7, 4
-#define PREVIEW_THUMBS_HEIGHT 7, 5
-#define PREVIEW_THUMBS_WIDTH  7, 6
-#define PREVIEW_THUMBS_HWND   7, 7
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 CLASS HBPrinter
 
-   DATA AfterPrint                INIT {|| NIL }
-   DATA aHS                       INIT {}
-   DATA aOpisy                    INIT {}
-   DATA aTH                       INIT {}
-   DATA aZoom                     INIT { 0, 0, 0, 0 }
-   DATA BaseDoc                   INIT ""
-   DATA BeforePrint               INIT {|| .T. }
-   DATA BeforePrintCopy           INIT {|| .T. }
-   DATA BinNames                  INIT {}
-   DATA BkColor                   INIT 0xFFFFFF
-   DATA BkMode                    INIT BKMODE_TRANSPARENT
-   DATA Brushes                   INIT { {}, {} }
-   DATA Cargo                     INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-   DATA ClsPreview                INIT .T.
-   DATA CurPage                   INIT 1 PROTECTED
-   DATA DevCaps                   INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
-   DATA DocName                   INIT "HBPRINTER"
-   DATA dx                        INIT 0
-   DATA dy                        INIT 0
-   DATA Error                     INIT 0 READONLY
-   DATA Fonts                     INIT { {}, {}, 0, {} }
-   DATA hData                     INIT 0
-   DATA hDC                       INIT 0
-   DATA hDCRef                    INIT 0 PROTECTED
-   DATA IloscStron                INIT 0              // 'Ilosc Stron' means 'Number of Pages' in polish
-   DATA ImageLists                INIT { {}, {} }
-   DATA InMemory                  INIT .F.
-   DATA lAbsoluteCoords           INIT .F.
-   DATA lEscaped                  INIT .F.
-   DATA lGlobalChanges            INIT .T.
-   DATA lReportError              INIT .F.
-   DATA lReturnRGB                INIT .T.
-   DATA MaxCol                    INIT 0
-   DATA MaxRow                    INIT 0
-   DATA MetaFiles                 INIT {} PROTECTED
-   DATA nCopies                   INIT 1
-   DATA nFromPage                 INIT 1
-   DATA nGroup                    INIT -1
-   DATA NoButtonOptions           INIT .F.
-   DATA NoButtonSave              INIT .F.
-   DATA NotifyOnSave              INIT .F.
-   DATA nPages                    INIT {}
-   DATA nToPage                   INIT 0
-   DATA nWhatToPrint              INIT 0
-   DATA oWinPagePreview           INIT NIL
-   DATA oWinPreview               INIT NIL
-   DATA oWinThumbs                INIT NIL
-   DATA Page                      INIT 1
-   DATA PaperNames                INIT {}
-   DATA Pens                      INIT { {}, {} }
-   DATA PolyFillMode              INIT POLYFILL_ALTERNATE
-   DATA Ports                     INIT {}
-#ifndef NO_GUI
-   DATA PreviewMode               INIT .F.
-#else
-   DATA PreviewMode               INIT .F. PROTECTED
-#endif
-   DATA PreviewRect               INIT { 0, 0, 0, 0 }
-   DATA PreviewScale              INIT 1
-   DATA PrinterDefault            INIT ""
-   DATA PrinterName               INIT ""
-   DATA Printers                  INIT {}
-   DATA Printing                  INIT .F.
-   DATA PrintingEMF               INIT .F. PROTECTED
-   DATA PrintOpt                  INIT 1 PROTECTED
-   DATA Regions                   INIT { {}, {} }
-   DATA Scale                     INIT 1
-   DATA TextColor                 INIT 0
-   DATA Thumbnails                INIT .F.
-   DATA TimeStamp                 INIT ""
-   DATA Units                     INIT 0
-   DATA Version                   INIT 2.48 READONLY
-   DATA ViewportOrg               INIT { 0, 0 }
-
-   DESTRUCTOR Destroy
+   DATA hDC                     INIT 0
+   DATA hDCRef                  INIT 0
+   DATA PrinterName             INIT ""
+   DATA nFromPage               INIT 1
+   DATA nToPage                 INIT 0
+   DATA CurPage                 INIT 1
+   DATA nCopies                 INIT 1
+   DATA nWhatToPrint            INIT 0
+   DATA PrintOpt                INIT 1
+   DATA PrinterDefault          INIT ""
+   DATA Error                   INIT 0
+   DATA PaperNames              INIT {}
+   DATA BinNames                INIT {}
+   DATA DocName                 INIT "HBPRINTER"
+   DATA TextColor               INIT 0
+   DATA BkColor                 INIT 0xFFFFFF
+   DATA BkMode                  INIT BKMODE_TRANSPARENT
+   DATA PolyFillMode            INIT 1
+   DATA Cargo                   INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+   DATA Fonts                   INIT { {}, {}, 0, {} }
+   DATA Brushes                 INIT { {}, {} }
+   DATA Pens                    INIT { {}, {} }
+   DATA Regions                 INIT { {}, {} }
+   DATA ImageLists              INIT { {}, {} }
+   DATA Units                   INIT 0
+   DATA DevCaps                 INIT { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }
+   DATA MaxRow                  INIT 0
+   DATA MaxCol                  INIT 0
+   DATA MetaFiles               INIT {}
+   DATA PreviewMode             INIT .F.
+   DATA Thumbnails              INIT .F.
+   DATA ViewportOrg             INIT { 0, 0 }
+   DATA PreviewRect             INIT { 0, 0, 0, 0 }
+   DATA PrintingEMF             INIT .F.
+   DATA Printing                INIT .F.
+   DATA PreviewScale            INIT 1
+   DATA Printers                INIT {}
+   DATA Ports                   INIT {}
+   DATA iLoscstron              INIT 0
+   DATA nGroup                  INIT -1
+   DATA Page                    INIT 1
+   DATA AtH                     INIT {}
+   DATA dx                      INIT 0
+   DATA dy                      INIT 0
+   DATA aHS                     INIT {}
+   DATA aZoom                   INIT { 0, 0, 0, 0 }
+   DATA Scale                   INIT 1
+   DATA nPages                  INIT {}
+   DATA aOpisy                  INIT {}
+   DATA oWinPreview             INIT NIL
+   DATA oWinPrOpt               INIT NIL
+   DATA oWinPagePreview         INIT NIL
+   DATA oWinThumbs              INIT NIL
+   DATA NotifyOnSave            INIT .F.
+   DATA NoButtonSave            INIT .F.
+   DATA NoButtonOptions         INIT .F.
+   DATA BeforePrint             INIT {|| .T. }
+   DATA AfterPrint              INIT {|| NIL }
+   DATA BeforePrintCopy         INIT {|| .T. }
+   DATA InMemory                INIT .F.
+   DATA TimeStamp               INIT ""
+   DATA BaseDoc                 INIT ""
+   DATA lGlobalChanges          INIT .T.
+   DATA lAbsoluteCoords         INIT .F.
+   DATA hData                   INIT 0
 
    METHOD New
    METHOD SelectPrinter
    METHOD SetDevMode
-   METHOD SetUserMode
    METHOD StartDoc
    METHOD SetPage
    METHOD StartPage
    METHOD EndPage
    METHOD EndDoc
    METHOD SetTextColor
-   METHOD GetTextColor            INLINE ::TextColor
+   METHOD GetTextColor          INLINE ::TextColor
    METHOD SetBkColor
-   METHOD GetBkColor              INLINE ::BkColor
+   METHOD GetBkColor            INLINE ::BkColor
    METHOD SetBkMode
-   METHOD GetBkMode               INLINE ::BkMode
+   METHOD GetBkMode             INLINE ::BkMode
    METHOD DefineImageList
    METHOD DrawImageList
    METHOD DefineBrush
@@ -284,12 +182,11 @@ CLASS HBPrinter
    METHOD DefineFont
    METHOD ModifyFont
    METHOD SelectFont
-   METHOD GetFontNames            INLINE RR_GetFontNames()
    METHOD GetObjByName
    METHOD DrawText
    METHOD TextOut
    METHOD Say
-   METHOD SetCharset( charset )   INLINE RR_SetCharset( charset, ::hData, Self )
+   METHOD SetCharset( charset ) INLINE RR_SetCharset( charset, ::hData, Self )
    METHOD Rectangle
    METHOD RoundRect
    METHOD FillRect
@@ -305,7 +202,6 @@ CLASS HBPrinter
    METHOD PolyBezierTo
    METHOD SetUnits
    METHOD Convert
-   METHOD UnConvert
    METHOD DefineRectRgn
    METHOD DefinePolygonRgn
    METHOD DefineEllipticRgn
@@ -314,7 +210,7 @@ CLASS HBPrinter
    METHOD SelectClipRgn
    METHOD DeleteClipRgn
    METHOD SetPolyFillMode
-   METHOD GetPolyFillMode         INLINE ::PolyFillMode
+   METHOD GetPolyFillMode       INLINE ::PolyFillMode
    METHOD SetViewPortOrg
    METHOD GetViewPortOrg
    METHOD DxColors
@@ -327,31 +223,27 @@ CLASS HBPrinter
    METHOD GetTextAlign
    METHOD Picture
    METHOD BitMap
-   METHOD MoveTo
    METHOD Line
    METHOD LineTo
    METHOD End
    METHOD GetTextExtent
-   METHOD GetTextExtent_MM
    METHOD ReportData
    METHOD InitMessages
-   METHOD BasePageName            INLINE ::BaseDoc
-   METHOD GetVersion              INLINE ::Version
 #ifndef NO_GUI
    METHOD Preview
+   METHOD PrevAdjust
    METHOD PrevClose
    METHOD PrevPrint
    METHOD PrevShow
    METHOD PrevThumb
    METHOD PrintOption
    METHOD SaveMetaFiles
-   METHOD CleanOnPrevClose
 #endif
 
    ENDCLASS
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD New( cLang, cFolder ) CLASS HBPrinter
+METHOD New( cLang ) CLASS HBPrinter
 
    LOCAL aPrnPort
 
@@ -366,18 +258,8 @@ METHOD New( cLang, cFolder ) CLASS HBPrinter
    ELSE
       ::Error := 1
    ENDIF
-   IF Empty( cFolder )
-      cFolder := RR_GetTempFolder()
-   ELSE
-      IF ! Right( cFolder, 1 ) == "\"
-         cFolder += "\"
-      ENDIF
-      IF ! File( cFolder + "NUL" )
-         cFolder := RR_GetTempFolder()
-      ENDIF
-   ENDIF
    ::TimeStamp := TToS( DateTime() )
-   ::BaseDoc := cFolder + ::TimeStamp + "_HBPrinter_preview_"
+   ::BaseDoc := RR_GetTempFolder() + '\' + ::TimeStamp + "_HBPrinter_preview_"
    ::InitMessages( cLang )
 
    RETURN Self
@@ -385,7 +267,7 @@ METHOD New( cLang, cFolder ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
 
-   LOCAL txtp := "", txtb := "", t := { 0, 0, 1, 0 }
+   LOCAL txtp := "", txtb := "", t := { 0, 0, 1, .T. }
 
    IF cPrinter == NIL
       ::hDCRef := RR_GetDC( ::PrinterDefault, ::hData )
@@ -406,7 +288,11 @@ METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
    ENDIF
    IF HB_ISLOGICAL( lPrev )
       #ifndef NO_GUI
-         ::PreviewMode := lPrev
+         IF lprev
+            ::PreviewMode := .T.
+         ENDIF
+      #else
+         ::PreviewMode := .F.
       #endif
    ENDIF
    IF ::hDC == 0
@@ -436,50 +322,17 @@ METHOD SelectPrinter( cPrinter, lPrev ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetDevMode( what, newvalue ) CLASS HBPrinter
 
-   LOCAL uRet
+   ::hDCRef := RR_SetDevMode( what, newvalue, ::lGlobalChanges, ::hData )
+   RR_GetDeviceCaps( ::DevCaps, ::Fonts[ 3 ], ::hData )
+   ::SetUnits( ::Units )
 
-   STATIC aWhat := { DM_ORIENTATION, DM_PAPERSIZE, DM_SCALE, DM_COPIES, DM_DEFAULTSOURCE, DM_PRINTQUALITY, DM_COLOR, DM_DUPLEX, DM_COLLATE, DM_PAPERLENGTH, DM_PAPERWIDTH }
-
-   uRet := RR_SetDevMode( what, newvalue, ::lGlobalChanges, ::hData )
-   IF uRet == NIL
-      IF ::lReportError
-         MsgInfo( ::aOpisy[ 37 ] + ::aOpisy[ 38 + aScan( aWhat, uRet ) ], "" )
-      ENDIF
-      ::Error := 1
-   ELSE
-      RR_GetDeviceCaps( ::DevCaps, ::Fonts[ 3 ], ::hData )
-      ::SetUnits( ::Units )
-      ::Error := 0
-   ENDIF
-
-   RETURN ::Error
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SetUserMode( what, value, value2 ) CLASS HBPrinter
-
-   LOCAL uRet
-
-   uRet := RR_SetUserMode( what, value, value2, ::hData )
-   IF uRet == NIL
-      IF ::lReportError
-         MsgInfo( ::aOpisy[ 37 ] + ::aOpisy[ 38 + aScan( what, what ) ], "" )
-      ENDIF
-      ::Error := 1
-   ELSE
-      RR_GetDeviceCaps( ::DevCaps, ::Fonts[ 3 ], ::hData )
-      ::SetUnits( ::Units )
-      ::Error := 0
-   ENDIF
-
-   RETURN ::Error
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD StartDoc( cDocName ) CLASS HBPrinter
 
    ::Printing := .T.
-   IF HB_ISCHAR( cDocName )
-      ::DocName := cDocName
-   ENDIF
+   ::DocName := iif( HB_ISCHAR( cDocName ), cDocName, "HBPRINTER" )
    IF ! ::PreviewMode
       RR_StartDoc( ::DocName, ::hData )
    ENDIF
@@ -510,10 +363,10 @@ METHOD StartPage() CLASS HBPrinter
 
    IF ::PreviewMode
       IF ::InMemory
-         ::hDC := RR_CreatEMFile( "", ::hData )
+         ::hDC := RR_CreatEMFile( ::hData )
       ELSE
-         ::hDC := RR_CreatEMFile( ::BaseDoc + AllTrim( Str( ::CurPage ) ) + '.emf', ::hData )
-         ::CurPage ++
+         ::hDC := RR_CreateFile( ::BaseDoc + AllTrim( StrZero( ::CurPage, 4 ) ) + '.emf', ::hData )
+         ::CurPage := ::CurPage + 1
       ENDIF
    ELSE
       RR_StartPage( ::hData )
@@ -536,17 +389,11 @@ METHOD EndPage() CLASS HBPrinter
 
    IF ::PreviewMode
       IF ::InMemory
-         AAdd( ::MetaFiles, { RR_ClosEMFile( ::hData ), ;
-                              ::DevCaps[ DI_VERT_SIZE ], ::DevCaps[ DI_HORZ_SIZE ], ;
-                              ::DevCaps[ DI_VERT_RES ], ::DevCaps[ DI_HORZ_RES ], ;
-                              ::DevCaps[ DI_ORIENTATION ], ::DevCaps[ DI_PAPERSIZE ] } )
+         AAdd( ::MetaFiles, { RR_ClosEMFile( ::hData ), ::DevCaps[ 1 ], ::DevCaps[ 2 ], ::DevCaps[ 3 ], ::DevCaps[ 4 ], ::DevCaps[ 15 ], ::DevCaps[ 17 ] } )
       ELSE
          RR_CloseFile( ::hData )
-         AAdd( ::MetaFiles, { ::BaseDoc + AllTrim( Str( ::CurPage - 1 ) ) + '.emf', ;
-                              ::DevCaps[ DI_VERT_SIZE ], ::DevCaps[ DI_HORZ_SIZE ], ;
-                              ::DevCaps[ DI_VERT_RES ], ::DevCaps[ DI_HORZ_RES ], ;
-                              ::DevCaps[ DI_ORIENTATION ], ::DevCaps[ DI_PAPERSIZE ] } )
-      ENDIF
+         AAdd( ::MetaFiles, { ::BaseDoc + StrZero( ::CurPage - 1, 4 ) + '.emf', ::DevCaps[ 1 ], ::DevCaps[ 2 ], ::DevCaps[ 3 ], ::DevCaps[ 4 ], ::DevCaps[ 15 ], ::DevCaps[ 17 ] } )
+      END
    ELSE
       RR_EndPage( ::hData )
    ENDIF
@@ -563,11 +410,10 @@ METHOD EndDoc( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
-   IF ::PreviewMode
 #ifndef NO_GUI
-      ::Preview( cParent, lWait, lSize )
+   ::Preview( cParent, lWait, lSize )
 #endif
-   ELSE
+   IF ! ::PreviewMode
       IF lWait
          MsgInfo( ::aOpisy[ 31 ], "" )
       ENDIF
@@ -620,7 +466,7 @@ METHOD SetBkMode( nmode ) CLASS HBPrinter
    LOCAL lret := ::BkMode
 
    ::BkMode := nmode
-   ::Error := iif( RR_SetBkMode( nmode, ::hData ) == 0, 1, 0 )
+   RR_SetBkMode( nmode, ::hData )
 
    RETURN lret
 
@@ -634,9 +480,9 @@ METHOD DefineBrush( defname, lstyle, lcolor, lhatch ) CLASS HBPrinter
          lcolor := RR_SetRGB( lcolor[ 1 ], lcolor[ 2 ], lcolor[ 3 ] )
       ENDIF
 
-      lstyle := iif( lstyle == NIL, BS_NULL, lstyle )
-      lcolor := iif( lcolor == NIL, 0xFFFFFF, lcolor )
-      lhatch := iif( lhatch == NIL, HS_HORIZONTAL, lhatch )
+   lstyle := if( lstyle == NIL, BS_NULL, lstyle )
+      lcolor := if( lcolor == NIL, 0xFFFFFF, lcolor )
+      lhatch := if( lhatch == NIL, HS_HORIZONTAL, lhatch )
       AAdd( ::Brushes[ 1 ], RR_CreateBrush( lstyle, lcolor, lhatch ) )
       AAdd( ::Brushes[ 2 ], Upper( AllTrim( defname ) ) )
    ENDIF
@@ -673,14 +519,14 @@ METHOD ModifyBrush( defname, lstyle, lcolor, lhatch ) CLASS HBPrinter
       ::Error := 1
       RETURN NIL
    ENDIF
-
    lstyle := if( lstyle == NIL, -1, lstyle )
+
    IF HB_ISARRAY ( lcolor )
       lcolor := RR_SetRGB( lcolor[ 1 ], lcolor[ 2 ], lcolor[ 3 ] )
    ENDIF
+
    lcolor := if( lcolor == NIL, -1, lcolor )
    lhatch := if( lhatch == NIL, -1, lhatch )
-
    ::Brushes[ 1, lpos ] := RR_ModifyBrush( lhand, lstyle, lcolor, lhatch )
    IF lhand == ::Brushes[ 1, 1 ]
       ::SelectBrush( ::Brushes[ 2, lpos ] )
@@ -697,10 +543,9 @@ METHOD DefinePen( defname, lstyle, lwidth, lcolor ) CLASS HBPrinter
       IF HB_ISARRAY ( lcolor )
          lcolor := RR_SetRGB( lcolor[ 1 ], lcolor[ 2 ], lcolor[ 3 ] )
       ENDIF
-      lstyle := iif( lstyle == NIL, PS_SOLID, lstyle )
-      lcolor := iif( lcolor == NIL, 0xFFFFFF, lcolor )
-      lwidth := iif( lwidth == NIL, 0, lwidth )
-
+      lstyle := if( lstyle == NIL, PS_SOLID, lstyle )
+      lcolor := if( lcolor == NIL, 0xFFFFFF, lcolor )
+      lwidth := if( lwidth == NIL, 0, lwidth )
       AAdd( ::Pens[ 1 ], RR_CreatePen( lstyle, lwidth, lcolor ) )
       AAdd( ::Pens[ 2 ], Upper( AllTrim( defname ) ) )
    ENDIF
@@ -727,12 +572,13 @@ METHOD ModifyPen( defname, lstyle, lwidth, lcolor ) CLASS HBPrinter
    ENDIF
 
    lstyle := if( lstyle == NIL, -1, lstyle )
+
    IF HB_ISARRAY ( lcolor )
       lcolor := RR_SetRGB( lcolor[ 1 ], lcolor[ 2 ], lcolor[ 3 ] )
    ENDIF
+
    lcolor := iif( lcolor == NIL, -1, lcolor )
    lwidth := iif( lwidth == NIL, -1, lwidth )
-
    ::Pens[ 1, lpos ] := RR_ModifyPen( lhand, lstyle, lwidth, lcolor )
    IF lhand == ::Pens[ 1, 1 ]
       ::SelectPen( ::Pens[ 2, lpos ] )
@@ -879,17 +725,17 @@ METHOD SetUnits( newvalue, r, c, lAbsolute ) CLASS HBPrinter
    ::Units := if( newvalue < 0 .OR. newvalue > 4, 0, newvalue )
    DO CASE
    CASE ::Units == 0
-      ::MaxRow := ::DevCaps[ DI_ROWS ] - 1
-      ::MaxCol := ::DevCaps[ DI_COLS ] - 1
+      ::MaxRow := ::DevCaps[ 13 ] - 1
+      ::MaxCol := ::DevCaps[ 14 ] - 1
    CASE ::Units == 1
-      ::MaxRow := ::DevCaps[ DI_VERT_SIZE ] - 1
-      ::MaxCol := ::DevCaps[ DI_HORZ_SIZE ] - 1
+      ::MaxRow := ::DevCaps[ 1 ] - 1
+      ::MaxCol := ::DevCaps[ 2 ] - 1
    CASE ::Units == 2
-      ::MaxRow := ( ::DevCaps[ DI_VERT_SIZE ] / 25.4 ) - 1
-      ::MaxCol := ( ::DevCaps[ DI_HORZ_SIZE ] / 25.4 ) - 1
+      ::MaxRow := ( ::DevCaps[ 1 ] / 25.4 ) - 1
+      ::MaxCol := ( ::DevCaps[ 2 ] / 25.4 ) - 1
    CASE ::Units == 3
-      ::MaxRow := ::DevCaps[ DI_VERT_RES ]
-      ::MaxCol := ::DevCaps[ DI_HORZ_RES ]
+      ::MaxRow := ::DevCaps[ 3 ]
+      ::MaxCol := ::DevCaps[ 4 ]
    CASE ::Units == 4
       IF HB_ISNUMERIC( r )
          ::MaxRow := r - 1
@@ -910,48 +756,22 @@ METHOD Convert( arr, lsize ) CLASS HBPrinter
    LOCAL aret := AClone( arr )
 
    DO CASE
-   CASE ::Units == 0   // ROWCOL
-      aret[ 1 ] := arr[ 1 ] * ::DevCaps[ DI_VERT_FONTSIZE ]
-      aret[ 2 ] := arr[ 2 ] * ::DevCaps[ DI_HORZ_FONTSIZE ]
-   CASE ::Units == 3   // PIXEL
-   CASE ::Units == 4   // ROWS   COLS
-      aret[ 1 ] := arr[ 1 ] * ::DevCaps[ DI_VERT_RES ] / ( ::MaxRow + 1 )
-      aret[ 2 ] := arr[ 2 ] * ::DevCaps[ DI_HORZ_RES ] / ( ::MaxCol + 1 )
-   CASE ::Units == 1   // MM
-      aret[ 1 ] := arr[ 1 ] * ::DevCaps[ DI_VERT_LOGPIX ] / 25.4 - iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_VERT_PHYOFFS ], 0 )
-      aret[ 2 ] := arr[ 2 ] * ::DevCaps[ DI_HORZ_LOGPIX ] / 25.4 - iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_HORZ_PHYOFFS ], 0 )
-   CASE ::Units == 2   // INCHES
-      aret[ 1 ] := arr[ 1 ] * ::DevCaps[ DI_VERT_LOGPIX ] - iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_VERT_PHYOFFS ], 0 )
-      aret[ 2 ] := arr[ 2 ] * ::DevCaps[ DI_HORZ_LOGPIX ] - iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_HORZ_PHYOFFS ], 0 )
+   CASE ::Units == 0
+      aret[ 1 ] := ( arr[ 1 ] ) * ::DevCaps[ 11 ]
+      aret[ 2 ] := ( arr[ 2 ] ) * ::DevCaps[ 12 ]
+   CASE ::Units == 3
+   CASE ::Units == 4
+      aret[ 1 ] := ( arr[ 1 ] ) * ::DevCaps[ 3 ] / ( ::MaxRow + 1 )
+      aret[ 2 ] := ( arr[ 2 ] ) * ::DevCaps[ 4 ] / ( ::MaxCol + 1 )
+   CASE ::Units == 1
+      aret[ 1 ] := ( arr[ 1 ] ) * ::DevCaps[ 5 ] / 25.4 - if( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ 9 ], 0 )
+      aret[ 2 ] := ( arr[ 2 ] ) * ::DevCaps[ 6 ] / 25.4 - if( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ 10 ], 0 )
+   CASE ::Units == 2
+      aret[ 1 ] := ( arr[ 1 ] ) * ::DevCaps[ 5 ] - if( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ 9 ], 0 )
+      aret[ 2 ] := ( arr[ 2 ] ) * ::DevCaps[ 6 ] - if( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ 10 ], 0 )
    OTHERWISE
-      aret[ 1 ] := arr[ 1 ] * ::DevCaps[ DI_VERT_FONTSIZE ]
-      aret[ 2 ] := arr[ 2 ] * ::DevCaps[ DI_HORZ_FONTSIZE ]
-   ENDCASE
-
-   RETURN aret
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD UnConvert( arr, lsize ) CLASS HBPrinter
-
-   LOCAL aret := AClone( arr )
-
-   DO CASE
-   CASE ::Units == 0   // ROWCOL
-      aret[ 1 ] := Int( arr[ 1 ] / ::DevCaps[ DI_VERT_FONTSIZE ] )
-      aret[ 2 ] := Int( arr[ 2 ] / ::DevCaps[ DI_HORZ_FONTSIZE ] )
-   CASE ::Units == 3   // PIXEL
-   CASE ::Units == 4   // ROWS   COLS
-      aret[ 1 ] := Int( arr[ 1 ] / ::DevCaps[ DI_VERT_RES ] * ( ::MaxRow + 1 ) )
-      aret[ 2 ] := Int( arr[ 2 ] / ::DevCaps[ DI_HORZ_RES ] * ( ::MaxCol + 1 ) )
-   CASE ::Units == 1   // MM
-      aret[ 1 ] := ( arr[ 1 ] + iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_VERT_PHYOFFS ], 0 ) ) / ::DevCaps[ DI_VERT_LOGPIX ] * 25.4
-      aret[ 2 ] := ( arr[ 2 ] + iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_HORZ_PHYOFFS ], 0 ) ) / ::DevCaps[ DI_HORZ_LOGPIX ] * 25.4
-   CASE ::Units == 2   // INCHES
-      aret[ 1 ] := ( arr[ 1 ] + iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_VERT_PHYOFFS ], 0 ) ) / ::DevCaps[ DI_VERT_LOGPIX ]
-      aret[ 2 ] := ( arr[ 2 ] + iif( ! ::lAbsoluteCoords .AND. lsize == NIL, ::DevCaps[ DI_HORZ_PHYOFFS ], 0 ) ) / ::DevCaps[ DI_HORZ_LOGPIX ]
-   OTHERWISE
-      aret[ 1 ] := Int( arr[ 1 ] / ::DevCaps[ DI_VERT_FONTSIZE ] )
-      aret[ 2 ] := Int( arr[ 2 ] / ::DevCaps[ DI_HORZ_FONTSIZE ] )
+      aret[ 1 ] := ( arr[ 1 ] ) * ::DevCaps[ 11 ]
+      aret[ 2 ] := ( arr[ 2 ] ) * ::DevCaps[ 12 ]
    ENDCASE
 
    RETURN aret
@@ -967,20 +787,24 @@ METHOD DrawText( row, col, torow, tocol, txt, style, defname, lNoWordBreak ) CLA
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   RR_DrawText( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), txt, style, lhf, lNoWordBreak, ::hData )
 
-   RETURN( ::Error := RR_DrawText( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), txt, style, lhf, lNoWordBreak, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD TextOut( row, col, txt, defname ) CLASS HBPrinter
 
    LOCAL lhf := ::GetObjByName( defname, "F" )
 
-   RETURN ( ::Error := RR_TextOut( txt, ::Convert( { row, col } ), lhf, NumAt( " ", txt ), ::hData ) )
+   RR_TextOut( txt, ::Convert( { row, col } ), lhf, RAt( " ", txt ), ::hData )
+
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Say( row, col, txt, defname, lcolor, lalign ) CLASS HBPrinter
 
-   LOCAL atxt := {}, i, lhf := ::GetObjByName( defname, "F" ), oldalign, apos, lError := .F.
+   LOCAL atxt := {}, i, lhf := ::GetObjByName( defname, "F" ), oldalign
+   LOCAL apos
 
    DO CASE
    CASE HB_ISNUMERIC( txt ) ;  AAdd( atxt, Str( txt ) )
@@ -1005,36 +829,33 @@ METHOD Say( row, col, txt, defname, lcolor, lalign ) CLASS HBPrinter
       RR_SetTextAlign( lalign, ::hData )
    ENDIF
    FOR i := 1 TO Len( atxt )
-      IF RR_TextOut( atxt[ i ], apos, lhf, NumAt( " ", atxt[ i ] ), ::hData ) == 1
-         lError := .T.
-      ENDIF
-      apos[ 1 ] += ::DevCaps[ DI_VERT_FONTSIZE ]
+      RR_TextOut( atxt[ i ], apos, lhf, RAt( " ", atxt[ i ] ), ::hData )
+      apos[ 1 ] += ::DevCaps[ 11 ]
    NEXT
    IF lalign <> NIL
       RR_SetTextAlign( oldalign, ::hData )
    ENDIF
+
    IF lcolor <> NIL
       RR_SetTextColor( ::TextColor, ::hData )
    ENDIF
 
-   RETURN ( ::Error := iif( lError, 1, 0 ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DefineImageList( defname, cpicture, nicons ) CLASS HBPrinter
 
-   LOCAL lhi := ::GetObjByName( defname, "I" ), w := 0, h := 0, hand, lError := .F.
+   LOCAL lhi := ::GetObjByName( defname, "I" ), w := 0, h := 0, hand
 
    IF lhi == 0
       hand := RR_CreateImageList( cpicture, nicons, @w, @h )
       IF hand <> 0 .AND. w > 0 .AND. h > 0
          AAdd( ::ImageLists[ 1 ], { hand, nicons, w, h } )
          AAdd( ::ImageLists[ 2 ], Upper( AllTrim( defname ) ) )
-      ELSE
-         lError := .T.
       ENDIF
    ENDIF
 
-   RETURN ( ::Error := iif( lError, 1, 0 ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD DrawImageList( defname, nicon, row, col, torow, tocol, lstyle, color ) CLASS HBPrinter
@@ -1044,8 +865,8 @@ METHOD DrawImageList( defname, nicon, row, col, torow, tocol, lstyle, color ) CL
    IF Empty( lhi )
       RETURN NIL
    ENDIF
-   IF color == NIL
-      color := -1
+   IF COLOR == NIL
+      COLOR := -1
    ENDIF
    IF torow == NIL
       torow := ::MaxRow
@@ -1053,8 +874,9 @@ METHOD DrawImageList( defname, nicon, row, col, torow, tocol, lstyle, color ) CL
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_DrawImageList( lhi[ 1 ], nicon, ::Convert( { row, col } ), ::Convert( { torow - row, tocol - col } ), lhi[ 3 ], lhi[ 4 ], lstyle, COLOR, ::hData )
 
-   RETURN ( ::Error := RR_DrawImageList( lhi[ 1 ], nicon, ::Convert( { row, col } ), ::Convert( { torow - row, tocol - col } ), lhi[ 3 ], lhi[ 4 ], lstyle, color, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Rectangle( row, col, torow, tocol, defpen, defbrush ) CLASS HBPrinter
@@ -1067,8 +889,9 @@ METHOD Rectangle( row, col, torow, tocol, defpen, defbrush ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Rectangle( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, lhb, ::hData )
 
-   RETURN( ::Error := RR_Rectangle( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FrameRect( row, col, torow, tocol, defbrush ) CLASS HBPrinter
@@ -1081,8 +904,9 @@ METHOD FrameRect( row, col, torow, tocol, defbrush ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_FrameRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhb, ::hData )
 
-   RETURN ( ::Error := RR_FrameRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD RoundRect( row, col, torow, tocol, widthellipse, heightellipse, defpen, defbrush ) CLASS HBPrinter
@@ -1101,8 +925,9 @@ METHOD RoundRect( row, col, torow, tocol, widthellipse, heightellipse, defpen, d
    IF heightellipse == NIL
       heightellipse := 0
    ENDIF
+   ::Error := RR_RoundRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { widthellipse, heightellipse } ), lhp, lhb, ::hData )
 
-   RETURN ( ::Error := RR_RoundRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { widthellipse, heightellipse } ), lhp, lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD FillRect( row, col, torow, tocol, defbrush ) CLASS HBPrinter
@@ -1115,8 +940,9 @@ METHOD FillRect( row, col, torow, tocol, defbrush ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_FillRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhb, ::hData )
 
-   RETURN ( ::Error := RR_FillRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InvertRect( row, col, torow, tocol ) CLASS HBPrinter
@@ -1127,8 +953,9 @@ METHOD InvertRect( row, col, torow, tocol ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_InvertRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::hData )
 
-   RETURN ( ::Error := RR_InvertRect( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Ellipse( row, col, torow, tocol, defpen, defbrush ) CLASS HBPrinter
@@ -1141,8 +968,9 @@ METHOD Ellipse( row, col, torow, tocol, defpen, defbrush ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Ellipse( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, lhb, ::hData )
 
-   RETURN ( ::Error := RR_Ellipse( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Arc( row, col, torow, tocol, rowsarc, colsarc, rowearc, colearc, defpen ) CLASS HBPrinter
@@ -1155,8 +983,9 @@ METHOD Arc( row, col, torow, tocol, rowsarc, colsarc, rowearc, colearc, defpen )
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Arc( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowsarc, colsarc } ), ::Convert( { rowearc, colearc } ), lhp, ::hData )
 
-   RETURN ( ::Error := RR_Arc( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowsarc, colsarc } ), ::Convert( { rowearc, colearc } ), lhp, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ArcTo( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen ) CLASS HBPrinter
@@ -1169,8 +998,9 @@ METHOD ArcTo( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_ArcTo( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, ::hData )
 
-   RETURN ( ::Error := RR_ArcTo( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Chord( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen, defbrush ) CLASS HBPrinter
@@ -1183,8 +1013,9 @@ METHOD Chord( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Chord( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, lhb, ::hData )
 
-   RETURN ( ::Error := RR_Chord( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Pie( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen, defbrush ) CLASS HBPrinter
@@ -1197,8 +1028,9 @@ METHOD Pie( row, col, torow, tocol, rowrad1, colrad1, rowrad2, colrad2, defpen, 
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Pie( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, lhb, ::hData )
 
-   RETURN ( ::Error := RR_Pie( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), ::Convert( { rowrad1, colrad1 } ), ::Convert( { rowrad2, colrad2 } ), lhp, lhb, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Polygon( apoints, defpen, defbrush, style ) CLASS HBPrinter
@@ -1207,8 +1039,9 @@ METHOD Polygon( apoints, defpen, defbrush, style ) CLASS HBPrinter
    LOCAL lhp := ::GetObjByName( defpen, "P" ), lhb := ::GetObjByName( defbrush, "B" )
 
    AEval( apoints, {| x | temp := ::Convert( x ), AAdd( apx, temp[ 2 ] ), AAdd( apy, temp[ 1 ] ) } )
+   ::Error := RR_Polygon( apx, apy, lhp, lhb, style, ::hData )
 
-   RETURN ( ::Error := RR_Polygon( apx, apy, lhp, lhb, style, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PolyBezier( apoints, defpen ) CLASS HBPrinter
@@ -1217,8 +1050,9 @@ METHOD PolyBezier( apoints, defpen ) CLASS HBPrinter
    LOCAL lhp := ::GetObjByName( defpen, "P" )
 
    AEval( apoints, {| x | temp := ::Convert( x ), AAdd( apx, temp[ 2 ] ), AAdd( apy, temp[ 1 ] ) } )
+   ::Error := RR_PolyBezier( apx, apy, lhp, ::hData )
 
-   RETURN ( ::Error := RR_PolyBezier( apx, apy, lhp, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PolyBezierTo( apoints, defpen ) CLASS HBPrinter
@@ -1228,16 +1062,9 @@ METHOD PolyBezierTo( apoints, defpen ) CLASS HBPrinter
 
    AEval( apoints, {| x | temp := ::Convert( x ), AAdd( apx, temp[ 2 ] ), AAdd( apy, temp[ 1 ] ) } )
 
-   RETURN ( ::Error := RR_PolyBezierTo( apx, apy, lhp, ::hData ) )
+   ::Error := RR_PolyBezierTo( apx, apy, lhp, ::hData )
 
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD MoveTo( row, col ) CLASS HBPrinter
-
-   LOCAL aPrevious := { NIL, NIL }
-
-   ::Error := RR_MoveTo( ::Convert( { row, col } ), ::hData, aPrevious )
-
-   RETURN ::UnConvert( aPrevious )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Line( row, col, torow, tocol, defpen ) CLASS HBPrinter
@@ -1250,33 +1077,27 @@ METHOD Line( row, col, torow, tocol, defpen ) CLASS HBPrinter
    IF tocol == NIL
       tocol := ::MaxCol
    ENDIF
+   ::Error := RR_Line( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, ::hData )
 
-   RETURN ( ::Error := RR_Line( ::Convert( { row, col } ), ::Convert( { torow, tocol } ), lhp, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD LineTo( row, col, defpen ) CLASS HBPrinter
 
    LOCAL lhp := ::GetObjByName( defpen, "P" )
 
-   RETURN ( ::Error := RR_LineTo( ::Convert( { row, col } ), lhp, ::hData ) )
+   ::Error := RR_LineTo( ::Convert( { row, col } ), lhp, ::hData )
+
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetTextExtent( ctext, apoint, deffont ) CLASS HBPrinter
 
    LOCAL lhf := ::GetObjByName( deffont, "F" )
 
-   RETURN ( ::Error := RR_GetTextExtent( ctext, apoint, lhf, ::hData ) )
+   ::Error := RR_GetTextExtent( ctext, apoint, lhf, ::hData )
 
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD GetTextExtent_MM( ctext, apoint, deffont ) CLASS HBPrinter
-
-   LOCAL lhf := ::GetObjByName( deffont, "F" )
-
-   ::Error = RR_GetTextExtent( ctext, apoint, lhf, ::hData )
-   apoint[ 1 ] := 25.4 * apoint[ 1 ] / ::DevCaps[ DI_VERT_LOGPIX ]
-   apoint[ 2 ] := 25.4 * apoint[ 2 ] / ::DevCaps[ DI_HORZ_LOGPIX ]
-
-   RETURN ::Error
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetObjByName( defname, what, retpos ) CLASS HBPrinter
@@ -1412,46 +1233,48 @@ METHOD SetViewPortOrg( row, col ) CLASS HBPrinter
    row := if( row <> NIL, row, 0 )
    col := if( col <> NIL, col, 0 )
    ::ViewportOrg := ::Convert( { row, col } )
+   RR_SetViewportOrg( ::ViewportOrg, ::hData )
 
-   RETURN ( ::Error := RR_SetViewportOrg( ::ViewportOrg, ::hData ) )
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetViewPortOrg() CLASS HBPrinter
 
-   RETURN ( ::Error := RR_GetViewportOrg( ::ViewportOrg, ::hData ) )
+   RR_GetViewportOrg( ::ViewportOrg, ::hData )
 
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-PROCEDURE Destroy() CLASS HBPrinter
-
-   ::End()
-
-   RETURN
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD End() CLASS HBPrinter
 
+   LOCAL n, l
+
    IF ::PreviewMode
-      IF ! ::InMemory
-         AEval( ::MetaFiles, {| x | FErase( x[ PG_FILE ] ) } )
-      ENDIF
       ::MetaFiles := {}
+      IF ! ::InMemory
+         l := ::CurPage - 1
+         FOR n := 1 TO l
+            FErase( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' )
+         NEXT
+      ENDIF
+   ENDIF
+   IF ::hDCRef # 0
+      RR_ResetPrinter( ::hData )
+      RR_DeleteDC( ::hDCRef, ::hData )
    ENDIF
    RR_DeleteObjects( ::Fonts[ 1 ] )
    RR_DeleteObjects( ::Brushes[ 1 ] )
    RR_DeleteObjects( ::Pens[ 1 ] )
    RR_DeleteObjects( ::Regions[ 1 ] )
    RR_DeleteImageLists( ::ImageLists[ 1 ] )
-   IF ::hData # 0
-      IF ::hDCRef # 0
-         RR_DeleteDC( ::hData )
-        ::hDCRef := 0
-      ENDIF
-      RR_ResetPrinter( ::hData )
-      RR_Finish( ::hData )
-      ::hData := 0
-   ENDIF
+   RR_Finish( ::hData )
+   ::hData := NIL
    IF HB_ISOBJECT( ::oWinPreview )
       ::PrevClose()
+   ENDIF
+   IF HB_ISOBJECT( ::oWinPrOpt )
+      ::oWinPrOpt:Release()
+      ::oWinPrOpt := NIL
    ENDIF
    ::BeforePrint := NIL
    ::AfterPrint := NIL
@@ -1613,7 +1436,7 @@ METHOD DxColors( uPar ) CLASS HBPrinter
        nColor := aColors[ uPar, 2 ]
    ENDIF
 
-   RETURN iif( ::lReturnRGB, nColor % 0xff000000, nColor )
+   RETURN nColor
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetRGB( red, green, blue ) CLASS HBPrinter
@@ -1623,21 +1446,14 @@ METHOD SetRGB( red, green, blue ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetTextCharExtra( col ) CLASS HBPrinter
 
-   LOCAL p1 := ::Convert( { 0, 0 } ), p2 := ::Convert( { 0, col } ), nRet
+   LOCAL p1 := ::Convert( { 0, 0 } ), p2 := ::Convert( { 0, col } )
 
-   nRet := RR_SetTextCharExtra( p2[ 2 ] - p1[ 2 ], ::hData )
-   ::Error := iif( nRet == 0x80000000, 1, 0 )
-
-   RETURN nRet
+   RETURN RR_SetTextCharExtra( p2[ 2 ] - p1[ 2 ], ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetTextCharExtra() CLASS HBPrinter
 
-   LOCAL nRet := RR_GetTextCharExtra( ::hData )
-
-   ::Error := iif( nRet == 0x80000000, 1, 0 )
-
-   RETURN nRet
+   RETURN RR_GetTextCharExtra( ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetTextJustification( col ) CLASS HBPrinter
@@ -1654,67 +1470,56 @@ METHOD GetTextJustification() CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD SetTextAlign( style ) CLASS HBPrinter
 
-   LOCAL nRet := RR_SetTextAlign( style, ::hData )
-
-   ::Error := iif( nRet == GDI_ERROR, 1, 0 )
-
-   RETURN nRet
+   RETURN RR_SetTextAlign( style, ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD GetTextAlign() CLASS HBPrinter
 
-   LOCAL nRet := RR_GetTextAlign( ::hData )
-
-   ::Error := iif( nRet == GDI_ERROR, 1, 0 )
-
-   RETURN nRet
+   RETURN RR_GetTextAlign( ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Picture( row, col, height, width, cpicture, exth, extw, lImageSize ) CLASS HBPrinter
+METHOD Picture( row, col, torow, tocol, cpicture, extrow, extcol, lImageSize ) CLASS HBPrinter
 
-   LOCAL lp1, lp2, lp3
+   LOCAL lp1 := ::Convert( { row, col } ), lp2, lp3
 
-   lp1 := ::Convert( { row, col } )
+   IF torow == NIL
+      torow := ::MaxRow   // height
+   ENDIF
+   IF tocol == NIL
+      tocol := ::MaxCol   // width
+   ENDIF
+   lp2 := ::Convert( { torow, tocol }, 1 )
+   IF extrow == NIL
+      extrow := 0   // height of the 'extension': to replicate the image
+   ENDIF
+   IF extcol == NIL
+      extcol := 0   // width of the 'extension': to replicate the image
+   ENDIF
+   lp3 := ::Convert( { extrow, extcol } )
 
-   IF height == NIL
-      height := ::MaxRow
-   ENDIF
-   IF width == NIL
-      width := ::MaxCol
-   ENDIF
-   lp2 := ::Convert( { height, width }, 1 )
-   IF exth == NIL
-      exth := 0   // height of the 'extension' to fill with image replicas
-   ENDIF
-   IF extw == NIL
-      extw := 0   // width of the 'extension' to fill with image replicas
-   ENDIF
-   lp3 := ::Convert( { exth, extw } )
-
-   RETURN ( ::Error := RR_DrawPicture( cpicture, lp1, lp2, lp3, lImageSize, ::hData ) )
+   RETURN RR_DrawPicture( cpicture, lp1, lp2, lp3, lImageSize, ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD Bitmap( row, col, height, width, hbitmap, exth, extw, lImageSize ) CLASS HBPrinter
+METHOD Bitmap( row, col, torow, tocol, hbitmap, extrow, extcol, lImageSize ) CLASS HBPrinter
 
-   LOCAL lp1, lp2, lp3
+   LOCAL lp1 := ::Convert( { row, col } ), lp2, lp3
 
-   lp1 := ::Convert( { row, col } )
-   IF height == NIL
-      height := ::MaxRow
+   IF torow == NIL
+      torow := ::MaxRow
    ENDIF
-   IF width == NIL
-      width := ::MaxCol
+   IF tocol == NIL
+      tocol := ::MaxCol
    ENDIF
-   lp2 := ::Convert( { height, width }, 1 )
-   IF exth == NIL
-      exth := 0   // height of the 'extension' to fill with image replicas
+   lp2 := ::Convert( { torow, tocol }, 1 )
+   IF extrow == NIL
+      extrow := 0
    ENDIF
-   IF extw == NIL
-      extw := 0   // width of the 'extension' to fill with image replicas
+   IF extcol == NIL
+      extcol := 0
    ENDIF
-   lp3 := ::Convert( { exth, extw } )
+   lp3 := ::Convert( { extrow, extcol } )
 
-   RETURN ( ::Error := RR_DrawBitmap( hbitmap, lp1, lp2, lp3, lImageSize, ::hData ) )
+   RETURN RR_DrawBitmap( hbitmap, lp1, lp2, lp3, lImageSize, ::hData )
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION RR_Str2File( ctxt, cfile )
@@ -1782,20 +1587,6 @@ FUNCTION RR_Str2Arr( cList, cDelimiter )
 
    RETURN aList
 
-#ifdef HB_DYNLIB
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-STATIC FUNCTION NumAt( cSearch, cString )
-
-   LOCAL n := 0, nAt, nPos := 0
-
-   DO WHILE ( nAt := At( cSearch, SubStr( cString, nPos + 1 ) ) ) > 0
-      nPos += nAt
-      ++n
-   ENDDO
-
-   RETURN n
-#endif
-
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD ReportData( l_x1, l_x2, l_x3, l_x4, l_x5, l_x6 ) CLASS HBPrinter
 
@@ -1811,20 +1602,19 @@ METHOD ReportData( l_x1, l_x2, l_x3, l_x4, l_x5, l_x6 ) CLASS HBPrinter
    ?? iif( ValType( l_x4 ) <> "U", l_x4, "," )
    ?? iif( ValType( l_x5 ) <> "U", l_x5, "," )
    ?? iif( ValType( l_x6 ) <> "U", l_x6, "," )
-   ? 'HDC                      :', ::hDC
-   ? 'HDCREF                   :', ::hDCREF
-   ? 'PRINTERNAME              :', ::PrinterName
-   ? 'PRINTEDEFAULT            :', ::PrinterDefault
-   ? 'VERT X HORZ SIZE         :', ::DevCaps[ DI_VERT_SIZE ], "x", ::DevCaps[ DI_HORZ_SIZE ]
-   ? 'VERT X HORZ RES          :', ::DevCaps[ DI_VERT_RES ], "x", ::DevCaps[ DI_HORZ_RES ]
-   ? 'VERT X HORZ LOGPIX       :', ::DevCaps[ DI_VERT_LOGPIX ], "x", ::DevCaps[ DI_HORZ_LOGPIX ]
-   ? 'VERT X HORZ PHYS. SIZE   :', ::DevCaps[ DI_VERT_PHYSIZE ], "x", ::DevCaps[ DI_HORZ_PHYSIZE ]
-   ? 'VERT X HORZ PHYS. OFFSET :', ::DevCaps[ DI_VERT_PHYOFFS ], "x", ::DevCaps[ DI_HORZ_PHYOFFS ]
-   ? 'VERT X HORZ FONT SIZE    :', ::DevCaps[ DI_VERT_FONTSIZE ], "x", ::DevCaps[ DI_HORZ_FONTSIZE ]
-   ? 'MAX ROWS X COLS          :', ::DevCaps[ DI_ROWS ], "x", ::DevCaps[ DI_COLS ]
-   ? 'ORIENTATION              :', ::DevCaps[ DI_ORIENTATION ]
-   ? 'TEXT METRICS ASCENT      :', ::DevCaps[ DI_TMASCENT ]
-   ? 'PAPER SIZE               :', ::DevCaps[ DI_TMASCENT ]
+   ? 'HDC            :', ::hDC
+   ? 'HDCREF         :', ::hDCREF
+   ? 'PRINTERNAME    :', ::PrinterName
+   ? 'PRINTEDEFAULT  :', ::PrinterDefault
+   ? 'VERT X HORZ SIZE         :', ::DevCaps[ 1 ], "x", ::DevCaps[ 2 ]
+   ? 'VERT X HORZ RES          :', ::DevCaps[ 3 ], "x", ::DevCaps[ 4 ]
+   ? 'VERT X HORZ LOGPIX       :', ::DevCaps[ 5 ], "x", ::DevCaps[ 6 ]
+   ? 'VERT X HORZ PHYS. SIZE   :', ::DevCaps[ 7 ], "x", ::DevCaps[ 8 ]
+   ? 'VERT X HORZ PHYS. OFFSET :', ::DevCaps[ 9 ], "x", ::DevCaps[ 10 ]
+   ? 'VERT X HORZ FONT SIZE    :', ::DevCaps[ 11 ], "x", ::DevCaps[ 12 ]
+   ? 'VERT X HORZ ROWS COLS    :', ::DevCaps[ 13 ], "x", ::DevCaps[ 14 ]
+   ? 'ORIENTATION              :', ::DevCaps[ 15 ]
+   ? 'PAPER SIZE               :', ::DevCaps[ 17 ]
    SET PRINTER OFF
    SET PRINTER TO
    SET CONSOLE ON
@@ -1835,7 +1625,7 @@ METHOD ReportData( l_x1, l_x2, l_x3, l_x4, l_x5, l_x6 ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD InitMessages( cLang ) CLASS HBPrinter
 
-   LOCAL nAt, i, cData
+   LOCAL nAt
 
 #ifndef NO_GUI
    IF ! ValType( cLang ) $ "CM" .OR. Empty( cLang )
@@ -1851,1124 +1641,266 @@ METHOD InitMessages( cLang ) CLASS HBPrinter
    cLang := Upper( AllTrim( cLang ) )
 
    DO CASE
-   CASE cLang == "FR"                                 // French
-      ::aOpisy := { "Prévisualisation", ;             // 01
-         "&Abandonner", ;                             // 02
-         "&Imprimer", ;                               // 03
-         "&Enregistrer", ;                            // 04
-         "&Premier", ;                                // 05
-         "P&récédent", ;                              // 06
-         "&Suivant", ;                                // 07
-         "&Dernier", ;                                // 08
-         "Zoom +", ;                                  // 09
-         "Zoom -", ;                                  // 10
-         "&Options", ;                                // 11
-         "Aller à la page:", ;                        // 12
-         "Aperçu de la page", ;                       // 13
-         "Aperçu affichettes", ;                      // 14
-         "Page", ;                                    // 15
-         "Imprimer la page en cours", ;               // 16
-         "Pages:", ;                                  // 17
-         "Plus de zoom !", ;                          // 18
-         "Options d'impression", ;                    // 19
-         "Imprimer de", ;                             // 20
-         "à", ;                                       // 21
-         "Copies", ;                                  // 22
-         "Classement", ;                              // 23
-         "Tout dans l'intervalle", ;                  // 24
-         "Impair seulement", ;                        // 25
-         "Pair seulement", ;                          // 26
-         "Tout mais impair d'abord", ;                // 27
-         "Tout mais pair d'abord", ;                  // 28
-         "Impression ....", ;                         // 29
-         "Attente de changement de papier...", ;      // 30
-         "Appuyez sur OK pour continuer.", ;          // 31
-         "Terminé !", ;                               // 32
-         "Enregistrer sous...", ;                     // 33
-         "Enregistrer tout", ;                        // 34
-         "Fichiers EMF", ;                            // 35
-         "Tous les fichiers", ;                       // 36
-         "Paramètre non supporté:", ;                 // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Sélectionnez un dossier", ;                 // 50
-         "Le rapport est vide!", ;                    // 51
-         "&OK" }                                      // 52
-   CASE cLang == "DEWIN" .OR. ;
-        cLang == "DE"                                 // German
-      ::aOpisy := { "Vorschau", ;                     // 01
-         "&Abbruch", ;                                // 02
-         "&Drucken", ;                                // 03
-         "&Speichern", ;                              // 04
-         "&Erste", ;                                  // 05
-         "&Vorige", ;                                 // 06
-         "&Nächste", ;                                // 07
-         "&Letzte", ;                                 // 08
-         "Ver&größern", ;                             // 09
-         "Ver&kleinern", ;                            // 10
-         "&Optionen", ;                               // 11
-         "Seite:", ;                                  // 12
-         "Seitenvorschau", ;                          // 13
-         "Überblick", ;                               // 14
-         "Seite", ;                                   // 15
-         "Aktuelle Seite drucken", ;                  // 16
-         "Seiten:", ;                                 // 17
-         "Maximum erreicht!", ;                       // 18
-         "Druckeroptionen", ;                         // 19
-         "Drucke von", ;                              // 20
-         "bis", ;                                     // 21
-         "Anzahl", ;                                  // 22
-         "Bereich", ;                                 // 23
-         "Alle Seiten", ;                             // 24
-         "Ungerade Seiten", ;                         // 25
-         "Gerade Seiten", ;                           // 26
-         "Alles ungerade Seiten zuerst", ;            // 27
-         "Alles gerade Seiten zuerst", ;              // 28
-         "Druckt ....", ;                             // 29
-         "Bitte Papier nachlegen...", ;               // 30
-         "Drücken Sie OK, um fortzufahren.", ;        // 31
-         "Getan!", ;                                  // 32
-         "Speichern als...", ;                        // 33
-         "Speichern alle", ;                          // 34
-         "EMF files", ;                               // 35
-         "Alle Dateien", ;                            // 36
-         "Nicht unterstützte Einstellung:", ;         // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Wählen Sie einen Ordner", ;                 // 50
-         "Bericht ist leer!", ;                       // 51
-         "&OK" }                                      // 52
-   CASE cLang == "IT"                                 // Italian
-      ::aOpisy := { "Anteprima", ;                    // 01
-         "&Cancella", ;                               // 02
-         "S&tampa", ;                                 // 03
-         "&Salva", ;                                  // 04
-         "&Primo", ;                                  // 05
-         "&Indietro", ;                               // 06
-         "&Avanti", ;                                 // 07
-         "&Ultimo", ;                                 // 08
-         "Zoom In", ;                                 // 09
-         "Zoom Out", ;                                // 10
-         "&Opzioni", ;                                // 11
-         "Pagina:", ;                                 // 12
-         "Pagina anteprima ", ;                       // 13
-         "Miniatura Anteprima", ;                     // 14
-         "Pagina", ;                                  // 15
-         "Stampa solo pagina attuale", ;              // 16
-         "Pagine:", ;                                 // 17
-         "Limite zoom !", ;                           // 18
-         "Opzioni Stampa", ;                          // 19
-         "Stampa da", ;                               // 20
-         "a", ;                                       // 21
-         "Copie", ;                                   // 22
-         "Confronto", ;                               // 23
-         "Tutte", ;                                   // 24
-         "Solo dispari", ;                            // 25
-         "Solo pari", ;                               // 26
-         "Tutte iniziando dispari", ;                 // 27
-         "Tutte iniziando pari", ;                    // 28
-         "Stampa in corso ....", ;                    // 29
-         "Attendere cambio carta...", ;               // 30
-         "Premere OK per continuare.", ;              // 31
-         "Fatto !", ;                                 // 32
-         "Salva come...", ;                           // 33
-         "Salva tutto", ;                             // 34
-         "File EMF", ;                                // 35
-         "Tutti i file", ;                            // 36
-         "Impostazione non supportata:", ;            // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Seleziona una cartella", ;                  // 50
-         "Il rapporto è vuoto!", ;                    // 51
-         "&OK" }                                      // 52
-   CASE cLang == "PLWIN" .OR. ;
-        cLang == "PL852" .OR. ;
-        cLang == "PLISO" .OR. ;
-        cLang == "PLMAZ"                              // Polish
-      ::aOpisy := { "Podgl¹d", ;                      // 01
-         "&Rezygnuj", ;                               // 02
-         "&Drukuj", ;                                 // 03
-         "Zapisz", ;                                  // 04
-         "Pierwsza", ;                                // 05
-         "Poprzednia", ;                              // 06
-         "Nastêpna", ;                                // 07
-         "Ostatnia", ;                                // 08
-         "Powiêksz", ;                                // 09
-         "Pomniejsz", ;                               // 10
-         "Opc&je", ;                                  // 11
-         "IdŸ do strony:", ;                          // 12
-         "Podgl¹d strony", ;                          // 13
-         "Podgl¹d miniaturek", ;                      // 14
-         "Strona", ;                                  // 15
-         "Drukuj aktualn¹ stronê", ;                  // 16
-         "Stron:", ;                                  // 17
-         "Nie mozna wiêcej !", ;                      // 18
-         "Opcje drukowania", ;                        // 19
-         "Drukuj od", ;                               // 20
-         "do", ;                                      // 21
-         "Kopii", ;                                   // 22
-         "Zakres", ;                                  // 23
-         "Wszystkie z zakresu", ;                     // 24
-         "Tylko nieparzyste", ;                       // 25
-         "Tylko parzyste", ;                          // 26
-         "Najpierw nieparzyste", ;                    // 27
-         "Najpierw parzyste", ;                       // 28
-         "Drukowanie...", ;                           // 29
-         "Czekam na zmiane papieru...", ;             // 30
-         "Nacisnij OK, aby kontynuowac.", ;           // 31
-         "Gotowy !", ;                                // 32
-         "Zapisz jako...", ;                          // 33
-         "Zapisz wszystko", ;                         // 34
-         "Pliki EMF", ;                               // 35
-         "Wszystkie pliki", ;                         // 36
-         "Nieobslugiwane ustawienie:", ;              // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Wybierz folder", ;                          // 50
-         "Raport jest pusty!", ;                      // 51
-         "&OK" }                                      // 52
-   CASE cLang == "PT"                                 // Portuguese
-      ::aOpisy := { "Inspeção Prévia", ;              // 01
-         "&Cancelar", ;                               // 02
-         "&Imprimir", ;                               // 03
-         "&Salvar", ;                                 // 04
-         "&Primera", ;                                // 05
-         "&Anterior", ;                               // 06
-         "Próximo", ;                                 // 07
-         "&Último", ;                                 // 08
-         "Zoom +", ;                                  // 09
-         "Zoom -", ;                                  // 10
-         "&Opções", ;                                 // 11
-         "Pag.:", ;                                   // 12
-         "Página ", ;                                 // 13
-         "Miniaturas", ;                              // 14
-         "Pag.", ;                                    // 15
-         "Imprimir somente a pag. atual", ;           // 16
-         "Páginas:", ;                                // 17
-         "Zoom Máximo/Minimo", ;                      // 18
-         "Opções de Impressão", ;                     // 19
-         "Imprimir de", ;                             // 20
-         "para", ;                                    // 21
-         "Cópias", ;                                  // 22
-         "Agrupamento", ;                             // 23
-         "Tudo a partir desta", ;                     // 24
-         "Só Ímpares", ;                              // 25
-         "Só Pares", ;                                // 26
-         "Todas as Ímpares Primeiro", ;               // 27
-         "Todas Pares primero", ;                     // 28
-         "Imprimindo ....", ;                         // 29
-         "Esperando por papel...", ;                  // 30
-         "Pressione OK para continuar.", ;            // 31
-         "Feito!", ;                                  // 32
-         "Salvar como...", ;                          // 33
-         "Salvar tudo", ;                             // 34
-         "Arquivos EMF", ;                            // 35
-         "Todos os arquivos", ;                       // 36
-         "Configuração não suportada:", ;             // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Selecione uma pasta", ;                     // 50
-         "O relatório está vazio!", ;                 // 51
-         "&OK" }                                      // 52
-   CASE cLang == "RUKOI8" .OR. ;
-        cLang == "RU866"  .OR. ;
-        cLang == "RUWIN"                              // Russian
-      ::aOpisy := { 'Ïðîñìîòð', ;                     // 01
-         'Âûõîä', ;                                   // 02
-         'Ïå÷àòü', ;                                  // 03
-         'Ñîõðàíèòü', ;                               // 04
-         'Íà÷àëî', ;                                  // 05
-         'Íàçàä', ;                                   // 06
-         'Âïåðåä', ;                                  // 07
-         'Êîíåö', ;                                   // 08
-         'Óâåëè÷èòü', ;                               // 09
-         'Óìåíüøèòü', ;                               // 10
-         'Îïöèè', ;                                   // 11
-         'Ñòðàíèöà:', ;                               // 12
-         'Ïðîñìîòð ñòðàíèöû ', ;                      // 13
-         'Ìèíèàòþðû', ;                               // 14
-         'Ñòðàíèöà', ;                                // 15
-         'Ïå÷àòàòü òåêóùóþ', ;                        // 16
-         'Ñòðàíèö:', ;                                // 17
-         'Äîñòèãíóò ïðåäåë ìàñøòàáèðîâàíèÿ!', ;       // 18
-         'Ïàðàìåòðû ïå÷àòè', ;                        // 19
-         'Ñòðàíèöû ñ', ;                              // 20
-         'ïî', ;                                      // 21
-         'Êîïèé', ;                                   // 22
-         'Íàïå÷àòàòü', ;                              // 23
-         'Âñå ñòðàíèöû', ;                            // 24
-         'Íå÷¸òíûå', ;                                // 25
-         '×¸òíûå', ;                                  // 26
-         'Âñå, íî âíà÷àëå íå÷¸òíûå', ;                // 27
-         'Âñå, íî âíà÷àëå ÷¸òíûå', ;                  // 28
-         'Ïå÷àòü ....', ;                             // 29
-         'Âñòàâüòå áóìàãó...', ;                      // 30
-         "Press OK to continue.", ;                   // 31
-         "Done!", ;                                   // 32
-         'Ñîõðàíèòü êàê...', ;                        // 33
-         'Ñîõðàíèòü âñå', ;                           // 34
-         'Ôàéëû EMF', ;                               // 35
-         'Âñå ôàéëû', ;                               // 36
-         "Unsupported setting:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Select a folder", ;                         // 50
-         "Report is empty!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "ES" .OR. ;
-        cLang == "ESWIN"                              // Spanish
-      ::aOpisy := { "Vista Previa", ;                 // 01
-         "&Cerrar", ;                                 // 02
-         "&Imprimir", ;                               // 03
-         "&Guardar", ;                                // 04
-         "&Primera", ;                                // 05
-         "&Anterior", ;                               // 06
-         "&Siguiente", ;                              // 07
-         "&Última", ;                                 // 08
-         "Zoom +", ;                                  // 09
-         "Zoom -", ;                                  // 10
-         "&Opciones", ;                               // 11
-         "Ir a Página:", ;                            // 12
-         "Vista previa", ;                            // 13
-         "Miniaturas", ;                              // 14
-         "Página", ;                                  // 15
-         "Imprimir página actual", ;                  // 16
-         "Páginas:", ;                                // 17
-         "Zoom Máximo/Mínimo", ;                      // 18
-         "Opciones de Impresión", ;                   // 19
-         "Imprimir de", ;                             // 20
-         "a", ;                                       // 21
-         "Copias", ;                                  // 22
-         "Compaginación", ;                           // 23
-         "Todo, secuencial", ;                        // 24
-         "Solo páginas impares", ;                    // 25
-         "Solo páginas pares", ;                      // 26
-         "Todo, páginas impares primero", ;           // 27
-         "Todo, páginas pares primero", ;             // 28
-         "Imprimiendo...", ;                          // 29
-         "Esperando cambio de papel...", ;            // 30
-         "Haga clic en OK para continuar.", ;         // 31
-         "¡Listo!", ;                                 // 32
-         "Guardar co&mo...", ;                        // 33
-         "Guardar &todo", ;                           // 34
-         "Archivos EMF", ;                            // 35
-         "Todos los archivos", ;                      // 36
-         "Configuración no soportada:", ;             // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Seleccione una carpeta", ;                  // 50
-         "¡El reporte está vacío!", ;                 // 51
-         "&OK" }                                      // 52
-   CASE cLang == "UK" .OR. ;
-        cLang == "UA"                                 // Ukranian
-      ::aOpisy := { 'Ïåðåãëÿä', ;                     // 01
-         'Âèõiä', ;                                   // 02
-         'Äðóê', ;                                    // 03
-         'Çáåðåãòè', ;                                // 04
-         'Ïî÷àòîê', ;                                 // 05
-         'Íàçàä', ;                                   // 06
-         'Âïåðåä', ;                                  // 07
-         'Êiíåöü', ;                                  // 08
-         'Çáiëüøèòè', ;                               // 09
-         'Çìåíøèòè', ;                                // 10
-         'Îïöi¿', ;                                   // 11
-         'Ñòîðiíêà:', ;                               // 12
-         'Ïåðåãëÿä ñòîðiíêè ', ;                      // 13
-         'Ìiíiàòþðè', ;                               // 14
-         'Ñòîðiíêà', ;                                // 15
-         'Äðóêóâàòè ïîòî÷íó', ;                       // 16
-         'Ñòîðiíîê:', ;                               // 17
-         'Äîñÿãíóòà ìåæà ìàñøòàáóâàííÿ!', ;           // 18
-         'Ïàðàìåòðè äðóêó', ;                         // 19
-         'Ñòîðiíêè ç', ;                              // 20
-         'ïî', ;                                      // 21
-         'Êîïié', ;                                   // 22
-         'Íàäðóêóâàòè', ;                             // 23
-         'Óñi ñòðiíêè', ;                             // 24
-         'Íåïàðíi', ;                                 // 25
-         'Ïàðíi', ;                                   // 26
-         'Óñi, àëå ñïåðøó íåïàðíi', ;                 // 27
-         'Óñi, àëå ñïåðøó ïàðíi', ;                   // 28
-         'Äðóê ....', ;                               // 29
-         'Çàìiíiòü ïàïið...', ;                       // 30
-         "Press OK to continue.", ;                   // 31
-         "Done!", ;                                   // 32
-         'Çáåðåãòè ÿê...', ;                          // 33
-         'Çáåðåãòè âñå', ;                            // 34
-         'Ôàéëè EMF', ;                               // 35
-         'Óñi ôàéëè', ;                               // 36
-         "Unsupported setting:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Select a folder", ;                         // 50
-         "Report is empty!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "FI"                                 // Finnish
-      ::aOpisy := { "Esikatsele", ;                   // 01
-         "&Keskeytä", ;                               // 02
-         "&Tulosta", ;                                // 03
-         "T&allenna", ;                               // 04
-         "&Ensimmäinen", ;                            // 05
-         "E&dellinen", ;                              // 06
-         "&Seuraava", ;                               // 07
-         "&Viimeinen", ;                              // 08
-         "Suurenna", ;                                // 09
-         "Pienennä", ;                                // 10
-         "&Optiot", ;                                 // 11
-         "Mene sivulle:", ;                           // 12
-         "Esikatsele sivu ", ;                        // 13
-         "Esikatsele miniatyyrit", ;                  // 14
-         "Sivu", ;                                    // 15
-         "Tulosta tämä sivu", ;                       // 16
-         "Sivuja:", ;                                 // 17
-         "Ei voi suurentaa !", ;                      // 18
-         "Tulostus optiot", ;                         // 19
-         "Alkaen", ;                                  // 20
-         "->", ;                                      // 21
-         "Kopiot", ;                                  // 22
-         "Tulostus alue", ;                           // 23
-         "Kaikki alueelta", ;                         // 24
-         "Vain parittomat", ;                         // 25
-         "Vain parilleset", ;                         // 26
-         "Kaikki paitsi ensim. pariton", ;            // 27
-         "Kaikki paitsi ensim. parillinen", ;         // 28
-         "Tulostan ....", ;                           // 29
-         "Odotan paperin vaihtoa...", ;               // 30
-         "Jatka painamalla OK.", ;                    // 31
-         "Valmis!", ;                                 // 32
-         "Tallenna nimellä...", ;                     // 33
-         "Tallenna kaikki", ;                         // 34
-         "EMF Tiedostot", ;                           // 35
-         "Kaikki Tiedostot", ;                        // 36
-         "Asetusta ei tueta:", ;                      // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Valitse kansio", ;                          // 50
-         "Raportti on tyhjä!", ;                      // 51
-         "&OK" }                                      // 52
-   CASE cLang == "NL"                                 // Dutch
-      ::aOpisy := { 'Afdrukvoorbeeld', ;              // 01
-         'Annuleer', ;                                // 02
-         'Print', ;                                   // 03
-         'Opslaan', ;                                 // 04
-         'Eerste', ;                                  // 05
-         'Vorige', ;                                  // 06
-         'Volgende', ;                                // 07
-         'Laatste', ;                                 // 08
-         'Inzoomen', ;                                // 09
-         'Uitzoomen', ;                               // 10
-         'Opties', ;                                  // 11
-         'Ga naar pagina:', ;                         // 12
-         'Pagina voorbeeld ', ;                       // 13
-         'Thumbnails voorbeeld', ;                    // 14
-         'Pagina', ;                                  // 15
-         'Print alleen huidige pagina', ;             // 16
-         "Pagina's:", ;                               // 17
-         'Geen zoom meer !', ;                        // 18
-         'Print opties', ;                            // 19
-         'Print van', ;                               // 20
-         'tot', ;                                     // 21
-         'Exemplaren', ;                              // 22
-         "Pagina's", ;                                // 23
-         "Alle pagina's", ;                           // 24
-         'Alleen oneven', ;                           // 25
-         'Alleen even', ;                             // 26
-         'Alles maar oneven eerst', ;                 // 27
-         'Alles maar even eerst', ;                   // 28
-         'Printen ....', ;                            // 29
-         'Wacht op papier wissel...', ;               // 30
-         "Druk op OK om door te gaan.", ;             // 31
-         "Gedaan!", ;                                 // 32
-         'Be&waar als...', ;                          // 33
-         'Bewaar &Alles', ;                           // 34
-         'EMF-bestanden', ;                           // 35
-         'Alle bestanden', ;                          // 36
-         "Niet-ondersteunde instelling:", ;           // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Selecteer een map", ;                       // 50
-         "Rapport is leeg!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "CS"                                 // Czech
-      ::aOpisy := { "Náhled", ;                       // 01
-         "&Storno", ;                                 // 02
-         "&Tisk", ;                                   // 03
-         "&Uložit", ;                                 // 04
-         "&První", ;                                  // 05
-         "P&øedchozí", ;                              // 06
-         "&Další", ;                                  // 07
-         "P&oslední", ;                               // 08
-         "Z&vìtšit", ;                                // 09
-         "&Zmenšit", ;                                // 10
-         "&Možnosti", ;                               // 11
-         "Ukaž stranu:", ;                            // 12
-         "Náhled strany ", ;                          // 13
-         "Náhled více strán", ;                       // 14
-         "Strana", ;                                  // 15
-         "Tisk aktuální strany", ;                    // 16
-         "Strán:", ;                                  // 17
-         "Nemožno dále mìnit velikost!", ;            // 18
-         "Možnosti tisku", ;                          // 19
-         "Tisk od", ;                                 // 20
-         "po", ;                                      // 21
-         "Kópií", ;                                   // 22
-         "Tisk stran", ;                              // 23
-         "Všechny stran", ;                           // 24
-         "Jenom liché", ;                             // 25
-         "Jenom sudé", ;                              // 26
-         "Všechny kromì první liché", ;               // 27
-         "Všechny kromì první sudéj", ;               // 28
-         "Tisknu ...", ;                              // 29
-         "Èekám na papír ...", ;                      // 30
-         "Pokracujte stisknutím tlacítka OK.", ;      // 31
-         "Hotovo!", ;                                 // 32
-         "Uložit &jako...", ;                         // 33
-         "Uložit &všechno", ;                         // 34
-         "EMF soubor", ;                              // 35
-         "Všechny soubory", ;                         // 36
-         "Nepodporované nastavení:", ;                // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Vyberte složku", ;                          // 50
-         "Zpráva je prázdná!", ;                      // 51
-         "&OK" }                                      // 52
-   CASE cLang == "SK"                                 // Slovak
-      ::aOpisy := { "Náh¾ad", ;                       // 01
-         "&Storno", ;                                 // 02
-         "&Tlaè", ;                                   // 03
-         "Uložit", ;                                  // 04
-         "&Prvá", ;                                   // 05
-         "P&redcházajúca", ;                          // 06
-         "&Ïalšia", ;                                 // 07
-         "Po&sledná", ;                               // 08
-         "Zoom +", ;                                  // 09
-         "Zoom -", ;                                  // 10
-         "&Možnosti", ;                               // 11
-         "Ukáž stranu:", ;                            // 12
-         "Náh¾ad strany ", ;                          // 13
-         "Náh¾ad viacerých stránok", ;                // 14
-         "Strana", ;                                  // 15
-         "Tlaè aktuálnej strany", ;                   // 16
-         "Strana:", ;                                 // 17
-         "Už žiadne priblíženie", ;                   // 18
-         "Možnosti tlaèe", ;                          // 19
-         "Tlaè od", ;                                 // 20
-         "po", ;                                      // 21
-         "Kópií", ;                                   // 22
-         "Tlaè strán", ;                              // 23
-         "Všetky strany", ;                           // 24
-         "Len nepárne", ;                             // 25
-         "Len párne", ;                               // 26
-         "Všetko, najskôr nepárne stránky", ;         // 27
-         "Všetko, najskôr párne stránky", ;           // 28
-         "Tlaèím ...", ;                              // 29
-         "Èakám na papier ...", ;                     // 30
-         "Pokracujte stlacením tlacidla OK. ", ;      // 31
-         "Hotový!", ;                                 // 32
-         "Uloži ako...", ;                            // 33
-         "Uloži všetko", ;                            // 34
-         "EMF súbor", ;                               // 35
-         "Všetky súbory", ;                           // 36
-         "Nepodporované nastavenie:", ;               // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Vyberte priecinok", ;                       // 50
-         "Zpráva je prázdná!", ;                      // 51
-         "&OK" }                                      // 52
-   CASE cLang == "SLWIN" .OR. ;
-        cLang == "SLISO" .OR. ;
-        cLang == "SL852" .OR. ;
-        cLang == "SL437"                              // Slovenian
-      ::aOpisy := { 'Predgled', ;                     // 01
-         'Prekini', ;                                 // 02
-         'Natisni', ;                                 // 03
-         'Shrani', ;                                  // 04
-         'Prva', ;                                    // 05
-         'Prejšnja', ;                                // 06
-         'Naslednja', ;                               // 07
-         'Zadnja', ;                                  // 08
-         'Poveèaj', ;                                 // 09
-         'Pomanjšaj', ;                               // 10
-         'Možnosti', ;                                // 11
-         'Skok na stran:', ;                          // 12
-         'Predgled', ;                                // 13
-         'Mini predgled', ;                           // 14
-         'Stran', ;                                   // 15
-         'Samo trenutna stran', ;                     // 16
-         'Strani:', ;                                 // 17
-         'Ni veè poveèave!', ;                        // 18
-         'Možnosti tiskanja', ;                       // 19
-         'Tiskaj od', ;                               // 20
-         'do', ;                                      // 21
-         'Kopij', ;                                   // 22
-         'Tiskanje', ;                                // 23
-         'Vse iz izbora', ;                           // 24
-         'Samo neparne strani', ;                     // 25
-         'Samo parne strani', ;                       // 26
-         'Vse - neparne strani najprej', ;            // 27
-         'Vse - parne strani najprej', ;              // 28
-         'Tiskanje ....', ;                           // 29
-         'Èakanje na zamenjavo papirja...', ;         // 30
-         "Pritisnite OK za nadaljevanje.", ;          // 31
-         "Koncano!", ;                                // 32
-         'Shrani kot...', ;                           // 33
-         'Shrani vse', ;                              // 34
-         'EMF datoteke', ;                            // 35
-         'Vse datoteke', ;                            // 36
-         "Nepodprta nastavitev:", ;                   // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Izberite mapo", ;                           // 50
-         "Porocilo je prazno!", ;                     // 51
-         "&OK" }                                      // 52
-   CASE cLang == "HU"                                 // Hungarian
-      ::aOpisy := { "Elõnézet", ;                     // 01
-         "&Mégse", ;                                  // 02
-         "Nyo&mtatás", ;                              // 03
-         "&Mentés", ;                                 // 04
-         "&Elsõ", ;                                   // 05
-         "E&lõzõ", ;                                  // 06
-         "&Következõ", ;                              // 07
-         "&Utolsó", ;                                 // 08
-         "&Nagyítás", ;                               // 09
-         "K&icsinyítés", ;                            // 10
-         "&Opciók", ;                                 // 11
-         "Oldalt mutasd:", ;                          // 12
-         "Oldal elõnézete ", ;                        // 13
-         "Több oldal elõnézete", ;                    // 14
-         "Oldal", ;                                   // 15
-         "Aktuális oldal nyomtatása", ;               // 16
-         "Oldal:", ;                                  // 17
-         "A nagyság tovább nem változtatható!", ;     // 18
-         "Nyomtatási lehetõségek", ;                  // 19
-         "Nyomtatás ettõl", ;                         // 20
-         "eddig", ;                                   // 21
-         "Másolat", ;                                 // 22
-         "Egyeztetés", ;                              // 23
-         "Minden oldalt", ;                           // 24
-         "Csak a páratlan", ;                         // 25
-         "Csak a páros", ;                            // 26
-         "Mindet kivéve az elsõ páratlant", ;         // 27
-         "Mindet kivéve az elsõ párost", ;            // 28
-         "Nyomtatom ...", ;                           // 29
-         "Papírra várok ...", ;                       // 30
-         "A folytatáshoz nyomja meg az OK gombot.", ; // 31  ;
-         "Kész!", ;                                   // 32
-         "Mentés másként ...", ;                      // 33
-         "Mindet mentsd", ;                           // 34
-         "EMF állomány", ;                            // 35
-         "Minden állomány", ;                         // 36
-         "Nem támogatott beállítás:", ;               // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Válasszon mappát", ;                        // 50
-         "A jelentés üres!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "EL"                                 // Greek - Ellinika
-      ::aOpisy := { 'ÐñïâïëÞ', ;                      // 01
-         '&Áêõñï', ;                                  // 02
-         '&Ôýðùóå', ;                                 // 03
-         '&Óþóå', ;                                   // 04
-         '&1ç', ;                                     // 05
-         'Ð&ñïçã/íç', ;                               // 06
-         '&Åðïìåíç', ;                                // 07
-         '&Ôåëåõô/á', ;                               // 08
-         'Zoom +', ;                                  // 09
-         'Zoom -', ;                                  // 10
-         '&Åðéëïãåò', ;                               // 11
-         'Ðçãáéíå óåë:', ;                            // 12
-         'Ðñïâïëç ', ;                                // 13
-         'Ìéêñïãñáößåò', ;                            // 14
-         'Óåë.', ;                                    // 15
-         'Ôõðùóå ìïíï ôçí ðáñïõóá', ;                 // 16
-         'Óåëéäåò:', ;                                // 17
-         'Ï÷é Üëëï zoom !', ;                         // 18
-         'ÅðéëïãÝò', ;                                // 19
-         'Ôýðùóå áðü', ;                              // 20
-         'Ýùò', ;                                     // 21
-         'Áíôßãñáöá', ;                               // 22
-         'Åýñïò åêôýðùóçò', ;                         // 23
-         'Ïëåò áðï', ;                                // 24
-         'Ìüíï ÌïíÝò ', ;                             // 25
-         'Ìüíï ÆõãÝò', ;                              // 26
-         'Ïëåò åêôïò áðï ôçí 1ç ìïíÞ', ;              // 27
-         'Ïëåò åêôïò áðï ôçí 1ç æõãÞ', ;              // 28
-         'Ôõðþíù ....', ;                             // 29
-         'Áíáìïíç ãéá áëëáãç ÷áñôéïõ...', ;           // 30
-         "Press OK to continue.", ;                   // 31
-         "Done!", ;                                   // 32
-         'ÁðïèÞêåõóç ùò..', ;                         // 33
-         'ÁðïèÞêåõóç üëùí', ;                         // 34
-         'Áñ÷åßá EMF', ;                              // 35
-         '¼ëá ôá áñ÷åßá', ;                           // 36
-         "Unsupported setting:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Select a folder", ;                         // 50
-         "Report is empty!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "BG"                                 // Bulgarian
-      ::aOpisy := { 'Ïðåãëåä', ;                      // 01
-         'Èçõîä', ;                                   // 02
-         'Ïå÷àò', ;                                   // 03
-         'Ñúõðàíè', ;                                 // 04
-         'Íà÷àëî', ;                                  // 05
-         'Íàçàä', ;                                   // 06
-         'Íàïðåä', ;                                  // 07
-         'Êðàé', ;                                    // 08
-         'Óâåëè÷è', ;                                 // 09
-         'Íàìàëè', ;                                  // 10
-         'Îïöèè', ;                                   // 11
-         'Ñòðàíèöà:', ;                               // 12
-         'Ïðåãëåä íà ñòðàíèöàòà ', ;                  // 13
-         'Ìèíèàòþðè', ;                               // 14
-         'Ñòðàíèöà', ;                                // 15
-         'Ïå÷àòàíå íà òåêóùà', ;                      // 16
-         'Ñòðàíèöè:', ;                               // 17
-         'Äîñòèãíàò e ïðåäåëà íà ìàùàáèðàíå!', ;      // 18
-         'Ïàðàìåòðè çà ïå÷àò', ;                      // 19
-         'Ñòðàíèöè îò', ;                             // 20
-         'äî', ;                                      // 21
-         'Êîïèÿ', ;                                   // 22
-         'Íàïå÷àòàé', ;                               // 23
-         'Âñè÷êè ñòðàíèöè', ;                         // 24
-         'Íå÷åòíèòå', ;                               // 25
-         '×åòíèòå', ;                                 // 26
-         'Âñè÷êè, íî ïúðâî íå÷åòíèòå', ;              // 27
-         'Âñè÷êè, íî ïúðâî ÷åòíèòå', ;                // 28
-         'Ïå÷àò ....', ;                              // 29
-         'Ïîñòàâåòå õàðòèÿ...', ;                     // 30
-         "Press OK to continue.", ;                   // 31
-         "Done!", ;                                   // 32
-         'Ñúõðàíè êàòî...', ;                         // 33
-         'Ñúõðàíè âñè÷êî', ;                          // 34
-         'Ôàéëîâå EMF', ;                             // 35
-         'Âñè÷êè ôàéëîâå', ;                          // 36
-         "Unsupported setting:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Select a folder", ;                         // 50
-         "Report is empty!", ;                        // 51
-         "&OK" }                                      // 52
-   CASE cLang == "HR852"                              // Croatian
-      ::aOpisy := { "Pregled", ;                      // 01
-         "Otkazati", ;                                // 02
-         "Ispis", ;                                   // 03
-         "Uštedjeti", ;                               // 04
-         "Prvo", ;                                    // 05
-         "Prethodni", ;                               // 06
-         "Sljedeci", ;                                // 07
-         "Posljednji", ;                              // 08
-         "Zumirati", ;                                // 09
-         "Umanji", ;                                  // 10
-         "Opcije", ;                                  // 11
-         "Idi na stranicu:", ;                        // 12
-         "Pregled stranice", ;                        // 13
-         "Pregledavanje slicica", ;                   // 14
-         "Stranica", ;                                // 15
-         "Ispis samo trenutne stranice", ;            // 16
-         "Stranice:", ;                               // 17
-         "Nema više zumiranja!", ;                    // 18
-         "Opcije ispisa", ;                           // 19
-         "Ispis iz", ;                                // 20
-         "->", ;                                      // 21
-         "Kopije", ;                                  // 22
-         "Raspon ispisa", ;                           // 23
-         "Sve iz dometa", ;                           // 24
-         "Samo neparno", ;                            // 25
-         "Cak i samo", ;                              // 26
-         "Sve osim neparno prvo", ;                   // 27
-         "Sve, ali cak i prvo", ;                     // 28
-         "Tisak ...", ;                               // 29
-         "Ceka se promjena papira ...", ;             // 30
-         "Pritisnite OK za nastavak.", ;              // 31
-         "Gotovo!", ;                                 // 32
-         "Spremi kao...", ;                           // 33
-         "Spremi sve", ;                              // 34
-         "EMF datoteke", ;                            // 35
-         "Sve datoteke", ;                            // 36
-         "Nepodržana postavka:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Odaberite mapu", ;                          // 50
-         "Izvještaj je prazan!", ;                    // 51
-         "&OK" }                                      // 52
-   CASE cLang == "EU"                                 // Basque
-      ::aOpisy := { "Aurrebista", ;                   // 01
-         "Utzi", ;                                    // 02
-         "Inprimatu", ;                               // 03
-         "Gorde", ;                                   // 04
-         "Lehenik", ;                                 // 05
-         "Aurrekoa", ;                                // 06
-         "Hurrengoa", ;                               // 07
-         "Azkena", ;                                  // 08
-         "Zoom In", ;                                 // 09
-         "Zoom handiagotu", ;                         // 10
-         "Aukerak", ;                                 // 11
-         "Joan Orrialdera:", ;                        // 12
-         "Orriaren aurrebista", ;                     // 13
-         "Miniatutako aurrebista", ;                  // 14
-         "Orria", ;                                   // 15
-         "Uneko orria inprimatu bakarrik", ;          // 16
-         "Orrialdeak:", ;                             // 17
-         "Ez gehiago zoom!", ;                        // 18
-         "Inprimatzeko aukerak", ;                    // 19
-         "Inprimatu", ;                               // 20
-         "etik", ;                                    // 21
-         "Kopiak", ;                                  // 22
-         "Inprimatu barrutia", ;                      // 23
-         "Guztiak barrutik", ;                        // 24
-         "Bitxia bakarrik", ;                         // 25
-         "Bakarrik", ;                                // 26
-         "Lehenik eta bakoitiak", ;                   // 27
-         "Guztiak, baina baita lehen ere", ;          // 28
-         "Inprimaketa ...", ;                         // 29
-         "Papera aldatzeko zain ...", ;               // 30
-         "Sakatu OK jarraitzeko.", ;                  // 31
-         "Egina!", ;                                  // 32
-         "Gorde...", ;                                // 33
-         "Gorde guztiak", ;                           // 34
-         "EMF fitxategiak", ;                         // 35
-         "Fitxategi guztiak", ;                       // 36
-         "Ezarpenik gabeko ezarpena:", ;              // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Hautatu karpeta", ;                         // 50
-         "Txostena hutsik dago!", ;                   // 51
-         "&OK" }                                      // 52
-   CASE cLang == "TR"                                 // Turkish
-      ::aOpisy := { "Önizleme", ;                     // 01
-         "Iptal", ;                                   // 02
-         "Yazdir", ;                                  // 03
-         "Kaydet", ;                                  // 04
-         "Ilk", ;                                     // 05
-         "Önceki", ;                                  // 06
-         "Ileri", ;                                   // 07
-         "Son", ;                                     // 08
-         "Yakinlastir", ;                             // 09
-         "Uzaklastir", ;                              // 10
-         "Seçenekler", ;                              // 11
-         "Sayfaya Git:", ;                            // 12
-         "Sayfa önizlemesi", ;                        // 13
-         "Küçük resimlerin önizlemesi", ;             // 14
-         "Sayfa", ;                                   // 15
-         "Yalnizca geçerli sayfayi yazdir", ;         // 16
-         "Sayfalar:", ;                               // 17
-         "Artik zoom yok!", ;                         // 18
-         "Yazdirma seçenekleri", ;                    // 19
-         "Yazdir", ;                                  // 20
-         "kadar", ;                                   // 21
-         "Kopya", ;                                   // 22
-         "Karsilastirma", ;                           // 23
-         "Tüm araliktan", ;                           // 24
-         "Sadece Garip", ;                            // 25
-         "Sadece", ;                                  // 26
-         "Ilk önce garip olanlarin hepsi", ;          // 27
-         "Ilk önce hepsi bile", ;                     // 28
-         "Yazdiriliyor ...", ;                        // 29
-         "Kagit degisimi bekleniyor ...", ;           // 30
-         "Devam etmek için OK tusuna basin.", ;       // 31
-         "Bitti!", ;                                  // 32
-         "Farkli kaydet ...", ;                       // 33
-         "Tümünü kaydet", ;                           // 34
-         "EMF dosyalari", ;                           // 35
-         "Tüm dosyalar", ;                            // 36
-         "Desteklenmeyen ayar:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Bir klasör seçin", ;                        // 50
-         "Rapor bos!", ;                              // 51
-         "&OK" }                                      // 52
-   OTHERWISE
-      ::aOpisy := { "Preview", ;                      // 01
-         "&Cancel", ;                                 // 02
-         "&Print", ;                                  // 03
-         "&Save", ;                                   // 04
-         "&First", ;                                  // 05
-         "P&revious", ;                               // 06
-         "&Next", ;                                   // 07
-         "&Last", ;                                   // 08
-         "Zoom In", ;                                 // 09
-         "Zoom Out", ;                                // 10
-         "&Options", ;                                // 11
-         "Go To Page:", ;                             // 12
-         "Page preview ", ;                           // 13
-         "Thumbnails preview", ;                      // 14
-         "Page", ;                                    // 15
-         "Print current page only", ;                 // 16
-         "Pages:", ;                                  // 17
-         "No more zoom!", ;                           // 18
-         "Print options", ;                           // 19
-         "Print from", ;                              // 20
-         "to", ;                                      // 21
-         "Copies", ;                                  // 22
-         "Collation", ;                               // 23  HMG - Print range
-         "Everything, sequential", ;                  // 24  HMG - All from range
-         "Only odd pages", ;                          // 25
-         "Only even pages", ;                         // 26
-         "Everything, odd pages first", ;             // 27
-         "Everything, even pages first", ;            // 28
-         "Printing...", ;                             // 29
-         "Waiting for paper change...", ;             // 30
-         "Press OK to continue.", ;                   // 31
-         "Done!", ;                                   // 32
-         "Save as...", ;                              // 33
-         "Save all", ;                                // 34
-         "EMF files", ;                               // 35
-         "All files", ;                               // 36
-         "Unsupported setting:", ;                    // 37
-         "UNKNOWN", ;                                 // 38
-         "ORIENTATION", ;                             // 39
-         "PAPERSIZE", ;                               // 40
-         "SCALE", ;                                   // 41
-         "COPIES", ;                                  // 42
-         "DEFAULTSOURCE", ;                           // 43
-         "PRINTQUALITY", ;                            // 44
-         "COLOR", ;                                   // 45
-         "DUPLEX", ;                                  // 46
-         "COLLATE", ;                                 // 47
-         "PAPERLENGTH", ;                             // 48
-         "PAPERWIDTH", ;                              // 49
-         "Select a folder", ;                         // 50
-         "Report is empty!", ;                        // 51
-         "&OK" }                                      // 52
+   CASE cLang == "ES"
+      ::aOpisy := { "Vista Previa", ;
+         "&Salir", ;
+         "&Imprimir", ;
+         "&Guardar", ;
+         "&Primera", ;
+         "&Anterior", ;
+         "&Siguiente", ;
+         "&Última", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Opciones", ;
+         "Ir a Página:", ;
+         "Página ", ;
+         "Miniaturas", ;
+         "Página", ;
+         "Imprimir página actual", ;
+         "Páginas:", ;
+         "Zoom Máximo/Mínimo", ;
+         "Opciones de Impresión", ;
+         "Imprimir de", ;
+         "a", ;
+         "Copias", ;
+         "Imprimir rango", ;
+         "Todo a partir de", ;
+         "Solo impares", ;
+         "Solo pares", ;
+         "Todo (impares primero)", ;
+         "Todo (pares primero)", ;
+         "Imprimiendo...", ;
+         "Esperando cambio de papel...", ;
+         "Haga clic en OK para continuar.", ;
+         "¡Listo!" }
+   CASE cLang == "IT"
+      ::aOpisy := { "Anteprima", ;
+         "&Cancella", ;
+         "S&tampa", ;
+         "&Salva", ;
+         "&Primo", ;
+         "&Indietro", ;
+         "&Avanti", ;
+         "&Ultimo", ;
+         "Zoom In", ;
+         "Zoom Out", ;
+         "&Opzioni", ;
+         "Pagina:", ;
+         "Pagina anteprima ", ;
+         "Miniatura Anteprima", ;
+         "Pagina", ;
+         "Stampa solo pagina attuale", ;
+         "Pagine:", ;
+         "Limite zoom !", ;
+         "Opzioni Stampa", ;
+         "Stampa da", ;
+         "a", ;
+         "Copie", ;
+         "Range Stampa", ;
+         "Tutte", ;
+         "Solo dispari", ;
+         "Solo pari", ;
+         "Tutte iniziando dispari", ;
+         "Tutte iniziando pari", ;
+         "Stampa in corso ....", ;
+         "Attendere cambio carta...", ;
+         "Premere OK per continuare.", ;
+         "Fatto !" }
+   CASE cLang == "PLWIN"
+      ::aOpisy := { "Podgl¹d", ;
+         "&Rezygnuj", ;
+         "&Drukuj", ;
+         "Zapisz", ;
+         "Pierwsza", ;
+         "Poprzednia", ;
+         "Nastêpna", ;
+         "Ostatnia", ;
+         "Powiêksz", ;
+         "Pomniejsz", ;
+         "Opc&je", ;
+         "IdŸ do strony:", ;
+         "Podgl¹d strony", ;
+         "Podgl¹d miniaturek", ;
+         "Strona", ;
+         "Drukuj aktualn¹ stronê", ;
+         "Stron:", ;
+         "Nie mozna wiêcej !", ;
+         "Opcje drukowania", ;
+         "Drukuj od", ;
+         "do", ;
+         "Kopii", ;
+         "Zakres", ;
+         "Wszystkie z zakresu", ;
+         "Tylko nieparzyste", ;
+         "Tylko parzyste", ;
+         "Najpierw nieparzyste", ;
+         "Najpierw parzyste", ;
+         "Drukowanie ....", ;
+         "Czekam na zmiane papieru...", ;
+         "Nacisnij OK, aby kontynuowac.", ;
+         "Gotowy !" }
+   CASE cLang == "PT"
+      ::aOpisy := { "Inspeção Prévia", ;
+         "&Cancelar", ;
+         "&Imprimir", ;
+         "&Salvar", ;
+         "&Primera", ;
+         "&Anterior", ;
+         "Próximo", ;
+         "&Último", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Opções", ;
+         "Pag.:", ;
+         "Página ", ;
+         "Miniaturas", ;
+         "Pag.", ;
+         "Imprimir somente a pag. atual", ;
+         "Páginas:", ;
+         "Zoom Máximo/Minimo", ;
+         "Opções de Impressão", ;
+         "Imprimir de", ;
+         "Esta", ;
+         "Cópias", ;
+         "Imprimir rango", ;
+         "Tudo a partir desta", ;
+         "Só Ímpares", ;
+         "Só Pares", ;
+         "Todas as Ímpares Primeiro", ;
+         "Todas Pares primero", ;
+         "Imprimindo ....", ;
+         "Esperando por papel...", ;
+         "Pressione OK para continuar.", ;
+         "Feito!" }
+   CASE cLang == "DEWIN"
+      ::aOpisy := { "Vorschau", ;
+         "&Abbruch", ;
+         "&Drucken", ;
+         "&Speichern", ;
+         "&Erste", ;
+         "&Vorige", ;
+         "&Nächste", ;
+         "&Letzte", ;
+         "Ver&größern", ;
+         "Ver&kleinern", ;
+         "&Optionen", ;
+         "Seite:", ;
+         "Seitenvorschau", ;
+         "Überblick", ;
+         "Seite", ;
+         "Aktuelle Seite drucken", ;
+         "Seiten:", ;
+         "Maximum erreicht!", ;
+         "Druckeroptionen", ;
+         "Drucke von", ;
+         "bis", ;
+         "Anzahl", ;
+         "Bereich", ;
+         "Alle Seiten", ;
+         "Ungerade Seiten", ;
+         "Gerade Seiten", ;
+         "Alles ungerade Seiten zuerst", ;
+         "Alles gerade Seiten zuerst", ;
+         "Druckt ....", ;
+         "Bitte Papier nachlegen...", ;
+         "Drücken Sie OK, um fortzufahren.", ;
+         "Getan!" }
+   CASE cLang == 'FR'
+      ::aOpisy := { "Prévisualisation", ;
+         "&Abandonner", ;
+         "&Imprimer", ;
+         "&Sauver", ;
+         "&Premier", ;
+         "P&récédent", ;
+         "&Suivant", ;
+         "&Dernier", ;
+         "Zoom +", ;
+         "Zoom -", ;
+         "&Options", ;
+         "Aller à la page:", ;
+         "Aperçu de la page", ;
+         "Aperçu affichettes", ;
+         "Page", ;
+         "Imprimer la page en cours", ;
+         "Pages:", ;
+         "Plus de zoom !", ;
+         "Options d'impression", ;
+         "Imprimer de", ;
+         "à", ;
+         "Copies", ;
+         "Intervalle d'impression", ;
+         "Tout dans l'intervalle", ;
+         "Impair seulement", ;
+         "Pair seulement", ;
+         "Tout mais impair d'abord", ;
+         "Tout mais pair d'abord", ;
+         "Impression ....", ;
+         "Attente de changement de papier...", ;
+         "Appuyez sur OK pour continuer.", ;
+         "Terminé !" }
+   OTHERWISE   // default to "EN"
+      ::aOpisy := { "Preview", ;
+         "&Cancel", ;
+         "&Print", ;
+         "&Save", ;
+         "&First", ;
+         "P&revious", ;
+         "&Next", ;
+         "&Last", ;
+         "Zoom In", ;
+         "Zoom Out", ;
+         "&Options", ;
+         "Go To Page:", ;
+         "Page preview ", ;
+         "Thumbnails preview", ;
+         "Page", ;
+         "Print current page only", ;
+         "Pages:", ;
+         "No more zoom!", ;
+         "Print options", ;
+         "Print from", ;
+         "to", ;
+         "Copies", ;
+         "Print Range", ;
+         "All from range", ;
+         "Odd only", ;
+         "Even only", ;
+         "All but odd first", ;
+         "All but even first", ;
+         "Printing...", ;
+         "Waiting for paper change...", ;
+         "Press OK to continue.", ;
+         "Done!" }
    ENDCASE
-
-   FOR i := 1 TO Len( ::aOpisy )
-      IF ! Empty( cData := LoadString( i ) )
-         ::aOpisy[ i ] := cData
-      ENDIF
-   NEXT i
 
    RETURN NIL
 
 #ifndef NO_GUI
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD SaveMetaFiles( number, filename ) CLASS HBPrinter
+METHOD SaveMetaFiles( number ) CLASS HBPrinter
 
-   LOCAL n
+   LOCAL n, l
 
    IF ::PreviewMode
-      IF ! HB_ISNUMERIC( number ) .OR. number < 1 .OR. number > Len( ::MetaFiles )
+      IF ! HB_ISNUMERIC( number ) .OR. number < 1 .OR. number >= ::CurPage
          number := NIL
-      ENDIF
-      IF Empty( filename )
-         IF Empty( filename := GetFolder( ::aOpisy[ 50 ] ) )
-            RETURN NIL
-         ENDIF
-         IF Right( filename, 1 ) != "\"
-            filename += "\"
-         ENDIF
-         IF Left( ::DocName, 1 ) != "\"
-            filename += ::DocName + "_page_"
-         ELSE
-            filename += SubStr( ::DocName, 2 ) + "_page_"
-         ENDIF
       ENDIF
 
       IF ::InMemory
          IF number == NIL
-            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ PG_FILE ], filename + AllTrim( Str( xi ) ) + ".emf" ) } )
+            AEval( ::MetaFiles, {| x, xi | RR_Str2File( x[ 1 ], "page" + AllTrim( Str( xi ) ) + ".emf" ) } )
          ELSE
-            RR_Str2File( ::MetaFiles[ number, PG_FILE ], filename + AllTrim( Str( number ) ) + ".emf" )
+            RR_Str2File( ::MetaFiles[ number, 1 ], "page" + AllTrim( Str( number ) ) + ".emf" )
          ENDIF
       ELSE
-         IF number <> NIL
-            COPY FILE ( ::BaseDoc + AllTrim( Str( number ) ) + '.emf' ) TO ( filename + AllTrim( Str( number ) ) + ".emf" )
+         IF number == NIL
+            l := ::CurPage - 1
+            FOR n := 1 TO l
+               COPY FILE ( ::BaseDoc + AllTrim( StrZero( n, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( n, 4 ) ) + ".emf" )
+            END
          ELSE
-            FOR n := 1 TO Len( ::MetaFiles )
-               COPY FILE ( ::BaseDoc + AllTrim( Str( n ) ) + '.emf' ) TO ( filename + AllTrim( Str( n ) ) + ".emf" )
-            NEXT
+            COPY FILE ( ::BaseDoc + AllTrim( StrZero( number, 4 ) ) + '.emf' ) to ( "page" + AllTrim( StrZero( number, 4 ) ) + ".emf" )
          ENDIF
       ENDIF
 
@@ -2982,13 +1914,14 @@ METHOD SaveMetaFiles( number, filename ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrevThumb( nclick ) CLASS HBPrinter
 
-   LOCAL i, spage, oImage
+   LOCAL i, spage
 
-   IF ::IloscStron < 2
+   IF ::iLoscstron == 1
       RETURN NIL
    ENDIF
    IF nclick <> NIL
       ::Page := ::nGroup * 15 + nclick
+      ::PrevShow()
       ::oWinPreview:combo_1:value := ::Page
       RETURN NIL
    ENDIF
@@ -3000,21 +1933,22 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
    spage := ::nGroup * 15
 
    FOR i := 1 TO 15
-      oImage := GetControlObjectByHandle( ::aTH[ i, TH_HWND ] )
-      IF i + spage > ::IloscStron
-         oImage:Visible := .F.
+      IF i + spage > ::iLoscstron
+         HideWindow( ::AtH[ i, 5 ] )
       ELSE
-         IF ::MetaFiles[ i + spage, PG_VERT_SIZE ] >= ::MetaFiles[ i + spage, PG_HORZ_SIZE ]
-            ::aTH[ i, TH_HEIGHT ] := ::dy - 10
-            ::aTH[ i, TH_WIDTH ] := ::aTH[ i, TH_HEIGHT ] * ::MetaFiles[ i + spage, PG_HORZ_SIZE ] / ::MetaFiles[ i + spage, PG_VERT_SIZE ]
+         IF ::MetaFiles[ i + spage, 2 ] >= ::MetaFiles[ i + spage, 3 ]
+            ::AtH[ i, 3 ] := ::dy - 5
+            ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ i + spage, 3 ] / ::MetaFiles[ i + spage, 2 ] - 5
          ELSE
-            ::aTH[ i, TH_WIDTH ] := ::dx - 10
-            ::aTH[ i, TH_HEIGHT ] := ::aTH[ i, TH_WIDTH ] * ::MetaFiles[ i + spage, PG_VERT_SIZE ] / ::MetaFiles[ i + spage, PG_HORZ_SIZE ]
+            ::AtH[ i, 4 ] := ::dx - 5
+            ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ i + spage, 2 ] / ::MetaFiles[ i + spage, 3 ] - 5
          ENDIF
-
-         oImage:SizePos( NIL, NIL, ::aTH[ i, TH_WIDTH ], ::aTH[ i, TH_HEIGHT ] )
-         oImage:HBitMap := RR_PlayThumb( ::aTH[ i ], ::MetaFiles[ i + spage ], LTrim( Str( i + spage ) ), ::InMemory )
-         oImage:Visible := .T.
+         IF ::InMemory
+            RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i + spage ], AllTrim( Str( i + spage ) ), i, ::hData )
+         ELSE
+            RR_PlayFThumb( ::AtH[ i ], ::MetaFiles[ i + spage, 1 ], AllTrim( Str( i + spage ) ), i, ::hData )
+         ENDIF
+         CShowControl( ::AtH[ i, 5 ] )
       ENDIF
    NEXT
 
@@ -3023,32 +1957,21 @@ METHOD PrevThumb( nclick ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrevShow() CLASS HBPrinter
 
-   LOCAL spos
+   LOCAL spos, hImage
 
    IF ::Thumbnails
       ::PrevThumb()
    ENDIF
 
-   spos := Array( 2 )
-   IF Empty( ::aZoom[ 4 ] )
-      spos[ 1 ] := 0
-   ELSE
-      spos[ 1 ] := GetScrollpos( ::aHS[ PREVIEW_PAGE_HWND ], SB_HORZ ) / ::aZoom[ 4 ]
-   ENDIF
-   IF Empty( ::aZoom[ 3 ] )
-      spos[ 2 ] := 0
-   ELSE
-      spos[ 2 ] := GetScrollpos( ::aHS[ PREVIEW_PAGE_HWND ], SB_VERT ) / ::aZoom[ 3 ]
-   ENDIF
+   spos := { GetScrollpos( ::aHS[ 5, 7 ], SB_HORZ ) / ::aZoom[ 4 ], GetScrollpos( ::aHS[ 5, 7 ], SB_VERT ) / ( ::aZoom[ 3 ] ) }
 
-   IF ::MetaFiles[ ::Page, PG_VERT_SIZE ] >= ::MetaFiles[ ::Page, PG_HORZ_SIZE ]
-      ::aZoom[ 3 ] := ( ::aHS[ PREVIEW_PAGE_BOTTOM ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ PREVIEW_PAGE_BOTTOM ] * ::MetaFiles[ ::Page, PG_HORZ_SIZE ] / ::MetaFiles[ ::Page, PG_VERT_SIZE ] ) * ::Scale - 60
+   IF ::MetaFiles[ ::Page, 2 ] >= ::MetaFiles[ ::Page, 3 ]
+      ::aZoom[ 3 ] := ( ::aHS[ 5, 3 ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ 5, 3 ] * ::MetaFiles[ ::Page, 3 ] / ::MetaFiles[ ::Page, 2 ] ) * ::Scale - 60
    ELSE
-      ::aZoom[ 3 ] := ( ::aHS[ PREVIEW_PAGE_RIGHT ] * ::MetaFiles[ ::Page, PG_VERT_SIZE ] / ::MetaFiles[ ::Page, PG_HORZ_SIZE ] ) * ::Scale - 60
-      ::aZoom[ 4 ] := ( ::aHS[ PREVIEW_PAGE_RIGHT ] ) * ::Scale - 60
+      ::aZoom[ 3 ] := ( ::aHS[ 5, 4 ] * ::MetaFiles[ ::Page, 2 ] / ::MetaFiles[ ::Page, 3 ] ) * ::Scale - 60
+      ::aZoom[ 4 ] := ( ::aHS[ 5, 4 ] ) * ::Scale - 60
    ENDIF
-
    ::oWinPreview:StatusBar:Item( 1, ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) )
 
    IF ::aZoom[ 3 ] < 30
@@ -3056,20 +1979,30 @@ METHOD PrevShow() CLASS HBPrinter
       ::PrevShow()
       MsgStop( ::aOpisy[ 18 ], "" )
    ENDIF
+   HideWindow( ::aHS[ 6, 7 ] )
+   ::oWinPagePreview:i1:SizePos(,, ::aZoom[ 4 ], ::aZoom[ 3 ] )
+   ::oWinPagePreview:VirtualHeight := ::aZoom[ 3 ] + 20
+   ::oWinPagePreview:VirtualWidth := ::aZoom[ 4 ] + 20
 
-   WITH OBJECT ::oWinPagePreview
-      :Visible := .F.
-      :VirtualHeight := ::aZoom[ 3 ] + 20
-      :VirtualWidth := ::aZoom[ 4 ] + 20
-      :i1:SizePos( NIL, NIL, ::aZoom[ 4 ], ::aZoom[ 3 ] )
-      :i1:HBitMap := RR_PlayPreview( :hWnd, ::MetaFiles[ ::Page ], ::aZoom, ::InMemory )
-      :Visible := .T.
-   END WIDTH
+   IF ::InMemory
+      hImage := RR_PreviewPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page ], ::aZoom )
+   ELSE
+      hImage := RR_PreviewFPlay( ::aHS[ 6, 7 ], ::MetaFiles[ ::Page, 1 ], ::aZoom )
+   ENDIF
+   if ! ValidHandler( hImage )
+      ::Scale := ::Scale / 1.25
+      ::PrevShow()
+      MsgStop( ::aOpisy[ 18 ], ::aOpisy[ 1 ] )
+   ELSE
+      ::oWinPagePreview:i1:hbitmap := hImage
+   ENDIF
+   RR_ScrollWindow( ::aHS[ 5, 7 ], -spos[ 1 ] * ::aZoom[ 4 ], -spos[ 2 ] * ::aZoom[ 3 ] )
+   CShowControl( ::aHS[ 6, 7 ] )
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevPrint( nPage ) CLASS HBPrinter
+METHOD PrevPrint( n1 ) CLASS HBPrinter
 
    LOCAL i, ilkop, toprint := .T.
 
@@ -3080,11 +2013,15 @@ METHOD PrevPrint( nPage ) CLASS HBPrinter
    ::PreviewMode := .F.
    ::PrintingEMF := .T.
    RR_LaLaBye( 1, ::hData )
-   IF nPage <> NIL
+   IF n1 <> NIL
       ::StartDoc()
-      ::SetPage( ::MetaFiles[ nPage, PG_ORIENTATION ], ::MetaFiles[ nPage, PG_PAPER_SIZE ] )
+      ::SetPage( ::MetaFiles[ n1, 6 ], ::MetaFiles[ n1, 7 ] )
       ::StartPage()
-      RR_PlayEnhMetaFile( ::MetaFiles[ nPage ], ::hDCRef, ::InMemory )
+      IF ::InMemory
+         RR_PlayEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
+      ELSE
+         RR_PlayFEnhMetaFile( ::MetaFiles[ n1 ], ::hDCRef )
+      END
       ::EndPage()
       ::EndDoc()
    ELSE
@@ -3096,7 +2033,7 @@ METHOD PrevPrint( nPage ) CLASS HBPrinter
             RETURN NIL
          ENDIF
          ::StartDoc()
-         FOR i := Max( 1, ::nFromPage ) TO Min( ::IloscStron, ::nToPage )
+         FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
             DO CASE
             CASE ::PrintOpt == 1 ; toprint := .T.
             CASE ::PrintOpt == 2 .OR. ::PrintOpt == 4 ; toprint := !( i % 2 == 0 )
@@ -3104,26 +2041,36 @@ METHOD PrevPrint( nPage ) CLASS HBPrinter
             ENDCASE
             IF toprint
                toprint := .F.
-               ::SetPage( ::MetaFiles[ i, PG_ORIENTATION ], ::MetaFiles[ i, PG_PAPER_SIZE ] )
+               ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
                ::StartPage()
-               RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef, ::InMemory )
+               IF ::InMemory
+                  RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+               ELSE
+                  RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+               END
+
                ::EndPage()
             ENDIF
          NEXT i
          ::EndDoc()
+
          IF ::PrintOpt == 4 .OR. ::PrintOpt == 5
             MsgBox( ::aOpisy[ 30 ], ::aOpisy[ 29 ] )
             ::StartDoc()
-            FOR i := Max( 1, ::nFromPage ) TO Min( ::IloscStron, ::nToPage )
+            FOR i := Max( 1, ::nFromPage ) TO Min( ::iLoscstron, ::nToPage )
                DO CASE
                CASE ::PrintOpt == 4 ; toprint := ( i % 2 == 0 )
                CASE ::PrintOpt == 5 ; toprint := !( i % 2 == 0 )
                ENDCASE
                IF toprint
                   toprint := .F.
-                  ::SetPage( ::MetaFiles[ i, PG_ORIENTATION ], ::MetaFiles[ i, PG_PAPER_SIZE ] )
+                  ::SetPage( ::MetaFiles[ i, 6 ], ::MetaFiles[ i, 7 ] )
                   ::StartPage()
-                  RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef, ::InMemory )
+                  IF ::InMemory
+                     RR_PlayEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+                  ELSE
+                     RR_PlayFEnhMetaFile( ::MetaFiles[ i ], ::hDCRef )
+                  END
                   ::EndPage()
                ENDIF
             NEXT i
@@ -3141,17 +2088,7 @@ METHOD PrevPrint( nPage ) CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
 
-   LOCAL i, cName, oSplit, oPages, oImg
-
-   IF ! ::PreviewMode
-      RETURN NIL
-   ENDIF
-
-   ::IloscStron := Len( ::MetaFiles )
-   IF ::IloscStron < 1
-      MsgStop( ::aOpisy[ 51 ], "" )
-      RETURN NIL
-   ENDIF
+   LOCAL i, pi, cName
 
    IF ! HB_ISLOGICAL( lWait )
       lWait := .T.
@@ -3160,61 +2097,72 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       lSize := ! lWait
    ENDIF
 
+   ::iLoscstron := Len( ::MetaFiles )
    ::nGroup := -1
    ::Page := 1
-   ::aTH := {}
+   ::AtH := {}
    ::aHS := {}
    ::aZoom := { 0, 0, 0, 0 }
    ::Scale := ::PreviewScale
    ::nPages := {}
 
    IF ::nWhatToPrint < 2
-      ::nToPage := ::IloscStron
-   ELSE
-      ::nToPage := Min( ::IloscStron, ::nToPage )
+      ::nToPage := ::iLoscstron
    ENDIF
 
-   AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, 0 } )
-   IF ::PreviewRect[ 3 ] > 0 .AND. ::PreviewRect[ 4 ] > 0
-      ::aHS[ PREVIEW_RECT_TOP ]    := ::PreviewRect[ 1 ]
-      ::aHS[ PREVIEW_RECT_LEFT ]   := ::PreviewRect[ 2 ]
-      ::aHS[ PREVIEW_RECT_BOTTOM ] := ::PreviewRect[ 3 ]
-      ::aHS[ PREVIEW_RECT_RIGHT ]  := ::PreviewRect[ 4 ]
-   ELSE
-      RR_GetDesktopArea( ::aHS[ PREVIEW_RECT ] )
-      ::aHS[ PREVIEW_RECT_TOP ] += 10
-      ::aHS[ PREVIEW_RECT_LEFT ] += 10
-      ::aHS[ PREVIEW_RECT_BOTTOM ] -= 10
-      ::aHS[ PREVIEW_RECT_RIGHT ] -= 10
+   IF ! ::PreviewMode
+      RETURN NIL
    ENDIF
-   ::aHS[ PREVIEW_RECT_HEIGHT ] := ::aHS[ PREVIEW_RECT_BOTTOM ] - ::aHS[ PREVIEW_RECT_TOP ] + 1
-   ::aHS[ PREVIEW_RECT_WIDTH ] := ::aHS[ PREVIEW_RECT_RIGHT ] - ::aHS[ PREVIEW_RECT_LEFT ] + 1
+   AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, 0 } )
+   RR_GetWindowRect( ::aHS[ 1 ] )
+
+   FOR pi := 1 TO ::iLoscstron
+      AAdd( ::nPages, PadL( pi, 4 ) )
+   NEXT pi
+
+   IF ::PreviewRect[ 3 ] > 0 .AND. ::PreviewRect[ 4 ] > 0
+      ::aHS[ 1, 1 ] := ::PreviewRect[ 1 ]
+      ::aHS[ 1, 2 ] := ::PreviewRect[ 2 ]
+      ::aHS[ 1, 3 ] := ::PreviewRect[ 3 ]
+      ::aHS[ 1, 4 ] := ::PreviewRect[ 4 ]
+      ::aHS[ 1, 5 ] := ::PreviewRect[ 3 ] - ::PreviewRect[ 1 ] + 1
+      ::aHS[ 1, 6 ] := ::PreviewRect[ 4 ] - ::PreviewRect[ 2 ] + 1
+   ELSE
+      ::aHS[ 1, 1 ] += 10
+      ::aHS[ 1, 2 ] += 10
+      ::aHS[ 1, 3 ] -= 10
+      ::aHS[ 1, 4 ] -= 10
+      ::aHS[ 1, 5 ] := ::aHS[ 1, 3 ] - ::aHS[ 1, 1 ] + 1
+      ::aHS[ 1, 6 ] := ::aHS[ 1, 4 ] - ::aHS[ 1, 2 ] + 1
+   ENDIF
 
    IF lSize
       IF lWait
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
-            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
-            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
-            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
+            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
+            WIDTH ::aHS[ 1, 6 ] ;
+            HEIGHT ::aHS[ 1, 5 ] - 45 ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            MODAL
+            MODAL ;
+            ON SIZE ::PrevAdjust()
       ELSE
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             PARENT ( cParent ) ;
-            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
-            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
-            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
+            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
+            WIDTH ::aHS[ 1, 6 ] ;
+            HEIGHT ::aHS[ 1, 5 ] - 45 ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
-            ON RELEASE ::CleanOnPrevClose()
+            ON SIZE ::PrevAdjust() ;
+            ON RELEASE ::PrevClose()
       ENDIF
    ELSE
       IF lWait
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
-            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
-            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
-            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
+            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
+            WIDTH ::aHS[ 1, 6 ] ;
+            HEIGHT ::aHS[ 1, 5 ] - 45 ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             MODAL ;
@@ -3222,175 +2170,128 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
       ELSE
          DEFINE WINDOW 0 OBJ ::oWinPreview ;
             PARENT ( cParent ) ;
-            AT ::aHS[ PREVIEW_RECT_TOP ], ::aHS[ PREVIEW_RECT_LEFT ] ;
-            WIDTH ::aHS[ PREVIEW_RECT_WIDTH ] ;
-            HEIGHT ::aHS[ PREVIEW_RECT_HEIGHT ] ;
+            AT ::aHS[ 1, 1 ], ::aHS[ 1, 1 ] ;
+            WIDTH ::aHS[ 1, 6 ] ;
+            HEIGHT ::aHS[ 1, 5 ] - 45 ;
             TITLE ::aOpisy[ 1 ] ;
             ICON 'ZZZ_PRINTICON' ;
             NOSIZE ;
-            ON RELEASE ::CleanOnPrevClose()
+            ON RELEASE ::PrevClose()
       ENDIF
    ENDIF
 
 /*
    DEFINE WINDOW 0 OBJ ::oWinPreview ;
 */
-      ON KEY ESCAPE      OF ( ::oWinPreview ) ACTION ::PrevClose( .T. )
-      ON KEY ADD         OF ( ::oWinPreview ) ACTION ( ::Scale *= 1.25, ::PrevShow() )
-      ON KEY SUBTRACT    OF ( ::oWinPreview ) ACTION ( ::Scale /= 1.25, ::PrevShow() )
-      ON KEY CONTROL + P OF ( ::oWinPreview ) ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
-      ON KEY PRIOR       OF ( ::oWinPreview ) ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
-      ON KEY NEXT        OF ( ::oWinPreview ) ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
+      ::oWinPreview:HotKey( 27, 0, {|| ::oWinPreview:Release() } )
+      ::oWinPreview:HotKey( 107, 0, {|| ::Scale := ::Scale * 1.25, ::PrevShow() } )
+      ::oWinPreview:HotKey( 109, 0, {|| ::Scale := ::Scale / 1.25, ::PrevShow() } )
 
       DEFINE STATUSBAR
          STATUSITEM ::aOpisy[ 15 ] + " " + AllTrim( Str( ::Page ) ) WIDTH 100
          STATUSITEM ::aOpisy[ 16 ] WIDTH 200 ICON 'ZZZ_PRINTICON' ACTION ::PrevPrint( ::Page ) RAISED
-         STATUSITEM ::aOpisy[ 17 ] + " " + AllTrim( Str( ::IloscStron ) ) WIDTH 100
+         STATUSITEM ::aOpisy[ 17 ] + " " + AllTrim( Str( ::iLoscstron ) ) WIDTH 100
       END STATUSBAR
 
-      DEFINE SPLITBOX OBJ oSplit
-         DEFINE TOOLBAR TB1 BUTTONSIZE iif( hb_osisWin10(), 56, 50 ), 37 SIZE 8 FLAT BREAK
-            BUTTON B1 CAPTION ::aOpisy[ 02 ] PICTURE 'hbprint_close' ACTION ::PrevClose( .T. )
-            BUTTON B2 CAPTION ::aOpisy[ 03 ] PICTURE 'hbprint_print' ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
+      @ 15, ::aHS[ 1, 6 ] - 150 LABEL prl VALUE ::aOpisy[ 12 ] WIDTH 80 HEIGHT 18 SIZE 8 TRANSPARENT
+      @ 13, ::aHS[ 1, 6 ] - 77 COMBOBOX combo_1 ITEMS ::nPages VALUE 1 WIDTH 58 SIZE 8 ;
+         ON CHANGE {|| ::Page := ::CurPage := ::oWinPreview:combo_1:value, ::PrevShow(), ::oWinPagePreview:setfocus() }
+
+      DEFINE SPLITBOX
+         DEFINE TOOLBAR TB1 BUTTONSIZE 50, 37 SIZE 8 FLAT BREAK
+            BUTTON B1 CAPTION ::aOpisy[ 2 ] PICTURE 'hbprint_close' ACTION ::PrevClose()
+            BUTTON B2 CAPTION ::aOpisy[ 3 ] PICTURE 'hbprint_print' ACTION {|| ::prevprint() }
             IF ! ::NoButtonSave
-               BUTTON B3 CAPTION ::aOpisy[ 04 ] PICTURE 'hbprint_save' WHOLEDROPDOWN SEPARATOR
-               DEFINE DROPDOWN MENU BUTTON B3
-                  ITEM ::aOpisy[ 04 ] ACTION ::SaveMetaFiles( ::Page )
-                  ITEM ::aOpisy[ 33 ] ACTION { |fn| fn := PutFile( { { ::aOpisy[ 35 ], '*.emf' }, { ::aOpisy[ 36 ], '*.*' } }, NIL, GetStartUpFolder(), .T., ::DocName ), iif( Empty( fn ), NIL, ::SaveMetaFiles( ::Page, fn ) ) }
-                  ITEM ::aOpisy[ 34 ] ACTION ::SaveMetaFiles()
-              END MENU
+               BUTTON B3 CAPTION ::aOpisy[ 4 ] PICTURE 'hbprint_save' ACTION {|| ::SaveMetaFiles() }
             ENDIF
-            IF ::IloscStron > 1
-               BUTTON B4 CAPTION ::aOpisy[ 05 ] PICTURE 'hbprint_top' ACTION {|| ::Page := 1, ::oWinPreview:combo_1:value := ::Page }
-               BUTTON B5 CAPTION ::aOpisy[ 06 ] PICTURE 'hbprint_back' ACTION {|| ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page }
-               BUTTON B6 CAPTION ::aOpisy[ 07 ] PICTURE 'hbprint_next' ACTION {|| ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page }
-               BUTTON B7 CAPTION ::aOpisy[ 08 ] PICTURE 'hbprint_end' ACTION {|| ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page } SEPARATOR
+            IF ::iLoscstron > 1
+               BUTTON B4 CAPTION ::aOpisy[ 5 ] PICTURE 'hbprint_top' ACTION {|| ::Page := ::CurPage := 1, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B5 CAPTION ::aOpisy[ 6 ] PICTURE 'hbprint_back' ACTION {|| ::Page := ::CurPage := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B6 CAPTION ::aOpisy[ 7 ] PICTURE 'hbprint_next' ACTION {|| ::Page := ::CurPage := iif( ::Page == ::iLoscstron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
+               BUTTON B7 CAPTION ::aOpisy[ 8 ] PICTURE 'hbprint_end' ACTION {|| ::Page := ::CurPage := ::iLoscstron, ::oWinPreview:combo_1:value := ::Page, ::PrevShow() }
             ENDIF
-            BUTTON B8 CAPTION ::aOpisy[ 09 ] PICTURE 'hbprint_zoomin' ACTION {|| ::Scale *= 1.25, ::PrevShow() }
+            BUTTON B8 CAPTION ::aOpisy[ 9 ] PICTURE 'hbprint_zoomin' ACTION {|| ::Scale := ::Scale * 1.25, ::PrevShow() }
+            BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale := ::Scale / 1.25, ::PrevShow() }
             IF ! ::NoButtonOptions
-               BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale /= 1.25, ::PrevShow() } SEPARATOR
                BUTTON B10 CAPTION ::aOpisy[ 11 ] PICTURE 'hbprint_option' ACTION {|| ::PrintOption() }
-            ELSE
-               BUTTON B9 CAPTION ::aOpisy[ 10 ] PICTURE 'hbprint_zoomout' ACTION {|| ::Scale /= 1.25, ::PrevShow() }
             ENDIF
-         END TOOLBAR NOBREAK
-
-         FOR i := 1 TO ::IloscStron
-            AAdd( ::nPages, LTrim( Str( i ) ) )
-         NEXT i
-
-         COMBOBOX combo_1 OBJ oPages ;
-            WIDTH 60 ITEMS ::nPages VALUE 1 GRIPPERTEXT ::aOpisy[ 12 ] DISPLAYEDIT ;
-            ON ENTER {|n| n := oPages:ItemValue( oPages:DisplayValue ), iif( n >= 1 .AND. n <= ::IloscStron, oPages:Value := n, oPages:DisplayValue := "" ) } ;
-            ON CHANGE {|| ::Page := oPages:Value, ::PrevShow(), ::oWinPagePreview:SetFocus() }
-         oPages:AutoSize := .T.
-         oPages:AutoSize := .F.
-         oPages:lFixWidth := .T.
-         oSplit:BandGripperOFF( 2 )
-
-         DEFINE WINDOW 0 SPLITCHILD NOSYSMENU NOCAPTION WIDTH 10 HEIGHT 10
-         END WINDOW
-         oSplit:BandGripperOFF( 3 )
-
-         FORCEBREAK
+         END TOOLBAR
 
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:hWnd } )
-         RR_GetClientRect( ::aHS[ PREVIEW_FORM ] )
-
-         AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:TB1:hWnd } )
-         RR_GetClientRect( ::aHS[ PREVIEW_TB ] )
-
+         RR_GetClientRect( ::aHS[ 2 ] )
+         AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:Tb1:hWnd } )
+         RR_GetClientRect( ::aHS[ 3 ] )
          AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPreview:StatusBar:hWnd } )
-         RR_GetClientRect( ::aHS[ PREVIEW_SB ] )
+         RR_GetClientRect( ::aHS[ 4 ] )
 
          DEFINE WINDOW 0 OBJ ::oWinPagePreview ;
-            WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 15 ;
-            HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] - 10 ;
-            VIRTUAL WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 5 ;
-            VIRTUAL HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] ;
+            WIDTH ::aHS[ 2, 6 ] - 15 ;
+            HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] - 10 ;
+            VIRTUAL WIDTH ::aHS[ 2, 6 ] - 5 ;
+            VIRTUAL HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] ;
             TITLE ::aOpisy[ 13 ] ;
             SPLITCHILD ;
             GRIPPERTEXT "P" ;
             NOSYSMENU ;
+            NOCAPTION ;
             ON MOUSECLICK ::oWinPagePreview:setfocus()
 
             ::oWinPagePreview:VScrollbar:nLineSkip := 20
             ::oWinPagePreview:HScrollbar:nLineSkip := 20
-
             AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:hWnd } )
-            RR_GetClientRect( ::aHS[ PREVIEW_PAGE ] )
-
-            @ ::aHS[ PREVIEW_PAGE_TOP ] + 10, ::aHS[ PREVIEW_PAGE_LEFT ] + 10 IMAGE i1 ;
-               PICTURE "" ;
-               WIDTH ::aHS[ PREVIEW_PAGE_WIDTH ] - 10 ;
-               HEIGHT ::aHS[ PREVIEW_PAGE_HEIGHT ] - 10
-
+            RR_GetClientRect( ::aHS[ 5 ] )
+            @ ::aHS[ 5, 2 ] + 10, ::aHS[ 5, 1 ] + 10 IMAGE I1 PICTURE "" WIDTH ::aHS[ 5, 6 ] - 10 HEIGHT ::aHS[ 5, 5 ] - 10
             AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinPagePreview:i1:hWnd } )
-            RR_GetClientRect( ::aHS[ PREVIEW_IMAGE ] )
-
-            ON KEY ESCAPE      ACTION ::PrevClose( .T. )
-            ON KEY ADD         ACTION ( ::Scale *= 1.25, ::PrevShow() )
-            ON KEY SUBTRACT    ACTION ( ::Scale /= 1.25, ::PrevShow() )
-            ON KEY CONTROL + P ACTION ( ::PrevPrint(), iif( ::ClsPreview, ::PrevClose( .F. ), NIL ) )
-            IF ::IloscStron > 1
-               ON KEY PRIOR    ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
-               ON KEY NEXT     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
-               ON KEY END      ACTION ( ::Page := ::IloscStron, ::oWinPreview:combo_1:value := ::Page )
-               ON KEY HOME     ACTION ( ::Page := 1, ::oWinPreview:combo_1:value := ::Page )
-               ON KEY LEFT     ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
-               ON KEY UP       ACTION ( ::Page := iif( ::Page == 1, 1, ::Page - 1 ), ::oWinPreview:combo_1:value := ::Page )
-               ON KEY RIGHT    ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
-               ON KEY DOWN     ACTION ( ::Page := iif( ::Page == ::IloscStron, ::Page, ::Page + 1 ), ::oWinPreview:combo_1:value := ::Page )
-            ENDIF
+            RR_GetClientRect( ::aHS[ 6 ] )
          END WINDOW
 
-         IF ::Thumbnails .AND. ::IloscStron > 1
+         IF ::Thumbnails .AND. ::iLoscstron > 1
             DEFINE WINDOW 0 OBJ ::oWinThumbs ;
-               WIDTH ::aHS[ PREVIEW_FORM_WIDTH ] - 15 ;
-               HEIGHT ::aHS[ PREVIEW_FORM_HEIGHT ] - ::aHS[ PREVIEW_TB_HEIGHT ] - ::aHS[ PREVIEW_SB_HEIGHT ] - 10 ;
+               WIDTH ::aHS[ 2, 6 ] - 15 ;
+               HEIGHT ::aHS[ 2, 5 ] - ::aHS[ 3, 5 ] - ::aHS[ 4, 5 ] - 10 ;
                TITLE ::aOpisy[ 14 ] ;
                SPLITCHILD ;
                GRIPPERTEXT "T"
 
                AAdd( ::aHS, { 0, 0, 0, 0, 0, 0, ::oWinThumbs:hWnd } )
-               RR_GetClientRect( ::aHS[ PREVIEW_THUMBS ] )
-
-               ::dx := ( ::oWinPagePreview:ClientWidth - 10 ) / 5
-               ::dy := ( ::oWinPagePreview:ClientHeight - 10 ) / 3
+               RR_GetClientRect( ::aHS[ 7 ] )
+               ::dx := ( ::aHS[ 5, 6 ] - 20 ) / 5 - 5
+               ::dy := ::aHS[ 5, 5 ] / 3 - 5
                FOR i := 1 TO 15
-                  AAdd( ::aTH, { 0, 0, 0, 0, 0 } )
-                  IF ::MetaFiles[ 1, PG_VERT_SIZE ] >= ::MetaFiles[ 1, PG_HORZ_SIZE ]
-                     ::aTH[ i, TH_HEIGHT ] := ::dy - 10
-                     ::aTH[ i, TH_WIDTH ] := ::aTH[ i, TH_HEIGHT ] * ::MetaFiles[ 1, PG_HORZ_SIZE ] / ::MetaFiles[ 1, PG_VERT_SIZE ]
+                  AAdd( ::AtH, { 0, 0, 0, 0, 0 } )
+                  IF ::MetaFiles[ 1, 2 ] >= ::MetaFiles[ 1, 3 ]
+                     ::AtH[ i, 3 ] := ::dy - 5
+                     ::AtH[ i, 4 ] := ::dx * ::MetaFiles[ 1, 3 ] / ::MetaFiles[ 1, 2 ] - 5
                   ELSE
-                     ::aTH[ i, TH_WIDTH ] := ::dx - 10
-                     ::aTH[ i, TH_HEIGHT ] := ::aTH[ i, TH_WIDTH ] * ::MetaFiles[ 1, PG_VERT_SIZE ] / ::MetaFiles[ 1, PG_HORZ_SIZE ]
+                     ::AtH[ i, 4 ] := ::dx - 5
+                     ::AtH[ i, 3 ] := ::dy * ::MetaFiles[ 1, 2 ] / ::MetaFiles[ 1, 3 ] - 5
                   ENDIF
-                  ::aTH[ i, TH_ROW ] := 10 + Int( ( i - 1 ) / 5 ) * ::dy
-                  ::aTH[ i, TH_COL ] := 10 + ( ( i - 1 ) % 5 ) * ::dx
+                  ::AtH[ i, 1 ] := Int( ( i - 1 ) / 5 ) * ::dy + 5
+                  ::AtH[ i, 2 ] := ( ( i - 1 ) % 5 ) * ::dx + 5
                NEXT
-
-               @ ::aTH[  1, TH_ROW ], ::aTH[  1, TH_COL ] IMAGE it1  ACTION {|| ::PrevThumb(  1 ) } WIDTH ::aTH[  1, TH_WIDTH ] HEIGHT ::aTH[  1, TH_HEIGHT ]
-               @ ::aTH[  2, TH_ROW ], ::aTH[  2, TH_COL ] IMAGE it2  ACTION {|| ::PrevThumb(  2 ) } WIDTH ::aTH[  2, TH_WIDTH ] HEIGHT ::aTH[  2, TH_HEIGHT ]
-               @ ::aTH[  3, TH_ROW ], ::aTH[  3, TH_COL ] IMAGE it3  ACTION {|| ::PrevThumb(  3 ) } WIDTH ::aTH[  3, TH_WIDTH ] HEIGHT ::aTH[  3, TH_HEIGHT ]
-               @ ::aTH[  4, TH_ROW ], ::aTH[  4, TH_COL ] IMAGE it4  ACTION {|| ::PrevThumb(  4 ) } WIDTH ::aTH[  4, TH_WIDTH ] HEIGHT ::aTH[  4, TH_HEIGHT ]
-               @ ::aTH[  5, TH_ROW ], ::aTH[  5, TH_COL ] IMAGE it5  ACTION {|| ::PrevThumb(  5 ) } WIDTH ::aTH[  5, TH_WIDTH ] HEIGHT ::aTH[  5, TH_HEIGHT ]
-               @ ::aTH[  6, TH_ROW ], ::aTH[  6, TH_COL ] IMAGE it6  ACTION {|| ::PrevThumb(  6 ) } WIDTH ::aTH[  6, TH_WIDTH ] HEIGHT ::aTH[  6, TH_HEIGHT ]
-               @ ::aTH[  7, TH_ROW ], ::aTH[  7, TH_COL ] IMAGE it7  ACTION {|| ::PrevThumb(  7 ) } WIDTH ::aTH[  7, TH_WIDTH ] HEIGHT ::aTH[  7, TH_HEIGHT ]
-               @ ::aTH[  8, TH_ROW ], ::aTH[  8, TH_COL ] IMAGE it8  ACTION {|| ::PrevThumb(  8 ) } WIDTH ::aTH[  8, TH_WIDTH ] HEIGHT ::aTH[  8, TH_HEIGHT ]
-               @ ::aTH[  9, TH_ROW ], ::aTH[  9, TH_COL ] IMAGE it9  ACTION {|| ::PrevThumb(  9 ) } WIDTH ::aTH[  9, TH_WIDTH ] HEIGHT ::aTH[  9, TH_HEIGHT ]
-               @ ::aTH[ 10, TH_ROW ], ::aTH[ 10, TH_COL ] IMAGE it10 ACTION {|| ::PrevThumb( 10 ) } WIDTH ::aTH[ 10, TH_WIDTH ] HEIGHT ::aTH[ 10, TH_HEIGHT ]
-               @ ::aTH[ 11, TH_ROW ], ::aTH[ 11, TH_COL ] IMAGE it11 ACTION {|| ::PrevThumb( 11 ) } WIDTH ::aTH[ 11, TH_WIDTH ] HEIGHT ::aTH[ 11, TH_HEIGHT ]
-               @ ::aTH[ 12, TH_ROW ], ::aTH[ 12, TH_COL ] IMAGE it12 ACTION {|| ::PrevThumb( 12 ) } WIDTH ::aTH[ 12, TH_WIDTH ] HEIGHT ::aTH[ 12, TH_HEIGHT ]
-               @ ::aTH[ 13, TH_ROW ], ::aTH[ 13, TH_COL ] IMAGE it13 ACTION {|| ::PrevThumb( 13 ) } WIDTH ::aTH[ 13, TH_WIDTH ] HEIGHT ::aTH[ 13, TH_HEIGHT ]
-               @ ::aTH[ 14, TH_ROW ], ::aTH[ 14, TH_COL ] IMAGE it14 ACTION {|| ::PrevThumb( 14 ) } WIDTH ::aTH[ 14, TH_WIDTH ] HEIGHT ::aTH[ 14, TH_HEIGHT ]
-               @ ::aTH[ 15, TH_ROW ], ::aTH[ 15, TH_COL ] IMAGE it15 ACTION {|| ::PrevThumb( 15 ) } WIDTH ::aTH[ 15, TH_WIDTH ] HEIGHT ::aTH[ 15, TH_HEIGHT ]
+               @ ::AtH[ 1, 1 ], ::AtH[ 1, 2 ] IMAGE it1 PICTURE "" ACTION {|| ::PrevThumb( 1 ) } WIDTH ::AtH[ 1, 4 ] HEIGHT ::AtH[ 1, 3 ]
+               @ ::AtH[ 2, 1 ], ::AtH[ 2, 2 ] IMAGE it2 PICTURE "" ACTION {|| ::PrevThumb( 2 ) } WIDTH ::AtH[ 2, 4 ] HEIGHT ::AtH[ 2, 3 ]
+               @ ::AtH[ 3, 1 ], ::AtH[ 3, 2 ] IMAGE it3 PICTURE "" ACTION {|| ::PrevThumb( 3 ) } WIDTH ::AtH[ 3, 4 ] HEIGHT ::AtH[ 3, 3 ]
+               @ ::AtH[ 4, 1 ], ::AtH[ 4, 2 ] IMAGE it4 PICTURE "" ACTION {|| ::PrevThumb( 4 ) } WIDTH ::AtH[ 4, 4 ] HEIGHT ::AtH[ 4, 3 ]
+               @ ::AtH[ 5, 1 ], ::AtH[ 5, 2 ] IMAGE it5 PICTURE "" ACTION {|| ::PrevThumb( 5 ) } WIDTH ::AtH[ 5, 4 ] HEIGHT ::AtH[ 5, 3 ]
+               @ ::AtH[ 6, 1 ], ::AtH[ 6, 2 ] IMAGE it6 PICTURE "" ACTION {|| ::PrevThumb( 6 ) } WIDTH ::AtH[ 6, 4 ] HEIGHT ::AtH[ 6, 3 ]
+               @ ::AtH[ 7, 1 ], ::AtH[ 7, 2 ] IMAGE it7 PICTURE "" ACTION {|| ::PrevThumb( 7 ) } WIDTH ::AtH[ 7, 4 ] HEIGHT ::AtH[ 7, 3 ]
+               @ ::AtH[ 8, 1 ], ::AtH[ 8, 2 ] IMAGE it8 PICTURE "" ACTION {|| ::PrevThumb( 8 ) } WIDTH ::AtH[ 8, 4 ] HEIGHT ::AtH[ 8, 3 ]
+               @ ::AtH[ 9, 1 ], ::AtH[ 9, 2 ] IMAGE it9 PICTURE "" ACTION {|| ::PrevThumb( 9 ) } WIDTH ::AtH[ 9, 4 ] HEIGHT ::AtH[ 9, 3 ]
+               @ ::AtH[ 10, 1 ], ::AtH[ 10, 2 ] IMAGE it10 PICTURE "" ACTION {|| ::PrevThumb( 10 ) } WIDTH ::AtH[ 10, 4 ] HEIGHT ::AtH[ 10, 3 ]
+               @ ::AtH[ 11, 1 ], ::AtH[ 11, 2 ] IMAGE it11 PICTURE "" ACTION {|| ::PrevThumb( 11 ) } WIDTH ::AtH[ 11, 4 ] HEIGHT ::AtH[ 11, 3 ]
+               @ ::AtH[ 12, 1 ], ::AtH[ 12, 2 ] IMAGE it12 PICTURE "" ACTION {|| ::PrevThumb( 12 ) } WIDTH ::AtH[ 12, 4 ] HEIGHT ::AtH[ 12, 3 ]
+               @ ::AtH[ 13, 1 ], ::AtH[ 13, 2 ] IMAGE it13 PICTURE "" ACTION {|| ::PrevThumb( 13 ) } WIDTH ::AtH[ 13, 4 ] HEIGHT ::AtH[ 13, 3 ]
+               @ ::AtH[ 14, 1 ], ::AtH[ 14, 2 ] IMAGE it14 PICTURE "" ACTION {|| ::PrevThumb( 14 ) } WIDTH ::AtH[ 14, 4 ] HEIGHT ::AtH[ 14, 3 ]
+               @ ::AtH[ 15, 1 ], ::AtH[ 15, 2 ] IMAGE it15 PICTURE "" ACTION {|| ::PrevThumb( 15 ) } WIDTH ::AtH[ 15, 4 ] HEIGHT ::AtH[ 15, 3 ]
 
                cName := ::oWinThumbs:Name
-               FOR i := 1 TO Min( ::IloscStron, 15 )
-                  oImg := GetControlObject( "it" + AllTrim( Str( i ) ), cName )
-                  ::aTH[ i, TH_HWND ] := oImg:hWnd
-                  oImg:HBitMap := RR_PlayThumb( ::aTH[ i ], ::MetaFiles[ i ], LTrim( Str( i ) ), ::InMemory )
+               FOR i := 1 TO 15
+                  ::AtH[ i, 5 ] := GetControlHandle( "it" + AllTrim( Str( i ) ), cName )
+                  RR_PlayThumb( ::AtH[ i ], ::MetaFiles[ i ], AllTrim( Str( i ) ), i, ::hData )
+                  IF i >= ::iLoscstron
+                     EXIT
+                  ENDIF
                NEXT
             END WINDOW
          ENDIF
@@ -3404,20 +2305,22 @@ METHOD Preview( cParent, lWait, lSize ) CLASS HBPrinter
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD PrevClose( lEsc ) CLASS HBPrinter
+METHOD PrevAdjust() CLASS HBPrinter
 
-   ::lEscaped := lEsc
-   ::oWinPreview:Release()
+   ::oWinPreview:prl:col := ::oWinPreview:width - 150
+   ::oWinPreview:combo_1:col := ::oWinPreview:width - 77
 
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD CleanOnPrevClose() CLASS HBPrinter
+METHOD PrevClose() CLASS HBPrinter
 
    ::oWinPagePreview:Release()
-   IF ::IloscStron > 1 .AND. ::Thumbnails
+   IF ::iLoscstron > 1 .AND. ::Thumbnails
       ::oWinThumbs:Release()
    ENDIF
+   ::oWinPreview:Release()
+
    ::oWinPagePreview := NIL
    ::oWinThumbs := NIL
    ::oWinPreview := NIL
@@ -3427,79 +2330,82 @@ METHOD CleanOnPrevClose() CLASS HBPrinter
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 METHOD PrintOption() CLASS HBPrinter
 
-   LOCAL nLen := Len( LTrim( Str( ::IloscStron ) ) ), oFrom, oTo, oCopies, oWinPrOpt
+   LOCAL OKprint := .F.
 
-   DEFINE WINDOW 0 OBJ oWinPrOpt ;
-      AT 270, 346 ;
-      WIDTH 390 HEIGHT 150 ;
-      CLIENTAREA ;
-      TITLE ::aOpisy[ 19 ] ;
-      ICON 'ZZZ_PRINTICON' ;
-      MODAL NOSIZE NOSYSMENU SIZE 9
+   IF ! HB_ISOBJECT( ::oWinPrOpt )
+      DEFINE WINDOW 0 OBJ ::oWinPrOpt ;
+            AT 270, 346 ;
+            WIDTH 298 HEIGHT 134 ;
+            TITLE ::aOpisy[ 19 ] ;
+            ICON 'ZZZ_PRINTICON' ;
+            MODAL ;
+            NOSIZE
 
-      @ 002, 005 FRAME PrOptFrame WIDTH 380 HEIGHT 133
+         @ 02, 001 FRAME PrOptFrame WIDTH 291 HEIGHT 105
+         @ 19, 009 LABEL label_11 WIDTH 087 HEIGHT 016 VALUE ::aOpisy[ 20 ] BOLD
+         @ 18, 090 TEXTBOX textFrom WIDTH 033 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
+         @ 19, 134 LABEL label_12 WIDTH 014 HEIGHT 019 VALUE ::aOpisy[ 21 ] BOLD
+         @ 18, 156 TEXTBOX textTo WIDTH 033 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
+         @ 19, 200 LABEL label_18 WIDTH 040 HEIGHT 019 VALUE ::aOpisy[ 22 ] BOLD
+         @ 18, 252 TEXTBOX textCopies WIDTH 030 HEIGHT 021 NUMERIC MAXLENGTH 4 RIGHTALIGN
+         @ 55, 009 LABEL label_13 WIDTH 071 HEIGHT 017 VALUE ::aOpisy[ 23 ] BOLD
+         @ 50, 090 COMBOBOX prnCombo WIDTH 195 VALUE ::PrintOpt ITEMS { ::aOpisy[ 24 ], ::aOpisy[ 25 ], ::aOpisy[ 26 ], ::aOpisy[ 27 ], ::aOpisy[ 28 ] }
 
-      @ 020, 010 LABEL label_11 WIDTH 120 HEIGHT 21 VALUE ::aOpisy[ 20 ] BOLD VCENTERALIGN
-      @ 020, 135 TEXTBOX textFrom OBJ oFrom WIDTH 33 HEIGHT 21 NUMERIC MAXLENGTH nLen RIGHTALIGN ;
-         VALUE Max( ::nFromPage, 1 ) VALID oFrom:Value > 0 .AND. oFrom:Value <= oTo:Value
-      @ 020, 173 LABEL label_12 WIDTH 40 HEIGHT 21 VALUE ::aOpisy[ 21 ] BOLD CENTERALIGN VCENTERALIGN
-      @ 020, 218 TEXTBOX textTo OBJ oTo WIDTH 33 HEIGHT 21 NUMERIC MAXLENGTH nLen RIGHTALIGN ;
-         VALUE ::nToPage VALID oTo:Value >= oFrom:Value .AND. oTo:Value <= ::nToPage
+         @ 82, 090 BUTTON button_14 WIDTH 110 HEIGHT 019 CAPTION "OK" ;
+            ACTION {|| ::nFromPage := ::oWinPrOpt:textFrom:Value, ;
+            ::nToPage := ::oWinPrOpt:textTo:Value, ;
+            ::nCopies := Max( ::oWinPrOpt:textCopies:Value, 1 ), ;
+            ::PrintOpt := ::oWinPrOpt:prnCombo:Value, ;
+            ::oWinPrOpt:Release() }
+      END WINDOW
+   ENDIF
+   ::oWinPrOpt:Title := ::aOpisy[ 19 ]
+   ::oWinPrOpt:textCopies:Value := ::nCopies
+   ::oWinPrOpt:textFrom:Value := Max( ::nFromPage, 1 )
+   ::oWinPrOpt:textTo:Value := iif( ::nWhatToPrint < 2, ::iLoscstron, ::nToPage )
+   ::oWinPrOpt:Activate( .F. )
 
-      @ 020, 260 LABEL label_18 WIDTH 80 HEIGHT 21 VALUE ::aOpisy[ 22 ] BOLD VCENTERALIGN
-      @ 020, 350 TEXTBOX textCopies OBJ oCopies WIDTH 30 HEIGHT 21 NUMERIC MAXLENGTH 6 RIGHTALIGN ;
-         VALUE ::nCopies VALID oCopies:Value > 0
-      @ 060, 010 LABEL label_13 WIDTH 100 HEIGHT 21 VALUE ::aOpisy[ 23 ] BOLD VCENTERALIGN
-      @ 060, 115 COMBOBOX prnCombo WIDTH 265 VALUE ::PrintOpt ITEMS { ::aOpisy[ 24 ], ::aOpisy[ 25 ], ::aOpisy[ 26 ], ::aOpisy[ 27 ], ::aOpisy[ 28 ] }
-
-      @ 100, 160 BUTTON button_14 WIDTH 95 HEIGHT 24 CAPTION ::aOpisy[ 52 ] ;
-         ACTION {|| ::nFromPage := oWinPrOpt:textFrom:Value, ;
-         ::nToPage := oWinPrOpt:textTo:Value, ;
-         ::nCopies := Max( oWinPrOpt:textCopies:Value, 1 ), ;
-         ::PrintOpt := oWinPrOpt:prnCombo:Value, ;
-         oWinPrOpt:Release() }
-
-      @ 100, 285 BUTTON button_15 CAPTION ::aOpisy[ 02 ] ;
-         ACTION oWinPrOpt:Release() ;
-         WIDTH 95 HEIGHT 24
-
-      ON KEY ESCAPE ACTION oWinPrOpt:Release()
-   END WINDOW
-
-   oWinPrOpt:Activate( .F. )
-
-   RETURN .T.
+   RETURN OKPrint
 #endif /* NO_GUI */
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 #pragma BEGINDUMP
 
-#include "oohg.h"
-#include <olectl.h>
-#include <ocidl.h>
+#ifndef WINVER
+   #define WINVER 0x0400
+#endif
+#if ( WINVER < 0x0400 )
+   #undef WINVER
+   #define WINVER 0x0400
+#endif
+
+#ifndef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+#if ( _WIN32_IE < 0x0500 )
+   #undef _WIN32_IE
+   #define _WIN32_IE 0x0500
+#endif
+
+#ifndef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+#if ( _WIN32_WINNT < 0x0400 )
+   #undef _WIN32_WINNT
+   #define _WIN32_WINNT 0x0400
+#endif
+
+#include <windows.h>
 #include <winuser.h>
 #include <wingdi.h>
+#include "hbapi.h"
 #include "hbvm.h"
+#include "hbstack.h"
 #include "hbapiitm.h"
-
-// For devcaps
-#define DI_VERT_SIZE          1
-#define DI_HORZ_SIZE          2
-#define DI_VERT_RES           3
-#define DI_HORZ_RES           4
-#define DI_VERT_LOGPIX        5
-#define DI_HORZ_LOGPIX        6
-#define DI_VERT_PHYSIZE       7
-#define DI_HORZ_PHYSIZE       8
-#define DI_VERT_PHYOFFS       9
-#define DI_HORZ_PHYOFFS       10
-#define DI_VERT_FONTSIZE      11
-#define DI_HORZ_FONTSIZE      12
-#define DI_ROWS               13
-#define DI_COLS               14
-#define DI_ORIENTATION        15
-#define DI_TMASCENT           16
-#define DI_PAPERSIZE          17
+#include <olectl.h>
+#include <ocidl.h>
+#include <commctrl.h>
+#include "oohg.h"
 
 typedef struct _HBPRINTERDATA
 {
@@ -3510,106 +2416,30 @@ typedef struct _HBPRINTERDATA
    PRINTER_DEFAULTS pd;
    PRINTDLG         pdlg;
    DOCINFO          di;
-   int              nFromPage;
-   int              nToPage;
+   INT              nFromPage;
+   INT              nToPage;
    DWORD            charset;
    HFONT            hfont;
    HPEN             hpen;
    HBRUSH           hbrush;
-   int              textjust;
-   int              polyfillmode;
+   INT              textjust;
+   INT              preview;
+   INT              polyfillmode;
    HRGN             hrgn;
    DEVMODE *        pDevMode;
    DEVMODE *        pDevMode2;
    DEVNAMES *       pDevNames;
    PRINTER_INFO_2 * pi2;
    PRINTER_INFO_2 * pi22;
-   char             PrinterName[ 128 ];
-   char             PrinterDefault[ 128 ];
-   int              devcaps[ 18 ];
+   CHAR             PrinterName[ 128 ];
+   CHAR             PrinterDefault[ 128 ];
+   INT              devcaps[ 17 ];
+   HBITMAP          hbmp[ 15 ];
    OSVERSIONINFO    osvi;
 } HBPRINTERDATA, * LPHBPRINTERDATA;
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEHBPRINTERDATA )          /* FUNCTION RR_CreateHBPrinterData() -> hData */
-{
-   LPHBPRINTERDATA lpData = (HBPRINTERDATA *) hb_xgrab( ( sizeof( HBPRINTERDATA ) ) );
-
-   memset( lpData, 0, sizeof( HBPRINTERDATA ) );
-
-   lpData->charset = DEFAULT_CHARSET;
-   lpData->devcaps[ DI_ORIENTATION ] = 1;
-   lpData->polyfillmode = 1;
-   lpData->osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-   GetVersionEx( &lpData->osvi );
-
-   HANDLEret( lpData );
-}
-
-static far int nFontIndex = 0;
-static far BOOL bGetName = FALSE;
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-static int CALLBACK EnumFontsCallBack( LOGFONT FAR *lpLogFont, TEXTMETRIC FAR *lpTextMetric, int nFontType, LPARAM lParam )
-{
-   HB_SYMBOL_UNUSED( lpTextMetric );
-   HB_SYMBOL_UNUSED( nFontType );
-   HB_SYMBOL_UNUSED( lParam );
-
-   ++nFontIndex;
-   if( bGetName )
-   {
-      HB_STORC( lpLogFont->lfFaceName, -1, nFontIndex );
-   }
-   return 1;
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETFONTNAMES )          /* FUNCTION RR_GetFontNames() -> aNames */
-{
-   HDC hDC;
-   FONTENUMPROC lpEnumFontsCallBack;
-
-   WaitForSingleObject( _OOHG_GlobalMutex(), INFINITE );
-
-   hDC = GetDC( NULL );
-   lpEnumFontsCallBack = (FONTENUMPROC) MakeProcInstance( EnumFontsCallBack, GetModuleHandle( NULL ) );
-
-   // Get the number of fonts
-   nFontIndex = 0;
-   bGetName = FALSE;
-   EnumFonts( hDC, NULL, lpEnumFontsCallBack, (LPARAM) NULL );
-
-   // Get the font names into an unsorted array
-   hb_reta( nFontIndex );
-   nFontIndex = 0;
-   bGetName = TRUE;
-   EnumFonts( hDC, NULL, lpEnumFontsCallBack, (LPARAM) NULL );
-
-   ReleaseDC( NULL, hDC );
-
-   ReleaseMutex( _OOHG_GlobalMutex() );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_FINISH )          /* FUNCTION RR_Finish( hData ) -> NIL */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
-
-   ClosePrinter( lpData->hPrinter );
-   hb_xfree( lpData );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PRINTERNAME )          /* FUNCTION RR_PrintName( hData ) -> cName */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
-
-   hb_retc( lpData->PrinterName );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-static void RR_GetDevmode( HBPRINTERDATA *lpData )
+static VOID RR_GetDevmode( HBPRINTERDATA * lpData )
 {
    DWORD dwNeeded = 0;
 
@@ -3617,10 +2447,10 @@ static void RR_GetDevmode( HBPRINTERDATA *lpData )
    lpData->pd.DesiredAccess = PRINTER_ALL_ACCESS;
    OpenPrinter( lpData->PrinterName, &lpData->hPrinter, NULL );
    GetPrinter( lpData->hPrinter, 2, 0, 0, &dwNeeded );
-   lpData->pi2 = (PRINTER_INFO_2 *) GlobalAlloc( GPTR, dwNeeded );
-   GetPrinter( lpData->hPrinter, 2, (LPBYTE) lpData->pi2, dwNeeded, &dwNeeded );
-   lpData->pi22 = (PRINTER_INFO_2 *) GlobalAlloc( GPTR, dwNeeded );
-   GetPrinter( lpData->hPrinter, 2, (LPBYTE) lpData->pi22, dwNeeded, &dwNeeded );
+   lpData->pi2 = ( PRINTER_INFO_2 * ) GlobalAlloc( GPTR, dwNeeded );
+   GetPrinter( lpData->hPrinter, 2, ( LPBYTE ) lpData->pi2, dwNeeded, &dwNeeded );
+   lpData->pi22 = ( PRINTER_INFO_2 * ) GlobalAlloc( GPTR, dwNeeded );
+   GetPrinter( lpData->hPrinter, 2, ( LPBYTE ) lpData->pi22, dwNeeded, &dwNeeded );
 
    if( lpData->pDevMode )
    {
@@ -3631,56 +2461,89 @@ static void RR_GetDevmode( HBPRINTERDATA *lpData )
       if( lpData->pi2->pDevMode == NULL )
       {
          dwNeeded = DocumentProperties( NULL, lpData->hPrinter, lpData->PrinterName, NULL, NULL, 0 );
-         lpData->pDevMode2 = (DEVMODE *) GlobalAlloc( GPTR, dwNeeded );
+         lpData->pDevMode2 = ( DEVMODE * ) GlobalAlloc( GPTR, dwNeeded );
          DocumentProperties( NULL, lpData->hPrinter, lpData->PrinterName, lpData->pDevMode2, NULL, DM_OUT_BUFFER );
          lpData->pi2->pDevMode = lpData->pDevMode2;
       }
    }
-   lpData->hfont = (HFONT) GetCurrentObject( lpData->hDC, OBJ_FONT );
-   lpData->hbrush = (HBRUSH) GetCurrentObject( lpData->hDC, OBJ_BRUSH );
-   lpData->hpen = (HPEN) GetCurrentObject( lpData->hDC, OBJ_PEN );
+   lpData->hfont = ( HFONT ) GetCurrentObject( lpData->hDC, OBJ_FONT );
+   lpData->hbrush = ( HBRUSH ) GetCurrentObject( lpData->hDC, OBJ_BRUSH );
+   lpData->hpen = ( HPEN ) GetCurrentObject( lpData->hDC, OBJ_PEN );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PRINTDIALOG )          /* FUNCTION RR_PrintDialog( { @nFromPage, @nToPage, @nCopies, @nWhatToPrint }, hData ) -> cName */
+HB_FUNC( RR_CREATEHBPRINTERDATA )
 {
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) hb_xgrab( ( sizeof( HBPRINTERDATA ) ) );
+
+   memset( lpData, 0, sizeof( HBPRINTERDATA ) );
+
+   lpData->charset = DEFAULT_CHARSET;
+   lpData->devcaps[ 15 ] = 1;
+   lpData->polyfillmode = 1;
+   lpData->osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
+   GetVersionEx( &lpData->osvi );
+
+   HB_RETNL( ( LONG_PTR ) lpData );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_FINISH )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
+
+   ClosePrinter( lpData->hPrinter );
+   hb_xfree( lpData );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PRINTERNAME )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
+
+   hb_retc( lpData->PrinterName );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PRINTDIALOG )
+{
+   HWND hwnd;
    LPCTSTR pDevice;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    memset( &lpData->pdlg, 0, sizeof( lpData->pdlg ) );
    lpData->pdlg.lStructSize = sizeof( lpData->pdlg );
    lpData->pdlg.Flags = PD_RETURNDC | PD_ALLPAGES;
    lpData->pdlg.nFromPage = 1;
-   lpData->pdlg.nToPage = -1;
-   lpData->pdlg.nMinPage = 1;
-   lpData->pdlg.nMaxPage = -1;
-   lpData->pdlg.nCopies = 1;
-   lpData->pdlg.hwndOwner = GetActiveWindow();
+   lpData->pdlg.nToPage = 1;
+   hwnd = GetActiveWindow();
+   lpData->pdlg.hwndOwner = hwnd;
 
    if( PrintDlg( &lpData->pdlg ) )
    {
       lpData->hDC = lpData->pdlg.hDC;
+      lpData->pDevMode = ( LPDEVMODE ) GlobalLock( lpData->pdlg.hDevMode );
+      lpData->pDevNames = ( LPDEVNAMES ) GlobalLock( lpData->pdlg.hDevNames );
+      /* Note: pDevMode->dmDeviceName is limited to 32 characters.
+       * if the printer name is greater than 32, like network printers,
+       * the RR_GetDC() function return a null handle. So, I'm using
+       * pDevNames instead of pDevMode.
+       * strcpy( lpData->PrinterName, pDevMode->dmDeviceName );
+       */
+      pDevice = ( LPCTSTR ) lpData->pDevNames + lpData->pDevNames->wDeviceOffset;
+      strcpy( lpData->PrinterName, pDevice );
 
       if( lpData->hDC == NULL )
       {
          strcpy( lpData->PrinterName, "" );
+         GlobalUnlock( lpData->pdlg.hDevMode );
+         GlobalUnlock( lpData->pdlg.hDevNames );
       }
       else
       {
-         lpData->pDevMode = (LPDEVMODE) GlobalLock( lpData->pdlg.hDevMode );
-         lpData->pDevNames = (LPDEVNAMES) GlobalLock( lpData->pdlg.hDevNames );
-         /* Note: pDevMode->dmDeviceName is limited to 32 characters.
-          * If the length of the printer's name is greater than 32,
-          * e.g. network printers, the RR_GetDC() function returns a
-          * null handle. So, I'm using pDevNames->wDeviceOffset instead
-          * of pDevMode->dmDeviceName. (E.F.)
-          */
-         pDevice = (LPCTSTR) lpData->pDevNames + lpData->pDevNames->wDeviceOffset;
-         strcpy( lpData->PrinterName, pDevice );
-
-         HB_STORNL3( (long) lpData->pdlg.nFromPage, 1, 1 );
-         HB_STORNL3( (long) lpData->pdlg.nToPage, 1, 2 );
-         HB_STORNL3( (long) lpData->pDevMode->dmCopies > 1 ? lpData->pDevMode->dmCopies : lpData->pdlg.nCopies, 1, 3 );
+         HB_STORNL3( ( LONG ) lpData->pdlg.nFromPage, 1, 1 );
+         HB_STORNL3( ( LONG ) lpData->pdlg.nToPage, 1, 2 );
+         HB_STORNL3( ( LONG ) lpData->pdlg.nCopies, 1, 3 );
          if( ( lpData->pdlg.Flags & PD_PAGENUMS ) == PD_PAGENUMS )
          {
             HB_STORNL3( 2, 1, 4 );
@@ -3697,25 +2560,22 @@ HB_FUNC( RR_PRINTDIALOG )          /* FUNCTION RR_PrintDialog( { @nFromPage, @nT
             }
          }
          RR_GetDevmode( lpData );
-
-         GlobalUnlock( lpData->pdlg.hDevMode );
-         GlobalUnlock( lpData->pdlg.hDevNames );
       }
    }
    else
    {
-      lpData->hDC = NULL;
+      lpData->hDC = 0;
    }
 
    lpData->hDCRef = lpData->hDC;
 
-   HDCret( lpData->hDC );
+   HB_RETNL( ( LONG_PTR ) lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETDC )          /* FUNCTION RR_GetDC( cPrinterName, hData ) -> hDC */
+HB_FUNC( RR_GETDC )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    if( lpData->osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
    {
@@ -3731,54 +2591,49 @@ HB_FUNC( RR_GETDC )          /* FUNCTION RR_GetDC( cPrinterName, hData ) -> hDC 
       strcpy( lpData->PrinterName, hb_parc( 1 ) );
       RR_GetDevmode( lpData );
    }
-
    lpData->hDCRef = lpData->hDC;
-
-   HDCret( lpData->hDC );
+   HB_RETNL( ( LONG_PTR ) lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_RESETPRINTER )          /* FUNCTION RR_ResetPrinter( hData ) -> NIL */
+HB_FUNC( RR_RESETPRINTER )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    if( lpData->pi22 )
    {
-      SetPrinter( lpData->hPrinter, 2, (LPBYTE) lpData->pi22, 0 );
-      GlobalFree( lpData->pi22 );
-      lpData->pi22 = NULL;
+      SetPrinter( lpData->hPrinter, 2, ( LPBYTE ) lpData->pi22, 0 );
    }
+   GlobalFree( lpData->pi22 );
+   lpData->pi22 = NULL;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DELETEDC )          /* FUNCTION RR_DeleteDC( hData ) -> NIL */
+HB_FUNC( RR_DELETEDC )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    if( lpData->pdlg.hDevMode )
       GlobalUnlock( lpData->pdlg.hDevMode );
-   if( lpData->pdlg.hDevNames )
-      GlobalUnlock( lpData->pdlg.hDevNames );
+   if( lpData->pDevMode )
+      GlobalFree( lpData->pDevMode );
    if( lpData->pDevMode2 )
       GlobalFree( lpData->pDevMode2 );
+   if( lpData->pDevNames )
+      GlobalFree( lpData->pDevNames );
    if( lpData->pi2 )
       GlobalFree( lpData->pi2 );
 
-   DeleteObject( lpData->hfont );
-   DeleteObject( lpData->hpen );
-   DeleteObject( lpData->hbrush );
-   DeleteObject( lpData->hrgn );
-   DeleteDC( lpData->hDCRef );
-   lpData->hDCRef = NULL;
+   DeleteDC( ( HDC ) HB_PARNL( 1 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETDEVICECAPS )          /* FUNCTION RR_GetDeviceCaps( @aDeviceCaps, hFont, hData ) -> NIL */
+HB_FUNC( RR_GETDEVICECAPS )
 {
    TEXTMETRIC tm;
    UINT i;
-   HFONT xfont = HFONTparam( 2 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 3 );
+   HFONT xfont = ( HFONT ) HB_PARNL( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 3 );
 
    if( xfont )
    {
@@ -3787,27 +2642,27 @@ HB_FUNC( RR_GETDEVICECAPS )          /* FUNCTION RR_GetDeviceCaps( @aDeviceCaps,
 
    GetTextMetrics( lpData->hDCRef, &tm );
 
-   lpData->devcaps[ DI_VERT_SIZE ]     = GetDeviceCaps( lpData->hDCRef, VERTSIZE );
-   lpData->devcaps[ DI_HORZ_SIZE ]     = GetDeviceCaps( lpData->hDCRef, HORZSIZE );
-   lpData->devcaps[ DI_VERT_RES ]      = GetDeviceCaps( lpData->hDCRef, VERTRES );
-   lpData->devcaps[ DI_HORZ_RES ]      = GetDeviceCaps( lpData->hDCRef, HORZRES );
-   lpData->devcaps[ DI_VERT_LOGPIX ]   = GetDeviceCaps( lpData->hDCRef, LOGPIXELSY );
-   lpData->devcaps[ DI_HORZ_LOGPIX ]   = GetDeviceCaps( lpData->hDCRef, LOGPIXELSX );
-   lpData->devcaps[ DI_VERT_PHYSIZE ]  = GetDeviceCaps( lpData->hDCRef, PHYSICALHEIGHT );
-   lpData->devcaps[ DI_HORZ_PHYSIZE ]  = GetDeviceCaps( lpData->hDCRef, PHYSICALWIDTH );
-   lpData->devcaps[ DI_VERT_PHYOFFS ]  = GetDeviceCaps( lpData->hDCRef, PHYSICALOFFSETY );
-   lpData->devcaps[ DI_HORZ_PHYOFFS ]  = GetDeviceCaps( lpData->hDCRef, PHYSICALOFFSETX );
-   lpData->devcaps[ DI_VERT_FONTSIZE ] = tm.tmHeight;
-   lpData->devcaps[ DI_HORZ_FONTSIZE ] = tm.tmAveCharWidth;
-   lpData->devcaps[ DI_ROWS ]          = (int) ( ( lpData->devcaps[ 3 ] - tm.tmAscent ) / tm.tmHeight );
-   lpData->devcaps[ DI_COLS ]          = (int) ( lpData->devcaps[ 4 ] / tm.tmAveCharWidth );
-   lpData->devcaps[ DI_ORIENTATION ]   = lpData->pi2->pDevMode->dmOrientation;
-   lpData->devcaps[ DI_TMASCENT ]      = (int) tm.tmAscent;
-   lpData->devcaps[ DI_PAPERSIZE ]     = (int) lpData->pi2->pDevMode->dmPaperSize;
+   lpData->devcaps[  0 ] = GetDeviceCaps( lpData->hDCRef, VERTSIZE );
+   lpData->devcaps[  1 ] = GetDeviceCaps( lpData->hDCRef, HORZSIZE );
+   lpData->devcaps[  2 ] = GetDeviceCaps( lpData->hDCRef, VERTRES );
+   lpData->devcaps[  3 ] = GetDeviceCaps( lpData->hDCRef, HORZRES );
+   lpData->devcaps[  4 ] = GetDeviceCaps( lpData->hDCRef, LOGPIXELSY );
+   lpData->devcaps[  5 ] = GetDeviceCaps( lpData->hDCRef, LOGPIXELSX );
+   lpData->devcaps[  6 ] = GetDeviceCaps( lpData->hDCRef, PHYSICALHEIGHT );
+   lpData->devcaps[  7 ] = GetDeviceCaps( lpData->hDCRef, PHYSICALWIDTH );
+   lpData->devcaps[  8 ] = GetDeviceCaps( lpData->hDCRef, PHYSICALOFFSETY );
+   lpData->devcaps[  9 ] = GetDeviceCaps( lpData->hDCRef, PHYSICALOFFSETX );
+   lpData->devcaps[ 10 ] = tm.tmHeight;
+   lpData->devcaps[ 11 ] = tm.tmAveCharWidth;
+   lpData->devcaps[ 12 ] = ( INT ) ( ( lpData->devcaps[2] - tm.tmAscent ) / tm.tmHeight );
+   lpData->devcaps[ 13 ] = ( INT ) ( lpData->devcaps[3] / tm.tmAveCharWidth );
+   lpData->devcaps[ 14 ] = lpData->pi2->pDevMode->dmOrientation;
+   lpData->devcaps[ 15 ] = ( INT ) tm.tmAscent;
+   lpData->devcaps[ 16 ] = ( INT ) lpData->pi2->pDevMode->dmPaperSize;
 
    for( i = 1; i <= hb_parinfa( 1, 0 ); i ++ )
    {
-      HB_STORNI( lpData->devcaps[ i ], 1, i );
+      HB_STORNI( lpData->devcaps[ i - 1 ], 1, i );
    }
 
    if( xfont )
@@ -3817,83 +2672,59 @@ HB_FUNC( RR_GETDEVICECAPS )          /* FUNCTION RR_GetDeviceCaps( @aDeviceCaps,
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETDEVMODE )          /* FUNCTION RR_SetDevMode( nProperty, nValue, lGlobal, hData ) -> hDC */
+HB_FUNC( RR_SETDEVMODE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
    DWORD what = hb_parnl( 1 );
 
    if( what == ( lpData->pi2->pDevMode->dmFields & what ) )
    {
       if( what == DM_ORIENTATION )
-         lpData->pi2->pDevMode->dmOrientation = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmOrientation = ( SHORT ) hb_parni( 2 );
       if( what == DM_PAPERSIZE )
-         lpData->pi2->pDevMode->dmPaperSize = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmPaperSize = ( SHORT) hb_parni( 2 );
       if( what == DM_SCALE )
-         lpData->pi2->pDevMode->dmScale = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmScale = ( SHORT ) hb_parni( 2 );
       if( what == DM_COPIES )
-         lpData->pi2->pDevMode->dmCopies = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmCopies = ( SHORT ) hb_parni( 2 );
       if( what == DM_DEFAULTSOURCE )
-         lpData->pi2->pDevMode->dmDefaultSource = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmDefaultSource = ( SHORT ) hb_parni( 2 );
       if( what == DM_PRINTQUALITY )
-         lpData->pi2->pDevMode->dmPrintQuality = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmPrintQuality = ( SHORT ) hb_parni( 2 );
       if( what == DM_COLOR )
-         lpData->pi2->pDevMode->dmColor = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmColor = ( SHORT ) hb_parni( 2 );
       if( what == DM_DUPLEX )
-         lpData->pi2->pDevMode->dmDuplex = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmDuplex = ( SHORT ) hb_parni( 2 );
       if( what == DM_COLLATE )
-         lpData->pi2->pDevMode->dmCollate = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmCollate = ( SHORT ) hb_parni( 2 );
       if( what == DM_PAPERLENGTH )
-         lpData->pi2->pDevMode->dmPaperLength = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmPaperLength = ( SHORT ) hb_parni( 2 );
       if( what == DM_PAPERWIDTH )
-         lpData->pi2->pDevMode->dmPaperWidth = (SHORT) hb_parni( 2 );
+         lpData->pi2->pDevMode->dmPaperWidth = ( SHORT ) hb_parni( 2 );
 
       DocumentProperties( NULL, lpData->hPrinter, lpData->PrinterName, lpData->pi2->pDevMode, lpData->pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
       if( hb_parl( 3 ) )
       {
-         SetPrinter( lpData->hPrinter, 2, (LPBYTE) lpData->pi2, 0 );
+         SetPrinter( lpData->hPrinter, 2, ( LPBYTE ) lpData->pi2, 0 );
       }
-      if( ResetDC( lpData->hDCRef, lpData->pi2->pDevMode ) )
-      {
-         HDCret( lpData->hDCRef );
-      }
+      ResetDC( lpData->hDCRef, lpData->pi2->pDevMode );
+      HB_RETNL( ( LONG_PTR ) lpData->hDCRef);
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETUSERMODE )          /* FUNCTION RR_SetUserMode( nProperty, nValue, nValue2, hData ) -> hDC */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-   DWORD what = hb_parnl( 1 );
-
-   if( what == ( lpData->pi2->pDevMode->dmFields & DMPAPER_USER ) )
-   {
-      lpData->pi2->pDevMode->dmFields      = lpData->pi2->pDevMode->dmFields | DM_PAPERSIZE | DM_PAPERWIDTH | DM_PAPERLENGTH;
-      lpData->pi2->pDevMode->dmPaperSize   = DMPAPER_USER;
-      lpData->pi2->pDevMode->dmPaperWidth  = (SHORT) hb_parnl( 2 );
-      lpData->pi2->pDevMode->dmPaperLength = (SHORT) hb_parnl( 3 );
-
-      DocumentProperties( NULL, lpData->hPrinter, lpData->PrinterName, lpData->pi2->pDevMode, lpData->pi2->pDevMode, DM_IN_BUFFER | DM_OUT_BUFFER );
-      SetPrinter( lpData->hPrinter, 2, (LPBYTE) lpData->pi2, 0 );
-      if( ResetDC( lpData->hDCRef, lpData->pi2->pDevMode ) )
-      {
-         HDCret( lpData->hDCRef );
-      }
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETDEFAULTPRINTER )          /* FUNCTION RR_GetDefaultPrinter( hData ) -> cName */
+HB_FUNC( RR_GETDEFAULTPRINTER )
 {
    DWORD Needed, Returned;
    DWORD BuffSize = 256;
    LPPRINTER_INFO_5 PrinterInfo;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    if( lpData->osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )
    {
       EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, NULL, 0, &Needed, &Returned );
-      PrinterInfo = (LPPRINTER_INFO_5) LocalAlloc( LPTR, Needed );
-      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, (LPBYTE) PrinterInfo, Needed, &Needed, &Returned );
+      PrinterInfo = ( LPPRINTER_INFO_5 ) LocalAlloc( LPTR, Needed );
+      EnumPrinters( PRINTER_ENUM_DEFAULT, NULL, 5, ( LPBYTE ) PrinterInfo, Needed, &Needed, &Returned );
       strcpy( lpData->PrinterDefault, PrinterInfo->pPrinterName );
       LocalFree( PrinterInfo );
    }
@@ -3910,26 +2741,23 @@ HB_FUNC( RR_GETDEFAULTPRINTER )          /* FUNCTION RR_GetDefaultPrinter( hData
          strtok( lpData->PrinterDefault, "," );
       }
    }
-   else
-   {
-      strcpy( lpData->PrinterDefault, "" );
-   }
    hb_retc( lpData->PrinterDefault );
+   return;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETPRINTERS )          /* FUNCTION RR_GetPrinters( hData ) -> cPrintersData */
+HB_FUNC( RR_GETPRINTERS )
 {
    DWORD dwSize = 0;
    DWORD dwPrinters = 0;
    DWORD i;
-   char * pBuffer;
-   char * cBuffer;
+   CHAR * pBuffer;
+   CHAR * cBuffer;
    PRINTER_INFO_4 * pInfo4;
    PRINTER_INFO_5 * pInfo5;
    DWORD level;
    DWORD flags;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    if( lpData->osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
    {
@@ -3944,24 +2772,24 @@ HB_FUNC( RR_GETPRINTERS )          /* FUNCTION RR_GetPrinters( hData ) -> cPrint
 
    EnumPrinters( flags, NULL, level, NULL, 0, &dwSize, &dwPrinters );
 
-   pBuffer = (char *) GlobalAlloc( GPTR, dwSize );
+   pBuffer = ( CHAR * ) GlobalAlloc( GPTR, dwSize );
    if( pBuffer == NULL )
    {
       hb_retc( ",," );
       return;
    }
-   EnumPrinters( flags, NULL, level, (BYTE *) pBuffer, dwSize, &dwSize, &dwPrinters );
+   EnumPrinters( flags, NULL, level, ( BYTE * ) pBuffer, dwSize, &dwSize, &dwPrinters );
 
    if( dwPrinters == 0 )
    {
       hb_retc( ",," );
       return;
    }
-   cBuffer = (char *) GlobalAlloc( GPTR, dwPrinters * 256 );
+   cBuffer = ( CHAR * ) GlobalAlloc( GPTR, dwPrinters * 256 );
 
    if( lpData->osvi.dwPlatformId == VER_PLATFORM_WIN32_NT )
    {
-      pInfo4 = (PRINTER_INFO_4 *) pBuffer;
+      pInfo4 = ( PRINTER_INFO_4 * ) pBuffer;
 
       for( i = 0; i < dwPrinters; i++ )
       {
@@ -3986,7 +2814,7 @@ HB_FUNC( RR_GETPRINTERS )          /* FUNCTION RR_GetPrinters( hData ) -> cPrint
    }
    else
    {
-      pInfo5 = (PRINTER_INFO_5 *) pBuffer;
+      pInfo5 = ( PRINTER_INFO_5 * ) pBuffer;
 
       for( i = 0; i < dwPrinters; i++ )
       {
@@ -4006,12 +2834,13 @@ HB_FUNC( RR_GETPRINTERS )          /* FUNCTION RR_GetPrinters( hData ) -> cPrint
    hb_retc( cBuffer );
    GlobalFree( pBuffer );
    GlobalFree( cBuffer );
+   return;
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_STARTDOC )          /* FUNCTION RR_StartDoc( cDocName, hData ) -> NIL */
+HB_FUNC( RR_STARTDOC )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    memset( &lpData->di, 0, sizeof( lpData->di ) );
    lpData->di.cbSize = sizeof( lpData->di );
@@ -4020,61 +2849,61 @@ HB_FUNC( RR_STARTDOC )          /* FUNCTION RR_StartDoc( cDocName, hData ) -> NI
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_STARTPAGE )          /* FUNCTION RR_StartPage( hData ) -> NIL */
+HB_FUNC( RR_STARTPAGE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    StartPage( lpData->hDC );
    SetTextAlign( lpData->hDC, TA_BASELINE );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ENDPAGE )          /* FUNCTION RR_EndPage( hData ) -> NIL */
+HB_FUNC( RR_ENDPAGE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    EndPage( lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ENDDOC )          /* FUNCTION RR_EndDoc( hData ) -> NIL */
+HB_FUNC( RR_ENDDOC )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    EndDoc( lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ABORTDOC )          /* FUNCTION RR_AbortDoc( hData ) -> NIL */
+HB_FUNC( RR_ABORTDOC )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    AbortDoc( lpData->hDC );
    DeleteDC( lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DEVICECAPABILITIES )          /* FUNCTION RR_DeviceCapabilities( @cPaperNames, @cBinNames, hData ) -> NIL */
+HB_FUNC( RR_DEVICECAPABILITIES )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 3 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 3 );
    HGLOBAL cBuf, pBuf, nBuf, sBuf, bnBuf, bwBuf, bcBuf;
-   char * cBuffer, * pBuffer, * nBuffer, * sBuffer, * bnBuffer, * bwBuffer, * bcBuffer;
+   CHAR * cBuffer, * pBuffer, * nBuffer, * sBuffer, * bnBuffer, * bwBuffer, * bcBuffer;
    DWORD numpapers, numbins, i;
    LPPOINT lp;
-   char buffer[ sizeof(long) * 8 + 1 ];
+   CHAR buffer[ sizeof( LONG ) * 8 + 1 ];
 
    numbins = DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_BINNAMES, NULL, NULL );
    numpapers = DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_PAPERNAMES, NULL, NULL );
-   if( numpapers != (DWORD) 0 && numpapers != (DWORD) ( ~ 0 ) )
+   if( numpapers != ( DWORD ) 0 && numpapers != ( DWORD ) ( ~ 0 ) )
    {
       pBuf = GlobalAlloc( GPTR, numpapers * 64 );
       nBuf = GlobalAlloc( GPTR, numpapers * sizeof( WORD ) );
       sBuf = GlobalAlloc( GPTR, numpapers * sizeof( POINT ) );
       cBuf = GlobalAlloc( GPTR, numpapers * 128 );
-      pBuffer = (char *) pBuf;
-      nBuffer = (char *) nBuf;
-      sBuffer = (char *) sBuf;
-      cBuffer = (char *) cBuf;
+      pBuffer = ( CHAR * ) pBuf;
+      nBuffer = ( CHAR * ) nBuf;
+      sBuffer = ( CHAR * ) sBuf;
+      cBuffer = ( CHAR * ) cBuf;
       DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_PAPERNAMES, pBuffer, lpData->pi2->pDevMode );
       DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_PAPERS, nBuffer, lpData->pi2->pDevMode );
       DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_PAPERSIZE, sBuffer, lpData->pi2->pDevMode );
@@ -4086,7 +2915,7 @@ HB_FUNC( RR_DEVICECAPABILITIES )          /* FUNCTION RR_DeviceCapabilities( @cP
          strcat( cBuffer, _OOHG_ITOA( * nBuffer, buffer, 10 ) );
          strcat( cBuffer, "," );
 
-         lp = (LPPOINT) sBuffer;
+         lp = ( LPPOINT ) sBuffer;
          strcat( cBuffer, _OOHG_LTOA( lp->x, buffer, 10 ) );
          strcat( cBuffer, "," );
          strcat( cBuffer, _OOHG_LTOA( lp->y, buffer, 10 ) );
@@ -4111,14 +2940,14 @@ HB_FUNC( RR_DEVICECAPABILITIES )          /* FUNCTION RR_DeviceCapabilities( @cP
       hb_storc( "", 1 );
    }
 
-   if( numbins != (DWORD) 0 && numbins != (DWORD) ( ~ 0 ) )
+   if( numbins != ( DWORD ) 0 && numbins != ( DWORD ) ( ~ 0 ) )
    {
       bnBuf = GlobalAlloc( GPTR, numbins * 24 );
       bwBuf = GlobalAlloc( GPTR, numbins * sizeof( WORD ) );
       bcBuf = GlobalAlloc( GPTR, numbins * 64 );
-      bnBuffer = (char *) bnBuf;
-      bwBuffer = (char *) bwBuf;
-      bcBuffer = (char *) bcBuf;
+      bnBuffer = ( CHAR * ) bnBuf;
+      bwBuffer = ( CHAR * ) bwBuf;
+      bcBuffer = ( CHAR * ) bcBuf;
       DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_BINNAMES, bnBuffer, lpData->pi2->pDevMode );
       DeviceCapabilities( lpData->pi2->pPrinterName, lpData->pi2->pPortName, DC_BINS, bwBuffer, lpData->pi2->pDevMode );
       bcBuffer[ 0 ] = 0;
@@ -4149,95 +2978,95 @@ HB_FUNC( RR_DEVICECAPABILITIES )          /* FUNCTION RR_DeviceCapabilities( @cP
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETPOLYFILLMODE )          /* FUNCTION RR_SetPolyFillMode( nMode, hData ) -> nPrevious */
+HB_FUNC( RR_SETPOLYFILLMODE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   if( SetPolyFillMode( lpData->hDC, hb_parni( 1 ) ) )
-   {
-      hb_retni( hb_parni( 1 ) );
-   }
-   else
-   {
-      hb_retni( GetPolyFillMode( lpData->hDC ) );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETTEXTCOLOR )          /* FUNCTION RR_SetTextColor( nColor, hData ) -> nColor */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
-
-   if( SetTextColor( lpData->hDC, (COLORREF) hb_parnl( 1 ) ) != CLR_INVALID )
+   if( SetPolyFillMode( lpData->hDC, ( COLORREF ) hb_parnl( 1 ) ) )
    {
       hb_retnl( hb_parnl( 1 ) );
    }
    else
    {
-      hb_retnl( (long) GetTextColor( lpData->hDC ) );
+      hb_retnl( ( LONG ) GetPolyFillMode( lpData->hDC ) );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETBKCOLOR )          /* FUNCTION RR_SetBackColor( nColor, hData ) -> nColor */
+HB_FUNC( RR_SETTEXTCOLOR )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   if( SetBkColor( lpData->hDC, (COLORREF) hb_parnl( 1 ) ) != CLR_INVALID )
+   if( SetTextColor( lpData->hDC, ( COLORREF ) hb_parnl( 1 ) ) != CLR_INVALID )
    {
       hb_retnl( hb_parnl( 1 ) );
    }
    else
    {
-      hb_retnl( (long) GetBkColor( lpData->hDC ) );
+      hb_retnl( ( LONG ) GetTextColor( lpData->hDC ) );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETBKMODE )          /* FUNCTION RR_SetBkMode( nMode, hData ) -> nPrevious */
+HB_FUNC( RR_SETBKCOLOR )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
+
+   if( SetBkColor( lpData->hDC, ( COLORREF ) hb_parnl( 1 ) ) != CLR_INVALID )
+   {
+      hb_retnl( hb_parnl( 1) );
+   }
+   else
+   {
+      hb_retnl( ( LONG ) GetBkColor( lpData->hDC ) );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_SETBKMODE )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    if( hb_parni( 1 ) == 1 )
    {
-      hb_retni( SetBkMode( lpData->hDC, TRANSPARENT ) );
+      SetBkMode( lpData->hDC, TRANSPARENT );
    }
    else
    {
-      hb_retni( SetBkMode( lpData->hDC, OPAQUE ) );
+      SetBkMode( lpData->hDC, OPAQUE );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DELETEOBJECTS )          /* FUNCTION RR_DeleteObjects( aGDIObjects ) -> NIL */
+HB_FUNC( RR_DELETEOBJECTS )
 {
    UINT i;
 
    for( i = 2; i <= hb_parinfa( 1, 0 ); i++ )
-      DeleteObject( HGDIOBJparam2( 1, i ) );
+      DeleteObject( ( HGDIOBJ ) HB_PARNL2( 1, i ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DELETEIMAGELISTS )          /* FUNCTION RR_DeleteImageLists( aImageLists ) -> NIL */
+HB_FUNC( RR_DELETEIMAGELISTS )
 {
    UINT i;
 
    for( i = 1; i <= hb_parinfa( 1, 0 ); i++ )
-      ImageList_Destroy( HIMAGELISTparam3( 1, i, 1 ) );
+      ImageList_Destroy( ( HIMAGELIST ) HB_PARNL3( 1, i, 1) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SAVEMETAFILE )          /* FUNCTION RR_SaveMetaFile( hOldEMF, cName ) -> hNewEMF */
+HB_FUNC( RR_SAVEMETAFILE )
 {
-   HEMFret( CopyEnhMetaFile( HEMFparam( 1 ), hb_parc( 2 ) ) );
+   CopyEnhMetaFile( ( HENHMETAFILE ) HB_PARNL( 1 ), hb_parc( 2 ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETCURRENTOBJECT )          /* FUNCTION RR_GetCurrentObject( nObject, hData ) -> hObject */
+HB_FUNC( RR_GETCURRENTOBJECT )
 {
-   int what = hb_parni( 1 );
+   INT what = hb_parni( 1 );
    HGDIOBJ hand;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    if( what == 1 )
    {
@@ -4254,35 +3083,35 @@ HB_FUNC( RR_GETCURRENTOBJECT )          /* FUNCTION RR_GetCurrentObject( nObject
          hand = GetCurrentObject( lpData->hDC, OBJ_PEN );
       }
    }
-   HGDIOBJret( hand );
+   HB_RETNL( ( LONG_PTR ) hand );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETSTOCKOBJECT )          /* FUNCTION RR_GetStockObject( nObject ) -> hObject */
+HB_FUNC( RR_GETSTOCKOBJECT )
 {
-   HGDIOBJret( GetStockObject( hb_parni( 1 ) ) );
+   HB_RETNL( ( LONG_PTR ) GetStockObject( hb_parni( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEPEN )          /* FUNCTION RR_CreatePen( nStyle, nWidth, nColor ) -> hPen */
+HB_FUNC( RR_CREATEPEN )
 {
-   HPENret( CreatePen( hb_parni( 1 ), hb_parni( 2 ), (COLORREF) hb_parnl( 3 ) ) );
+   HB_RETNL( ( LONG_PTR ) CreatePen( hb_parni( 1 ), hb_parni( 2 ), ( COLORREF ) hb_parnl( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_MODIFYPEN )          /* FUNCTION RR_ModifyPen( hPen, nStyle, nWidth, nColor ) -> hPen */
+HB_FUNC( RR_MODIFYPEN )
 {
    LOGPEN ppn;
-   int i;
+   INT i;
    HPEN hp;
 
    memset( &ppn, 0, sizeof( LOGPEN ) );
-   i = GetObject( HPENparam( 1 ), sizeof( LOGPEN ), &ppn );
-   if( i > 0 )
+   i = GetObject( ( HPEN ) HB_PARNL( 1 ), sizeof( LOGPEN ), &ppn );
+   if ( i > 0 )
    {
       if( hb_parni( 2 ) >= 0 )
       {
-         ppn.lopnStyle = (UINT) hb_parni( 2 );
+         ppn.lopnStyle = ( UINT ) hb_parni( 2 );
       }
       if( hb_parnl( 3 ) >= 0 )
       {
@@ -4290,131 +3119,112 @@ HB_FUNC( RR_MODIFYPEN )          /* FUNCTION RR_ModifyPen( hPen, nStyle, nWidth,
       }
       if( hb_parnl( 4 ) >= 0 )
       {
-         ppn.lopnColor = (COLORREF) hb_parnl( 4 );
+         ppn.lopnColor = ( COLORREF ) hb_parnl( 4 );
       }
 
       hp = CreatePenIndirect( &ppn );
       if( hp != NULL )
       {
-         DeleteObject( HPENparam( 1 ) );
-         HPENret( hp );
+         DeleteObject( ( HPEN ) HB_PARNL( 1 ) );
+         HB_RETNL( ( LONG_PTR ) hp );
       }
       else
       {
-         HPENret( HPENparam( 1 ) );
+         HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
       }
    }
    else
    {
-      HPENret( HPENparam( 1 ) );
+      HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SELECTPEN )          /* FUNCTION RR_SelectPen( hPen, hData ) -> NIL */
+HB_FUNC( RR_SELECTPEN )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   SelectObject( lpData->hDC, HPENparam( 1 ) );
-   lpData->hpen = HPENparam( 1 );
+   SelectObject( lpData->hDC, ( HPEN ) HB_PARNL( 1 ) );
+   lpData->hpen = ( HPEN ) HB_PARNL(1);
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEBRUSH )          /* FUNCTION RR_CreateBrush( nStyle, nColor, nHatch ) -> hBrush */
+HB_FUNC( RR_CREATEBRUSH )
 {
-   LOGBRUSH pbr;
+  LOGBRUSH pbr;
 
-   pbr.lbColor = (COLORREF) hb_parnl( 2 );
-   pbr.lbStyle = (UINT) hb_parni( 1 );
-   switch( pbr.lbStyle )
-   {
-      case BS_DIBPATTERN:
-      case BS_DIBPATTERNPT:
-         pbr.lbHatch = (ULONG_PTR) HANDLEparam( 3 );
-         break;
-      case BS_HATCHED:
-         pbr.lbHatch = (ULONG_PTR) hb_parnl( 3 );
-         break;
-      case BS_PATTERN:
-         pbr.lbHatch = (ULONG_PTR) HBITMAPparam( 3 );
-         break;
-      case BS_SOLID:
-      case BS_HOLLOW:
-         pbr.lbHatch = (ULONG_PTR) NULL;
-         break;
-      default:
-         pbr.lbHatch = (ULONG_PTR) NULL;
-         break;
-   }
-   HBRUSHret( CreateBrushIndirect( &pbr ) );
+  pbr.lbStyle = hb_parni( 1 );
+  pbr.lbColor = ( COLORREF ) hb_parnl( 2 );
+  pbr.lbHatch = ( ULONG_PTR ) HB_PARNL( 3 );
+  HB_RETNL( ( LONG_PTR ) CreateBrushIndirect( &pbr ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_MODIFYBRUSH )          /* FUNCTION RR_ModifyBrush( hBrush, nStyle, nColor, nHatch ) -> hBrush */
+HB_FUNC( RR_MODIFYBRUSH )
 {
    LOGBRUSH ppn;
-   int i;
+   INT i;
    HBRUSH hb;
 
    memset( &ppn, 0, sizeof( LOGBRUSH ) );
-   i = GetObject( HBRUSHparam( 1 ), sizeof( LOGBRUSH ), &ppn );
+   i = GetObject( ( HBRUSH ) HB_PARNL( 1 ), sizeof( LOGBRUSH ), &ppn );
    if( i > 0 )
    {
       if( hb_parni( 2 ) >= 0 )
       {
-         ppn.lbStyle = (UINT) hb_parni( 2 );
+         ppn.lbStyle = ( UINT ) hb_parni( 2 );
       }
       if( hb_parnl( 3 ) >= 0 )
       {
-         ppn.lbColor = (COLORREF) hb_parnl( 3 );
+         ppn.lbColor = ( COLORREF ) hb_parnl( 3 );
       }
       if( hb_parnl( 4 ) >= 0 )
       {
-         ppn.lbHatch = ULONG_PTRparam( 4 );
+         ppn.lbHatch = ( ULONG_PTR ) HB_PARNL( 4 );
       }
 
       hb = CreateBrushIndirect( &ppn );
       if( hb != NULL )
       {
-         DeleteObject( HBRUSHparam( 1 ) );
-         HBRUSHret( hb );
+         DeleteObject( ( HBRUSH ) HB_PARNL( 1 ) );
+         HB_RETNL( ( LONG_PTR ) hb );
       }
       else
       {
-         HBRUSHret( HBRUSHparam( 1 ) );
+         HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
       }
    }
    else
    {
-      HBRUSHret( HBRUSHparam( 1 ) );
+      HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SELECTBRUSH )          /* FUNCTION RR_SelectBrush( hBrush, hData ) -> NIL */
+HB_FUNC( RR_SELECTBRUSH )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   SelectObject( lpData->hDC, HBRUSHparam( 1 ) );
-   lpData->hbrush = HBRUSHparam( 1 );
+   SelectObject( lpData->hDC, ( HBRUSH ) HB_PARNL( 1 ) );
+   lpData->hbrush = ( HBRUSH ) HB_PARNL( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEFONT )          /* FUNCTION RR_CreateFont( cName, nSize, nWidth, nAngle, nWeight, nItalic, nUnder, nStrike, hData ) -> hFont */
+HB_FUNC( RR_CREATEFONT )
 {
-   const char * FontName = hb_parc( 1 );
-   int FontSize = hb_parni( 2 );
-   long FontWidth = hb_parnl( 3 );
-   long Orient = hb_parnl( 4 );
-   long Weight = hb_parnl( 5 );
-   int Italic = hb_parni( 6 );
-   int Underline = hb_parni( 7 );
-   int Strikeout = hb_parni( 8 );
+   const CHAR * FontName = ( const CHAR * ) hb_parc( 1 );
+   INT FontSize = hb_parni( 2 );
+   LONG FontWidth = hb_parnl( 3 );
+   LONG Orient = hb_parnl( 4 );
+   LONG Weight = hb_parnl( 5 );
+   INT Italic = hb_parni( 6 );
+   INT Underline = hb_parni( 7 );
+   INT Strikeout = hb_parni( 8 );
    HFONT oldfont, hxfont;
-   long newWidth, FontHeight;
+   LONG newWidth, FontHeight;
    TEXTMETRIC tm;
    BYTE bItalic, bUnderline, bStrikeOut;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 9 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 9 );
 
    newWidth = FontWidth;
    if( FontSize <= 0 )
@@ -4462,34 +3272,34 @@ HB_FUNC( RR_CREATEFONT )          /* FUNCTION RR_CreateFont( cName, nSize, nWidt
       bStrikeOut = 1;
    }
 
-   FontHeight = - MulDiv( FontSize, lpData->devcaps[ DI_VERT_LOGPIX ], 72 );
+   FontHeight = - MulDiv( FontSize, GetDeviceCaps( lpData->hDCRef, LOGPIXELSY ), 72 );
    hxfont = CreateFont( FontHeight, newWidth, Orient, Orient, Weight, bItalic, bUnderline, bStrikeOut, lpData->charset,
                         OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, FontName );
    if( FontWidth < 0 )
    {
-      oldfont = (HFONT) SelectObject( lpData->hDC, hxfont );
+      oldfont = ( HFONT ) SelectObject( lpData->hDC, hxfont );
       GetTextMetrics( lpData->hDC, &tm );
       SelectObject( lpData->hDC, oldfont );
       DeleteObject( hxfont );
-      newWidth = (int) ( (float) - ( tm.tmAveCharWidth + tm.tmOverhang ) * FontWidth / 100 );
+      newWidth = ( INT ) ( ( FLOAT ) - ( tm.tmAveCharWidth + tm.tmOverhang ) * FontWidth / 100 );
       hxfont = CreateFont( FontHeight, newWidth, Orient, Orient, Weight, bItalic, bUnderline, bStrikeOut, lpData->charset,
                            OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_DONTCARE, FontName );
    }
 
-   HFONTret( hxfont );
+   HB_RETNL( ( LONG_PTR ) hxfont );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_MODIFYFONT )          /* FUNCTION RR_CreateFont( hFont, cName, nSize, nWidth, nAngle, nBold, nItalic, nUnder, nStrike, hData ) -> hFont */
+HB_FUNC( RR_MODIFYFONT )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 10 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 10 );
    LOGFONT ppn;
-   int i;
+   INT i;
    HFONT hf;
-   long nHeight;
+   LONG nHeight;
 
    memset( &ppn, 0, sizeof( LOGFONT ) );
-   i = GetObject( HFONTparam( 1 ), sizeof( LOGFONT ), &ppn );
+   i = GetObject( ( HFONT ) HB_PARNL( 1 ), sizeof( LOGFONT ), &ppn );
    if( i > 0 )
    {
       if( hb_parni( 3 ) > 0 )
@@ -4499,7 +3309,7 @@ HB_FUNC( RR_MODIFYFONT )          /* FUNCTION RR_CreateFont( hFont, cName, nSize
       }
       if( hb_parnl( 4 ) >= 0 )
       {
-         ppn.lfWidth = (long) hb_parnl( 4 ) * ppn.lfWidth / 100;
+         ppn.lfWidth = ( LONG ) hb_parnl( 4 ) * ppn.lfWidth / 100;
       }
       if( hb_parnl( 5 ) >= 0 )
       {
@@ -4516,63 +3326,63 @@ HB_FUNC( RR_MODIFYFONT )          /* FUNCTION RR_CreateFont( hFont, cName, nSize
       }
       if( hb_parni( 7 ) >= 0 )
       {
-         ppn.lfItalic = (BYTE) hb_parni( 7 );
+         ppn.lfItalic = ( BYTE ) hb_parni( 7 );
       }
       if( hb_parni( 8 ) >= 0 )
       {
-         ppn.lfUnderline = (BYTE) hb_parni( 8 );
+         ppn.lfUnderline = ( BYTE ) hb_parni( 8 );
       }
       if( hb_parni( 9 ) >= 0 )
       {
-         ppn.lfStrikeOut = (BYTE) hb_parni( 9 );
+         ppn.lfStrikeOut = ( BYTE ) hb_parni( 9 );
       }
 
       hf = CreateFontIndirect( &ppn );
-      if( hf != NULL )
+      if ( hf != NULL )
       {
-         DeleteObject( HFONTparam( 1 ) );
-         HFONTret( hf );
+         DeleteObject( ( HFONT ) HB_PARNL( 1 ) );
+         HB_RETNL( ( LONG_PTR ) hf );
       }
       else
       {
-         HFONTret( HFONTparam( 1 ) );
+         HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
       }
    }
    else
    {
-      HFONTret( HFONTparam( 1 ) );
+      HB_RETNL( ( LONG_PTR ) HB_PARNL( 1 ) );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SELECTFONT )          /* FUNCTION RR_SelectFont( hfont, hData ) -> NIL */
+HB_FUNC( RR_SELECTFONT )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   SelectObject( lpData->hDC, HFONTparam( 1 ) );
-   lpData->hfont = HFONTparam( 1 );
+   SelectObject( lpData->hDC, ( HFONT ) HB_PARNL( 1 ) );
+   lpData->hfont = ( HFONT ) HB_PARNL( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETCHARSET )          /* FUNCTION RR_SetCharSet( nCharSet, hData ) -> NIL */
+HB_FUNC( RR_SETCHARSET )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   lpData->charset = (DWORD) hb_parnl( 1 );
+   lpData->charset = ( DWORD ) hb_parnl( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_TEXTOUT )          /* FUNCTION RR_TextOut( cText, aPoint, hFont, nSpaces, hData ) -> nError */
+HB_FUNC( RR_TEXTOUT )
 {
-   HFONT xfont = HFONTparam( 3 );
+   HFONT xfont = ( HFONT ) HB_PARNL( 3 );
    HFONT prevfont = NULL;
    SIZE szMetric;
-   int lspace = hb_parni( 4 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 5 );
+   INT lspace = hb_parni( 4 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
 
    if( xfont )
    {
-      prevfont = (HFONT) SelectObject( lpData->hDC, xfont);
+      prevfont = ( HFONT ) SelectObject( lpData->hDC, xfont);
    }
    if( lpData->textjust > 0 )
    {
@@ -4581,44 +3391,44 @@ HB_FUNC( RR_TEXTOUT )          /* FUNCTION RR_TextOut( cText, aPoint, hFont, nSp
       {
          if( lspace > 0 )
          {
-            SetTextJustification( lpData->hDC, (int) ( lpData->textjust - szMetric.cx ), lspace );
+            SetTextJustification( lpData->hDC, ( INT ) ( lpData->textjust - szMetric.cx ), lspace );
          }
       }
    }
 
-   hb_retni( TextOut( lpData->hDC, HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) + lpData->devcaps[ DI_TMASCENT ], hb_parc( 1 ), hb_parclen( 1 ) ) ? 0 : 1 );
+   hb_retl( TextOut( lpData->hDC, HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) + lpData->devcaps[ 15 ], hb_parc( 1 ), hb_parclen( 1 ) ) );
 
    if( xfont )
    {
       SelectObject( lpData->hDC, prevfont );
    }
-   if( lpData->textjust > 0 )
+   if( lpData->textjust > 0)
    {
       SetTextJustification( lpData->hDC, 0, 0 );
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWTEXT )          /* FUNCTION RR_DrawText( aPoint, aPoint, cText, nStyle, hFont, lNoBreak, hData ) -> nError */
+HB_FUNC( RR_DRAWTEXT )
 {
-   HFONT xfont = HFONTparam( 5 );
+   HFONT xfont = ( HFONT ) HB_PARNL( 5 );
    HFONT prevfont = NULL;
    RECT rect;
    UINT uFormat;
    SIZE  sSize;
-   const char * pszData = hb_parc( 3 );
-   int iLen = strlen( pszData );
-   int iStyle = hb_parni( 4 );
-   int iAlign = 0, iNoWordBreak;
-   long w, h;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 7 );
+   const CHAR * pszData = hb_parc( 3 );
+   INT iLen = strlen( pszData );
+   INT iStyle = hb_parni( 4 );
+   INT iAlign = 0, iNoWordBreak;
+   LONG w, h;
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 7 );
 
    SetRect( &rect, HB_PARNL2( 1, 2 ), HB_PARNL2( 1, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 1 ) );
    iNoWordBreak = hb_parl( 6 );
 
    if( xfont )
    {
-      prevfont = (HFONT) SelectObject( lpData->hDC, xfont );
+      prevfont = ( HFONT ) SelectObject( lpData->hDC, xfont );
    }
 
    uFormat = DT_NOPREFIX;
@@ -4633,8 +3443,8 @@ HB_FUNC( RR_DRAWTEXT )          /* FUNCTION RR_DrawText( aPoint, aPoint, cText, 
       uFormat |= DT_NOCLIP | DT_WORDBREAK | DT_END_ELLIPSIS;
 
       GetTextExtentPoint32( lpData->hDC, pszData, iLen, &sSize );
-      w = (long) sSize.cx; /* text width */
-      h = (long) sSize.cy; /* text height */
+      w = ( LONG ) sSize.cx; /* text width */
+      h = ( LONG ) sSize.cy; /* text height */
 
       /* Center text vertically within rectangle */
       if( w < rect.right - rect.left )
@@ -4660,7 +3470,7 @@ HB_FUNC( RR_DRAWTEXT )          /* FUNCTION RR_DrawText( aPoint, aPoint, cText, 
       uFormat = uFormat | DT_CENTER;
    }
 
-   hb_retni( DrawText( lpData->hDC, pszData, -1, &rect, uFormat ) ? 0 : 1 );
+   hb_retni( DrawText( lpData->hDC, pszData, -1, &rect, uFormat ) );
 
    if( xfont )
    {
@@ -4674,11 +3484,11 @@ HB_FUNC( RR_DRAWTEXT )          /* FUNCTION RR_DrawText( aPoint, aPoint, cText, 
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_RECTANGLE )          /* FUNCTION RR_Rectangle( aPoint, aPoint, hPen, hBrush, hData ) ) -> nError */
+HB_FUNC( RR_RECTANGLE )
 {
-   HPEN xpen = HPENparam( 3 );
-   HBRUSH xbrush = HBRUSHparam( 4 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 5 );
+   HPEN xpen = ( HPEN ) HB_PARNL( 3 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 4 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
 
    if( xpen )
    {
@@ -4689,7 +3499,7 @@ HB_FUNC( RR_RECTANGLE )          /* FUNCTION RR_Rectangle( aPoint, aPoint, hPen,
       SelectObject( lpData->hDC, xbrush );
    }
 
-   hb_retni( Rectangle( lpData->hDC, HB_PARNL2( 1, 2 ), HB_PARNL2( 1, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 1 ) ) ? 0 : 1 );
+   hb_retni( Rectangle( lpData->hDC, HB_PARNL2( 1, 2 ), HB_PARNL2( 1, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 2, 1 ) ) );
 
    if( xpen )
    {
@@ -4702,203 +3512,301 @@ HB_FUNC( RR_RECTANGLE )          /* FUNCTION RR_Rectangle( aPoint, aPoint, hPen,
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CLOSEMFILE )          /* FUNCTION RR_CloseEMFile( hData ) ) -> nSize */
+HB_FUNC( RR_CLOSEMFILE )
 {
    UINT size;
    HENHMETAFILE hh;
-   char * eBuffer;
+   CHAR * eBuffer;
    LPENHMETAHEADER eHeader;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    hh = CloseEnhMetaFile( lpData->hDC );
    size = GetEnhMetaFileBits( hh, 0, NULL );
-   eBuffer = (char *) GlobalAlloc( GPTR, (DWORD) size );
-   GetEnhMetaFileBits( hh, size, (BYTE *) eBuffer);
-   eHeader = (LPENHMETAHEADER) eBuffer;
-   eHeader->szlDevice.cx = lpData->devcaps[ DI_HORZ_RES ];
-   eHeader->szlDevice.cy = lpData->devcaps[ DI_VERT_RES ];
-   eHeader->szlMillimeters.cx = lpData->devcaps[ DI_HORZ_SIZE ];
-   eHeader->szlMillimeters.cy = lpData->devcaps[ DI_VERT_SIZE ];
+   eBuffer = ( CHAR * ) GlobalAlloc( GPTR, ( DWORD ) size );
+   GetEnhMetaFileBits( hh, size, ( BYTE * ) eBuffer);
+   eHeader = ( LPENHMETAHEADER ) eBuffer;
+   eHeader->szlDevice.cx = lpData->devcaps[ 3 ];
+   eHeader->szlDevice.cy = lpData->devcaps[ 2 ];
+   eHeader->szlMillimeters.cx = lpData->devcaps[ 1 ];
+   eHeader->szlMillimeters.cy = lpData->devcaps[ 0 ];
    hb_retclen( eBuffer, ( ULONG ) size );
    DeleteEnhMetaFile( hh );
    GlobalFree( eBuffer );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CLOSEFILE )          /* FUNCTION RR_CloseEMFile( hData ) ) -> NIL */
+HB_FUNC( RR_CLOSEFILE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    DeleteEnhMetaFile( CloseEnhMetaFile( lpData->hDC ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEMFILE )          /* FUNCTION RR_CreatEMFile( cFile, hData ) ) -> hDC */
+HB_FUNC( RR_CREATEMFILE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
    RECT emfrect;
 
-   SetRect( &emfrect, 0, 0, lpData->devcaps[ DI_HORZ_SIZE ] * 100, lpData->devcaps[ DI_VERT_SIZE ] * 100 );
-   if( hb_parclen( 1 ) > 0 )
-   {
-      lpData->hDC = CreateEnhMetaFile( lpData->hDCRef, hb_parc( 1 ), &emfrect, "hbprinter\0emf file\0\0" );
-   }
-   else
-   {
-      lpData->hDC = CreateEnhMetaFile( lpData->hDCRef, NULL, &emfrect, "hbprinter\0emf file\0\0" );
-   }
+   SetRect( &emfrect, 0, 0, GetDeviceCaps( lpData->hDCRef, HORZSIZE ) * 100, GetDeviceCaps( lpData->hDCRef, VERTSIZE ) * 100 );
+   lpData->hDC = CreateEnhMetaFile( lpData->hDCRef, NULL, &emfrect, "hbprinter\0emf file\0\0" );
    SetTextAlign( lpData->hDC, TA_BASELINE );
-
-   HDCret( lpData->hDC );
+   lpData->preview = 1;
+   HB_RETNL( ( LONG_PTR ) lpData->hDC );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DELETECLIPRGN )          /* FUNCTION RR_DeleteClipRgn( hData ) ) -> NIL */
+HB_FUNC( RR_CREATEFILE )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
+   RECT emfrect;
+
+   SetRect( &emfrect, 0, 0, GetDeviceCaps( lpData->hDCRef, HORZSIZE ) * 100, GetDeviceCaps( lpData->hDCRef, VERTSIZE ) * 100 );
+   lpData->hDC = CreateEnhMetaFile( lpData->hDCRef, hb_parc( 1 ), &emfrect, "hbprinter\0emf file\0\0" );
+   SetTextAlign( lpData->hDC, TA_BASELINE );
+   lpData->preview = 1;
+   HB_RETNL( ( LONG_PTR ) lpData->hDC );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_DELETECLIPRGN )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    SelectClipRgn( lpData->hDC, NULL );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATERGN )          /* FUNCTION RR_CreateRgn( aPoint, aPoint, nType, aPoint, hData ) ) -> hRgn */
+HB_FUNC( RR_CREATERGN )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
    POINT lpp;
    GetViewportOrgEx( lpData->hDC, &lpp );
 
    if( hb_parni( 3 ) == 2 )
    {
-      HRGNret( CreateEllipticRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
-                                  HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y ) );
+      HB_RETNL( ( LONG_PTR ) CreateEllipticRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
+                                                HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y ) );
    }
    else
    {
       if( hb_parni( 3 ) == 3 )
       {
-         HRGNret( CreateRoundRectRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
-                                      HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y,
-                                      HB_PARNI( 4, 2 ) + lpp.x, HB_PARNI( 4, 1 ) + lpp.y ) );
+         HB_RETNL( ( LONG_PTR ) CreateRoundRectRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
+                                                    HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y,
+                                                    HB_PARNI( 4, 2 ) + lpp.x, HB_PARNI( 4, 1 ) + lpp.y ) );
       }
       else
       {
-         HRGNret( CreateRectRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
-                                 HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y ) );
+         HB_RETNL( ( LONG_PTR ) CreateRectRgn( HB_PARNI( 1, 2 ) + lpp.x, HB_PARNI( 1, 1 ) + lpp.y,
+                                               HB_PARNI( 2, 2 ) + lpp.x, HB_PARNI( 2, 1 ) + lpp.y ) );
       }
    }
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEPOLYGONRGN )          /* FUNCTION RR_CreatePolygonRgn( aPoints ) -> hRgn */
+HB_FUNC( RR_CREATEPOLYGONRGN )
 {
-   int number = hb_parinfa( 1, 0 );
-   int i;
+   INT number = hb_parinfa( 1, 0 );
+   INT i;
    POINT apoints[ 1024 ];
 
    for( i = 0; i <= number - 1; i++ )
    {
-      apoints[ i ].x = HB_PARNL2( 1, i + 1 );
-      apoints[ i ].y = HB_PARNL2( 2, i + 1 );
+      apoints[ i ].x = HB_PARNI( 1, i + 1 );
+      apoints[ i ].y = HB_PARNI( 2, i + 1 );
    }
-   HRGNret( CreatePolygonRgn( apoints, number, hb_parni( 3 ) ) );
+   HB_RETNL( ( LONG_PTR ) CreatePolygonRgn( apoints, number, hb_parni( 3 ) ) );
 }
 
+
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_COMBINERGN )          /* FUNCTION RR_CombineRgn( hRgn, hRgn, nStyle ) -> hRgn */
+HB_FUNC( RR_COMBINERGN )
 {
    HRGN rgnnew = CreateRectRgn( 0, 0, 1, 1 );
 
-   CombineRgn( rgnnew, HRGNparam( 1 ), HRGNparam( 2 ), hb_parni( 3 ) );
-   HRGNret( rgnnew );
+   CombineRgn( rgnnew, ( HRGN ) HB_PARNL( 1 ), ( HRGN ) HB_PARNL( 2 ), hb_parni( 3 ) );
+   HB_RETNL( ( LONG_PTR ) rgnnew );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SELECTCLIPRGN )          /* FUNCTION RR_SelectClipRgn( hRgn, hData ) -> NIL */
+HB_FUNC( RR_SELECTCLIPRGN )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   SelectClipRgn( lpData->hDC, HRGNparam( 1 ) );
-   lpData->hrgn = HRGNparam( 1 );
+   SelectClipRgn( lpData->hDC, ( HRGN ) HB_PARNL( 1 ) );
+   lpData->hrgn = ( HRGN ) HB_PARNL( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETVIEWPORTORG )          /* FUNCTION RR_SetViewportOrg( aPoint, hData ) -> nError */
+HB_FUNC( RR_SETVIEWPORTORG )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   hb_retni( SetViewportOrgEx( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), NULL ) ? 0 : 1 );
+   hb_retl( SetViewportOrgEx( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), NULL ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETVIEWPORTORG )          /* FUNCTION RR_GetViewportOrg( @aPoint, hData ) -> nError */
+HB_FUNC( RR_GETVIEWPORTORG )
 {
    POINT lpp;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
-   hb_retni( GetViewportOrgEx( lpData->hDC, &lpp ) ? 0 : 1 );
+   hb_retl( GetViewportOrgEx( lpData->hDC, &lpp ) );
    HB_STORNL3( lpp.x, 1, 2 );
    HB_STORNL3( lpp.y, 1, 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETRGB )          /* FUNCTION RR_SetRGB( nRed, nGreen, nBlue ) -> nColor */
+HB_FUNC( RR_SETRGB )
 {
    hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETTEXTCHAREXTRA )          /* FUNCTION RR_SetTextCharExtra( nSpace, hData ) -> nPrevious */
+HB_FUNC( RR_SETTEXTCHAREXTRA )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    hb_retni( SetTextCharacterExtra( lpData->hDC, hb_parni( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETTEXTCHAREXTRA )          /* FUNCTION RR_GetTextCharExtra( hData ) -> nSpace */
+HB_FUNC( RR_GETTEXTCHAREXTRA )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    hb_retni( GetTextCharacterExtra( lpData->hDC ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETTEXTJUSTIFICATION )          /* FUNCTION RR_SetTextJustification( nJust, hData ) -> NIL */
+HB_FUNC( RR_SETTEXTJUSTIFICATION )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    lpData->textjust = hb_parni( 1 );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETTEXTJUSTIFICATION )          /* FUNCTION RR_GetTextJustification( hData ) -> nJust */
+HB_FUNC( RR_GETTEXTJUSTIFICATION )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    hb_retni( lpData->textjust );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETTEXTALIGN )          /* FUNCTION RR_GetTextAlign( hData ) -> nAlign */
+HB_FUNC( RR_GETTEXTALIGN )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 1 );
 
    hb_retni( GetTextAlign( lpData->hDC ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_SETTEXTALIGN )          /* FUNCTION RR_SetTextAlign( nAlign, hData ) -> nPrevious */
+HB_FUNC( RR_SETTEXTALIGN )
 {
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
 
    hb_retni( SetTextAlign( lpData->hDC, TA_BASELINE | hb_parni( 1 ) ) );
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static LPVOID RR_LoadPictureFromResource( const char * resname, long * lwidth, long * lheight )
+HB_FUNC( RR_PICTURE )
+{
+   IStream * iStream;
+   IPicture * iPicture;
+   IPicture ** iPictureRef = &iPicture;
+   HGLOBAL hGlobal;
+   VOID * pGlobal;
+   HANDLE hFile;
+   DWORD nFileSize;
+   DWORD nReadByte;
+   LONG lWidth, lHeight;
+   INT x, y, xe, ye;
+   INT r = HB_PARNI( 2, 1 );
+   INT c = HB_PARNI( 2, 2 );
+   INT dr = HB_PARNI( 3, 1 );
+   INT dc = HB_PARNI( 3, 2 );
+   INT tor = HB_PARNI( 4, 1 );
+   INT toc = HB_PARNI( 4, 2 );
+   HRGN hrgn1;
+   POINT lpp;
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
+
+   hFile = CreateFile( hb_parc( 1 ), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+   if( hFile == INVALID_HANDLE_VALUE )
+   {
+      return;
+   }
+   nFileSize = GetFileSize( hFile, NULL );
+   hGlobal = GlobalAlloc( GMEM_MOVEABLE, nFileSize );
+   pGlobal = GlobalLock( hGlobal );
+   ReadFile( hFile, pGlobal, nFileSize, &nReadByte, NULL );
+   CloseHandle( hFile );
+   GlobalUnlock( hGlobal );
+   CreateStreamOnHGlobal( hGlobal, TRUE, &iStream );
+   OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );
+   GlobalFree( hGlobal );
+   iStream->lpVtbl->Release( iStream );
+   if( iPicture == NULL )
+   {
+      return;
+   }
+   iPicture->lpVtbl->get_Width( iPicture, &lWidth );
+   iPicture->lpVtbl->get_Height( iPicture, &lHeight );
+   if( dc == 0 )
+   {
+      dc = ( INT ) ( ( FLOAT ) dr * lWidth / lHeight );
+   }
+   if( dr == 0 )
+   {
+      dr = ( INT ) ( ( FLOAT ) dc * lHeight / lWidth );
+   }
+   if( tor <= 0 )
+   {
+      tor = dr;
+   }
+   if( toc <= 0 )
+   {
+      toc = dc;
+   }
+   x = c;
+   y = r;
+   xe = c + toc - 1;
+   ye = r + tor - 1;
+   GetViewportOrgEx( lpData->hDC, &lpp );
+   hrgn1 = CreateRectRgn( c + lpp.x, r + lpp.y, xe + lpp.x, ye + lpp.y );
+   if( lpData->hrgn == NULL )
+   {
+      SelectClipRgn( lpData->hDC, hrgn1 );
+   }
+   else
+   {
+      ExtSelectClipRgn( lpData->hDC, hrgn1, RGN_AND );
+   }
+   while( x < xe )
+   {
+      while( y < ye )
+      {
+         iPicture->lpVtbl->Render( iPicture, lpData->hDC, x, y, dc, dr, 0, lHeight, lWidth, - lHeight, NULL );
+         y += dr;
+      }
+      y = r;
+      x += dc;
+   }
+   iPicture->lpVtbl->Release( iPicture );
+   SelectClipRgn( lpData->hDC, lpData->hrgn );
+   DeleteObject( hrgn1 );
+   hb_retni( 0 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+static LPVOID RR_LoadPictureFromResource( const CHAR * resname, LONG * lwidth, LONG * lheight )
 {
    HBITMAP hbmpx;
    IPicture * iPicture = NULL;
+   IPicture ** iPictureRef = &iPicture;
    IStream * iStream = NULL;
    PICTDESC picd;
    HGLOBAL hGlobalres;
@@ -4906,15 +3814,15 @@ static LPVOID RR_LoadPictureFromResource( const char * resname, long * lwidth, l
    HRSRC hSource;
    LPVOID lpVoid;
    HINSTANCE hinstance = GetModuleHandle( NULL );
-   int nSize;
+   INT nSize;
 
-   hbmpx = (HBITMAP) LoadImage( hinstance, resname, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
+   hbmpx = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), resname, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
    if( hbmpx != NULL )
    {
       picd.cbSizeofstruct = sizeof( PICTDESC );
       picd.picType = PICTYPE_BITMAP;
       picd.bmp.hbitmap = hbmpx;
-      OleCreatePictureIndirect( &picd, &IID_IPicture, TRUE, (LPVOID *) &iPicture );
+      OleCreatePictureIndirect( &picd, &IID_IPicture, TRUE, ( LPVOID * ) iPictureRef );
    }
    else
    {
@@ -4975,7 +3883,7 @@ static LPVOID RR_LoadPictureFromResource( const char * resname, long * lwidth, l
          GlobalFree( hGlobal );
          return NULL;
       }
-      OleLoadPicture( iStream, nSize, TRUE, &IID_IPicture, (LPVOID *) &iPicture );
+      OleLoadPicture( iStream, nSize, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );
       iStream->lpVtbl->Release( iStream );
       GlobalFree( hGlobal );
    }
@@ -4988,12 +3896,13 @@ static LPVOID RR_LoadPictureFromResource( const char * resname, long * lwidth, l
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static LPVOID RR_LoadPicture( const char * filename, long * lwidth, long * lheight )
+static LPVOID RR_LoadPicture( const CHAR * filename, LONG * lwidth, LONG * lheight )
 {
    IStream * iStream = NULL;
    IPicture * iPicture = NULL;
+   IPicture ** iPictureRef = &iPicture;
    HGLOBAL hGlobal;
-   void * pGlobal;
+   VOID * pGlobal;
    HANDLE hFile;
    DWORD nFileSize, nReadByte;
 
@@ -5014,7 +3923,7 @@ static LPVOID RR_LoadPicture( const char * filename, long * lwidth, long * lheig
       GlobalFree( hGlobal );
       return NULL;
    }
-   OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, (LPVOID *) &iPicture );
+   OleLoadPicture( iStream, nFileSize, TRUE, &IID_IPicture, ( LPVOID * ) iPictureRef );
    GlobalUnlock( hGlobal );
    GlobalFree( hGlobal );
    iStream->lpVtbl->Release( iStream );
@@ -5028,33 +3937,55 @@ static LPVOID RR_LoadPicture( const char * filename, long * lwidth, long * lheig
 }
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-static int RR_DrawIPicture( IPicture * ipic, long lwidth, long lheight, long r, long c, long dr, long dc, long tor, long toc, BOOL bImgSize, LPHBPRINTERDATA lpData )
+HB_FUNC( RR_DRAWPICTURE )          /* RR_DrawPicture( cpicture, lp1, lp2, lp3, lImageSize, ::hData ) -> lSuccess */
 {
-   long x, y, xe, ye;
+   IPicture * ipic;
+   INT x, y, xe, ye;
+   INT r = HB_PARNI( 2, 1 );
+   INT c = HB_PARNI( 2, 2 );
+   INT dr = HB_PARNI( 3, 1 );
+   INT dc = HB_PARNI( 3, 2 );
+   INT tor = HB_PARNI( 4, 1 );
+   INT toc = HB_PARNI( 4, 2 );
+   LONG lwidth = 0;
+   LONG lheight = 0;
    RECT lrect;
    HRGN hrgn1;
    POINT lpp;
-   long lw, lh;
-   int error = 0;
+   INT lw, lh;
+   BOOL bImageSize = hb_parl( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+   BOOL bRet = TRUE;
 
-   lw = MulDiv( lwidth, lpData->devcaps[ DI_HORZ_LOGPIX ], 2540 );
-   lh = MulDiv( lheight, lpData->devcaps[ DI_VERT_LOGPIX ], 2540 );
-
-   if( bImgSize )
+   if( ! hb_parclen( 1 ) )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+   ipic = ( IPicture * ) RR_LoadPicture( ( const CHAR * ) hb_parc( 1 ), &lwidth, &lheight );
+   if( ! ipic )
+   {
+      ipic = ( IPicture * ) RR_LoadPictureFromResource( ( const CHAR * ) hb_parc( 1 ), &lwidth, &lheight );
+   }
+   if( ! ipic )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+   lw = MulDiv( lwidth, lpData->devcaps[ 5 ], 2540 );
+   lh = MulDiv( lheight, lpData->devcaps[ 4 ], 2540 );
+   if( dc == 0 )
+   {
+      dc = ( INT ) ( ( FLOAT ) dr * lw / lh );
+   }
+   if( dr == 0 )
+   {
+      dr = ( INT ) ( ( FLOAT ) dc * lh / lw );
+   }
+   if( bImageSize )
    {
       dr = lh;
       dc = lw;
-   }
-   else
-   {
-      if( dc == 0 )
-      {
-         dc = (int) ( (float) dr * lw / lh );
-      }
-      if( dr == 0 )
-      {
-         dr = (int) ( (float) dc * lh / lw );
-      }
    }
    if( tor <= 0 )
    {
@@ -5064,13 +3995,756 @@ static int RR_DrawIPicture( IPicture * ipic, long lwidth, long lheight, long r, 
    {
       toc = dc;
    }
-
+   if( bImageSize )
+   {
+      tor = lh;
+      toc = lw;
+   }
    x = c;
    y = r;
    xe = c + toc - 1;
    ye = r + tor - 1;
    GetViewportOrgEx( lpData->hDC, &lpp );
+   hrgn1 = CreateRectRgn( c + lpp.x, r + lpp.y, xe + lpp.x, ye + lpp.y );
+   if( lpData->hrgn == NULL )
+   {
+      SelectClipRgn( lpData->hDC, hrgn1 );
+   }
+   else
+   {
+      ExtSelectClipRgn( lpData->hDC, hrgn1, RGN_AND );
+   }
+   while( x < xe )
+   {
+      while( y < ye )
+      {
+         SetRect( &lrect, x, y, dc + x, dr +y );
+         if( ipic->lpVtbl->Render( ipic, lpData->hDC, x, y, dc, dr, 0, lheight, lwidth, -lheight, &lrect ) != S_OK )
+         {
+            bRet = FALSE;
+         }
+         y += dr;
+      }
+      y = r;
+      x += dc;
+   }
+   ipic->lpVtbl->Release( ipic );
+   SelectClipRgn( lpData->hDC, lpData->hrgn );
+   DeleteObject( hrgn1 );
+   hb_retl( bRet );
+}
 
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_CREATEIMAGELIST )
+{
+   HBITMAP hbmpx;
+   BITMAP bm;
+   HIMAGELIST himl;
+   INT dx, number;
+
+   hbmpx = ( HBITMAP ) LoadImage( 0, hb_parc( 1 ), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
+   if( hbmpx == NULL )
+   {
+      hbmpx = ( HBITMAP ) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
+   }
+   if( hbmpx == NULL )
+   {
+      return;
+   }
+   GetObject( hbmpx, sizeof( BITMAP ), &bm );
+   number = hb_parni( 2 );
+   if( number == 0 )
+   {
+      number = ( INT ) bm.bmWidth / bm.bmHeight;
+      dx = bm.bmHeight;
+   }
+   else
+   {
+      dx = ( INT ) bm.bmWidth / number;
+   }
+   himl = ImageList_Create( dx, bm.bmHeight, ILC_COLOR24 | ILC_MASK, number, 0 );
+   ImageList_AddMasked( himl, hbmpx, CLR_DEFAULT );
+   hb_storni( dx, 3 );
+   hb_storni( bm.bmHeight, 4 );
+   DeleteObject( hbmpx );
+   HB_RETNL( ( LONG_PTR ) himl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_DRAWIMAGELIST )
+{
+   HIMAGELIST himl = ( HIMAGELIST ) HB_PARNL( 1 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 8 );
+   HDC tempdc, temp2dc;
+   HBITMAP hbmpx;
+   RECT rect;
+   HWND hwnd = GetActiveWindow();
+
+   rect.left = HB_PARNI( 3, 2 );
+   rect.top = HB_PARNI( 3, 1 );
+   rect.right = HB_PARNI( 4, 2 );
+   rect.bottom = HB_PARNI( 4, 1 );
+   temp2dc = GetWindowDC( hwnd );
+   tempdc = CreateCompatibleDC( temp2dc );
+   hbmpx = CreateCompatibleBitmap( temp2dc, hb_parni( 5 ), hb_parni( 6 ) );
+   ReleaseDC( hwnd, temp2dc );
+   SelectObject( tempdc, hbmpx );
+   BitBlt( tempdc, 0, 0, hb_parni( 5 ), hb_parni( 6 ), tempdc, 0, 0, WHITENESS );
+   if( hb_parnl( 8 ) >= 0 )
+   {
+      ImageList_SetBkColor( himl, ( COLORREF ) hb_parnl( 8 ) );
+   }
+   ImageList_Draw( himl, hb_parni( 2 ) - 1, tempdc, 0, 0, ( UINT ) hb_parni( 7 ) );
+   if( hb_parnl( 8 ) >= 0 )
+   {
+      ImageList_SetBkColor( himl, CLR_NONE );
+   }
+   hb_retl( StretchBlt( lpData->hDC, rect.left, rect.top, rect.right, rect.bottom, tempdc, 0, 0, hb_parni( 5 ), hb_parni( 6 ), SRCCOPY ) );
+   DeleteDC( tempdc );
+   DeleteObject( hbmpx );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_POLYGON )
+{
+   INT number = ( INT ) hb_parinfa( 1, 0 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+   INT i;
+   INT styl = GetPolyFillMode( lpData->hDC );
+   POINT apoints[ 1024 ];
+   HPEN xpen = ( HPEN ) HB_PARNL( 3 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 4 );
+
+   for( i = 0; i <= number-1; i++ )
+   {
+      apoints[ i ].x = HB_PARNI( 1, i + 1 );
+      apoints[ i ].y = HB_PARNI( 2, i + 1 );
+   }
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, xbrush );
+   }
+   SetPolyFillMode( lpData->hDC, hb_parni( 5 ) );
+
+   hb_retnl( ( LONG ) Polygon( lpData->hDC, apoints, number ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, lpData->hbrush );
+   }
+   SetPolyFillMode( lpData->hDC, styl );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_POLYBEZIER )
+{
+   DWORD number = ( DWORD ) hb_parinfa( 1, 0 );
+   DWORD i;
+   POINT apoints[ 1024 ];
+   HPEN xpen = ( HPEN )HB_PARNL( 3 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+
+   for( i = 0; i <= number - 1; i++ )
+   {
+      apoints[ i ].x = HB_PARNI( 1, i + 1 );
+      apoints[ i ].y = HB_PARNI( 2, i + 1 );
+   }
+
+   if( xpen )
+   {
+     SelectObject( lpData->hDC, xpen );
+   }
+
+   hb_retnl( ( LONG ) PolyBezier( lpData->hDC, apoints, number ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_POLYBEZIERTO )
+{
+   DWORD number = ( DWORD ) hb_parinfa( 1, 0 );
+   DWORD i;
+   POINT apoints[ 1024 ];
+   HPEN xpen = ( HPEN ) HB_PARNL( 3 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+
+   for( i = 0; i <= number-1; i++ )
+   {
+      apoints[ i ].x = HB_PARNI( 1, i + 1 );
+      apoints[ i ].y = HB_PARNI( 2, i + 1 );
+   }
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+
+   hb_retnl( ( LONG ) PolyBezierTo( lpData->hDC, apoints, number ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETTEXTEXTENT )
+{
+   HFONT xfont = ( HFONT ) HB_PARNL( 3 );
+   SIZE szMetric;
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+
+   if( xfont )
+   {
+      SelectObject( lpData->hDC, xfont );
+   }
+   hb_retni( GetTextExtentPoint32( lpData->hDC, hb_parc( 1 ), ( INT ) hb_parclen( 1 ), &szMetric ) );
+   HB_STORNI( szMetric.cy, 2, 1 );
+   HB_STORNI( szMetric.cx, 2, 2 );
+   if( xfont )
+   {
+      SelectObject( lpData->hDC, lpData->hfont );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_ROUNDRECT )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 4 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, xbrush );
+   }
+
+   hb_retni( RoundRect( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ), HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ) ) );
+
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, lpData->hbrush );
+   }
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_ELLIPSE )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 3 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 4 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, xbrush );
+   }
+
+   hb_retni( Ellipse( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, lpData->hbrush );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_CHORD )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 5 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 6 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 7 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, xbrush );
+   }
+
+   hb_retni( Chord( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
+                    HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, lpData->hbrush );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_ARCTO )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+
+    hb_retni( ArcTo( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
+                     HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_ARC )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+
+   hb_retni( Arc( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
+                  HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PIE )
+{
+   HPEN xpen = ( HPEN ) HB_PARNL( 5 );
+   HBRUSH xbrush = ( HBRUSH ) HB_PARNL( 6 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 7 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, xbrush );
+   }
+
+   hb_retni( Pie( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
+                  HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+   if( xbrush )
+   {
+      SelectObject( lpData->hDC, lpData->hbrush );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_FILLRECT )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+   RECT rect;
+
+   rect.left = HB_PARNI( 1, 2 );
+   rect.top = HB_PARNI( 1, 1 );
+   rect.right = HB_PARNI( 2, 2 );
+   rect.bottom = HB_PARNI( 2, 1 );
+   hb_retni( FillRect( lpData->hDC, &rect, ( HBRUSH ) HB_PARNL( 3 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_FRAMERECT )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+   RECT rect;
+
+   rect.left = HB_PARNI( 1, 2 );
+   rect.top = HB_PARNI( 1, 1 );
+   rect.right = HB_PARNI( 2, 2 );
+   rect.bottom = HB_PARNI( 2, 1 );
+   hb_retni( FrameRect( lpData->hDC, &rect, ( HBRUSH ) HB_PARNL( 3 ) ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_LINE )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 4 );
+   HPEN xpen = ( HPEN ) HB_PARNL( 3 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   MoveToEx( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), NULL );
+   hb_retni( LineTo( lpData->hDC, HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) ) );
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_LINETO )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 3 );
+   HPEN xpen = ( HPEN ) HB_PARNL( 2 );
+
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, xpen );
+   }
+   hb_retni( LineTo( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ) ) );
+   if( xpen )
+   {
+      SelectObject( lpData->hDC, lpData->hpen );
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_INVERTRECT )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 3 );
+   RECT rect;
+
+   rect.left = HB_PARNI( 1, 2 );
+   rect.top = HB_PARNI( 1, 1 );
+   rect.right = HB_PARNI( 2, 2 );
+   rect.bottom = HB_PARNI( 2, 1 );
+   hb_retni( InvertRect( lpData->hDC, &rect ) );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETWINDOWRECT )
+{
+   RECT rect;
+   HWND hwnd = HWNDparam2( 1, 7 );
+
+   if( hwnd == 0 )
+   {
+      hwnd = GetDesktopWindow();
+   }
+   GetWindowRect( hwnd, &rect );
+   HB_STORNI( rect.top, 1, 1 );
+   HB_STORNI( rect.left, 1, 2 );
+   HB_STORNI( rect.bottom, 1, 3 );
+   HB_STORNI( rect.right, 1, 4 );
+   HB_STORNI( rect.bottom - rect.top + 1, 1, 5 );
+   HB_STORNI( rect.right - rect.left + 1, 1, 6 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETCLIENTRECT )
+{
+   RECT rect;
+
+   GetClientRect( HWNDparam2( 1, 7 ), &rect );
+   HB_STORNI( rect.top, 1, 1 );
+   HB_STORNI( rect.left, 1, 2 );
+   HB_STORNI( rect.bottom, 1, 3 );
+   HB_STORNI( rect.right, 1, 4 );
+   HB_STORNI( rect.bottom - rect.top + 1, 1, 5 );
+   HB_STORNI( rect.right - rect.left + 1, 1, 6 );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_SCROLLWINDOW )
+{
+   ScrollWindow( HWNDparam( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL, NULL );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PREVIEWPLAY )
+{
+   RECT rect;
+   HBITMAP himgbmp = 0;
+   HDC imgDC = GetWindowDC( HWNDparam( 1 ) );
+   HENHMETAFILE hh = SetEnhMetaFileBits( ( UINT ) HB_PARCLEN( 2, 1 ), ( const BYTE * ) HB_PARC( 2, 1 ) );
+   HDC tmpDC = CreateCompatibleDC( imgDC );
+
+   if( tmpDC == NULL )
+   {
+      ReleaseDC( HWNDparam( 1 ), imgDC );
+   }
+   else
+   {
+      SetRect( &rect, 0, 0, HB_PARNL2( 3, 4 ), HB_PARNL2( 3, 3 ) );
+      himgbmp = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
+      SelectObject( tmpDC, ( HBITMAP ) himgbmp );
+      FillRect( tmpDC, &rect, ( HBRUSH ) GetStockObject( WHITE_BRUSH ) );
+      PlayEnhMetaFile( tmpDC, hh, &rect );
+      DeleteEnhMetaFile( hh );
+      ReleaseDC( HWNDparam( 1 ), imgDC );
+      DeleteDC( tmpDC );
+   }
+   HB_RETNL( ( LONG_PTR ) himgbmp );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PREVIEWFPLAY )
+{
+   RECT rect;
+   HBITMAP himgbmp = 0;
+   HDC imgDC = GetWindowDC( HWNDparam( 1 ) );
+   HENHMETAFILE hh = GetEnhMetaFile( hb_parc( 2 ) );
+   HDC tmpDC = CreateCompatibleDC( imgDC );
+
+   if( tmpDC == NULL )
+   {
+      ReleaseDC( HWNDparam( 1 ), imgDC );
+   }
+   else
+   {
+      SetRect( &rect, 0, 0, HB_PARNL2( 3, 4 ), HB_PARNL2( 3, 3 ) );
+      himgbmp = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
+      SelectObject( tmpDC, ( HBITMAP ) himgbmp );
+      FillRect( tmpDC, &rect, ( HBRUSH ) GetStockObject( WHITE_BRUSH ) );
+      PlayEnhMetaFile( tmpDC, hh, &rect );
+      DeleteEnhMetaFile( hh );
+      ReleaseDC( HWNDparam( 1 ), imgDC );
+      DeleteDC( tmpDC );
+   }
+   HB_RETNL( ( LONG_PTR ) himgbmp );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PLAYTHUMB )
+{
+   RECT rect;
+   INT i = hb_parni( 4 ) - 1;
+   HWND hwnd = HWNDparam2( 1, 5 );
+   HDC imgDC = GetWindowDC( hwnd );
+   HDC tmpDC = CreateCompatibleDC( imgDC );
+   HENHMETAFILE hh = SetEnhMetaFileBits( ( UINT ) HB_PARCLEN( 2, 1 ), ( const BYTE * ) HB_PARC( 2, 1 ) );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
+
+   SetRect( &rect, 0, 0, HB_PARNI( 1, 4 ), HB_PARNI( 1, 3 ) );
+   lpData->hbmp[ i ] = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
+   DeleteObject( SelectObject( tmpDC, lpData->hbmp[ i ] ) );
+   FillRect( tmpDC, &rect, ( HBRUSH ) GetStockObject( WHITE_BRUSH ) );
+   PlayEnhMetaFile( tmpDC, hh, &rect );
+   DeleteEnhMetaFile( hh );
+   TextOut( tmpDC, ( INT )( rect.right / 2 - 5 ), ( INT )( rect.bottom / 2 - 5 ), hb_parc( 3 ), ( INT ) hb_parclen( 3 ) );
+   SendMessage( hwnd, ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) lpData->hbmp[ i ] );
+   ReleaseDC( hwnd, imgDC );
+   DeleteDC( tmpDC );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PLAYFTHUMB )
+{
+   RECT rect;
+   INT i = hb_parni( 4 ) - 1;
+   HWND hwnd = HWNDparam2( 1, 5 );
+   HDC imgDC = GetWindowDC( hwnd );
+   HDC tmpDC = CreateCompatibleDC( imgDC );
+   HENHMETAFILE hh = GetEnhMetaFile( HB_PARC( 2, 1 ) );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 5 );
+
+   SetRect( &rect, 0, 0, HB_PARNI( 1, 4 ), HB_PARNI( 1, 3 ) );
+   lpData->hbmp[ i ] = CreateCompatibleBitmap( imgDC, rect.right, rect.bottom );
+   DeleteObject( SelectObject( tmpDC, lpData->hbmp[ i ] ) );
+   FillRect( tmpDC, &rect, ( HBRUSH ) GetStockObject( WHITE_BRUSH ) );
+   PlayEnhMetaFile( tmpDC, hh, &rect );
+   DeleteEnhMetaFile( hh );
+   TextOut( tmpDC, ( INT )( rect.right / 2 - 5 ), ( INT )( rect.bottom / 2 - 5 ), hb_parc( 3 ), ( INT ) hb_parclen( 3 ) );
+   SendMessage( hwnd, ( UINT ) STM_SETIMAGE, ( WPARAM ) IMAGE_BITMAP, ( LPARAM ) lpData->hbmp[ i ] );
+   ReleaseDC( hwnd, imgDC );
+   DeleteDC( tmpDC );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PLAYENHMETAFILE )
+{
+   RECT rect;
+   HENHMETAFILE hh = SetEnhMetaFileBits( ( UINT ) HB_PARCLEN( 1, 1 ), ( const BYTE * ) HB_PARC( 1, 1 ) );
+
+   SetRect( &rect, 0, 0, HB_PARNL2( 1, 5 ), HB_PARNL2( 1, 4 ) );
+   PlayEnhMetaFile( ( HDC ) HB_PARNL( 2 ), hh, &rect );
+   DeleteEnhMetaFile( hh );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_PLAYFENHMETAFILE )
+{
+   RECT rect;
+   HENHMETAFILE hh = GetEnhMetaFile( HB_PARC( 1, 1 ) );
+
+   SetRect( &rect, 0, 0, HB_PARNL2( 1, 5 ), HB_PARNL2( 1, 4 ) );
+   PlayEnhMetaFile( ( HDC ) HB_PARNL( 2 ), hh, &rect );
+   DeleteEnhMetaFile( hh );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_LALABYE )
+{
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 2 );
+
+   if( hb_parni( 1 ) == 1 )
+   {
+      lpData->hDCtemp = lpData->hDC;
+      lpData->hDC = lpData->hDCRef;
+   }
+   else
+   {
+      lpData->hDC = lpData->hDCtemp;
+   }
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_LOADSTRING )
+{
+   CHAR * cBuffer;
+
+   cBuffer = ( CHAR * ) GlobalAlloc( GPTR, 255 );
+   LoadString( GetModuleHandle( NULL ), ( UINT ) hb_parni( 1 ), ( LPSTR ) cBuffer, 254 );
+   hb_retc( cBuffer );
+   GlobalFree( cBuffer );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETTEMPFOLDER )
+{
+   CHAR szBuffer[ MAX_PATH + 1 ] = { 0 };
+
+   GetTempPath( MAX_PATH, szBuffer );
+   hb_retc( szBuffer );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_GETPIXELCOLOR )          /* FUNCTION _OOHG_GetPixelColor( hBitmap, row, col ) -> nColor */
+{
+   int x, y;
+   HDC memDC;
+   COLORREF color;
+   HBITMAP hOld;
+   HBITMAP hBmp = ( HBITMAP ) HWNDparam( 1 );
+
+   if( hBmp )
+   {
+      x = hb_parni( 2 );
+      y = hb_parni( 3 );
+      memDC = CreateCompatibleDC( NULL );
+      hOld = SelectObject( memDC, hBmp );
+      color = GetPixel( memDC, x, y );
+      SelectObject( memDC, hOld );
+      DeleteDC( memDC );
+   }
+   else
+   {
+      color = -1;
+   }
+   hb_retnl( ( LONG ) color );
+}
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+HB_FUNC( RR_DRAWBITMAP )          /* FUNCTION RR_DrawBitMap( hBitmap, lp1, lp2, lp3, lImageSize, hData ) -> lSuccess */
+{
+   HBITMAP hBitmap = ( HBITMAP ) HWNDparam( 1 );
+   INT r = HB_PARNI( 2, 1 );
+   INT c = HB_PARNI( 2, 2 );
+   INT dr = HB_PARNI( 3, 1 );
+   INT dc = HB_PARNI( 3, 2 );
+   INT tor = HB_PARNI( 4, 1 );
+   INT toc = HB_PARNI( 4, 2 );
+   BOOL bImageSize = hb_parl( 5 );
+   LPHBPRINTERDATA lpData = ( HBPRINTERDATA * ) HB_PARNL( 6 );
+   INT x, y, xe, ye;
+   LONG lwidth = 0;
+   LONG lheight = 0;
+   RECT lrect;
+   HRGN hrgn1;
+   POINT lpp;
+   INT lw, lh;
+   PICTDESC picd;
+   IPicture * iPicture;
+   IPicture ** iPictureRef = &iPicture;
+   BOOL bRet = TRUE;
+
+   if( ! hBitmap )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+   picd.cbSizeofstruct = sizeof( PICTDESC );
+   picd.picType = PICTYPE_BITMAP;
+   picd.bmp.hbitmap = hBitmap;
+   if( OleCreatePictureIndirect( &picd, &IID_IPicture, FALSE, ( LPVOID * ) iPictureRef ) != S_OK )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+   iPicture->lpVtbl->get_Width( iPicture, &lwidth );
+   iPicture->lpVtbl->get_Height( iPicture, &lheight );
+   lw = MulDiv( lwidth, lpData->devcaps[ 5 ], 2540 );
+   lh = MulDiv( lheight, lpData->devcaps[ 4 ], 2540 );
+
+   if( dc == 0 )
+   {
+      dc = ( INT ) ( ( FLOAT ) dr * lw / lh );
+   }
+   if( dr == 0 )
+   {
+      dr = ( INT ) ( ( FLOAT ) dc * lh / lw );
+   }
+   if( bImageSize )
+   {
+      dr = lh;
+      dc = lw;
+   }
+   if( tor <= 0 )
+   {
+      tor = dr;
+   }
+   if( toc <= 0 )
+   {
+      toc = dc;
+   }
+   if( bImageSize )
+   {
+      tor = lh;
+      toc = lw;
+   }
+   x = c;
+   y = r;
+   xe = c + toc - 1;
+   ye = r + tor - 1;
+
+   GetViewportOrgEx( lpData->hDC, &lpp );
    hrgn1 = CreateRectRgn( c + lpp.x, r + lpp.y, xe + lpp.x, ye + lpp.y );
    if( lpData->hrgn == NULL )
    {
@@ -5085,794 +4759,20 @@ static int RR_DrawIPicture( IPicture * ipic, long lwidth, long lheight, long r, 
       while( y < ye )
       {
          SetRect( &lrect, x, y, dc + x, dr + y );
-         if( ipic->lpVtbl->Render( ipic, lpData->hDC, x, y, dc, dr, 0, lheight, lwidth, -lheight, &lrect ) != S_OK )
+         if( iPicture->lpVtbl->Render( iPicture, lpData->hDC, x, y, dc, dr, 0, lheight, lwidth, -lheight, &lrect ) != S_OK )
          {
-            error = 1;
+            bRet = FALSE;
          }
          y += dr;
-      }
+}
       y = r;
       x += dc;
    }
 
-   ipic->lpVtbl->Release( ipic );
+   iPicture->lpVtbl->Release( iPicture );
    SelectClipRgn( lpData->hDC, lpData->hrgn );
    DeleteObject( hrgn1 );
-   return error;
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWPICTURE )          /* RR_DrawPicture( cPicture, aPoint, aPoint, aPoint, lImgSize, hData ) -> nSuccess */
-{
-   IPicture * ipic;
-   long lwidth = 0;
-   long lheight = 0;
-
-   if( ! hb_parclen( 1 ) )
-   {
-      hb_retni( 1 );
-      return;
-   }
-   ipic = (IPicture *) RR_LoadPicture( hb_parc( 1 ), &lwidth, &lheight );
-   if( ! ipic )
-   {
-      ipic = (IPicture *) RR_LoadPictureFromResource( hb_parc( 1 ), &lwidth, &lheight );
-   }
-   if( ! ipic )
-   {
-      hb_retni( 1 );
-      return;
-   }
-
-   hb_retni( RR_DrawIPicture( ipic, lwidth, lheight,
-             HB_PARNL2( 2, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 3, 1 ), HB_PARNL2( 3, 2 ), HB_PARNL2( 4, 1 ), HB_PARNL2( 4, 2 ),
-             hb_parl( 5 ), HBPRINTERDATAparam( 6 ) ) );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWBITMAP )          /* FUNCTION RR_DrawBitMap( hBitmap, aPoint, aPoint, aPoint, lImgSize, hData ) -> nSuccess */
-{
-   HBITMAP hBitmap;
-   PICTDESC picd;
-   IPicture * ipic;
-   long lwidth = 0;
-   long lheight = 0;
-
-   hBitmap = (HBITMAP) HWNDparam( 1 );
-   if( ! hBitmap )
-   {
-      hb_retni( 1 );
-      return;
-   }
-   picd.cbSizeofstruct = sizeof( PICTDESC );
-   picd.picType = PICTYPE_BITMAP;
-   picd.bmp.hbitmap = hBitmap;
-   if( OleCreatePictureIndirect( &picd, &IID_IPicture, FALSE, (LPVOID *) &ipic ) != S_OK )
-   {
-      hb_retni( 1 );
-      return;
-   }
-   ipic->lpVtbl->get_Width( ipic, &lwidth );
-   ipic->lpVtbl->get_Height( ipic, &lheight );
-
-   hb_retni( RR_DrawIPicture( ipic, lwidth, lheight,
-             HB_PARNL2( 2, 1 ), HB_PARNL2( 2, 2 ), HB_PARNL2( 3, 1 ), HB_PARNL2( 3, 2 ), HB_PARNL2( 4, 1 ), HB_PARNL2( 4, 2 ),
-             hb_parl( 5 ), HBPRINTERDATAparam( 6 ) ) );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CREATEIMAGELIST )          /* FUNCTION RR_CreateImageList( cImage, nIcons, @width, @height ) ) -> hIml */
-{
-   HBITMAP hbmpx;
-   BITMAP bm;
-   HIMAGELIST himl = NULL;
-   int dx, number;
-
-   hbmpx = (HBITMAP) LoadImage( 0, hb_parc( 1 ), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION );
-   if( hbmpx == NULL )
-   {
-      hbmpx = (HBITMAP) LoadImage( GetModuleHandle( NULL ), hb_parc( 1 ), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION );
-   }
-   if( hbmpx != NULL )
-   {
-      GetObject( hbmpx, sizeof( BITMAP ), &bm );
-      number = hb_parni( 2 );
-      if( number == 0 )
-      {
-         number = (int) bm.bmWidth / bm.bmHeight;
-         dx = bm.bmHeight;
-      }
-      else
-      {
-         dx = (int) bm.bmWidth / number;
-      }
-      himl = ImageList_Create( dx, bm.bmHeight, ILC_COLOR24 | ILC_MASK, number, 0 );
-      ImageList_AddMasked( himl, hbmpx, CLR_DEFAULT );
-      hb_storni( dx, 3 );
-      hb_storni( bm.bmHeight, 4 );
-      DeleteObject( hbmpx );
-   }
-   HIMAGELISTret( himl );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_DRAWIMAGELIST )          /* FUNCTION RR_DrawImageList( hIml, nIcon, aStart, aEnd, nWidth, nHeight, nStyle, nColor, hData ) -> nError */
-{
-   HIMAGELIST himl = HIMAGELISTparam( 1 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 9 );
-   HDC tempdc, temp2dc;
-   HBITMAP hbmpx;
-   RECT rect;
-   HWND hwnd = GetActiveWindow();
-
-   rect.left = HB_PARNL2( 3, 2 );
-   rect.top = HB_PARNL2( 3, 1 );
-   rect.right = HB_PARNL2( 4, 2 );
-   rect.bottom = HB_PARNL2( 4, 1 );
-   temp2dc = GetWindowDC( hwnd );
-   tempdc = CreateCompatibleDC( temp2dc );
-   hbmpx = CreateCompatibleBitmap( temp2dc, hb_parni( 5 ), hb_parni( 6 ) );
-   ReleaseDC( hwnd, temp2dc );
-   SelectObject( tempdc, hbmpx );
-   BitBlt( tempdc, 0, 0, hb_parni( 5 ), hb_parni( 6 ), tempdc, 0, 0, WHITENESS );
-   if( hb_parnl( 8 ) >= 0 )
-   {
-      ImageList_SetBkColor( himl, (COLORREF) hb_parnl( 8 ) );
-   }
-   ImageList_Draw( himl, hb_parni( 2 ) - 1, tempdc, 0, 0, (UINT) hb_parni( 7 ) );
-   if( hb_parnl( 8 ) >= 0 )
-   {
-      ImageList_SetBkColor( himl, CLR_NONE );
-   }
-   hb_retni( StretchBlt( lpData->hDC, rect.left, rect.top, rect.right, rect.bottom, tempdc, 0, 0, hb_parni( 5 ), hb_parni( 6 ), SRCCOPY ) ? 0 : 1 );
-   DeleteDC( tempdc );
-   DeleteObject( hbmpx );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_POLYGON )          /* FUNCTION RR_Polygon( aCols, aRows, hPen, hBrush, nMode, hData ) -> nError */
-{
-   int number = (int) hb_parinfa( 1, 0 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 6 );
-   int i;
-   int styl = GetPolyFillMode( lpData->hDC );
-   POINT apoints[ 1024 ];
-   HPEN xpen = HPENparam( 3 );
-   HBRUSH xbrush = HBRUSHparam( 4 );
-
-   for( i = 0; i <= number-1; i++ )
-   {
-      apoints[ i ].x = HB_PARNL2( 1, i + 1 );
-      apoints[ i ].y = HB_PARNL2( 2, i + 1 );
-   }
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, xbrush );
-   }
-   SetPolyFillMode( lpData->hDC, hb_parni( 5 ) );
-
-   hb_retni( Polygon( lpData->hDC, apoints, number ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, lpData->hbrush );
-   }
-   SetPolyFillMode( lpData->hDC, styl );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_POLYBEZIER )          /* FUNCTION RR_PolyBezier( aCols, aRows, hPen, hData ) -> nError */
-{
-   DWORD number = (DWORD) hb_parinfa( 1, 0 );
-   DWORD i;
-   POINT apoints[ 1024 ];
-   HPEN xpen = HPENparam( 3 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-
-   for( i = 0; i <= number - 1; i++ )
-   {
-      apoints[ i ].x = HB_PARNL2( 1, i + 1 );
-      apoints[ i ].y = HB_PARNL2( 2, i + 1 );
-   }
-
-   if( xpen )
-   {
-     SelectObject( lpData->hDC, xpen );
-   }
-
-   hb_retni( PolyBezier( lpData->hDC, apoints, number ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_POLYBEZIERTO )          /* FUNCTION RR_PolyBezier( aCols, aRows, hPen, hData ) -> nError */
-{
-   DWORD number = (DWORD) hb_parinfa( 1, 0 );
-   DWORD i;
-   POINT apoints[ 1024 ];
-   HPEN xpen = HPENparam( 3 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-
-   for( i = 0; i <= number-1; i++ )
-   {
-      apoints[ i ].x = HB_PARNL2( 1, i + 1 );
-      apoints[ i ].y = HB_PARNL2( 2, i + 1 );
-   }
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-
-   hb_retni( PolyBezierTo( lpData->hDC, apoints, number ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETTEXTEXTENT )          /* FUNCTION RR_GetTextExtent( cText, @aPoint, hFont, hData ) -> nError */
-{
-   HFONT xfont = HFONTparam( 3 );
-   SIZE szMetric;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-
-   if( xfont )
-   {
-      SelectObject( lpData->hDC, xfont );
-   }
-
-   hb_retni( GetTextExtentPoint32( lpData->hDC, hb_parc( 1 ), (int) hb_parclen( 1 ), &szMetric ) ? 0 : 1 );
-
-   HB_STORNL3( szMetric.cy, 2, 1 );
-   HB_STORNL3( szMetric.cx, 2, 2 );
-
-   if( xfont )
-   {
-      SelectObject( lpData->hDC, lpData->hfont );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ROUNDRECT )          /* FUNCTION RR_RoundRect( aPoint, aPoint, aSize, hPen, hBrush, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 4 );
-   HBRUSH xbrush = HBRUSHparam( 5 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 6 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, xbrush );
-   }
-
-   hb_retni( RoundRect( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ), HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ) ) ? 0 : 1 );
-
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, lpData->hbrush );
-   }
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ELLIPSE )          /* FUNCTION RR_Ellipse( aPoint, aPoint, hPen, hBrush, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 3 );
-   HBRUSH xbrush = HBRUSHparam( 4 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 5 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, xbrush );
-   }
-
-   hb_retni( Ellipse( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, lpData->hbrush );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_CHORD )          /* FUNCTION RR_Ellipse( aPoint, aPoint, aPoint, aPoint, hPen, hBrush, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 5 );
-   HBRUSH xbrush = HBRUSHparam( 6 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 7 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, xbrush );
-   }
-
-   hb_retni( Chord( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
-                    HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, lpData->hbrush );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ARCTO )          /* FUNCTION RR_ArcTo( aPoint, aPoint, aPoint, aPoint, hPen, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 5 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 6 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-
-    hb_retni( ArcTo( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
-                     HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_ARC )          /* FUNCTION RR_ArcTo( aPoint, aPoint, aPoint, aPoint, hPen, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 5 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 6 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-
-   hb_retni( Arc( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
-                  HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PIE )          /* FUNCTION RR_Pie( aPoint, aPoint, aPoint, aPoint, hPen, hBrush, hData ) -> nError */
-{
-   HPEN xpen = HPENparam( 5 );
-   HBRUSH xbrush = HBRUSHparam( 6 );
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 7 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, xbrush );
-   }
-
-   hb_retni( Pie( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ),
-                  HB_PARNI( 3, 2 ), HB_PARNI( 3, 1 ), HB_PARNI( 4, 2 ), HB_PARNI( 4, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-   if( xbrush )
-   {
-      SelectObject( lpData->hDC, lpData->hbrush );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_FILLRECT )          /* FUNCTION RR_FillRect( aPoint, aPoint, hBrush, hData ) -> nError */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-   RECT rect;
-
-   rect.left = HB_PARNL2( 1, 2 );
-   rect.top = HB_PARNL2( 1, 1 );
-   rect.right = HB_PARNL2( 2, 2 );
-   rect.bottom = HB_PARNL2( 2, 1 );
-
-   hb_retni( FillRect( lpData->hDC, &rect, HBRUSHparam( 3 ) ) ? 0 : 1 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_FRAMERECT )          /* FUNCTION RR_FrameRect( aPoint, aPoint, hBrush, hData ) -> nError */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-   RECT rect;
-
-   rect.left = HB_PARNL2( 1, 2 );
-   rect.top = HB_PARNL2( 1, 1 );
-   rect.right = HB_PARNL2( 2, 2 );
-   rect.bottom = HB_PARNL2( 2, 1 );
-
-   hb_retni( FrameRect( lpData->hDC, &rect, HBRUSHparam( 3 ) ) ? 0 : 1 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_MOVETO )          /* FUNCTION RR_MoveTo( aPoint, hData, @aPoint ) -> nError */
-{
-   POINT lpp;
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
-
-   hb_retni( MoveToEx( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), &lpp ) ? 0 : 1 );
-
-   HB_STORNL3( lpp.x, 3, 2 );
-   HB_STORNL3( lpp.y, 3, 1 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_LINE )          /* FUNCTION RR_Line( aPoint, aPoint, hPen, hData ) -> nError */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 4 );
-   HPEN xpen = HPENparam( 3 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-
-   MoveToEx( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ), NULL );
-   hb_retni( LineTo( lpData->hDC, HB_PARNI( 2, 2 ), HB_PARNI( 2, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_LINETO )          /* FUNCTION RR_LineTo( aPoint, hPen, hData ) -> nError */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 3 );
-   HPEN xpen = HPENparam( 2 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, xpen );
-   }
-
-   hb_retni( LineTo( lpData->hDC, HB_PARNI( 1, 2 ), HB_PARNI( 1, 1 ) ) ? 0 : 1 );
-
-   if( xpen )
-   {
-      SelectObject( lpData->hDC, lpData->hpen );
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_INVERTRECT )          /* FUNCTION RR_InvertRect( aPoint, aPoint, hData ) -> nError */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 3 );
-   RECT rect;
-
-   rect.left = HB_PARNL2( 1, 2 );
-   rect.top = HB_PARNL2( 1, 1 );
-   rect.right = HB_PARNL2( 2, 2 );
-   rect.bottom = HB_PARNL2( 2, 1 );
-
-   hb_retni( InvertRect( lpData->hDC, &rect ) ? 0 : 1 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETDESKTOPAREA )          /* FUNCTION RR_GetDesktopArea( @aData ) -> NIL */
-{
-   RECT rect;
-
-   SystemParametersInfo( SPI_GETWORKAREA, 1, &rect, 0 );
-
-   HB_STORNL3( rect.top, 1, 1 );
-   HB_STORNL3( rect.left, 1, 2 );
-   HB_STORNL3( rect.bottom, 1, 3 );
-   HB_STORNL3( rect.right, 1, 4 );
-   HB_STORNL3( rect.bottom - rect.top + 1, 1, 5 );
-   HB_STORNL3( rect.right - rect.left + 1, 1, 6 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETWINDOWRECT )          /* FUNCTION RR_GetWindowRect( @aData ) -> NIL */
-{
-   RECT rect;
-   HWND hwnd = HWNDparam2( 1, 7 );
-
-   if( hwnd == 0 )
-   {
-      hwnd = GetDesktopWindow();
-   }
-   GetWindowRect( hwnd, &rect );
-   HB_STORNL3( rect.top, 1, 1 );
-   HB_STORNL3( rect.left, 1, 2 );
-   HB_STORNL3( rect.bottom, 1, 3 );
-   HB_STORNL3( rect.right, 1, 4 );
-   HB_STORNL3( rect.bottom - rect.top + 1, 1, 5 );
-   HB_STORNL3( rect.right - rect.left + 1, 1, 6 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETCLIENTRECT )          /* FUNCTION RR_ClientRect( @aData ) -> NIL */
-{
-   RECT rect;
-
-   GetClientRect( HWNDparam2( 1, 7 ), &rect );
-   HB_STORNL3( rect.top, 1, 1 );
-   HB_STORNL3( rect.left, 1, 2 );
-   HB_STORNL3( rect.bottom, 1, 3 );
-   HB_STORNL3( rect.right, 1, 4 );
-   HB_STORNL3( rect.bottom - rect.top + 1, 1, 5 );
-   HB_STORNL3( rect.right - rect.left + 1, 1, 6 );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PLAYPREVIEW )          /* FUNCTION RR_PlayPreview( hWnd, aEMFData, aZoom, lInMemory ) -> hBitmap */
-{
-   HWND hwnd;
-   HDC imgDC, tmpDC;
-   RECT rect;
-   HBITMAP holdbmp, himgbmp = NULL;
-   HENHMETAFILE hh;
-   ENHMETAHEADER emh;
-   HBRUSH hnewbsh, holdbsh;
-   LPBYTE lpBitmapBits = NULL;
-   BITMAPINFO bi;
-   POINT Point;
-
-   hwnd = HWNDparam( 1 );
-   imgDC = GetWindowDC( hwnd );
-   if( imgDC != NULL )
-   {
-      tmpDC = CreateCompatibleDC( imgDC );
-      if( tmpDC != NULL )
-      {
-         if( hb_parl( 4 ) )
-         {
-            hh = SetEnhMetaFileBits( (UINT) HB_PARCLEN( 2, 1 ), (const BYTE *) HB_PARC( 2, 1 ) );
-         }
-         else
-         {
-            hh = GetEnhMetaFile( HB_PARC( 2, 1 ) );
-         }
-         if( hh != NULL )
-         {
-            memset( &emh, 0, sizeof( ENHMETAHEADER ) );
-            emh.nSize = sizeof( ENHMETAHEADER );
-            if( GetEnhMetaFileHeader( hh, sizeof( ENHMETAHEADER ), &emh ) != 0 )
-            {
-               SetRect( &rect, 0, 0, HB_PARNL2( 3, 4 ), HB_PARNL2( 3, 3 ) );
-               bi.bmiHeader.biSize          = sizeof( BITMAPINFOHEADER );
-               bi.bmiHeader.biWidth         = rect.right;
-               bi.bmiHeader.biHeight        = - rect.bottom;
-               bi.bmiHeader.biPlanes        = 1;
-               bi.bmiHeader.biBitCount      = 24;
-               bi.bmiHeader.biCompression   = BI_RGB;
-               bi.bmiHeader.biSizeImage     = 0;
-               bi.bmiHeader.biXPelsPerMeter = 0;
-               bi.bmiHeader.biYPelsPerMeter = 0;
-               bi.bmiHeader.biClrUsed       = 0;
-               bi.bmiHeader.biClrImportant  = 0;
-               himgbmp = CreateDIBSection( tmpDC, &bi, DIB_RGB_COLORS, (void **) &lpBitmapBits, NULL, 0 );
-               if( lpBitmapBits )
-               {
-                  holdbmp = (HBITMAP) SelectObject( tmpDC, himgbmp );
-                  hnewbsh = (HBRUSH) GetStockObject( WHITE_BRUSH );
-                  holdbsh = (HBRUSH) SelectObject( tmpDC, hnewbsh );
-                  FillRect( tmpDC, &rect, hnewbsh );
-                  GetBrushOrgEx( tmpDC, &Point );
-                  SetStretchBltMode( tmpDC, HALFTONE );
-                  SetBrushOrgEx( tmpDC, Point.x, Point.y, NULL );
-                  PlayEnhMetaFile( tmpDC, hh, &rect );
-                  SelectObject( tmpDC, holdbsh );
-                  SelectObject( tmpDC, holdbmp );
-               }
-            }
-            DeleteEnhMetaFile( hh );
-         }
-         DeleteDC( tmpDC );
-      }
-      ReleaseDC( hwnd, imgDC );
-   }
-   HBITMAPret( himgbmp );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PLAYTHUMB )          /* FUNCTION RR_PlayThumb( aWinThumbsData, aEMFData, cText, lInMemory ) -> hBitmap */
-{
-   HWND hwnd;
-   HDC imgDC, tmpDC;
-   RECT rect;
-   HBITMAP holdbmp, himgbmp = NULL;
-   HENHMETAFILE hh;
-   ENHMETAHEADER emh;
-   HBRUSH hnewbsh, holdbsh;
-   LPBYTE lpBitmapBits = NULL;
-   BITMAPINFO bi;
-   POINT Point;
-
-   hwnd = HWNDparam2( 1, 5 );
-   imgDC = GetWindowDC( hwnd );
-   if( imgDC != NULL )
-   {
-      tmpDC = CreateCompatibleDC( imgDC ); // or NULL
-      if( tmpDC != NULL )
-      {
-         if( hb_parl( 4 ) )
-         {
-            hh = SetEnhMetaFileBits( (UINT) HB_PARCLEN( 2, 1 ), (const BYTE *) HB_PARC( 2, 1 ) );
-         }
-         else
-         {
-            hh = GetEnhMetaFile( HB_PARC( 2, 1 ) );
-         }
-         if( hh != NULL )
-         {
-            memset( &emh, 0, sizeof( ENHMETAHEADER ) );
-            emh.nSize = sizeof( ENHMETAHEADER );
-            if( GetEnhMetaFileHeader( hh, sizeof( ENHMETAHEADER ), &emh ) != 0 )
-            {
-               SetRect( &rect, 0, 0, HB_PARNL2( 1, 4 ), HB_PARNL2( 1, 3 ) );
-               bi.bmiHeader.biSize          = sizeof( BITMAPINFOHEADER );
-               bi.bmiHeader.biWidth         = rect.right;
-               bi.bmiHeader.biHeight        = - rect.bottom;
-               bi.bmiHeader.biPlanes        = 1;
-               bi.bmiHeader.biBitCount      = 24;
-               bi.bmiHeader.biCompression   = BI_RGB;
-               bi.bmiHeader.biSizeImage     = 0;
-               bi.bmiHeader.biXPelsPerMeter = 0;
-               bi.bmiHeader.biYPelsPerMeter = 0;
-               bi.bmiHeader.biClrUsed       = 0;
-               bi.bmiHeader.biClrImportant  = 0;
-               himgbmp = CreateDIBSection( tmpDC, &bi, DIB_RGB_COLORS, (void **) &lpBitmapBits, NULL, 0 );
-               if( lpBitmapBits )
-               {
-                  holdbmp = (HBITMAP) SelectObject( tmpDC, himgbmp );
-                  hnewbsh = (HBRUSH) GetStockObject( WHITE_BRUSH );
-                  holdbsh = (HBRUSH) SelectObject( tmpDC, hnewbsh );
-                  FillRect( tmpDC, &rect, hnewbsh );
-                  GetBrushOrgEx( tmpDC, &Point );
-                  SetStretchBltMode( tmpDC, HALFTONE );
-                  SetBrushOrgEx( tmpDC, Point.x, Point.y, NULL );
-                  PlayEnhMetaFile( tmpDC, hh, &rect );
-                  TextOut( tmpDC, (int) ( rect.right / 2 - 5 ), (int) ( rect.bottom / 2 - 5 ), hb_parc( 3 ), (int) hb_parclen( 3 ) );
-                  SelectObject( tmpDC, holdbsh );
-                  SelectObject( tmpDC, holdbmp );
-               }
-            }
-            DeleteEnhMetaFile( hh );
-         }
-         DeleteDC( tmpDC );
-      }
-      ReleaseDC( hwnd, imgDC );
-   }
-   HBITMAPret( himgbmp );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_PLAYENHMETAFILE )          /* FUNCTION RR_PlayEnhMetaFile( aData, hDC, lInMemory ) -> hBitmap */
-{
-   HENHMETAFILE hh;
-   ENHMETAHEADER emh;
-   RECT rect;
-   HDC hDC = HDCparam( 2 );
-
-   if( hb_parl( 3 ) )
-   {
-      hh = SetEnhMetaFileBits( (UINT) HB_PARCLEN( 1, 1 ), (const BYTE *) HB_PARC( 1, 1 ) );
-   }
-   else
-   {
-      hh = GetEnhMetaFile( HB_PARC( 1, 1 ) );
-   }
-   if( hh != NULL )
-   {
-      memset( &emh, 0, sizeof( ENHMETAHEADER ) );
-      emh.nSize = sizeof( ENHMETAHEADER );
-      if( GetEnhMetaFileHeader( hh, sizeof( ENHMETAHEADER ), &emh ) != 0 )
-      {
-         SetRect( &rect, 0, 0, HB_PARNL2( 1, 5 ), HB_PARNL2( 1, 4 ) );
-         PlayEnhMetaFile( hDC, hh, &rect );
-         DeleteEnhMetaFile( hh );
-      }
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_LALABYE )          /* FUNCTION RR_LaLaBye( nCase ) -> NIL */
-{
-   LPHBPRINTERDATA lpData = HBPRINTERDATAparam( 2 );
-
-   if( hb_parni( 1 ) == 1 )
-   {
-      lpData->hDCtemp = lpData->hDC;
-      lpData->hDC = lpData->hDCRef;
-   }
-   else
-   {
-      lpData->hDC = lpData->hDCtemp;
-   }
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_LOADSTRING )          /* FUNCTION RR_LoadString( nIdentifier ) -> cString */
-{
-   char * cBuffer;
-
-   cBuffer = (char *) GlobalAlloc( GPTR, 255 );
-   LoadString( GetModuleHandle( NULL ), (UINT) hb_parni( 1 ), (LPSTR) cBuffer, 254 );
-   hb_retc( cBuffer );
-   GlobalFree( cBuffer );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETTEMPFOLDER )          /* FUNCTION RR_GetTempFolder() -> cFolder */
-{
-   char szBuffer[ MAX_PATH + 1 ];
-
-   memset( &szBuffer, 0, sizeof( szBuffer ) );
-   GetTempPath( MAX_PATH, szBuffer );
-   hb_retc( szBuffer );
-}
-
-/*--------------------------------------------------------------------------------------------------------------------------------*/
-HB_FUNC( RR_GETPIXELCOLOR )          /* FUNCTION RR_GetPixelColor( hBitmap, nRow, nCol ) -> nColor */
-{
-   HDC memDC;
-   COLORREF color;
-   HBITMAP hOld;
-   HBITMAP hBmp = (HBITMAP) HWNDparam( 1 );
-
-   if( hBmp )
-   {
-      memDC = CreateCompatibleDC( NULL );
-      hOld = (HBITMAP) SelectObject( memDC, hBmp );
-      color = GetPixel( memDC, hb_parni( 2 ), hb_parni( 3 ) );
-      SelectObject( memDC, hOld );
-      DeleteDC( memDC );
-   }
-   else
-   {
-      color = -1;
-   }
-   hb_retnl( (long) color );
+   hb_retl( bRet );
 }
 
 #pragma ENDDUMP
