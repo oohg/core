@@ -349,7 +349,7 @@ METHOD EasyReport1( cTitle, aHeaders1, aHeaders2, aFields, aWidths, aTotals, nLP
 
    IF ! Empty( cGraphic )
       IF File( cGraphic )
-         ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic )
+         ::oPrint:PrintImage( nFI, nCI + ::nLMargin, nFF, nCF + ::nLMargin, cGraphic, NIL, .F., NIL )
       ELSE
          MsgStop( _OOHG_Messages( MT_MISCELL, 21 ) + DQM( cGraphic ) + ".", _OOHG_Messages( MT_MISCELL, 9 ) )
       ENDIF
@@ -1224,7 +1224,7 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
       lBEject, lSummary, lNoSeps, lSelect, lPreview, lLandscape, nPapersize, nRes, nBin, nDuplex, lCollate, ;
       nCopies, lColor, nScale, nLength, nWidth, cDocName, lInfo ) CLASS TReportFormWin
 
-   LOCAL oError, lSale := .F., nCol, nGroup, lAnySubTotals, sAuxST, lAnyTotals, xBreakVal, lBroke := .F.
+   LOCAL oError, lSale := .F., nCol, nGroup, lAnySubTotals, sAuxST, lAnyTotals, lError := .F., cName
 
    HB_SYMBOL_UNUSED( cAltFile )
    HB_SYMBOL_UNUSED( lNoConsole )
@@ -1259,8 +1259,11 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
    ASSIGN nWidth     VALUE nWidth     TYPE "N"  DEFAULT NIL
    ASSIGN lInfo      VALUE lInfo      TYPE "L"  DEFAULT .F.
 
+#ifdef __XHARBOUR__
+   TRY
+#else
    BEGIN SEQUENCE
-
+#endif
       ::aReportData := ::LoadFRM( cFRMName )
 
       IF ValType( nPaperSize ) # "N"
@@ -1293,6 +1296,8 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
       ::nLinesLeft := ::aReportData[ RP_LINES ]
 
       ::oPrint:BeginDoc( cDocName )
+      cName := ::oPrint:cDocument
+
       ::oPrint:BeginPage()
 
       ::nPosRow := _RF_FIRSTROW
@@ -1392,30 +1397,27 @@ METHOD DoReport( cFRMName, lPrinter, cAltFile, lNoConsole, bFor, bWhile, nNext, 
          ::PrintLine( SubStr( sAuxSt, 2 ), .T. )
       ENDIF
 
-      IF lInfo .AND. ! Empty( ::oPrint:cDocument )
-         MsgInfo( "Document " + ::oPrint:cDocument + " was created." )
-      ENDIF
-
-      // Eject the paper. Needed under DOS. It's better not to send this under Windows.
-      /*
-      IF ::aReportData[ RP_AEJECT ]
-         ::EjectPage()
-      ENDIF
-      */
-
-   RECOVER USING xBreakVal
-
-      lBroke := .T.
-
-   END SEQUENCE
-
-   IF ! lSale
       ::oPrint:EndPage()
       ::oPrint:EndDoc()
 
-      IF lBroke
-         BREAK xBreakVal
-      END
+#ifdef __XHARBOUR__
+   CATCH
+      lError := .T.
+   END
+#else
+   RECOVER
+      lError := .T.
+   END SEQUENCE
+#endif
+
+   ::oPrint:Release()
+
+   IF ! lSale
+      IF ! lError
+         IF lInfo .AND. ! Empty( cName )
+            MsgInfo( "Document " + cName + " was created." )
+         ENDIF
+      ENDIF
    ENDIF
 
    RETURN NIL
