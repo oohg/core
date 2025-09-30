@@ -14,6 +14,10 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-09-30 01:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+ * core\source\miniprint.prg
+   ! Preview window is not showing all the buttons in the toolbar.
+
 2025-09-28 12:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
  * core\source\winprint.prg
    ! Content was reverted to commit 10f80af of 2019-09-23 to address
@@ -2102,7 +2106,7 @@
       removed or .F. if not.
     * Method ActiveFramePush now returns the just addeed frame.
     + Method Release: added support for releasing the new stack.
-  #460
+ÿ #4?
 
 2021-07-02 14:58 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg.hbc
