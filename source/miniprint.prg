@@ -77,7 +77,7 @@ DECLARE WINDOW _HMG_PRINTER_SHOWPREVIEW
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
 
-   LOCAL tHeight, tFactor, tvHeight, icb, oSep
+   LOCAL tHeight, tFactor, tvHeight, icb, oSep, oPPNAV, oSHOWPREVIEW, oSHOWTHUMBNAILS
 
    IF _HMG_PRINTER_hdcPrint == 0
       RETURN
@@ -154,7 +154,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
       ENDIF
    ENDIF
 
-      DEFINE WINDOW _HMG_PRINTER_PPNAV HEIGHT 35 WIDTH 100 INTERNAL
+      DEFINE WINDOW _HMG_PRINTER_PPNAV HEIGHT 35 WIDTH 100 INTERNAL OBJ oPPNAV
 
          @ 2, 2 BUTTON b1 ;
             WIDTH 30 ;
@@ -235,9 +235,9 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
                      _HMG_PRINTER_SHOWPREVIEW.Show() )
       END WINDOW
 
-      _HMG_PRINTER_PPNAV.ClientAdjust := 1
+      oPPNAV:Adjust( 1 )
 
-      DEFINE WINDOW _HMG_PRINTER_SHOWPREVIEW ;
+      DEFINE WINDOW _HMG_PRINTER_SHOWPREVIEW OBJ oShowPreview ;
          AT 0, 0 ;
          WIDTH GetDesktopRealWidth() - 123 ;
          HEIGHT GetDesktopRealHeight() - 123 ;
@@ -269,7 +269,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
       ENDIF
          ON KEY CONTROL+T    ACTION _HMG_PRINTER_ThumbnailToggle()
 
-         _HMG_PRINTER_SHOWPREVIEW.ClientAdjust := 5
+         oShowPreview:Adjust( 5 )
       END WINDOW
 
       IF _HMG_PRINTER_GetPageHeight( _HMG_PRINTER_hdcPrint ) > _HMG_PRINTER_GetPageWidth( _HMG_PRINTER_hdcPrint )
@@ -291,7 +291,7 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
          _HMG_PRINTER_ThumbScroll := .T.
       ENDIF
 
-      DEFINE WINDOW _HMG_PRINTER_SHOWTHUMBNAILS INTERNAL ;
+      DEFINE WINDOW _HMG_PRINTER_SHOWTHUMBNAILS INTERNAL OBJ oSHOWTHUMBNAILS ;
          WIDTH 130 ;
          VIRTUAL WIDTH 130 ;
          VIRTUAL HEIGHT tvHeight ;
@@ -299,8 +299,8 @@ PROCEDURE _HMG_PRINTER_ShowPreview( cParent, lWait, lSize )
          BACKCOLOR { 100, 100, 100 }
       END WINDOW
 
-      _HMG_PRINTER_SHOWTHUMBNAILS.ClientAdjust := 3
-      _HMG_PRINTER_SHOWTHUMBNAILS.Hide()
+      oSHOWTHUMBNAILS:Adjust( 3 )
+      oSHOWTHUMBNAILS:Hide()
 
       @ 0, 0 LABEL _lsep OBJ oSep WIDTH 4 VALUE '' BORDER
 

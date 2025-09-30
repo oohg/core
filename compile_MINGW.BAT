@@ -185,7 +185,7 @@ rem
 
    if "%HG_COMP_TYPE%" == "DEBUG" echo OPTIONS NORUNATSTARTUP > init.cld
    if "%HG_COMP_TYPE%" == "DEBUG" set %HG_EXTRA%=-b %HG_EXTRA%
-   set HG_SEARCH=-i%HG_HRB%\include;%HG_ROOT%\include;.
+   set HG_SEARCH=-i%HG_HRB%\include;%HG_ROOT%\include;%HG_ROOT%\contrib\hbzebra;.
    if not "%HG_INC_HRB%" == "" set HG_SEARCH=%HG_SEARCH%;%HG_INC_HRB%
    %HG_HRB%\%BIN_HRB%\harbour %HG_FILE%.prg -n %HG_EXTRA% %HG_SEARCH% %HG_DEFINES% %HG_PRG_LOG%
    if errorlevel 1 set HG_NO_RUN=TRUE
