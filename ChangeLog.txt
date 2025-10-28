@@ -14,42 +14,54 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-09-30 09:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\oohg_hb.hbc
+    ! Lib vfw32 was addeded for MinGW builds.
+  ; Thanks to José M. C. Quintas.
+  #645
+
 2025-09-30 01:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\source\miniprint.prg
-   ! Preview window is not showing all the buttons in the toolbar.
+  * core\source\miniprint.prg
+    ! Preview window is not showing all the buttons in the toolbar.
+  #646
 
 2025-09-28 12:10 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\source\winprint.prg
-   ! Content was reverted to commit 10f80af of 2019-09-23 to address
-     the missing "Print Preview" icon. TODO: Reintroduce improvements
-     from subsequent commits.
+  * core\source\winprint.prg
+    ! Content was reverted to commit 10f80af of 2019-09-23 to address
+      the missing "Print Preview" icon.
+    ; TODO: Reintroduce improvements from subsequent commits.
+  #647
   * core\include\oohg_dyns.hbx
     * Updated
 
 2025-09-28 09:02 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\source\h_report.prg
-   + Support for handling print errors under xHarbour in
-     TReportFormWin:DoReport method.
+  * core\source\h_report.prg
+    + Support for handling print errors under xHarbour in
+      TReportFormWin:DoReport method.
+  #647
 
 2025-09-28 08:50 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\source\oohg.hbp
-   * Use oohg.hbc instead of include folder.
+  * core\source\oohg.hbp
+    * Use oohg.hbc instead of 'include' folder.
+  #647
 
 2025-09-28 08:46 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
- * core\include\miniprint.ch
-   ! Duplicate defines warning.
+  * core\include\miniprint.ch
+    ! Duplicate defines warning.
+  #650
 
 2025-09-28 08:43 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\compile.bat
   * core\compile_MINGW.BAT
     ! Missing hbzebra lib.
+  #649
 
 2025-07-31 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\BuildApp_hbmk2.bat
   * core\compile_MINGW.BAT
     ! Compilation under HB30 cancels with message "hbcurl lib not found".
-  #540
     ! Compilation under HB32 cancels with message "hbcurl lib not found".
+  #540
   #642
 
 2025-07-29 18:59 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
@@ -57,8 +69,8 @@
   * core\compile_MINGW.BAT
   * core\oohg.hbc
     ! Compilation under HB30 cancels with message "hbcurl lib not found".
-  #540
     ! Compilation under HB32 cancels with message "hbcurl lib not found".
+  #540
   #642
 
 2025-07-28 16:00 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
