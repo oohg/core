@@ -6231,7 +6231,7 @@ STATIC FUNCTION Zebra_CreateBitmapBarcode( aBarColor, aBackColor, nLineWidth, nL
       IF hb_zebra_geterror( hZebra ) == 0
          cTextCode   := hb_zebra_getcode( hZebra )
          nSizeWidth  := Zebra_GetWidth( hZebra, nLineWidth, nLineHeight, Nil )
-         nSizeHeight := Zebra_GetHeight( hZebra, nLineWidth, nLineHeight, Nil ) + IIF( lShowDigits, ( nLineWidth * 10 ) + 20, 0 )
+         nSizeHeight := Zebra_GetHeight( hZebra, nLineWidth, nLineHeight, Nil ) + iif( lShowDigits, ( nLineWidth * 10 ) + 20, 0 )
          hBitmap     := BT_BitmapCreateNew( nSizeWidth, nSizeHeight, aBackColor )
          hDC         := BT_CreateDC( hBitmap, BT_HDC_BITMAP, @BTstruct )
          Zebra_Draw( hZebra, hDC, aBarColor, 0, 0, nLineWidth, nLineHeight, Nil )
