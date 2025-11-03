@@ -111,8 +111,8 @@
       [ <dummy: INPUTMASK, PICTURE> <inputmask> ] ;
       [ FORMAT <format> ] ;
       [ SUBCLASS <subclass> ] ;
-      [ ACTION <action> [ TOOLTIP <tb1> ] ]  ;
-      [ ACTION2 <action2> [ TOOLTIP <tb2> ] ]  ;
+      [ ACTION <action> [ TOOLTIP <tb1> ] [ <c1: CANCEL> ] ] ;
+      [ ACTION2 <action2> [ TOOLTIP <tb2> ] [ <c2: CANCEL> ] ] ;
       [ IMAGE <abitmap> ] ;
       [ BUTTONWIDTH <btnwidth> ] ;
       [ WHEN <bWhen> ] ;
@@ -133,5 +133,6 @@
             <.date.>, <.numeric.>, <inputmask>, <format>, [ <subclass>() ], ;
             <{action}>, <abitmap>, <btnwidth>, <{action2}>, <{bWhen}>, ;
             <.centeralign.>, <year>, <{textfilled}>, <nInsType>, <.place.>, ;
-            <.nocm.>, <tb1>, <tb2>, <cuetext>, <.undo.>, <.nortrim.> )
+            <.nocm.>, <tb1>, <tb2>, <cuetext>, <.undo.>, <.nortrim.>, <.c1.>, ;
+            <.c2.> )
 
