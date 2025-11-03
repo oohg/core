@@ -14,6 +14,13 @@
  * Use #nnn-PRG to refer to a pull request.
  */
 
+2025-11-02 22:53 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
+  * core\include\i_textbox.ch
+  * core\source\h_textbox.prg
+    + Enable the execution of ACTION and ACTION2 codeblocks so
+      the user can pick a suitable value from a list.
+  #651
+
 2025-09-30 09:49 UTC-0300 Fernando Yurisich <fyurisich@oohg.org>
   * core\oohg_hb.hbc
     ! Lib vfw32 was addeded for MinGW builds.
