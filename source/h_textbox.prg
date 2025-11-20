@@ -80,6 +80,8 @@ CLASS TText FROM TLabel
    DATA cToolTipBut1              INIT NIL
    DATA cToolTipBut2              INIT NIL
    DATA lAutoSkip                 INIT .F.
+   DATA lCancelBut1               INIT .F.
+   DATA lCancelBut2               INIT .F.
    DATA lFocused                  INIT .F.
    DATA lInsert                   INIT .T.
    DATA lNoRTrim                  INIT .F.
@@ -164,7 +166,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
                lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
                lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TText
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 ) CLASS TText
 
    LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -175,7 +177,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
               lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
               lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
               nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-              lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+              lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
 
    RETURN Self
 
@@ -184,7 +186,7 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
                 bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
                 cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
                 nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-                lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TText
+                lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 ) CLASS TText
 
    LOCAL nControlHandle, aAux, lBreak := NIL
 
@@ -254,8 +256,8 @@ METHOD Define2( cControlName, cParentForm, x, y, w, h, cValue, cFontName, nFontS
    ENDIF
    ::aBitmap := aAux
 
-   ::DefineAction( bAction1, aAux[ 1 ], cTTipB1 )
-   ::DefineAction2( bAction2, aAux[ 2 ], cTTipB2 )
+   ::DefineAction( bAction1, aAux[ 1 ], cTTipB1, lCancel1 )
+   ::DefineAction2( bAction2, aAux[ 2 ], cTTipB2, lCancel2 )
 
    IF HB_ISLOGICAL( lNoCntxtMnu ) .AND. lNoCntxtMnu
       ::ContextMenu := TMenuContext():Define( Self )
@@ -281,10 +283,12 @@ METHOD Release() CLASS TText
    ::ReleaseAction()
    ::bAction1 := NIL
    ::cToolTipBut1 := NIL
+   ::lCancelBut1 := NIL
 
    ::ReleaseAction2()
    ::bAction2 := NIL
    ::cToolTipBut2 := NIL
+   ::lCancelBut2 := NIL
 
    ::aBitmap := NIL
 
@@ -315,39 +319,76 @@ METHOD ReleaseAction2()  CLASS TText
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DefineAction( bAction, uBitmap, cToolTip ) CLASS TText
+METHOD DefineAction( bAction, uBitmap, cToolTip, lCancel ) CLASS TText
 
    IF HB_ISBLOCK( bAction )
-      ::bAction1 := bAction
-      ::cToolTipBut1 := cToolTip
+      ASSIGN ::bAction1     VALUE bAction  TYPE "B"  DEFAULT NIL
+      ASSIGN ::cToolTipBut1 VALUE cToolTip TYPE "CM" DEFAULT NIL
+      ASSIGN ::lCancelBut1  VALUE lCancel  TYPE "L"  DEFAULT .F.
 
       IF ::ControlPosition == 0
-         IF Empty( uBitmap )
-            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               CAPTION '...' ;
-               TOOLTIP cToolTip
+         IF ::lCancelBut1
+            IF Empty( uBitmap )
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut1 ;
+                  CANCEL
+            ELSE
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut1 ;
+                  CANCEL
+            ENDIF
          ELSE
-            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               PICTURE uBitmap AUTOFIT ;
-               TOOLTIP cToolTip
+            IF Empty( uBitmap )
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut1
+            ELSE
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut1
+            ENDIF
          ENDIF
       ELSE
-         IF Empty( uBitmap )
-            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               CAPTION '...' ;
-               TOOLTIP cToolTip
+         IF ::lCancelBut1
+            IF Empty( uBitmap )
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut1 ;
+                  CANCEL
+            ELSE
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut1 ;
+                  CANCEL
+            ENDIF
          ELSE
-            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               PICTURE uBitmap AUTOFIT ;
-               TOOLTIP cToolTip
+            IF Empty( uBitmap )
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut1
+            ELSE
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction1 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut1
+            ENDIF
          ENDIF
       ENDIF
    ENDIF
@@ -355,39 +396,62 @@ METHOD DefineAction( bAction, uBitmap, cToolTip ) CLASS TText
    RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
-METHOD DefineAction2( bAction, uBitmap, cToolTip ) CLASS TText
+METHOD DefineAction2( bAction, uBitmap, cToolTip, lCancel ) CLASS TText
 
    IF HB_ISBLOCK( bAction )
-      ::bAction2 := bAction
-      ::cToolTipBut2 := cToolTip
+      ASSIGN ::bAction2     VALUE bAction  TYPE "B"  DEFAULT NIL
+      ASSIGN ::cToolTipBut2 VALUE cToolTip TYPE "CM" DEFAULT NIL
+      ASSIGN ::lCancelBut2  VALUE lCancel  TYPE "L"  DEFAULT .F.
 
       IF ::ControlPosition == 0
-         IF Empty( uBitmap )
-            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               CAPTION '...' ;
-               TOOLTIP cToolTip
-         ELSE
-            @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               PICTURE uBitmap AUTOFIT ;
-               TOOLTIP cToolTip
+         IF ::lCancelBut2
+            IF Empty( uBitmap )
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut2 ;
+                  CANCEL
+            ELSE
+               @ 2,2 BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut2 ;
+                  CANCEL
+            ENDIF
          ENDIF
       ELSE
-         IF Empty( uBitmap )
-            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               CAPTION '...' ;
-               TOOLTIP cToolTip
+         IF ::lCancelBut2
+            IF Empty( uBitmap )
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut2 ;
+                  CANCEL
+            ELSE
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut2 ;
+                  CANCEL
+            ENDIF
          ELSE
-            @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton2 ;
-               WIDTH ::nBtnWidth HEIGHT 100 ;
-               ACTION Eval( bAction ) ;
-               PICTURE uBitmap AUTOFIT ;
-               TOOLTIP cToolTip
+            IF Empty( uBitmap )
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  CAPTION '...' ;
+                  TOOLTIP ::cToolTipBut2
+            ELSE
+               @ 2,::ClientWidth + 2 - ::nBtnWidth BUTTON 0 OF ( Self ) OBJ ::oButton1 ;
+                  WIDTH ::nBtnWidth HEIGHT 100 ;
+                  ACTION Eval( ::bAction2 ) ;
+                  PICTURE uBitmap AUTOFIT ;
+                  TOOLTIP ::cToolTipBut2
+            ENDIF
          ENDIF
       ENDIF
    ENDIF
@@ -427,8 +491,8 @@ METHOD RedefinePasswordStyle() CLASS TText
 
    ::ReleaseAction()
    ::ReleaseAction2()
-   ::DefineAction( ::bAction1, aBitmap1, ::cToolTipBut1 )
-   ::DefineAction2( ::bAction2, aBitmap2, ::cToolTipBut2 )
+   ::DefineAction( ::bAction1, aBitmap1, ::cToolTipBut1, ::lCancelBut1 )
+   ::DefineAction2( ::bAction2, aBitmap2, ::cToolTipBut2, ::lCancelBut2 )
 
    DestroyWindow( nOldHandle )
 
@@ -1200,7 +1264,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, c
                bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
                cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, nOnFocusPos, lDisabled, ;
                bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TTextPicture
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 ) CLASS TTextPicture
 
    LOCAL nStyle := ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1228,7 +1292,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, c
               bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, lStrikeout, ;
               cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, lNoBorder, ;
               nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, ;
-              nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+              nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
 
    RETURN Self
 
@@ -1931,7 +1995,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
                lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, ;
                lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, bOnTextFilled, nInsType, ;
-               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim ) CLASS TTextNum
+               lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 ) CLASS TTextNum
 
    LOCAL nStyle := ES_NUMBER + ES_AUTOHSCROLL, nStyleEx := 0
 
@@ -1942,7 +2006,7 @@ METHOD Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, cValue, c
               lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
               lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, nStyle, lRtl, lAutoSkip, nStyleEx, ;
               lNoBorder, nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-              bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+              bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
 
    RETURN Self
 
@@ -1996,7 +2060,7 @@ FUNCTION DefineTextBox( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, 
                         lReadOnly, lBold, lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, ;
                         lNoTabStop, lRtl, lAutoSkip, lNoBorder, nOnFocusPos, lDisabled, bValid, lDate, lNumeric, cInputmask, ;
                         cFormat, oSubclass, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, nYear, bOnTextFilled, ;
-                        nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+                        nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
 
    LOCAL Self, lInsert
 
@@ -2042,14 +2106,14 @@ FUNCTION DefineTextBox( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, 
                 cTooltip, bLostfocus, bGotfocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, lItalic, lUnderline, ;
                 lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, lNoBorder, ;
                 nOnFocusPos, lDisabled, bValid, lUpper, lLower, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-                nYear, bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+                nYear, bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
    ELSE
       Self := _OOHG_SelectSubClass( iif( lNumeric, TTextNum(), TText() ), oSubclass )
       ::Define( cControlName, cParentForm, nCol, nRow, nWidth, nHeight, uValue, cFontName, nFontSize, cToolTip, nMaxLength, ;
                 lUpper, lLower, lPassword, bLostFocus, bGotFocus, bChange, bEnter, lRight, nHelpId, lReadOnly, lBold, ;
                 lItalic, lUnderline, lStrikeout, cField, uBackColor, uFontColor, lInvisible, lNoTabStop, lRtl, lAutoSkip, ;
                 lNoBorder, nOnFocusPos, lDisabled, bValid, bAction1, aBitmap, nBtnWidth, bAction2, bWhen, lCenter, ;
-                bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim )
+                bOnTextFilled, nInsType, lAtLeft, lNoCntxtMnu, cTTipB1, cTTipB2, cCue, lUndo, lNoRTrim, lCancel1, lCancel2 )
    ENDIF
 
    ASSIGN ::InsertStatus VALUE lInsert TYPE "L"
