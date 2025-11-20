@@ -900,7 +900,7 @@ POLYFILL() MODES
 TEXT ALIGNMENT OPTIONS
 ---------------------------------------------------------------------------*/
 
-#ifndef __MINIPRINT__
+#ifndef __TA_DEFINED
 #define TA_NOUPDATECP                         0
 #define TA_UPDATECP                           1
 #define TA_LEFT                               0
@@ -912,6 +912,7 @@ TEXT ALIGNMENT OPTIONS
 #define TA_RTLREADING                         256
 #define TA_MASK                               ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
 #define GDI_ERROR                             0xFFFFFFFF
+#define __TA_DEFINED
 #endif
 
 /*---------------------------------------------------------------------------
