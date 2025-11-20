@@ -804,8 +804,9 @@ PRINTER CONFIGURATION CONSTANTS
 #define WIN_PRINTER_STATUS_POWER_SAVE               0x01000000
 #endif
 
+#endif
 /* text alignment */
-#ifndef __HBPRN__
+#ifndef __TA_DEFINED
 #define TA_NOUPDATECP                               0
 #define TA_UPDATECP                                 1
 #define TA_LEFT                                     0
@@ -816,7 +817,7 @@ PRINTER CONFIGURATION CONSTANTS
 #define TA_BASELINE                                 24
 #define TA_RTLREADING                               256
 #define TA_MASK                                     ( TA_BASELINE + TA_CENTER + TA_UPDATECP + TA_RTLREADING )
+#define __TA_DEFINED
 #endif
 
-#endif
 
