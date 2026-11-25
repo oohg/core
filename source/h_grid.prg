@@ -87,6 +87,9 @@ CLASS TGrid FROM TControl
    DATA AllowMoveColumn           INIT .T.
    DATA aPicture                  INIT {}
    DATA aSelectedColors           INIT {}
+   DATA aMarkRowSave              INIT Nil   // MARKROW: selected colors before enabling it
+   DATA uMarkRow                  INIT Nil   // MARKROW: NIL, .F., .T. or array of colors
+   DATA nMarkCol                  INIT 0     // MARKROW: current column without NAVIGATEBYCELL
    DATA aStopEdit                 INIT {}
    DATA aWhen                     INIT {}
    DATA aWidths                   INIT {}
@@ -261,6 +264,11 @@ CLASS TGrid FROM TControl
    METHOD Left
    METHOD lNoFocusRect            BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lFocusRect := ! lValue, ! ::lFocusRect ) }
    METHOD LoadHeaderImages
+   METHOD MarkColMove
+   METHOD MarkColShow
+   METHOD MarkColValid
+   METHOD MarkRow                 SETGET
+   METHOD MarkRowActive
    METHOD NextColInOrder
    METHOD NextPosToEdit
    METHOD OnEnter                 SETGET
@@ -495,9 +503,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       OOHG_MsgError( "TGrid.Define2: CHECKBOXES and PAINTLEFTMARGIN clauses can not be used simultaneously. Program terminated." )
    EndIf
 
+   // When lNoShowAlways is not set (NIL) the selection is always shown, like in MiniGUI.
+   // The @ ... BROWSE rule of i_minigui_compat.ch used to pass NIL and the selected row was not
+   // painted when the control lost the focus. Only NOSHOWALWAYS (.T.) hides it.
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
-             If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
+             If( HB_IsLogical( lNoShowAlways ) .AND. lNoShowAlways, 0, LVS_SHOWSELALWAYS )
 
    IF ! HB_ISARRAY( aJust )
       ::aJust := AFill( Array( Len( ::aHeaders ) ), 0 )
@@ -905,11 +916,12 @@ METHOD CheckItem( nItem, lChecked ) CLASS TGrid
 
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
 
-   Local i, aColors[ 4 ]
+   // 8 colors like TGridByCell (colors 5 to 8 are used by MARKROW)
+   Local i, aColors[ 8 ]
 
    If HB_IsArray( aSelectedColors )
       aSelectedColors := AClone( aSelectedColors )
-      ASize( aSelectedColors, 4 )
+      ASize( aSelectedColors, 8 )
 
       // For text of selected row when grid has the focus
       If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
@@ -927,10 +939,16 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
       If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
          aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
       EndIf
+      // For the rest of the selected row with MARKROW (-1 = normal color of the cell)
+      For i := 5 To 8
+         If ! ValType( aSelectedColors[ i ] ) $ "ANB"
+            aSelectedColors[ i ] := -1
+         EndIf
+      Next i
 
       ::aSelectedColors := aSelectedColors
 
-      For i := 1 To 4
+      For i := 1 To 8
          aColors[ i ] := _OOHG_GetArrayItem( aSelectedColors, i )
       Next i
 
@@ -944,6 +962,150 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
    EndIf
 
    Return aSelectedColors
+
+/*
+ * MARKROW clause and MarkRow property.
+ * Contributed by Miguel Ingles.
+ *
+ * Paints the current cell with selected colors 1 to 4 and the rest of the row with colors 5 to 8.
+ *    NIL or .F. -> not marked (the colors set before enabling it are restored)
+ *    .T.        -> with focus: cell with the selection color and rest of the row light blue {204,232,255}
+ *                  without focus: cell light gray {200,200,200} and rest of the row gray {225,225,225}
+ *    array      -> { text with focus, back with focus, text without focus, back without focus } for
+ *                  the rest of the row, or an array like SELECTEDCOLORS (8 items): colors 1 to 4 that
+ *                  are not NIL change the cell's colors and colors 5 to 8 those of the rest of the row.
+ *    A NIL color for the rest of the row keeps the normal color of the cell.
+ * With NAVIGATEBYCELL the current cell is the one of Value. Without NAVIGATEBYCELL (TGrid only,
+ * not MULTISELECT) the column is kept at ::nMarkCol: it changes with the click and with the
+ * left/right arrows, and Value is still the row number.
+ * Runtime usage: oGrid:MarkRow := .T. / .F. / array
+ */
+METHOD MarkRow( uMarkRow ) CLASS TGrid
+
+   Local aColors, aRow, i, lWasOn
+
+   If PCount() > 0
+      lWasOn  := ( HB_IsLogical( ::uMarkRow ) .AND. ::uMarkRow ) .OR. HB_IsArray( ::uMarkRow )
+      aColors := ::SetSelectedColors()          // copy of the current 8 colors
+
+      // When enabling it, the 8 colors are saved to restore them later
+      If ! lWasOn
+         ::aMarkRowSave := AClone( aColors )
+      Else
+         aColors := AClone( ::aMarkRowSave )    // always start from the colors without MARKROW
+      EndIf
+
+      Do Case
+      Case HB_IsArray( uMarkRow ) .AND. Len( uMarkRow ) > 4
+         aRow := ASize( AClone( uMarkRow ), 8 )
+         For i := 1 To 4
+            If aRow[ i ] # Nil
+               aColors[ i ] := aRow[ i ]
+            EndIf
+            aColors[ 4 + i ] := aRow[ 4 + i ]
+         Next i
+      Case HB_IsArray( uMarkRow )
+         aRow := ASize( AClone( uMarkRow ), 4 )
+         For i := 1 To 4
+            aColors[ 4 + i ] := aRow[ i ]
+         Next i
+      Case HB_IsLogical( uMarkRow ) .AND. uMarkRow
+         aColors[ 4 ] := { 200, 200, 200 }      // cell without focus: light gray
+         aColors[ 5 ] := Nil
+         aColors[ 6 ] := { 204, 232, 255 }      // rest of the row with focus: light blue
+         aColors[ 7 ] := Nil
+         aColors[ 8 ] := { 225, 225, 225 }      // rest of the row without focus: lighter gray
+      EndCase
+      // NIL or .F.: aColors already has the saved colors
+
+      ::uMarkRow := uMarkRow
+      ::SetSelectedColors( aColors, .T. )
+   EndIf
+
+   Return ::uMarkRow
+
+// .T. if the cell must be marked in a GRID without NAVIGATEBYCELL
+METHOD MarkRowActive() CLASS TGrid
+
+   Return ( ::Type == "GRID" .AND. ( ( HB_IsLogical( ::uMarkRow ) .AND. ::uMarkRow ) .OR. HB_IsArray( ::uMarkRow ) ) )
+
+// Valid column for the marked cell (exists, not hidden and with width)
+METHOD MarkColValid( nCol ) CLASS TGrid
+
+   Return ( HB_IsNumeric( nCol ) .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. ;
+            AScan( ::aHiddenCols, nCol ) == 0 .AND. ListView_GetColumnWidth( ::hWnd, nCol - 1 ) > 0 )
+
+// Moves the marked cell to the next column (nDir = 1), to the previous one (nDir = -1)
+// or to the first valid one (nDir = 0), following the order in which the columns are shown
+METHOD MarkColMove( nDir ) CLASS TGrid
+
+   Local aOrder, i, nCol := 0
+
+   aOrder := ::ColumnOrder
+   i := iif( nDir == 0, 0, AScan( aOrder, ::nMarkCol ) )
+   If i == 0
+      i := iif( nDir < 0, Len( aOrder ) + 1, 0 )
+      nDir := iif( nDir < 0, -1, 1 )
+   EndIf
+   i += nDir
+   Do While i >= 1 .AND. i <= Len( aOrder )
+      If ::MarkColValid( aOrder[ i ] )
+         nCol := aOrder[ i ]
+         Exit
+      EndIf
+      i += nDir
+   EndDo
+
+   If nCol # 0 .AND. nCol # ::nMarkCol
+      ::nMarkCol := nCol
+      ::MarkColShow()
+      RedrawWindow( ::hWnd )
+   EndIf
+
+   Return Self
+
+// Scrolls the grid horizontally so the marked column is visible
+// (same computation as METHOD Value CLASS TGridByCell)
+METHOD MarkColShow() CLASS TGrid
+
+   Local r, nRow, nClientWidth, nScrollWidth
+
+   If ::ItemCount > 0 .AND. ::MarkColValid( ::nMarkCol )
+      nRow := Max( ::FirstSelectedItem, 1 )
+      r := { 0, 0, 0, 0 }                                                              // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nClientWidth := r[ 3 ] - r[ 1 ]
+      r := ListView_GetSubitemRect( ::hWnd, nRow - 1, ::nMarkCol - 1 )                 // top, left, width, height
+      If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+         nScrollWidth := GetVScrollBarWidth()
+      Else
+         nScrollWidth := 0
+      EndIf
+      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         // Move right side into client area
+         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         // Get new position
+         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, ::nMarkCol - 1 )             // top, left, width, height
+      EndIf
+      If r[ 2 ] < 0
+         // Move left side into client area
+         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+      EndIf
+   EndIf
+
+   Return Self
+
+/*
+ * Applies the MARKROW clause after the GRID is defined (see i_grid.ch), so there's no need to add
+ * one more parameter to every Define. When the clause is omitted it does nothing.
+ */
+FUNCTION _OOHG_GridMarkRow( oGrid, uMarkRow )
+
+   If uMarkRow != Nil
+      oGrid:MarkRow := uMarkRow
+   EndIf
+
+   Return oGrid
 
 METHOD LoadHeaderImages( aNewHeaderImage ) CLASS TGrid
 
@@ -3515,6 +3677,13 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
          // This fires WM_NCCALCSIZE
          SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
       ENDIF
+      // With MARKROW the grid is painted like NAVIGATEBYCELL (current cell + rest of the row)
+      If ::MarkRowActive()
+         If ! ::MarkColValid( ::nMarkCol )
+            ::MarkColMove( 0 )
+         EndIf
+         RETURN TGrid_Notify_CustomDraw( Self, lParam, .T., ::FirstSelectedItem, ::nMarkCol, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+      EndIf
       RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_ENDSCROLL
@@ -3533,6 +3702,13 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       EndIf
 
       nvKey := GetGridvKey( lParam )
+
+      // With MARKROW the left/right arrows move the marked cell
+      If ::MarkRowActive() .AND. ( nvkey == VK_LEFT .OR. nvkey == VK_RIGHT ) .AND. GetKeyFlagState() == 0
+         ::MarkColMove( iif( nvkey == VK_LEFT, -1, 1 ) )
+         // skip default action
+         Return 1
+      EndIf
 
       If nvkey == VK_DOWN
          If ::FirstSelectedItem == ::ItemCount
@@ -3626,6 +3802,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
       // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
 
+      // With MARKROW the click also selects the marked cell
+      If ::MarkRowActive() .AND. ::MarkColValid( aCellData[ 2 ] ) .AND. aCellData[ 2 ] # ::nMarkCol
+         ::nMarkCol := aCellData[ 2 ]
+         RedrawWindow( ::hWnd )
+      EndIf
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -3685,6 +3867,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
    ElseIf nNotify == NM_RCLICK
       aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
       // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
+      // With MARKROW the click also selects the marked cell
+      If ::MarkRowActive() .AND. ::MarkColValid( aCellData[ 2 ] ) .AND. aCellData[ 2 ] # ::nMarkCol
+         ::nMarkCol := aCellData[ 2 ]
+         RedrawWindow( ::hWnd )
+      EndIf
 
       If ::lCheckBoxes
          // detect item
@@ -9675,6 +9863,10 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.cchTextMax = 1022;
       LI.pszText = buffer;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* The state (selected/focused) belongs to the row, so it's asked to the row.
+         Windows also returns it for subitems, but Wine returns 0 when iSubItem > 0
+         and then only the cell of the first column was painted as selected. */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED | LVIS_FOCUSED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -9761,25 +9953,29 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
+      /* Bits are cleared with "&= ~" instead of "-=".
+         uItemState does not always include CDIS_SELECTED/CDIS_FOCUS even when LI.state says that
+         the row is selected (see MSDN comment above, and Wine for subitems); subtracting a bit
+         that is not set corrupts all the other bits of the state. */
       if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
       {
          if( LI.state & LVIS_FOCUSED )
          {
             if( ! bFocusRect )
             {
-               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
+               lplvcd->nmcd.uItemState &= ~CDIS_FOCUS;
             }
          }
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
       else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
       {
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
 
@@ -9805,6 +10001,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iItem = lplvcd->nmcd.dwItemSpec;
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* Like at CDDS_ITEMPREPAINT, the state is asked to the row (Wine) */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -10012,6 +10210,14 @@ HB_FUNC( SETGRIDQUERYDATA )
    NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    pDispInfo->item.pszText = (LPTSTR) HB_UNCONST( hb_itemGetCPtr( pValue ) );
+   /* The cell is text, so explicitly say it has no image.
+      Windows keeps the iImage set by the caller (-1), but Wine sets it to 0, and then
+      ListViewGetItem returned a number instead of the text (CTOD error) and CustomDraw
+      thought that every cell had an image (CDRF_NOTIFYPOSTPAINT) and repainted them. */
+   if( pDispInfo->item.mask & LVIF_IMAGE )
+   {
+      pDispInfo->item.iImage = -1;
+   }
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )
