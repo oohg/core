@@ -495,9 +495,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       OOHG_MsgError( "TGrid.Define2: CHECKBOXES and PAINTLEFTMARGIN clauses can not be used simultaneously. Program terminated." )
    EndIf
 
+   // When lNoShowAlways is not set (NIL) the selection is always shown, like in MiniGUI.
+   // The @ ... BROWSE rule of i_minigui_compat.ch used to pass NIL and the selected row was not
+   // painted when the control lost the focus. Only NOSHOWALWAYS (.T.) hides it.
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
-             If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
+             If( HB_IsLogical( lNoShowAlways ) .AND. lNoShowAlways, 0, LVS_SHOWSELALWAYS )
 
    IF ! HB_ISARRAY( aJust )
       ::aJust := AFill( Array( Len( ::aHeaders ) ), 0 )
@@ -9675,6 +9678,10 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.cchTextMax = 1022;
       LI.pszText = buffer;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* The state (selected/focused) belongs to the row, so it's asked to the row.
+         Windows also returns it for subitems, but Wine returns 0 when iSubItem > 0
+         and then only the cell of the first column was painted as selected. */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED | LVIS_FOCUSED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -9761,25 +9768,29 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
+      /* Bits are cleared with "&= ~" instead of "-=".
+         uItemState does not always include CDIS_SELECTED/CDIS_FOCUS even when LI.state says that
+         the row is selected (see MSDN comment above, and Wine for subitems); subtracting a bit
+         that is not set corrupts all the other bits of the state. */
       if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
       {
          if( LI.state & LVIS_FOCUSED )
          {
             if( ! bFocusRect )
             {
-               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
+               lplvcd->nmcd.uItemState &= ~CDIS_FOCUS;
             }
          }
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
       else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
       {
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
 
@@ -9805,6 +9816,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iItem = lplvcd->nmcd.dwItemSpec;
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* Like at CDDS_ITEMPREPAINT, the state is asked to the row (Wine) */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -10012,6 +10025,14 @@ HB_FUNC( SETGRIDQUERYDATA )
    NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    pDispInfo->item.pszText = (LPTSTR) HB_UNCONST( hb_itemGetCPtr( pValue ) );
+   /* The cell is text, so explicitly say it has no image.
+      Windows keeps the iImage set by the caller (-1), but Wine sets it to 0, and then
+      ListViewGetItem returned a number instead of the text (CTOD error) and CustomDraw
+      thought that every cell had an image (CDRF_NOTIFYPOSTPAINT) and repainted them. */
+   if( pDispInfo->item.mask & LVIF_IMAGE )
+   {
+      pDispInfo->item.iImage = -1;
+   }
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )
