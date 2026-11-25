@@ -185,6 +185,7 @@ CLASS TGrid FROM TControl
    DATA SetImageListWParam        INIT LVSIL_SMALL
    DATA Type                      INIT "GRID" READONLY
    DATA uIniTime                  INIT 0
+   DATA uMultiLineHeaders         INIT .F.   // MULTILINEHEADERS: .F., .T. or fixed height in pixels
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
 
@@ -269,6 +270,8 @@ CLASS TGrid FROM TControl
    METHOD MarkColValid
    METHOD MarkRow                 SETGET
    METHOD MarkRowActive
+   METHOD MultiLineHeaders        SETGET
+   METHOD MultiLineHeadersOn      BLOCK { | Self | HB_IsNumeric( ::uMultiLineHeaders ) .OR. ::uMultiLineHeaders }
    METHOD NextColInOrder
    METHOD NextPosToEdit
    METHOD OnEnter                 SETGET
@@ -3604,7 +3607,8 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       uFontColor := iif( HB_ISBLOCK( ::aHeaderColors[ nColumn ] ), Eval( ::aHeaderColors[ nColumn ], nColumn ), ::aHeaderColors[ nColumn ] )
       uBackColor := iif( HB_ISBLOCK( ::aHeaderBkClrs[ nColumn ] ), Eval( ::aHeaderBkClrs[ nColumn ], nColumn ), ::aHeaderBkClrs[ nColumn ] )
 
-      RETURN TGrid_Header_CustomDraw( lParam, uFontColor, uBackColor )
+      // The 4th parameter tells if multiline headers are enabled (MULTILINEHEADERS)
+      RETURN TGrid_Header_CustomDraw( lParam, uFontColor, uBackColor, ::MultiLineHeadersOn() )
 
    ElseIf nNotify == NM_RELEASEDCAPTURE
       If ::lTracking
@@ -4479,6 +4483,51 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
    ENDIF
 
    RETURN NIL
+
+/*
+ * MULTILINEHEADERS clause and MultiLineHeaders property.
+ * Contributed by Miguel Ingles, based on the example by David Field.
+ *
+ * Allows headers with two or more lines in GRID, BROWSE and XBROWSE controls.
+ * Lines are separated with CHR(13)+CHR(10) (Windows), CHR(10) (Linux) or a lone CHR(13).
+ * Single-line and multiline columns can be mixed.
+ *    .F.     -> disabled (default)
+ *    .T.     -> header height is computed automatically: the default height plus one line of the
+ *               header's font for each extra line of the column with more lines. It's updated
+ *               when the captions change (::Header()) or the font changes (::HeaderSetFont()).
+ *    nPixels -> fixed header height in pixels (zero or negative means disabled)
+ * Runtime usage: oGrid:MultiLineHeaders := .T. / .F. / nPixels
+ * Single-line columns are still painted by Windows (visual style, image, sort arrow).
+ * Multiline columns are painted at TGRID_HEADER_CUSTOMDRAW, vertically centered and honoring
+ * JUSTIFY, HEADERCOLORS and HEADERBACKCOLORS. They don't show the HEADERIMAGES image.
+ */
+METHOD MultiLineHeaders( uValue ) CLASS TGrid
+
+   IF PCount() > 0 .AND. ( HB_ISLOGICAL( uValue ) .OR. HB_ISNUMERIC( uValue ) )
+      // A height of zero or less means disabled
+      IF HB_ISNUMERIC( uValue ) .AND. uValue <= 0
+         uValue := .F.
+      ENDIF
+      ::uMultiLineHeaders := uValue
+      IF ValidHandler( ::hWnd )
+         // Install, update or remove the header's subclass that changes its height
+         TGrid_SetMultiLineHeaders( ::hWnd, ::MultiLineHeadersOn(), iif( HB_ISNUMERIC( uValue ), uValue, 0 ) )
+      ENDIF
+   ENDIF
+
+   RETURN ::uMultiLineHeaders
+
+/*
+ * Applies the MULTILINEHEADERS clause after the control is defined (see i_grid.ch, i_browse.ch,
+ * i_xbrowse.ch and i_minigui_compat.ch). When the clause is omitted it receives .F. and does nothing.
+ */
+FUNCTION _OOHG_GridMultiLineHeaders( oGrid, uValue )
+
+   IF ( HB_ISLOGICAL( uValue ) .AND. uValue ) .OR. HB_ISNUMERIC( uValue )
+      oGrid:MultiLineHeaders := uValue
+   ENDIF
+
+   RETURN oGrid
 
 METHOD Release() CLASS TGrid
 
@@ -9795,6 +9844,466 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
    return -1;
 }
 
+/*
+ * Multiline headers (MULTILINEHEADERS clause, METHOD MultiLineHeaders).
+ * Contributed by Miguel Ingles, based on the example by David Field.
+ *
+ * Height: the header is subclassed (SetWindowSubclass) and at HDM_LAYOUT it is made taller and
+ * the grid's data area is moved down by the same amount. WM_WINDOWPOSCHANGING prevents the header
+ * from being shrunk again. With automatic height, it's recomputed when the captions or the font
+ * change.
+ * Painting: the header's WM_PAINT is NOT replaced, so the visual style, the images, the sort
+ * arrows and HEADERCOLORS/HEADERBACKCOLORS keep working. Only the captions with line breaks are
+ * painted at TGRID_HEADER_CUSTOMDRAW (CDRF_SKIPDEFAULT).
+ * Accepted line breaks: CHR(13)+CHR(10) (Windows), CHR(10) (Linux) and a lone CHR(13).
+ */
+
+#define OOHG_MLH_SUBCLASS_ID   0x4D484452   /* subclass id */
+#define OOHG_HP_HEADERITEM     1            /* part and states of "HEADER" theme class (vsstyle.h) */
+#define OOHG_HIS_NORMAL        1
+#define OOHG_HIS_HOT           2
+#define OOHG_HIS_PRESSED       3
+
+/* Data of each subclassed header (freed at WM_NCDESTROY) */
+typedef struct
+{
+   int iFixed;    /* fixed height in pixels, 0 = automatic */
+   int iLines;    /* number of lines of the caption with more lines */
+   int iHeight;   /* height set at the last HDM_LAYOUT, 0 = none */
+} OOHG_GRID_MLH;
+
+/* Private message used to recompute the height after the captions or the font change */
+static UINT s_uMLHRelayout = 0;
+
+/* Converts line breaks (CR+LF, LF or lone CR) to LF and returns the number of lines */
+static int TGrid_MLH_Normalize( TCHAR * cText )
+{
+   TCHAR * s = cText;
+   TCHAR * d = cText;
+   int iLines = 1;
+
+   while( *s )
+   {
+      if( *s == TEXT( '\r' ) )
+      {
+         /* CR+LF (Windows) or lone CR: just one line break */
+         *d++ = TEXT( '\n' );
+         iLines++;
+         s++;
+         if( *s == TEXT( '\n' ) )
+         {
+            s++;
+         }
+      }
+      else
+      {
+         /* LF (Linux) is kept */
+         if( *s == TEXT( '\n' ) )
+         {
+            iLines++;
+         }
+         *d++ = *s++;
+      }
+   }
+   *d = 0;
+
+   return iLines;
+}
+
+/* Number of lines of the header's caption with more lines */
+static int TGrid_MLH_MaxLines( HWND hHeader )
+{
+   HDITEM hdi;
+   TCHAR cText[ 1024 ];
+   int i, iCount, iLines, iMax = 1;
+
+   iCount = Header_GetItemCount( hHeader );
+   for( i = 0; i < iCount; i++ )
+   {
+      memset( &hdi, 0, sizeof( hdi ) );
+      cText[ 0 ] = 0;
+      hdi.mask = HDI_TEXT;
+      hdi.pszText = cText;
+      hdi.cchTextMax = 1023;
+      if( Header_GetItem( hHeader, i, &hdi ) )
+      {
+         iLines = TGrid_MLH_Normalize( cText );
+         if( iLines > iMax )
+         {
+            iMax = iLines;
+         }
+      }
+   }
+
+   return iMax;
+}
+
+/* Height of a text line using the header's font */
+static int TGrid_MLH_LineHeight( HWND hHeader )
+{
+   HDC hDC;
+   HFONT hFont, hOldFont = NULL;
+   TEXTMETRIC tm;
+   int iHeight = 0;
+
+   hDC = GetDC( hHeader );
+   if( hDC )
+   {
+      hFont = (HFONT) SendMessage( hHeader, WM_GETFONT, 0, 0 );
+      if( hFont )
+      {
+         hOldFont = (HFONT) SelectObject( hDC, hFont );
+      }
+      if( GetTextMetrics( hDC, &tm ) )
+      {
+         iHeight = tm.tmHeight;
+      }
+      if( hOldFont )
+      {
+         SelectObject( hDC, hOldFont );
+      }
+      ReleaseDC( hHeader, hDC );
+   }
+
+   return iHeight;
+}
+
+/*
+ * Forces the grid to reposition its header (and so to send HDM_LAYOUT) by really changing its
+ * width by one pixel and restoring it.
+ */
+static void TGrid_MLH_Relayout( HWND hGrid )
+{
+   RECT rc;
+   int iWidth, iHeight;
+
+   if( ! ValidHandler( hGrid ) )
+   {
+      return;
+   }
+
+   GetWindowRect( hGrid, &rc );
+   iWidth  = rc.right - rc.left;
+   iHeight = rc.bottom - rc.top;
+
+   SetWindowPos( hGrid, NULL, 0, 0, iWidth + 1, iHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE );
+   SetWindowPos( hGrid, NULL, 0, 0, iWidth, iHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE );
+
+   RedrawWindow( hGrid, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_UPDATENOW );
+}
+
+/* Header's subclass procedure */
+static LRESULT CALLBACK TGrid_MLH_HeaderProc( HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData )
+{
+   OOHG_GRID_MLH * pData = (OOHG_GRID_MLH *) dwRefData;
+   LRESULT lResult;
+   int iLines;
+
+   /* Recompute the height (message posted below) */
+   if( s_uMLHRelayout != 0 && nMsg == s_uMLHRelayout )
+   {
+      TGrid_MLH_Relayout( GetParent( hWnd ) );
+      return 0;
+   }
+
+   switch( nMsg )
+   {
+      case HDM_LAYOUT:
+      {
+         LPHDLAYOUT pLayout = (LPHDLAYOUT) lParam;
+         int iDefault, iNew;
+
+         /* First, let Windows compute the default (single line) height */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+
+         if( lResult && pLayout && pLayout->pwpos && pLayout->prc )
+         {
+            iDefault = pLayout->pwpos->cy;
+            if( iDefault > 0 )   /* 0 = hidden header (NOHEADERS) */
+            {
+               if( pData->iFixed > 0 )
+               {
+                  iNew = pData->iFixed;
+               }
+               else
+               {
+                  iNew = iDefault + ( pData->iLines - 1 ) * TGrid_MLH_LineHeight( hWnd );
+               }
+
+               /* Taller header and data area moved down by the same amount */
+               pLayout->pwpos->cy = iNew;
+               pLayout->prc->top += iNew - iDefault;
+               pData->iHeight = iNew;
+            }
+            else
+            {
+               pData->iHeight = 0;
+            }
+         }
+         return lResult;
+      }
+
+      case WM_WINDOWPOSCHANGING:
+      {
+         LPWINDOWPOS pPos = (LPWINDOWPOS) lParam;
+
+         /* Don't let Windows shrink the header again (except to hide it) */
+         if( pPos && pData->iHeight > 0 && ! ( pPos->flags & SWP_NOSIZE ) && pPos->cy > 0 )
+         {
+            pPos->cy = pData->iHeight;
+         }
+         break;
+      }
+
+      case WM_SETFONT:
+         /* New font (HeaderSetFont): automatic height must be recomputed */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+         if( pData->iFixed == 0 )
+         {
+            PostMessage( hWnd, s_uMLHRelayout, 0, 0 );
+         }
+         return lResult;
+
+      case HDM_SETITEMA:
+      case HDM_SETITEMW:
+      case HDM_INSERTITEMA:
+      case HDM_INSERTITEMW:
+      case HDM_DELETEITEM:
+         /* Captions changed (METHOD Header, added or deleted columns): if the number of lines
+            changes and the height is automatic, it's recomputed. PostMessage is used to avoid
+            resizing the grid while the grid itself is changing the header */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+         iLines = TGrid_MLH_MaxLines( hWnd );
+         if( iLines != pData->iLines )
+         {
+            pData->iLines = iLines;
+            if( pData->iFixed == 0 )
+            {
+               PostMessage( hWnd, s_uMLHRelayout, 0, 0 );
+            }
+         }
+         return lResult;
+
+      case WM_NCDESTROY:
+         /* The header is destroyed: remove the subclass and free its data */
+         RemoveWindowSubclass( hWnd, TGrid_MLH_HeaderProc, uIdSubclass );
+         LocalFree( (HLOCAL) pData );
+         break;
+   }
+
+   return DefSubclassProc( hWnd, nMsg, wParam, lParam );
+}
+
+/*
+ * TGrid_SetMultiLineHeaders( hWnd, lOn, nFixedHeight ) -> lEnabled
+ * Installs, updates or removes the subclass of the grid's header (METHOD MultiLineHeaders).
+ */
+HB_FUNC( TGRID_SETMULTILINEHEADERS )
+{
+   HWND hGrid = HWNDparam( 1 );
+   HWND hHeader;
+   BOOL bOn = hb_parl( 2 );
+   int iFixed = hb_parni( 3 );
+   OOHG_GRID_MLH * pData;
+   DWORD_PTR dwRef = 0;
+   BOOL bInstalled;
+
+   if( ! ValidHandler( hGrid ) )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+
+   hHeader = ListView_GetHeader( hGrid );
+   if( ! ValidHandler( hHeader ) )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+
+   if( s_uMLHRelayout == 0 )
+   {
+      s_uMLHRelayout = RegisterWindowMessage( TEXT( "OOHG_TGRID_MLH_RELAYOUT" ) );
+   }
+
+   bInstalled = GetWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID, &dwRef );
+
+   if( bOn )
+   {
+      if( bInstalled )
+      {
+         pData = (OOHG_GRID_MLH *) dwRef;
+      }
+      else
+      {
+         /* LocalAlloc instead of hb_xgrab: it's freed at WM_NCDESTROY, which may arrive when the app is closing */
+         pData = (OOHG_GRID_MLH *) LocalAlloc( LPTR, sizeof( OOHG_GRID_MLH ) );
+         if( ! pData )
+         {
+            hb_retl( FALSE );
+            return;
+         }
+         if( ! SetWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID, (DWORD_PTR) pData ) )
+         {
+            LocalFree( (HLOCAL) pData );
+            hb_retl( FALSE );
+            return;
+         }
+      }
+      pData->iFixed = ( iFixed > 0 ) ? iFixed : 0;
+      pData->iLines = TGrid_MLH_MaxLines( hHeader );
+   }
+   else
+   {
+      if( ! bInstalled )
+      {
+         hb_retl( FALSE );
+         return;
+      }
+      /* Disable: the header returns to its default height */
+      RemoveWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID );
+      LocalFree( (HLOCAL) dwRef );
+   }
+
+   TGrid_MLH_Relayout( hGrid );
+   RedrawWindow( hHeader, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW );
+
+   hb_retl( bOn );
+}
+
+/*
+ * Paints a multiline caption (CDDS_ITEMPREPAINT). Returns FALSE if the caption has only one line,
+ * so Windows paints it as usual.
+ * lFontColor / lBackColor: colors from HEADERCOLORS / HEADERBACKCOLORS, -1 if not set.
+ */
+static BOOL TGrid_Header_DrawMultiLine( LPNMCUSTOMDRAW lpnmcd, long lFontColor, long lBackColor )
+{
+   HWND hHeader = lpnmcd->hdr.hwndFrom;
+   HDC hDC = lpnmcd->hdc;
+   HDITEM hdi;
+   TCHAR cText[ 1024 ];
+   RECT rcItem, rcText, rcCalc;
+   HTHEME hTheme = NULL;
+   HBRUSH hBrush;
+   HFONT hFont, hOldFont = NULL;
+   UINT uFormat;
+   int iHeight, iStateId, iMargin;
+   BOOL bPressed = ( ( lpnmcd->uItemState & CDIS_SELECTED ) == CDIS_SELECTED );
+
+   /* Caption and column's alignment */
+   memset( &hdi, 0, sizeof( hdi ) );
+   cText[ 0 ] = 0;
+   hdi.mask = HDI_TEXT | HDI_FORMAT;
+   hdi.pszText = cText;
+   hdi.cchTextMax = 1023;
+   if( ! Header_GetItem( hHeader, (int) lpnmcd->dwItemSpec, &hdi ) )
+   {
+      return FALSE;
+   }
+   if( TGrid_MLH_Normalize( cText ) < 2 )
+   {
+      return FALSE;
+   }
+
+   rcItem = lpnmcd->rc;
+
+   /* Background: visual style (if there's no backcolor) or classic edge */
+   if( lBackColor == -1 && _UxTheme_Init() )
+   {
+      hTheme = ProcOpenThemeData( hHeader, L"HEADER" );
+   }
+   if( hTheme )
+   {
+      if( bPressed )
+      {
+         iStateId = OOHG_HIS_PRESSED;
+      }
+      else if( ( lpnmcd->uItemState & CDIS_HOT ) == CDIS_HOT )
+      {
+         iStateId = OOHG_HIS_HOT;
+      }
+      else
+      {
+         iStateId = OOHG_HIS_NORMAL;
+      }
+      ProcDrawThemeBackground( hTheme, hDC, OOHG_HP_HEADERITEM, iStateId, &rcItem, NULL );
+      ProcCloseThemeData( hTheme );
+   }
+   else
+   {
+      /* Same as Windows paints a non-themed header with buttons; BF_ADJUST shrinks rcItem */
+      if( bPressed )
+      {
+         DrawEdge( hDC, &rcItem, BDR_RAISEDOUTER, BF_RECT | BF_FLAT | BF_MIDDLE | BF_ADJUST );
+      }
+      else
+      {
+         DrawEdge( hDC, &rcItem, EDGE_RAISED, BF_RECT | BF_SOFT | BF_MIDDLE | BF_ADJUST );
+      }
+      if( lBackColor != -1 )
+      {
+         hBrush = CreateSolidBrush( (COLORREF) lBackColor );
+         FillRect( hDC, &rcItem, hBrush );
+         DeleteObject( hBrush );
+      }
+   }
+
+   /* Text using the header's font */
+   hFont = (HFONT) SendMessage( hHeader, WM_GETFONT, 0, 0 );
+   if( hFont )
+   {
+      hOldFont = (HFONT) SelectObject( hDC, hFont );
+   }
+   if( lFontColor == -1 )
+   {
+      lFontColor = GetSysColor( COLOR_WINDOWTEXT );
+   }
+   SetTextColor( hDC, (COLORREF) lFontColor );
+   SetBkMode( hDC, TRANSPARENT );
+
+   /* Side margin like Windows; when pressed without visual style, text is moved by one pixel */
+   iMargin = 3 * GetSystemMetrics( SM_CXEDGE );
+   rcText = lpnmcd->rc;
+   rcText.left  += iMargin;
+   rcText.right -= iMargin;
+   if( bPressed && ! hTheme )
+   {
+      OffsetRect( &rcText, 1, 1 );
+   }
+
+   /* Column's horizontal alignment (JUSTIFY) */
+   switch( hdi.fmt & HDF_JUSTIFYMASK )
+   {
+      case HDF_RIGHT:
+         uFormat = DT_RIGHT;
+         break;
+      case HDF_CENTER:
+         uFormat = DT_CENTER;
+         break;
+      default:
+         uFormat = DT_LEFT;
+   }
+   uFormat |= DT_NOPREFIX;
+
+   /* Vertical centering: DT_VCENTER only works with DT_SINGLELINE, so the text is measured first */
+   rcCalc = rcText;
+   DrawText( hDC, cText, -1, &rcCalc, uFormat | DT_CALCRECT );
+   iHeight = rcCalc.bottom - rcCalc.top;
+   if( iHeight < rcText.bottom - rcText.top )
+   {
+      rcText.top += ( ( rcText.bottom - rcText.top ) - iHeight ) / 2;
+      rcText.bottom = rcText.top + iHeight;
+   }
+   DrawText( hDC, cText, -1, &rcText, uFormat );
+
+   if( hOldFont )
+   {
+      SelectObject( hDC, hOldFont );
+   }
+
+   return TRUE;
+}
+
 HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
 {
    LPNMCUSTOMDRAW lpnmcd = NMCUSTOMDRAWparam( 1 );
@@ -9810,12 +10319,21 @@ HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
       if( lpnmcd->dwDrawStage == CDDS_ITEMPREPAINT )
       {
          _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lFontColor );
+         _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lBackColor );
+
+         // With MULTILINEHEADERS (4th parameter) multiline captions are painted here
+         // and Windows paints nothing else
+         if( hb_parl( 4 ) && TGrid_Header_DrawMultiLine( lpnmcd, lFontColor, lBackColor ) )
+         {
+            hb_retni( CDRF_SKIPDEFAULT );
+            return;
+         }
+
          if( lFontColor == -1 )
             lFontColor = GetSysColor( COLOR_WINDOWTEXT );
          SetTextColor( lpnmcd->hdc, (COLORREF) lFontColor );
 
          // Note that backcolor is ignored when header has visual style enabled
-         _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lBackColor );
          if( lBackColor == -1 )
             lBackColor = GetSysColor( COLOR_WINDOW );
          SetBkColor( lpnmcd->hdc, (COLORREF) lBackColor );

@@ -77,6 +77,11 @@
 STANDARD VERSION
 ---------------------------------------------------------------------------*/
 
+/*
+ * MULTILINEHEADERS clause: headers with two or more lines
+ * (see i_grid.ch and METHOD MultiLineHeaders in h_grid.prg).
+ */
+
 #command @ <row>, <col> BROWSE <name> ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -191,8 +196,10 @@ STANDARD VERSION
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
       [ NEWATROW <nRowAt> ] ;
+      [ <mlh: MULTILINEHEADERS> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
+      [ <obj> := ] _OOHG_GridMultiLineHeaders( ;
+            _OOHG_SelectSubClass( iif( <.bycell.>, TOBrowseByCell(), TOBrowse() ), [ <subclass>() ] ): ;
             Define( <(name)>, <(parent)>, <col>, <row>, <width>, <height>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
@@ -226,7 +233,7 @@ STANDARD VERSION
             <.checkboxes.>, <{checkchange}>, <{rowrefresh}>, <aDefVal>, ;
             <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, <.klc.>, ;
             <.ctt.>, <.nohsb.>, <aHeadDblClick>, <aHeadClrs>, <nTime>, ;
-            <nRowAt>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> )
+            <nRowAt>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> ), <.mlh.> )
 
 #command SET BROWSESYNC ON ;
    => ;

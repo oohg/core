@@ -178,6 +178,8 @@
  *   bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst(.T.), bbeforeditcell, bEditCellValue, klc,
  *   lLabelTip, lNoHSB, aHeadDblClick, aHeaderColors, nTimeOut, nNewAtRow, bEditKeysFun, lNoDefMsg,
  *   aHeaderBkClrs
+ * MULTILINEHEADERS clause: headers with two or more lines
+ * (see i_grid.ch and METHOD MultiLineHeaders in h_grid.prg).
  */
 #command @ <row>,<col> BROWSE <name>			;
 		[ <dummy1: OF,PARENT,DIALOG> <parent> ] ;
@@ -223,7 +225,9 @@
 		[ <notabstop: NOTABSTOP> ]		;
 		[ HEADERIMAGE <aImageHeader> ]		;
 		[ <doublebuffer: PAINTDOUBLEBUFFER> ]	;
+		[ <mlh: MULTILINEHEADERS> ]	;
    => ;
+      _OOHG_GridMultiLineHeaders( ;
       TOBrowse():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
             <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
             <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
@@ -247,7 +251,7 @@
             .F., .F., NIL, .F., NIL, ;
             NIL, NIL, NIL, .T., ;
             NIL, NIL, .F., .F., .F., ;
-            NIL, NIL, NIL, NIL, NIL, .F., NIL )
+            NIL, NIL, NIL, NIL, NIL, .F., NIL ), <.mlh.> )
 
 #xtranslate BROWSE [ <x> ] ID <nId> [ <y> ] ;
    => ;

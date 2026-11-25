@@ -13,6 +13,25 @@
  * Use #nnn to refer to an issue.
  * Use #nnn-PRG to refer to a pull request.
  */
+2026-11-25 12:20 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_minigui_compat.ch
+  * core\include\i_xbrowse.ch
+  * core\source\h_grid.prg
+    + New clause MULTILINEHEADERS and new property MultiLineHeaders for
+      GRID, BROWSE and XBROWSE controls. Header captions can have two or
+      more lines separated by CHR(13)+CHR(10), CHR(10) or CHR(13).
+      Header height is computed automatically from the caption with more
+      lines and the header's font, and it's updated when the captions or
+      the font change. Use oGrid:MultiLineHeaders := nPixels to set a
+      fixed height or .F. to disable it.
+      Single-line captions are still painted by Windows. Multiline captions
+      are vertically centered and honor JUSTIFY, HEADERCOLORS and
+      HEADERBACKCOLORS. They don't show the HEADERIMAGES image.
+  ; Based on the example by David Field.
+  ; See sample grid\s040.prg at https://github.com/oohg/samples
+
 2026-11-25 12:10 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
   * core\include\i_grid.ch
   * core\source\h_grid.prg

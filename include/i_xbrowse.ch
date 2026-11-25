@@ -68,6 +68,11 @@
 
 #translate MemVar . <AreaName> . <FieldName> => MemVar<AreaName><FieldName>
 
+/*
+ * MULTILINEHEADERS clause: headers with two or more lines
+ * (see i_grid.ch and METHOD MultiLineHeaders in h_grid.prg).
+ */
+
 #command @ <row>, <col> XBROWSE <name> ;
       [ <dummy: OF, PARENT> <parent> ] ;
       [ OBJ <obj> ] ;
@@ -176,8 +181,10 @@
       [ <dummy: HEADERCOLORS, HEADERFONTCOLORS> <aHeadClrs> ] ;
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
+      [ <mlh: MULTILINEHEADERS> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TXBrowseByCell(), ;
+      [ <obj> := ] _OOHG_GridMultiLineHeaders( ;
+            _OOHG_SelectSubClass( iif( <.bycell.>, TXBrowseByCell(), ;
             TXBrowse() ), [ <subclass>() ] ):Define( <(name)>, <(parent)>, ;
             <col>, <row>, <width>, <height>, <headers>, <widths>, <Fields>, ;
             <(workarea)>, <value>, <.delete.>, <.lock.>, <.novsb.>, ;
@@ -207,7 +214,7 @@
             <.noshow.>, <{rclick}>, <.checkboxes.>, <{checkchange}>, ;
             <{rowrefresh}>, <aDefVal>, <{editend}>, ! <.efv.>, <{beforedit}>, ;
             <{edtval}>, <.klc.>, <.ctt.>, <.nohsb.>, <aHeadDblClick>, ;
-            <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> )
+            <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, <aHeadBkClrs> ), <.mlh.> )
 
 #command SET XBROWSEFIXEDBLOCKS ON ;
    => ;
