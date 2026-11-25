@@ -13,6 +13,27 @@
  * Use #nnn to refer to an issue.
  * Use #nnn-PRG to refer to a pull request.
  */
+2026-11-25 12:00 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_minigui_compat.ch
+    ! @ ... BROWSE rule now passes to TOBrowse():Define the same default
+      values used by the standard rule of i_browse.ch when a clause is
+      omitted. NILs were passed before and, for example, the control did
+      not show the selection without focus nor used double buffer.
+  * core\source\h_grid.prg
+    ! Selected row is painted entirely under Wine. The row state
+      (selected/focused) is now asked to the row at TGrid_Notify_CustomDraw.
+      Wine returns 0 for subitems and only the first column was painted
+      as selected.
+    ! uItemState bits are cleared with "&= ~" instead of "-=". Subtracting
+      a bit that is not set corrupted the other bits of the state.
+    ! SETGRIDQUERYDATA sets iImage to -1 (the cell is text). Under Wine
+      virtual grids and browses showed a CTOD error and repainted every
+      cell because iImage was 0.
+    * When lNoShowAlways is NIL the selection is always shown, like in
+      MiniGUI. Only NOSHOWALWAYS hides it. Standard rules always pass a
+      logical value, so they are not affected.
+  ; See sample grid\s041.prg at https://github.com/oohg/samples
+
 2025-11-20 20:09 UTC-0200 Jose Quintas <jmcquintas@gmail.com>
    * include\miniprint.ch
    * include\winprint.ch
