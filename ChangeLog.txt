@@ -13,6 +13,24 @@
  * Use #nnn to refer to an issue.
  * Use #nnn-PRG to refer to a pull request.
  */
+2026-11-25 12:30 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_menu.ch
+  * core\source\h_menu.prg
+    + New command SET [STANDARD] MENU FONT TO <cFontName>, <nFontSize>
+      [BOLD] [CHARSET <nCharset>]. It sets the default font of the menus
+      of the application (only this application, unlike MiniGUI) and
+      enables OWNERDRAW menus. Before, the "SET MENU <*x*>" rule of std.ch
+      turned it into nothing.
+    ! TMenu:Define() only sets the window's menu bar (SetMenu) and
+      DynamicMenu for DEFINE MENU DYNAMIC. TMenuContext and TMenuNotify
+      inherit this method: under Wine their popup menu replaced the menu
+      bar, and they released each other because they shared DynamicMenu.
+    ! TMenuDropDown:Define() (DEFINE CONTEXT MENU CONTROL) does not call
+      SetMenu anymore. Under Wine it replaced the MAIN MENU.
+    ! MenuHilited() only calls HiliteMenuItem() when the state changes.
+      Under Wine the last item of the menu bar was left selected.
+  ; See sample menu\s014.prg at https://github.com/oohg/samples
+
 2026-11-25 12:20 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
   * core\include\i_browse.ch
   * core\include\i_grid.ch

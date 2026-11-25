@@ -583,6 +583,20 @@
    => ;
       _OOHG_OwnerDrawMenus := .F.
 
+/*
+ * Font for the menus of this application.
+ * Without this rule, the "SET MENU <*x*> =>" rule of std.ch (Clipper) turned it into nothing.
+ * Unlike MiniGUI (which changes the menu font of the whole system with SPI_SETNONCLIENTMETRICS),
+ * here it only affects this application: it enables OWNERDRAW menus and sets this font as their
+ * default font. Use it before defining the menus.
+ * Contributed by Miguel Ingles.
+ */
+#xcommand SET [STANDARD] MENU FONT TO <fontname>, <fontsize> ;
+      [ <bold: BOLD> ] ;
+      [ CHARSET <charset> ] ;
+   => ;
+      _OOHG_SetMenuFont( <fontname>, <fontsize>, <.bold.>, <charset> )
+
 #xtranslate IsExtendedMenuStyleActive() ;
    => ;
       _OOHG_OwnerDrawMenus
