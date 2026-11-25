@@ -87,6 +87,9 @@ CLASS TGrid FROM TControl
    DATA AllowMoveColumn           INIT .T.
    DATA aPicture                  INIT {}
    DATA aSelectedColors           INIT {}
+   DATA aMarkRowSave              INIT Nil   // MARKROW: selected colors before enabling it
+   DATA uMarkRow                  INIT Nil   // MARKROW: NIL, .F., .T. or array of colors
+   DATA nMarkCol                  INIT 0     // MARKROW: current column without NAVIGATEBYCELL
    DATA aStopEdit                 INIT {}
    DATA aWhen                     INIT {}
    DATA aWidths                   INIT {}
@@ -182,6 +185,7 @@ CLASS TGrid FROM TControl
    DATA SetImageListWParam        INIT LVSIL_SMALL
    DATA Type                      INIT "GRID" READONLY
    DATA uIniTime                  INIT 0
+   DATA uMultiLineHeaders         INIT .F.   // MULTILINEHEADERS: .F., .T. or fixed height in pixels
    DATA Valid                     INIT Nil
    DATA ValidMessages             INIT Nil
 
@@ -261,6 +265,13 @@ CLASS TGrid FROM TControl
    METHOD Left
    METHOD lNoFocusRect            BLOCK { | Self, lValue | iif( HB_ISLOGICAL( lValue ), ::lFocusRect := ! lValue, ! ::lFocusRect ) }
    METHOD LoadHeaderImages
+   METHOD MarkColMove
+   METHOD MarkColShow
+   METHOD MarkColValid
+   METHOD MarkRow                 SETGET
+   METHOD MarkRowActive
+   METHOD MultiLineHeaders        SETGET
+   METHOD MultiLineHeadersOn      BLOCK { | Self | HB_IsNumeric( ::uMultiLineHeaders ) .OR. ::uMultiLineHeaders }
    METHOD NextColInOrder
    METHOD NextPosToEdit
    METHOD OnEnter                 SETGET
@@ -495,9 +506,12 @@ METHOD Define2( ControlName, ParentForm, x, y, w, h, aHeaders, aWidths, aRows, ;
       OOHG_MsgError( "TGrid.Define2: CHECKBOXES and PAINTLEFTMARGIN clauses can not be used simultaneously. Program terminated." )
    EndIf
 
+   // When lNoShowAlways is not set (NIL) the selection is always shown, like in MiniGUI.
+   // The @ ... BROWSE rule of i_minigui_compat.ch used to pass NIL and the selected row was not
+   // painted when the control lost the focus. Only NOSHOWALWAYS (.T.) hides it.
    nStyle := ::InitStyle( nStyle,, lInvisible, lNoTabStop ) + ;
              If( HB_IsLogical( lHasHeaders ) .AND. ! lHasHeaders, LVS_NOCOLUMNHEADER, 0 ) + ;
-             If( HB_IsLogical( lNoShowAlways ) .AND. ! lNoShowAlways, LVS_SHOWSELALWAYS, 0 )
+             If( HB_IsLogical( lNoShowAlways ) .AND. lNoShowAlways, 0, LVS_SHOWSELALWAYS )
 
    IF ! HB_ISARRAY( aJust )
       ::aJust := AFill( Array( Len( ::aHeaders ) ), 0 )
@@ -905,11 +919,12 @@ METHOD CheckItem( nItem, lChecked ) CLASS TGrid
 
 METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
 
-   Local i, aColors[ 4 ]
+   // 8 colors like TGridByCell (colors 5 to 8 are used by MARKROW)
+   Local i, aColors[ 8 ]
 
    If HB_IsArray( aSelectedColors )
       aSelectedColors := AClone( aSelectedColors )
-      ASize( aSelectedColors, 4 )
+      ASize( aSelectedColors, 8 )
 
       // For text of selected row when grid has the focus
       If ! ValType( aSelectedColors[ 1 ] ) $ "ANB"
@@ -927,10 +942,16 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
       If ! ValType( aSelectedColors[ 4 ] ) $ "ANB"
          aSelectedColors[ 4 ] := GetSysColor( COLOR_3DFACE )
       EndIf
+      // For the rest of the selected row with MARKROW (-1 = normal color of the cell)
+      For i := 5 To 8
+         If ! ValType( aSelectedColors[ i ] ) $ "ANB"
+            aSelectedColors[ i ] := -1
+         EndIf
+      Next i
 
       ::aSelectedColors := aSelectedColors
 
-      For i := 1 To 4
+      For i := 1 To 8
          aColors[ i ] := _OOHG_GetArrayItem( aSelectedColors, i )
       Next i
 
@@ -944,6 +965,150 @@ METHOD SetSelectedColors( aSelectedColors, lRedraw ) CLASS TGrid
    EndIf
 
    Return aSelectedColors
+
+/*
+ * MARKROW clause and MarkRow property.
+ * Contributed by Miguel Ingles.
+ *
+ * Paints the current cell with selected colors 1 to 4 and the rest of the row with colors 5 to 8.
+ *    NIL or .F. -> not marked (the colors set before enabling it are restored)
+ *    .T.        -> with focus: cell with the selection color and rest of the row light blue {204,232,255}
+ *                  without focus: cell light gray {200,200,200} and rest of the row gray {225,225,225}
+ *    array      -> { text with focus, back with focus, text without focus, back without focus } for
+ *                  the rest of the row, or an array like SELECTEDCOLORS (8 items): colors 1 to 4 that
+ *                  are not NIL change the cell's colors and colors 5 to 8 those of the rest of the row.
+ *    A NIL color for the rest of the row keeps the normal color of the cell.
+ * With NAVIGATEBYCELL the current cell is the one of Value. Without NAVIGATEBYCELL (TGrid only,
+ * not MULTISELECT) the column is kept at ::nMarkCol: it changes with the click and with the
+ * left/right arrows, and Value is still the row number.
+ * Runtime usage: oGrid:MarkRow := .T. / .F. / array
+ */
+METHOD MarkRow( uMarkRow ) CLASS TGrid
+
+   Local aColors, aRow, i, lWasOn
+
+   If PCount() > 0
+      lWasOn  := ( HB_IsLogical( ::uMarkRow ) .AND. ::uMarkRow ) .OR. HB_IsArray( ::uMarkRow )
+      aColors := ::SetSelectedColors()          // copy of the current 8 colors
+
+      // When enabling it, the 8 colors are saved to restore them later
+      If ! lWasOn
+         ::aMarkRowSave := AClone( aColors )
+      Else
+         aColors := AClone( ::aMarkRowSave )    // always start from the colors without MARKROW
+      EndIf
+
+      Do Case
+      Case HB_IsArray( uMarkRow ) .AND. Len( uMarkRow ) > 4
+         aRow := ASize( AClone( uMarkRow ), 8 )
+         For i := 1 To 4
+            If aRow[ i ] # Nil
+               aColors[ i ] := aRow[ i ]
+            EndIf
+            aColors[ 4 + i ] := aRow[ 4 + i ]
+         Next i
+      Case HB_IsArray( uMarkRow )
+         aRow := ASize( AClone( uMarkRow ), 4 )
+         For i := 1 To 4
+            aColors[ 4 + i ] := aRow[ i ]
+         Next i
+      Case HB_IsLogical( uMarkRow ) .AND. uMarkRow
+         aColors[ 4 ] := { 200, 200, 200 }      // cell without focus: light gray
+         aColors[ 5 ] := Nil
+         aColors[ 6 ] := { 204, 232, 255 }      // rest of the row with focus: light blue
+         aColors[ 7 ] := Nil
+         aColors[ 8 ] := { 225, 225, 225 }      // rest of the row without focus: lighter gray
+      EndCase
+      // NIL or .F.: aColors already has the saved colors
+
+      ::uMarkRow := uMarkRow
+      ::SetSelectedColors( aColors, .T. )
+   EndIf
+
+   Return ::uMarkRow
+
+// .T. if the cell must be marked in a GRID without NAVIGATEBYCELL
+METHOD MarkRowActive() CLASS TGrid
+
+   Return ( ::Type == "GRID" .AND. ( ( HB_IsLogical( ::uMarkRow ) .AND. ::uMarkRow ) .OR. HB_IsArray( ::uMarkRow ) ) )
+
+// Valid column for the marked cell (exists, not hidden and with width)
+METHOD MarkColValid( nCol ) CLASS TGrid
+
+   Return ( HB_IsNumeric( nCol ) .AND. nCol >= 1 .AND. nCol <= Len( ::aHeaders ) .AND. ;
+            AScan( ::aHiddenCols, nCol ) == 0 .AND. ListView_GetColumnWidth( ::hWnd, nCol - 1 ) > 0 )
+
+// Moves the marked cell to the next column (nDir = 1), to the previous one (nDir = -1)
+// or to the first valid one (nDir = 0), following the order in which the columns are shown
+METHOD MarkColMove( nDir ) CLASS TGrid
+
+   Local aOrder, i, nCol := 0
+
+   aOrder := ::ColumnOrder
+   i := iif( nDir == 0, 0, AScan( aOrder, ::nMarkCol ) )
+   If i == 0
+      i := iif( nDir < 0, Len( aOrder ) + 1, 0 )
+      nDir := iif( nDir < 0, -1, 1 )
+   EndIf
+   i += nDir
+   Do While i >= 1 .AND. i <= Len( aOrder )
+      If ::MarkColValid( aOrder[ i ] )
+         nCol := aOrder[ i ]
+         Exit
+      EndIf
+      i += nDir
+   EndDo
+
+   If nCol # 0 .AND. nCol # ::nMarkCol
+      ::nMarkCol := nCol
+      ::MarkColShow()
+      RedrawWindow( ::hWnd )
+   EndIf
+
+   Return Self
+
+// Scrolls the grid horizontally so the marked column is visible
+// (same computation as METHOD Value CLASS TGridByCell)
+METHOD MarkColShow() CLASS TGrid
+
+   Local r, nRow, nClientWidth, nScrollWidth
+
+   If ::ItemCount > 0 .AND. ::MarkColValid( ::nMarkCol )
+      nRow := Max( ::FirstSelectedItem, 1 )
+      r := { 0, 0, 0, 0 }                                                              // left, top, right, bottom
+      GetClientRect( ::hWnd, r )
+      nClientWidth := r[ 3 ] - r[ 1 ]
+      r := ListView_GetSubitemRect( ::hWnd, nRow - 1, ::nMarkCol - 1 )                 // top, left, width, height
+      If IsWindowStyle( ::hWnd, WS_VSCROLL ) .AND. ::lScrollBarUsesClientArea .AND. ::ItemCount > ::CountPerPage
+         nScrollWidth := GetVScrollBarWidth()
+      Else
+         nScrollWidth := 0
+      EndIf
+      If r[ 2 ] + r[ 3 ] + nScrollWidth > nClientWidth
+         // Move right side into client area
+         ListView_Scroll( ::hWnd, ( r[ 2 ] + r[ 3 ] + nScrollWidth - nClientWidth ), 0 )
+         // Get new position
+         r := ListView_GetSubitemRect( ::hWnd, nRow - 1, ::nMarkCol - 1 )             // top, left, width, height
+      EndIf
+      If r[ 2 ] < 0
+         // Move left side into client area
+         ListView_Scroll( ::hWnd, r[ 2 ], 0 )
+      EndIf
+   EndIf
+
+   Return Self
+
+/*
+ * Applies the MARKROW clause after the GRID is defined (see i_grid.ch), so there's no need to add
+ * one more parameter to every Define. When the clause is omitted it does nothing.
+ */
+FUNCTION _OOHG_GridMarkRow( oGrid, uMarkRow )
+
+   If uMarkRow != Nil
+      oGrid:MarkRow := uMarkRow
+   EndIf
+
+   Return oGrid
 
 METHOD LoadHeaderImages( aNewHeaderImage ) CLASS TGrid
 
@@ -3442,7 +3607,8 @@ FUNCTION _OOHG_TGrid_Notify2( Self, wParam, lParam ) // CLASS TGrid
       uFontColor := iif( HB_ISBLOCK( ::aHeaderColors[ nColumn ] ), Eval( ::aHeaderColors[ nColumn ], nColumn ), ::aHeaderColors[ nColumn ] )
       uBackColor := iif( HB_ISBLOCK( ::aHeaderBkClrs[ nColumn ] ), Eval( ::aHeaderBkClrs[ nColumn ], nColumn ), ::aHeaderBkClrs[ nColumn ] )
 
-      RETURN TGrid_Header_CustomDraw( lParam, uFontColor, uBackColor )
+      // The 4th parameter tells if multiline headers are enabled (MULTILINEHEADERS)
+      RETURN TGrid_Header_CustomDraw( lParam, uFontColor, uBackColor, ::MultiLineHeadersOn() )
 
    ElseIf nNotify == NM_RELEASEDCAPTURE
       If ::lTracking
@@ -3515,6 +3681,13 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
          // This fires WM_NCCALCSIZE
          SetWindowPos( ::hWnd, 0, 0, 0, 0, 0, SWP_NOACTIVATE + SWP_NOSIZE + SWP_NOMOVE + SWP_NOZORDER + SWP_FRAMECHANGED + SWP_NOCOPYBITS + SWP_NOOWNERZORDER + SWP_NOSENDCHANGING )
       ENDIF
+      // With MARKROW the grid is painted like NAVIGATEBYCELL (current cell + rest of the row)
+      If ::MarkRowActive()
+         If ! ::MarkColValid( ::nMarkCol )
+            ::MarkColMove( 0 )
+         EndIf
+         RETURN TGrid_Notify_CustomDraw( Self, lParam, .T., ::FirstSelectedItem, ::nMarkCol, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
+      EndIf
       RETURN TGrid_Notify_CustomDraw( Self, lParam, .F., NIL, NIL, ::lCheckBoxes, ::lFocusRect, ::lNoGrid, ::lPLM )
 
    ElseIf nNotify == LVN_ENDSCROLL
@@ -3533,6 +3706,13 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       EndIf
 
       nvKey := GetGridvKey( lParam )
+
+      // With MARKROW the left/right arrows move the marked cell
+      If ::MarkRowActive() .AND. ( nvkey == VK_LEFT .OR. nvkey == VK_RIGHT ) .AND. GetKeyFlagState() == 0
+         ::MarkColMove( iif( nvkey == VK_LEFT, -1, 1 ) )
+         // skip default action
+         Return 1
+      EndIf
 
       If nvkey == VK_DOWN
          If ::FirstSelectedItem == ::ItemCount
@@ -3626,6 +3806,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
       aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
       // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
 
+      // With MARKROW the click also selects the marked cell
+      If ::MarkRowActive() .AND. ::MarkColValid( aCellData[ 2 ] ) .AND. aCellData[ 2 ] # ::nMarkCol
+         ::nMarkCol := aCellData[ 2 ]
+         RedrawWindow( ::hWnd )
+      EndIf
+
       If ::lCheckBoxes
          // detect item
          uValue := ListView_HitOnCheckBox( ::hWnd, GetCursorRow() - GetWindowRow( ::hWnd ), GetCursorCol() - GetWindowCol( ::hWnd ) )
@@ -3685,6 +3871,12 @@ METHOD Events_Notify( wParam, lParam ) CLASS TGrid
    ElseIf nNotify == NM_RCLICK
       aCellData := _GetGridCellData( Self, ListView_ItemActivate( lParam ) )
       // aCellData[ 3 ] -> LVKF_ALT, LVKF_CONTROL, LVKF_SHIFT
+
+      // With MARKROW the click also selects the marked cell
+      If ::MarkRowActive() .AND. ::MarkColValid( aCellData[ 2 ] ) .AND. aCellData[ 2 ] # ::nMarkCol
+         ::nMarkCol := aCellData[ 2 ]
+         RedrawWindow( ::hWnd )
+      EndIf
 
       If ::lCheckBoxes
          // detect item
@@ -4291,6 +4483,51 @@ METHOD HeaderSetFont( cFontName, nFontSize, lBold, lItalic, lUnderline, lStrikeo
    ENDIF
 
    RETURN NIL
+
+/*
+ * MULTILINEHEADERS clause and MultiLineHeaders property.
+ * Contributed by Miguel Ingles, based on the example by David Field.
+ *
+ * Allows headers with two or more lines in GRID, BROWSE and XBROWSE controls.
+ * Lines are separated with CHR(13)+CHR(10) (Windows), CHR(10) (Linux) or a lone CHR(13).
+ * Single-line and multiline columns can be mixed.
+ *    .F.     -> disabled (default)
+ *    .T.     -> header height is computed automatically: the default height plus one line of the
+ *               header's font for each extra line of the column with more lines. It's updated
+ *               when the captions change (::Header()) or the font changes (::HeaderSetFont()).
+ *    nPixels -> fixed header height in pixels (zero or negative means disabled)
+ * Runtime usage: oGrid:MultiLineHeaders := .T. / .F. / nPixels
+ * Single-line columns are still painted by Windows (visual style, image, sort arrow).
+ * Multiline columns are painted at TGRID_HEADER_CUSTOMDRAW, vertically centered and honoring
+ * JUSTIFY, HEADERCOLORS and HEADERBACKCOLORS. They don't show the HEADERIMAGES image.
+ */
+METHOD MultiLineHeaders( uValue ) CLASS TGrid
+
+   IF PCount() > 0 .AND. ( HB_ISLOGICAL( uValue ) .OR. HB_ISNUMERIC( uValue ) )
+      // A height of zero or less means disabled
+      IF HB_ISNUMERIC( uValue ) .AND. uValue <= 0
+         uValue := .F.
+      ENDIF
+      ::uMultiLineHeaders := uValue
+      IF ValidHandler( ::hWnd )
+         // Install, update or remove the header's subclass that changes its height
+         TGrid_SetMultiLineHeaders( ::hWnd, ::MultiLineHeadersOn(), iif( HB_ISNUMERIC( uValue ), uValue, 0 ) )
+      ENDIF
+   ENDIF
+
+   RETURN ::uMultiLineHeaders
+
+/*
+ * Applies the MULTILINEHEADERS clause after the control is defined (see i_grid.ch, i_browse.ch,
+ * i_xbrowse.ch and i_minigui_compat.ch). When the clause is omitted it receives .F. and does nothing.
+ */
+FUNCTION _OOHG_GridMultiLineHeaders( oGrid, uValue )
+
+   IF ( HB_ISLOGICAL( uValue ) .AND. uValue ) .OR. HB_ISNUMERIC( uValue )
+      oGrid:MultiLineHeaders := uValue
+   ENDIF
+
+   RETURN oGrid
 
 METHOD Release() CLASS TGrid
 
@@ -9607,6 +9844,466 @@ static int TGrid_Notify_CustomDraw_GetSelColor( PHB_ITEM pSelf, UINT x )
    return -1;
 }
 
+/*
+ * Multiline headers (MULTILINEHEADERS clause, METHOD MultiLineHeaders).
+ * Contributed by Miguel Ingles, based on the example by David Field.
+ *
+ * Height: the header is subclassed (SetWindowSubclass) and at HDM_LAYOUT it is made taller and
+ * the grid's data area is moved down by the same amount. WM_WINDOWPOSCHANGING prevents the header
+ * from being shrunk again. With automatic height, it's recomputed when the captions or the font
+ * change.
+ * Painting: the header's WM_PAINT is NOT replaced, so the visual style, the images, the sort
+ * arrows and HEADERCOLORS/HEADERBACKCOLORS keep working. Only the captions with line breaks are
+ * painted at TGRID_HEADER_CUSTOMDRAW (CDRF_SKIPDEFAULT).
+ * Accepted line breaks: CHR(13)+CHR(10) (Windows), CHR(10) (Linux) and a lone CHR(13).
+ */
+
+#define OOHG_MLH_SUBCLASS_ID   0x4D484452   /* subclass id */
+#define OOHG_HP_HEADERITEM     1            /* part and states of "HEADER" theme class (vsstyle.h) */
+#define OOHG_HIS_NORMAL        1
+#define OOHG_HIS_HOT           2
+#define OOHG_HIS_PRESSED       3
+
+/* Data of each subclassed header (freed at WM_NCDESTROY) */
+typedef struct
+{
+   int iFixed;    /* fixed height in pixels, 0 = automatic */
+   int iLines;    /* number of lines of the caption with more lines */
+   int iHeight;   /* height set at the last HDM_LAYOUT, 0 = none */
+} OOHG_GRID_MLH;
+
+/* Private message used to recompute the height after the captions or the font change */
+static UINT s_uMLHRelayout = 0;
+
+/* Converts line breaks (CR+LF, LF or lone CR) to LF and returns the number of lines */
+static int TGrid_MLH_Normalize( TCHAR * cText )
+{
+   TCHAR * s = cText;
+   TCHAR * d = cText;
+   int iLines = 1;
+
+   while( *s )
+   {
+      if( *s == TEXT( '\r' ) )
+      {
+         /* CR+LF (Windows) or lone CR: just one line break */
+         *d++ = TEXT( '\n' );
+         iLines++;
+         s++;
+         if( *s == TEXT( '\n' ) )
+         {
+            s++;
+         }
+      }
+      else
+      {
+         /* LF (Linux) is kept */
+         if( *s == TEXT( '\n' ) )
+         {
+            iLines++;
+         }
+         *d++ = *s++;
+      }
+   }
+   *d = 0;
+
+   return iLines;
+}
+
+/* Number of lines of the header's caption with more lines */
+static int TGrid_MLH_MaxLines( HWND hHeader )
+{
+   HDITEM hdi;
+   TCHAR cText[ 1024 ];
+   int i, iCount, iLines, iMax = 1;
+
+   iCount = Header_GetItemCount( hHeader );
+   for( i = 0; i < iCount; i++ )
+   {
+      memset( &hdi, 0, sizeof( hdi ) );
+      cText[ 0 ] = 0;
+      hdi.mask = HDI_TEXT;
+      hdi.pszText = cText;
+      hdi.cchTextMax = 1023;
+      if( Header_GetItem( hHeader, i, &hdi ) )
+      {
+         iLines = TGrid_MLH_Normalize( cText );
+         if( iLines > iMax )
+         {
+            iMax = iLines;
+         }
+      }
+   }
+
+   return iMax;
+}
+
+/* Height of a text line using the header's font */
+static int TGrid_MLH_LineHeight( HWND hHeader )
+{
+   HDC hDC;
+   HFONT hFont, hOldFont = NULL;
+   TEXTMETRIC tm;
+   int iHeight = 0;
+
+   hDC = GetDC( hHeader );
+   if( hDC )
+   {
+      hFont = (HFONT) SendMessage( hHeader, WM_GETFONT, 0, 0 );
+      if( hFont )
+      {
+         hOldFont = (HFONT) SelectObject( hDC, hFont );
+      }
+      if( GetTextMetrics( hDC, &tm ) )
+      {
+         iHeight = tm.tmHeight;
+      }
+      if( hOldFont )
+      {
+         SelectObject( hDC, hOldFont );
+      }
+      ReleaseDC( hHeader, hDC );
+   }
+
+   return iHeight;
+}
+
+/*
+ * Forces the grid to reposition its header (and so to send HDM_LAYOUT) by really changing its
+ * width by one pixel and restoring it.
+ */
+static void TGrid_MLH_Relayout( HWND hGrid )
+{
+   RECT rc;
+   int iWidth, iHeight;
+
+   if( ! ValidHandler( hGrid ) )
+   {
+      return;
+   }
+
+   GetWindowRect( hGrid, &rc );
+   iWidth  = rc.right - rc.left;
+   iHeight = rc.bottom - rc.top;
+
+   SetWindowPos( hGrid, NULL, 0, 0, iWidth + 1, iHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE );
+   SetWindowPos( hGrid, NULL, 0, 0, iWidth, iHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE );
+
+   RedrawWindow( hGrid, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_ALLCHILDREN | RDW_UPDATENOW );
+}
+
+/* Header's subclass procedure */
+static LRESULT CALLBACK TGrid_MLH_HeaderProc( HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData )
+{
+   OOHG_GRID_MLH * pData = (OOHG_GRID_MLH *) dwRefData;
+   LRESULT lResult;
+   int iLines;
+
+   /* Recompute the height (message posted below) */
+   if( s_uMLHRelayout != 0 && nMsg == s_uMLHRelayout )
+   {
+      TGrid_MLH_Relayout( GetParent( hWnd ) );
+      return 0;
+   }
+
+   switch( nMsg )
+   {
+      case HDM_LAYOUT:
+      {
+         LPHDLAYOUT pLayout = (LPHDLAYOUT) lParam;
+         int iDefault, iNew;
+
+         /* First, let Windows compute the default (single line) height */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+
+         if( lResult && pLayout && pLayout->pwpos && pLayout->prc )
+         {
+            iDefault = pLayout->pwpos->cy;
+            if( iDefault > 0 )   /* 0 = hidden header (NOHEADERS) */
+            {
+               if( pData->iFixed > 0 )
+               {
+                  iNew = pData->iFixed;
+               }
+               else
+               {
+                  iNew = iDefault + ( pData->iLines - 1 ) * TGrid_MLH_LineHeight( hWnd );
+               }
+
+               /* Taller header and data area moved down by the same amount */
+               pLayout->pwpos->cy = iNew;
+               pLayout->prc->top += iNew - iDefault;
+               pData->iHeight = iNew;
+            }
+            else
+            {
+               pData->iHeight = 0;
+            }
+         }
+         return lResult;
+      }
+
+      case WM_WINDOWPOSCHANGING:
+      {
+         LPWINDOWPOS pPos = (LPWINDOWPOS) lParam;
+
+         /* Don't let Windows shrink the header again (except to hide it) */
+         if( pPos && pData->iHeight > 0 && ! ( pPos->flags & SWP_NOSIZE ) && pPos->cy > 0 )
+         {
+            pPos->cy = pData->iHeight;
+         }
+         break;
+      }
+
+      case WM_SETFONT:
+         /* New font (HeaderSetFont): automatic height must be recomputed */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+         if( pData->iFixed == 0 )
+         {
+            PostMessage( hWnd, s_uMLHRelayout, 0, 0 );
+         }
+         return lResult;
+
+      case HDM_SETITEMA:
+      case HDM_SETITEMW:
+      case HDM_INSERTITEMA:
+      case HDM_INSERTITEMW:
+      case HDM_DELETEITEM:
+         /* Captions changed (METHOD Header, added or deleted columns): if the number of lines
+            changes and the height is automatic, it's recomputed. PostMessage is used to avoid
+            resizing the grid while the grid itself is changing the header */
+         lResult = DefSubclassProc( hWnd, nMsg, wParam, lParam );
+         iLines = TGrid_MLH_MaxLines( hWnd );
+         if( iLines != pData->iLines )
+         {
+            pData->iLines = iLines;
+            if( pData->iFixed == 0 )
+            {
+               PostMessage( hWnd, s_uMLHRelayout, 0, 0 );
+            }
+         }
+         return lResult;
+
+      case WM_NCDESTROY:
+         /* The header is destroyed: remove the subclass and free its data */
+         RemoveWindowSubclass( hWnd, TGrid_MLH_HeaderProc, uIdSubclass );
+         LocalFree( (HLOCAL) pData );
+         break;
+   }
+
+   return DefSubclassProc( hWnd, nMsg, wParam, lParam );
+}
+
+/*
+ * TGrid_SetMultiLineHeaders( hWnd, lOn, nFixedHeight ) -> lEnabled
+ * Installs, updates or removes the subclass of the grid's header (METHOD MultiLineHeaders).
+ */
+HB_FUNC( TGRID_SETMULTILINEHEADERS )
+{
+   HWND hGrid = HWNDparam( 1 );
+   HWND hHeader;
+   BOOL bOn = hb_parl( 2 );
+   int iFixed = hb_parni( 3 );
+   OOHG_GRID_MLH * pData;
+   DWORD_PTR dwRef = 0;
+   BOOL bInstalled;
+
+   if( ! ValidHandler( hGrid ) )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+
+   hHeader = ListView_GetHeader( hGrid );
+   if( ! ValidHandler( hHeader ) )
+   {
+      hb_retl( FALSE );
+      return;
+   }
+
+   if( s_uMLHRelayout == 0 )
+   {
+      s_uMLHRelayout = RegisterWindowMessage( TEXT( "OOHG_TGRID_MLH_RELAYOUT" ) );
+   }
+
+   bInstalled = GetWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID, &dwRef );
+
+   if( bOn )
+   {
+      if( bInstalled )
+      {
+         pData = (OOHG_GRID_MLH *) dwRef;
+      }
+      else
+      {
+         /* LocalAlloc instead of hb_xgrab: it's freed at WM_NCDESTROY, which may arrive when the app is closing */
+         pData = (OOHG_GRID_MLH *) LocalAlloc( LPTR, sizeof( OOHG_GRID_MLH ) );
+         if( ! pData )
+         {
+            hb_retl( FALSE );
+            return;
+         }
+         if( ! SetWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID, (DWORD_PTR) pData ) )
+         {
+            LocalFree( (HLOCAL) pData );
+            hb_retl( FALSE );
+            return;
+         }
+      }
+      pData->iFixed = ( iFixed > 0 ) ? iFixed : 0;
+      pData->iLines = TGrid_MLH_MaxLines( hHeader );
+   }
+   else
+   {
+      if( ! bInstalled )
+      {
+         hb_retl( FALSE );
+         return;
+      }
+      /* Disable: the header returns to its default height */
+      RemoveWindowSubclass( hHeader, TGrid_MLH_HeaderProc, OOHG_MLH_SUBCLASS_ID );
+      LocalFree( (HLOCAL) dwRef );
+   }
+
+   TGrid_MLH_Relayout( hGrid );
+   RedrawWindow( hHeader, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_UPDATENOW );
+
+   hb_retl( bOn );
+}
+
+/*
+ * Paints a multiline caption (CDDS_ITEMPREPAINT). Returns FALSE if the caption has only one line,
+ * so Windows paints it as usual.
+ * lFontColor / lBackColor: colors from HEADERCOLORS / HEADERBACKCOLORS, -1 if not set.
+ */
+static BOOL TGrid_Header_DrawMultiLine( LPNMCUSTOMDRAW lpnmcd, long lFontColor, long lBackColor )
+{
+   HWND hHeader = lpnmcd->hdr.hwndFrom;
+   HDC hDC = lpnmcd->hdc;
+   HDITEM hdi;
+   TCHAR cText[ 1024 ];
+   RECT rcItem, rcText, rcCalc;
+   HTHEME hTheme = NULL;
+   HBRUSH hBrush;
+   HFONT hFont, hOldFont = NULL;
+   UINT uFormat;
+   int iHeight, iStateId, iMargin;
+   BOOL bPressed = ( ( lpnmcd->uItemState & CDIS_SELECTED ) == CDIS_SELECTED );
+
+   /* Caption and column's alignment */
+   memset( &hdi, 0, sizeof( hdi ) );
+   cText[ 0 ] = 0;
+   hdi.mask = HDI_TEXT | HDI_FORMAT;
+   hdi.pszText = cText;
+   hdi.cchTextMax = 1023;
+   if( ! Header_GetItem( hHeader, (int) lpnmcd->dwItemSpec, &hdi ) )
+   {
+      return FALSE;
+   }
+   if( TGrid_MLH_Normalize( cText ) < 2 )
+   {
+      return FALSE;
+   }
+
+   rcItem = lpnmcd->rc;
+
+   /* Background: visual style (if there's no backcolor) or classic edge */
+   if( lBackColor == -1 && _UxTheme_Init() )
+   {
+      hTheme = ProcOpenThemeData( hHeader, L"HEADER" );
+   }
+   if( hTheme )
+   {
+      if( bPressed )
+      {
+         iStateId = OOHG_HIS_PRESSED;
+      }
+      else if( ( lpnmcd->uItemState & CDIS_HOT ) == CDIS_HOT )
+      {
+         iStateId = OOHG_HIS_HOT;
+      }
+      else
+      {
+         iStateId = OOHG_HIS_NORMAL;
+      }
+      ProcDrawThemeBackground( hTheme, hDC, OOHG_HP_HEADERITEM, iStateId, &rcItem, NULL );
+      ProcCloseThemeData( hTheme );
+   }
+   else
+   {
+      /* Same as Windows paints a non-themed header with buttons; BF_ADJUST shrinks rcItem */
+      if( bPressed )
+      {
+         DrawEdge( hDC, &rcItem, BDR_RAISEDOUTER, BF_RECT | BF_FLAT | BF_MIDDLE | BF_ADJUST );
+      }
+      else
+      {
+         DrawEdge( hDC, &rcItem, EDGE_RAISED, BF_RECT | BF_SOFT | BF_MIDDLE | BF_ADJUST );
+      }
+      if( lBackColor != -1 )
+      {
+         hBrush = CreateSolidBrush( (COLORREF) lBackColor );
+         FillRect( hDC, &rcItem, hBrush );
+         DeleteObject( hBrush );
+      }
+   }
+
+   /* Text using the header's font */
+   hFont = (HFONT) SendMessage( hHeader, WM_GETFONT, 0, 0 );
+   if( hFont )
+   {
+      hOldFont = (HFONT) SelectObject( hDC, hFont );
+   }
+   if( lFontColor == -1 )
+   {
+      lFontColor = GetSysColor( COLOR_WINDOWTEXT );
+   }
+   SetTextColor( hDC, (COLORREF) lFontColor );
+   SetBkMode( hDC, TRANSPARENT );
+
+   /* Side margin like Windows; when pressed without visual style, text is moved by one pixel */
+   iMargin = 3 * GetSystemMetrics( SM_CXEDGE );
+   rcText = lpnmcd->rc;
+   rcText.left  += iMargin;
+   rcText.right -= iMargin;
+   if( bPressed && ! hTheme )
+   {
+      OffsetRect( &rcText, 1, 1 );
+   }
+
+   /* Column's horizontal alignment (JUSTIFY) */
+   switch( hdi.fmt & HDF_JUSTIFYMASK )
+   {
+      case HDF_RIGHT:
+         uFormat = DT_RIGHT;
+         break;
+      case HDF_CENTER:
+         uFormat = DT_CENTER;
+         break;
+      default:
+         uFormat = DT_LEFT;
+   }
+   uFormat |= DT_NOPREFIX;
+
+   /* Vertical centering: DT_VCENTER only works with DT_SINGLELINE, so the text is measured first */
+   rcCalc = rcText;
+   DrawText( hDC, cText, -1, &rcCalc, uFormat | DT_CALCRECT );
+   iHeight = rcCalc.bottom - rcCalc.top;
+   if( iHeight < rcText.bottom - rcText.top )
+   {
+      rcText.top += ( ( rcText.bottom - rcText.top ) - iHeight ) / 2;
+      rcText.bottom = rcText.top + iHeight;
+   }
+   DrawText( hDC, cText, -1, &rcText, uFormat );
+
+   if( hOldFont )
+   {
+      SelectObject( hDC, hOldFont );
+   }
+
+   return TRUE;
+}
+
 HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
 {
    LPNMCUSTOMDRAW lpnmcd = NMCUSTOMDRAWparam( 1 );
@@ -9622,12 +10319,21 @@ HB_FUNC( TGRID_HEADER_CUSTOMDRAW )
       if( lpnmcd->dwDrawStage == CDDS_ITEMPREPAINT )
       {
          _OOHG_DetermineColor( hb_param( 2, HB_IT_ANY ), &lFontColor );
+         _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lBackColor );
+
+         // With MULTILINEHEADERS (4th parameter) multiline captions are painted here
+         // and Windows paints nothing else
+         if( hb_parl( 4 ) && TGrid_Header_DrawMultiLine( lpnmcd, lFontColor, lBackColor ) )
+         {
+            hb_retni( CDRF_SKIPDEFAULT );
+            return;
+         }
+
          if( lFontColor == -1 )
             lFontColor = GetSysColor( COLOR_WINDOWTEXT );
          SetTextColor( lpnmcd->hdc, (COLORREF) lFontColor );
 
          // Note that backcolor is ignored when header has visual style enabled
-         _OOHG_DetermineColor( hb_param( 3, HB_IT_ANY ), &lBackColor );
          if( lBackColor == -1 )
             lBackColor = GetSysColor( COLOR_WINDOW );
          SetBkColor( lpnmcd->hdc, (COLORREF) lBackColor );
@@ -9675,6 +10381,10 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.cchTextMax = 1022;
       LI.pszText = buffer;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* The state (selected/focused) belongs to the row, so it's asked to the row.
+         Windows also returns it for subitems, but Wine returns 0 when iSubItem > 0
+         and then only the cell of the first column was painted as selected. */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED | LVIS_FOCUSED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -9761,25 +10471,29 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
          lplvcd->clrTextBk = TGrid_Notify_CustomDraw_GetColor( pSelf, x, y, s_GridBackColor, s_BackColor, COLOR_WINDOW );
       }
 
+      /* Bits are cleared with "&= ~" instead of "-=".
+         uItemState does not always include CDIS_SELECTED/CDIS_FOCUS even when LI.state says that
+         the row is selected (see MSDN comment above, and Wine for subitems); subtracting a bit
+         that is not set corrupts all the other bits of the state. */
       if( GetFocus() == lplvcd->nmcd.hdr.hwndFrom )
       {
          if( LI.state & LVIS_FOCUSED )
          {
             if( ! bFocusRect )
             {
-               lplvcd->nmcd.uItemState -= CDIS_FOCUS;
+               lplvcd->nmcd.uItemState &= ~CDIS_FOCUS;
             }
          }
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
       else if( GetWindowLongPtr( lplvcd->nmcd.hdr.hwndFrom, GWL_STYLE ) & LVS_SHOWSELALWAYS )
       {
          if( LI.state & LVIS_SELECTED )
          {
-            lplvcd->nmcd.uItemState -= CDIS_SELECTED;
+            lplvcd->nmcd.uItemState &= ~CDIS_SELECTED;
          }
       }
 
@@ -9805,6 +10519,8 @@ int TGrid_Notify_CustomDraw( PHB_ITEM pSelf, LPARAM lParam, BOOL bByCell, int iR
       LI.iItem = lplvcd->nmcd.dwItemSpec;
       LI.iSubItem = lplvcd->iSubItem;
       ListView_GetItem( lplvcd->nmcd.hdr.hwndFrom, &LI );
+      /* Like at CDDS_ITEMPREPAINT, the state is asked to the row (Wine) */
+      LI.state = ListView_GetItemState( lplvcd->nmcd.hdr.hwndFrom, lplvcd->nmcd.dwItemSpec, LVIS_SELECTED );
 
       /* Get subitem's row (y) and col (x) */
       x = lplvcd->iSubItem + 1;
@@ -10012,6 +10728,14 @@ HB_FUNC( SETGRIDQUERYDATA )
    NMLVDISPINFO *pDispInfo = NMLVDISPINFOparam( 1 );
    hb_itemCopy( pValue, hb_param( 2, HB_IT_STRING ) );
    pDispInfo->item.pszText = (LPTSTR) HB_UNCONST( hb_itemGetCPtr( pValue ) );
+   /* The cell is text, so explicitly say it has no image.
+      Windows keeps the iImage set by the caller (-1), but Wine sets it to 0, and then
+      ListViewGetItem returned a number instead of the text (CTOD error) and CustomDraw
+      thought that every cell had an image (CDRF_NOTIFYPOSTPAINT) and repainted them. */
+   if( pDispInfo->item.mask & LVIF_IMAGE )
+   {
+      pDispInfo->item.iImage = -1;
+   }
 }
 
 HB_FUNC( SETGRIDQUERYIMAGE )

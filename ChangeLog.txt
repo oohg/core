@@ -13,6 +13,62 @@
  * Use #nnn to refer to an issue.
  * Use #nnn-PRG to refer to a pull request.
  */
+2026-11-25 12:20 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_browse.ch
+  * core\include\i_grid.ch
+  * core\include\i_minigui_compat.ch
+  * core\include\i_xbrowse.ch
+  * core\source\h_grid.prg
+    + New clause MULTILINEHEADERS and new property MultiLineHeaders for
+      GRID, BROWSE and XBROWSE controls. Header captions can have two or
+      more lines separated by CHR(13)+CHR(10), CHR(10) or CHR(13).
+      Header height is computed automatically from the caption with more
+      lines and the header's font, and it's updated when the captions or
+      the font change. Use oGrid:MultiLineHeaders := nPixels to set a
+      fixed height or .F. to disable it.
+      Single-line captions are still painted by Windows. Multiline captions
+      are vertically centered and honor JUSTIFY, HEADERCOLORS and
+      HEADERBACKCOLORS. They don't show the HEADERIMAGES image.
+  ; Based on the example by David Field.
+  ; See sample grid\s040.prg at https://github.com/oohg/samples
+
+2026-11-25 12:10 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_grid.ch
+  * core\source\h_grid.prg
+    + New clause MARKROW and new property MarkRow for GRID controls.
+      The current cell is painted with selected colors 1 to 4 and the rest
+      of the selected row with colors 5 to 8 (like NAVIGATEBYCELL), but
+      Value is still the row number. Without NAVIGATEBYCELL the marked
+      column is changed with the left/right arrows and with the click.
+      Values: .T. (rest of the row light blue), .F. or NIL (disabled), or an
+      array of colors { text with focus, back with focus, text without
+      focus, back without focus } for the rest of the row, or an array of
+      8 colors like SELECTEDCOLORS.
+    * TGrid:SetSelectedColors() now handles 8 colors like TGridByCell.
+      Colors 5 to 8 default to -1 (normal color of the cell).
+  ; See sample grid\s042.prg at https://github.com/oohg/samples
+
+2026-11-25 12:00 UTC+0100 Miguel Ingles <miguelsuizowin@gmail.com>
+  * core\include\i_minigui_compat.ch
+    ! @ ... BROWSE rule now passes to TOBrowse():Define the same default
+      values used by the standard rule of i_browse.ch when a clause is
+      omitted. NILs were passed before and, for example, the control did
+      not show the selection without focus nor used double buffer.
+  * core\source\h_grid.prg
+    ! Selected row is painted entirely under Wine. The row state
+      (selected/focused) is now asked to the row at TGrid_Notify_CustomDraw.
+      Wine returns 0 for subitems and only the first column was painted
+      as selected.
+    ! uItemState bits are cleared with "&= ~" instead of "-=". Subtracting
+      a bit that is not set corrupted the other bits of the state.
+    ! SETGRIDQUERYDATA sets iImage to -1 (the cell is text). Under Wine
+      virtual grids and browses showed a CTOD error and repainted every
+      cell because iImage was 0.
+    * When lNoShowAlways is NIL the selection is always shown, like in
+      MiniGUI. Only NOSHOWALWAYS hides it. Standard rules always pass a
+      logical value, so they are not affected.
+  ; See sample grid\s041.prg at https://github.com/oohg/samples
+
 2025-11-20 20:09 UTC-0200 Jose Quintas <jmcquintas@gmail.com>
    * include\miniprint.ch
    * include\winprint.ch
