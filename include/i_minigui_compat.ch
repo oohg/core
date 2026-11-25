@@ -162,6 +162,25 @@
    => ;
       _OOHG_ThisForm:Name
 
+/*
+ * The call to TOBrowse():Define in this rule passes the same default values used by the
+ * standard rule of i_browse.ch when a clause is omitted. NILs were passed before and, for
+ * example, the BROWSE did not show the selection without focus nor used double buffer.
+ * PAINTDOUBLEBUFFER is accepted, but double buffer is always enabled, like in OOHG.
+ * Order of the parameters after <inputmask> (see METHOD Define CLASS TOBrowse in h_browse.prg):
+ *   lRtl, bOnAppend, bOnEditCell, aEditControls, aReplaceFields, lRecCount, aColumnInfo,
+ *   lHasHeaders(.T.), bOnEnter, lDisabled, lNoTabStop, lInvisible, lDescending, bDelWhen, cDelMsg,
+ *   bOnDelete, aHeaderImage, aHeaderImageAlign, lFullMove, aSelectedColors, aEditKeys, uRefresh,
+ *   lDblBffr(.T.), lFocusRect, lPLM, lSync, lFixedCols, lNoDelMsg, lUpdateAll, bOnAbortedit, bOnClick,
+ *   lFixedWidths, lFixedBlocks, bBeforeColMove, bAfterColMove, bBeforeColSize, bAfterColSize,
+ *   bBeforeAutofit, lLikeExcel, lButtons, lUpdCols, lFixedCtrls, bHeadRClick, lExtDbl, lNoModal,
+ *   lSilent, lAltA(.T.), lNoShowAlways(.F.), lNone, lCBE, bOnRClick, lCheckBoxes, bOnCheck,
+ *   bOnRowRefresh, aDefaultValues, bOnEditEnd, lAtFirst(.T.), bbeforeditcell, bEditCellValue, klc,
+ *   lLabelTip, lNoHSB, aHeadDblClick, aHeaderColors, nTimeOut, nNewAtRow, bEditKeysFun, lNoDefMsg,
+ *   aHeaderBkClrs
+ * MULTILINEHEADERS clause: headers with two or more lines
+ * (see i_grid.ch and METHOD MultiLineHeaders in h_grid.prg).
+ */
 #command @ <row>,<col> BROWSE <name>			;
 		[ <dummy1: OF,PARENT,DIALOG> <parent> ] ;
 		[ WIDTH <w> ] 				;
@@ -206,17 +225,33 @@
 		[ <notabstop: NOTABSTOP> ]		;
 		[ HEADERIMAGE <aImageHeader> ]		;
 		[ <doublebuffer: PAINTDOUBLEBUFFER> ]	;
+		[ <mlh: MULTILINEHEADERS> ]	;
    => ;
+      _OOHG_GridMultiLineHeaders( ;
       TOBrowse():Define( <(name)>, <(parent)>, <col>, <row>, <w>, <h>, <headers>, ;
-            <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, <{change}>, ;
-            <{dblclick}>, <aHeadClick>, <{gotfocus}>, <{lostfocus}>, <(workarea)>, ;
-            <.delete.>, <.style.>, <aImage>, <aJust>, <helpid>, <.bold.>, <.italic.>, ;
-            <.underline.>, <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, ;
-            <.lock.>, <.inplace.>, <.novsb.>, <.append.>, <aReadOnly>, <aValidFields>, ;
-            <aValidMessages>, <.edit.>, <dynamicbackcolor>, <aWhenFields>, ;
-            <dynamicforecolor>, <inputmask>, NIL, NIL, NIL, NIL, NIL, NIL, NIL, NIL, ;
-            NIL, NIL, <.notabstop.>, NIL, NIL, NIL, NIL, NIL, <aImageHeader>, NIL, NIL, ;
-            NIL, NIL, NIL, <.doublebuffer.> )
+            <widths>, <Fields>, <value>, <fontname>, <fontsize>, <tooltip>, ;
+            <{change}>, <{dblclick}>, <aHeadClick>, <{gotfocus}>, ;
+            <{lostfocus}>, <(workarea)>, <.delete.>, <.style.>, <aImage>, ;
+            <aJust>, <helpid>, <.bold.>, <.italic.>, <.underline.>, ;
+            <.strikeout.>, <.break.>, <backcolor>, <fontcolor>, <.lock.>, ;
+            <.inplace.>, <.novsb.>, <.append.>, <aReadOnly>, ;
+            <aValidFields>, <aValidMessages>, <.edit.>, <dynamicbackcolor>, ;
+            <aWhenFields>, <dynamicforecolor>, <inputmask>, ;
+            .F., NIL, NIL, NIL, NIL, ;
+            .F., NIL, .T., NIL, ;
+            .F., <.notabstop.>, .F., .F., ;
+            NIL, NIL, NIL, <aImageHeader>, NIL, ;
+            .F., NIL, NIL, NIL, ;
+            iif( <.doublebuffer.>, .T., .T. ), ;
+            NIL, .F., NIL, .F., .F., .F., ;
+            NIL, NIL, .F., NIL, ;
+            NIL, NIL, NIL, NIL, NIL, ;
+            .F., .F., .F., NIL, NIL, ;
+            .F., .F., .F., .T., .F., ;
+            .F., .F., NIL, .F., NIL, ;
+            NIL, NIL, NIL, .T., ;
+            NIL, NIL, .F., .F., .F., ;
+            NIL, NIL, NIL, NIL, NIL, .F., NIL ), <.mlh.> )
 
 #xtranslate BROWSE [ <x> ] ID <nId> [ <y> ] ;
    => ;

@@ -213,16 +213,22 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) CLASS TMenu
    ::oMenuParams := TMenuParams()
    ::OwnerDraw   := lOwnerDraw
    ::cStatMsg    := cMsg
-   ::cFontId     := cFontId
+   ::cFontId     := iif( cFontId == NIL, _OOHG_DefaultMenuFont(), cFontId )   // SET MENU FONT
    ::nTimeout    := nTimeout
    _OOHG_AppObject():ActiveMenuPush( Self )
 
-   IF ::Parent:DynamicMenu != NIL
-      // DYNAMIC MENU is already defined for this form
-      ::Parent:DynamicMenu:Release()
+   // Only DEFINE MENU DYNAMIC (class TMenu) goes to the window's menu bar.
+   // TMenuContext and TMenuNotify inherit this Define: with SetMenu they set their popup menu
+   // as the window's menu bar (Windows ignores it, Wine does not) and they also released each
+   // other because they shared DynamicMenu.
+   IF ::Type == "MENU"
+      IF ::Parent:DynamicMenu != NIL
+         // DYNAMIC MENU is already defined for this form
+         ::Parent:DynamicMenu:Release()
+      ENDIF
+      SetMenu( ::Parent:hWnd, ::hWnd )
+      ::Parent:DynamicMenu := Self
    ENDIF
-   SetMenu( ::Parent:hWnd, ::hWnd )
-   ::Parent:DynamicMenu := Self
 
    RETURN Self
 
@@ -340,7 +346,7 @@ METHOD Define( uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw, uColor, lApp
    ::oMenuParams := TMenuParams()
    ::OwnerDraw := lOwnerDraw
    ::cStatMsg  := cMsg
-   ::cFontId   := cFontId
+   ::cFontId   := iif( cFontId == NIL, _OOHG_DefaultMenuFont(), cFontId )   // SET MENU FONT
    ::nTimeout  := nTimeout
    _OOHG_AppObject():ActiveMenuPush( Self )
 
@@ -427,10 +433,11 @@ METHOD Define( uControl, uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) C
    ::oMenuParams := TMenuParams()
    ::OwnerDraw   := lOwnerDraw
    ::cStatMsg    := cMsg
-   ::cFontId     := cFontId
+   ::cFontId     := iif( cFontId == NIL, _OOHG_DefaultMenuFont(), cFontId )   // SET MENU FONT
    ::nTimeout    := nTimeout
    _OOHG_AppObject():ActiveMenuPush( Self )
-   SetMenu( ::Parent:hWnd, ::hWnd )
+   // SetMenu( ::Parent:hWnd, ::hWnd ) was removed. This is a popup menu of the control, not
+   // the window's menu bar; under Wine it replaced the MAIN MENU.
    ::Container := GetControlObject( uControl, ::Parent:Name )
    IF ::Container:ContextMenu != NIL
       ::Container:ContextMenu:Release()
@@ -438,6 +445,39 @@ METHOD Define( uControl, uParent, cName, cMsg, cFontId, nTimeout, lOwnerDraw ) C
    ::Container:ContextMenu := Self
 
    RETURN Self
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+// Default font of the menus (SET MENU FONT TO).
+// Returns the ID of the font (DEFINE FONT) used by the menus that don't set FONT, or NIL.
+// Contributed by Miguel Ingles.
+FUNCTION _OOHG_DefaultMenuFont( cFontId )
+
+   STATIC s_cFontId := NIL
+
+   IF PCount() > 0
+      s_cFontId := cFontId
+   ENDIF
+
+   RETURN s_cFontId
+
+/*--------------------------------------------------------------------------------------------------------------------------------*/
+// SET MENU FONT TO <cFontName>, <nFontSize> [BOLD] [CHARSET <nCharset>]
+// Creates font "_OOHG_MENUFONT", sets it as the menus' default font and enables OWNERDRAW
+// menus (a standard Windows menu always uses the system's menu font).
+// Contributed by Miguel Ingles.
+FUNCTION _OOHG_SetMenuFont( cFontName, nFontSize, lBold, nCharset )
+
+   LOCAL oApp := _OOHG_AppObject()
+
+   // If it's already defined, it's created again with the new values
+   IF ValidHandler( oApp:GetLogFontHandle( "_OOHG_MENUFONT" ) )
+      oApp:ReleaseLogFont( "_OOHG_MENUFONT" )
+   ENDIF
+   oApp:DefineLogFont( "_OOHG_MENUFONT", .F., cFontName, nFontSize, lBold, .F., .F., .F., NIL, nCharset )
+   _OOHG_DefaultMenuFont( "_OOHG_MENUFONT" )
+   _OOHG_OwnerDrawMenus := .T.
+
+   RETURN NIL
 
 /*--------------------------------------------------------------------------------------------------------------------------------*/
 FUNCTION _EndMenu()
@@ -1771,7 +1811,11 @@ HB_FUNC( MENUHILITED )          /* FUNCTION MenuHilited( hMenu, nPos, lHilited/N
    HMENU hMenu = HMENUparam( 1 );
    UINT nPos = (UINT) hb_parni( 2 );
 
-   if( HB_ISLOG( 3 ) )
+   /* HiliteMenuItem is only called if the state changes.
+      Each item is created asking for .F. (not hilited); Windows ignores it because it's
+      already not hilited, but Wine selects the item anyway and the last item of the
+      menu bar was left selected. */
+   if( HB_ISLOG( 3 ) && ( hb_parl( 3 ) != ( ( GetMenuState( hMenu, nPos, MF_BYPOSITION ) & MF_HILITE ) != 0 ) ) )
    {
       HiliteMenuItem( HWNDparam( 4 ), hMenu, nPos, MF_BYPOSITION | ( hb_parl( 3 ) ? MF_HILITE : MF_UNHILITE ) );
    }

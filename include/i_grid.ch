@@ -72,6 +72,25 @@
 STANDARD VERSION
 ---------------------------------------------------------------------------*/
 
+/*
+ * MARKROW <uMarkRow> clause: marks the current cell and the rest of the selected row
+ * with different colors (with or without NAVIGATEBYCELL).
+ *    omitted or .F. -> does nothing
+ *    .T.            -> the rest of the row is painted light blue {204,232,255}
+ *    array          -> { text with focus, back with focus, text without focus, back without focus }
+ *                      or an array like SELECTEDCOLORS (8 items), from which colors 5 to 8 are used
+ * At runtime: oGrid:MarkRow := .T. / .F. / array (see METHOD MarkRow in h_grid.prg)
+ */
+
+/*
+ * MULTILINEHEADERS clause: headers with two or more lines.
+ * In HEADERS, lines are separated with CHR(13)+CHR(10) (Windows), CHR(10) (Linux) or CHR(13).
+ * Header height is computed automatically.
+ * Example: HEADERS { "Code", "Customer" + CHR(13) + CHR(10) + "name" } MULTILINEHEADERS
+ * At runtime: oGrid:MultiLineHeaders := .T. / .F. / nPixels (fixed height)
+ * See METHOD MultiLineHeaders in h_grid.prg. Also available in BROWSE and XBROWSE.
+ */
+
 #command @ <row>, <col> GRID <name> ;
       [ OBJ <obj> ] ;
       [ <dummy: OF, PARENT> <parent> ] ;
@@ -129,6 +148,7 @@ STANDARD VERSION
       [ <fullmove: FULLMOVE> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
+      [ MARKROW <markrow> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ EDITKEYSFUN <bFun> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
@@ -180,8 +200,9 @@ STANDARD VERSION
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
       [ STOPEDIT <aStopEdit> ] ;
+      [ <mlh: MULTILINEHEADERS> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
+      [ <obj> := ] _OOHG_GridMultiLineHeaders( _OOHG_GridMarkRow( _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
             iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, <col>, <row>, ;
             <width>, <height>, <headers>, <widths>, <rows>, <value>, <fontname>, ;
@@ -209,7 +230,7 @@ STANDARD VERSION
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
             <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
-            <aHeadBkClrs>, <aStopEdit> )
+            <aHeadBkClrs>, <aStopEdit> ), <markrow> ), <.mlh.> )
 
 /*---------------------------------------------------------------------------
 SPLITBOX VERSION
@@ -272,6 +293,7 @@ SPLITBOX VERSION
       [ <fullmove: FULLMOVE> ] ;
       [ <bycell: NAVIGATEBYCELL> ] ;
       [ SELECTEDCOLORS <aSelectedColors> ] ;
+      [ MARKROW <markrow> ] ;
       [ EDITKEYS <aEditKeys> ] ;
       [ EDITKEYSFUN <bFun> ] ;
       [ <checkboxes: CHECKBOXES> ] ;
@@ -323,8 +345,9 @@ SPLITBOX VERSION
       [ HEADERBACKCOLORS <aHeadBkClrs> ] ;
       [ TIMEOUT <nTime> ] ;
       [ STOPEDIT <aStopEdit> ] ;
+      [ <mlh: MULTILINEHEADERS> ] ;
    => ;
-      [ <obj> := ] _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
+      [ <obj> := ] _OOHG_GridMultiLineHeaders( _OOHG_GridMarkRow( _OOHG_SelectSubClass( iif( <.bycell.>, TGridByCell(), ;
             iif( <.multiselect.>, TGridMulti(), TGrid() ) ), ;
             [ <subclass>() ] ):Define( <(name)>, <(parent)>, NIL, NIL, <width>, <height>, ;
             <headers>, <widths>, <rows>, <value>, <fontname>, <fontsize>, ;
@@ -352,7 +375,7 @@ SPLITBOX VERSION
             <{oninsert}>, <{editend}>, ! <.efv.>, <{beforedit}>, <{edtval}>, ;
             <.klc.>, <.ctt.>, <.nohsb.>, <.novsb.>, <{beforeins}>, ;
             <aHeadDblClick>, <aHeadClrs>, <nTime>, <{bFun}>, <.nomsg.>, ;
-            <aHeadBkClrs>, <aStopEdit> )
+            <aHeadBkClrs>, <aStopEdit> ), <markrow> ), <.mlh.> )
 
 #command SET GRIDFIXEDCONTROLS ON ;
    => ;
